@@ -30,7 +30,15 @@ jobs:
         with:
           node-version: "24"
 
-      - run: npm ci
+      # `--legacy-peer-deps` không phải để né lỗi cho xong. Lý do cụ thể:
+      # `ws` (bên trong @solana/web3.js) khai `bufferutil` và `utf-8-validate`
+      # là peerOptional — hai module native. npm trên Windows bỏ qua chúng khi
+      # sinh lockfile, npm trên Linux lại đưa vào cây phụ thuộc lý tưởng. `npm ci`
+      # đòi hai bên khớp tuyệt đối nên hỏng ngay, dù lockfile hoàn toàn hợp lệ.
+      # Cờ này bảo npm đừng dựng cây theo peerDependencies — mọi thứ khác vẫn
+      # cài đúng phiên bản ghi trong lockfile. Hai module đó chỉ tăng tốc
+      # websocket, mà Custos chỉ gọi RPC qua HTTP.
+      - run: npm ci --legacy-peer-deps
 
       - name: Kiểm thử trước khi deploy
         run: npm run check
