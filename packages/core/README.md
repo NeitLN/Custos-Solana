@@ -198,8 +198,9 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 | Giới hạn | Chi tiết |
 |---|---|
-| **Coverage chưa đủ trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 40 %**. Chưa có decoder cho các chương trình DEX và aggregator |
+| **Coverage chưa đủ trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 46 %**. Chưa có decoder cho các chương trình DEX và aggregator. Riêng phần lệnh chạm được tài sản của bạn: **21 %** |
 | **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
+| **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
 | **Luật 4 không phân biệt được authority** | Permanent delegate luôn ở mức Vàng, vì `Facts` chưa bóc trường `authority` của lệnh Transfer |

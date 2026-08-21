@@ -256,3 +256,93 @@ test("L1 decode được lệnh CPI, không còn mặc định 'chưa đọc hi�
   assert.ok(cpi, "phải có lệnh CPI trong Facts");
   assert.deepEqual(cpi!.decoded, { kind: "transfer" }, "lệnh Transfer không vì nằm trong CPI mà khó hiểu hơn");
 });
+
+// ── Decoder mở rộng ───────────────────────────────────────────────
+const ATA_PROG = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+const ORCA_PROG = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
+const SYS_PROG = "11111111111111111111111111111111";
+
+test("ATA — lệnh Create đời đầu KHÔNG có dữ liệu, và vẫn phải đọc hiểu được", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  // Nếu phép kiểm "dữ liệu rỗng ⇒ null" chạy trước, lệnh này bị đếm nhầm là
+  // chưa đọc hiểu suốt.
+  assert.deepEqual(decodeInstruction(ATA_PROG, new Uint8Array(0)), { kind: "createAta" });
+  assert.deepEqual(decodeInstruction(ATA_PROG, new Uint8Array([1])), { kind: "createAtaIdempotent" });
+});
+
+test("SPL Token — đọc hiểu cả những mã lệnh vô hại", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  // Bốn mã này chiếm 111 lệnh trong 40 giao dịch mainnet. Chúng vô hại, nhưng
+  // coverage đo TẤT CẢ lệnh — bỏ qua chúng là tự làm xấu con số của mình.
+  const TOK = TOKEN_PROGRAM_ID.toBase58();
+  assert.deepEqual(decodeInstruction(TOK, new Uint8Array([17])), { kind: "syncNative" });
+  assert.deepEqual(decodeInstruction(TOK, new Uint8Array([18])), { kind: "initializeAccount3" });
+  assert.deepEqual(decodeInstruction(TOK, new Uint8Array([21])), { kind: "getAccountDataSize" });
+  assert.deepEqual(decodeInstruction(TOK, new Uint8Array([22])), { kind: "initializeImmutableOwner" });
+});
+
+test("Token-2022 — lệnh mở rộng để NGUYÊN là chưa đọc hiểu, không đoán tên", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  // Gán sai tên một lệnh trong sản phẩm bảo mật tệ hơn thú nhận là không biết.
+  assert.equal(decodeInstruction(TOKEN_2022_PROGRAM_ID.toBase58(), new Uint8Array([26])), null);
+  assert.equal(decodeInstruction(TOKEN_2022_PROGRAM_ID.toBase58(), new Uint8Array([36])), null);
+});
+
+test("System — đọc u32 little-endian, không đọc 1 byte", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  assert.deepEqual(decodeInstruction(SYS_PROG, new Uint8Array([4, 0, 0, 0])), { kind: "advanceNonceAccount" });
+  assert.equal(decodeInstruction(SYS_PROG, new Uint8Array([4])), null, "thiếu byte thì không đoán");
+});
+
+test("BẢNG ORCA được TÍNH RA, không phải chép — đối chiếu lại bằng sha256", async () => {
+  // Đây là điều đáng kiểm nhất trong cả file. Discriminator của một chương trình
+  // Anchor là 8 byte đầu của sha256("global:<tên lệnh>"). Test tính lại từ tên
+  // và bắt buộc bảng trong decode.ts phải khớp — nên không ai chép nhầm một
+  // dòng vào đó được, và cũng không ai bịa ra một dòng được.
+  const { createHash } = await import("node:crypto");
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+
+  const anchor = (ten: string) => createHash("sha256").update(`global:${ten}`).digest().subarray(0, 8);
+  const camelSangSnake = (s: string) =>
+    s.replace(/V2$/, "_v2").replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
+
+  for (const ten of [
+    "swap", "swapV2", "twoHopSwap", "twoHopSwapV2", "openPosition", "closePosition",
+    "increaseLiquidity", "increaseLiquidityV2", "decreaseLiquidity", "decreaseLiquidityV2",
+    "collectFees", "collectFeesV2", "collectReward", "collectProtocolFees",
+    "initializeTickArray", "updateFeesAndRewards",
+  ]) {
+    const d = anchor(camelSangSnake(ten));
+    assert.deepEqual(
+      decodeInstruction(ORCA_PROG, d),
+      { kind: ten },
+      `discriminator của ${ten} không khớp sha256("global:${camelSangSnake(ten)}")`,
+    );
+  }
+});
+
+test("ORCA — ba discriminator đã bắt gặp thật trên mainnet", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  const hex = (h: string) => Uint8Array.from(Buffer.from(h, "hex"));
+  // Lấy từ giao dịch mainnet thật trong mẻ khảo sát 40 giao dịch.
+  assert.deepEqual(decodeInstruction(ORCA_PROG, hex("2b04ed0b1ac91e62")), { kind: "swapV2" });
+  assert.deepEqual(decodeInstruction(ORCA_PROG, hex("a026d06f685b2c01")), { kind: "decreaseLiquidity" });
+  assert.deepEqual(decodeInstruction(ORCA_PROG, hex("a498cf631eba13b6")), { kind: "collectFees" });
+});
+
+test("MỌI chương trình trong danh sách xác minh phải có decoder", async () => {
+  // Chốt chặn cho quy tắc đã khoá: "đã xác minh" nghĩa là ĐỌC HIỂU ĐƯỢC. SPL Memo
+  // từng bị gỡ vì vi phạm điều này, rồi Orca Whirlpool lại nằm trong danh sách
+  // suốt một thời gian mà không có lấy một decoder. Test này không cho tái diễn.
+  //
+  // Đếm thẳng từ bảng decoder chứ không dò thử từng byte: chương trình Anchor
+  // dùng discriminator 8 byte, dò 1 byte sẽ không bao giờ trúng và test sẽ báo
+  // sai — một chốt chặn hay kêu oan thì sớm muộn cũng bị nới ra cho qua.
+  const { VERIFIED_PROGRAMS } = await import("../src/constants.ts");
+  const { SO_LENH_DOC_DUOC } = await import("../src/l1/decode.ts");
+
+  for (const [pid, ten] of VERIFIED_PROGRAMS) {
+    const n = SO_LENH_DOC_DUOC.get(pid) ?? 0;
+    assert.ok(n > 0, `${ten} nằm trong danh sách xác minh nhưng không decode được lệnh nào`);
+  }
+});
