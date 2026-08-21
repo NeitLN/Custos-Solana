@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 138 test
+npm run check      # typecheck + 160 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -64,16 +64,22 @@ Custos mô phỏng giao dịch, đối chiếu với một engine luật xác đ
 |---|---|---|
 | L1 | Mô phỏng và bóc tách thay đổi số dư, quyền sở hữu, delegate | Xác định |
 | L2 | Engine luật ra verdict Đỏ / Vàng / Xanh kèm mã lý do | Xác định |
-| L3 | Nhận diện hành động chính, chỉ ra hậu quả lệch khỏi nó, diễn giải tiếng Việt | AI |
+| L3 | Nhận diện hành động chính, chỉ ra hậu quả lệch khỏi nó, diễn giải tiếng Việt | Lõi xác định + mô hình ngôn ngữ tuỳ chọn |
 
 AI không tạo và không sửa verdict. Nó chỉ có thể yêu cầu người dùng kiểm tra thủ công.
+
+Mô hình ngôn ngữ là **tuỳ chọn và do bên tích hợp tự cắm** — Custos không nhúng
+SDK của nhà cung cấp nào và không giữ khoá API nào. Không cắm gì thì sản phẩm
+vẫn chạy đầy đủ bằng lõi xác định. Bốn ràng buộc lên mô hình (không chạm
+`level`, không xác nhận an toàn, không hạ được mức nghi ngờ, không nhận giao
+dịch thô) đều có test đối kháng — xem [packages/core/README.md](packages/core/README.md).
 
 ## Tình trạng thật — đo được, không ước lượng
 
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **12** trên 12 đã đặc tả |
-| Test | **138**, chạy trong `npm run check` |
+| Test | **160**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
 | Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
 | Coverage trung bình trên giao dịch mainnet thật | **40 %** |

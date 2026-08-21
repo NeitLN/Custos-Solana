@@ -26,11 +26,15 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 đủ mười hai luật + SDK · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 29 mẫu dữ liệu · 138 test · CI deploy công khai lên
-GitHub Pages kèm bước chặn rò rỉ khoá.
+hiện trường devnet thật · 29 mẫu dữ liệu · 160 test · lớp mô hình ngôn ngữ cho
+L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
+bước chặn rò rỉ khoá.
 
-**Chưa có:** lớp LLM thật cho L3 (hiện là lõi xác định + câu mẫu) · deck ·
-video demo · phỏng vấn người dùng.
+**Chưa có:** deck · video demo · phỏng vấn người dùng · decoder cho chương
+trình DEX (coverage đang 40 %).
+
+Lớp mô hình ngôn ngữ đã dựng xong và có test đối kháng, nhưng **chưa chạy với
+mô hình thật lần nào** — cần khoá API, và bản demo công khai cố ý không nhúng khoá.
 
 Đo được, không ước lượng: 0 verdict Đỏ sai trên 20 giao dịch SPL mainnet ngẫu
 nhiên; coverage trung bình 40 % (trước khi đọc hiểu CPI và ComputeBudget là

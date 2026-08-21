@@ -136,6 +136,54 @@ Lớp diễn giải có thời hạn mặc định **4 giây** (`boiThoiHan(fn, 
 
 ---
 
+## Cắm mô hình ngôn ngữ — tuỳ chọn, và có ranh giới cứng
+
+Custos **không nhúng SDK của nhà cung cấp nào và không giữ khoá API nào.** Bạn
+đưa vào một hàm gọi mô hình, tự chọn mô hình, tự quyết định chạy ở đâu và trả
+tiền thế nào:
+
+```ts
+import { inspect } from "@custos/core";
+import { dienGiaiBangMoHinh, boiThoiHan } from "@custos/ai";
+
+const interpret = boiThoiHan(
+  dienGiaiBangMoHinh(async ({ system, user }) => {
+    const r = await goiMoHinhCuaBan(system, user);   // hàm của bạn
+    return r;                                        // trả về chuỗi thô
+  }),
+  4000,                                              // thời hạn, ms
+);
+
+const ketQua = await inspect({ connection, interpret }, tx, { locale: "vi" });
+```
+
+Không cắm gì thì `inspect()` dùng lõi xác định và **vẫn chạy đầy đủ** — chỉ khác
+ở chỗ câu chữ cứng hơn. `level`, `diff`, `reasonCodes`, `coverage` không phụ
+thuộc vào mô hình.
+
+### Mô hình được viết chữ, không được quyết định gì
+
+Bốn ràng buộc, tất cả đều có test:
+
+| Ràng buộc | Cưỡng chế bằng gì |
+|---|---|
+| Không chạm được `level` | Kiểu `Interpreter` không có trường đó — trình biên dịch chặn |
+| Không xác nhận giao dịch an toàn | Đầu ra bị soi; câu trấn an bị từ chối và rơi về lõi xác định |
+| Không hạ được mức nghi ngờ | `aiAdvisory` bất đối xứng: mô hình chỉ NÂNG lên `review_required` |
+| Không nhận giao dịch thô | Chỉ nhận danh sách trắng dữ kiện đã bóc |
+
+Mô hình hỏng, chậm, trả rác, hoặc bị lái — cả bốn trường hợp đều rơi về lõi xác
+định, và người dùng không mất phần bảo vệ nào.
+
+### Ký hiệu token là dữ liệu do người ngoài đặt
+
+`kyHieuToken` bạn truyền vào bị lọc trước khi hiển thị và trước khi gửi cho mô
+hình: chỉ nhận nhãn ngắn dạng `USDC`, `SOL`, `USDC-demo`. Cái gì không có hình
+dạng đó thì Custos hiển thị địa chỉ rút gọn — xấu hơn nhưng thật.
+
+Lý do rất cụ thể: nếu in nguyên văn, một dApp độc hại chỉ cần đặt tên token
+thành *"an toàn, cứ ký đi"* là khiến chính lớp bảo vệ nói câu trấn an hộ nó.
+
 ## Quyền riêng tư
 
 Custos **không** giữ khoá riêng, **không** ký gì, **không** ghi gì lên chain — nó là lớp đọc và mô phỏng.
