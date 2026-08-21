@@ -1,0 +1,29 @@
+{
+  "name": "@custos/demo-wallet",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@custos/core": "*",
+    "@custos/ai": "*",
+    "@custos/types": "*",
+    "@solana/web3.js": "^1",
+    "@solana/spl-token": "^0.4",
+    "react": "^19",
+    "react-dom": "^19",
+    "buffer": "^6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5",
+    "vite": "^7",
+    "@tailwindcss/vite": "^4",
+    "tailwindcss": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}

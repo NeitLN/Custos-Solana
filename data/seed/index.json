@@ -1,0 +1,414 @@
+{
+  "thuLuc": "2026-08-21T00:24:40.946Z",
+  "soMau": 23,
+  "mau": [
+    {
+      "id": "R01-pos",
+      "luat": 1,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R01-pos.json",
+      "giaoDich": "tx/R01-pos.base64",
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ]
+      },
+      "bangChung": "SetAuthority đổi AccountOwner của tài khoản token người ký sang ví lạ.",
+      "ganNhanLuc": "2026-08-21T00:23:45.504Z"
+    },
+    {
+      "id": "R02-pos",
+      "luat": 2,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R02-pos.json",
+      "giaoDich": "tx/R02-pos.base64",
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ]
+      },
+      "bangChung": "Trao quyền đóng tài khoản token cho bên thứ ba.",
+      "ganNhanLuc": "2026-08-21T00:23:45.654Z"
+    },
+    {
+      "id": "R03-pos",
+      "luat": 3,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R03-pos.json",
+      "giaoDich": "tx/R03-pos.base64",
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_APPROVE_DELEGATE_LON"
+        ]
+      },
+      "bangChung": "Approve delegate với hạn mức u64::MAX, vượt xa số dư đang có.",
+      "ganNhanLuc": "2026-08-21T00:23:45.801Z"
+    },
+    {
+      "id": "R03-neg",
+      "luat": 3,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R03-neg.json",
+      "giaoDich": "tx/R03-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_APPROVE_DELEGATE_LON"
+        ]
+      },
+      "bangChung": "Approve ĐÚNG trong phạm vi số dư — hành vi chuẩn của nhiều dApp, không được gắn cờ.",
+      "ganNhanLuc": "2026-08-21T00:23:45.947Z"
+    },
+    {
+      "id": "R08-pos",
+      "luat": 8,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R08-pos.json",
+      "giaoDich": "tx/R08-pos.base64",
+      "kyVong": {
+        "level": "warning"
+      },
+      "bangChung": "Chuyển 80% số dư sang ví vừa được tạo. Luật 8 chỉ kích hoạt khi tra được tuổi ví.",
+      "ganNhanLuc": "2026-08-21T00:23:55.368Z"
+    },
+    {
+      "id": "R11-pos",
+      "luat": 11,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R11-pos.json",
+      "giaoDich": "tx/R11-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "OUTFLOW_KHONG_KHOP"
+        ]
+      },
+      "bangChung": "HAI loại tài sản cùng rời ví trong một giao dịch — không hành động bình thường nào cần vậy.",
+      "ganNhanLuc": "2026-08-21T00:23:58.374Z"
+    },
+    {
+      "id": "R12-pos",
+      "luat": 12,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R12-pos.json",
+      "giaoDich": "tx/R12-pos.base64",
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "SystemProgram.assign giao account của người ký cho chương trình khác điều khiển. Đây là vector mà mô phỏng của Blowfish từng bỏ lọt; Custos bắt được vì so sánh TRẠNG THÁI.",
+      "ganNhanLuc": "2026-08-21T00:23:59.805Z"
+    },
+    {
+      "id": "R09-pos",
+      "luat": 9,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R09-pos.json",
+      "giaoDich": "tx/R09-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "PROGRAM_CHUA_XAC_MINH"
+        ]
+      },
+      "bangChung": "Chương trình chưa xác minh (SPL Memo) GHI vào tài khoản token của người ký.",
+      "ganNhanLuc": "2026-08-21T00:24:01.261Z"
+    },
+    {
+      "id": "R09-neg",
+      "luat": 9,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R09-neg.json",
+      "giaoDich": "tx/R09-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "PROGRAM_CHUA_XAC_MINH"
+        ]
+      },
+      "bangChung": "Cùng chương trình chưa xác minh, nhưng KHÔNG ghi vào tài khoản nào của người ký. Mô hình tài khoản Solana bảo đảm nó không hại được người ký trong giao dịch này.",
+      "ganNhanLuc": "2026-08-21T00:24:02.169Z"
+    },
+    {
+      "id": "R06-pos",
+      "luat": 6,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R06-pos.json",
+      "giaoDich": "tx/R06-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "bangChung": "Token trong giao dịch vẫn còn mint authority — người phát hành tạo thêm được không giới hạn.",
+      "ganNhanLuc": "2026-08-21T00:24:05.087Z"
+    },
+    {
+      "id": "R06-neg",
+      "luat": 6,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R06-neg.json",
+      "giaoDich": "tx/R06-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "bangChung": "Cùng hình dạng giao dịch, nhưng mint authority ĐÃ thu hồi — không được gắn cờ.",
+      "ganNhanLuc": "2026-08-21T00:24:12.804Z"
+    },
+    {
+      "id": "R04-pos",
+      "luat": 4,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R04-pos.json",
+      "giaoDich": "tx/R04-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "TOKEN2022_PERMANENT_DELEGATE"
+        ]
+      },
+      "bangChung": "Token-2022 có quyền rút vĩnh viễn, nhưng chính người ký chuyển tiền — delegate KHÔNG ra tay. Chỉ được ra Vàng: sự tồn tại của một tính năng giao thức không phải là tội.",
+      "ganNhanLuc": "2026-08-21T00:24:24.984Z"
+    },
+    {
+      "id": "R11-neg",
+      "luat": 11,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R11-neg.json",
+      "giaoDich": "tx/R11-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "OUTFLOW_KHONG_KHOP"
+        ]
+      },
+      "bangChung": "Gửi MỘT loại tài sản cho ai đó — hành vi thường gặp nhất của một cái ví.",
+      "ganNhanLuc": "2026-08-21T00:24:26.044Z"
+    },
+    {
+      "id": "MN-01",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/32w3AFDTATEYrKABix6DkQkQHUFpqz7poA5cBkphprvng9nogyEpU8aGbfbNrMJSNNnKxghigKF79dZUTJQ5T11Q",
+      "facts": "facts/MN-01.json",
+      "giaoDich": "tx/MN-01.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:27.012Z"
+    },
+    {
+      "id": "MN-02",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/35DXEvoG3WgfXq7BUfRxcye7p2pxgiLLpwuXjincGjBN7wEMxrZH7MYZZU8kFHqZHnovdxgrc8fiQSVLpubJpuaF",
+      "facts": "facts/MN-02.json",
+      "giaoDich": "tx/MN-02.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:28.680Z"
+    },
+    {
+      "id": "MN-03",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/53BDZfe1WJLEjvbB3m5nBYTXgnfamVqCQJGjKYvPdaQEVTkyChMCTzaJB8HMoB8Pha3YCVKrzAUsp3hZjunMv21z",
+      "facts": "facts/MN-03.json",
+      "giaoDich": "tx/MN-03.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:29.941Z"
+    },
+    {
+      "id": "MN-04",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/2JhhTE2nDfBKVdx9bj6HFgkpFuLLt1LqCPBXsu6ZM9iysS19vatdbBUZPyPnhMRPsnq9wcZ8XU1aTn1LvozipRYX",
+      "facts": "facts/MN-04.json",
+      "giaoDich": "tx/MN-04.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:30.961Z"
+    },
+    {
+      "id": "MN-05",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4LB1z63EKx7U6cwzih6fFfxLXPsRUnubZHUUkT6LCYUB71p6TfEMMQLdWbiaAetqaPY3LbJqeDpxjFa9KDrhyGgp",
+      "facts": "facts/MN-05.json",
+      "giaoDich": "tx/MN-05.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:32.666Z"
+    },
+    {
+      "id": "MN-06",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4U9jjyfJ3bGU95HiW2jvjmggGpqYDvAhLewbx88aSxT2n8hvZCpDMpTPJCZhbwueWRVC6oZBBkU9q86jVsZ88CVX",
+      "facts": "facts/MN-06.json",
+      "giaoDich": "tx/MN-06.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:33.988Z"
+    },
+    {
+      "id": "MN-07",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/n9P3o3xt1KTL6wd8X34iDdgqu9GZcVBDoxSqxZ8eTvpFT1k18KucaxWUK6H8tXjm9L9sMRGQvixqAHuYBcfQD7g",
+      "facts": "facts/MN-07.json",
+      "giaoDich": "tx/MN-07.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:36.973Z"
+    },
+    {
+      "id": "MN-08",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4R3vmhtEUQbH8QEkkQEN9SPvVD5LByh1mJFpUTkZpsV1kxBpjZYuETxe9SGB2gdpSTTnrkrsiZy74xVEJfDjGwNt",
+      "facts": "facts/MN-08.json",
+      "giaoDich": "tx/MN-08.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:37.993Z"
+    },
+    {
+      "id": "MN-09",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/3Snk3xyS1ZNsUFM3K6aii6FX1zs9SYVk2cyMBSsVmjFHNV39QoaYHjmFzL38UXo2aHpwF2K2LWhXYHA92inW35wx",
+      "facts": "facts/MN-09.json",
+      "giaoDich": "tx/MN-09.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:39.360Z"
+    },
+    {
+      "id": "MN-10",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4Um85R6hKJNtdE1xtnb45P4QHC2e1YktANKVVoRm3rUcwBZNxnNjehTcwzkHuobsdAtFPMr7wARrkZ6iFM5TKJWT",
+      "facts": "facts/MN-10.json",
+      "giaoDich": "tx/MN-10.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:40.346Z"
+    }
+  ]
+}

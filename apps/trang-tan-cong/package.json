@@ -1,0 +1,25 @@
+{
+  "name": "@custos/trang-tan-cong",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5189 --strictPort",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1",
+    "@solana/spl-token": "^0.4",
+    "react": "^19",
+    "react-dom": "^19",
+    "buffer": "^6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5",
+    "vite": "^7",
+    "@tailwindcss/vite": "^4",
+    "tailwindcss": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}

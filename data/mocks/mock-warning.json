@@ -1,0 +1,32 @@
+{
+  "level": "warning",
+  "aiAdvisory": null,
+  "detectedPrimaryAction": {
+    "type": "transfer",
+    "to": "4kPm…9Wq1"
+  },
+  "diff": [
+    {
+      "label": "Số dư USDC sau khi ký",
+      "before": "500,00",
+      "after": "450,00",
+      "severity": "warning"
+    },
+    {
+      "label": "Phí mạng",
+      "before": "0",
+      "after": "−0,000005 SOL",
+      "severity": "info"
+    }
+  ],
+  "reasonCodes": [
+    "VI_NHAN_MOI_TAO",
+    "MINT_AUTHORITY_CHUA_THU_HOI"
+  ],
+  "coverage": {
+    "analyzed": 8,
+    "total": 11,
+    "unverifiedPrograms": 2
+  },
+  "explanation": "50 USDC sẽ chuyển sang ví 4kPm…9Wq1. Ví này vừa được tạo cách đây 3 giờ. Người phát hành token này vẫn có thể tạo thêm không giới hạn."
+}

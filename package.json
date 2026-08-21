@@ -1,0 +1,29 @@
+{
+  "name": "custos",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test --experimental-strip-types \"packages/**/test/*.test.ts\"",
+    "check": "npm run typecheck && npm run test",
+    "hien-truong": "node --experimental-strip-types scripts/dung-hien-truong.ts",
+    "vi": "npm run dev -w @custos/demo-wallet",
+    "tan-cong": "npm run dev -w @custos/trang-tan-cong",
+    "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.15",
+    "@solana/web3.js": "^1.98.4"
+  }
+}

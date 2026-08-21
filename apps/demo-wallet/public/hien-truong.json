@@ -1,0 +1,14 @@
+{
+  "rpc": "https://api.devnet.solana.com",
+  "mint": "4YDgw6GUGH8J9SzcqNZSFr2V9TENkXdgyFWmkkK2Wpv1",
+  "kyHieu": "USDC-demo",
+  "decimals": 6,
+  "nanNhan": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+  "taiKhoanNanNhan": "62P13bTTRZfnyMq5X8e6kPCkzPprzUJVVn7wZozihNFq",
+  "keTanCong": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz",
+  "taiKhoanKeTanCong": "6pt2cPpaFozcqBWT9hHFHkuCS5Luj5YgcjwDk7hV9kJC",
+  "banBe": "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP",
+  "taiKhoanBanBe": "EuBqHL98MzEua6C7HCPTEgCcKYdhX4E3BZrS8JZKZk2W",
+  "soLuong": "500000000",
+  "dungLuc": "2026-08-21T01:05:32.551Z"
+}
