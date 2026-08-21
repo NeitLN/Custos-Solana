@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 167 test
+npm run check      # typecheck + 188 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -78,11 +78,11 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 | Thứ | Số |
 |---|---|
-| Luật đã chạy | **12** trên 12 đã đặc tả |
-| Test | **167**, chạy trong `npm run check` |
+| Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
+| Test | **188**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
 | Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
-| Coverage trung bình trên giao dịch mainnet thật | **46 %** |
+| Coverage trung bình trên giao dịch mainnet thật | **69 %** trên cohort đo ngày 22/08 |
 
 **Coverage 46 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
 cho các chương trình DEX, nên hơn một nửa một giao dịch DeFi là thứ nó chưa đọc
@@ -91,14 +91,19 @@ im lặng và để người dùng tưởng là đã kiểm hết.
 
 Con số này từng là **4 %**. Nó tăng lên không phải nhờ nới lỏng định nghĩa, mà
 nhờ đọc hiểu thêm những thứ đội thật sự hiểu: lệnh `ComputeBudget`, lệnh gọi
-lồng nhau (CPI), và toàn bộ tập lệnh của các chương trình vốn đã nằm trong danh
-sách xác minh. Mỗi bước đều đo trên **cùng một mẻ giao dịch**, không phải hai mẻ
-khác nhau.
+lồng nhau (CPI), toàn bộ tập lệnh của các chương trình vốn đã trong danh sách
+xác minh, và sáu chương trình Anchor có **IDL công bố ngay trên chuỗi**.
+
+**Coverage dao động mạnh theo mẻ mẫu** — cohort ngày 21/08 cho 53 %, cohort ngày
+22/08 cho 69 %. Nên mọi so sánh trước/sau đều đo trong **một lượt trên cùng
+cohort**, không phải hai lần chạy khác nhau. Riêng phần decoder sinh từ IDL đóng
+góp **+2 điểm** (67 % → 69 %) đo đúng như vậy; so chéo hai cohort thì nó "trông
+như" +5, và con số đó sai.
 
 Phần còn thiếu nằm đúng chỗ khó chịu nhất: lệnh **chạm được tài sản của bạn**
-mới chỉ đọc hiểu được **21 %**, thấp hơn mức chung. Nói cách khác, phần Custos
-chưa đọc hiểu chính là phần đang di chuyển tiền. Bảng chênh lệch vẫn đo được
-hậu quả của chúng — nhưng đội không giả vờ là đã hiểu chúng.
+mới đọc hiểu được **39 %**, thấp hơn mức chung. Phần Custos chưa đọc hiểu chính
+là phần đang di chuyển tiền. Bảng chênh lệch vẫn đo được hậu quả của chúng —
+nhưng đội không giả vờ là đã hiểu chúng.
 
 Mẫu ngẫu nhiên không bảo đảm cả 20 giao dịch đều lành tính. **Không có Đỏ nghĩa là
 không cờ nào bật**, không phải bằng chứng cả 20 cái đều sạch.

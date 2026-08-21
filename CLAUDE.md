@@ -25,8 +25,8 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT ĐẦU BUILD`) đã qua.
 Không cần xin duyệt để viết code nữa.
 
-**Đã có:** L1 bóc tách + L2 đủ mười hai luật + SDK · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 29 mẫu dữ liệu · 167 test · lớp mô hình ngôn ngữ cho
+**Đã có:** L1 bóc tách + L2 mười bốn luật + SDK · ví mẫu · trang tấn công giả ·
+hiện trường devnet thật · 29 mẫu dữ liệu · 188 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
@@ -74,7 +74,7 @@ type InspectResult = {
 
 | Vai | Sở hữu |
 |---|---|
-| **A** | Custos Core: L1 bóc tách + L2 mười hai luật + SDK |
+| **A** | Custos Core: L1 bóc tách + L2 mười bốn luật + SDK |
 | **B** | Demo Wallet · trang tấn công giả · giao dịch devnet · deploy |
 | **C** | L3: nhận diện hành động chính, diễn giải, `aiAdvisory`, toàn bộ chữ tiếng Việt |
 | **D** | Seed dataset · liên hệ ví/dApp · phỏng vấn · deck · video · nộp hồ sơ |

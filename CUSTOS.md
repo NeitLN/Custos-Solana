@@ -257,14 +257,14 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 
 **3 · Điều chỉnh cách diễn đạt theo trình độ người dùng.** Cùng một facts, hai cách nói.
 
-### 12 luật của L2 — đã cài đủ 12
+### 14 luật của L2
 
 | # | Luật *(xác định, không có AI tham gia)* | Verdict |
 |---:|---|---|
 | 1 | `SetAuthority` đổi `AccountOwner` của tài khoản token người ký | Đỏ |
 | 2 | `SetAuthority` gán `CloseAccount` hoặc `Freeze` cho bên thứ ba | Đỏ |
 | 3 | `Approve` delegate với hạn mức vượt ngưỡng bất thường | Đỏ |
-| 4 | Token-2022 có Permanent Delegate | **Vàng** — chỉ lên **Đỏ** khi **chính permanent delegate đó** thực hiện transfer hoặc burn ảnh hưởng tài khoản của người dùng trong giao dịch này |
+| 4 | Token-2022 có Permanent Delegate | **Vàng** — lên **Đỏ** khi `authority` của lệnh transfer/burn ĐÚNG BẰNG permanent delegate. Không bóc được `authority` thì giữ Vàng |
 | 5 | Token-2022 có Transfer Hook trỏ tới chương trình chưa xác minh | Vàng |
 | 6 | Mint authority chưa thu hồi | Vàng |
 | 7 | Freeze authority còn hoạt động | Vàng |
@@ -273,6 +273,8 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 | 10 | Có bảng tra địa chỉ (ALT) không giải được | Vàng |
 | 11 | Có outflow từ tài khoản người ký ở tài sản hoặc khối lượng không khớp với các leg còn lại của giao dịch | **Vàng** — lên **Đỏ** chỉ khi trùng với một luật Đỏ khác |
 | 12 | `SystemProgram.assign` đổi owner của một account thuộc người ký sang program khác | Đỏ |
+| 13 | Phần lớn số SOL của người dùng rời ví, sau khi trừ phí mạng ước tính | **Vàng** — lên **Đỏ** chỉ khi trùng một luật Đỏ khác |
+| 14 | Giao dịch có nhiều người ký và ví không cho biết địa chỉ nào là của người dùng | Vàng |
 
 **Nguyên tắc chung của bốn luật đã được nới (4, 5, 10, 11):** ba cơ chế Token-2022 Permanent Delegate, Transfer Hook và Address Lookup Table đều là **năng lực hợp lệ của giao thức**, có trường hợp dùng chính đáng. Chúng chỉ trở thành dấu hiệu tấn công khi kết hợp với hành vi cụ thể trong chính giao dịch đang xét. Gắn cờ Đỏ cho sự tồn tại của một tính năng là cách nhanh nhất để tạo false positive.
 
