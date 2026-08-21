@@ -29,6 +29,67 @@ Không gộp mẫu tự dựng vào con số đó.
 
 ---
 
+## 0b4 · Mở rộng decoder — 21/08
+
+Khảo sát 40 giao dịch mainnet bằng `scripts/soi-lenh-chua-decode.ts`: **164 lệnh
+chưa decode được nằm trong chính những chương trình đội đã tự nhận là xác minh.**
+
+| Số lệnh | Chương trình · mã lệnh |
+|---:|---|
+| 46 | ATA · `createIdempotent` |
+| 30 | SPL Token · `getAccountDataSize` |
+| 30 | SPL Token · `initializeImmutableOwner` |
+| 30 | SPL Token · `initializeAccount3` |
+| 21 | SPL Token · `syncNative` |
+| 4 | Orca Whirlpool · bốn lệnh khác nhau |
+| 3 | System · `advanceNonceAccount` |
+
+Đây là loại thiếu sót rẻ nhất để vá: không phải chương trình lạ, chỉ là bảng mã
+lệnh viết chưa hết. Bản cũ chỉ liệt kê 10 mã "liên quan tới luật", nhưng coverage
+đo **mọi** lệnh.
+
+Kết quả, đo trên **cùng 20 giao dịch**: coverage **41 % → 46 %**, và sau khi vá
+thì **không còn lệnh nào chưa decode trong chương trình đã xác minh**.
+
+### Orca Whirlpool nằm trong danh sách xác minh mà không có lấy một decoder
+
+Đây là lỗi nghiêm trọng hơn con số coverage. Quy tắc đã khoá: *"xác minh" nghĩa
+là đội ĐỌC HIỂU ĐƯỢC nội dung lệnh của nó* — chính lý do SPL Memo bị gỡ khỏi danh
+sách. Orca thì nằm trong danh sách từ đầu và `decodeInstruction` chưa bao giờ trả
+về gì cho nó.
+
+Đã viết decoder thật. Orca là chương trình Anchor nên mã lệnh là 8 byte đầu của
+`sha256("global:<tên lệnh>")`. Bảng trong `decode.ts` là hash **tự tính**, và ba
+dòng đã được đối chiếu với byte thật lấy từ mainnet: `swapV2`, `decreaseLiquidity`,
+`collectFees`. Có một test tính lại toàn bộ bảng bằng `node:crypto` và bắt buộc
+phải khớp, nên không ai chép nhầm hay bịa thêm một dòng được.
+
+Và một chốt chặn mới: **mọi chương trình trong `VERIFIED_PROGRAMS` phải có
+decoder**. Đã kiểm chứng bằng cách thử thêm Jupiter vào danh sách mà không viết
+decoder — test đỏ ngay.
+
+### Con số khó chịu, và phải nói ra
+
+Đo riêng phần lệnh **chạm được tài sản người ký**:
+
+| | Đọc hiểu được |
+|---|---:|
+| Toàn bộ lệnh | 30 % |
+| Lệnh **chạm tài sản người ký** | **21 %** |
+
+Thấp hơn mức chung. Nghĩa là phần Custos chưa đọc hiểu **chính là phần đang di
+chuyển tiền của người dùng** — không phải phần phụ vô hại.
+
+Đội đã định công bố góc nhìn ngược lại (*"chúng tôi đọc hiểu 100 % phần chạm được
+tài sản của bạn"*) cho tới khi đo. Số liệu bác bỏ nó thẳng thừng. Ghi lại ở đây
+để không ai dựng lại câu đó.
+
+Bảng chênh lệch vẫn ĐO ĐƯỢC hậu quả của những lệnh đó — mô hình tài khoản Solana
+bảo đảm mọi thay đổi đều hiện ra trong mô phỏng. Nhưng đo được hậu quả khác với
+hiểu được nguyên nhân, và Custos chỉ nhận phần thứ nhất.
+
+---
+
 ## 0b3 · Coverage 4 % → 40 % — 21/08
 
 Đo thành phần trước khi sửa: **coverage mất vào đâu**, trên 10 mẫu mainnet.

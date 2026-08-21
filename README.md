@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 160 test
+npm run check      # typecheck + 167 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -79,20 +79,26 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **12** trên 12 đã đặc tả |
-| Test | **160**, chạy trong `npm run check` |
+| Test | **167**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
 | Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
-| Coverage trung bình trên giao dịch mainnet thật | **40 %** |
+| Coverage trung bình trên giao dịch mainnet thật | **46 %** |
 
-**Coverage 40 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
+**Coverage 46 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
 cho các chương trình DEX, nên hơn một nửa một giao dịch DeFi là thứ nó chưa đọc
 hiểu. Sản phẩm hiển thị đúng điều đó — *"đã đọc hiểu 2 trên 3 lệnh"* — thay vì
 im lặng và để người dùng tưởng là đã kiểm hết.
 
-Con số này từng là **4 %**. Nó tăng lên 40 % không phải nhờ nới lỏng định nghĩa,
-mà nhờ đọc hiểu thêm hai thứ đội thật sự hiểu: lệnh `ComputeBudget` (25 % số
-lệnh mainnet) và lệnh gọi lồng nhau (CPI) của chính những chương trình đã xác
-minh. Đo trên **cùng một mẻ 20 giao dịch**, không phải hai mẻ khác nhau.
+Con số này từng là **4 %**. Nó tăng lên không phải nhờ nới lỏng định nghĩa, mà
+nhờ đọc hiểu thêm những thứ đội thật sự hiểu: lệnh `ComputeBudget`, lệnh gọi
+lồng nhau (CPI), và toàn bộ tập lệnh của các chương trình vốn đã nằm trong danh
+sách xác minh. Mỗi bước đều đo trên **cùng một mẻ giao dịch**, không phải hai mẻ
+khác nhau.
+
+Phần còn thiếu nằm đúng chỗ khó chịu nhất: lệnh **chạm được tài sản của bạn**
+mới chỉ đọc hiểu được **21 %**, thấp hơn mức chung. Nói cách khác, phần Custos
+chưa đọc hiểu chính là phần đang di chuyển tiền. Bảng chênh lệch vẫn đo được
+hậu quả của chúng — nhưng đội không giả vờ là đã hiểu chúng.
 
 Mẫu ngẫu nhiên không bảo đảm cả 20 giao dịch đều lành tính. **Không có Đỏ nghĩa là
 không cờ nào bật**, không phải bằng chứng cả 20 cái đều sạch.
