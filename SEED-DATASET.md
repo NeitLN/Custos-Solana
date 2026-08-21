@@ -29,6 +29,62 @@ Không gộp mẫu tự dựng vào con số đó.
 
 ---
 
+## 0b3 · Coverage 4 % → 40 % — 21/08
+
+Đo thành phần trước khi sửa: **coverage mất vào đâu**, trên 10 mẫu mainnet.
+75 lệnh, đọc hiểu 9 (12 %). Xếp phần chưa đọc hiểu theo số lệnh:
+
+| Số lệnh | Chương trình |
+|---:|---|
+| **19** | `ComputeBudget` |
+| 27 | thuộc chương trình **ĐÃ xác minh** nhưng là lệnh CPI |
+| 5 | `pAMMBay6…` |
+| 5 | `MFv2hWf3…` |
+| 4 | `pfeeUxB6…` |
+| còn lại | Jupiter và các chương trình lẻ |
+
+Hai khoản đầu chiếm **46 trên 75 lệnh**, và cả hai đều thu hồi được mà không cần
+nói dối:
+
+1. **`ComputeBudget`** — bốn lệnh, đội decode được cả bốn, và không lệnh nào
+   nhận account nào nên không lệnh nào đụng được tài sản. Thêm nó vào danh sách
+   xác minh đúng theo định nghĩa *"đội đọc hiểu được nội dung lệnh của nó"*.
+2. **Lệnh CPI** — `simulateTransaction` trả về cả `data` của inner instruction,
+   nhưng L1 bỏ qua trường đó và gán `decoded = null` cho MỌI lệnh lồng nhau.
+   Một lệnh `Transfer` của SPL Token không vì nằm trong CPI mà trở nên khó hiểu
+   hơn. Đây cũng là lý do fail-safe 2 kích hoạt ở gần như mọi giao dịch: lệnh
+   CPI nào cũng "chưa đọc hiểu mà có chạm".
+
+Kết quả, đo trên **CÙNG 20 giao dịch** (không phải hai mẻ khác nhau — chi tiết
+dưới đây về việc đó):
+
+| | cũ | mới |
+|---|---:|---:|
+| Coverage trung bình | 4 % | **40 %** |
+| Verdict **Đỏ sai** | 0 | **0** |
+| Cảnh báo **cáo buộc** | 0 | **0** |
+
+### Một cái bẫy suýt làm đội nói quá
+
+Lần đo đầu chạy `do-bao-nham.ts` hai lượt, trước và sau khi sửa. Kết quả: cảnh
+báo cáo buộc giảm từ **5/20 xuống 0/20**. Nghe rất kêu.
+
+Nhưng mỗi lượt chạy **bốc một mẻ giao dịch ngẫu nhiên KHÁC nhau**, nên con số đó
+là dao động mẫu chứ không phải cải thiện. Đo lại đúng cách — dựng cả hai kết quả
+từ cùng một bộ Facts — thì cột "cáo buộc" là 0 ở cả hai bên.
+
+Cải thiện thật nằm ở coverage, và chỉ ở coverage. Nếu công bố "giảm 5 cảnh báo
+sai xuống 0" thì đó là một tuyên bố sai, và là loại sai một giám khảo có thể
+kiểm chứng bằng cách bảo chạy lại.
+
+### Việc còn lại
+
+`scripts/phan-tich-coverage.ts` in ra bảng trên bất cứ lúc nào. Nó cho biết
+decoder tiếp theo nên viết cho chương trình nào — đúng thứ công việc tích luỹ
+đã ghi là moat ở `CUSTOS.md` mục 09.
+
+---
+
 ## 0b2 · Đo lại sau khi cài nốt luật 5, 7, 10 — 21/08
 
 Câu hỏi duy nhất đáng hỏi khi thêm luật vào một sản phẩm bảo mật: **nó có làm
@@ -106,7 +162,7 @@ Gộp hai loại là cách nhanh nhất tạo mệt mỏi cảnh báo: `PROGRAM_
 
 - **0 báo Đỏ sai trên 20 giao dịch mainnet thật** — nói được.
 - Mẫu ngẫu nhiên **không bảo đảm** mọi mẫu đều lành tính. Không có Đỏ nghĩa là không cờ nào bật, **không** chứng minh cả 20 cái đều sạch.
-- **Coverage 3–10 %** — phải nói ra. Custos chưa đọc hiểu phần lớn giao dịch DeFi, và nó nói thẳng điều đó thay vì giả vờ hiểu.
+- **Coverage 40 %** (con số hiện tại — xem mục 0b3; bảng ngay trên là số của bản 9 luật, giữ lại làm lịch sử). Phải nói ra: Custos vẫn chưa đọc hiểu hơn một nửa một giao dịch DeFi, và nó nói thẳng điều đó thay vì giả vờ hiểu.
 
 ### Việc còn lại để coverage khá hơn
 

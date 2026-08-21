@@ -168,3 +168,91 @@ test("L1 KHÔNG ném lỗi khi có ALT không giải được — suy giảm êm
     "cảnh báo phải kèm lý do — cảnh báo không có lý do là cảnh báo người dùng không hành động được",
   );
 });
+
+// ── base58 tự viết ────────────────────────────────────────────────
+//
+// Đây là code mã hoá tự viết trong một sản phẩm bảo mật, nên phải đối chiếu với
+// một hiện thực độc lập chứ không tự nghiệm lại chính mình. `PublicKey` của
+// web3.js dùng thư viện base58 riêng — dùng nó làm trọng tài.
+test("base58 khớp với hiện thực của web3.js trên khoá ngẫu nhiên", async () => {
+  const { giaiBase58 } = await import("../src/l1/base58.ts");
+  const { Keypair } = await import("@solana/web3.js");
+  for (let i = 0; i < 50; i++) {
+    const pk = Keypair.generate().publicKey;
+    assert.deepEqual(
+      Array.from(giaiBase58(pk.toBase58())!),
+      Array.from(pk.toBytes()),
+      `lệch ở khoá ${pk.toBase58()}`,
+    );
+  }
+});
+
+test("base58 giữ đúng số byte 0 ở đầu", async () => {
+  const { giaiBase58 } = await import("../src/l1/base58.ts");
+  // Mỗi ký tự '1' đứng đầu là một byte 0. Quên vế này thì mọi dữ liệu phía sau
+  // lệch đi, và bộ giải mã lệnh sẽ đọc nhầm mã lệnh.
+  assert.deepEqual(Array.from(giaiBase58("1")!), [0]);
+  assert.deepEqual(Array.from(giaiBase58("111")!), [0, 0, 0]);
+  assert.deepEqual(Array.from(giaiBase58("11z")!), [0, 0, 57]);
+  assert.deepEqual(Array.from(giaiBase58("")!), []);
+});
+
+test("base58 trả null cho chuỗi không hợp lệ, KHÔNG ném lỗi", async () => {
+  const { giaiBase58 } = await import("../src/l1/base58.ts");
+  // '0', 'O', 'I', 'l' cố ý không có trong bảng base58 vì dễ nhìn nhầm.
+  for (const xau of ["0", "O", "I", "l", "abc!", "Đây là tiếng Việt"]) {
+    assert.equal(giaiBase58(xau), null, `"${xau}" phải bị từ chối`);
+  }
+});
+
+// ── ComputeBudget ─────────────────────────────────────────────────
+test("đọc hiểu được lệnh ComputeBudget — 25% số lệnh mainnet nằm ở đây", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  const CB = "ComputeBudget111111111111111111111111111111";
+  assert.deepEqual(decodeInstruction(CB, new Uint8Array([2, 0, 0, 0, 0])), { kind: "setComputeUnitLimit" });
+  assert.deepEqual(decodeInstruction(CB, new Uint8Array([3, 0, 0, 0, 0, 0, 0, 0, 0])), { kind: "setComputeUnitPrice" });
+  assert.equal(decodeInstruction(CB, new Uint8Array([99])), null, "mã lệnh lạ vẫn phải là 'chưa đọc hiểu'");
+});
+
+// ── Đọc hiểu lệnh CPI ─────────────────────────────────────────────
+test("L1 decode được lệnh CPI, không còn mặc định 'chưa đọc hiểu'", async () => {
+  const { Keypair, SystemProgram, TransactionMessage, VersionedTransaction } = await import("@solana/web3.js");
+  const { extractFacts } = await import("../src/l1/fetch.ts");
+
+  const toi = Keypair.generate();
+  const tx = new VersionedTransaction(
+    new TransactionMessage({
+      payerKey: toi.publicKey,
+      recentBlockhash: PublicKey.default.toBase58(),
+      instructions: [SystemProgram.transfer({ fromPubkey: toi.publicKey, toPubkey: VI_LA, lamports: 1 })],
+    }).compileToV0Message(),
+  );
+
+  // Mô phỏng giả trả về một CPI Transfer của SPL Token. Chuỗi base58 dưới đây
+  // là mã hoá của [3, 1,0,0,0,0,0,0,0] — mã lệnh 3 (transfer), số lượng 1.
+  const conn = {
+    getAddressLookupTable: async () => ({ value: null }),
+    getMultipleAccountsInfo: async (keys: unknown[]) => keys.map(() => null),
+    simulateTransaction: async () => ({
+      value: {
+        err: null,
+        accounts: [],
+        logs: [],
+        innerInstructions: [
+          {
+            index: 0,
+            instructions: [
+              { programId: TOKEN_PROGRAM_ID, accounts: [], data: "3DdGGhkhJbjm" },
+            ],
+          },
+        ],
+      },
+    }),
+    getSignaturesForAddress: async () => [],
+  };
+
+  const f = await extractFacts(conn as never, tx);
+  const cpi = f.instructions.find((ix) => ix.isInner);
+  assert.ok(cpi, "phải có lệnh CPI trong Facts");
+  assert.deepEqual(cpi!.decoded, { kind: "transfer" }, "lệnh Transfer không vì nằm trong CPI mà khó hiểu hơn");
+});

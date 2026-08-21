@@ -150,7 +150,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 | Giới hạn | Chi tiết |
 |---|---|
-| **Coverage thấp trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 3–10 %**. Chưa có decoder cho các chương trình DEX và aggregator |
+| **Coverage chưa đủ trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 40 %**. Chưa có decoder cho các chương trình DEX và aggregator |
 | **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |

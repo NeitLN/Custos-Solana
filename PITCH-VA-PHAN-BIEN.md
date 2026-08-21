@@ -28,7 +28,7 @@ Giao dịch demo hiện thiết kế là: **swap-legs + `Transfer` + `SetAuthori
 
 Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ không bao giờ xuất hiện.** Nhưng chính dòng đó mới là trục khác biệt mới. Câu chuyện nói một đằng, demo chiếu một nẻo.
 
-**Cách sửa, rẻ và trung thực:** thêm vào giao dịch tấn công **một instruction gọi program nằm ngoài danh sách đã xác minh**. Danh sách xác minh của đội chỉ gồm System, SPL Token, Token-2022, ATA, Orca Whirlpool — nên chỉ cần một lệnh tới SPL Memo với payload nhị phân là coverage tụt xuống 10/11 một cách thật.
+**Cách sửa, rẻ và trung thực:** thêm vào giao dịch tấn công **một instruction gọi program nằm ngoài danh sách đã xác minh**. Danh sách xác minh của đội chỉ gồm System, SPL Token, Token-2022, ATA, Orca Whirlpool, ComputeBudget — nên chỉ cần một lệnh tới SPL Memo với payload nhị phân là coverage tụt xuống 10/11 một cách thật.
 
 Điều này còn **đúng với thực tế**: drainer thật thường gói hành vi độc hại trong program riêng của chúng, và program đó tất nhiên chưa ai xác minh.
 

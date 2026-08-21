@@ -11,6 +11,11 @@ export const VERIFIED_PROGRAMS = new Map<string, string>([
   ["TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb", "Token-2022"],
   ["ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL", "Associated Token Account"],
   ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc", "Orca Whirlpool"],
+  // ComputeBudget: bốn lệnh, đội decode được cả bốn, và không lệnh nào nhận
+  // account nào nên không lệnh nào đụng được tài sản người ký. Thêm vào đây là
+  // trung thực theo đúng định nghĩa "đội đọc hiểu được nội dung lệnh của nó" —
+  // khác hẳn với việc thêm một chương trình DEX chưa viết decoder.
+  ["ComputeBudget111111111111111111111111111111", "Compute Budget"],
 ]);
 
 export const REASON = {
