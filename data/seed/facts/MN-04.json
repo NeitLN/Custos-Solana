@@ -1,0 +1,307 @@
+{
+  "signer": "ACCcFkjkBu4xRrouJxQ2cg8JbCyPRfum3TTTmrxUbySa",
+  "tuoiViNhan": {},
+  "simulationOk": false,
+  "simulationError": "{\"InstructionError\":[4,{\"Custom\":1}]}",
+  "accounts": [
+    {
+      "address": "ACCcFkjkBu4xRrouJxQ2cg8JbCyPRfum3TTTmrxUbySa",
+      "isSigner": true,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": null,
+      "lamportsBefore": "8064890n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "AcVNYrZKQbdQipBAwD2cbAppLrU4DNp3bXYgzzhGezzB",
+      "isSigner": false,
+      "programOwnerBefore": null,
+      "programOwnerAfter": null,
+      "lamportsBefore": "0n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "EE3zk9Fxp9guair2xeReFxf4TsEXeZFFuWETRna2PkcV",
+      "isSigner": false,
+      "programOwnerBefore": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "2985840n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "2LLS3bm76BVwY5EBgrxnuXEdHATdoGiCvjrXiVn4PiGY",
+      "isSigner": false,
+      "programOwnerBefore": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "programOwnerAfter": null,
+      "lamportsBefore": "2074080n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "vmxQwhrC72CszWMFuouNAoETiN7F59qZam1HGiSRqq7",
+      "isSigner": false,
+      "programOwnerBefore": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "programOwnerAfter": null,
+      "lamportsBefore": "2074080n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "HC4Cwxu88GhX7wqa7XQ27BpnFcKyYffLtMe5JXDJcgeV",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "1984070164982n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "9UmkEbr4UXkjJBdA6TLcNrZ8rqN1Yh7c2UNWcdAwRczh",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "54591977349n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "6ehEcTMCc85aNF4x9CWx8HuvWGhxQtvKdhKVf2HDpump",
+      "isSigner": false,
+      "programOwnerBefore": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "programOwnerAfter": null,
+      "lamportsBefore": "3744484n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "DWpvfqzGWuVy9jVSKSShdM2733nrEsnnhsUStYbkj6Nn",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "3623274781768n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "6rVkF4HSgy1jrnC3HogfRgPHrq4CtLg5f11URpsC4i9D",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "1976713444n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "So11111111111111111111111111111111111111112",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null,
+      "lamportsBefore": "1701031224589n",
+      "lamportsAfter": "0n"
+    }
+  ],
+  "tokenAccounts": [
+    {
+      "address": "2LLS3bm76BVwY5EBgrxnuXEdHATdoGiCvjrXiVn4PiGY",
+      "mint": "6ehEcTMCc85aNF4x9CWx8HuvWGhxQtvKdhKVf2HDpump",
+      "ownerBefore": "ACCcFkjkBu4xRrouJxQ2cg8JbCyPRfum3TTTmrxUbySa",
+      "ownerAfter": null,
+      "amountBefore": "0n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "programOwnerAfter": null
+    },
+    {
+      "address": "vmxQwhrC72CszWMFuouNAoETiN7F59qZam1HGiSRqq7",
+      "mint": "6ehEcTMCc85aNF4x9CWx8HuvWGhxQtvKdhKVf2HDpump",
+      "ownerBefore": "EE3zk9Fxp9guair2xeReFxf4TsEXeZFFuWETRna2PkcV",
+      "ownerAfter": null,
+      "amountBefore": "27620424350231n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "programOwnerAfter": null
+    },
+    {
+      "address": "HC4Cwxu88GhX7wqa7XQ27BpnFcKyYffLtMe5JXDJcgeV",
+      "mint": "So11111111111111111111111111111111111111112",
+      "ownerBefore": "EE3zk9Fxp9guair2xeReFxf4TsEXeZFFuWETRna2PkcV",
+      "ownerAfter": null,
+      "amountBefore": "1984068125702n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null
+    },
+    {
+      "address": "9UmkEbr4UXkjJBdA6TLcNrZ8rqN1Yh7c2UNWcdAwRczh",
+      "mint": "So11111111111111111111111111111111111111112",
+      "ownerBefore": "Fm2g933jBw3av6QwsPYDGDmBw4uhML66ZY1KVwoddnek",
+      "ownerAfter": null,
+      "amountBefore": "54589938069n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null
+    },
+    {
+      "address": "DWpvfqzGWuVy9jVSKSShdM2733nrEsnnhsUStYbkj6Nn",
+      "mint": "So11111111111111111111111111111111111111112",
+      "ownerBefore": "JCRGumoE9Qi5BBgULTgdgTLjSgkCMSbF62ZZfGs84JeU",
+      "ownerAfter": null,
+      "amountBefore": "3623272742488n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null
+    },
+    {
+      "address": "6rVkF4HSgy1jrnC3HogfRgPHrq4CtLg5f11URpsC4i9D",
+      "mint": "So11111111111111111111111111111111111111112",
+      "ownerBefore": "3BpXnfJaUTiwXnJNe7Ej1rcbzqTTQUvLShZaWazebsVR",
+      "ownerAfter": null,
+      "amountBefore": "1974674164n",
+      "amountAfter": "0n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": null
+    }
+  ],
+  "mints": [
+    {
+      "address": "6ehEcTMCc85aNF4x9CWx8HuvWGhxQtvKdhKVf2HDpump",
+      "mintAuthority": null,
+      "freezeAuthority": null,
+      "permanentDelegate": null,
+      "transferHookProgramId": null,
+      "isToken2022": true,
+      "decimals": 6
+    },
+    {
+      "address": "So11111111111111111111111111111111111111112",
+      "mintAuthority": null,
+      "freezeAuthority": null,
+      "permanentDelegate": null,
+      "transferHookProgramId": null,
+      "isToken2022": false,
+      "decimals": 9
+    }
+  ],
+  "solDelta": {
+    "ACCcFkjkBu4xRrouJxQ2cg8JbCyPRfum3TTTmrxUbySa": "-8064890n",
+    "EE3zk9Fxp9guair2xeReFxf4TsEXeZFFuWETRna2PkcV": "-2985840n",
+    "2LLS3bm76BVwY5EBgrxnuXEdHATdoGiCvjrXiVn4PiGY": "-2074080n",
+    "vmxQwhrC72CszWMFuouNAoETiN7F59qZam1HGiSRqq7": "-2074080n",
+    "HC4Cwxu88GhX7wqa7XQ27BpnFcKyYffLtMe5JXDJcgeV": "-1984070164982n",
+    "9UmkEbr4UXkjJBdA6TLcNrZ8rqN1Yh7c2UNWcdAwRczh": "-54591977349n",
+    "6ehEcTMCc85aNF4x9CWx8HuvWGhxQtvKdhKVf2HDpump": "-3744484n",
+    "DWpvfqzGWuVy9jVSKSShdM2733nrEsnnhsUStYbkj6Nn": "-3623274781768n",
+    "6rVkF4HSgy1jrnC3HogfRgPHrq4CtLg5f11URpsC4i9D": "-1976713444n",
+    "So11111111111111111111111111111111111111112": "-1701031224589n"
+  },
+  "instructions": [
+    {
+      "index": 0,
+      "programId": "ComputeBudget111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": false
+    },
+    {
+      "index": 1,
+      "programId": "ComputeBudget111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": false
+    },
+    {
+      "index": 2,
+      "programId": "11111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    },
+    {
+      "index": 3,
+      "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    },
+    {
+      "index": 4,
+      "programId": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    },
+    {
+      "index": 5,
+      "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": {
+        "kind": "closeAccount"
+      },
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    },
+    {
+      "index": 6,
+      "programId": "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ",
+      "isInner": true,
+      "parentIndex": 4,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": false
+    },
+    {
+      "index": 7,
+      "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "isInner": true,
+      "parentIndex": 4,
+      "decoded": null,
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    }
+  ],
+  "lookupTables": [
+    {
+      "address": "FSGBpXZGjw21kq3jDtonUccrvYRyGtJFZNX3sUtHFEq3",
+      "resolved": true
+    }
+  ],
+  "coverage": {
+    "analyzed": 0,
+    "total": 8,
+    "unverifiedPrograms": 3
+  }
+}

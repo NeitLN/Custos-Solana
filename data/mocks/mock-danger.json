@@ -1,0 +1,40 @@
+{
+  "level": "danger",
+  "aiAdvisory": "review_required",
+  "detectedPrimaryAction": {
+    "type": "swap",
+    "from": "SOL",
+    "to": "USDC"
+  },
+  "diff": [
+    {
+      "label": "Số dư USDC sau khi ký",
+      "before": "500,00",
+      "after": "0,00",
+      "severity": "danger"
+    },
+    {
+      "label": "Chủ sở hữu tài khoản USDC",
+      "before": "Bạn",
+      "after": "9xQe…7Tm2",
+      "severity": "danger"
+    },
+    {
+      "label": "Phí mạng",
+      "before": "0",
+      "after": "−0,000005 SOL",
+      "severity": "info"
+    }
+  ],
+  "reasonCodes": [
+    "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+    "SPL_TRANSFER_NGOAI_HANH_DONG_CHINH",
+    "PROGRAM_CHUA_XAC_MINH"
+  ],
+  "coverage": {
+    "analyzed": 10,
+    "total": 11,
+    "unverifiedPrograms": 1
+  },
+  "explanation": "500 USDC của bạn sẽ chuyển sang ví 9xQe…7Tm2, và tài khoản USDC cũng đổi chủ sang chính ví đó. Sau khi ký, bạn không lấy lại được. Giao dịch cũng gọi một chương trình chúng tôi chưa xác minh — chúng tôi không biết nó làm gì."
+}

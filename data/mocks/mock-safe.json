@@ -1,0 +1,36 @@
+{
+  "level": "safe",
+  "aiAdvisory": null,
+  "detectedPrimaryAction": {
+    "type": "swap",
+    "from": "SOL",
+    "to": "USDC"
+  },
+  "diff": [
+    {
+      "label": "Số dư SOL sau khi ký",
+      "before": "2,50",
+      "after": "1,50",
+      "severity": "info"
+    },
+    {
+      "label": "Số dư USDC sau khi ký",
+      "before": "0,00",
+      "after": "148,20",
+      "severity": "info"
+    },
+    {
+      "label": "Phí mạng",
+      "before": "0",
+      "after": "−0,000005 SOL",
+      "severity": "info"
+    }
+  ],
+  "reasonCodes": [],
+  "coverage": {
+    "analyzed": 11,
+    "total": 11,
+    "unverifiedPrograms": 0
+  },
+  "explanation": "Bạn đổi 1 SOL lấy 148,20 USDC. Không có hành động nào khác ngoài việc hoán đổi."
+}

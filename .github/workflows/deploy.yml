@@ -1,0 +1,74 @@
+name: Deploy demo lên GitHub Pages
+
+# Bản deploy này CỐ Ý không nhúng khoá ký (không có VITE_DEMO_SECRET).
+# Người xem chạy được inspect() và thấy đầy đủ màn cảnh báo — mô phỏng không
+# cần chữ ký. Cái họ không làm được là KÝ, và đó là chủ đích: không ai phá được
+# hiện trường trước buổi thi, và không có khoá riêng nào nằm trong một trang web
+# công khai.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - run: npm ci
+
+      - name: Kiểm thử trước khi deploy
+        run: npm run check
+
+      # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
+      # xem chú thích trong file đó để biết vì sao.
+      - name: Build ví mẫu
+        run: npm run build -w @custos/demo-wallet
+
+      - name: Build trang tấn công giả
+        run: npm run build -w @custos/trang-tan-cong
+
+      - name: Kiểm tra base path đã đúng
+        run: |
+          grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/index.html
+          grep -q 'src="/Custos-Solana/tan-cong/assets/' apps/trang-tan-cong/dist/index.html
+          echo "✓ base path đúng"
+
+      - name: Gộp hai app vào một thư mục
+        run: |
+          mkdir -p site
+          cp -r apps/demo-wallet/dist/* site/
+          mkdir -p site/tan-cong
+          cp -r apps/trang-tan-cong/dist/* site/tan-cong/
+
+      - name: Soi rò rỉ khoá riêng trong bản build
+        run: node scripts/soi-ro-ri-khoa.mjs site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

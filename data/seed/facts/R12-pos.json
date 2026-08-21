@@ -1,0 +1,48 @@
+{
+  "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+  "tuoiViNhan": {},
+  "simulationOk": true,
+  "simulationError": null,
+  "accounts": [
+    {
+      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "isSigner": true,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": "11111111111111111111111111111111",
+      "lamportsBefore": "4914255680n",
+      "lamportsAfter": "4914245680n"
+    },
+    {
+      "address": "ELc2Pq113k75tH9xge2suJmnqgqnkeCtv7SrZUohf4rw",
+      "isSigner": false,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "lamportsBefore": "890880n",
+      "lamportsAfter": "890880n"
+    }
+  ],
+  "tokenAccounts": [],
+  "mints": [],
+  "solDelta": {
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-10000n"
+  },
+  "instructions": [
+    {
+      "index": 0,
+      "programId": "11111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": {
+        "kind": "assign"
+      },
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": false
+    }
+  ],
+  "lookupTables": [],
+  "coverage": {
+    "analyzed": 1,
+    "total": 1,
+    "unverifiedPrograms": 0
+  }
+}
