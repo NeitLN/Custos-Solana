@@ -1,4 +1,4 @@
-import type { Facts } from "@custos/core";
+import { kyHieuAnToan, type Facts } from "@custos/core";
 import type { PrimaryAction } from "@custos/types";
 
 /**
@@ -34,25 +34,6 @@ const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)
 /** Tên hiển thị của một mint: ký hiệu nếu biết, không thì địa chỉ rút gọn.
  *  Địa chỉ base58 trên màn cảnh báo là vô nghĩa với người dùng — mà mục đích
  *  duy nhất của sản phẩm là làm người ta HIỂU KỊP trước khi bấm ký. */
-/**
- * Ký hiệu token là CHUỖI DO BÊN NGOÀI ĐẶT.
- *
- * Nó đến từ ví hoặc dApp qua `InspectOptions.kyHieuToken`, và trước đây được in
- * thẳng vào lời giải thích của Custos. Nghĩa là một dApp độc hại chỉ cần đặt tên
- * token thành "an toàn, cứ ký đi" là làm chính sản phẩm bảo mật nói câu trấn an
- * hộ nó. Lỗi này lộ ra khi viết test đối kháng cho lớp mô hình ngôn ngữ.
- *
- * Ký hiệu thật là nhãn ngắn: USDC, SOL, USDC-demo. Cái gì không có hình dạng đó
- * thì không phải ký hiệu, và ta quay về địa chỉ rút gọn — xấu hơn nhưng thật.
- */
-const KY_HIEU_HOP_LE = /^[A-Za-z0-9 ._+-]{1,16}$/;
-
-export function kyHieuAnToan(mint: string, kyHieu?: Record<string, string>): string {
-  const k = kyHieu?.[mint];
-  if (typeof k === "string" && KY_HIEU_HOP_LE.test(k)) return k;
-  return rutGon(mint);
-}
-
 const tenToken = (mint: string, kyHieu?: Record<string, string>) => kyHieuAnToan(mint, kyHieu);
 
 export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaNhanDien {

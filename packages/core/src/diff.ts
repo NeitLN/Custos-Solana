@@ -5,6 +5,25 @@ import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);
 
+/**
+ * Ký hiệu token là CHUỖI DO BÊN NGOÀI ĐẶT — ví hoặc dApp truyền vào qua
+ * `InspectOptions.kyHieuToken`.
+ *
+ * Đã từng có lỗi thật: ký hiệu được in thẳng vào lời giải thích, nên một dApp
+ * độc hại chỉ cần đặt tên token thành "an toàn, cứ ký đi" là khiến chính lớp
+ * bảo vệ nói câu trấn an hộ nó.
+ *
+ * Ký hiệu thật là nhãn ngắn: USDC, SOL, USDC-demo. Cái gì không có hình dạng đó
+ * thì quay về địa chỉ rút gọn — xấu hơn nhưng thật.
+ */
+const KY_HIEU_HOP_LE = /^[A-Za-z0-9 ._+-]{1,16}$/;
+
+export function kyHieuAnToan(mint: string, kyHieu?: Record<string, string>): string {
+  const k = kyHieu?.[mint];
+  if (typeof k === "string" && KY_HIEU_HOP_LE.test(k)) return k;
+  return rutGon(mint);
+}
+
 /** Định dạng số theo kiểu Việt Nam: dấu phẩy thập phân, chấm phân nhóm. */
 export function dinhDangSo(raw: bigint, decimals: number): string {
   const am = raw < 0n;
@@ -20,6 +39,25 @@ export function dinhDangSo(raw: bigint, decimals: number): string {
 
 const LAMPORTS_DECIMALS = 9;
 
+/**
+ * Tiền tố nhãn của từng loại dòng trong bảng chênh lệch.
+ *
+ * Đưa ra hằng số vì mức diễn đạt NGẮN (@custos/ai) phải nhận ra loại dòng để
+ * rút thành một câu. Nếu mỗi bên tự viết chuỗi của mình thì đổi chữ ở đây sẽ
+ * làm câu tóm tắt im lặng hỏng — có test khoá lại chuyện đó.
+ */
+export const NHAN = {
+  SO_DU: "Số dư ",
+  CHU_SO_HUU: "Chủ sở hữu tài khoản ",
+  DUOC_PHEP_RUT: "Được phép rút ",
+  QUYEN_DONG: "Quyền đóng tài khoản ",
+  CHUONG_TRINH: "Chương trình điều khiển ",
+  CHUYEN_SOL: "Chuyển SOL đi",
+  NHAN_SOL: "Nhận SOL",
+  PHI: "Phí mạng (ước tính)",
+  CHUA_DOC: "Phần chưa đọc được",
+} as const;
+
 
 /**
  * Bảng chênh lệch — đây là DỮ LIỆU ĐO ĐƯỢC, không phải diễn giải.
@@ -28,7 +66,11 @@ const LAMPORTS_DECIMALS = 9;
  * những gì giao dịch làm. Nếu hiện số dư 500 → 0 thì giao dịch phải thật sự
  * có chuyển tiền, chứ không phải chỉ đổi quyền.
  */
-export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
+export function dungBangChenhLech(
+  facts: Facts,
+  hits: RuleHit[],
+  kyHieu?: Record<string, string>,
+): DiffEntry[] {
   const out: DiffEntry[] = [];
   const decimalsCua = new Map(facts.mints.map((m) => [m.address, m.decimals]));
   const coHitO = (chuoi: string) => hits.some((h) => h.detail.includes(chuoi));
@@ -36,11 +78,13 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
   for (const t of facts.tokenAccounts) {
     if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
     const dec = decimalsCua.get(t.mint) ?? 0;
-    const nhan = rutGon(t.mint);
+    // Người dùng không đọc được base58. Mục đích duy nhất của sản phẩm là làm
+    // người ta HIỂU KỊP trước khi bấm ký, nên hiện ký hiệu khi biết.
+    const nhan = kyHieuAnToan(t.mint, kyHieu);
 
     if (t.amountBefore !== t.amountAfter) {
       out.push({
-        label: `Số dư ${nhan} sau khi ký`,
+        label: `${NHAN.SO_DU}${nhan} sau khi ký`,
         before: dinhDangSo(t.amountBefore, dec),
         after: dinhDangSo(t.amountAfter, dec),
         severity: t.amountAfter < t.amountBefore && coHitO(t.address) ? "danger" : "info",
@@ -49,7 +93,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
 
     if (t.ownerBefore !== null && t.ownerAfter !== null && t.ownerBefore !== t.ownerAfter) {
       out.push({
-        label: `Chủ sở hữu tài khoản ${nhan}`,
+        label: `${NHAN.CHU_SO_HUU}${nhan}`,
         before: t.ownerBefore === facts.signer ? "Bạn" : rutGon(t.ownerBefore),
         after: t.ownerAfter === facts.signer ? "Bạn" : rutGon(t.ownerAfter),
         severity: "danger",
@@ -58,7 +102,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
 
     if (t.delegateAfter !== null && t.delegateAfter !== t.delegateBefore) {
       out.push({
-        label: `Được phép rút ${nhan}`,
+        label: `${NHAN.DUOC_PHEP_RUT}${nhan}`,
         before: t.delegateBefore ? rutGon(t.delegateBefore) : "không ai",
         after: `${rutGon(t.delegateAfter)} — tới ${dinhDangSo(t.delegatedAmountAfter, dec)}`,
         severity: coHitO(t.address) ? "danger" : "warning",
@@ -70,7 +114,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
       t.closeAuthorityAfter !== t.closeAuthorityBefore
     ) {
       out.push({
-        label: `Quyền đóng tài khoản ${nhan}`,
+        label: `${NHAN.QUYEN_DONG}${nhan}`,
         before: t.closeAuthorityBefore ? rutGon(t.closeAuthorityBefore) : "không ai",
         after: rutGon(t.closeAuthorityAfter),
         severity: "danger",
@@ -82,7 +126,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
     if (a.programOwnerBefore === null || a.programOwnerAfter === null) continue;
     if (a.programOwnerBefore === a.programOwnerAfter) continue;
     out.push({
-      label: `Chương trình điều khiển ${rutGon(a.address)}`,
+      label: `${NHAN.CHUONG_TRINH}${rutGon(a.address)}`,
       before: rutGon(a.programOwnerBefore),
       after: rutGon(a.programOwnerAfter),
       severity: "danger",
@@ -107,7 +151,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
 
       if (phiHienThi > 0n) {
         out.push({
-          label: "Phí mạng (ước tính)",
+          label: NHAN.PHI,
           before: "0",
           after: `−${dinhDangSo(phiHienThi, LAMPORTS_DECIMALS)} SOL`,
           severity: "info",
@@ -119,7 +163,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
         const truoc = facts.accounts.find((a) => a.address === facts.signer)?.lamportsBefore ?? 0n;
         const phanLon = truoc > 0n && (chuyenDi * 100n) / truoc >= NGUONG_SOL_PHAN_TRAM;
         out.push({
-          label: "Chuyển SOL đi",
+          label: NHAN.CHUYEN_SOL,
           before: dinhDangSo(truoc, LAMPORTS_DECIMALS),
           after: `−${dinhDangSo(chuyenDi, LAMPORTS_DECIMALS)} SOL`,
           severity: phanLon ? "danger" : "info",
@@ -128,7 +172,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
     } else {
       // SOL TĂNG. Hiển thị nó như "phí mạng dương" là vô nghĩa.
       out.push({
-        label: "Nhận SOL",
+        label: NHAN.NHAN_SOL,
         before: "0",
         after: `${dinhDangSo(solNguoiKy, LAMPORTS_DECIMALS)} SOL`,
         severity: "info",
@@ -140,7 +184,7 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
   const thieu = facts.accountKhongDoDuoc?.length ?? 0;
   if (thieu > 0) {
     out.push({
-      label: "Phần chưa đọc được",
+      label: NHAN.CHUA_DOC,
       before: "—",
       after: `${thieu} tài khoản không đọc được trạng thái sau`,
       severity: "warning",
