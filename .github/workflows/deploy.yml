@@ -28,17 +28,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          # Ghim đúng phiên bản đội đang dùng, không để "24" trôi theo bản mới nhất.
+          # Runner từng lấy 24.19.0 trong khi máy dev là 24.12.0; npm đi kèm hai bản
+          # dựng cây phụ thuộc khác nhau cho peerOptional native của `ws`, làm `npm ci`
+          # hỏng dù lockfile hợp lệ. CI phải chạy đúng bộ công cụ mà đội đang chạy.
+          node-version: "24.12.0"
 
-      # `--legacy-peer-deps` không phải để né lỗi cho xong. Lý do cụ thể:
-      # `ws` (bên trong @solana/web3.js) khai `bufferutil` và `utf-8-validate`
-      # là peerOptional — hai module native. npm trên Windows bỏ qua chúng khi
-      # sinh lockfile, npm trên Linux lại đưa vào cây phụ thuộc lý tưởng. `npm ci`
-      # đòi hai bên khớp tuyệt đối nên hỏng ngay, dù lockfile hoàn toàn hợp lệ.
-      # Cờ này bảo npm đừng dựng cây theo peerDependencies — mọi thứ khác vẫn
-      # cài đúng phiên bản ghi trong lockfile. Hai module đó chỉ tăng tốc
-      # websocket, mà Custos chỉ gọi RPC qua HTTP.
-      - run: npm ci --legacy-peer-deps
+      - run: npm ci
 
       - name: Kiểm thử trước khi deploy
         run: npm run check
