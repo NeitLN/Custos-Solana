@@ -107,3 +107,64 @@ test("coverage — program đã xác minh nhưng KHÔNG decode được thì kh�
   ]);
   assert.deepEqual(c, { analyzed: 0, total: 1, unverifiedPrograms: 0 });
 });
+
+// ── Hồi quy: bảng tra địa chỉ không giải được ─────────────────────
+//
+// Lỗi thật, chỉ lộ ra khi cố dựng mẫu R10-pos trên devnet: `getAccountKeys()`
+// của web3.js NÉM LỖI khi giao dịch có ALT chưa giải được. `extractFacts` chết
+// trước khi kịp trả về `Facts`, nghĩa là fail-safe 3 trong evaluate.ts và luật
+// 10 KHÔNG BAO GIỜ chạy được từ một giao dịch thật — luật viết đúng nhưng dữ
+// liệu nuôi nó không bao giờ tới nơi.
+//
+// Test này giữ cho L1 suy giảm êm thay vì ném lỗi. Mẫu đã đóng băng trong
+// data/seed KHÔNG bắt được lỗi này, vì nó chạy trên Facts có sẵn chứ không
+// chạy lại fetch.ts.
+test("L1 KHÔNG ném lỗi khi có ALT không giải được — suy giảm êm", async () => {
+  const { AddressLookupTableAccount, Keypair, SystemProgram, TransactionMessage, VersionedTransaction } =
+    await import("@solana/web3.js");
+  const { extractFacts } = await import("../src/l1/fetch.ts");
+
+  const toi = Keypair.generate();
+  const bangMa = new AddressLookupTableAccount({
+    key: Keypair.generate().publicKey,
+    state: {
+      deactivationSlot: 2n ** 64n - 1n,
+      lastExtendedSlot: 0,
+      lastExtendedSlotStartIndex: 0,
+      authority: toi.publicKey,
+      addresses: [VI_LA, TOKEN_PROGRAM_ID],
+    },
+  });
+  const tx = new VersionedTransaction(
+    new TransactionMessage({
+      payerKey: toi.publicKey,
+      recentBlockhash: PublicKey.default.toBase58(),
+      instructions: [
+        SystemProgram.transfer({ fromPubkey: toi.publicKey, toPubkey: VI_LA, lamports: 1000 }),
+      ],
+    }).compileToV0Message([bangMa]),
+  );
+
+  // RPC giả: bảng tra KHÔNG đọc được — đúng tình huống bảng đã bị đóng.
+  const conn = {
+    getAddressLookupTable: async () => ({ value: null }),
+    getMultipleAccountsInfo: async (keys: unknown[]) => keys.map(() => null),
+    simulateTransaction: async () => ({
+      value: { err: null, accounts: [], innerInstructions: [], logs: [] },
+    }),
+    getSignaturesForAddress: async () => [],
+  };
+
+  const f = await extractFacts(conn as never, tx);
+  assert.equal(f.lookupTables.length, 1);
+  assert.equal(f.lookupTables[0]!.resolved, false, "phải ghi nhận là chưa giải được");
+
+  const { danhGia } = await import("../src/l2/evaluate.ts");
+  const { REASON } = await import("../src/constants.ts");
+  const r = danhGia(f);
+  assert.notEqual(r.level, "safe", "thiếu địa chỉ mà vẫn nói an toàn là fail-safe hỏng");
+  assert.ok(
+    r.reasonCodes.includes(REASON.ALT_KHONG_GIAI_DUOC),
+    "cảnh báo phải kèm lý do — cảnh báo không có lý do là cảnh báo người dùng không hành động được",
+  );
+});

@@ -151,7 +151,7 @@ function evaluate(facts: Facts): { level: Level; reasonCodes: string[] } // lấ
 
 **Không có AI ở đâu trong file này.** Đây là ranh giới đã khoá.
 
-### 3.2 Chín luật của bản thi — phân theo nguồn dữ liệu
+### 3.2 Mười hai luật của bản thi — phân theo nguồn dữ liệu
 
 Phân loại này cho biết mỗi luật cần gì, và luật nào làm được ngay mà không cần mô phỏng.
 
@@ -166,6 +166,9 @@ Phân loại này cho biết mỗi luật cần gì, và luật nào làm đư�
 | 6 | `mintAuthority` chưa thu hồi | Dữ liệu tĩnh của mint | Vàng |
 | 9 | Program ngoài danh sách xác minh | Danh sách instruction | Vàng |
 | 8 | Ví nhận mới tạo dưới 24h, nhận giá trị lớn | **Tra cứu ngoài** | Vàng |
+| 5 | Mint có Transfer Hook trỏ tới chương trình chưa xác minh | Dữ liệu tĩnh của mint | Vàng |
+| 7 | `freezeAuthority` còn hiệu lực và không thuộc người ký | Dữ liệu tĩnh của mint | Vàng |
+| 10 | Có bảng tra địa chỉ (ALT) không giải được | Cấu trúc giao dịch | Vàng |
 
 > Bốn luật Đỏ đầu tiên đều là **chênh lệch trạng thái**. Đó không phải trùng hợp — xem mục 1.
 

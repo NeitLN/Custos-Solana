@@ -123,7 +123,7 @@ Thể lệ BTC: *trình bày sai về tính năng, dữ liệu hoặc mức hoà
 |---|---|
 | "Ví lớn chỉ hiển thị chênh lệch số dư" | "Ví lớn đã có mô phỏng. Chúng tôi khác ở chỗ nói ra phần chưa hiểu" |
 | "Phantom có lỗ hổng này" | "Đã từng có một ca được công bố và đã được vá. Vấn đề là cấu trúc" |
-| "Chúng tôi phát hiện được scam" | "Engine luật phát hiện các hậu quả xác định trong danh sách 9 luật" |
+| "Chúng tôi phát hiện được scam" | "Engine luật phát hiện các hậu quả xác định trong danh sách 12 luật" |
 | "Dataset của chúng tôi là lợi thế cạnh tranh" | "Đây là bộ kiểm thử. Moat là thứ tích luỹ sau này" |
 | "Nhiều ví quan tâm" (khi chưa có ai trả lời) | "Chúng tôi đã liên hệ N đội, hiện có M phản hồi" |
 | Làm tròn số mẫu hoặc số luật lên | Đọc đúng con số đang có |

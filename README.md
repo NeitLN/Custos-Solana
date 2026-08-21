@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 117 test
+npm run check      # typecheck + 138 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -41,7 +41,7 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
 - **[SEED-DATASET.md](SEED-DATASET.md)** — bộ kiểm thử: 25 mẫu phải thu thập, định dạng, quy tắc đo false positive
 - **[PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
-- **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 9 luật, lịch làm của vai A
+- **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 12 luật, lịch làm của vai A
 - **[DAC-TA-L3.md](DAC-TA-L3.md)** — đặc tả L3 và chữ tiếng Việt: từ vựng, câu mẫu dự phòng, prompt
 - **[packages/core/README.md](packages/core/README.md)** — **tài liệu tích hợp SDK** dành cho ví và dApp
 - **[CLAUDE.md](CLAUDE.md)** — bối cảnh cho Claude Code, và các quyết định thiết kế đã khoá
@@ -72,9 +72,9 @@ AI không tạo và không sửa verdict. Nó chỉ có thể yêu cầu ngườ
 
 | Thứ | Số |
 |---|---|
-| Luật đã chạy | **9** trên 12 đã đặc tả (3 luật còn lại là P1) |
-| Test | **117**, chạy trong `npm run check` |
-| Mẫu trong bộ dữ liệu | **23** — mỗi luật Đỏ có một ca nguy hiểm và một ca lành tính trông giống nó |
+| Luật đã chạy | **12** trên 12 đã đặc tả |
+| Test | **138**, chạy trong `npm run check` |
+| Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
 | Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
 | Coverage trung bình trên giao dịch mainnet thật | **3–10 %** |
 

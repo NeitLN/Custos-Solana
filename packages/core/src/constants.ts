@@ -24,6 +24,9 @@ export const REASON = {
   PROGRAM_CHUA_XAC_MINH: "PROGRAM_CHUA_XAC_MINH",
   VI_NHAN_MOI_TAO: "VI_NHAN_MOI_TAO",
   TRANSFER_NGOAI_HANH_DONG_CHINH: "SPL_TRANSFER_NGOAI_HANH_DONG_CHINH",
+  TOKEN2022_TRANSFER_HOOK: "TOKEN2022_TRANSFER_HOOK",
+  FREEZE_AUTHORITY_CON_HIEU_LUC: "FREEZE_AUTHORITY_CON_HIEU_LUC",
+  ALT_KHONG_GIAI_DUOC: "ALT_KHONG_GIAI_DUOC",
 } as const;
 
 /**
@@ -48,6 +51,15 @@ export const MA_THONG_TIN: ReadonlySet<string> = new Set([
   REASON.PROGRAM_CHUA_XAC_MINH,
   REASON.MINT_AUTHORITY_CHUA_THU_HOI,
   REASON.TOKEN2022_PERMANENT_DELEGATE,
+  // Ba mã dưới đây thuộc luật 5, 7, 10 — cả ba đều là THUỘC TÍNH.
+  //
+  // Freeze authority đặc biệt dễ bị dùng sai: USDC có freeze authority, và
+  // phần lớn stablecoin nghiêm túc đều có, vì quy định bắt buộc phải đóng băng
+  // được tài sản bị đánh cắp. Nói "token này đóng băng được" là đúng; nói
+  // "giao dịch này đang đóng băng tiền của bạn" là bịa.
+  REASON.TOKEN2022_TRANSFER_HOOK,
+  REASON.FREEZE_AUTHORITY_CON_HIEU_LUC,
+  REASON.ALT_KHONG_GIAI_DUOC,
 ]);
 
 /** Chỉ toàn thông tin, không có cáo buộc nào về chính giao dịch này. */

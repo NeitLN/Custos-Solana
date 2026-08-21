@@ -82,9 +82,22 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
     }
   }
 
-  const keyList = msg.getAccountKeys({ addressLookupTableAccounts: altAccounts });
-  const allKeys: PublicKey[] = [];
-  for (let i = 0; i < keyList.length; i++) allKeys.push(keyList.get(i)!);
+  // Nếu CÒN BẢNG NÀO chưa giải được thì không hỏi `getAccountKeys` — nó ném lỗi
+  // chứ không trả về danh sách thiếu. Trước đây chỗ này làm `extractFacts` chết
+  // hẳn, nghĩa là fail-safe 3 trong evaluate.ts KHÔNG BAO GIỜ chạy được từ một
+  // giao dịch thật: L1 đã ném lỗi trước khi có Facts để đánh giá. Cùng loại lỗi
+  // với "luật 12 không kích hoạt được trên chuỗi" — luật viết đúng, nhưng dữ
+  // liệu nuôi nó không bao giờ tới nơi.
+  //
+  // Suy giảm êm: dùng danh sách tĩnh, đánh dấu bảng chưa giải được, để luật 10
+  // và fail-safe nói ra rằng bảng chênh lệch có thể đang thiếu.
+  const duBang = altAccounts.length === (msg.addressTableLookups?.length ?? 0);
+  const allKeys: PublicKey[] = [...msg.staticAccountKeys];
+  if (duBang) {
+    const keyList = msg.getAccountKeys({ addressLookupTableAccounts: altAccounts });
+    allKeys.length = 0;
+    for (let i = 0; i < keyList.length; i++) allKeys.push(keyList.get(i)!);
+  }
   const staticCount = msg.staticAccountKeys.length;
 
   // 2. trạng thái TRƯỚC
@@ -251,10 +264,17 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   // instruction tầng ngoài
   const instructions: InstructionFact[] = [];
   msg.compiledInstructions.forEach((ix, n) => {
-    const pid = allKeys[ix.programIdIndex]!.toBase58();
-    const cham = ix.accountKeyIndexes.some(
-      (k) => msg.isAccountWritable(k) && cuaNguoiKy.has(allKeys[k]?.toBase58() ?? ""),
-    );
+    const pid = allKeys[ix.programIdIndex]?.toBase58() ?? "";
+    // Địa chỉ nằm ngoài danh sách nghĩa là nó đến từ một bảng tra chưa giải
+    // được. Không nhìn thấy tài khoản thì không kết luận được là lệnh này vô
+    // hại — chọn phía thận trọng, coi như có chạm. Cùng cách xử lý với inner
+    // instruction ở dưới.
+    const khuyetDiaChi = ix.accountKeyIndexes.some((k) => allKeys[k] === undefined);
+    const cham =
+      khuyetDiaChi ||
+      ix.accountKeyIndexes.some(
+        (k) => msg.isAccountWritable(k) && cuaNguoiKy.has(allKeys[k]?.toBase58() ?? ""),
+      );
     instructions.push({
       index: n,
       programId: pid,

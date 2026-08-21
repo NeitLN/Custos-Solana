@@ -151,7 +151,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | Giới hạn | Chi tiết |
 |---|---|
 | **Coverage thấp trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 3–10 %**. Chưa có decoder cho các chương trình DEX và aggregator |
-| **9 luật** | SPL Token và System Program. Chưa phủ hết extension của Token-2022 |
+| **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
 | **Luật 4 không phân biệt được authority** | Permanent delegate luôn ở mức Vàng, vì `Facts` chưa bóc trường `authority` của lệnh Transfer |
@@ -164,7 +164,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ```bash
 npm install
-npm run check                # 117 test, chạy offline
+npm run check                # 138 test, chạy offline
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
 npm run vi                   # ví mẫu      → localhost:5188
@@ -173,4 +173,4 @@ npm run tan-cong             # trang lừa đảo → localhost:5189
 
 Bấm **Nhận thưởng ngay** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
-Bộ kiểm thử gồm **23 mẫu gắn nhãn** (13 tự dựng trên devnet, 10 giao dịch mainnet thật), phủ cả 9 luật — `data/seed/`.
+Bộ kiểm thử gồm **29 mẫu gắn nhãn** (19 tự dựng trên devnet, 10 giao dịch mainnet thật), phủ cả 12 luật — `data/seed/`.
