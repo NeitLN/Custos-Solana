@@ -46,7 +46,7 @@ export async function inspect(
 ): Promise<InspectResult> {
   const facts = await extractFacts(deps.connection, tx, options.nguoiDung);
   const l2 = danhGia(facts);
-  const diff = dungBangChenhLech(facts, l2.hits);
+  const diff = dungBangChenhLech(facts, l2.hits, options.kyHieuToken);
 
   let detectedPrimaryAction: PrimaryAction | null = null;
   let explanation = "";

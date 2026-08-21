@@ -1,5 +1,7 @@
 import type { InspectResult } from "@custos/types";
 import { chiLaThongTin } from "@custos/core";
+import { tomTat } from "@custos/ai";
+import { useState } from "react";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
@@ -41,6 +43,7 @@ export function CanhBao({
   // và lúc (a) xảy ra thật thì họ cũng bỏ qua nốt.
   //
   // `level` KHÔNG đổi — fail-safe giữ nguyên. Chỉ cách nói đổi.
+  const [moRong, setMoRong] = useState(false);
   const chiLaChuaHieu =
     ketQua.level === "warning" &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
@@ -81,8 +84,29 @@ export function CanhBao({
           </p>
         )}
 
-        {ketQua.explanation && !chiLaChuaHieu && (
-          <p className="text-[15px] leading-relaxed text-slate-100">{ketQua.explanation}</p>
+        {!chiLaChuaHieu && (
+          <div className="space-y-2">
+            {/* MỨC 1 — NGẮN. Mặc định, hiện ngay. Đây là câu duy nhất phần lớn
+                người dùng sẽ đọc, và cũng là màn hình dùng để đo mức độ hiểu
+                (DAC-TA-L3.md mục 6 và 7). */}
+            <p className="text-[16px] leading-relaxed font-medium text-slate-50">{tomTat(ketQua)}</p>
+
+            {ketQua.explanation && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setMoRong((v) => !v)}
+                  className="text-[13px] text-slate-400 underline underline-offset-2 hover:text-slate-200"
+                >
+                  {moRong ? "Thu gọn" : "Xem chi tiết"}
+                </button>
+                {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
+                {moRong && (
+                  <p className="text-[15px] leading-relaxed text-slate-300">{ketQua.explanation}</p>
+                )}
+              </>
+            )}
+          </div>
         )}
 
         {ketQua.diff.length > 0 && (

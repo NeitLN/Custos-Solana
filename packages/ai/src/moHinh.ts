@@ -1,7 +1,7 @@
-import type { Interpreter, Facts } from "@custos/core";
+import { kyHieuAnToan, type Interpreter, type Facts } from "@custos/core";
 import type { AiAdvisory, PrimaryAction } from "@custos/types";
 import { dienGiaiKhongAI } from "./index.ts";
-import { nhanDien, kyHieuAnToan } from "./nhanDien.ts";
+import { nhanDien } from "./nhanDien.ts";
 
 /**
  * LỚP MÔ HÌNH NGÔN NGỮ CỦA L3.
