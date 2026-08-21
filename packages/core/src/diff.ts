@@ -1,6 +1,7 @@
 import type { DiffEntry } from "@custos/types";
 import type { Facts } from "./facts.ts";
 import type { RuleHit } from "./l2/rules.ts";
+import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);
 
@@ -18,6 +19,7 @@ export function dinhDangSo(raw: bigint, decimals: number): string {
 }
 
 const LAMPORTS_DECIMALS = 9;
+
 
 /**
  * Bảng chênh lệch — đây là DỮ LIỆU ĐO ĐƯỢC, không phải diễn giải.
@@ -87,13 +89,61 @@ export function dungBangChenhLech(facts: Facts, hits: RuleHit[]): DiffEntry[] {
     });
   }
 
+  // ── SOL của người được bảo vệ ───────────────────────────────────
+  //
+  // Bản trước gán TOÀN BỘ chênh lệch lamport của người ký vào một dòng tên
+  // "Phí mạng" với severity "info". Nghĩa là một giao dịch rút 5 SOL hiện ra
+  // đúng như một khoản phí. Xem SECURITY-AUDIT.md — F1.
+  //
+  // Giờ tách làm ba phần rõ ràng: phí, khoản rời ví, khoản vào ví.
   const solNguoiKy = facts.solDelta[facts.signer];
   if (solNguoiKy !== undefined && solNguoiKy !== 0n) {
+    const phi = facts.phiUocTinh ?? 0n;
+
+    if (solNguoiKy < 0n) {
+      const raKhoiVi = -solNguoiKy;
+      const phiHienThi = raKhoiVi < phi ? raKhoiVi : phi;
+      const chuyenDi = raKhoiVi - phiHienThi;
+
+      if (phiHienThi > 0n) {
+        out.push({
+          label: "Phí mạng (ước tính)",
+          before: "0",
+          after: `−${dinhDangSo(phiHienThi, LAMPORTS_DECIMALS)} SOL`,
+          severity: "info",
+        });
+      }
+      if (chuyenDi > 0n) {
+        // Nặng hay nhẹ đo bằng TỈ LỆ số dư, không bằng con số tuyệt đối — đội
+        // không có dữ liệu giá để biết bao nhiêu là "nhiều".
+        const truoc = facts.accounts.find((a) => a.address === facts.signer)?.lamportsBefore ?? 0n;
+        const phanLon = truoc > 0n && (chuyenDi * 100n) / truoc >= NGUONG_SOL_PHAN_TRAM;
+        out.push({
+          label: "Chuyển SOL đi",
+          before: dinhDangSo(truoc, LAMPORTS_DECIMALS),
+          after: `−${dinhDangSo(chuyenDi, LAMPORTS_DECIMALS)} SOL`,
+          severity: phanLon ? "danger" : "info",
+        });
+      }
+    } else {
+      // SOL TĂNG. Hiển thị nó như "phí mạng dương" là vô nghĩa.
+      out.push({
+        label: "Nhận SOL",
+        before: "0",
+        after: `${dinhDangSo(solNguoiKy, LAMPORTS_DECIMALS)} SOL`,
+        severity: "info",
+      });
+    }
+  }
+
+  // Bảng có thể đang thiếu — nói ra ngay trong bảng, không chỉ trong mã lý do.
+  const thieu = facts.accountKhongDoDuoc?.length ?? 0;
+  if (thieu > 0) {
     out.push({
-      label: "Phí mạng",
-      before: "0",
-      after: `${dinhDangSo(solNguoiKy, LAMPORTS_DECIMALS)} SOL`,
-      severity: "info",
+      label: "Phần chưa đọc được",
+      before: "—",
+      after: `${thieu} tài khoản không đọc được trạng thái sau`,
+      severity: "warning",
     });
   }
 

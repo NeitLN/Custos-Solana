@@ -53,6 +53,10 @@ function facts(p: Partial<Facts> = {}): Facts {
     tuoiViNhan: {},
     instructions: [],
     lookupTables: [],
+    accountKhongDoDuoc: [],
+    nguoiKy: [TOI],
+    nguoiDungDuocChiDinh: false,
+    phiUocTinh: 5_000n,
     coverage: { analyzed: 0, total: 0, unverifiedPrograms: 0 },
     ...p,
   };

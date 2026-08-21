@@ -47,11 +47,17 @@ export default function App() {
     setTuDApp(yc.khai ? `dApp khai đây là: ${yc.khai.type}` : "dApp không khai gì");
     setDangChay(true);
     const c = new Connection("https://api.devnet.solana.com", "confirmed");
-    void inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, yc.tx, {
-      locale: "vi",
-      ...(yc.khai ? { expectedAction: yc.khai } : {}),
-      ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
-    })
+    // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
+    // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
+    // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
+    void docHienTruong().then((htNay) =>
+      inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, yc.tx, {
+        locale: "vi",
+        ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
+        ...(yc.khai ? { expectedAction: yc.khai } : {}),
+        ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
+      }),
+    )
       .then((r) => {
         ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
         setKetQua(r);
@@ -123,6 +129,8 @@ export default function App() {
       ghi("đang chạy thử giao dịch trên devnet…");
       const r = await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
         locale: "vi",
+        // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
+        nguoiDung: ht.nanNhan,
         ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
       });
       ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);

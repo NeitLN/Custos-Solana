@@ -1,6 +1,7 @@
 import type { Level } from "@custos/types";
 import type { Facts } from "../facts.ts";
 import { LUAT, type Rule, type RuleHit } from "./rules.ts";
+import { REASON } from "../constants.ts";
 
 const THU_TU: Record<Level, number> = { safe: 0, warning: 1, danger: 2 };
 
@@ -32,8 +33,16 @@ export function danhGia(facts: Facts, luat: Rule[] = LUAT): KetQuaL2 {
   let level: Level = "safe";
   for (const h of hits) level = caoHon(level, h.level);
 
+  // Mã lý do sinh ra từ fail-safe, không từ luật nào. Một cảnh báo không có mã
+  // là cảnh báo mà giao diện không giải thích được và bên tích hợp không phân
+  // loại được — xem SECURITY-AUDIT.md mục A2.
+  const maFailSafe: string[] = [];
+
   // Fail-safe 1 — mô phỏng thất bại: không biết gì về hậu quả.
-  if (!facts.simulationOk) level = caoHon(level, "warning");
+  if (!facts.simulationOk) {
+    level = caoHon(level, "warning");
+    maFailSafe.push(REASON.MO_PHONG_HONG);
+  }
 
   // Fail-safe 2 — còn phần chưa đọc hiểu được VÀ phần đó chạm được vào tài sản
   // của người ký.
@@ -59,8 +68,23 @@ export function danhGia(facts: Facts, luat: Rule[] = LUAT): KetQuaL2 {
   // nghĩa là bảng chênh lệch có thể đang bỏ sót thứ gì đó.
   if (facts.lookupTables.some((t) => !t.resolved)) level = caoHon(level, "warning");
 
+  // Fail-safe 4 — có account KHÔNG ĐO ĐƯỢC trạng thái sau.
+  //
+  // Khác hẳn fail-safe 2. Fail-safe 2 nói "có lệnh ta không đọc hiểu"; cái này
+  // nói "có thay đổi ta không nhìn thấy". Một giao dịch có thể đọc hiểu 100 %
+  // số lệnh mà vẫn giấu được hậu quả, nếu account bị ảnh hưởng nằm ngoài tầm
+  // đo — đúng ca đã tái hiện được: 131 account, trần RPC 100, account của người
+  // ký bị giao cho chương trình lạ ở vị trí 129, verdict ra `safe`.
+  //
+  // Không cần điều kiện "chạm tài sản người ký" như fail-safe 2: ta không biết
+  // account đó là gì thì cũng không biết nó có phải của người ký hay không.
+  if ((facts.accountKhongDoDuoc ?? []).length > 0) {
+    level = caoHon(level, "warning");
+    maFailSafe.push(REASON.TRANG_THAI_DO_KHUYET);
+  }
+
   // Giữ thứ tự xuất hiện, bỏ trùng.
-  const reasonCodes = [...new Set(hits.map((h) => h.reasonCode))];
+  const reasonCodes = [...new Set([...hits.map((h) => h.reasonCode), ...maFailSafe])];
 
   return { level, reasonCodes, hits };
 }

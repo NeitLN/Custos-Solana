@@ -5,6 +5,8 @@
  *  nên gọi nó là "đã xác minh" sẽ thổi phồng coverage một cách giả tạo.
  *  Danh sách ngắn làm `coverage` phản ánh đúng sự thật là đội mới decode được chừng đó.
  *  Xem DAC-TA-CORE.md mục 2.4. */
+import { BANG_IDL } from "./l1/bang-idl.ts";
+
 export const VERIFIED_PROGRAMS = new Map<string, string>([
   ["11111111111111111111111111111111", "System"],
   ["TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "SPL Token"],
@@ -16,7 +18,28 @@ export const VERIFIED_PROGRAMS = new Map<string, string>([
   // trung thực theo đúng định nghĩa "đội đọc hiểu được nội dung lệnh của nó" —
   // khác hẳn với việc thêm một chương trình DEX chưa viết decoder.
   ["ComputeBudget111111111111111111111111111111", "Compute Budget"],
+  // Chương trình Anchor có IDL công bố NGAY TRÊN CHUỖI. Danh sách sinh từ chính
+  // bảng IDL nên hai chỗ không lệch nhau được: thêm chương trình vào danh sách
+  // xác minh mà không có decoder là điều `l1.test.ts` chặn lại.
+  //
+  // Nhãn cố ý KHÔNG gọi tên thương hiệu. Đội đọc được TẬP LỆNH của chúng từ IDL;
+  // đội không kiểm toán chúng, và cũng không xác minh được ai sở hữu địa chỉ nào.
+  ...[...BANG_IDL.keys()].map(
+    (p) => [p, `Anchor ${p.slice(0, 6)}… (IDL trên chuỗi)`] as [string, string],
+  ),
 ]);
+
+/**
+ * Ngưỡng "phần lớn số SOL" — phần trăm số dư trước khi ký.
+ *
+ * Đặt ở đây vì cả luật 13 (l2/rules.ts) lẫn bảng chênh lệch (diff.ts) đều dùng,
+ * và hai chỗ đó không được lệch nhau: giao diện tô đỏ một dòng mà engine không
+ * gắn cờ thì người dùng không hiểu chuyện gì đang xảy ra.
+ *
+ * Theo TỈ LỆ chứ không theo con số tuyệt đối — đội không có dữ liệu giá để biết
+ * bao nhiêu SOL là "nhiều", và ngưỡng cứng thì vừa bỏ lọt ví lớn vừa kêu oan ví nhỏ.
+ */
+export const NGUONG_SOL_PHAN_TRAM = 50n;
 
 export const REASON = {
   SET_AUTHORITY_ACCOUNT_OWNER: "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
@@ -32,6 +55,11 @@ export const REASON = {
   TOKEN2022_TRANSFER_HOOK: "TOKEN2022_TRANSFER_HOOK",
   FREEZE_AUTHORITY_CON_HIEU_LUC: "FREEZE_AUTHORITY_CON_HIEU_LUC",
   ALT_KHONG_GIAI_DUOC: "ALT_KHONG_GIAI_DUOC",
+  TRANG_THAI_DO_KHUYET: "TRANG_THAI_DO_KHUYET",
+  MO_PHONG_HONG: "MO_PHONG_HONG",
+  SOL_ROI_VI: "SOL_ROI_VI",
+  PERMANENT_DELEGATE_RA_TAY: "TOKEN2022_PERMANENT_DELEGATE_RA_TAY",
+  NGUOI_DUNG_KHONG_RO: "NGUOI_DUNG_KHONG_RO",
 } as const;
 
 /**
@@ -65,6 +93,14 @@ export const MA_THONG_TIN: ReadonlySet<string> = new Set([
   REASON.TOKEN2022_TRANSFER_HOOK,
   REASON.FREEZE_AUTHORITY_CON_HIEU_LUC,
   REASON.ALT_KHONG_GIAI_DUOC,
+  // Hai mã dưới là lời thú nhận về giới hạn phép đo của chính Custos, không
+  // phải cáo buộc nhắm vào giao dịch. Giọng phải là thông tin.
+  REASON.TRANG_THAI_DO_KHUYET,
+  REASON.MO_PHONG_HONG,
+  // `NGUOI_DUNG_KHONG_RO` là giới hạn phạm vi phân tích, không phải cáo buộc.
+  // `SOL_ROI_VI` thì NGƯỢC LẠI — nó nói về chính giao dịch đang chờ ký, nên
+  // cố ý KHÔNG nằm trong danh sách này.
+  REASON.NGUOI_DUNG_KHONG_RO,
 ]);
 
 /** Chỉ toàn thông tin, không có cáo buộc nào về chính giao dịch này. */

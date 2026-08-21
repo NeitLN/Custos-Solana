@@ -113,6 +113,45 @@ function cauCho(ma: string, facts: Facts): string | null {
       return `Bên phát hành ${rutGon(m.address)} có quyền đóng băng tài khoản của bạn, khiến bạn không chuyển được token này. Nhiều token lớn cũng vậy — đây là tính năng hợp lệ.`;
     }
 
+    case REASON.PERMANENT_DELEGATE_RA_TAY: {
+      const m = facts.mints.find(
+        (x) =>
+          x.permanentDelegate !== null &&
+          facts.instructions.some((ix) => ix.decoded?.authority === x.permanentDelegate),
+      );
+      if (!m) return null;
+      // Khác hẳn câu của TOKEN2022_PERMANENT_DELEGATE: chỗ kia nói token CÓ
+      // quyền đó, chỗ này nói quyền đó ĐANG được dùng ngay trong giao dịch.
+      return `Bên phát hành ${rutGon(m.address)} đang tự tay lấy token này ra khỏi tài khoản của bạn bằng quyền rút vĩnh viễn. Bạn không cần đồng ý và cũng không thu hồi được quyền đó.`;
+    }
+
+    case REASON.SOL_ROI_VI: {
+      const d = facts.solDelta[facts.signer];
+      if (d === undefined || d >= 0n) return null;
+      const phi = facts.phiUocTinh ?? 0n;
+      const di = -d - phi;
+      if (di <= 0n) return null;
+      return `${dinhDangSo(di, 9)} SOL sẽ rời khỏi ví bạn — phần lớn số SOL bạn đang có. Số này chưa tính phí mạng.`;
+    }
+
+    case REASON.NGUOI_DUNG_KHONG_RO: {
+      const n = facts.nguoiKy?.length ?? 0;
+      if (n <= 1) return null;
+      // Không doạ. Đây là giới hạn của Custos, và người dùng có quyền biết.
+      return `Giao dịch này cần ${n} chữ ký, và ví chưa cho biết địa chỉ nào là của bạn. Chúng tôi đang kiểm theo ví trả phí, nên có thể đang xem nhầm ví.`;
+    }
+
+    case REASON.TRANG_THAI_DO_KHUYET: {
+      const n = facts.accountKhongDoDuoc?.length ?? 0;
+      if (n === 0) return null;
+      // Nói về GIỚI HẠN CỦA CHÚNG TÔI, không cáo buộc giao dịch. Người dùng cần
+      // biết bảng chênh lệch phía trên có thể chưa kể hết chuyện.
+      return `Giao dịch này chạm tới ${n} tài khoản mà chúng tôi không đọc được trạng thái sau khi ký, nên bảng thay đổi bên trên có thể còn thiếu.`;
+    }
+
+    case REASON.MO_PHONG_HONG:
+      return "Chúng tôi không chạy thử được giao dịch này, nên không biết nó sẽ làm gì với ví của bạn.";
+
     case REASON.ALT_KHONG_GIAI_DUOC:
       return "Giao dịch dùng một bảng địa chỉ mà chúng tôi không đọc được, nên danh sách bên nhận có thể còn thiếu.";
 

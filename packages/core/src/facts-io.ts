@@ -36,5 +36,10 @@ export function dongBangFacts(f: Facts): string {
 }
 
 export function giaiDongBangFacts(s: string): Facts {
-  return duyet(JSON.parse(s), doiNguoc) as Facts;
+  const f = duyet(JSON.parse(s), doiNguoc) as Facts;
+  // Fixture đóng băng trước khi có `accountKhongDoDuoc` thì thiếu trường này.
+  // Mặc định RỖNG là đúng: những mẫu đó được bóc khi phép đo còn đầy đủ, và
+  // để `undefined` sẽ làm engine luật ném lỗi thay vì đọc ra "không thiếu gì".
+  if (!Array.isArray(f.accountKhongDoDuoc)) f.accountKhongDoDuoc = [];
+  return f;
 }
