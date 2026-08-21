@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Facts, TokenAccountFact, AccountFact, MintFact } from "../src/facts.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
-import { REASON } from "../src/constants.ts";
+import { REASON, chiLaThongTin } from "../src/constants.ts";
 
 const TOI = "ViNguoiKy1111111111111111111111111111111111";
 const LA = "ViLa9xQe111111111111111111111111111111111111";
@@ -335,4 +335,85 @@ test("giao dịch sạch, đọc hiểu hết, không luật nào kích hoạt �
   );
   assert.equal(r.level, "safe");
   assert.deepEqual(r.reasonCodes, []);
+});
+
+// ── Luật 5 · Transfer Hook ────────────────────────────────────────
+test("LUẬT 5 kích hoạt — token có transfer hook trỏ tới chương trình chưa đọc hiểu", () => {
+  const r = danhGia(
+    facts({
+      tokenAccounts: [ta()],
+      mints: [mint({ transferHookProgramId: PROG_LA, isToken2022: true })],
+    }),
+  );
+  assert.equal(r.level, "warning", "transfer hook là năng lực hợp lệ — không bao giờ Đỏ vì nó tồn tại");
+  assert.ok(r.reasonCodes.includes(REASON.TOKEN2022_TRANSFER_HOOK));
+});
+
+test("LUẬT 5 KHÔNG kích hoạt — hook trỏ tới chương trình đã xác minh (ca R05-neg)", () => {
+  // Có hook không phải là tội. Điều đáng nói là "có hook mà ta không biết nó
+  // làm gì". Biết rồi thì không còn gì để cảnh báo.
+  const r = danhGia(
+    facts({
+      tokenAccounts: [ta()],
+      mints: [mint({ transferHookProgramId: TOKEN_PROG, isToken2022: true })],
+    }),
+  );
+  assert.equal(r.level, "safe");
+});
+
+test("LUẬT 5 KHÔNG kích hoạt — Token-2022 nhưng không cài hook", () => {
+  const r = danhGia(facts({ tokenAccounts: [ta()], mints: [mint({ isToken2022: true })] }));
+  assert.equal(r.level, "safe", "bản thân Token-2022 không phải dấu hiệu gì cả");
+});
+
+// ── Luật 7 · Freeze authority ─────────────────────────────────────
+test("LUẬT 7 kích hoạt — người phát hành vẫn đóng băng được tài khoản của bạn", () => {
+  const r = danhGia(facts({ tokenAccounts: [ta()], mints: [mint({ freezeAuthority: LA })] }));
+  assert.equal(r.level, "warning");
+  assert.ok(r.reasonCodes.includes(REASON.FREEZE_AUTHORITY_CON_HIEU_LUC));
+});
+
+test("LUẬT 7 chỉ mang tính THÔNG TIN — USDC cũng có freeze authority", () => {
+  // Nếu mã này bị xếp là cáo buộc thì Custos sẽ báo động ở gần như mọi
+  // stablecoin. Đây đúng là lỗi mà luật 4 đã mắc và phải sửa sau khi đo thật.
+  const r = danhGia(facts({ tokenAccounts: [ta()], mints: [mint({ freezeAuthority: LA })] }));
+  assert.ok(chiLaThongTin(r.reasonCodes), "freeze authority là thuộc tính của token, không phải hành vi của giao dịch");
+});
+
+test("LUẬT 7 KHÔNG kích hoạt — chính người ký giữ quyền đóng băng", () => {
+  const r = danhGia(facts({ tokenAccounts: [ta()], mints: [mint({ freezeAuthority: TOI })] }));
+  assert.equal(r.level, "safe");
+});
+
+test("LUẬT 7 KHÔNG kích hoạt — freeze authority đã thu hồi (ca R07-neg)", () => {
+  const r = danhGia(facts({ tokenAccounts: [ta()], mints: [mint()] }));
+  assert.equal(r.level, "safe");
+});
+
+// ── Luật 10 · Address Lookup Table ────────────────────────────────
+test("LUẬT 10 kích hoạt — có bảng tra địa chỉ không giải được", () => {
+  const r = danhGia(facts({ lookupTables: [{ address: "ALT1", resolved: false }] }));
+  assert.equal(r.level, "warning");
+  assert.ok(r.reasonCodes.includes(REASON.ALT_KHONG_GIAI_DUOC));
+});
+
+test("LUẬT 10 KHÔNG kích hoạt — ALT giải được bình thường (7/10 giao dịch mainnet)", () => {
+  // ALT là kỹ thuật hợp lệ và phổ biến. Gắn cờ cho việc DÙNG ALT là gắn cờ cho
+  // phần lớn lưu lượng DeFi thật.
+  const r = danhGia(
+    facts({
+      tokenAccounts: [ta()],
+      lookupTables: [
+        { address: "ALT1", resolved: true },
+        { address: "ALT2", resolved: true },
+      ],
+    }),
+  );
+  assert.equal(r.level, "safe");
+  assert.deepEqual(r.reasonCodes, []);
+});
+
+test("LUẬT 10 lấp chỗ trống của fail-safe 3 — trước đây Vàng mà không nói được vì sao", () => {
+  const r = danhGia(facts({ lookupTables: [{ address: "ALT1", resolved: false }] }));
+  assert.ok(r.reasonCodes.length > 0, "cảnh báo không có mã lý do là cảnh báo người dùng không hành động được");
 });

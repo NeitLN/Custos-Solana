@@ -1,0 +1,53 @@
+{
+  "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+  "tuoiViNhan": {},
+  "simulationOk": false,
+  "simulationError": "{\"InsufficientFundsForRent\":{\"account_index\":2}}",
+  "accounts": [
+    {
+      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "isSigner": true,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": null,
+      "lamportsBefore": "4836092960n",
+      "lamportsAfter": "0n"
+    },
+    {
+      "address": "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T",
+      "isSigner": false,
+      "programOwnerBefore": null,
+      "programOwnerAfter": null,
+      "lamportsBefore": "0n",
+      "lamportsAfter": "0n"
+    }
+  ],
+  "tokenAccounts": [],
+  "mints": [],
+  "solDelta": {
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-4836092960n"
+  },
+  "instructions": [
+    {
+      "index": 0,
+      "programId": "11111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": {
+        "kind": "transfer"
+      },
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    }
+  ],
+  "lookupTables": [
+    {
+      "address": "G4zMRxz49iN1ainvVPE4wqp22AYGcwrRVLkzy5i51m16",
+      "resolved": true
+    }
+  ],
+  "coverage": {
+    "analyzed": 0,
+    "total": 1,
+    "unverifiedPrograms": 0
+  }
+}

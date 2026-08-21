@@ -29,6 +29,50 @@ Không gộp mẫu tự dựng vào con số đó.
 
 ---
 
+## 0b2 · Đo lại sau khi cài nốt luật 5, 7, 10 — 21/08
+
+Câu hỏi duy nhất đáng hỏi khi thêm luật vào một sản phẩm bảo mật: **nó có làm
+sản phẩm kêu oan thêm không?** Chạy cả hai bộ luật trên đúng 10 mẫu mainnet đã lưu:
+
+| | 9 luật | 12 luật |
+|---|---:|---:|
+| Verdict **Đỏ sai** | 0 | **0** |
+| Cảnh báo mang tính **cáo buộc** | 1 | **1** |
+| Ra Bình thường | 0 | 0 |
+
+Ba luật mới không thêm một cáo buộc nào. Mã lý do bật trên 10 mẫu:
+
+| Mã | Số lần | Giọng |
+|---|---:|---|
+| `PROGRAM_CHUA_XAC_MINH` | 10/10 | thông tin |
+| `MINT_AUTHORITY_CHUA_THU_HOI` | 1/10 | thông tin |
+| `FREEZE_AUTHORITY_CON_HIEU_LUC` | 1/10 | thông tin |
+| `OUTFLOW_KHONG_KHOP` | 1/10 | **cáo buộc** |
+
+Vì sao ba luật này an toàn với lưu lượng thật, đo trước khi viết:
+
+- **transfer hook**: 0/10 mẫu mainnet có. Luật 5 không kích hoạt lần nào.
+- **freeze authority**: 1/10 — nhưng đây là mã dễ dùng sai nhất trong cả bộ.
+  USDC có freeze authority. Nếu xếp nó là cáo buộc thì Custos sẽ báo động ở gần
+  như mọi stablecoin. Nó nằm trong `MA_THONG_TIN`, và có test riêng khoá điều đó lại.
+- **ALT**: 7/10 mẫu CÓ dùng ALT, và cả 7 đều giải được. Luật 10 chỉ gắn cờ khi
+  KHÔNG GIẢI ĐƯỢC bảng, nên nó bật 0/10. Nhánh "ALT trỏ tới program chưa xác
+  minh" trong đặc tả đã bị **cố ý bỏ**: nó trùng với luật 9 và sẽ kích hoạt
+  trên 7/10 giao dịch bình thường.
+
+### Một lỗi thật mà việc dựng mẫu R10-pos moi ra
+
+Fail-safe 3 (`lookupTables.some(t => !t.resolved)` ⇒ warning) **chưa bao giờ chạy
+được từ một giao dịch thật**. `msg.getAccountKeys()` của web3.js NÉM LỖI khi có
+bảng chưa giải được, nên `extractFacts` chết trước khi có `Facts` để đánh giá.
+Luật viết đúng, nhưng dữ liệu nuôi nó không bao giờ tới nơi — cùng loại lỗi với
+"luật 12 không kích hoạt được trên chuỗi thật" đã gặp trước đó.
+
+Chỉ lộ ra khi cố dựng một mẫu thật cho tình huống đó. Đây là lý do quy tắc
+"mỗi luật phải có ca dương tính chạy được" đáng giá hơn nó trông có vẻ.
+
+---
+
 ## 0b · Kết quả đo thật — cập nhật 21/08 sau khi hoàn thiện 8 luật
 
 `scripts/do-bao-nham.ts` — giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc.
@@ -72,14 +116,14 @@ Viết decoder cho các chương trình DEX phổ biến. Đó là công việc 
 
 ## 0c · Bộ dữ liệu đã dựng — trạng thái 21/08
 
-**23 mẫu**, chạy tự động qua `packages/core/test/dataset.test.ts` (offline, tất định).
+**29 mẫu**, chạy tự động qua `packages/core/test/dataset.test.ts` (offline, tất định).
 
 | Nguồn | Số mẫu | Dùng để |
 |---|---:|---|
 | `synthetic-devnet` | 13 | Kiểm thử từng luật. **Không** vào mẫu số báo nhầm |
 | `real-mainnet` | 10 | **Đo báo nhầm** |
 
-**Cả 9 luật đều đã được phủ:** 1, 2, 3, 4, 6, 8, 9, 11, 12. Bộ test tự in ra luật nào còn thiếu thay vì im lặng.
+**Cả 12 luật đều đã được phủ:** 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12. Bộ test tự in ra luật nào còn thiếu thay vì im lặng.
 
 ### Vì sao lưu `Facts` chứ không chỉ lưu giao dịch
 

@@ -71,6 +71,51 @@ function cauCho(ma: string, facts: Facts): string | null {
     case REASON.PROGRAM_CHUA_XAC_MINH:
       return "Giao dịch gọi một chương trình chúng tôi chưa xác minh. Chúng tôi không biết nó làm gì.";
 
+    case REASON.OUTFLOW_KHONG_KHOP: {
+      // Cộng theo từng loại token: khoản nào rời ví mà giao dịch không trả lại gì.
+      const theoMint = new Map<string, bigint>();
+      for (const t of facts.tokenAccounts) {
+        if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
+        theoMint.set(t.mint, (theoMint.get(t.mint) ?? 0n) + (t.amountAfter - t.amountBefore));
+      }
+      const ra = [...theoMint.entries()].filter(([, d]) => d < 0n);
+      if (ra.length === 0) return null;
+      const ten = ra.map(([mint, d]) => `${dinhDangSo(-d, decimalsCua(facts, mint))} ${rutGon(mint)}`);
+      return `${ten.join(" và ")} sẽ rời khỏi ví bạn, và giao dịch này không có phần nào trả lại.`;
+    }
+
+    case REASON.VI_NHAN_MOI_TAO: {
+      const moi = Object.entries(facts.tuoiViNhan).find(([, tuoi]) => tuoi !== null && tuoi < 24);
+      if (!moi) return null;
+      const [vi, tuoi] = moi;
+      return `Ví nhận ${rutGon(vi)} vừa được tạo cách đây ${(tuoi as number).toFixed(1)} giờ. Ví mới tinh nhận phần lớn tài sản là hình dạng quen thuộc của một vụ lừa.`;
+    }
+
+    case REASON.TRANSFER_NGOAI_HANH_DONG_CHINH: {
+      const t = cuaToi.find((x) => x.amountAfter < x.amountBefore);
+      if (!t) return null;
+      const so = dinhDangSo(t.amountBefore - t.amountAfter, decimalsCua(facts, t.mint));
+      return `Ngoài việc bạn định làm, giao dịch còn chuyển ${so} ${rutGon(t.mint)} ra khỏi ví bạn.`;
+    }
+
+    case REASON.TOKEN2022_TRANSFER_HOOK: {
+      const m = facts.mints.find((x) => x.transferHookProgramId !== null);
+      if (!m) return null;
+      return `Mỗi lần ${rutGon(m.address)} được chuyển đi, một chương trình khác sẽ chạy theo. Đây là tính năng hợp lệ, nhưng chúng tôi chưa đọc hiểu chương trình đó.`;
+    }
+
+    case REASON.FREEZE_AUTHORITY_CON_HIEU_LUC: {
+      const m = facts.mints.find((x) => x.freezeAuthority !== null && x.freezeAuthority !== facts.signer);
+      if (!m) return null;
+      // Cố ý nói rõ "nhiều token lớn cũng vậy". Nếu không, người dùng sẽ hiểu
+      // đây là dấu hiệu lừa đảo và bỏ luôn một token hoàn toàn bình thường —
+      // USDC có freeze authority. Cảnh báo doạ người là cảnh báo bị tắt.
+      return `Bên phát hành ${rutGon(m.address)} có quyền đóng băng tài khoản của bạn, khiến bạn không chuyển được token này. Nhiều token lớn cũng vậy — đây là tính năng hợp lệ.`;
+    }
+
+    case REASON.ALT_KHONG_GIAI_DUOC:
+      return "Giao dịch dùng một bảng địa chỉ mà chúng tôi không đọc được, nên danh sách bên nhận có thể còn thiếu.";
+
     default:
       return null;
   }

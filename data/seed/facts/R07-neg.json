@@ -1,0 +1,99 @@
+{
+  "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+  "tuoiViNhan": {
+    "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T": null
+  },
+  "simulationOk": true,
+  "simulationError": null,
+  "accounts": [
+    {
+      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "isSigner": true,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": "11111111111111111111111111111111",
+      "lamportsBefore": "4837829040n",
+      "lamportsAfter": "4837824040n"
+    },
+    {
+      "address": "8KdNBXXWQnbqVDijeqCNsCHPYApM15ZmxbmQVSZktxKq",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "lamportsBefore": "2039280n",
+      "lamportsAfter": "2039280n"
+    },
+    {
+      "address": "BsCD6xVmjhYpGZQDgYLHoKFaM8KXSh1CZoKSMVk7JJvT",
+      "isSigner": false,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "lamportsBefore": "2039280n",
+      "lamportsAfter": "2039280n"
+    }
+  ],
+  "tokenAccounts": [
+    {
+      "address": "8KdNBXXWQnbqVDijeqCNsCHPYApM15ZmxbmQVSZktxKq",
+      "mint": "5zraqknFEd1jkeyATSDmcdn8vAUL3ebEEJvwjt3WSeA9",
+      "ownerBefore": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "ownerAfter": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "amountBefore": "100000000n",
+      "amountAfter": "99000000n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    },
+    {
+      "address": "BsCD6xVmjhYpGZQDgYLHoKFaM8KXSh1CZoKSMVk7JJvT",
+      "mint": "5zraqknFEd1jkeyATSDmcdn8vAUL3ebEEJvwjt3WSeA9",
+      "ownerBefore": "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T",
+      "ownerAfter": "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T",
+      "amountBefore": "0n",
+      "amountAfter": "1000000n",
+      "delegateBefore": null,
+      "delegateAfter": null,
+      "delegatedAmountAfter": "0n",
+      "closeAuthorityBefore": null,
+      "closeAuthorityAfter": null,
+      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    }
+  ],
+  "mints": [
+    {
+      "address": "5zraqknFEd1jkeyATSDmcdn8vAUL3ebEEJvwjt3WSeA9",
+      "mintAuthority": null,
+      "freezeAuthority": null,
+      "permanentDelegate": null,
+      "transferHookProgramId": null,
+      "isToken2022": false,
+      "decimals": 6
+    }
+  ],
+  "solDelta": {
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-5000n"
+  },
+  "instructions": [
+    {
+      "index": 0,
+      "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": {
+        "kind": "transfer"
+      },
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    }
+  ],
+  "lookupTables": [],
+  "coverage": {
+    "analyzed": 1,
+    "total": 1,
+    "unverifiedPrograms": 0
+  }
+}

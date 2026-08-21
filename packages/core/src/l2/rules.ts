@@ -1,6 +1,6 @@
 import type { Level } from "@custos/types";
 import type { Facts } from "../facts.ts";
-import { REASON } from "../constants.ts";
+import { REASON, VERIFIED_PROGRAMS } from "../constants.ts";
 
 export type RuleHit = {
   ruleId: number;
@@ -301,6 +301,116 @@ export const luat8: Rule = {
   },
 };
 
-/** Chín luật của bản thi: bốn Đỏ và năm Vàng. */
-export const LUAT: Rule[] = [luat1, luat2, luat3, luat12, luat4, luat6, luat8, luat9, luat11];
+/**
+ * Luật 5 — token có Transfer Hook mà đội chưa đọc hiểu chương trình hook đó.
+ *
+ * Transfer Hook là NĂNG LỰC HỢP LỆ của Token-2022: nó cho phép mint chạy thêm
+ * logic mỗi lần chuyển — dùng cho danh sách tuân thủ, phí bản quyền, giới hạn
+ * chuyển nhượng. Sự tồn tại của nó không phải tội, nên luật này ở mức Vàng và
+ * mang giọng THÔNG TIN.
+ *
+ * Điều đáng nói với người dùng không phải "có hook", mà là "có hook và chúng
+ * tôi không biết nó làm gì". Nếu chương trình hook nằm trong danh sách đã xác
+ * minh thì đội đọc hiểu được nó, và không có gì để cảnh báo — đó chính là ca
+ * âm tính R05-neg.
+ *
+ * Đo trên 10 giao dịch mainnet: 0 mẫu có transfer hook. Luật này không góp phần
+ * nào vào mệt mỏi cảnh báo trên lưu lượng thật.
+ */
+export const luat5: Rule = {
+  id: 5,
+  ten: "Token có transfer hook chưa kiểm chứng",
+  danhGia(f) {
+    const lienQuan = new Set(f.tokenAccounts.map((t) => t.mint));
+    return f.mints
+      .filter((m) => m.transferHookProgramId !== null && lienQuan.has(m.address))
+      .filter((m) => !VERIFIED_PROGRAMS.has(m.transferHookProgramId as string))
+      .map((m) => ({
+        ruleId: 5,
+        level: "warning" as const,
+        reasonCode: REASON.TOKEN2022_TRANSFER_HOOK,
+        detail:
+          `Mỗi lần chuyển ${m.address} sẽ chạy thêm chương trình ` +
+          `${m.transferHookProgramId}, và chúng tôi chưa đọc hiểu được nó`,
+      }));
+  },
+};
+
+/**
+ * Luật 7 — người phát hành vẫn đóng băng được tài khoản của bạn.
+ *
+ * ĐÂY LÀ LUẬT DỄ DÙNG SAI NHẤT trong cả mười hai. USDC có freeze authority.
+ * Phần lớn stablecoin nghiêm túc đều có, vì quy định buộc họ phải đóng băng
+ * được tài sản bị đánh cắp. Gắn cờ báo động cho nó là gắn cờ cho gần như mọi
+ * stablecoin trên Solana — đúng kiểu sai mà luật 4 và PROGRAM_CHUA_XAC_MINH đã
+ * mắc và phải sửa sau khi đo thật.
+ *
+ * Nên luật này LUÔN Vàng, luôn giọng thông tin, và câu chữ nói về NĂNG LỰC của
+ * token chứ không nói về giao dịch đang chờ ký. Người dùng xứng đáng được biết
+ * tài sản mình giữ có thể bị đóng băng; họ không xứng đáng bị doạ vì điều đó.
+ *
+ * Bỏ qua khi chính người ký giữ quyền đó — mình đóng băng được tài khoản mình
+ * thì không có gì để cảnh báo, cùng logic với luật 2 và luật 3.
+ */
+export const luat7: Rule = {
+  id: 7,
+  ten: "Token có thể bị đóng băng bởi người phát hành",
+  danhGia(f) {
+    const lienQuan = new Set(f.tokenAccounts.map((t) => t.mint));
+    return f.mints
+      .filter((m) => m.freezeAuthority !== null && lienQuan.has(m.address))
+      .filter((m) => m.freezeAuthority !== f.signer)
+      .map((m) => ({
+        ruleId: 7,
+        level: "warning" as const,
+        reasonCode: REASON.FREEZE_AUTHORITY_CON_HIEU_LUC,
+        detail: `${m.freezeAuthority} có thể đóng băng tài khoản ${m.address} của bạn`,
+      }));
+  },
+};
+
+/**
+ * Luật 10 — có Address Lookup Table không giải được.
+ *
+ * ALT là kỹ thuật hợp lệ và phổ biến: 7 trên 10 giao dịch mainnet trong bộ dữ
+ * liệu có dùng ALT, và cả 7 đều lành. Nên luật này KHÔNG gắn cờ việc dùng ALT.
+ * Nó chỉ gắn cờ khi ta KHÔNG GIẢI ĐƯỢC bảng — vì khi đó danh sách tài khoản
+ * còn thiếu, và bảng chênh lệch có thể đang bỏ sót thứ gì đó. Đây là lời thú
+ * nhận về giới hạn của Custos, không phải cáo buộc nhắm vào giao dịch.
+ *
+ * ĐÃ CỐ Ý BỎ nhánh thứ hai của đặc tả — "ALT trỏ tới program hoặc account chưa
+ * xác minh". Hai lý do, cả hai đo được:
+ *   1. Nó trùng với luật 9, vốn đã bắt chương trình chưa xác minh có chạm tài
+ *      sản người ký. Địa chỉ đến từ ALT hay đến từ danh sách account tĩnh không
+ *      làm thay đổi mức nguy hiểm.
+ *   2. Nó sẽ kích hoạt trên 7/10 giao dịch mainnet, nơi ALT hoàn toàn bình
+ *      thường. Đúng công thức tạo mệt mỏi cảnh báo.
+ * Ghi lại ở đây để không ai thêm lại nhánh đó mà tưởng là bỏ sót.
+ *
+ * Fail-safe 3 trong `evaluate.ts` cũng đẩy verdict lên Vàng cho đúng tình huống
+ * này, nhưng KHÔNG kèm mã lý do — nghĩa là giao diện hiện cảnh báo mà không nói
+ * được vì sao. Luật này lấp đúng chỗ đó.
+ */
+export const luat10: Rule = {
+  id: 10,
+  ten: "Bảng tra địa chỉ không giải được",
+  danhGia(f) {
+    return f.lookupTables
+      .filter((t) => !t.resolved)
+      .map((t) => ({
+        ruleId: 10,
+        level: "warning" as const,
+        reasonCode: REASON.ALT_KHONG_GIAI_DUOC,
+        detail:
+          `Không đọc được bảng tra địa chỉ ${t.address}, nên danh sách tài khoản ` +
+          `của giao dịch có thể còn thiếu`,
+      }));
+  },
+};
+
+/** Mười hai luật: bốn Đỏ và tám Vàng. */
+export const LUAT: Rule[] = [
+  luat1, luat2, luat3, luat12,
+  luat4, luat5, luat6, luat7, luat8, luat9, luat10, luat11,
+];
 

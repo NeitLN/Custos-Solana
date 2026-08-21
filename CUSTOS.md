@@ -257,7 +257,7 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 
 **3 · Điều chỉnh cách diễn đạt theo trình độ người dùng.** Cùng một facts, hai cách nói.
 
-### 12 luật của L2 — bản thi cài 9
+### 12 luật của L2 — đã cài đủ 12
 
 | # | Luật *(xác định, không có AI tham gia)* | Verdict |
 |---:|---|---|
@@ -265,12 +265,12 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 | 2 | `SetAuthority` gán `CloseAccount` hoặc `Freeze` cho bên thứ ba | Đỏ |
 | 3 | `Approve` delegate với hạn mức vượt ngưỡng bất thường | Đỏ |
 | 4 | Token-2022 có Permanent Delegate | **Vàng** — chỉ lên **Đỏ** khi **chính permanent delegate đó** thực hiện transfer hoặc burn ảnh hưởng tài khoản của người dùng trong giao dịch này |
-| 5 | Token-2022 có Transfer Hook chưa kiểm chứng | Vàng |
+| 5 | Token-2022 có Transfer Hook trỏ tới chương trình chưa xác minh | Vàng |
 | 6 | Mint authority chưa thu hồi | Vàng |
 | 7 | Freeze authority còn hoạt động | Vàng |
 | 8 | Ví nhận được tạo dưới 24 giờ và nhận giá trị lớn | Vàng |
 | 9 | Program không nằm trong danh sách đã xác minh | Vàng |
-| 10 | Có địa chỉ từ ALT không resolve được, hoặc trỏ tới program/account chưa xác minh | Vàng |
+| 10 | Có bảng tra địa chỉ (ALT) không giải được | Vàng |
 | 11 | Có outflow từ tài khoản người ký ở tài sản hoặc khối lượng không khớp với các leg còn lại của giao dịch | **Vàng** — lên **Đỏ** chỉ khi trùng với một luật Đỏ khác |
 | 12 | `SystemProgram.assign` đổi owner của một account thuộc người ký sang program khác | Đỏ |
 
@@ -294,7 +294,7 @@ Giám khảo đã xác nhận qua bốn vòng: *"Phần phân tích giao dịch 
 
 | Ưu tiên | Nội dung |
 |---|---|
-| **P0 · Bắt buộc** | **Custos Core** (L1 + L2 **9 luật** + L3) đóng gói thành SDK · **bộ kiểm thử** chạy trên seed dataset · **Demo Wallet devnet** · **trang tấn công giả** devnet · dashboard tối giản. Không cần một dòng Rust nào. |
+| **P0 · Bắt buộc** | **Custos Core** (L1 + L2 **12 luật** + L3) đóng gói thành SDK · **bộ kiểm thử** chạy trên seed dataset · **Demo Wallet devnet** · **trang tấn công giả** devnet · dashboard tối giản. Không cần một dòng Rust nào. |
 | **P0 · Song song** | **Seed evaluation dataset** 30–50 giao dịch gắn nhãn và **nghiên cứu người dùng** 20 phỏng vấn — hai việc riêng biệt. |
 | **P1 · Có cắt** | Thêm luật ngoài 11 · hồ sơ rủi ro địa chỉ chi tiết · đánh bóng trải nghiệm. |
 | **P2 · Sau cuộc thi** | Browser extension (B2C) · đánh dấu cộng đồng on-chain · registry có đặt cọc · Anchor program · bảng điều khiển doanh nghiệp · khách hàng sàn tập trung. |

@@ -1,6 +1,7 @@
 {
   "thuLuc": "2026-08-21T00:24:40.946Z",
-  "soMau": 23,
+  "themLuc": "2026-08-21T15:25:30.431Z",
+  "soMau": 29,
   "mau": [
     {
       "id": "R01-pos",
@@ -409,6 +410,111 @@
       },
       "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
       "ganNhanLuc": "2026-08-21T00:24:40.346Z"
+    },
+    {
+      "id": "R05-pos",
+      "luat": 5,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R05-pos.json",
+      "giaoDich": "tx/R05-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "TOKEN2022_TRANSFER_HOOK"
+        ]
+      },
+      "bangChung": "Mint Token-2022 có transfer hook trỏ tới chương trình Custos chưa đọc hiểu. Chỉ được ra Vàng: transfer hook là năng lực hợp lệ của giao thức.",
+      "ganNhanLuc": "2026-08-21T15:23:55.279Z"
+    },
+    {
+      "id": "R05-neg",
+      "luat": 5,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R05-neg.json",
+      "giaoDich": "tx/R05-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "TOKEN2022_TRANSFER_HOOK"
+        ]
+      },
+      "bangChung": "Mint Token-2022 y hệt nhưng KHÔNG cài transfer hook. Bản thân việc là Token-2022 không phải dấu hiệu gì cả.",
+      "ganNhanLuc": "2026-08-21T15:23:56.710Z"
+    },
+    {
+      "id": "R07-pos",
+      "luat": 7,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R07-pos.json",
+      "giaoDich": "tx/R07-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "FREEZE_AUTHORITY_CON_HIEU_LUC"
+        ],
+        "khongCoMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "bangChung": "Người phát hành vẫn đóng băng được tài khoản của người ký. Đây là THUỘC TÍNH của token — USDC cũng có — nên chỉ Vàng và phải mang giọng thông tin.",
+      "ganNhanLuc": "2026-08-21T15:24:09.590Z"
+    },
+    {
+      "id": "R07-neg",
+      "luat": 7,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R07-neg.json",
+      "giaoDich": "tx/R07-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "FREEZE_AUTHORITY_CON_HIEU_LUC"
+        ]
+      },
+      "bangChung": "Giao dịch chuyển token y hệt, nhưng mint đã thu hồi cả quyền đóng băng lẫn quyền tạo thêm.",
+      "ganNhanLuc": "2026-08-21T15:25:24.576Z"
+    },
+    {
+      "id": "R10-pos",
+      "luat": 10,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R10-pos.json",
+      "giaoDich": "tx/R10-pos.base64",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "ALT_KHONG_GIAI_DUOC"
+        ]
+      },
+      "bangChung": "Giao dịch trỏ tới bảng tra địa chỉ không đọc được, nên danh sách tài khoản có thể còn thiếu và bảng chênh lệch có thể đang bỏ sót.",
+      "ganNhanLuc": "2026-08-21T15:25:25.492Z"
+    },
+    {
+      "id": "R10-neg",
+      "luat": 10,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "facts": "facts/R10-neg.json",
+      "giaoDich": "tx/R10-neg.base64",
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "ALT_KHONG_GIAI_DUOC"
+        ]
+      },
+      "bangChung": "Giao dịch dùng bảng tra địa chỉ thật, giải được bình thường. ALT là kỹ thuật hợp lệ và phổ biến — 7/10 giao dịch mainnet trong bộ dữ liệu có dùng.",
+      "ganNhanLuc": "2026-08-21T15:25:30.430Z"
     }
   ]
 }
