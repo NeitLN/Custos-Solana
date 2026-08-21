@@ -80,3 +80,11 @@ test("README nêu quy tắc bất đối xứng của expectedAction", () => {
   assert.match(README, /Không giảm verdict/);
   assert.match(README, /thận trọng hơn, không bao giờ dễ dãi hơn/);
 });
+
+test("README nêu ranh giới của lớp mô hình ngôn ngữ", () => {
+  // Bên tích hợp phải biết chính xác mô hình được phép làm gì trước khi cắm
+  // nó vào luồng ký. Đây là câu hỏi đầu tiên một đội bảo mật sẽ hỏi.
+  assert.match(README, /không giữ khoá API nào/);
+  assert.match(README, /Không chạm được `level`/);
+  assert.match(README, /chỉ NÂNG lên `review_required`/);
+});
