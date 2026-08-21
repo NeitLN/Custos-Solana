@@ -29,6 +29,40 @@ Không gộp mẫu tự dựng vào con số đó.
 
 ---
 
+## 0b5 · Đo sau audit bảo mật — 22/08
+
+Audit vòng 1 (`docs/bao-mat/SECURITY-AUDIT.md`) tìm ra bốn lỗ hổng Critical, trong đó
+ba lỗ có chung một nguyên nhân: `Facts` không phân biệt được *"đo được và bằng không"*
+với *"chưa đo được"*.
+
+Từ đây mọi phép đo coverage dùng **cohort cố định** ghi tại `data/seed/cohort-audit.json`,
+chạy bằng `scripts/do-cohort.ts`. Lý do rất cụ thể:
+
+| Cohort | Mẫu đo được | Coverage | Lệnh chạm tài sản |
+|---|---:|---:|---:|
+| 21/08 | 20/20 | 53 % | 21 % |
+| 22/08 | 15/20 | 69 % | 39 % |
+
+**Hai cohort chênh nhau 16 điểm coverage, và phần lớn là do mẫu chứ không do code.**
+Nên đóng góp của decoder sinh từ IDL được đo **trong một lượt trên cùng cohort**:
+69 % so với 67 % nếu bỏ các decoder đó — tức **+2 điểm**, không phải +5 như so chéo
+hai cohort gợi ý. Đúng cái bẫy đã ghi ở mục 0b3, lần này tránh được.
+
+### Vì sao mẫu tụt từ 20 xuống 15
+
+Coverage phụ thuộc mô phỏng thành công, mà mô phỏng phụ thuộc trạng thái chuỗi HIỆN TẠI.
+Giao dịch càng cũ càng dễ hỏng khi mô phỏng lại (trượt giá, blockhash hết hạn). Script
+**đếm và báo số mẫu bỏ qua** thay vì lặng lẽ thu nhỏ mẫu số — nếu không, coverage sẽ tự
+"đẹp lên" theo thời gian mà không ai đụng vào code.
+
+### Báo nhầm sau khắc phục
+
+Trên mọi lần đo: **0 verdict Đỏ**, **0 cảnh báo mang tính cáo buộc**, **0 cảnh báo
+không có mã lý do**. Hai luật mới (13 SOL rời ví, 14 không rõ bảo vệ ai) và hai fail-safe
+mới không gây thêm mệt mỏi cảnh báo nào.
+
+---
+
 ## 0b4 · Mở rộng decoder — 21/08
 
 Khảo sát 40 giao dịch mainnet bằng `scripts/soi-lenh-chua-decode.ts`: **164 lệnh
