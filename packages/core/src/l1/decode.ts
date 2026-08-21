@@ -1,5 +1,6 @@
 import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { SystemProgram } from "@solana/web3.js";
+import { BANG_IDL } from "./bang-idl.ts";
 
 const TOKEN = TOKEN_PROGRAM_ID.toBase58();
 const TOKEN22 = TOKEN_2022_PROGRAM_ID.toBase58();
@@ -128,6 +129,7 @@ const ORCA_IX: Record<string, string> = {
  * chính các bảng ở trên nên không lệch đi được.
  */
 export const SO_LENH_DOC_DUOC: ReadonlyMap<string, number> = new Map([
+  ...[...BANG_IDL.entries()].map(([p, m]) => [p, Object.keys(m).length] as const),
   [TOKEN, Object.keys(SPL_TOKEN).length],
   [TOKEN22, Object.keys(SPL_TOKEN).length],
   [SYSTEM, Object.keys(SYSTEM_IX).length],
@@ -140,6 +142,25 @@ const hex8 = (data: Uint8Array): string =>
   Array.from(data.slice(0, 8))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
+
+/**
+ * Vị trí của account `authority` trong danh sách account của lệnh SPL Token.
+ *
+ * Đây là bố cục cố định của SPL Token, không phải suy đoán:
+ *   Transfer        [nguồn, đích, authority]                → 2
+ *   TransferChecked [nguồn, mint, đích, authority]           → 3
+ *   Burn            [tài khoản, mint, authority]             → 2
+ *   BurnChecked     [tài khoản, mint, authority]             → 2
+ *
+ * Cần nó để phân biệt "chủ tài khoản tự chuyển" với "permanent delegate ra tay" —
+ * hai chuyện trông giống hệt nhau trên bảng chênh lệch.
+ */
+export const VI_TRI_AUTHORITY: Record<string, number> = {
+  transfer: 2,
+  transferChecked: 3,
+  burn: 2,
+  burnChecked: 2,
+};
 
 export function decodeInstruction(programId: string, data: Uint8Array): { kind: string } | null {
   // ATA phải xét TRƯỚC phép kiểm dữ liệu rỗng: lệnh `Create` đời đầu không mang
@@ -175,6 +196,17 @@ export function decodeInstruction(programId: string, data: Uint8Array): { kind: 
     if (data.length < 8) return null;
     const d = hex8(data);
     return ORCA_IX[d] ? { kind: ORCA_IX[d]! } : null;
+  }
+
+  // Chương trình Anchor có IDL công bố trên chuỗi. Bảng sinh tự động từ chính
+  // IDL đó — xem bang-idl.ts và scripts/tao-bang-idl.ts. Mã lệnh không nằm
+  // trong IDL thì vẫn là "chưa đọc hiểu": chương trình có thể đã nâng cấp mà
+  // IDL chưa cập nhật, và ta không đoán thay tác giả.
+  const idl = BANG_IDL.get(programId);
+  if (idl) {
+    if (data.length < 8) return null;
+    const ten = idl[hex8(data)];
+    return ten ? { kind: ten } : null;
   }
 
   return null;

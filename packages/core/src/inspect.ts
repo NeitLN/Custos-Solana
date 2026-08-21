@@ -44,7 +44,7 @@ export async function inspect(
   tx: VersionedTransaction,
   options: InspectOptions = {},
 ): Promise<InspectResult> {
-  const facts = await extractFacts(deps.connection, tx);
+  const facts = await extractFacts(deps.connection, tx, options.nguoiDung);
   const l2 = danhGia(facts);
   const diff = dungBangChenhLech(facts, l2.hits);
 

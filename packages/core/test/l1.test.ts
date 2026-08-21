@@ -346,3 +346,45 @@ test("MỌI chương trình trong danh sách xác minh phải có decoder", asyn
     assert.ok(n > 0, `${ten} nằm trong danh sách xác minh nhưng không decode được lệnh nào`);
   }
 });
+
+// ── Decoder sinh từ IDL trên chuỗi ────────────────────────────────
+test("IDL · mã lệnh khớp sha256(\"global:<tên>\") — bảng KHÔNG phải chép tay", async () => {
+  const { createHash } = await import("node:crypto");
+  const { BANG_IDL, ANCHOR_EVENT_CPI } = await import("../src/l1/bang-idl.ts");
+
+  let daKiem = 0;
+  for (const [pid, bang] of BANG_IDL) {
+    for (const [hex, ten] of Object.entries(bang)) {
+      if (hex === ANCHOR_EVENT_CPI) continue; // tag của khung Anchor, không có trong IDL
+      const dung = createHash("sha256").update(`global:${ten}`).digest().subarray(0, 8).toString("hex");
+      assert.equal(dung, hex, `${pid} · ${ten}: mã lệnh không khớp hash của chính tên lệnh`);
+      daKiem++;
+    }
+  }
+  assert.ok(daKiem > 100, `bảng quá nhỏ, mới kiểm ${daKiem} lệnh`);
+});
+
+test("IDL · decode được lệnh thật đã bắt gặp trên mainnet", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  const hex = (h: string) => Uint8Array.from(Buffer.from(h, "hex"));
+  const PAMM = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+
+  // Ba mã dưới đây đếm được trong mẻ khảo sát 40 giao dịch mainnet.
+  assert.deepEqual(decodeInstruction(PAMM, hex("66063d1201daebea")), { kind: "buy" });
+  assert.deepEqual(decodeInstruction(PAMM, hex("33e685a4017f83ad")), { kind: "sell" });
+  // Mã này chạy 15 lần và đội KHÔNG biết nó là gì cho tới khi đọc IDL trên chuỗi.
+  assert.deepEqual(decodeInstruction(PAMM, hex("c62e1552b4d9e870")), { kind: "buy_exact_quote_in" });
+  // Anchor tự gọi lại chính nó để phát log — chiếm 21/42 lệnh của chương trình này.
+  assert.deepEqual(decodeInstruction(PAMM, hex("e445a52e51cb9a1d")), { kind: "logSuKien" });
+});
+
+test("IDL · mã lạ và dữ liệu dị dạng KHÔNG được đoán bừa", async () => {
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  const PAMM = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA";
+  // Chương trình có thể đã nâng cấp mà IDL chưa cập nhật. Không đoán thay tác giả.
+  assert.equal(decodeInstruction(PAMM, Uint8Array.from(Buffer.from("ffffffffffffffff", "hex"))), null);
+  assert.equal(decodeInstruction(PAMM, new Uint8Array([1, 2, 3])), null, "thiếu byte thì không đoán");
+  assert.equal(decodeInstruction(PAMM, new Uint8Array(0)), null);
+  // Chương trình không có IDL trên chuỗi vẫn phải là chưa xác minh.
+  assert.equal(decodeInstruction("KhongTonTai1111111111111111111111111111111", Uint8Array.from(Buffer.from("66063d1201daebea", "hex"))), null);
+});

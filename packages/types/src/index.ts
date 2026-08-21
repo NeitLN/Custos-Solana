@@ -75,4 +75,20 @@ export type InspectOptions = {
   /** Ký hiệu token theo địa chỉ mint, để hiển thị "USDC" thay vì "4YDg…Wpv1".
    *  Chỉ ảnh hưởng cách hiển thị — KHÔNG bao giờ ảnh hưởng verdict. */
   kyHieuToken?: Record<string, string>;
+  /**
+   * Địa chỉ ví NGƯỜI DÙNG mà Custos phải bảo vệ.
+   *
+   * Thêm ngày 22/08 sau audit bảo mật (SECURITY-AUDIT.md — F1b). Trường TUỲ CHỌN
+   * nên không phá hợp đồng đã đóng băng: mã cũ bỏ qua được.
+   *
+   * Vì sao cần: mặc định Custos bảo vệ `staticAccountKeys[0]`, tức NGƯỜI TRẢ PHÍ.
+   * Trong giao dịch được tài trợ phí, đó không phải người dùng — và khi đó mọi
+   * luật đều nhắm vào ví của bên kia. Chỉ ví mới biết địa chỉ nào là của người
+   * dùng, nên nó phải nói ra.
+   *
+   * KHÔNG PHẢI ngữ cảnh kiểu `expectedAction`: đây là ví tự khai địa chỉ của
+   * chính mình, không phải dApp khai ý định. Vắng mặt mà giao dịch có nhiều
+   * người ký ⇒ Custos nâng nghi ngờ thay vì đoán.
+   */
+  nguoiDung?: string;
 };

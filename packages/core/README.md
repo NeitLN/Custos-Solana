@@ -192,13 +192,36 @@ Bản này chạy hoàn toàn phía client: giao dịch chưa ký không rời k
 
 ---
 
+## Nói cho Custos biết ví nào là của người dùng
+
+```ts
+const ketQua = await inspect({ connection }, tx, {
+  locale: "vi",
+  nguoiDung: viNguoiDung.toBase58(),   // ← nên truyền
+});
+```
+
+Mặc định Custos bảo vệ `staticAccountKeys[0]`, tức **người trả phí**. Trong giao
+dịch được tài trợ phí, đó không phải người dùng — và khi đó mọi luật đều nhắm vào
+ví của bên kia. Chỉ ví mới biết địa chỉ nào là của người dùng.
+
+Không truyền mà giao dịch có nhiều hơn một người ký, Custos **không im lặng**: nó
+trả `NGUOI_DUNG_KHONG_RO` và không bao giờ ra `Bình thường`. Đó là thừa nhận giới
+hạn, không phải phát hiện tấn công — nó chỉ nói *"tôi có thể đang xem nhầm ví"*.
+
+Địa chỉ truyền vào mà **không phải người ký giao dịch** thì bị bỏ qua: nếu không,
+một dApp độc hại chỉ cần khai bừa một địa chỉ để Custos nhìn sang chỗ khác.
+
 ## Giới hạn hiện tại
 
 Nói thẳng để bên tích hợp tự quyết định:
 
 | Giới hạn | Chi tiết |
 |---|---|
-| **Coverage chưa đủ trên DeFi** | Đo trên 20 giao dịch mainnet ngẫu nhiên: **trung bình 46 %**. Chưa có decoder cho các chương trình DEX và aggregator. Riêng phần lệnh chạm được tài sản của bạn: **21 %** |
+| **Coverage chưa đủ trên DeFi** | **trung bình 69 %** trên cohort 22/08; riêng lệnh chạm được tài sản của bạn: **39 %**. Con số dao động mạnh theo mẻ mẫu. Chưa có decoder cho các chương trình DEX không công bố IDL trên chuỗi |
+| **Phí mạng là ƯỚC TÍNH** | Phí cơ bản 5000 lamport mỗi chữ ký thì chắc chắn; phí ưu tiên chỉ tính được khi giao dịch có cả `setComputeUnitPrice` lẫn `setComputeUnitLimit`. Nhãn ghi rõ "(ước tính)" |
+| **SOL: chỉ bắt theo tỉ lệ** | Luật 13 kích hoạt khi phần SOL rời ví vượt 50 % số dư. Khoản nhỏ vẫn hiện trong bảng chênh lệch nhưng không gắn cờ. Rent tạo/đóng account chưa tách riêng khỏi khoản chuyển |
+| **Không đo được thì nói ra** | Account vượt trần 100 của RPC, hoặc RPC không trả dữ liệu, sẽ thành `TRANG_THAI_DO_KHUYET` và verdict không bao giờ là `Bình thường` |
 | **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
 | **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |

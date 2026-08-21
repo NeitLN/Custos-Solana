@@ -34,7 +34,14 @@ export type InstructionFact = {
   programId: string;
   isInner: boolean;
   parentIndex: number | null;
-  decoded: { kind: string } | null;
+  /**
+   * Lệnh đã đọc hiểu.
+   *
+   * `authority` chỉ có với những lệnh mà nó CÓ NGHĨA và ta đọc được từ danh sách
+   * account — hiện là các lệnh chuyển/đốt của SPL Token. Vắng mặt nghĩa là chưa
+   * bóc được, KHÔNG có nghĩa là "không có ai". Luật phải xử lý hai chuyện đó khác nhau.
+   */
+  decoded: { kind: string; authority?: string } | null;
   fromLookupTable: boolean;
   /** Lệnh này có ghi vào tài khoản nào thuộc người ký không?
    *  Không đọc hiểu một lệnh chỉ đáng lo khi lệnh đó CHẠM ĐƯỢC vào tài sản
@@ -56,7 +63,33 @@ export type AccountFact = {
 };
 
 export type Facts = {
+  /**
+   * Địa chỉ Custos đang BẢO VỆ.
+   *
+   * Mặc định là `staticAccountKeys[0]`, tức người trả phí. Nhưng trong giao dịch
+   * được tài trợ phí, người trả phí KHÔNG phải người dùng — và khi đó mọi luật
+   * đều nhắm nhầm ví. Ví/dApp truyền `InspectOptions.nguoiDung` để chỉ đúng địa
+   * chỉ cần bảo vệ. Xem SECURITY-AUDIT.md — F1b.
+   */
   signer: string;
+  /** MỌI địa chỉ phải ký giao dịch này. Nhiều hơn một mà không có chỉ định thì
+   *  Custos không biết đang bảo vệ ai, và phải nói ra thay vì đoán. */
+  nguoiKy: string[];
+  /** Ví/dApp có chỉ định rõ người dùng không. */
+  nguoiDungDuocChiDinh: boolean;
+  /**
+   * Phí mạng ước tính, tính bằng lamport.
+   *
+   * ĐÂY LÀ CẬN DƯỚI, không phải con số chính xác: phí cơ bản 5000 lamport mỗi
+   * chữ ký thì chắc chắn, còn phí ưu tiên chỉ tính được khi giao dịch có CẢ
+   * `setComputeUnitPrice` lẫn `setComputeUnitLimit` đọc được. Thiếu một trong
+   * hai thì phần ưu tiên bỏ qua thay vì đoán.
+   *
+   * Vì là cận dưới, phần lamport rời ví vượt quá con số này có thể vẫn còn lẫn
+   * một ít phí. Luật dùng ngưỡng theo TỈ LỆ số dư nên sai số đó không đủ để
+   * kích hoạt cảnh báo — nhãn hiển thị thì có thể lệch vài nghìn lamport.
+   */
+  phiUocTinh: bigint;
   simulationOk: boolean;
   simulationError: string | null;
   accounts: AccountFact[];
@@ -72,5 +105,19 @@ export type Facts = {
   tuoiViNhan: Record<string, number | null>;
   instructions: InstructionFact[];
   lookupTables: { address: string; resolved: boolean }[];
+  /**
+   * Account CÓ MẶT trong giao dịch nhưng KHÔNG đo được trạng thái sau.
+   *
+   * Đây là chỗ `Facts` phân biệt "đo được và bằng không" với "chưa đo được".
+   * Trước khi có trường này, cả hai đều rơi về `null` rồi bị đọc như "số dư 0,
+   * không đổi chủ" — sai theo cả hai chiều cùng lúc: bỏ lọt tấn công vì tưởng
+   * không có gì đổi, và bịa ra mất mát vì tưởng số dư về 0.
+   *
+   * Ba nguồn: bị cắt ở trần `MAX_SIM_ACCOUNTS`, RPC không trả dữ liệu account,
+   * và mô phỏng hỏng. Rỗng nghĩa là phép đo đầy đủ.
+   *
+   * Xem docs/bao-mat/SECURITY-AUDIT.md — F2 và A1.
+   */
+  accountKhongDoDuoc: string[];
   coverage: { analyzed: number; total: number; unverifiedPrograms: number };
 };

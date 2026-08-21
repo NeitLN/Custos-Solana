@@ -7,7 +7,7 @@ import {
 } from "@solana/web3.js";
 import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact } from "../facts.ts";
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
-import { decodeInstruction } from "./decode.ts";
+import { decodeInstruction, VI_TRI_AUTHORITY } from "./decode.ts";
 import { giaiBase58 } from "./base58.ts";
 import { computeCoverage } from "./coverage.ts";
 
@@ -19,6 +19,7 @@ const MAX_SIM_ACCOUNTS = 100;
 const HAN_LAM_GIAU_MS = 2500;
 /** Số ví nhận tối đa chịu tra. Nhiều hơn thì không đáng để người dùng chờ. */
 const MAX_VI_TRA = 3;
+const COMPUTE_BUDGET = "ComputeBudget111111111111111111111111111111";
 
 /**
  * Tuổi ví tính bằng giờ, hoặc `null` nếu không tra được.
@@ -61,9 +62,39 @@ async function getManyAccounts(conn: Connection, keys: PublicKey[]) {
  * `simulateTransaction` CHỈ trả trạng thái sau. Không có bước 2 thì
  * không có bảng chênh lệch nào cả.
  */
-export async function extractFacts(conn: Connection, tx: VersionedTransaction): Promise<Facts> {
+/** Gắn `authority` vào lệnh đã decode, nếu lệnh đó có khái niệm authority VÀ
+ *  đọc được địa chỉ ở đúng vị trí. Không đọc được thì để vắng mặt — vắng mặt
+ *  nghĩa là "chưa biết", không phải "không có ai". */
+function themAuthority(
+  doc: { kind: string } | null,
+  layDiaChi: (viTri: number) => string | undefined,
+): { kind: string; authority?: string } | null {
+  if (doc === null) return null;
+  const viTri = VI_TRI_AUTHORITY[doc.kind];
+  if (viTri === undefined) return doc;
+  const dc = layDiaChi(viTri);
+  return dc ? { ...doc, authority: dc } : doc;
+}
+
+export async function extractFacts(
+  conn: Connection,
+  tx: VersionedTransaction,
+  nguoiDungChiDinh?: string,
+): Promise<Facts> {
   const msg = tx.message;
-  const signer = msg.staticAccountKeys[0]?.toBase58() ?? "";
+
+  // MỌI địa chỉ phải ký, không chỉ người trả phí.
+  const soKy = msg.header.numRequiredSignatures;
+  const nguoiKy = msg.staticAccountKeys.slice(0, soKy).map((k) => k.toBase58());
+
+  // Người trả phí LUÔN là account thứ nhất — đó là quy tắc của Solana. Nhưng
+  // người trả phí không nhất thiết là người dùng: giao dịch được tài trợ phí là
+  // mô hình hợp lệ, và kẻ tấn công cũng có thể tự đứng tên trả phí. Chỉ ví mới
+  // biết địa chỉ nào là của người dùng, nên nó phải nói ra.
+  const nguoiTraPhi = msg.staticAccountKeys[0]?.toBase58() ?? "";
+  const nguoiDungDuocChiDinh =
+    nguoiDungChiDinh !== undefined && nguoiKy.includes(nguoiDungChiDinh);
+  const signer = nguoiDungDuocChiDinh ? nguoiDungChiDinh! : nguoiTraPhi;
 
   // 1. giải ALT
   const lookupTables: Facts["lookupTables"] = [];
@@ -125,6 +156,10 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   // 3. trạng thái SAU
   let simOk = true;
   let simErr: string | null = null;
+  // Mô phỏng chạy được KHÔNG có nghĩa là ta nhận được trạng thái account. RPC có
+  // thể trả `accounts: null` kèm `err: null`. Phải tách hai chuyện đó ra, nếu
+  // không thì "không đo được" bị đọc thành "số dư về 0".
+  let coDuLieuAccount = false;
   let after: (AccountInfo<Buffer> | null)[] = [];
   let inner: { programId: string; accounts: string[]; data: string | null; parent: number }[] = [];
   try {
@@ -142,6 +177,7 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
       simOk = false;
       simErr = typeof v.err === "string" ? v.err : JSON.stringify(v.err);
     }
+    coDuLieuAccount = Array.isArray(v.accounts);
     after = simIdx.map((_, k) => {
       const a = v.accounts?.[k];
       if (!a) return null;
@@ -182,8 +218,23 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   }
 
   // 4. so khớp
+  //
+  // CHỈ nạp khi mô phỏng thật sự trả về dữ liệu account. Bản trước nạp vô điều
+  // kiện, nên khi RPC không trả gì thì mọi account đều có trạng thái sau bằng
+  // `null` — và `null` bị đọc tiếp thành "số dư 0, không còn chủ". Sản phẩm vừa
+  // nói "Bình thường" vừa vẽ ra cảnh người dùng mất sạch.
   const afterByIndex = new Map<number, AccountInfo<Buffer> | null>();
-  simIdx.forEach((orig, k) => afterByIndex.set(orig, after[k] ?? null));
+  if (coDuLieuAccount) simIdx.forEach((orig, k) => afterByIndex.set(orig, after[k] ?? null));
+
+  // Account có mặt trong giao dịch mà KHÔNG đo được trạng thái sau.
+  const khongDo = new Set<string>();
+  // (a) bị cắt ở trần RPC — phần dư của danh sách ưu tiên
+  for (const i of [...uuTien, ...conLai].slice(MAX_SIM_ACCOUNTS)) {
+    khongDo.add(allKeys[i]!.toBase58());
+  }
+  // (b) mô phỏng không trả dữ liệu account, hoặc hỏng hẳn
+  if (!coDuLieuAccount) for (const i of simIdx) khongDo.add(allKeys[i]!.toBase58());
+  const accountKhongDoDuoc = [...khongDo];
 
   // Mọi account có trạng thái sau — nguồn cho luật 12.
   const accounts: AccountFact[] = [];
@@ -206,6 +257,11 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   const mintAddrs = new Set<string>();
 
   for (let i = 0; i < allKeys.length; i++) {
+    // Không đo được trạng thái sau thì KHÔNG dựng fact cho account này. Bản
+    // trước vẫn dựng, lấy `before` thật ghép với `after` rỗng, và cho ra dòng
+    // "500.000.000 → 0" — một khoản mất mát không hề xảy ra. Địa chỉ đã nằm
+    // trong `accountKhongDoDuoc`, nên người dùng vẫn được báo là bảng thiếu.
+    if (!afterByIndex.has(i)) continue;
     const addr = allKeys[i]!.toBase58();
     const b = parseTokenAccount(addr, before[i] ?? null);
     const a = parseTokenAccount(addr, afterByIndex.get(i) ?? null);
@@ -257,10 +313,29 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
     }
   }
 
+  // Phí mạng ước tính. Phí cơ bản là 5000 lamport MỖI CHỮ KÝ — hằng số của giao
+  // thức. Phí ưu tiên chỉ tính khi đọc được CẢ giá lẫn hạn mức compute unit;
+  // thiếu một trong hai thì bỏ qua phần đó thay vì đoán hạn mức mặc định.
+  const PHI_CO_BAN_MOI_CHU_KY = 5_000n;
+  let giaCU: bigint | null = null;
+  let hanMucCU: bigint | null = null;
+  for (const ix of msg.compiledInstructions) {
+    if (allKeys[ix.programIdIndex]?.toBase58() !== COMPUTE_BUDGET) continue;
+    const d = ix.data;
+    if (d[0] === 3 && d.length >= 9) {
+      giaCU = 0n;
+      for (let k = 8; k >= 1; k--) giaCU = (giaCU << 8n) | BigInt(d[k]!);
+    } else if (d[0] === 2 && d.length >= 5) {
+      hanMucCU = BigInt(d[1]! | (d[2]! << 8) | (d[3]! << 16) | (d[4]! << 24));
+    }
+  }
+  const phiUuTien = giaCU !== null && hanMucCU !== null ? (giaCU * hanMucCU) / 1_000_000n : 0n;
+  const phiUocTinh = PHI_CO_BAN_MOI_CHU_KY * BigInt(soKy) + phiUuTien;
+
   const solDelta: Record<string, bigint> = {};
   for (let i = 0; i < allKeys.length; i++) {
+    if (!afterByIndex.has(i)) continue; // chưa đo được thì không suy ra chênh lệch
     const a = afterByIndex.get(i);
-    if (a === undefined) continue;
     const lamBefore = BigInt(before[i]?.lamports ?? 0);
     const lamAfter = BigInt(a?.lamports ?? 0);
     if (lamBefore !== lamAfter) solDelta[allKeys[i]!.toBase58()] = lamAfter - lamBefore;
@@ -286,12 +361,13 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
       ix.accountKeyIndexes.some(
         (k) => msg.isAccountWritable(k) && cuaNguoiKy.has(allKeys[k]?.toBase58() ?? ""),
       );
+    const doc = decodeInstruction(pid, ix.data);
     instructions.push({
       index: n,
       programId: pid,
       isInner: false,
       parentIndex: null,
-      decoded: decodeInstruction(pid, ix.data),
+      decoded: themAuthority(doc, (v) => allKeys[ix.accountKeyIndexes[v]!]?.toBase58()),
       fromLookupTable: ix.programIdIndex >= staticCount,
       chamTaiSanNguoiKy: cham,
     });
@@ -308,7 +384,10 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
       programId: g.programId,
       isInner: true,
       parentIndex: g.parent,
-      decoded: raw === null ? null : decodeInstruction(g.programId, raw),
+      decoded:
+        raw === null
+          ? null
+          : themAuthority(decodeInstruction(g.programId, raw), (v) => g.accounts[v]),
       fromLookupTable: false,
       // Không biết account nào ⇒ chọn phía thận trọng, coi như có chạm.
       chamTaiSanNguoiKy:
@@ -355,6 +434,10 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
     solDelta,
     instructions,
     lookupTables,
+    accountKhongDoDuoc,
+    nguoiKy,
+    nguoiDungDuocChiDinh,
+    phiUocTinh,
     // Mô phỏng hỏng => KHÔNG biết gì về hậu quả, dù có đọc được tên lệnh.
     // coverage trả lời "hiểu hậu quả bao nhiêu phần", không phải "nhận ra bao nhiêu tên".
     // Không có dòng này, một L2 ngây thơ sẽ thấy coverage đầy đủ và ra `safe`.

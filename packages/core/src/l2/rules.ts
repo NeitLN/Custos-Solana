@@ -1,6 +1,6 @@
 import type { Level } from "@custos/types";
 import type { Facts } from "../facts.ts";
-import { REASON, VERIFIED_PROGRAMS } from "../constants.ts";
+import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
 
 export type RuleHit = {
   ruleId: number;
@@ -155,14 +155,44 @@ export const luat4: Rule = {
   ten: "Token có quyền rút vĩnh viễn",
   danhGia(f) {
     const lienQuan = new Set(f.tokenAccounts.map((t) => t.mint));
-    return f.mints
-      .filter((m) => m.permanentDelegate !== null && lienQuan.has(m.address))
-      .map((m) => ({
+    const hits: RuleHit[] = [];
+
+    for (const m of f.mints) {
+      if (m.permanentDelegate === null || !lienQuan.has(m.address)) continue;
+
+      // Sự tồn tại của quyền: luôn Vàng, luôn giọng thông tin.
+      hits.push({
         ruleId: 4,
-        level: "warning" as const,
+        level: "warning",
         reasonCode: REASON.TOKEN2022_PERMANENT_DELEGATE,
         detail: `Token ${m.address} có quyền rút vĩnh viễn thuộc ${m.permanentDelegate}`,
-      }));
+      });
+
+      // CHÍNH quyền đó ra tay: chuyện khác hẳn. Người giữ token không bấm gì để
+      // trao quyền này, không thu hồi được, và cũng không nhận được gì lại.
+      //
+      // Điều kiện là `authority` của lệnh phải ĐÚNG BẰNG permanent delegate.
+      // `authority` vắng mặt nghĩa là chưa bóc được — và khi đó luật GIỮ NGUYÊN
+      // mức Vàng thay vì đoán. Đây là chính sách đã chốt, không phải thiếu sót.
+      const raTay = f.instructions.some(
+        (ix) =>
+          ix.decoded !== null &&
+          ix.decoded.authority !== undefined &&
+          ix.decoded.authority === m.permanentDelegate,
+      );
+      // Không tính khi chính người dùng lại là permanent delegate của mint mình giữ.
+      if (!raTay || m.permanentDelegate === f.signer) continue;
+
+      hits.push({
+        ruleId: 4,
+        level: "danger",
+        reasonCode: REASON.PERMANENT_DELEGATE_RA_TAY,
+        detail:
+          `${m.permanentDelegate} dùng quyền rút vĩnh viễn của token ${m.address} ` +
+          `để tự thực hiện lệnh trong giao dịch này`,
+      });
+    }
+    return hits;
   },
 };
 
@@ -408,9 +438,89 @@ export const luat10: Rule = {
   },
 };
 
-/** Mười hai luật: bốn Đỏ và tám Vàng. */
+/**
+ * Luật 13 — phần lớn SOL rời ví người được bảo vệ.
+ *
+ * Mười hai luật đầu đều đọc tài khoản token hoặc chủ sở hữu account. KHÔNG luật
+ * nào đọc `solDelta`. Hệ quả: một giao dịch chỉ rút SOL ra verdict `safe`, mã lý
+ * do rỗng, và khoản mất hiện ra dưới nhãn "Phí mạng". SOL là tài sản phổ biến
+ * nhất trên mạng này. Xem SECURITY-AUDIT.md — F1.
+ *
+ * Mức VÀNG, không phải Đỏ. Một giao dịch gửi SOL hợp lệ trông y hệt: số dư giảm,
+ * không nhận lại gì. Đây đúng là cái bẫy luật 11 đã sập một lần rồi. Chỉ lên Đỏ
+ * khi trùng với một luật Đỏ khác, và việc đó do `danhGia` lo.
+ *
+ * Ngưỡng theo TỈ LỆ số dư, không theo con số tuyệt đối: đội không có dữ liệu giá
+ * để biết bao nhiêu SOL là "nhiều", và một ngưỡng cứng sẽ vừa bỏ lọt ví lớn vừa
+ * kêu oan ví nhỏ.
+ *
+ * Phí mạng bị trừ ra trước khi tính. `phiUocTinh` là CẬN DƯỚI nên phần dư có thể
+ * còn lẫn chút phí ưu tiên — ngưỡng 50 % làm sai số đó không bao giờ đủ để kích
+ * hoạt cảnh báo.
+ */
+export const luat13: Rule = {
+  id: 13,
+  ten: "Phần lớn SOL rời ví",
+  danhGia(f) {
+    const delta = f.solDelta[f.signer];
+    if (delta === undefined || delta >= 0n) return [];
+
+    const raKhoiVi = -delta;
+    const phi = f.phiUocTinh ?? 0n;
+    if (raKhoiVi <= phi) return []; // chỉ là phí
+
+    const chuyenDi = raKhoiVi - phi;
+    const truoc = f.accounts.find((a) => a.address === f.signer)?.lamportsBefore ?? 0n;
+    if (truoc <= 0n) return [];
+    if ((chuyenDi * 100n) / truoc < NGUONG_SOL_PHAN_TRAM) return [];
+
+    return [{
+      ruleId: 13,
+      level: "warning" as const,
+      reasonCode: REASON.SOL_ROI_VI,
+      detail: `${chuyenDi} lamport rời khỏi ví bạn, trên tổng số ${truoc} đang có`,
+    }];
+  },
+};
+
+/**
+ * Luật 14 — không biết đang bảo vệ ai.
+ *
+ * `signer` mặc định là `staticAccountKeys[0]`, tức NGƯỜI TRẢ PHÍ. Trong giao dịch
+ * được tài trợ phí — mô hình hợp lệ, và cũng là cách kẻ tấn công dựng được — người
+ * trả phí không phải người dùng, nên mọi luật đều đang nhắm vào ví của bên kia.
+ *
+ * Chỉ ví mới biết địa chỉ nào là của người dùng. Nó nói ra qua
+ * `InspectOptions.nguoiDung`. Không nói mà giao dịch có nhiều hơn một người ký
+ * thì Custos phải thừa nhận là mình không chắc, thay vì im lặng bảo vệ nhầm ví.
+ *
+ * Đây là giới hạn phạm vi phân tích, không phải cáo buộc — nên mã nằm trong
+ * `MA_THONG_TIN` và giọng giao diện là thông tin.
+ */
+export const luat14: Rule = {
+  id: 14,
+  ten: "Không rõ đang bảo vệ ai",
+  danhGia(f) {
+    const ky = f.nguoiKy ?? [];
+    if (f.nguoiDungDuocChiDinh || ky.length <= 1) return [];
+    return [{
+      ruleId: 14,
+      level: "warning" as const,
+      reasonCode: REASON.NGUOI_DUNG_KHONG_RO,
+      detail:
+        `Giao dịch cần ${ky.length} chữ ký và ví không cho biết địa chỉ nào là của bạn. ` +
+        `Custos đang phân tích theo ${f.signer}`,
+    }];
+  },
+};
+
+/** Mười bốn luật: bốn Đỏ và mười Vàng.
+ *
+ *  Luật 13 và 14 sinh ra từ audit bảo mật ngày 21/08 — mười hai luật đầu không
+ *  bao phủ native SOL, và cũng không kiểm xem Custos có đang bảo vệ đúng người
+ *  hay không. Xem docs/bao-mat/SECURITY-AUDIT.md. */
 export const LUAT: Rule[] = [
   luat1, luat2, luat3, luat12,
-  luat4, luat5, luat6, luat7, luat8, luat9, luat10, luat11,
+  luat4, luat5, luat6, luat7, luat8, luat9, luat10, luat11, luat13, luat14,
 ];
 

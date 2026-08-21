@@ -39,6 +39,10 @@ function facts(p: Partial<Facts> = {}): Facts {
     tuoiViNhan: {},
     instructions: [],
     lookupTables: [],
+    accountKhongDoDuoc: [],
+    nguoiKy: [TOI],
+    nguoiDungDuocChiDinh: false,
+    phiUocTinh: 5_000n,
     coverage: { analyzed: 11, total: 11, unverifiedPrograms: 0 },
     ...p,
   };
@@ -189,20 +193,46 @@ test("KHÔNG mã lý do nào được rơi vào im lặng — có cảnh báo th
       // liệu để dựng câu, và test sẽ đổ lỗi cho câu mẫu thay vì cho fixture.
       ta({ ownerAfter: LA, amountAfter: 100_000_000n, closeAuthorityAfter: LA, delegateAfter: LA, delegatedAmountAfter: 9_999_999_999n }),
     ],
-    accounts: [
-      { address: "Acc1", isSigner: false, programOwnerBefore: "11111111111111111111111111111111",
-        programOwnerAfter: LA, lamportsBefore: 1n, lamportsAfter: 1n },
-    ],
     mints: [mintVoi({ mintAuthority: LA, freezeAuthority: LA, permanentDelegate: LA, transferHookProgramId: LA, isToken2022: true })],
     tuoiViNhan: { [LA]: 0.5 },
     lookupTables: [{ address: "ALT1", resolved: false }],
+    accountKhongDoDuoc: ["AccChuaDo1", "AccChuaDo2"],
+    simulationOk: false,
+    // Fixture phải kích hoạt được MỌI mã, nếu không test sẽ đổ lỗi cho câu mẫu
+    // trong khi thứ thiếu là dữ liệu đầu vào.
+    nguoiKy: [TOI, LA],
+    instructions: [{
+      index: 0, programId: "Tok", isInner: false, parentIndex: null,
+      decoded: { kind: "transfer", authority: LA }, fromLookupTable: false,
+      chamTaiSanNguoiKy: true,
+    }],
+    solDelta: { [TOI]: -4_000_000_000n },
+    accounts: [
+      { address: TOI, isSigner: true, programOwnerBefore: "11111111111111111111111111111111",
+        programOwnerAfter: "11111111111111111111111111111111",
+        lamportsBefore: 5_000_000_000n, lamportsAfter: 1_000_000_000n },
+      { address: "Acc1", isSigner: false, programOwnerBefore: "11111111111111111111111111111111",
+        programOwnerAfter: LA, lamportsBefore: 1n, lamportsAfter: 1n },
+    ],
   });
 
+  // Kiểm với CẢ BA câu dự phòng, không chỉ một. Bản trước chỉ so với "Không tìm
+  // thấy dấu hiệu nào", nên khi fixture có `simulationOk: false` thì mã thiếu
+  // câu lại rơi vào câu dự phòng khác và test PASS oan. Một chốt chặn tự nó
+  // hỏng còn tệ hơn không có chốt chặn.
+  const DU_PHONG = [
+    "Không tìm thấy dấu hiệu nào",
+    "Chúng tôi chưa đọc hiểu hết giao dịch này.",
+    "Chúng tôi không chạy thử được giao dịch này, nên không biết nó sẽ làm gì.",
+  ];
   for (const ma of Object.values(REASON)) {
     const c = dienGiaiMau(day, [ma]);
+    // So KHỚP HẲN, không so tiền tố: câu riêng của MO_PHONG_HONG nói đúng về
+    // việc mô phỏng hỏng nên gần giống câu dự phòng, và đó là hợp lý.
+    const roiVaoDuPhong = DU_PHONG.includes(c);
     assert.ok(
-      !c.startsWith("Không tìm thấy dấu hiệu nào"),
-      `mã ${ma} không có câu mẫu — giao diện sẽ cảnh báo mà không nói được vì sao`,
+      !roiVaoDuPhong,
+      `mã ${ma} không có câu mẫu riêng — giao diện sẽ cảnh báo mà không nói được vì sao (nhận: "${c.slice(0, 60)}")`,
     );
   }
 });

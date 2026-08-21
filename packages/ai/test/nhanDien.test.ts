@@ -31,7 +31,11 @@ function facts(p: Partial<Facts> = {}): Facts {
     signer: TOI, simulationOk: true, simulationError: null,
     accounts: [], tokenAccounts: [], mints: [mint(USDC), mint(SOL)],
     solDelta: {},
-    tuoiViNhan: {}, instructions: [], lookupTables: [],
+    tuoiViNhan: {},
+    accountKhongDoDuoc: [],
+    nguoiKy: [TOI],
+    nguoiDungDuocChiDinh: false,
+    phiUocTinh: 5_000n, instructions: [], lookupTables: [],
     coverage: { analyzed: 3, total: 3, unverifiedPrograms: 0 },
     ...p,
   };
