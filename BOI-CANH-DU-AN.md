@@ -33,7 +33,8 @@ GitHub Pages kèm bước chặn rò rỉ khoá.
 video demo · phỏng vấn người dùng.
 
 Đo được, không ước lượng: 0 verdict Đỏ sai trên 20 giao dịch SPL mainnet ngẫu
-nhiên; coverage trung bình 3–10 %. Xem `SEED-DATASET.md` mục 0b.
+nhiên; coverage trung bình 40 % (trước khi đọc hiểu CPI và ComputeBudget là
+4 %). Xem `SEED-DATASET.md` mục 0b3.
 
 ## Quyết định thiết kế đã khoá — không tự ý đảo lại
 

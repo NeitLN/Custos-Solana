@@ -66,7 +66,13 @@ test("README KHÔNG hướng dẫn hiển thị chữ 'an toàn' cho mức safe"
 
 test("README nêu rõ giới hạn thay vì chỉ khoe điểm mạnh", () => {
   assert.match(README, /Giới hạn hiện tại/);
-  assert.match(README, /3–10 ?%/, "phải nói thẳng coverage thấp trên DeFi");
+  // Kiểm NỘI DUNG chứ không kiểm một cụm từ cố định: phải có một con số coverage
+  // đo được, và phải nói thẳng là chưa có decoder cho DEX. Bản trước khoá cứng
+  // chuỗi "3–10 %" nên khi coverage tăng thật, test đỏ vì lý do sai — và cách
+  // sửa dễ nhất lại là xoá luôn câu thú nhận, đúng thứ nó sinh ra để giữ.
+  assert.match(README, /Coverage/, "phải có mục nói về coverage");
+  assert.match(README, /\*\*trung bình \d+ ?%\*\*/, "phải công bố một con số coverage đo được");
+  assert.match(README, /Chưa có decoder cho các chương trình DEX/, "phải nói thẳng phần chưa làm được");
   assert.match(README, /Devnet only/i);
 });
 

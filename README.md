@@ -76,12 +76,17 @@ AI không tạo và không sửa verdict. Nó chỉ có thể yêu cầu ngườ
 | Test | **138**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
 | Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
-| Coverage trung bình trên giao dịch mainnet thật | **3–10 %** |
+| Coverage trung bình trên giao dịch mainnet thật | **40 %** |
 
-**Coverage 3–10 % là con số thật và chúng tôi nói ra.** Custos chưa viết decoder
-cho phần lớn chương trình DeFi, nên phần lớn một giao dịch DEX là thứ nó chưa đọc
+**Coverage 40 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
+cho các chương trình DEX, nên hơn một nửa một giao dịch DeFi là thứ nó chưa đọc
 hiểu. Sản phẩm hiển thị đúng điều đó — *"đã đọc hiểu 2 trên 3 lệnh"* — thay vì
 im lặng và để người dùng tưởng là đã kiểm hết.
+
+Con số này từng là **4 %**. Nó tăng lên 40 % không phải nhờ nới lỏng định nghĩa,
+mà nhờ đọc hiểu thêm hai thứ đội thật sự hiểu: lệnh `ComputeBudget` (25 % số
+lệnh mainnet) và lệnh gọi lồng nhau (CPI) của chính những chương trình đã xác
+minh. Đo trên **cùng một mẻ 20 giao dịch**, không phải hai mẻ khác nhau.
 
 Mẫu ngẫu nhiên không bảo đảm cả 20 giao dịch đều lành tính. **Không có Đỏ nghĩa là
 không cờ nào bật**, không phải bằng chứng cả 20 cái đều sạch.

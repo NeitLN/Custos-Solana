@@ -8,6 +8,7 @@ import {
 import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact } from "../facts.ts";
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
 import { decodeInstruction } from "./decode.ts";
+import { giaiBase58 } from "./base58.ts";
 import { computeCoverage } from "./coverage.ts";
 
 /** getMultipleAccounts giới hạn 100 địa chỉ mỗi lượt gọi. */
@@ -125,7 +126,7 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   let simOk = true;
   let simErr: string | null = null;
   let after: (AccountInfo<Buffer> | null)[] = [];
-  let inner: { programId: string; accounts: string[]; parent: number }[] = [];
+  let inner: { programId: string; accounts: string[]; data: string | null; parent: number }[] = [];
   try {
     const sim = await conn.simulateTransaction(tx, {
       sigVerify: false, // giao dịch CHƯA ký — đó là toàn bộ mục đích sản phẩm
@@ -157,10 +158,20 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
     // biết lệnh đó có chạm được vào tài sản người ký hay không.
     inner = (v.innerInstructions ?? []).flatMap((g) =>
       g.instructions.map((ix) => {
-        const pd = ix as { programId?: { toBase58?: () => string }; accounts?: { toBase58?: () => string }[] };
+        const pd = ix as {
+          programId?: { toBase58?: () => string };
+          accounts?: { toBase58?: () => string }[];
+          data?: string;
+        };
         return {
           programId: pd.programId?.toBase58?.() ?? "",
           accounts: (pd.accounts ?? []).map((a) => a?.toBase58?.() ?? ""),
+          // `data` của inner instruction là base58. Bản trước bỏ qua trường này
+          // và gán decoded = null cho MỌI lệnh CPI — nghĩa là 27 trên 75 lệnh
+          // mainnet thuộc chương trình ĐÃ XÁC MINH vẫn bị đếm là chưa đọc hiểu.
+          // Coverage thấp một cách oan uổng, và fail-safe 2 kích hoạt ở gần như
+          // mọi giao dịch vì lệnh CPI nào cũng "chưa đọc hiểu mà có chạm".
+          data: typeof pd.data === "string" ? pd.data : null,
           parent: g.index,
         };
       }),
@@ -289,12 +300,15 @@ export async function extractFacts(conn: Connection, tx: VersionedTransaction): 
   // Inner instruction (CPI) PHẢI được đếm vào `total` — hành vi độc hại hay
   // nằm ở đây, bỏ qua sẽ làm coverage đẹp một cách giả tạo.
   for (const g of inner) {
+    // Decode lệnh CPI bằng đúng bộ giải mã dùng cho lệnh tầng ngoài. Một lệnh
+    // Transfer của SPL Token không vì nằm trong CPI mà trở nên khó hiểu hơn.
+    const raw = g.data === null ? null : giaiBase58(g.data);
     instructions.push({
       index: instructions.length,
       programId: g.programId,
       isInner: true,
       parentIndex: g.parent,
-      decoded: null,
+      decoded: raw === null ? null : decodeInstruction(g.programId, raw),
       fromLookupTable: false,
       // Không biết account nào ⇒ chọn phía thận trọng, coi như có chạm.
       chamTaiSanNguoiKy:

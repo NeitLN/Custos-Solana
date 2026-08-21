@@ -4,6 +4,7 @@ import { SystemProgram } from "@solana/web3.js";
 const TOKEN = TOKEN_PROGRAM_ID.toBase58();
 const TOKEN22 = TOKEN_2022_PROGRAM_ID.toBase58();
 const SYSTEM = SystemProgram.programId.toBase58();
+const COMPUTE_BUDGET = "ComputeBudget111111111111111111111111111111";
 
 /** Chỉ decode những instruction mà engine luật thật sự cần biết tên.
  *
@@ -41,6 +42,20 @@ export function decodeInstruction(programId: string, data: Uint8Array): { kind: 
       8: "allocate",
     };
     return m[t] ? { kind: m[t]! } : null;
+  }
+
+  if (programId === COMPUTE_BUDGET) {
+    // Bốn lệnh của ComputeBudget đều chỉ chỉnh hạn mức tính toán và phí ưu
+    // tiên. Không lệnh nào đụng được tới tài sản: chúng không nhận account nào.
+    // Đây là 19 trên 75 lệnh trong 10 giao dịch mainnet của bộ dữ liệu — khối
+    // lớn nhất của phần "chưa đọc hiểu", và là khối vô hại nhất.
+    const m: Record<number, string> = {
+      1: "requestHeapFrame",
+      2: "setComputeUnitLimit",
+      3: "setComputeUnitPrice",
+      4: "setLoadedAccountsDataSizeLimit",
+    };
+    return m[tag] ? { kind: m[tag]! } : null;
   }
 
   return null;
