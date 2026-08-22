@@ -281,11 +281,50 @@ test("SPL Token — đọc hiểu cả những mã lệnh vô hại", async () =
   assert.deepEqual(decodeInstruction(TOK, new Uint8Array([22])), { kind: "initializeImmutableOwner" });
 });
 
-test("Token-2022 — lệnh mở rộng để NGUYÊN là chưa đọc hiểu, không đoán tên", async () => {
+test("Token-2022 — lệnh mở rộng đọc hiểu được, tên lấy từ ENUM của thư viện", async () => {
+  // Trước đây mã 25+ trả `null` vì bảng viết tay chỉ có 25 mã đầu, và nguyên tắc
+  // là KHÔNG ĐOÁN tên. Nguyên tắc đó vẫn giữ — nhưng đọc enum của chính
+  // `@solana/spl-token` không phải đoán, nên giới hạn cũ không còn lý do tồn tại.
   const { decodeInstruction } = await import("../src/l1/decode.ts");
-  // Gán sai tên một lệnh trong sản phẩm bảo mật tệ hơn thú nhận là không biết.
-  assert.equal(decodeInstruction(TOKEN_2022_PROGRAM_ID.toBase58(), new Uint8Array([26])), null);
-  assert.equal(decodeInstruction(TOKEN_2022_PROGRAM_ID.toBase58(), new Uint8Array([36])), null);
+  const { TokenInstruction } = await import("@solana/spl-token");
+  const T22 = TOKEN_2022_PROGRAM_ID.toBase58();
+
+  assert.deepEqual(
+    decodeInstruction(T22, new Uint8Array([TokenInstruction.TransferFeeExtension])),
+    { kind: "transferFeeExtension" },
+  );
+  assert.deepEqual(
+    decodeInstruction(T22, new Uint8Array([TokenInstruction.InitializePermanentDelegate])),
+    { kind: "initializePermanentDelegate" },
+  );
+});
+
+test("BẢNG SPL Token khớp ENUM — không dòng nào chép tay lệch đi", async () => {
+  // Đây là điều đáng kiểm nhất sau khi bỏ bảng viết tay: mọi mã trong enum phải
+  // decode được, và tên phải đúng bằng tên enum đổi chữ đầu thành thường.
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  const { TokenInstruction } = await import("@solana/spl-token");
+  const TOK = TOKEN_PROGRAM_ID.toBase58();
+
+  let daKiem = 0;
+  for (const [ten, ma] of Object.entries(TokenInstruction)) {
+    if (typeof ma !== "number" || ma > 255) continue;
+    const mong = ten.charAt(0).toLowerCase() + ten.slice(1);
+    assert.deepEqual(
+      decodeInstruction(TOK, new Uint8Array([ma])),
+      { kind: mong },
+      `mã ${ma} phải ra "${mong}"`,
+    );
+    daKiem++;
+  }
+  assert.ok(daKiem >= 40, `enum phải có ít nhất 40 mã, mới kiểm ${daKiem}`);
+});
+
+test("SPL Token — mã NGOÀI enum vẫn là chưa đọc hiểu", async () => {
+  // Thư viện không biết thì đội cũng không biết. Không suy diễn thêm.
+  const { decodeInstruction } = await import("../src/l1/decode.ts");
+  assert.equal(decodeInstruction(TOKEN_PROGRAM_ID.toBase58(), new Uint8Array([250])), null);
+  assert.equal(decodeInstruction(TOKEN_PROGRAM_ID.toBase58(), new Uint8Array([255])), null);
 });
 
 test("System — đọc u32 little-endian, không đọc 1 byte", async () => {

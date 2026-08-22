@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 218 PASS |
+| Test | 220 PASS |
 | Luật | 14 |
 | Coverage trung bình | **74 %** |
 | Coverage lệnh **chạm tài sản người ký** | **70 %** |
@@ -164,14 +164,20 @@ Sinh bảng từ đó thì **không bao giờ lệch khỏi thư viện**, và t
 (0, 3, 6, 9, 12, 17, 21, 24) đều khớp chính xác tên viết tay sau khi đổi
 camelCase. Rủi ro thấp, ước lượng giữ nguyên.
 
-**Acceptance:**
-- Bảng sinh từ enum, không còn dòng viết tay
-- Test đối chiếu lại: mọi mã trong enum phải decode được
-- Mã ngoài enum vẫn trả `null`
-- Đo cohort trước/sau **một lượt**
+**XONG 23/08.** Bảng sinh từ `TokenInstruction`, phủ luôn 19 lệnh mở rộng của
+Token-2022 (mã 25–46) trước đây trả `null`.
+
+Một test cũ phải sửa: nó khẳng định mã 26 và 36 **phải** trả `null`. Đó là mô tả
+**giới hạn cũ**, không phải nguyên tắc. Nguyên tắc là *"không đoán tên"* — và đọc
+enum của chính thư viện không phải đoán, nên giới hạn đó hết lý do tồn tại. Thay
+bằng test mạnh hơn: **mọi mã trong enum phải decode đúng tên**, và mã ngoài enum
+vẫn trả `null`.
+
+Đo sau khi sửa: **86 %** lệnh decode được trên 25 giao dịch mainnet, và **không
+còn lệnh nào chưa đọc hiểu trong chương trình đã xác minh**.
 
 **Files:** `l1/decode.ts`, test
-**Ước:** 1–2 giờ
+**Thực tế:** ~40 phút
 
 ### P1-G · Phí mạng CHÍNH XÁC thay vì cận dưới
 
@@ -259,7 +265,7 @@ P0-A  wSOL              XONG
 P0-B  bảng nhất quán    XONG
 P1-G  phí chính xác     XONG — gỡ luôn chữ "(ước tính)" khỏi nhãn
 P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
-P1-D  enum SPL Token
+P1-D  enum SPL Token    XONG
 P1-E  thêm IDL
 P2-F  mức Kỹ thuật
 ```
@@ -274,6 +280,6 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 | P0-B | **PASS** — 7 ca test, kiểm trên mainnet thật |
 | P1-C | TODO — hạ từ P0 sau review |
 | P1-G | **PASS** — phí khớp từng lamport trên 4 giao dịch mainnet |
-| P1-D | TODO |
+| P1-D | **PASS** — 86% decode, 0 lệnh sót trong chương trình đã xác minh |
 | P1-E | TODO |
 | P2-F | TODO |

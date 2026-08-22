@@ -1,4 +1,4 @@
-import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID, TokenInstruction } from "@solana/spl-token";
 import { SystemProgram } from "@solana/web3.js";
 import { BANG_IDL } from "./bang-idl.ts";
 
@@ -20,39 +20,27 @@ const ORCA = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
  * là thổi phồng coverage — SPL Memo đã từng bị gỡ vì đúng lý do đó.
  */
 
-/** SPL Token và Token-2022 dùng chung 25 mã lệnh đầu (1 byte).
+/**
+ * SPL Token và Token-2022 — bảng SINH TỪ ENUM CỦA CHÍNH THƯ VIỆN.
  *
- *  Bản trước chỉ liệt kê 10 mã "liên quan tới luật", nhưng coverage đo cả những
- *  lệnh vô hại. Đo trên 40 giao dịch mainnet: riêng bốn mã 17, 18, 21, 22 chiếm
- *  111 lệnh bị đếm là "chưa đọc hiểu" — trong chính chương trình đội tự nhận là
- *  đã xác minh. */
-const SPL_TOKEN: Record<number, string> = {
-  0: "initializeMint",
-  1: "initializeAccount",
-  2: "initializeMultisig",
-  3: "transfer",
-  4: "approve",
-  5: "revoke",
-  6: "setAuthority",
-  7: "mintTo",
-  8: "burn",
-  9: "closeAccount",
-  10: "freezeAccount",
-  11: "thawAccount",
-  12: "transferChecked",
-  13: "approveChecked",
-  14: "mintToChecked",
-  15: "burnChecked",
-  16: "initializeAccount2",
-  17: "syncNative",
-  18: "initializeAccount3",
-  19: "initializeMultisig2",
-  20: "initializeMint2",
-  21: "getAccountDataSize",
-  22: "initializeImmutableOwner",
-  23: "amountToUiAmount",
-  24: "uiAmountToAmount",
-};
+ * `@solana/spl-token` export `TokenInstruction` với đủ mã lệnh, kể cả các lệnh
+ * mở rộng của Token-2022 từ mã 25 tới 46 (`InitializeMintCloseAuthority`,
+ * `TransferFeeExtension`, …, `PermissionedBurnExtension`).
+ *
+ * Sinh từ đó thay vì viết tay vì hai lý do:
+ *   - bảng viết tay chép sai một dòng thì Custos gọi nhầm tên một lệnh, và gọi
+ *     sai tên lệnh trong sản phẩm bảo mật tệ hơn thú nhận là không biết;
+ *   - thư viện nâng cấp thêm lệnh mới thì bảng tự có, không phải nhớ cập nhật.
+ *
+ * Enum dùng PascalCase (`Transfer`), sản phẩm hiển thị camelCase (`transfer`) —
+ * đổi chữ đầu là khớp. Đã đối chiếu tám mã (0, 3, 6, 9, 12, 17, 21, 24) với bảng
+ * viết tay cũ trước khi thay: khớp toàn bộ.
+ */
+const SPL_TOKEN: Record<number, string> = Object.fromEntries(
+  Object.entries(TokenInstruction)
+    .filter(([, v]) => typeof v === "number")
+    .map(([ten, ma]) => [ma as number, ten.charAt(0).toLowerCase() + ten.slice(1)]),
+);
 
 /** System Program dùng u32 little-endian, KHÔNG phải 1 byte như SPL Token. */
 const SYSTEM_IX: Record<number, string> = {
@@ -174,9 +162,8 @@ export function decodeInstruction(programId: string, data: Uint8Array): { kind: 
   const tag = data[0]!;
 
   if (programId === TOKEN || programId === TOKEN22) {
-    // Token-2022 còn có các lệnh mở rộng từ mã 25 trở lên. Đội CHƯA đọc hiểu
-    // chúng, nên để nguyên là "chưa đọc hiểu" thay vì đoán tên — gán sai tên
-    // một lệnh trong sản phẩm bảo mật còn tệ hơn thú nhận là không biết.
+    // Bảng phủ cả lệnh mở rộng của Token-2022 (mã 25–46) vì nó sinh từ enum.
+    // Mã ngoài enum vẫn trả null — thư viện không biết thì đội cũng không biết.
     return SPL_TOKEN[tag] ? { kind: SPL_TOKEN[tag]! } : null;
   }
 
