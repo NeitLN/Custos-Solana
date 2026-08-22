@@ -5,6 +5,7 @@ import { inspect } from "@custos/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
 import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
 import { CanhBao } from "./CanhBao.tsx";
+import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, type HienTruong } from "./hienTruong.ts";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
@@ -19,6 +20,9 @@ export default function App() {
   const [batCustos, setBatCustos] = useState(true);
   const [soDuToken, setSoDuToken] = useState<string | null>(null);
   const [ketQua, setKetQua] = useState<InspectResult | null>(null);
+  // Nhịp 1 của kịch bản demo, dựng lại KHÔNG cần khoá ký — xem HauQua.tsx.
+  const [hauQua, setHauQua] = useState<InspectResult | null>(null);
+  const [kichCuoi, setKichCuoi] = useState<Kich>("tanCong");
   const [txCho, setTxCho] = useState<VersionedTransaction | null>(null);
   const [dangChay, setDangChay] = useState(false);
   const [nhatKy, setNhatKy] = useState<string[]>([]);
@@ -105,7 +109,11 @@ export default function App() {
         });
   }
 
-  async function bam(kich: Kich) {
+  async function bam(kich: Kich, epBatCustos = false) {
+    // `batCustos` đọc từ closure nên setState ở nút "Xem Custos chặn nó" chưa
+    // kịp thấy được. Truyền thẳng cờ thay vì chờ một vòng render.
+    const coCustos = epBatCustos || batCustos;
+    setKichCuoi(kich);
     if (cheDo?.loai === "mock") {
       setKetQua(cheDo.ketQua);
       return;
@@ -114,15 +122,32 @@ export default function App() {
     setDangChay(true);
     setKetQua(null);
     setTxCho(null);
+    setHauQua(null);
     try {
       const c = conn();
       const { blockhash } = await c.getLatestBlockhash();
       const tx = dungTx(kich, blockhash);
 
-      if (!batCustos) {
+      if (!coCustos) {
         // NHỊP 1 — người dùng ký thẳng, không có ai cảnh báo.
-        ghi("Custos đang TẮT — ký thẳng, không kiểm tra gì");
-        await kyVaGui(tx);
+        if (kyDuoc()) {
+          ghi("Custos đang TẮT — ký thẳng, không kiểm tra gì");
+          await kyVaGui(tx);
+          return;
+        }
+        // Bản công khai không nhúng khoá ký. Trước đây nhánh này chạy vào ngõ cụt:
+        // `kyVaGui` báo lỗi trong nhật ký và người xem không thấy được nhịp 1 —
+        // tức là mất đúng nửa có sức thuyết phục của kịch bản.
+        //
+        // Mô phỏng KHÔNG cần chữ ký, nên hậu quả vẫn tính ra được thật. Chạy
+        // `inspect()` và hiện trạng thái sau, dán nhãn rõ là kết quả mô phỏng.
+        ghi("Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng");
+        const rTat = await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
+          locale: "vi",
+          nguoiDung: ht.nanNhan,
+          ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
+        });
+        setHauQua(rTat);
         return;
       }
 
@@ -248,6 +273,21 @@ export default function App() {
               Yêu cầu ký từ một trang web
             </span>
             <div className="mt-1 text-slate-200">{tuDApp}</div>
+          </div>
+        )}
+
+        {hauQua && (
+          <div className="mt-5">
+            <HauQua
+              ketQua={hauQua}
+              onDong={() => setHauQua(null)}
+              onXemCustos={() => {
+                setHauQua(null);
+                setBatCustos(true);
+                ghi("bật Custos, chạy lại đúng giao dịch đó");
+                void bam(kichCuoi, true);
+              }}
+            />
           </div>
         )}
 

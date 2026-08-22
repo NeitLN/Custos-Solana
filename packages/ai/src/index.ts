@@ -8,6 +8,7 @@ export { nhanDien, moTaHanhDong, moTaLech, type KetQuaNhanDien, type HauQuaLech 
 export { dienGiaiBangMoHinh, soiDauRa, SYSTEM_PROMPT, type GoiMoHinh } from "./moHinh.ts";
 export { tomTat } from "./mucNgan.ts";
 export { chiTietKyThuat, type DongKyThuat } from "./mucKyThuat.ts";
+export { dungHauQua, type HangHauQua } from "./hauQua.ts";
 export { dungGoiAnthropic, type TuyChonAnthropic } from "./anthropic.ts";
 
 /**

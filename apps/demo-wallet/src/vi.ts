@@ -25,7 +25,17 @@ const KHOA_LUU = "custos.vi-demo";
  *    - không nhúng khoá riêng vào một trang web công khai
  *
  *  Ký được hay không do có `VITE_DEMO_SECRET` hay không quyết định. */
-export const kyDuoc = (): boolean => Boolean(import.meta.env["VITE_DEMO_SECRET"]);
+export const kyDuoc = (): boolean => {
+  // `?khongkhoa=1` giả lập bản công khai NGAY TRÊN MÁY CÓ KHOÁ.
+  //
+  // Không có nó thì máy của đội luôn đi đường ký thật, nên màn "nếu bạn ký mà
+  // không có Custos" — thứ mà mọi người bấm link công khai sẽ thấy — không ai
+  // trong đội xem được lúc tập. Thứ không ai tập là thứ hỏng vào đúng hôm thi.
+  //
+  // Chỉ đi một chiều: bắt CHẶT hơn, không bao giờ mở khoá ký ở nơi không có khoá.
+  if (new URLSearchParams(window.location.search).has("khongkhoa")) return false;
+  return Boolean(import.meta.env["VITE_DEMO_SECRET"]);
+};
 
 export function napVi(): Keypair {
   const tuEnv = import.meta.env["VITE_DEMO_SECRET"];
