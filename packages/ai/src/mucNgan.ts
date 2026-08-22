@@ -44,8 +44,10 @@ export function tomTat(ketQua: InspectResult): string {
       cau.push(`${d.after} sẽ được quyền đóng tài khoản ${tenTuNhan(d.label, NHAN.QUYEN_DONG)} của bạn`);
     } else if (d.label.startsWith(NHAN.CHUONG_TRINH)) {
       cau.push(`một tài khoản của bạn sẽ chuyển sang quyền điều khiển của ${d.after}`);
-    } else if (d.label === NHAN.CHUYEN_SOL) {
-      cau.push(`${d.after.replace(/^−/, "")} sẽ rời khỏi ví bạn — phần lớn số SOL bạn đang có`);
+    } else if (d.label === NHAN.SO_DU_SOL) {
+      // Dòng này là SỐ DƯ → SỐ DƯ, nên câu nói theo đúng cách đó thay vì cố
+      // suy ngược ra mức thay đổi. Người đọc đối chiếu được với bảng ngay dưới.
+      cau.push(`số SOL của bạn giảm từ ${d.before} xuống ${d.after}`);
     }
   }
 

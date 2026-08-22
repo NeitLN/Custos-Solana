@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 208 PASS |
+| Test | 215 PASS |
 | Luật | 14 |
 | Coverage trung bình | **74 %** |
 | Coverage lệnh **chạm tài sản người ký** | **70 %** |
@@ -97,8 +97,24 @@ dòng wSOL không bao giờ được tô đỏ.
 - Ca chỉ có phí: verdict không đổi, không có dòng nào bị tô đỏ
 - Test khoá quy ước VÀ khoá liên kết luật↔màu
 
-**Files:** `diff.ts`, `mucNgan.ts` (đọc từ bảng nên phải theo), test
-**Ước:** 3 giờ (tăng từ 2 sau review)
+**XONG 23/08.** Một dòng `Tổng SOL của bạn` duy nhất, gộp cả wrapped SOL. Màu lấy
+thẳng từ `hits.some(h => h.ruleId === 13)` thay vì dò chuỗi địa chỉ. Dòng không
+phải số dư dùng `—` ở cột trái.
+
+**Làm xong mới lộ thêm hai thứ:**
+
+1. **Nhãn trùng tiền tố.** `"Số dư SOL của bạn"` bắt đầu bằng `"Số dư "`, mà
+   `mucNgan.ts` phân loại dòng bằng `startsWith` — nên dòng SOL rơi nhầm vào
+   nhánh token và được đọc thành *"một token tên SOL của bạn"*. Đã đổi thành
+   `"Tổng SOL của bạn"`, và thêm test bất biến: **không nhãn nào được là tiền tố
+   của nhãn khác**.
+
+2. **`phiUocTinh` là cận dưới nên dòng SOL hiện cả khi chỉ trả phí.** Đo mainnet:
+   phí thật 5203 lamport, ước tính 5000 → chênh 203 lamport vẫn vượt ngưỡng nên
+   dòng hiện ra. Không sai, nhưng nhiễu. Sinh ra mục **P1-G**.
+
+**Files:** `diff.ts`, `sol.ts`, `mucNgan.ts`, test
+**Thực tế:** ~2,5 giờ
 
 ### ~~P0-C~~ → **P1-C** · Rent bị gọi nhầm là khoản chuyển
 
@@ -157,6 +173,24 @@ camelCase. Rủi ro thấp, ước lượng giữ nguyên.
 **Files:** `l1/decode.ts`, test
 **Ước:** 1–2 giờ
 
+### P1-G · Phí mạng CHÍNH XÁC thay vì cận dưới
+
+**Từ P0-B.** `phiUocTinh` hiện chỉ tính chắc phần phí cơ bản; phí ưu tiên đòi cả
+`setComputeUnitPrice` lẫn `setComputeUnitLimit` mới suy ra được. Hệ quả đo được:
+phí thật 5203 lamport trong khi ước tính 5000, nên dòng `Tổng SOL của bạn` hiện
+ra cho một thay đổi 203 lamport — nhiễu, và nhãn phải kèm chữ "(ước tính)".
+
+**Cách làm.** RPC có `getFeeForMessage` trả phí **chính xác** cho một message.
+Một lượt gọi, và bỏ được luôn chữ "(ước tính)".
+
+**Acceptance:**
+- Phí lấy từ `getFeeForMessage`, hỏng thì lui về ước tính hiện tại
+- Dòng SOL không hiện khi thay đổi đúng bằng phí
+- Nhãn bỏ "(ước tính)" khi lấy được số chính xác
+
+**Files:** `l1/fetch.ts`, `diff.ts`
+**Ước:** 1 giờ
+
 ### P1-E · Thu thêm IDL trên chuỗi
 
 Khảo sát 30 giao dịch hôm nay: các chương trình nặng ký đã decode hết. Còn đuôi
@@ -205,8 +239,8 @@ lệnh, mã lý do, chương trình chưa xác minh.
 
 ```
 P0-A  wSOL              XONG
-P0-B  bảng nhất quán    <- tiếp theo, và gấp hơn lúc lập kế hoạch:
-                           sau P0-A, luật và bảng có thể nói hai điều khác nhau
+P0-B  bảng nhất quán    XONG
+P1-G  phí chính xác     <- sinh ra từ P0-B, và nó gỡ luôn chữ "(ước tính)"
 P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
 P1-D  enum SPL Token
 P1-E  thêm IDL
@@ -220,8 +254,9 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 | | |
 |---|---|
 | P0-A | **PASS** — 3 ca test, không hồi quy cohort |
-| P0-B | TODO |
+| P0-B | **PASS** — 7 ca test, kiểm trên mainnet thật |
 | P1-C | TODO — hạ từ P0 sau review |
+| P1-G | TODO — sinh ra từ P0-B |
 | P1-D | TODO |
 | P1-E | TODO |
 | P2-F | TODO |
