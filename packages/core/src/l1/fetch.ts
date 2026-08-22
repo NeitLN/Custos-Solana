@@ -98,6 +98,20 @@ export async function extractFacts(
     nguoiDungChiDinh !== undefined && nguoiKy.includes(nguoiDungChiDinh);
   const signer = nguoiDungDuocChiDinh ? nguoiDungChiDinh! : nguoiTraPhi;
 
+  // Phí mạng: khởi động NGAY, vì nó chỉ cần `msg` và không phụ thuộc mô phỏng.
+  // Chờ tuần tự thì cộng thẳng một vòng RPC vào thời gian người dùng phải đứng
+  // nhìn màn hình ký. Bắt lỗi tại chỗ để `Promise.all` phía dưới không vỡ.
+  // `.catch()` KHÔNG đỡ được method không tồn tại: gọi `undefined(...)` ném đồng
+  // bộ trước khi có promise nào. RPC cũ hoặc connection rút gọn đều rơi vào đây.
+  const phiHua: Promise<bigint | null> = (async () => {
+    try {
+      const r = await conn.getFeeForMessage(msg);
+      return typeof r?.value === "number" ? BigInt(r.value) : null;
+    } catch {
+      return null;
+    }
+  })();
+
   // 1. giải ALT
   const lookupTables: Facts["lookupTables"] = [];
   const altAccounts: AddressLookupTableAccount[] = [];
@@ -363,7 +377,23 @@ export async function extractFacts(
     }
   }
   const phiUuTien = giaCU !== null && hanMucCU !== null ? (giaCU * hanMucCU) / 1_000_000n : 0n;
-  const phiUocTinh = PHI_CO_BAN_MOI_CHU_KY * BigInt(soKy) + phiUuTien;
+  let phiUocTinh = PHI_CO_BAN_MOI_CHU_KY * BigInt(soKy) + phiUuTien;
+  let phiChinhXac = false;
+
+  // RPC tính được phí CHÍNH XÁC, kể cả phần ưu tiên mà công thức trên bỏ sót.
+  // Kiểm trên bốn giao dịch mainnet: khớp từng lamport với `meta.fee` thật.
+  //
+  // Vì sao đáng một lượt gọi: ước tính là cận dưới, nên phần lamport "vượt quá
+  // phí" luôn lẫn một ít phí thật. Đo được một ca chênh 203 lamport khiến bảng
+  // hiện dòng số dư SOL cho giao dịch chỉ trả phí — nhiễu đúng trên màn hình
+  // dùng để đo mức độ hiểu của người dùng.
+  //
+  // Lượt gọi đã chạy song song từ đầu hàm, nên chỗ này không tốn thêm thời gian.
+  const phiTuRpc = await phiHua;
+  if (phiTuRpc !== null) {
+    phiUocTinh = phiTuRpc;
+    phiChinhXac = true;
+  }
 
   const solDelta: Record<string, bigint> = {};
   for (let i = 0; i < allKeys.length; i++) {
@@ -481,6 +511,7 @@ export async function extractFacts(
     nguoiKy,
     nguoiDungDuocChiDinh,
     phiUocTinh,
+    phiChinhXac,
     // Mô phỏng hỏng => KHÔNG biết gì về hậu quả, dù có đọc được tên lệnh.
     // coverage trả lời "hiểu hậu quả bao nhiêu phần", không phải "nhận ra bao nhiêu tên".
     // Không có dòng này, một L2 ngây thơ sẽ thấy coverage đầy đủ và ra `safe`.

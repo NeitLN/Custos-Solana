@@ -35,7 +35,7 @@ const facts = (p: Partial<Facts>): Facts => ({
     decoded: { kind: "transfer" }, fromLookupTable: false, chamTaiSanNguoiKy: true,
   }],
   lookupTables: [], accountKhongDoDuoc: [],
-  nguoiKy: [TOI], nguoiDungDuocChiDinh: false, phiUocTinh: PHI,
+  nguoiKy: [TOI], nguoiDungDuocChiDinh: false, phiUocTinh: PHI, phiChinhXac: true,
   coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 },
   ...p,
 });

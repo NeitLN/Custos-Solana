@@ -50,7 +50,7 @@ const facts = (p: Partial<Facts>): Facts => ({
   signer: TOI, simulationOk: true, simulationError: null,
   accounts: [], tokenAccounts: [ta()], mints: [mintPD()], solDelta: {}, tuoiViNhan: {},
   instructions: [], lookupTables: [], accountKhongDoDuoc: [],
-  nguoiKy: [TOI], nguoiDungDuocChiDinh: true, phiUocTinh: 5_000n,
+  nguoiKy: [TOI], nguoiDungDuocChiDinh: true, phiUocTinh: 5_000n, phiChinhXac: true,
   coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 }, ...p,
 });
 

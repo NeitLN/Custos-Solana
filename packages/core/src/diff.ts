@@ -66,7 +66,10 @@ export const NHAN = {
    *  chỗ dò bằng `startsWith(NHAN.SO_DU)` sẽ nuốt luôn dòng này. `mucNgan.ts`
    *  dò đúng như vậy, và dòng SOL đã rơi nhầm vào nhánh token. */
   SO_DU_SOL: "Tổng SOL của bạn",
-  PHI: "Phí mạng (ước tính)",
+  /** Dùng khi lấy được phí CHÍNH XÁC từ `getFeeForMessage`. */
+  PHI: "Phí mạng",
+  /** Dùng khi RPC không trả lời và phải lui về ước tính cận dưới. */
+  PHI_UOC: "Ước tính phí mạng",
   CHUA_DOC: "Phần chưa đọc được",
 } as const;
 
@@ -181,7 +184,7 @@ export function dungBangChenhLech(
   // Phí KHÔNG phải số dư, nên cột trái là "—" chứ không phải số 0 giả.
   if (phi > 0n && facts.solDelta[facts.signer] !== undefined) {
     out.push({
-      label: NHAN.PHI,
+      label: facts.phiChinhXac ? NHAN.PHI : NHAN.PHI_UOC,
       before: "—",
       after: `${dinhDangSo(phi, LAMPORTS_DECIMALS)} SOL`,
       severity: "info",

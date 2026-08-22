@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 215 PASS |
+| Test | 218 PASS |
 | Luật | 14 |
 | Coverage trung bình | **74 %** |
 | Coverage lệnh **chạm tài sản người ký** | **70 %** |
@@ -183,13 +183,30 @@ ra cho một thay đổi 203 lamport — nhiễu, và nhãn phải kèm chữ "(
 **Cách làm.** RPC có `getFeeForMessage` trả phí **chính xác** cho một message.
 Một lượt gọi, và bỏ được luôn chữ "(ước tính)".
 
-**Acceptance:**
-- Phí lấy từ `getFeeForMessage`, hỏng thì lui về ước tính hiện tại
-- Dòng SOL không hiện khi thay đổi đúng bằng phí
-- Nhãn bỏ "(ước tính)" khi lấy được số chính xác
+**XONG 23/08.** Kiểm trên bốn giao dịch mainnet: `getFeeForMessage` khớp **từng
+lamport** với `meta.fee` thật, kể cả các ca có phí ưu tiên (36999, 33763, 8213)
+mà công thức ước tính cũ không tính nổi.
 
-**Files:** `l1/fetch.ts`, `diff.ts`
-**Ước:** 1 giờ
+Thêm `Facts.phiChinhXac`. Nhãn là `Phí mạng` khi lấy được số chính xác, `Ước tính
+phí mạng` khi phải lui về cận dưới — trình bày một cận dưới như số chính xác là
+loại nói quá mà sản phẩm này cấm.
+
+**Hai thứ lộ ra khi làm:**
+
+1. **Test bất biến nhãn bắt lỗi của chính tôi.** Đặt `PHI_UOC` là
+   `"Phí mạng (ước tính)"` — bắt đầu bằng `"Phí mạng"`. Test thêm ở P0-B đỏ ngay.
+   Đổi thành `"Ước tính phí mạng"`.
+
+2. **`.catch()` không đỡ được method không tồn tại.** Connection giả trong test
+   không có `getFeeForMessage`, và gọi `undefined(...)` ném **đồng bộ** trước khi
+   có promise nào. Phải bọc `try` trong hàm async. RPC cũ hoặc connection rút gọn
+   của bên tích hợp đều rơi vào đây.
+
+**Tối ưu:** lượt gọi khởi động NGAY từ đầu `extractFacts` vì nó chỉ cần `msg`,
+chạy song song với mô phỏng nên không cộng thêm thời gian chờ nào cho người dùng.
+
+**Files:** `l1/fetch.ts`, `facts.ts`, `diff.ts`, test
+**Thực tế:** ~1 giờ
 
 ### P1-E · Thu thêm IDL trên chuỗi
 
@@ -240,7 +257,7 @@ lệnh, mã lý do, chương trình chưa xác minh.
 ```
 P0-A  wSOL              XONG
 P0-B  bảng nhất quán    XONG
-P1-G  phí chính xác     <- sinh ra từ P0-B, và nó gỡ luôn chữ "(ước tính)"
+P1-G  phí chính xác     XONG — gỡ luôn chữ "(ước tính)" khỏi nhãn
 P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
 P1-D  enum SPL Token
 P1-E  thêm IDL
@@ -256,7 +273,7 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 | P0-A | **PASS** — 3 ca test, không hồi quy cohort |
 | P0-B | **PASS** — 7 ca test, kiểm trên mainnet thật |
 | P1-C | TODO — hạ từ P0 sau review |
-| P1-G | TODO — sinh ra từ P0-B |
+| P1-G | **PASS** — phí khớp từng lamport trên 4 giao dịch mainnet |
 | P1-D | TODO |
 | P1-E | TODO |
 | P2-F | TODO |
