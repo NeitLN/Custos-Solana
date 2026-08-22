@@ -1,6 +1,7 @@
 import type { Level } from "@custos/types";
 import type { Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
+import { tinhSolNguoiDung } from "../sol.ts";
 
 export type RuleHit = {
   ruleId: number;
@@ -462,15 +463,16 @@ export const luat13: Rule = {
   id: 13,
   ten: "Phần lớn SOL rời ví",
   danhGia(f) {
-    const delta = f.solDelta[f.signer];
-    if (delta === undefined || delta >= 0n) return [];
+    // Tính trên TỔNG SOL người dùng kiểm soát — lamport trong ví CỘNG wrapped SOL.
+    // Chỉ đọc `solDelta[signer]` thì vừa bỏ lọt (đóng tài khoản wSOL cho ví lạ)
+    // vừa kêu oan (bọc SOL để swap). Xem sol.ts.
+    const { truoc, roi } = tinhSolNguoiDung(f);
+    if (roi <= 0n) return []; // không mất gì, hoặc nhận thêm
 
-    const raKhoiVi = -delta;
     const phi = f.phiUocTinh ?? 0n;
-    if (raKhoiVi <= phi) return []; // chỉ là phí
+    if (roi <= phi) return []; // chỉ là phí
 
-    const chuyenDi = raKhoiVi - phi;
-    const truoc = f.accounts.find((a) => a.address === f.signer)?.lamportsBefore ?? 0n;
+    const chuyenDi = roi - phi;
     if (truoc <= 0n) return [];
     if ((chuyenDi * 100n) / truoc < NGUONG_SOL_PHAN_TRAM) return [];
 
@@ -478,7 +480,7 @@ export const luat13: Rule = {
       ruleId: 13,
       level: "warning" as const,
       reasonCode: REASON.SOL_ROI_VI,
-      detail: `${chuyenDi} lamport rời khỏi ví bạn, trên tổng số ${truoc} đang có`,
+      detail: `${chuyenDi} lamport rời khỏi tay bạn, trên tổng số ${truoc} đang có (đã tính cả wrapped SOL)`,
     }];
   },
 };

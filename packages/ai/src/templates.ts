@@ -1,5 +1,5 @@
 import type { Facts } from "@custos/core";
-import { REASON, dinhDangSo } from "@custos/core";
+import { REASON, dinhDangSo, tinhSolNguoiDung } from "@custos/core";
 
 /**
  * CÂU MẪU CỨNG — bản dự phòng khi mô hình hỏng, quá hạn, hoặc mất mạng.
@@ -126,10 +126,12 @@ function cauCho(ma: string, facts: Facts): string | null {
     }
 
     case REASON.SOL_ROI_VI: {
-      const d = facts.solDelta[facts.signer];
-      if (d === undefined || d >= 0n) return null;
+      // Dùng CHUNG phép tính với luật 13 — nếu không, câu chữ sẽ nói một con số
+      // còn engine gắn cờ theo một con số khác. Với wrapped SOL thì `solDelta`
+      // của ví chỉ thấy tiền phí, nên tính riêng ở đây là ra 0 và mất luôn câu.
+      const { roi } = tinhSolNguoiDung(facts);
       const phi = facts.phiUocTinh ?? 0n;
-      const di = -d - phi;
+      const di = roi - phi;
       if (di <= 0n) return null;
       return `${dinhDangSo(di, 9)} SOL sẽ rời khỏi ví bạn — phần lớn số SOL bạn đang có. Số này chưa tính phí mạng.`;
     }

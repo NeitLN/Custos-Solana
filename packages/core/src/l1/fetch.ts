@@ -8,6 +8,7 @@ import {
 import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact } from "../facts.ts";
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
 import { decodeInstruction, VI_TRI_AUTHORITY } from "./decode.ts";
+import { VERIFIED_PROGRAMS } from "../constants.ts";
 import { docKyHieuToken } from "./ten-token.ts";
 import { giaiBase58 } from "./base58.ts";
 import { computeCoverage } from "./coverage.ts";
@@ -162,7 +163,13 @@ export async function extractFacts(
   // không thì "không đo được" bị đọc thành "số dư về 0".
   let coDuLieuAccount = false;
   let after: (AccountInfo<Buffer> | null)[] = [];
-  let inner: { programId: string; accounts: string[]; data: string | null; parent: number }[] = [];
+  let inner: {
+    programId: string;
+    accounts: string[];
+    data: string | null;
+    loai: string | null;
+    parent: number;
+  }[] = [];
   try {
     const sim = await conn.simulateTransaction(tx, {
       sigVerify: false, // giao dịch CHƯA ký — đó là toàn bộ mục đích sản phẩm
@@ -199,6 +206,7 @@ export async function extractFacts(
           programId?: { toBase58?: () => string };
           accounts?: { toBase58?: () => string }[];
           data?: string;
+          parsed?: { type?: string };
         };
         return {
           programId: pd.programId?.toBase58?.() ?? "",
@@ -206,9 +214,13 @@ export async function extractFacts(
           // `data` của inner instruction là base58. Bản trước bỏ qua trường này
           // và gán decoded = null cho MỌI lệnh CPI — nghĩa là 27 trên 75 lệnh
           // mainnet thuộc chương trình ĐÃ XÁC MINH vẫn bị đếm là chưa đọc hiểu.
-          // Coverage thấp một cách oan uổng, và fail-safe 2 kích hoạt ở gần như
-          // mọi giao dịch vì lệnh CPI nào cũng "chưa đọc hiểu mà có chạm".
           data: typeof pd.data === "string" ? pd.data : null,
+          // RPC TỰ PHÂN GIẢI những chương trình nó biết, và khi đó trả về
+          // `{ parsed: { type } }` THAY VÌ `data`. Đo trên mainnet: 42/42 lệnh
+          // SPL Token trong CPI rơi vào dạng này — tức đường decode theo `data`
+          // không bao giờ chạm tới chúng, và chúng bị đếm là "chưa đọc hiểu"
+          // trong khi RPC đã nói thẳng chúng là lệnh gì.
+          loai: typeof pd.parsed?.type === "string" ? pd.parsed.type : null,
           parent: g.index,
         };
       }),
@@ -399,16 +411,26 @@ export async function extractFacts(
   for (const g of inner) {
     // Decode lệnh CPI bằng đúng bộ giải mã dùng cho lệnh tầng ngoài. Một lệnh
     // Transfer của SPL Token không vì nằm trong CPI mà trở nên khó hiểu hơn.
+    //
+    // Hai đường vào, vì RPC trả về hai hình dạng khác nhau:
+    //   - có `data` thô  -> giải base58 rồi decode như lệnh tầng ngoài
+    //   - có `parsed.type` -> RPC đã phân giải sẵn, dùng luôn
+    //
+    // Chỉ nhận `parsed.type` cho chương trình ĐÃ XÁC MINH. RPC phân giải được
+    // một chương trình không có nghĩa là đội đọc hiểu nó — giữ nguyên kỷ luật
+    // đã khoá, nếu không `coverage` sẽ phồng lên nhờ công của người khác.
     const raw = g.data === null ? null : giaiBase58(g.data);
+    const theoRpc =
+      g.loai !== null && VERIFIED_PROGRAMS.has(g.programId) ? { kind: g.loai } : null;
     instructions.push({
       index: instructions.length,
       programId: g.programId,
       isInner: true,
       parentIndex: g.parent,
       decoded:
-        raw === null
-          ? null
-          : themAuthority(decodeInstruction(g.programId, raw), (v) => g.accounts[v]),
+        raw !== null
+          ? themAuthority(decodeInstruction(g.programId, raw), (v) => g.accounts[v])
+          : theoRpc,
       fromLookupTable: false,
       // Không biết account nào ⇒ chọn phía thận trọng, coi như có chạm.
       chamTaiSanNguoiKy:
