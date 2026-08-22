@@ -20,6 +20,28 @@ Nghiên cứu ngày 21/8 (`NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng
 
 Cấu trúc mới nhượng bộ ngay câu phản đối hiển nhiên, rồi biến nó thành bàn đạp. Đây cũng là cách an toàn nhất về liêm chính: không nói sai một chữ nào về đối thủ.
 
+### Cập nhật 22/08 — Blowfish đã bị Phantom mua và đóng dịch vụ
+
+Tra ngày 22/08: Phantom đã mua Blowfish, và thông báo mua lại ghi rõ *"the current
+service has been sunset"*. `blowfish.xyz` giờ là trang hết hạn tên miền.
+
+**Trên sân khấu, nói ở thì quá khứ:** *"Blowfish — công ty Phantom đã mua lại năm
+2024 —"*, đừng nói *"Blowfish đang cung cấp"*. Một giám khảo theo mảng này biết
+chuyện đó, và nói sai thì mất uy tín ngay câu đầu.
+
+**Nó cũng cho một luận điểm mạnh mà đội chưa có:** ví lớn nhất Solana **bỏ tiền
+mua** đúng năng lực Custos đang làm. Đó là market validation do người khác trả tiền
+chứng minh, không phải lập luận đội tự nghĩ.
+
+Câu để dành cho phần mô hình kinh doanh:
+
+> *"Chúng em không cần chứng minh thị trường này có tồn tại. Phantom đã chứng minh
+> hộ — họ mua đứt Blowfish rồi đóng dịch vụ bán rời. Nghĩa là mọi ví và dApp khác
+> giờ không mua được năng lực này nữa."*
+
+Và chuẩn bị sẵn cho câu hỏi ngược: *"Phantom có rồi, sao còn cần các em?"* — trả lời
+ở mục 9 bên dưới.
+
 ---
 
 ## ⚠️ 1 · Một chỗ hở giữa câu chuyện và thiết kế demo — phải sửa trước 24/8
@@ -63,10 +85,14 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 
 ### 1. "Phantom đã có rồi mà?"
 
-> "Có, và họ làm tốt. Phantom dùng Blowfish, đã cảnh báo `setAuthority`. Chúng tôi không cạnh tranh ở chỗ đó.
-> Chỗ khác là khi mô phỏng **không** hiểu hết giao dịch. Coinspect từng công bố một ca Blowfish bỏ lọt instruction `assign` — ví chỉ hiện vế hợp lệ, im lặng về phần còn lại. Custos luôn nói ra phần nó chưa hiểu, và không bao giờ nói 'an toàn' khi chưa chắc."
+> "Có, và họ làm tốt — **Phantom mua đứt Blowfish năm 2024** để có năng lực đó.
+> Chúng tôi không cạnh tranh ở chỗ Phantom mạnh.
+> Chỗ khác là khi mô phỏng **không** hiểu hết giao dịch. Coinspect từng công bố một ca mô phỏng bỏ lọt instruction `assign` — ví chỉ hiện vế hợp lệ, im lặng về phần còn lại. Custos luôn nói ra phần nó chưa hiểu, và không bao giờ nói 'an toàn' khi chưa chắc.
+> Và quan trọng hơn: **Phantom có, cho người dùng Phantom, bằng tiếng Anh.** Mọi ví và dApp khác phục vụ người Việt thì không có — vì Blowfish đã đóng dịch vụ bán rời sau khi bị mua."
 
 ⚠️ **Phải nói thêm nếu bị hỏi tiếp:** lỗi cụ thể đó **đã được vá**. Luận điểm là về **cấu trúc** — ví cần phương án dự phòng khi mô phỏng thất bại — không phải cáo buộc Phantom đang có lỗ hổng. Nói sai chỗ này là mất điểm liêm chính.
+
+⚠️ **Nói ở thì quá khứ:** *"Blowfish — công ty Phantom đã mua"*, không nói *"Blowfish đang cung cấp"*. Dịch vụ đó đã đóng, `blowfish.xyz` giờ là tên miền hết hạn.
 
 ### 2. "AI ở đây có gì hơn template?"
 
@@ -87,9 +113,12 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 
 > "Ví và dApp, không phải người dùng cuối — người dùng cuối không bao giờ trả tiền cho bảo mật.
 > Ba tầng: developer miễn phí có hạn mức, startup trả theo lượt kiểm tra, enterprise thuê bao kèm SLA. Cùng cơ chế các nhà cung cấp RPC Solana đang dùng nên khách đã quen.
-> Chúng tôi chưa đưa con số vì chưa có dữ liệu, và chưa có cam kết nào từ ví nào."
+> **Neo giá thì có thật:** Helius và QuickNode — hạ tầng chính những khách hàng này đang trả tiền — đều đặt tầng trả tiền đầu tiên ở **$49 một tháng**. Đó là mức thị trường đã quen.
+> Nhưng **chúng tôi chưa hỏi được ví nào**, nên chưa có con số của riêng mình, và chưa có cam kết nào."
 
 > Câu cuối là câu **cố ý** nói ra. Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn.
+>
+> Phân biệt cho rõ khi bị hỏi vặn: **$49 là giá của người khác, không phải giá của Custos.** Nó chỉ chứng minh khách hàng mục tiêu đã quen trả tiền hạ tầng theo tháng, ở tầm đó. Nói nó là "định giá đã validate" là nói sai.
 
 ---
 

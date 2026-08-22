@@ -76,6 +76,22 @@ const { poolAddress, instructions, initializationCost, callback: sendTx } =
 
 Đây là việc thứ tư trong danh sách 48 giờ, và kết quả **không thuận lợi**.
 
+> ### ⚠️ CẬP NHẬT 22/08/2026 — Blowfish KHÔNG CÒN LÀ SẢN PHẨM ĐỘC LẬP
+>
+> Toàn bộ mục 2 dưới đây viết khi còn tưởng Blowfish là một công ty đang bán API.
+> Tra lại ngày 22/08: **Phantom đã mua Blowfish**, và trong chính thông báo mua lại:
+>
+> > *"Blowfish has notified all existing customers that the current service has been sunset."*
+>
+> `blowfish.xyz` hiện trả về trang báo hết hạn tên miền. Các link tài liệu ở mục
+> "Nguồn" phía dưới có thể không còn truy cập được.
+>
+> **Phân tích kỹ thuật dưới đây vẫn đúng và vẫn dùng được** — nó nói về *cách một
+> lớp mô phỏng có thể bỏ lọt instruction*, và điều đó không phụ thuộc vào việc
+> công ty nào còn tồn tại. Chỉ có phần "đối thủ là ai" là đã đổi.
+>
+> Xem `CUSTOS.md` mục 10 để biết việc này cắt cả hai chiều thế nào.
+
 ### Phantom và Blowfish đã làm nhiều hơn tài liệu của ta đang mô tả
 
 `CUSTOS.md` mục 10 hiện viết ví lớn *"nói số dư đổi bao nhiêu chứ không nói hậu quả nào không thuộc hành động chính"*. Tra cứu cho thấy điều đó **không chính xác**:
