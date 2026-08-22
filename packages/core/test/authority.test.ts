@@ -37,7 +37,7 @@ const ta = (p: Partial<TokenAccountFact> = {}): TokenAccountFact => ({
 const mintPD = (): MintFact => ({
   address: MINT, mintAuthority: null, freezeAuthority: null,
   permanentDelegate: NHA_PHAT_HANH, transferHookProgramId: null,
-  isToken2022: true, decimals: 6,
+  isToken2022: true, decimals: 6, kyHieu: null,
 });
 
 const lenhTransfer = (authority: string | null): InstructionFact => ({

@@ -18,9 +18,18 @@ const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)
  */
 const KY_HIEU_HOP_LE = /^[A-Za-z0-9 ._+-]{1,16}$/;
 
-export function kyHieuAnToan(mint: string, kyHieu?: Record<string, string>): string {
+export function kyHieuAnToan(
+  mint: string,
+  kyHieu?: Record<string, string>,
+  kyHieuTuChuoi?: string | null,
+): string {
   const k = kyHieu?.[mint];
   if (typeof k === "string" && KY_HIEU_HOP_LE.test(k)) return k;
+  // Ký hiệu on-chain đi qua CÙNG bộ lọc: nó cũng do người ngoài đặt — người phát
+  // hành token lừa đảo đặt tên được y như dApp độc hại khai tên được.
+  if (typeof kyHieuTuChuoi === "string" && KY_HIEU_HOP_LE.test(kyHieuTuChuoi)) {
+    return kyHieuTuChuoi;
+  }
   return rutGon(mint);
 }
 
@@ -73,6 +82,7 @@ export function dungBangChenhLech(
 ): DiffEntry[] {
   const out: DiffEntry[] = [];
   const decimalsCua = new Map(facts.mints.map((m) => [m.address, m.decimals]));
+  const kyHieuChuoi = new Map(facts.mints.map((m) => [m.address, m.kyHieu ?? null]));
   const coHitO = (chuoi: string) => hits.some((h) => h.detail.includes(chuoi));
 
   for (const t of facts.tokenAccounts) {
@@ -80,7 +90,12 @@ export function dungBangChenhLech(
     const dec = decimalsCua.get(t.mint) ?? 0;
     // Người dùng không đọc được base58. Mục đích duy nhất của sản phẩm là làm
     // người ta HIỂU KỊP trước khi bấm ký, nên hiện ký hiệu khi biết.
-    const nhan = kyHieuAnToan(t.mint, kyHieu);
+    //
+    // Thứ tự: ký hiệu ví truyền vào TRƯỚC, rồi mới tới ký hiệu đọc từ chuỗi.
+    // Ví biết ngữ cảnh người dùng — nó có thể đang hiển thị tên riêng, hoặc đã
+    // lọc theo danh sách token nó tin. Ký hiệu on-chain là phương án dự phòng
+    // cho trường hợp ví không truyền gì, tức là mọi giao dịch mainnet thật.
+    const nhan = kyHieuAnToan(t.mint, kyHieu, kyHieuChuoi.get(t.mint) ?? null);
 
     if (t.amountBefore !== t.amountAfter) {
       out.push({

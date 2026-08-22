@@ -34,7 +34,7 @@ function facts(p: Partial<Facts> = {}): Facts {
     simulationError: null,
     accounts: [],
     tokenAccounts: [],
-    mints: [{ address: MINT, mintAuthority: null, freezeAuthority: null, permanentDelegate: null, transferHookProgramId: null, isToken2022: false, decimals: 6 }],
+    mints: [{ address: MINT, mintAuthority: null, freezeAuthority: null, permanentDelegate: null, transferHookProgramId: null, isToken2022: false, decimals: 6 , kyHieu: null}],
     solDelta: {},
     tuoiViNhan: {},
     instructions: [],
@@ -72,7 +72,7 @@ test("không dùng dấu chấm than trong bất kỳ câu mẫu nào", () => {
   const f = facts({
     tokenAccounts: [ta({ ownerAfter: LA, closeAuthorityAfter: LA, delegateAfter: LA, delegatedAmountAfter: 1n })],
     accounts: [{ address: "Acc1", isSigner: false, programOwnerBefore: "A", programOwnerAfter: "B", lamportsBefore: 0n, lamportsAfter: 0n }],
-    mints: [{ address: MINT, mintAuthority: LA, freezeAuthority: LA, permanentDelegate: LA, transferHookProgramId: null, isToken2022: true, decimals: 6 }],
+    mints: [{ address: MINT, mintAuthority: LA, freezeAuthority: LA, permanentDelegate: LA, transferHookProgramId: null, isToken2022: true, decimals: 6 , kyHieu: null}],
   });
   assert.doesNotMatch(dienGiaiMau(f, moiMa), /!/);
 });
@@ -152,7 +152,7 @@ test("mô hình chạy tốt ⇒ giữ nguyên kết quả của mô hình", asy
 // ── Câu mẫu cho luật 5, 7, 10 ─────────────────────────────────────
 const mintVoi = (p: Record<string, unknown>) => ({
   address: MINT, mintAuthority: null, freezeAuthority: null, permanentDelegate: null,
-  transferHookProgramId: null, isToken2022: false, decimals: 6, ...p,
+  transferHookProgramId: null, isToken2022: false, decimals: 6, kyHieu: null, ...p,
 });
 
 test("LUẬT 5 có câu mẫu — nói hậu quả, không nói tên extension", () => {

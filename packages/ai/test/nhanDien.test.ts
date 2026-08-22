@@ -11,7 +11,7 @@ const SOL = "MintSOL11111111111111111111111111111111111";
 
 const mint = (a: string): MintFact => ({
   address: a, mintAuthority: null, freezeAuthority: null, permanentDelegate: null,
-  transferHookProgramId: null, isToken2022: false, decimals: 6,
+  transferHookProgramId: null, isToken2022: false, decimals: 6, kyHieu: null,
 });
 
 function ta(p: Partial<TokenAccountFact> = {}): TokenAccountFact {

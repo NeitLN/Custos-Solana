@@ -178,7 +178,7 @@ test("FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng", () => {
 const mint = (p: Partial<MintFact> = {}): MintFact => ({
   address: "Mint111111111111111111111111111111111111111",
   mintAuthority: null, freezeAuthority: null, permanentDelegate: null,
-  transferHookProgramId: null, isToken2022: false, decimals: 6, ...p,
+  transferHookProgramId: null, isToken2022: false, decimals: 6, kyHieu: null, ...p,
 });
 
 test("LUẬT 4 — token có Permanent Delegate nhưng PD KHÔNG ra tay ⇒ chỉ Vàng", () => {
