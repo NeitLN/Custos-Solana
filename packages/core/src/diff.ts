@@ -2,7 +2,7 @@ import type { DiffEntry } from "@custos/types";
 import type { Facts } from "./facts.ts";
 import type { RuleHit } from "./l2/rules.ts";
 import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
-import { tinhSolNguoiDung, WSOL_MINT } from "./sol.ts";
+import { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);
 
@@ -67,6 +67,7 @@ export const NHAN = {
    *  dò đúng như vậy, và dòng SOL đã rơi nhầm vào nhánh token. */
   SO_DU_SOL: "Tổng SOL của bạn",
   /** Dùng khi lấy được phí CHÍNH XÁC từ `getFeeForMessage`. */
+  DAT_COC: "Đặt cọc tài khoản (lấy lại được)",
   PHI: "Phí mạng",
   /** Dùng khi RPC không trả lời và phải lui về ước tính cận dưới. */
   PHI_UOC: "Ước tính phí mạng",
@@ -178,6 +179,18 @@ export function dungBangChenhLech(
       before: dinhDangSo(sol.truoc, LAMPORTS_DECIMALS),
       after: dinhDangSo(sol.sau, LAMPORTS_DECIMALS),
       severity: luat13 ? "danger" : "info",
+    });
+  }
+
+  // Đặt cọc KHÔNG phải mất tiền — nói ra để người dùng không hoảng khi thấy số
+  // dư SOL tụt xuống vì tạo vài tài khoản token.
+  const datCoc = tinhTienDatCoc(facts);
+  if (datCoc > 0n) {
+    out.push({
+      label: NHAN.DAT_COC,
+      before: "—",
+      after: `${dinhDangSo(datCoc, LAMPORTS_DECIMALS)} SOL`,
+      severity: "info",
     });
   }
 

@@ -58,3 +58,30 @@ export function tinhSolNguoiDung(facts: Facts): SolNguoiDung {
 
   return { truoc, sau, roi: truoc - sau };
 }
+
+/**
+ * TIỀN ĐẶT CỌC — rent của những tài khoản MỚI TẠO và THUỘC VỀ người dùng.
+ *
+ * Tạo một tài khoản token tốn khoảng 0,002 SOL. Đó là tiền đặt cọc lấy lại được
+ * khi đóng tài khoản, không phải khoản chuyển đi mất.
+ *
+ * ĐIỀU KIỆN "THUỘC VỀ NGƯỜI DÙNG" LÀ BẮT BUỘC, không phải chi tiết.
+ *
+ * Nếu chỉ lọc theo "có tạo tài khoản" thì kẻ tấn công dựng được ca này: tạo một
+ * tài khoản mà CHÚNG sở hữu, trả bằng SOL của người dùng. Khoản đó bị loại khỏi
+ * ngưỡng của luật 13 và Custos im lặng — trong khi người dùng mất tiền thật,
+ * không lấy lại được vì tài khoản không phải của họ.
+ *
+ * Có test riêng cho đúng cái bẫy đó.
+ */
+export function tinhTienDatCoc(facts: Facts): bigint {
+  let tong = 0n;
+  for (const t of facts.tokenAccounts) {
+    if (t.ownerBefore !== null) continue;      // phải là tài khoản MỚI
+    if (t.ownerAfter !== facts.signer) continue; // và phải thuộc về người dùng
+    const a = facts.accounts.find((x) => x.address === t.address);
+    if (!a || a.programOwnerBefore !== null) continue; // xác nhận là mới tạo
+    tong += a.lamportsAfter;
+  }
+  return tong;
+}

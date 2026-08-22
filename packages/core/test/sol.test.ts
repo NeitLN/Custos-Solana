@@ -354,3 +354,51 @@ test("wSOL · BẤT BIẾN — accounts và solDelta không được lệch nhau
   const { roi } = tinhSolNguoiDung(f);
   assert.equal(roi, 5_000_000_000n, "phải dựng lại được từ solDelta thay vì trả 0");
 });
+
+// ── Mua bán không phải là bị rút ──────────────────────────────────
+test("SOL · ÂM TÍNH — tiêu 63% SOL để MUA token thì KHÔNG phải bị rút", () => {
+  // Ca thật, bắt được khi đo cohort 23/08: ví 0,025 SOL tiêu 0,016 (63%) và
+  // nhận về 7.453 token. Luật 13 gắn cờ — cáo buộc sai.
+  //
+  // Luật 11 đã học đúng bài này: nó kiểm `coNhanLai` và im lặng khi người dùng
+  // nhận lại thứ gì. Luật 13 thiếu vế đó. Người trả tiền mua một món hàng thì
+  // không phải nạn nhân, và gắn cờ mọi lệnh mua là cách nhanh nhất để người
+  // dùng học được cách bỏ qua cảnh báo.
+  const truoc = 25_047_215n;
+  const f = facts({
+    accounts: [acc({ address: TOI, isSigner: true, lamportsBefore: truoc, lamportsAfter: 9_073_890n })],
+    tokenAccounts: [{
+      address: "ataMua", mint: "MintMua11111111111111111111111111111111111111",
+      ownerBefore: TOI, ownerAfter: TOI,
+      amountBefore: 38_984_347_981n, amountAfter: 46_437_929_529n, // NHẬN thêm token
+      delegateBefore: null, delegateAfter: null, delegatedAmountAfter: 0n,
+      closeAuthorityBefore: null, closeAuthorityAfter: null,
+      programOwnerBefore: TOK, programOwnerAfter: TOK,
+    }],
+    mints: [{
+      address: "MintMua11111111111111111111111111111111111111", mintAuthority: null,
+      freezeAuthority: null, permanentDelegate: null, transferHookProgramId: null,
+      isToken2022: false, decimals: 6, kyHieu: "MUA",
+    }],
+    solDelta: { [TOI]: -(truoc - 9_073_890n) },
+  });
+  assert.ok(
+    !danhGia(f).reasonCodes.includes(REASON.SOL_ROI_VI),
+    "trả tiền mua một món hàng thì không phải bị rút",
+  );
+});
+
+test("SOL · rút sạch mà KHÔNG nhận lại gì ⇒ VẪN gắn cờ", () => {
+  // Vế còn lại của cùng một luật. Nếu chỉ thêm điều kiện "có nhận lại" mà không
+  // giữ ca này thì đã gỡ mất chính luật 13.
+  const truoc = 5_000_000_000n;
+  const f = facts({
+    ...viCua(truoc, 0n),
+    accounts: [
+      acc({ address: TOI, isSigner: true, lamportsBefore: truoc, lamportsAfter: 0n }),
+      acc({ address: LA, lamportsAfter: truoc - PHI }),
+    ],
+    solDelta: { [TOI]: -truoc, [LA]: truoc - PHI },
+  });
+  assert.ok(danhGia(f).reasonCodes.includes(REASON.SOL_ROI_VI));
+});
