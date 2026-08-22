@@ -128,8 +128,23 @@ thái *sau*, đọc từ cùng kết quả mô phỏng đang có. Không ký, kh
    `CLAUDE.md`, và nó áp dụng cho màn mới y như bảng chênh lệch.
 3. **Không thêm đường ký nào vào bản công khai.** Ràng buộc bảo mật giữ nguyên.
 
-**Xong khi:** người lạ bấm link, không đọc hướng dẫn, vẫn hiểu được hai kết cục của
-cùng một giao dịch. Có test chặn ca "đổi chủ mà không chuyển tiền".
+**XONG 23/08.** Và hoá ra chỗ hở nặng hơn mô tả ban đầu: ở bản công khai, tắt
+Custos rồi bấm nút thì `kyVaGui` chạy vào **ngõ cụt** — báo lỗi trong nhật ký, người
+xem không thấy gì. Không chỉ thiếu nhịp 1, mà là một nút bấm vào thì hỏng.
+
+Mô phỏng không cần chữ ký, nên hậu quả vẫn tính ra được thật. Nhánh không-có-khoá
+giờ chạy `inspect()` rồi hiện trạng thái sau, dán nhãn **"Kết quả mô phỏng"**.
+
+Thêm `?khongkhoa=1` để giả lập bản công khai **trên máy có khoá**: không có nó thì
+máy của đội luôn đi đường ký thật, nên màn mà mọi người bấm link sẽ thấy lại là màn
+không ai trong đội xem được lúc tập. Cờ này chỉ đi một chiều — bắt chặt hơn, không
+bao giờ mở khoá ký ở nơi không có khoá.
+
+Nút **"Xem Custos chặn nó"** chạy lại đúng giao dịch đó với Custos bật — hai nhịp
+của kịch bản gói vào một cú bấm, đúng thứ cần cho giờ Expo.
+
+**Files:** `packages/ai/src/hauQua.ts`, `HauQua.tsx`, `App.tsx`, `vi.ts`, test
+**Thực tế:** ~2 giờ
 
 ---
 
@@ -200,6 +215,6 @@ cộng lại đổi được ~1,1.
 | | |
 |---|---|
 | B1 chi phí một lượt kiểm tra | **PASS** — đo được, và lòi ra một khoản chi phí không ai để ý |
-| B2 chế độ "nếu không có Custos" | ĐANG LÀM |
-| B3 trang số liệu | TODO |
+| B2 chế độ "nếu không có Custos" | **PASS** — 7 ca test, và vá một ngõ cụt của bản công khai |
+| B3 trang số liệu | ĐANG LÀM |
 | B4 bộ đo phỏng vấn | TUỲ CHỌN |
