@@ -191,9 +191,24 @@ ra cho một thay đổi 203 lamport — nhiễu, và nhãn phải kèm chữ "(
 **Cách làm.** RPC có `getFeeForMessage` trả phí **chính xác** cho một message.
 Một lượt gọi, và bỏ được luôn chữ "(ước tính)".
 
-**XONG 23/08.** Kiểm trên bốn giao dịch mainnet: `getFeeForMessage` khớp **từng
-lamport** với `meta.fee` thật, kể cả các ca có phí ưu tiên (36999, 33763, 8213)
-mà công thức ước tính cũ không tính nổi.
+**XONG 23/08.** `getFeeForMessage` khớp **từng lamport** với `meta.fee` thật, kể
+cả các ca có phí ưu tiên (36999, 33763, 18806, 8213) mà công thức ước tính cũ
+không tính nổi.
+
+**Giới hạn phát hiện khi tự review — ghi chú lúc commit đầu thiếu vế này:**
+
+| Tình huống | Kết quả |
+|---|---|
+| Blockhash tươi — **ca sản phẩm gặp thật** | ✅ chính xác |
+| Giao dịch vừa lên chuỗi | ✅ chính xác |
+| Giao dịch cũ, blockhash hết hạn | ❌ `null` → lui về ước tính |
+
+Nghĩa là: **chạy đúng cho việc sản phẩm sinh ra để làm** (kiểm giao dịch sắp ký),
+và lui về ước tính khi mô phỏng lại giao dịch lịch sử để đo đạc. Phần đo vì vậy
+sẽ thấy nhãn "Ước tính phí mạng" — đúng hành vi, không phải hỏng.
+
+Cũng đo được: khi giao dịch khai đủ cả giá lẫn hạn mức compute unit, ước tính
+chỉ lệch **1 lamport** (35001 so với 35002 thật) do làm tròn phép chia.
 
 Thêm `Facts.phiChinhXac`. Nhãn là `Phí mạng` khi lấy được số chính xác, `Ước tính
 phí mạng` khi phải lui về cận dưới — trình bày một cận dưới như số chính xác là

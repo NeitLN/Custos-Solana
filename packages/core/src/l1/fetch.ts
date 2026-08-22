@@ -103,6 +103,12 @@ export async function extractFacts(
   // nhìn màn hình ký. Bắt lỗi tại chỗ để `Promise.all` phía dưới không vỡ.
   // `.catch()` KHÔNG đỡ được method không tồn tại: gọi `undefined(...)` ném đồng
   // bộ trước khi có promise nào. RPC cũ hoặc connection rút gọn đều rơi vào đây.
+  //
+  // GIỚI HẠN ĐO ĐƯỢC: `getFeeForMessage` chỉ tính được khi **blockhash còn hiệu
+  // lực**. Ca sản phẩm thật — giao dịch sắp được ký, blockhash tươi — luôn chạy.
+  // Nhưng khi mô phỏng lại giao dịch LỊCH SỬ để đo đạc, blockhash đã hết hạn và
+  // RPC trả `null`, nên phần đo sẽ thấy nhãn "Ước tính phí mạng". Đó là đúng
+  // hành vi, không phải hỏng.
   const phiHua: Promise<bigint | null> = (async () => {
     try {
       const r = await conn.getFeeForMessage(msg);
