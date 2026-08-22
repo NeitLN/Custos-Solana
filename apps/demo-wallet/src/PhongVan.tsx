@@ -10,9 +10,12 @@ import { CanhBao } from "./CanhBao.tsx";
 /**
  * BỘ ĐO PHỎNG VẤN — `docs/VIEC-CUA-BAN.md` mục 2.
  *
- * Phép đo đã thiết kế đúng từ trước: chiếu màn hình, KHÔNG giải thích gì, hỏi
- * "nếu bạn bấm ký thì chuyện gì xảy ra với ví của bạn", rồi chấm ĐÚNG / KHÔNG CHẮC
- * / SAI. Con số đó lên sân khấu.
+ * Phép đo: chiếu màn hình, KHÔNG giải thích gì, hỏi "nếu bạn bấm ký thì chuyện gì
+ * xảy ra với ví của bạn", chấm ĐÚNG / MỘT PHẦN / SAI — rồi hỏi tiếp họ sẽ ký, huỷ
+ * hay kiểm tra thêm. Cả hai con số đó lên sân khấu.
+ *
+ * Hai câu, hỏi TÁCH NHAU và đúng thứ tự đó. Hỏi cùng lúc thì chính câu "bạn sẽ ký
+ * hay huỷ" đã mách rằng có gì đó đáng huỷ, và câu trả lời đầu tiên hỏng theo.
  *
  * Trang này không thay được việc đi hỏi 12 người. Nó chỉ chặn bốn cách phá hỏng
  * phép đo mà chính tài liệu kia đã liệt kê:
@@ -30,19 +33,33 @@ import { CanhBao } from "./CanhBao.tsx";
  * có người bấm sao chép. Không gửi đi đâu, không có backend.
  */
 
-type Cham = "dung" | "khongChac" | "sai";
+type Cham = "dung" | "motPhan" | "sai";
+/**
+ * QUYẾT ĐỊNH mới là biến kết quả thật, và bản đầu của trang này thiếu nó.
+ *
+ * Hiểu và hành động không đi cùng nhau: một người nói được "mất 500 token" rồi
+ * vẫn bấm ký thì sản phẩm đã thất bại, dù ô "hiểu" chấm ĐÚNG. Đo mỗi mức hiểu là
+ * đo nửa câu chuyện — và là nửa dễ đẹp hơn.
+ */
+type QuyetDinh = "huy" | "kiemTraThem" | "ky";
 type Ban = {
   luc: string;
   nguyenVan: string;
   cham: Cham;
+  quyetDinh: QuyetDinh;
   ghiChu: string;
 };
 
 const KHOA = "custos.phong-van";
 const NHAN_CHAM: Record<Cham, string> = {
   dung: "ĐÚNG — nêu được mất tiền HOẶC mất quyền kiểm soát",
-  khongChac: "KHÔNG CHẮC — biết có gì đó nguy hiểm, không nói được là gì",
+  motPhan: "MỘT PHẦN — nêu được một vế, hoặc chỉ biết có gì đó nguy hiểm",
   sai: "SAI — hiểu ngược, hoặc nói chuyện không liên quan",
+};
+const NHAN_QD: Record<QuyetDinh, string> = {
+  huy: "HUỶ",
+  kiemTraThem: "KIỂM TRA THÊM rồi mới quyết",
+  ky: "VẪN KÝ",
 };
 
 const doc = (): Ban[] => {
@@ -62,6 +79,9 @@ export function PhongVan() {
   // Nút chấm chỉ mở sau khi đã ghi nguyên văn. Chấm trước rồi mới chép lại là
   // chép theo cái nhãn mình vừa gắn, không còn là nguyên văn nữa.
   const [choCham, setChoCham] = useState(false);
+  // Chấm và quyết định lưu tách khỏi nguyên văn, và reset sau mỗi người.
+  const [cham, setCham] = useState<Cham | null>(null);
+  const [quyetDinh, setQuyetDinh] = useState<QuyetDinh | null>(null);
   const [daChep, setDaChep] = useState(false);
 
   const dung = useCallback(async (ht: HienTruong) => {
@@ -90,16 +110,20 @@ export function PhongVan() {
       .catch((e: unknown) => setLoi(e instanceof Error ? e.message : String(e)));
   }, [dung]);
 
-  function luu(cham: Cham) {
-    const moi: Ban[] = [...ban, { luc: new Date().toISOString(), nguyenVan, cham, ghiChu }];
+  function luu() {
+    if (!cham || !quyetDinh) return;
+    const moi: Ban[] = [...ban, { luc: new Date().toISOString(), nguyenVan, cham, quyetDinh, ghiChu }];
     setBan(moi);
     localStorage.setItem(KHOA, JSON.stringify(moi));
     setNguyenVan("");
     setGhiChu("");
+    setCham(null);
+    setQuyetDinh(null);
     setChoCham(false);
   }
 
   const dem = (c: Cham) => ban.filter((b) => b.cham === c).length;
+  const demQD = (q: QuyetDinh) => ban.filter((b) => b.quyetDinh === q).length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
@@ -152,6 +176,12 @@ export function PhongVan() {
               className="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-[13px] text-slate-200 outline-none focus:border-indigo-500"
             />
 
+            {/* Câu hỏi thứ hai, hỏi SAU khi họ đã trả lời xong câu một. Hỏi cùng
+                lúc thì chính câu "bạn sẽ ký hay huỷ" đã gợi ý rằng có gì đó đáng huỷ. */}
+            <p className="mt-5 text-[15px] font-medium text-slate-200">
+              Bạn sẽ ký, huỷ, hay cần kiểm tra thêm? Vì sao?
+            </p>
+
             {!choCham ? (
               <button
                 onClick={() => setChoCham(true)}
@@ -161,16 +191,56 @@ export function PhongVan() {
                 Đã chép xong → chấm
               </button>
             ) : (
-              <div className="mt-3 grid gap-2">
-                {(Object.keys(NHAN_CHAM) as Cham[]).map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => luu(c)}
-                    className="rounded-md border border-white/15 px-3 py-2 text-left text-[13px] text-slate-200 hover:bg-white/5"
-                  >
-                    {NHAN_CHAM[c]}
-                  </button>
-                ))}
+              <div className="mt-3 space-y-4">
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                    Mức hiểu hậu quả
+                  </div>
+                  <div className="mt-1.5 grid gap-2">
+                    {(Object.keys(NHAN_CHAM) as Cham[]).map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => setCham(c)}
+                        className={`rounded-md border px-3 py-2 text-left text-[13px] ${
+                          cham === c
+                            ? "border-indigo-500 bg-indigo-950/50 text-slate-100"
+                            : "border-white/15 text-slate-200 hover:bg-white/5"
+                        }`}
+                      >
+                        {NHAN_CHAM[c]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                    Họ nói sẽ làm gì
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap gap-2">
+                    {(Object.keys(NHAN_QD) as QuyetDinh[]).map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => setQuyetDinh(q)}
+                        className={`rounded-md border px-3 py-2 text-[13px] ${
+                          quyetDinh === q
+                            ? "border-indigo-500 bg-indigo-950/50 text-slate-100"
+                            : "border-white/15 text-slate-200 hover:bg-white/5"
+                        }`}
+                      >
+                        {NHAN_QD[q]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={luu}
+                  disabled={!cham || !quyetDinh}
+                  className="rounded-md bg-indigo-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-indigo-500 disabled:opacity-40"
+                >
+                  Lưu người này
+                </button>
               </div>
             )}
 
@@ -181,15 +251,25 @@ export function PhongVan() {
               <div className="mt-1 text-[15px] tabular-nums">
                 <span className="text-emerald-300">{dem("dung")} đúng</span>
                 {" · "}
-                <span className="text-amber-300">{dem("khongChac")} không chắc</span>
+                <span className="text-amber-300">{dem("motPhan")} một phần</span>
                 {" · "}
                 <span className="text-rose-300">{dem("sai")} sai</span>
               </div>
-              {/* Con số công bố phải là ĐÚNG / TỔNG. Gộp "không chắc" vào "đúng" là
+              <div className="mt-2 text-[15px] tabular-nums">
+                <span className="text-slate-400">Họ nói sẽ: </span>
+                <span className="text-emerald-300">{demQD("huy")} huỷ</span>
+                {" · "}
+                <span className="text-amber-300">{demQD("kiemTraThem")} kiểm tra thêm</span>
+                {" · "}
+                <span className="text-rose-300">{demQD("ky")} vẫn ký</span>
+              </div>
+              {/* Con số công bố phải là ĐÚNG / TỔNG. Gộp "một phần" vào "đúng" là
                   tự nâng điểm, và là thứ dễ bị hỏi lộ nhất. */}
-              <div className="mt-1 text-[12px] text-slate-500">
-                Con số nói trên sân khấu: {dem("dung")}/{ban.length} nêu được hậu quả. &quot;Không
-                chắc&quot; KHÔNG được gộp vào &quot;đúng&quot;.
+              <div className="mt-2 text-[12px] leading-relaxed text-slate-500">
+                Con số nói trên sân khấu: <span className="text-slate-400">{dem("dung")}/{ban.length} nêu
+                được hậu quả</span> và <span className="text-slate-400">{demQD("ky")}/{ban.length} vẫn ký</span>.
+                &quot;Một phần&quot; KHÔNG được gộp vào &quot;đúng&quot;. Nếu có người hiểu đúng mà vẫn
+                ký, đó là phát hiện quan trọng nhất của cả đợt — đừng giấu nó đi.
               </div>
 
               <button

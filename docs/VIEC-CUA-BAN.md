@@ -79,7 +79,9 @@ Repo: https://github.com/NeitLN/Custos-Solana
 |---|---|
 | **ĐÚNG** | Nêu được **mất tiền** HOẶC **mất quyền kiểm soát** |
 | **SAI** | Hiểu ngược, hoặc nói chuyện không liên quan |
-| **KHÔNG CHẮC** | "Chắc có gì đó nguy hiểm" mà không nói được là gì |
+| **MỘT PHẦN** | Nêu được một vế, hoặc "chắc có gì đó nguy hiểm" mà không nói được là gì |
+
+Và đo thêm **quyết định**: HUỶ / KIỂM TRA THÊM / VẪN KÝ. Người hiểu đúng mà vẫn ký là phát hiện quan trọng nhất — xem giao thức.
 
 ### Bốn cách tự phá hỏng phép đo
 
@@ -94,8 +96,12 @@ Repo: https://github.com/NeitLN/Custos-Solana
 
 **https://neitln.github.io/Custos-Solana/phong-van.html**
 
+Giao thức đầy đủ — tuyển người, mẫu xin phép, khung chấm, con số nào được nói —
+nằm ở `docs/GIAO-THUC-PHONG-VAN.md`. Đọc một lần trước cuộc đầu tiên.
+
 Nó chiếu **đúng màn cảnh báo thật** (chạy `inspect()` thật, không phải ảnh chụp),
-hỏi đúng một câu, và có ô chép nguyên văn. Nó chặn sẵn ba cách phá hỏng phép đo:
+hỏi hai câu tách nhau (hậu quả, rồi quyết định), và có ô chép nguyên văn. Nó chặn
+sẵn ba cách phá hỏng phép đo:
 
 - 4 người hỏi 4 kiểu → ai cũng thấy đúng một màn hình
 - vô tình chấm trước rồi mới chép → nút chấm chỉ mở **sau khi** đã ghi nguyên văn
