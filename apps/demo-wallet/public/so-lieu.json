@@ -1,0 +1,36 @@
+{
+  "sinhLuc": "2026-08-22T20:46:45.737Z",
+  "cohort": {
+    "ngayDo": "2026-08-22T20:45:41.358Z",
+    "mauDoDuoc": 12,
+    "mauTrongCohort": 20,
+    "mauBoQua": 8,
+    "coveragePhanTram": 77,
+    "chamTaiSan": {
+      "hieu": 28,
+      "tong": 38
+    },
+    "verdict": {
+      "danger": 0,
+      "warning": 10,
+      "safe": 2
+    },
+    "caoBuoc": 0,
+    "warningKhongLyDo": 0
+  },
+  "chiPhi": {
+    "ngayDo": "2026-08-22T20:11:10.506Z",
+    "soMau": 20,
+    "luotGoiRpc": {
+      "trungVi": 6.5,
+      "thap": 4,
+      "cao": 9
+    }
+  },
+  "test": {
+    "pass": 239,
+    "fail": 0
+  },
+  "soLuat": 14,
+  "soMau": 29
+}

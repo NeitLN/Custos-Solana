@@ -204,6 +204,12 @@ export default function App() {
         <p className="mt-1 text-[13px] text-slate-400">
           Ví mẫu để minh hoạ cách một ví tích hợp Custos. Không phải sản phẩm bán ra.
         </p>
+        <a
+          href={`${import.meta.env.BASE_URL}so-lieu.html`}
+          className="mt-2 inline-block text-[13px] text-indigo-400 underline underline-offset-2 hover:text-indigo-300"
+        >
+          Custos đo được những gì →
+        </a>
 
         {chuaDung && (
           <div className="mt-6 rounded-lg border border-amber-700/50 bg-amber-950/40 p-4 text-[13px]">

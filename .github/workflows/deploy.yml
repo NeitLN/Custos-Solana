@@ -39,6 +39,16 @@ jobs:
       - name: Kiểm thử trước khi deploy
         run: npm run check
 
+      # Sinh lại số liệu TRƯỚC khi build. Trang số liệu công khai đọc file này,
+      # và số test trong đó phải là số của chính commit đang deploy — số cũ còn
+      # sót lại là số sai, mà con số sai trên một trang công khai thì đúng loại
+      # "trình bày sai về dữ liệu" mà thể lệ phạt.
+      #
+      # Script chỉ CHẠY BỘ TEST; phần cohort và chi phí thì đọc từ file đã đo sẵn,
+      # nên bước này không gọi mainnet RPC từ CI.
+      - name: Sinh lại số liệu công khai
+        run: node --experimental-strip-types scripts/tao-so-lieu.ts
+
       # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
       # xem chú thích trong file đó để biết vì sao.
       - name: Build ví mẫu
@@ -50,6 +60,7 @@ jobs:
       - name: Kiểm tra base path đã đúng
         run: |
           grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/index.html
+          grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/so-lieu.html
           grep -q 'src="/Custos-Solana/tan-cong/assets/' apps/trang-tan-cong/dist/index.html
           echo "✓ base path đúng"
 
