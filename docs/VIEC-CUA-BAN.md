@@ -90,6 +90,23 @@ Repo: https://github.com/NeitLN/Custos-Solana
 | Bỏ người trả lời sai | Gian lận, và dễ bị hỏi lộ nhất |
 | Hỏi dev Web3 | Họ biết trước rồi, con số đẹp mà vô nghĩa |
 
+### Dùng trang đo sẵn — mở trên điện thoại là hỏi được
+
+**https://neitln.github.io/Custos-Solana/phong-van.html**
+
+Nó chiếu **đúng màn cảnh báo thật** (chạy `inspect()` thật, không phải ảnh chụp),
+hỏi đúng một câu, và có ô chép nguyên văn. Nó chặn sẵn ba cách phá hỏng phép đo:
+
+- 4 người hỏi 4 kiểu → ai cũng thấy đúng một màn hình
+- vô tình chấm trước rồi mới chép → nút chấm chỉ mở **sau khi** đã ghi nguyên văn
+- bỏ người trả lời sai → không có nút xoá từng mục
+
+Xong 12 người thì bấm **Sao chép toàn bộ (JSON)**, dán vào `data/seed/phong-van.json`,
+commit. Dữ liệu nằm trong trình duyệt máy bạn, không gửi đi đâu.
+
+> Con số công bố là **ĐÚNG / TỔNG**. "Không chắc" **không** được gộp vào "đúng" —
+> đó là thứ dễ bị hỏi lộ nhất, và gộp một lần là mất luôn độ tin của mọi con số khác.
+
 ### Ghi kết quả vào đâu
 
 Tạo file `docs/ket-qua-phong-van.md`, bảng có sẵn trong `PHONG-VAN-NGUOI-DUNG.md` mục 3.
