@@ -215,3 +215,35 @@ test("PHÍ chính xác ⇒ giao dịch chỉ trả phí KHÔNG hiện dòng tổ
   });
   assert.equal(timDong(f, NHAN.SO_DU_SOL), undefined, "chỉ trả phí thì không cần dòng tổng SOL");
 });
+
+test("PHÍ · blockhash hết hạn ⇒ lui về ước tính, KHÔNG làm hỏng lượt kiểm tra", async () => {
+  // `getFeeForMessage` chỉ tính được khi blockhash còn hiệu lực. Ca sản phẩm
+  // thật (giao dịch sắp ký) luôn chạy; mô phỏng lại giao dịch lịch sử thì RPC
+  // trả `null`. Phải lui êm chứ không được ném lỗi hay để phí bằng 0.
+  const { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } =
+    await import("@solana/web3.js");
+  const { extractFacts } = await import("../src/l1/fetch.ts");
+
+  const toi = Keypair.generate();
+  const tx = new VersionedTransaction(
+    new TransactionMessage({
+      payerKey: toi.publicKey,
+      recentBlockhash: PublicKey.default.toBase58(),
+      instructions: [SystemProgram.transfer({ fromPubkey: toi.publicKey, toPubkey: toi.publicKey, lamports: 1 })],
+    }).compileToV0Message(),
+  );
+
+  const conn = {
+    getFeeForMessage: async () => ({ value: null }), // blockhash hết hạn
+    getAddressLookupTable: async () => ({ value: null }),
+    getMultipleAccountsInfo: async (k: unknown[]) => k.map(() => null),
+    simulateTransaction: async (_t: unknown, cfg: { accounts?: { addresses?: string[] } }) => ({
+      value: { err: null, logs: [], innerInstructions: [], accounts: (cfg.accounts?.addresses ?? []).map(() => null) },
+    }),
+    getSignaturesForAddress: async () => [],
+  };
+
+  const f = await extractFacts(conn as never, tx);
+  assert.equal(f.phiChinhXac, false, "phải biết là mình đang dùng ước tính");
+  assert.ok(f.phiUocTinh > 0n, "và ước tính phải khác 0, không được rơi về không");
+});
