@@ -513,10 +513,10 @@ nó chưa hiểu.**
 | Câu hỏi | Quyết định |
 |---|---|
 | Có giữ idea? | Có |
-| Track · chủ đề | Best Product & Business · AI × Web3 |
+| Track · chủ đề | Best Product & Business · AI × Web3 — **cân lại 23/08, giữ nguyên**, xem dưới bảng |
 | Hình dạng sản phẩm | SDK/API cho ví và dApp |
 | Anchor program · memo on-chain | Không có trong bản thi |
-| Số lượng luật L2 | 11, mỗi luật có ca kiểm thử an toàn/nguy hiểm |
+| Số lượng luật L2 | **14** (chốt 11, thêm 3 khi thực thi), mỗi luật có ca kiểm thử an toàn/nguy hiểm |
 | Dữ liệu | Seed evaluation dataset 30–50 giao dịch, tách khỏi nghiên cứu người dùng |
 | Phân bổ thời gian | Engine luật + test 50% · trải nghiệm 30% · dataset 20% |
 | Demo Wallet | Trang ký tối giản, nhãn "Demo Wallet — Devnet Only" |
@@ -527,6 +527,36 @@ nó chưa hiểu.**
 | Định giá | Ba tầng Developer / Startup / Enterprise, chưa đưa con số |
 
 **Phạm vi đã khoá.** Từ đây trở đi mọi thay đổi là thay đổi khi thực thi, không phải thay đổi ý tưởng.
+
+### Vì sao KHÔNG chuyển sang Track 2 — cân lại 23/08
+
+Câu hỏi hợp lý: đội mạnh kỹ thuật, sao thi track không chấm chủ yếu kỹ thuật?
+Chấm thử Custos theo rubric Track 2 (chi tiết ở `docs/CHAM-DIEM-GIA-DINH.md`):
+
+| Tiêu chí Track 2 | Trọng số | Ước điểm |
+|---|---:|---:|
+| Độ khó & chiều sâu kỹ thuật | 30 % | 8,0 |
+| Kiến trúc on-chain/off-chain, **chất lượng smart contract** | 25 % | **3,5** |
+| Tận dụng Solana stack, composability, hiệu năng | 25 % | 7,0 |
+| Độ hoàn thiện demo & trình bày | 20 % | 8,5 |
+| **Tổng** | | **≈ 6,7** |
+
+Track 1 hôm nay ≈ 6,95; sau khi lấp hai ô đang trống thì ≈ 8,2.
+
+**Chỗ chết là ô 25 % gọi đích danh "chất lượng smart contract".** Giám khảo phải
+điền một con số, và Custos không có gì để họ chấm. Lập luận *"off-chain là cố ý,
+không có bề mặt tấn công on-chain"* đúng và hay, nhưng nó trả lời một câu rubric
+không hỏi.
+
+Và ô đó **không sửa được**: viết smart contract trong 12 ngày vi phạm quyết định số
+5, và sẽ là một contract chưa audit, viết vội, **trong một sản phẩm bảo mật** — câu
+hỏi đó không có câu trả lời nào nghe được.
+
+Đối chiếu: hai ô yếu của Track 1 (thị trường, kinh doanh) lấp được bằng bốn buổi tối
+không viết code. Một bên là trần cứng, một bên là việc đang làm dở.
+
+**Không có gì bị lãng phí khi ở lại.** Cùng khối lượng kỹ thuật đó đang nuôi ô
+*demo* 30 % của Track 1 và được chấm 8,5.
 
 ---
 

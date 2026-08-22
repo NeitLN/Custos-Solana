@@ -26,6 +26,8 @@ import { VERIFIED_PROGRAMS } from "../packages/core/src/constants.ts";
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
 const TOKEN = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const HO_SO = "data/seed/cohort-audit.json";
+/** Kết quả đo, để trang số liệu công khai đọc thay vì có người gõ tay. */
+const KET_QUA = "data/seed/cohort-ket-qua.json";
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function layCohort(conn: Connection, soMau: number): Promise<string[]> {
@@ -96,5 +98,31 @@ async function main() {
   console.log(`  verdict  Đỏ / Vàng / Xanh : ${danger} / ${warning} / ${safe}`);
   console.log(`  cảnh báo mang tính cáo buộc: ${caoBuoc}`);
   console.log(`  cảnh báo KHÔNG có mã lý do : ${warningKhongLyDo}   <- phải là 0`);
+
+  // Ghi ra file. Trước đây script chỉ in ra màn hình, nên mọi con số muốn dùng ở
+  // chỗ khác đều phải có người chép tay — và số chép tay là số sẽ lệch sau hai
+  // lần sửa code mà không ai nhận ra.
+  writeFileSync(
+    KET_QUA,
+    JSON.stringify(
+      {
+        doLuc: new Date().toISOString(),
+        nhan,
+        rpc: RPC.includes("api.mainnet-beta") ? "public mainnet-beta" : "riêng",
+        coMauDo: n,
+        coCohort: chuKy.length,
+        boQua,
+        coverageTrungBinh: n ? covTong / n : 0,
+        chamTaiSan: { hieu: chamHieu, tong: chamTong },
+        verdict: { danger, warning, safe },
+        caoBuoc,
+        warningKhongLyDo,
+      },
+      null,
+      2,
+    ),
+  );
+  console.log(`
+  đã ghi -> ${KET_QUA}`);
 }
 main().catch((e) => { console.error("LỖI:", e?.message ?? e); process.exit(1); });

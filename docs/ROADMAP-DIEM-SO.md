@@ -159,8 +159,20 @@ nào**, và phần lớn giám khảo sẽ không mở repo.
 Một trang `/so-lieu` trên chính bản deploy, mỗi con số kèm **cách đo và ngày đo**.
 Sinh từ file kết quả đã có chứ không gõ tay — số gõ tay là số sẽ lệch sau hai lần sửa code.
 
-**Xong khi:** không con số nào trên trang được gõ tay; sửa code xong deploy lại thì
-số tự đúng.
+**XONG 23/08** tại `/so-lieu.html`, entry Vite riêng nên có URL gửi được cho giám
+khảo và không kéo theo `@solana/web3.js`.
+
+Để làm được, `do-cohort.ts` phải **ghi kết quả ra file** — trước đây nó chỉ in ra
+màn hình, nên mọi con số muốn dùng chỗ khác đều phải có người chép tay.
+
+Số test thì **chạy bộ test thật rồi đọc kết quả**, không đếm file — một file có thể
+chứa 1 hay 20 ca. CI sinh lại số liệu trước mỗi lần build, nên con số trên trang
+luôn là con số của chính commit đang deploy.
+
+**Phép đo lần này lòi ra một chuyện phải nói ra chứ không được giấu:** cohort đã già
+đi — 8/20 mẫu không còn mô phỏng được, nên coverage tụt 80 % → 77 % **vì mẫu rụng,
+không phải vì code kém đi**. Trang ghi rõ điều đó ngay dưới con số. Giấu đi là tự
+đặt bẫy cho chính mình ở phần Q&A.
 
 ---
 
@@ -216,5 +228,5 @@ cộng lại đổi được ~1,1.
 |---|---|
 | B1 chi phí một lượt kiểm tra | **PASS** — đo được, và lòi ra một khoản chi phí không ai để ý |
 | B2 chế độ "nếu không có Custos" | **PASS** — 7 ca test, và vá một ngõ cụt của bản công khai |
-| B3 trang số liệu | ĐANG LÀM |
+| B3 trang số liệu | **PASS** — sinh từ phép đo, CI tự cập nhật số test |
 | B4 bộ đo phỏng vấn | TUỲ CHỌN |
