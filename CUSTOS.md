@@ -368,6 +368,30 @@ Cùng một giao dịch tạo ra hai kết cục khác nhau. Demo chứng minh c
 
 Điểm chuyển từ miễn phí sang trả tiền là **hạn mức lượt kiểm tra** — cùng cơ chế mà các nhà cung cấp RPC và API hạ tầng Solana đang dùng, nên khách hàng đã quen với hình thức này.
 
+### Neo giá — tra bảng giá CÔNG KHAI, không phải phỏng đoán
+
+Đội chưa hỏi được ví/dApp nào về mức giá họ sẵn sàng trả. Nhưng có một thứ tra được
+ngay: **hạ tầng Solana mà chính những khách hàng đó đang trả tiền hàng tháng.**
+Tra ngày 22/08/2026:
+
+| Nhà cung cấp | Miễn phí | Tầng đầu tiên trả tiền | Tầng tiếp theo |
+|---|---|---|---|
+| [Helius](https://www.helius.dev/pricing) | 1M credit/tháng · 10 req/s | **$49/tháng** — 10M credit | $499 — 100M credit |
+| [QuickNode](https://www.quicknode.com/pricing) | 10M credit (dùng thử) · 15 req/s | **$49/tháng** — 80M credit | $249 — 450M credit |
+
+**Hai nhà cung cấp độc lập cùng đặt tầng trả tiền đầu tiên ở $49/tháng.** Đó là mức
+giá thị trường đã quen cho hạ tầng Solana ở quy mô nhỏ, và Helius bán thêm credit ở
+**$5/triệu lượt gọi**.
+
+Điều này chưa nói Custos nên bán bao nhiêu — Custos tốn nhiều hơn một lời gọi RPC
+(mỗi lượt kiểm tra gồm resolve ALT, `getMultipleAccounts`, `simulateTransaction`, và
+có thể một lượt gọi mô hình ngôn ngữ). Nhưng nó cho một **neo có thật**: khách hàng
+mục tiêu đã quen trả khoảng $49/tháng để bắt đầu, và quen với mô hình hạn mức lượt gọi.
+
+> **Vẫn còn thiếu, và phải nói thẳng:** neo giá không thay thế được việc hỏi khách
+> hàng. Chưa ví/dApp nào nói với đội rằng họ sẽ trả bao nhiêu cho lớp kiểm tra này.
+> Đây là số liệu tham chiếu, **không phải** validation.
+
 **Điểm bán:** *Custos giúp ví và dApp Solana bổ sung transaction intelligence tiếng Việt thông qua một SDK call.*
 
 **Tiếp cận khách hàng đầu tiên:** ví và dApp Solana có người dùng Việt Nam, cộng đồng Superteam Vietnam, các nền tảng embedded wallet đang mở rộng sang Đông Nam Á.
@@ -406,11 +430,37 @@ Mỗi mẫu có: link Explorer hoặc transaction fixture · loại tấn công 
 
 | Đã tồn tại | Họ làm gì | Khoảng trống |
 |---|---|---|
-| Ví lớn (Phantom, Backpack) | Transaction preview do Blowfish cung cấp: mô phỏng, cảnh báo thời gian thực, diễn giải dạng người đọc được. **Đã cảnh báo khi giao dịch gọi `setAuthority` bất thường** | Tiếng Anh. Và quan trọng hơn: **không cho biết đã hiểu được bao nhiêu phần giao dịch** — khi mô phỏng bỏ lọt một instruction, người dùng không được báo gì cả |
-| Blowfish, Blockaid | API bảo mật giao dịch, đã gọi vốn lớn | Đóng, tiếng Anh, khách hàng là ví Mỹ |
+| Ví lớn (Phantom, Backpack) | Transaction preview: mô phỏng, cảnh báo thời gian thực, diễn giải dạng người đọc được. **Đã cảnh báo khi giao dịch gọi `setAuthority` bất thường** | Tiếng Anh. Và quan trọng hơn: **không cho biết đã hiểu được bao nhiêu phần giao dịch** — khi mô phỏng bỏ lọt một instruction, người dùng không được báo gì cả |
+| Blockaid | API bảo mật giao dịch, đã gọi vốn lớn | Đóng, tiếng Anh, khách hàng là ví Mỹ |
 | Unruggable | Ví cứng cho Solana | Phần cứng, phải mua thiết bị mới |
 
-Cùng hình dạng sản phẩm với Blowfish/Blockaid (SDK bán cho ví). Khác ở thị trường mục tiêu, và ở một lựa chọn kiến trúc: **Custos nói cho người dùng biết phần nào của giao dịch nó chưa hiểu.**
+### Blowfish đã bị Phantom mua và ĐÓNG dịch vụ độc lập
+
+Kiểm chứng ngày 22/08/2026: `blowfish.xyz` giờ trả về trang báo hết hạn tên miền.
+Phantom công bố mua lại Blowfish, và trong chính thông báo đó:
+
+> *"Blowfish has notified all existing customers that the current service has been sunset."*
+
+Con số Blowfish công bố trước khi bị mua: 1,3 tỉ giao dịch đã quét, 2,8 triệu vụ
+lừa đã chặn, hơn 18 tỉ USD tài sản được bảo vệ.
+
+**Điều này cắt cả hai chiều, và phải nói cả hai:**
+
+- **Thuận:** mô hình "bán SDK bảo mật giao dịch cho ví" **đã được thị trường trả tiền
+  xác nhận** — ví lớn nhất Solana bỏ tiền mua đúng năng lực này. Đây là bằng chứng
+  mạnh hơn bất kỳ lập luận nào đội tự nghĩ ra.
+- **Nghịch:** năng lực đó giờ **nằm trong Phantom**, không còn bán rời. Ví lớn nhất
+  đã có sẵn thứ này. Khách hàng đầu tiên của Custos vì vậy **không thể là Phantom** —
+  mà là ví và dApp chưa có, phục vụ người Việt.
+
+Nếu giám khảo hỏi *"Phantom đã có rồi, sao còn cần các em?"* — câu trả lời không phải
+"chúng em làm tốt hơn". Câu trả lời là: **Phantom có, bằng tiếng Anh, cho người dùng
+Phantom.** Ví và dApp khác phục vụ người Việt thì không có gì, và họ không mua được
+Blowfish nữa vì nó đã đóng.
+
+Cùng hình dạng sản phẩm với Blockaid (SDK bán cho ví). Khác ở thị trường mục tiêu,
+và ở một lựa chọn kiến trúc: **Custos nói cho người dùng biết phần nào của giao dịch
+nó chưa hiểu.**
 
 Đây không phải suy đoán về đối thủ. Coinspect đã công bố một ca mô phỏng của Blowfish bỏ lọt instruction `assign` chuyển quyền sở hữu tài khoản; khi kẻ tấn công ghép nó với một vế trông hợp lệ, ví chỉ hiển thị vế hợp lệ và **im lặng về phần nó không hiểu**. Khuyến nghị của nhóm nghiên cứu là ví phải có phương án dự phòng khi mô phỏng thất bại. Trường `coverage` và quy tắc fail-safe về `warning` của Custos chính là phương án đó.
 
