@@ -8,9 +8,11 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 | | |
 |---|---:|
 | Test | 220 PASS |
+| Cohort | 20 chữ ký, làm mới 23/08 |
 | Luật | 14 |
-| Coverage trung bình | **74 %** |
-| Coverage lệnh **chạm tài sản người ký** | **70 %** |
+| Coverage trung bình | **82 %** |
+| Coverage lệnh **chạm tài sản người ký** | **88 %** |
+| Giao dịch ra "Bình thường" | **5/15** |
 | Verdict Đỏ sai trên cohort | 0 |
 | Cảnh báo mang tính cáo buộc | 0 |
 
@@ -224,11 +226,21 @@ dài, mỗi cái 2–5 lệnh. Ứng viên có discriminator Anchor:
 | `CAMMCzo5YL8w…` | 5 | `global:swap`, `global:swapV2` |
 | `3QUnrcMqCQoi…` | 3 | `global:swap` |
 
-**Acceptance:** chỉ thêm chương trình **có IDL trên chuỗi**. Không có IDL thì
-không thêm — quy tắc đã khoá.
+**XONG 23/08 — và kết quả là "chỉ thêm được một".** Tra bốn ứng viên:
 
-**Files:** `scripts/tao-bang-idl.ts` (chỉ thêm địa chỉ), `bang-idl.ts` sinh lại
-**Ước:** 1 giờ
+| Chương trình | IDL trên chuỗi | Kết quả |
+|---|---|---|
+| `CAMMCzo5YL8w…` | **có**, 38 lệnh | đã thêm |
+| `3QUnrcMqCQoi…` | không | **không thêm** |
+| `Prism8hsRo6Ww…` | không | **không thêm** |
+| `FaJeucKqfFyz…` | không | **không thêm** |
+
+Ba chương trình không công bố IDL thì không có cách nào đọc hiểu mà không phỏng
+đoán. Quy tắc đã khoá, và ghi lại ngay trong `scripts/tao-bang-idl.ts` để lần sau
+không ai thử thêm lại.
+
+**Files:** `scripts/tao-bang-idl.ts`, `bang-idl.ts` sinh lại
+**Thực tế:** ~20 phút
 
 ---
 
@@ -266,7 +278,7 @@ P0-B  bảng nhất quán    XONG
 P1-G  phí chính xác     XONG — gỡ luôn chữ "(ước tính)" khỏi nhãn
 P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
 P1-D  enum SPL Token    XONG
-P1-E  thêm IDL
+P1-E  thêm IDL          XONG
 P2-F  mức Kỹ thuật
 ```
 
@@ -281,5 +293,5 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 | P1-C | TODO — hạ từ P0 sau review |
 | P1-G | **PASS** — phí khớp từng lamport trên 4 giao dịch mainnet |
 | P1-D | **PASS** — 86% decode, 0 lệnh sót trong chương trình đã xác minh |
-| P1-E | TODO |
+| P1-E | **PASS** — thêm 1/4 (ba cái kia không có IDL) |
 | P2-F | TODO |

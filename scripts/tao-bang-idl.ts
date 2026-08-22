@@ -24,6 +24,9 @@ const UNG_VIEN = [
   "DF1ow4tspfHX9JwWJsAb9epbkA8hmpSEAtxXy1V27QBH",
   "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
   "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+  // Thêm 23/08 sau khảo sát vòng hai. Ba ứng viên khác cùng đợt (3QUnrcM,
+  // Prism8hs, FaJeucK) KHÔNG công bố IDL trên chuỗi nên KHÔNG được thêm.
+  "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
 ];
 
 const bam = (t: string) => createHash("sha256").update(`global:${t}`).digest().subarray(0, 8).toString("hex");

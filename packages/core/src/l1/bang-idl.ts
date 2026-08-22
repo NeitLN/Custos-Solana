@@ -8,7 +8,7 @@
  *
  * Chương trình không công bố IDL trên chuỗi thì KHÔNG có mặt ở đây, và vẫn bị
  * đếm là chưa xác minh. Coverage thấp còn hơn tự nhận đã đọc hiểu.
- * Lấy lúc: 2026-08-21T17:27:24.723Z
+ * Lấy lúc: 2026-08-22T18:26:53.223Z
  */
 
 /** Anchor gọi lại chính nó để phát log sự kiện, dùng tag cố định này.
@@ -249,5 +249,47 @@ export const BANG_IDL: ReadonlyMap<string, BangLenh> = new Map<string, BangLenh>
     "bb64facc31c4af14": "route_v2",
     "3560e5cad8bbfa18": "shared_accounts_exact_out_route_v2",
     "d19853937cfed8e9": "shared_accounts_route_v2",
+  }],
+  // IDL trên chuỗi: FbDNAPsgm8Y5jWXQkXjpfN6Bp8xHeRkhMmsstAooPyY9
+  ["CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK", {
+    [ANCHOR_EVENT_CPI]: "logSuKien",
+    "4c7c800fd55725fa": "close_limit_order",
+    "9c5420764587467b": "close_permission_pda",
+    "7b86510031446262": "close_position",
+    "c975989055556cb2": "close_protocol_position",
+    "6088b76348983683": "close_support_mint_associated",
+    "a78a4e95dfc2067e": "collect_fund_fee",
+    "8888fcddc2427e59": "collect_protocol_fee",
+    "12eda6c52210d590": "collect_remaining_rewards",
+    "8934edd4d7756c68": "create_amm_config",
+    "2b44d4a7592fa401": "create_customizable_pool",
+    "bd0eb5785576e33e": "create_dynamic_fee_config",
+    "3f5794216d230868": "create_operation_account",
+    "878802d889a9b5ca": "create_permission_pda",
+    "24f3b3232aef35e5": "create_permissioned_pool",
+    "e992d18ecf6840bc": "create_pool",
+    "11fb415c88f20ea9": "create_support_mint_associated",
+    "759d3c674231a300": "decrease_limit_order",
+    "a026d06f685b2c01": "decrease_liquidity",
+    "3a7fbc3e4f52c460": "decrease_liquidity_v2",
+    "b19059ecfaba7d63": "increase_limit_order",
+    "2e9cf3760dcdfbb2": "increase_liquidity",
+    "851d59df45eeb00a": "increase_liquidity_v2",
+    "5f87c0c4f281e644": "initialize_reward",
+    "9d20dab7471d1293": "open_limit_order",
+    "87802f4d0f98f031": "open_position",
+    "4db84ad67056f1c7": "open_position_v2",
+    "4dffae527d1dc92e": "open_position_with_token22_nft",
+    "7034a74b20c9d389": "set_reward_params",
+    "cd4e74215c691a60": "settle_limit_order",
+    "f8c69e91e17587c8": "swap",
+    "457d73daf5baf2c4": "swap_router_base_in",
+    "2b04ed0b1ac91e62": "swap_v2",
+    "07160c53f22b3079": "transfer_reward_owner",
+    "313cae889a1c74c8": "update_amm_config",
+    "0707500802c784f0": "update_dynamic_fee_config",
+    "7f467728bce33d07": "update_operation_account",
+    "82576c062ee0757b": "update_pool_status",
+    "a3ace0340b9a6adf": "update_reward_infos",
   }],
 ]);
