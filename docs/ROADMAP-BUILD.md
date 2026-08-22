@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 220 PASS |
+| Test | 227 PASS |
 | Cohort | 20 chữ ký, làm mới 23/08 |
 | Luật | 14 |
 | Coverage trung bình | **82 %** |
@@ -142,12 +142,31 @@ sau`, và đó là **sự thật** — người dùng thật sự đang có ít 
 
 Còn lại là tinh chỉnh: tách riêng dòng cho biết phần nào lấy lại được.
 
-**Cách làm mới:** rent = lamport nằm trong các tài khoản **mới tạo trong chính
-giao dịch này** (`programOwnerBefore === null` mà `programOwnerAfter !== null`).
-Đọc từ trạng thái, không đọc từ lệnh.
+**XONG 23/08.** Rent đọc từ trạng thái: lamport trong tài khoản **mới tạo** và
+**thuộc về người dùng**.
 
-**Files:** `diff.ts`, `sol.ts`
-**Ước:** 2 giờ
+**Vế "thuộc về người dùng" là bắt buộc, không phải chi tiết.** Lọc thô theo "có
+tạo tài khoản" thì kẻ tấn công dựng được ca: tạo tài khoản mà **chúng** sở hữu,
+trả bằng SOL của người dùng — khoản đó bị loại khỏi ngưỡng luật 13 và Custos im
+lặng, trong khi tiền mất thật và không lấy lại được. Có test riêng cho đúng bẫy đó.
+
+**Đo cohort sau khi sửa lại phát hiện một cáo buộc SAI — và nó là lỗi có từ trước:**
+
+```
+ví 0,025 SOL · tiêu 0,016 (63 %) · NHẬN VỀ 7.453 token
+-> luật 13 gắn cờ SOL_ROI_VI
+```
+
+Đó là một lệnh **mua** bình thường của ví nhỏ. Luật 11 đã học đúng bài này từ
+trước — nó kiểm `coNhanLai` và im lặng khi người dùng nhận lại thứ gì. **Luật 13
+thiếu vế đó.** Đã thêm.
+
+Đánh đổi ghi rõ trong code: kẻ tấn công đưa lại một token vô giá trị cũng làm tắt
+được luật này. Custos không có dữ liệu giá nên không phân biệt được token thật với
+token rác — cùng khoảng hở luật 11 đã chấp nhận.
+
+**Files:** `sol.ts`, `diff.ts`, `l2/rules.ts`, test
+**Thực tế:** ~1,5 giờ
 
 ---
 
@@ -291,7 +310,7 @@ lệnh, mã lý do, chương trình chưa xác minh.
 P0-A  wSOL              XONG
 P0-B  bảng nhất quán    XONG
 P1-G  phí chính xác     XONG — gỡ luôn chữ "(ước tính)" khỏi nhãn
-P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
+P1-C  rent              XONG
 P1-D  enum SPL Token    XONG
 P1-E  thêm IDL          XONG
 P2-F  mức Kỹ thuật
@@ -305,7 +324,7 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 |---|---|
 | P0-A | **PASS** — 3 ca test, không hồi quy cohort |
 | P0-B | **PASS** — 7 ca test, kiểm trên mainnet thật |
-| P1-C | TODO — hạ từ P0 sau review |
+| P1-C | **PASS** — kèm vá một cáo buộc sai có từ trước |
 | P1-G | **PASS** — phí khớp từng lamport trên 4 giao dịch mainnet |
 | P1-D | **PASS** — 86% decode, 0 lệnh sót trong chương trình đã xác minh |
 | P1-E | **PASS** — thêm 1/4 (ba cái kia không có IDL) |

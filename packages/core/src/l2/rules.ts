@@ -1,7 +1,7 @@
 import type { Level } from "@custos/types";
 import type { Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
-import { tinhSolNguoiDung } from "../sol.ts";
+import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
 
 export type RuleHit = {
   ruleId: number;
@@ -469,12 +469,34 @@ export const luat13: Rule = {
     const { truoc, roi } = tinhSolNguoiDung(f);
     if (roi <= 0n) return []; // không mất gì, hoặc nhận thêm
 
-    const phi = f.phiUocTinh ?? 0n;
-    if (roi <= phi) return []; // chỉ là phí
+    // Trừ cả phí lẫn tiền đặt cọc: cả hai đều không phải "mất tiền". Đặt cọc
+    // chỉ được trừ khi tài khoản mới THUỘC VỀ người dùng — xem tinhTienDatCoc.
+    const khongPhaiMat = (f.phiUocTinh ?? 0n) + tinhTienDatCoc(f);
+    if (roi <= khongPhaiMat) return [];
 
-    const chuyenDi = roi - phi;
+    const chuyenDi = roi - khongPhaiMat;
     if (truoc <= 0n) return [];
     if ((chuyenDi * 100n) / truoc < NGUONG_SOL_PHAN_TRAM) return [];
+
+    // NGƯỜI DÙNG CÓ NHẬN LẠI GÌ KHÔNG?
+    //
+    // Trả tiền mua một món hàng thì không phải nạn nhân. Ca bắt được khi đo
+    // cohort 23/08: ví 0,025 SOL tiêu 0,016 (63 %) và nhận về 7.453 token — một
+    // lệnh mua bình thường của ví nhỏ, bị luật này gắn cờ oan.
+    //
+    // Luật 11 đã học đúng bài này từ trước và kiểm `coNhanLai`. Luật 13 thiếu vế
+    // đó. Gắn cờ mọi lệnh mua là cách nhanh nhất để người dùng học được cách bỏ
+    // qua cảnh báo — và một sản phẩm bảo mật chết vì mệt mỏi cảnh báo cũng nhanh
+    // như chết vì bỏ lọt.
+    //
+    // Đánh đổi phải nói rõ: kẻ tấn công đưa lại một token vô giá trị thì cũng
+    // làm tắt được luật này. Custos KHÔNG có dữ liệu giá nên không phân biệt
+    // được token thật với token rác. Đây là cùng một khoảng hở luật 11 đã chấp
+    // nhận, và ghi trong tài liệu tích hợp.
+    const coNhanLai = f.tokenAccounts.some(
+      (t) => t.ownerAfter === f.signer && t.amountAfter > t.amountBefore,
+    );
+    if (coNhanLai) return [];
 
     return [{
       ruleId: 13,
