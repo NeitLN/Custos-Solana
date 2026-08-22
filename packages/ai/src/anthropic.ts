@@ -19,6 +19,14 @@ export type TuyChonAnthropic = {
   apiKey?: string;
   model?: string;
   maxTokens?: number;
+  /**
+   * Nhận số token thật của mỗi lượt gọi, để đo chi phí.
+   *
+   * Chỉ có nhà cung cấp mới biết con số này — đếm ký tự rồi chia ra token là ước
+   * lượng, mà đơn vị kinh tế đưa lên slide thì không được đứng trên ước lượng.
+   * `scripts/do-token-mo-hinh.ts` dùng móc này.
+   */
+  ghiNhanDung?: (u: { vao: number; ra: number }) => void;
 };
 
 const MODEL_MAC_DINH = "claude-haiku-4-5-20251001";
@@ -44,6 +52,8 @@ export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
       system,
       messages: [{ role: "user", content: user }],
     });
+
+    tuyChon.ghiNhanDung?.({ vao: r.usage.input_tokens, ra: r.usage.output_tokens });
 
     const khoi = r.content.find((k) => k.type === "text");
     if (!khoi || khoi.type !== "text") {
