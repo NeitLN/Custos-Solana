@@ -190,6 +190,19 @@ lưu `localStorage`, xuất JSON — làm phép đo đồng nhất và giữ đ�
 > **Đây là mục dễ bị cám dỗ làm trước vì nó vui.** Đừng. Nó chỉ hỗ trợ việc của
 > người, không thay được việc của người: 12 cuộc trò chuyện vẫn phải có người đi hỏi.
 
+**XONG 23/08** tại `/phong-van.html`, làm sau cùng đúng như đã xếp.
+
+Màn hình là `CanhBao` **thật**, chạy qua đúng `inspect()` trên giao dịch tấn công
+devnet — không ảnh chụp, không mock, và **cố ý không có bản dự phòng**: đo trên một
+màn hình giả thì con số thu được cũng giả, nên thà báo lỗi còn hơn.
+
+Chặn ba cách phá hỏng phép đo, lấy thẳng từ danh sách trong `VIEC-CUA-BAN.md`:
+nút chấm chỉ mở **sau khi** đã ghi nguyên văn (chấm trước rồi chép là chép theo
+nhãn mình vừa gắn); không có nút xoá từng mục (bỏ người trả lời sai là gian lận);
+và mọi người phỏng vấn thấy đúng một màn hình.
+
+Trang tự nhắc con số công bố là **ĐÚNG / TỔNG**, "không chắc" không gộp vào "đúng".
+
 ---
 
 ## Cố ý KHÔNG làm ở vòng này
@@ -229,4 +242,4 @@ cộng lại đổi được ~1,1.
 | B1 chi phí một lượt kiểm tra | **PASS** — đo được, và lòi ra một khoản chi phí không ai để ý |
 | B2 chế độ "nếu không có Custos" | **PASS** — 7 ca test, và vá một ngõ cụt của bản công khai |
 | B3 trang số liệu | **PASS** — sinh từ phép đo, CI tự cập nhật số test |
-| B4 bộ đo phỏng vấn | TUỲ CHỌN |
+| B4 bộ đo phỏng vấn | **PASS** — `/phong-van.html`, chạy màn cảnh báo THẬT |
