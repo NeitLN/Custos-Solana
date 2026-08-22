@@ -39,7 +39,14 @@ export type SolNguoiDung = {
 export function tinhSolNguoiDung(facts: Facts): SolNguoiDung {
   const vi = facts.accounts.find((a) => a.address === facts.signer);
   let truoc = vi?.lamportsBefore ?? 0n;
-  let sau = vi?.lamportsAfter ?? 0n;
+  // Nếu vì lý do nào đó ví người ký không có trong `accounts`, dựng lại trạng
+  // thái sau từ `solDelta`. Hiện hai nguồn này luôn đi cùng nhau — cả hai đều
+  // lọc theo `afterByIndex.has(i)` trong l1/fetch.ts — nên nhánh này không chạy.
+  //
+  // Vẫn để, vì nếu chúng lệch nhau sau một lần refactor thì hậu quả là luật 13
+  // im lặng: nó sẽ tính ra 0 lamport rời ví trong khi `solDelta` biết rõ là 5 SOL
+  // đã đi. Một bỏ lọt im lặng là loại lỗi tệ nhất, và hai dòng phòng thủ thì rẻ.
+  let sau = vi ? vi.lamportsAfter : truoc + (facts.solDelta[facts.signer] ?? 0n);
 
   for (const t of facts.tokenAccounts) {
     if (t.mint !== WSOL_MINT) continue;

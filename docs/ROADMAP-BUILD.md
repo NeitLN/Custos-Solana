@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 204 PASS |
+| Test | 208 PASS |
 | Luật | 14 |
 | Coverage trung bình | **74 %** |
 | Coverage lệnh **chạm tài sản người ký** | **70 %** |
@@ -55,15 +55,14 @@ KÊU OAN · bọc 5 SOL thành wSOL để swap (ví mất 5 SOL, wSOL tăng 5 SO
 trong ví cộng wrapped SOL. Bọc và mở gói chỉ đổi hình dạng nên tổng không đổi;
 lamport chảy ra ngoài thì tổng giảm thật. Cả hai lỗi tự đúng.
 
-**Acceptance:**
-- Dựng được giao dịch devnet đóng tài khoản wSOL, lamport về ví thứ ba
-- Nếu tái hiện được ⇒ luật 15 gắn cờ, có mã lý do riêng
-- Ca âm tính: `syncNative` và đóng wSOL trả về **chính ví người dùng** ⇒ không gắn cờ
-  (đây là bước cuối bình thường của mọi giao dịch swap)
-- Đo cohort trước/sau: không thêm cáo buộc nào
+**Review sau khi sửa tìm thêm một mong manh do CHÍNH bản vá tạo ra.** Luật 13 giờ
+đọc `facts.accounts`, trong khi bản trước đọc `solDelta`. Hai nguồn này hiện luôn
+đi cùng nhau (cùng lọc theo `afterByIndex` trong `l1/fetch.ts`) nên không sai được
+hôm nay — nhưng nếu một lần refactor làm chúng lệch, hậu quả là luật 13 **im lặng**.
+Đã thêm nhánh dựng lại từ `solDelta`, kèm test bất biến.
 
-**Files:** `l2/rules.ts`, `constants.ts`, mẫu devnet mới
-**Ước:** 3–4 giờ
+**Files:** `sol.ts` (mới), `l2/rules.ts`, `packages/ai/src/templates.ts`
+**Thực tế:** ~2 giờ
 
 ### P0-B · Bảng chênh lệch lẫn lộn "số dư" với "mức thay đổi"
 
@@ -78,15 +77,30 @@ Phí mạng (ước tính)        | 0            -> −0,000014999 SOL  (0 giả
 Ba dòng, ba quy ước khác nhau, trên **cùng một bảng**. Đây là màn hình sắp đem đi
 đo mức độ hiểu của 12 người.
 
+**Review tìm thêm một lỗi nặng hơn ở cùng chỗ.** Ca đóng tài khoản wSOL cho ví lạ:
+
+```
+verdict : warning · SOL_ROI_VI          <- luật nói mất 5 SOL
+BẢNG    : Số dư SOL  5,0 -> 0,0  [info] <- bảng tô màu THÔNG TIN
+          (không có dòng "Chuyển SOL đi" nào)
+```
+
+Verdict nói nguy, bảng nói bình thường. Nguyên nhân: `severity` của dòng token
+tính bằng `coHitO(t.address)` — dò xem có luật nào nhắc tới **địa chỉ tài khoản**
+đó không. Luật 13 nói về SOL của người dùng chứ không nhắc địa chỉ ATA nào, nên
+dòng wSOL không bao giờ được tô đỏ.
+
 **Acceptance:**
 - Mọi dòng dùng chung một quy ước: `trước → sau`, cả hai là **số dư**
-- Ca chỉ có phí: hiện đúng số dư SOL trước và sau
-- Test khoá lại quy ước, để không ai lỡ tay đổi lệch một dòng
+- Dòng không phải số dư (phí, phần chưa đọc được) dùng `—` ở cột trái
+- Luật 13 kích hoạt ⇒ dòng SOL phải là `danger`, không được là `info`
+- Ca chỉ có phí: verdict không đổi, không có dòng nào bị tô đỏ
+- Test khoá quy ước VÀ khoá liên kết luật↔màu
 
 **Files:** `diff.ts`, `mucNgan.ts` (đọc từ bảng nên phải theo), test
-**Ước:** 2 giờ
+**Ước:** 3 giờ (tăng từ 2 sau review)
 
-### P0-C · Rent bị gọi nhầm là khoản chuyển
+### ~~P0-C~~ → **P1-C** · Rent bị gọi nhầm là khoản chuyển
 
 **Vấn đề.** Tạo tài khoản token tốn ~0,002 SOL tiền rent — đó là **tiền đặt cọc
 lấy lại được**, không phải khoản chuyển đi. Đóng tài khoản thì được hoàn. Hiện cả
@@ -95,16 +109,27 @@ hai gộp vào "Chuyển SOL đi" và "Nhận SOL".
 Trong giao dịch mainnet ở trên: hai lệnh `createAtaIdempotent` + một `closeAccount`
 — một phần của 0,026 SOL là rent, phần còn lại mới là tiền mua thật.
 
-**Cách làm.** Rent đi kèm lệnh `createAccount` / `createAta*` / `closeAccount` đã
-decode được, nên suy ra được từ chính danh sách lệnh — không phải đoán.
+**HẠ ƯU TIÊN sau review, vì hai lý do.**
 
-**Acceptance:**
-- Dòng riêng `Đặt cọc tài khoản (lấy lại được)`
-- Không tính rent vào ngưỡng 50 % của luật 13
-- Ca âm tính: giao dịch không tạo tài khoản nào ⇒ không có dòng đó
+**Một — thiết kế tôi ghi ban đầu KHÔNG chạy được.** Tôi viết "suy ra từ chính danh
+sách lệnh". Nhưng RPC trả lệnh CPI ở dạng `parsed.type`, **không kèm số lamport**.
+Lệnh `createAccount` trong CPI chỉ cho biết *có tạo tài khoản*, không cho biết
+*bao nhiêu tiền*. Muốn số chính xác phải đọc chênh lệch lamport của tài khoản mới
+tạo — tức đọc trạng thái, không đọc lệnh. Phải thiết kế lại.
 
-**Files:** `l1/fetch.ts`, `diff.ts`, `l2/rules.ts`
-**Ước:** 3 giờ
+**Hai — P0-B đã hoá giải phần lớn tác hại.** Cái sai không phải con số, mà là
+nhãn: gọi tiền đặt cọc là "Chuyển SOL đi". Sau P0-B, bảng hiện `Số dư SOL: trước →
+sau`, và đó là **sự thật** — người dùng thật sự đang có ít SOL hơn, dù lấy lại
+được sau. Không còn nhãn nào nói sai nữa.
+
+Còn lại là tinh chỉnh: tách riêng dòng cho biết phần nào lấy lại được.
+
+**Cách làm mới:** rent = lamport nằm trong các tài khoản **mới tạo trong chính
+giao dịch này** (`programOwnerBefore === null` mà `programOwnerAfter !== null`).
+Đọc từ trạng thái, không đọc từ lệnh.
+
+**Files:** `diff.ts`, `sol.ts`
+**Ước:** 2 giờ
 
 ---
 
@@ -118,6 +143,10 @@ sai một dòng, và Token-2022 có mã 25–46 chưa có dòng nào.
 **Cách làm.** `@solana/spl-token` export sẵn enum `TokenInstruction` với đủ mã tới
 46 (`InitializeMintCloseAuthority`, `TransferFeeExtension`, …, `PermissionedBurnExtension`).
 Sinh bảng từ đó thì **không bao giờ lệch khỏi thư viện**, và tự có luôn extension.
+
+**Đã kiểm chứng trong review:** enum có **44 mã**. Tám mã đối chiếu thử
+(0, 3, 6, 9, 12, 17, 21, 24) đều khớp chính xác tên viết tay sau khi đổi
+camelCase. Rủi ro thấp, ước lượng giữ nguyên.
 
 **Acceptance:**
 - Bảng sinh từ enum, không còn dòng viết tay
@@ -175,9 +204,10 @@ lệnh, mã lý do, chương trình chưa xác minh.
 ## Thứ tự thực hiện
 
 ```
-P0-A  wSOL            <- bắt đầu: đây là lỗ hổng, không phải điểm số
-P0-B  bảng nhất quán
-P0-C  rent
+P0-A  wSOL              XONG
+P0-B  bảng nhất quán    <- tiếp theo, và gấp hơn lúc lập kế hoạch:
+                           sau P0-A, luật và bảng có thể nói hai điều khác nhau
+P1-C  rent              (hạ từ P0 — P0-B đã hoá giải phần lớn tác hại)
 P1-D  enum SPL Token
 P1-E  thêm IDL
 P2-F  mức Kỹ thuật
@@ -191,7 +221,7 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 |---|---|
 | P0-A | **PASS** — 3 ca test, không hồi quy cohort |
 | P0-B | TODO |
-| P0-C | TODO |
+| P1-C | TODO — hạ từ P0 sau review |
 | P1-D | TODO |
 | P1-E | TODO |
 | P2-F | TODO |
