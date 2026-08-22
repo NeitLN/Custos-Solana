@@ -1,0 +1,48 @@
+{
+  "doLuc": "2026-08-22T20:11:10.506Z",
+  "rpc": "public mainnet-beta",
+  "soMauDoDuoc": 20,
+  "soMauBoQua": 0,
+  "ghiChu": "KHÔNG tính getTransaction — ví đã có giao dịch. Số là LƯỢT GỌI, chưa quy ra credit.",
+  "theoPhuongThuc": [
+    {
+      "ten": "getAddressLookupTable",
+      "trungVi": 1,
+      "thap": 0,
+      "cao": 3
+    },
+    {
+      "ten": "getFeeForMessage",
+      "trungVi": 1,
+      "thap": 1,
+      "cao": 1
+    },
+    {
+      "ten": "getMultipleAccountsInfo",
+      "trungVi": 2,
+      "thap": 2,
+      "cao": 2
+    },
+    {
+      "ten": "getSignaturesForAddress",
+      "trungVi": 0,
+      "thap": 0,
+      "cao": 3
+    },
+    {
+      "ten": "simulateTransaction",
+      "trungVi": 1,
+      "thap": 1,
+      "cao": 1
+    }
+  ],
+  "tongLuotGoi": {
+    "trungVi": 6.5,
+    "thap": 4,
+    "cao": 9
+  },
+  "soLenh": {
+    "trungVi": 6,
+    "cao": 19
+  }
+}
