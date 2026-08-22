@@ -230,6 +230,26 @@ test("mô hình KHÔNG BAO GIỜ nhận giao dịch thô — chỉ nhận dữ k
   assert.ok(!nhinThay.includes("instructions"), "không gửi danh sách lệnh thô");
 });
 
+test("dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn vị thô", async () => {
+  // Lỗi thật: bản trước gửi amountBefore.toString() nguyên văn. Với decimals=6,
+  // mô hình đọc lại "500000000" thay vì "500" — lệch đúng 10^6 lần. Phát hiện
+  // được ngay lượt gọi thật đầu tiên với Haiku (không phải test dựng sẵn).
+  let nhinThay = "";
+  const dg = dienGiaiBangMoHinh(async ({ user }) => {
+    nhinThay = user;
+    return '{"detectedPrimaryAction":null,"explanation":"Số dư đổi.","aiAdvisory":null}';
+  });
+  await dg(
+    facts({ tokenAccounts: [ta({ amountBefore: 500_000_000n, amountAfter: 400_000_000n })] }),
+    [],
+    "vi",
+  );
+  const o = JSON.parse(nhinThay) as { thayDoiSoDu: { truoc: string; sau: string }[] };
+  assert.equal(o.thayDoiSoDu[0]?.truoc, "500,0", `phải chia decimals: ${nhinThay}`);
+  assert.equal(o.thayDoiSoDu[0]?.sau, "400,0");
+  assert.ok(!nhinThay.includes("500000000"), "không được lộ đơn vị thô chưa chia decimals");
+});
+
 test("system prompt cấm mô hình kết luận an toàn hay nguy hiểm", () => {
   assert.match(SYSTEM_PROMPT, /Không được kết luận giao dịch an toàn hay nguy hiểm/);
   assert.match(SYSTEM_PROMPT, /Không chắc hành động chính là gì thì trả về null/);

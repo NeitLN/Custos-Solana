@@ -7,6 +7,7 @@ export { dienGiaiMau } from "./templates.ts";
 export { nhanDien, moTaHanhDong, moTaLech, type KetQuaNhanDien, type HauQuaLech } from "./nhanDien.ts";
 export { dienGiaiBangMoHinh, soiDauRa, SYSTEM_PROMPT, type GoiMoHinh } from "./moHinh.ts";
 export { tomTat } from "./mucNgan.ts";
+export { dungGoiAnthropic, type TuyChonAnthropic } from "./anthropic.ts";
 
 /**
  * L3 — diễn giải.

@@ -11,5 +11,8 @@
   "dependencies": {
     "@custos/core": "*",
     "@custos/types": "*"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.120.0"
   }
 }
