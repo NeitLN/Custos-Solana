@@ -176,7 +176,7 @@ Nói ngắn: ngữ cảnh chỉ được phép làm sản phẩm **thận trọn
 │                                                          │
 │  ⚑ AI đề nghị kiểm tra thủ công                          │
 │                                                          │
-│  Đã phân tích 10/11 instruction · 1 program chưa xác minh│
+│  Đã đọc hiểu 2/3 lệnh · 1 chương trình chưa xác minh     │
 │                                                          │
 │  SPL_SET_AUTHORITY__ACCOUNT_OWNER                        │
 │  SPL_TRANSFER_NGOAI_HANH_DONG_CHINH   VI_NHAN_TUOI_4H    │
@@ -194,7 +194,7 @@ Verdict **NGUY HIỂM** đến từ L2 (`SetAuthority`). Dòng **⚑ AI đề ng
 
 **2 · Hành động chính được nhận diện, và hậu quả không thuộc về nó** — điểm khác biệt trung tâm.
 
-**3 · Mức độ bao phủ phân tích** — *"đã phân tích 10/11 instruction, 1 program chưa xác minh"*. Cụ thể và kiểm chứng được, thay cho nhãn "độ tin cậy" dễ bị đọc thành *"chắc chắn nguy hiểm 100%"*.
+**3 · Mức độ bao phủ phân tích** — *"đã đọc hiểu 2/3 lệnh, 1 chương trình chưa xác minh"* (số thật của giao dịch demo, đo 23/08). Cụ thể và kiểm chứng được, thay cho nhãn "độ tin cậy" dễ bị đọc thành *"chắc chắn nguy hiểm 100%"*.
 
 ### Bốn thành phần trong 15 ngày
 
@@ -253,7 +253,7 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 
 **2 · Xử lý giao dịch không nằm trong mẫu cứng — trong giới hạn được nói rõ.** Khi gặp program chưa biết, AI **không suy đoán chức năng của program**. Nó chỉ tổng hợp thay đổi **quan sát được** và nói rõ phần không xác định:
 
-> *"Giao dịch này gọi một program chúng tôi chưa xác minh. Chúng tôi không biết program đó làm gì. Điều đo được: sau khi ký, quyền sở hữu tài khoản USDC của bạn thuộc về ví 9xQe…7Tm2. Đã phân tích 10/11 instruction."*
+> *"Giao dịch này gọi một program chúng tôi chưa xác minh. Chúng tôi không biết program đó làm gì. Điều đo được: sau khi ký, quyền sở hữu tài khoản USDC của bạn thuộc về ví 9xQe…7Tm2. Đã đọc hiểu 2/3 lệnh."*
 
 **3 · Điều chỉnh cách diễn đạt theo trình độ người dùng.** Cùng một facts, hai cách nói.
 
@@ -296,7 +296,7 @@ Giám khảo đã xác nhận qua bốn vòng: *"Phần phân tích giao dịch 
 
 | Ưu tiên | Nội dung |
 |---|---|
-| **P0 · Bắt buộc** | **Custos Core** (L1 + L2 **12 luật** + L3) đóng gói thành SDK · **bộ kiểm thử** chạy trên seed dataset · **Demo Wallet devnet** · **trang tấn công giả** devnet · dashboard tối giản. Không cần một dòng Rust nào. |
+| **P0 · Bắt buộc** | **Custos Core** (L1 + L2 **14 luật** + L3) đóng gói thành SDK · **bộ kiểm thử** chạy trên seed dataset · **Demo Wallet devnet** · **trang tấn công giả** devnet · dashboard tối giản. Không cần một dòng Rust nào. |
 | **P0 · Song song** | **Seed evaluation dataset** 30–50 giao dịch gắn nhãn và **nghiên cứu người dùng** 20 phỏng vấn — hai việc riêng biệt. |
 | **P1 · Có cắt** | Thêm luật ngoài 11 · hồ sơ rủi ro địa chỉ chi tiết · đánh bóng trải nghiệm. |
 | **P2 · Sau cuộc thi** | Browser extension (B2C) · đánh dấu cộng đồng on-chain · registry có đặt cọc · Anchor program · bảng điều khiển doanh nghiệp · khách hàng sàn tập trung. |
@@ -336,9 +336,29 @@ Giám khảo đã xác nhận qua bốn vòng: *"Phần phân tích giao dịch 
    - Hai hậu quả **không phục vụ việc hoán đổi**: chuyển 500 USDC, và đổi quyền sở hữu tài khoản
    - **L2 báo Đỏ** vì `SetAuthority` — quyết định xác định
    - **L3 giải thích** vì sao hành động đó bất thường, và phát cờ *đề nghị kiểm tra thủ công*
-   - Đã phân tích **10/11 instruction**
+   - Đã đọc hiểu **2/3 lệnh** *(số thật đo 23/08 — xem cảnh báo ngay dưới)*
 
 Cùng một giao dịch tạo ra hai kết cục khác nhau. Demo chứng minh cùng lúc bốn thứ: mô phỏng thật · engine luật hoạt động · AI nhận diện hành động chính · chi phí tích hợp là một SDK call.
+
+> ### ⚠️ CHƯA KHỚP — giao dịch demo đơn giản hơn mô tả ở trên
+>
+> Đo ngày 23/08: giao dịch tấn công hiện tại có **3 lệnh** (Memo chưa xác minh ·
+> `Transfer` · `SetAuthority`), coverage thật **2/3**. Mô tả ở đầu mục này nói nó
+> còn chứa **các lệnh swap hợp lệ** — phần đó **chưa được dựng**.
+>
+> **Hậu quả nếu không xử lý:** trên sân khấu nói *"đã phân tích 10/11"* trong khi màn
+> hình hiện *"đã đọc hiểu 2 trên 3 lệnh"*. Thể lệ BTC: trình bày sai về dữ liệu bị
+> trừ điểm hoặc loại. Con số **10/11 đã bị gỡ khỏi toàn bộ tài liệu** vì lý do đó.
+>
+> **Hai lựa chọn, vai B quyết:**
+>
+> | | Được | Mất |
+> |---|---|---|
+> | **Giữ 3 lệnh, nói đúng 2/3** | Trung thực tuyệt đối, không phải làm gì thêm | Giao dịch trông đơn giản hơn một cuộc tấn công thật; câu *"giao dịch thật có 8–15 lệnh"* mất chỗ dựa trên màn hình |
+> | **Dựng đủ các lệnh swap như mô tả** | Khớp với thiết kế đã chốt, và giống drainer thật — chúng giấu hành vi độc hại giữa lệnh hợp lệ | Vai B mất một buổi; các lệnh thêm vào phải là lệnh **chạy thật** (ComputeBudget, tạo ATA, syncNative), không được là lệnh độn cho đẹp số |
+>
+> Cách hai đúng hơn với thiết kế, nhưng **chỉ khi mọi lệnh thêm vào đều là lệnh một
+> giao dịch swap thật sự có**. Độn lệnh để mẫu số đẹp lên là dàn dựng.
 
 **Dự phòng:** ví nạp sẵn, RPC riêng, toàn bộ kịch bản quay thành video 60–90 giây nộp trước theo yêu cầu BTC.
 
@@ -392,9 +412,43 @@ mục tiêu đã quen trả khoảng $49/tháng để bắt đầu, và quen v�
 > hàng. Chưa ví/dApp nào nói với đội rằng họ sẽ trả bao nhiêu cho lớp kiểm tra này.
 > Đây là số liệu tham chiếu, **không phải** validation.
 
-**Điểm bán:** *Custos giúp ví và dApp Solana bổ sung transaction intelligence tiếng Việt thông qua một SDK call.*
+### Thị trường này đã được người khác chứng minh hộ
 
-**Tiếp cận khách hàng đầu tiên:** ví và dApp Solana có người dùng Việt Nam, cộng đồng Superteam Vietnam, các nền tảng embedded wallet đang mở rộng sang Đông Nam Á.
+> *"Chúng em không cần chứng minh thị trường này có tồn tại. Ví lớn nhất Solana đã
+> bỏ tiền mua đúng năng lực này — rồi **đóng cửa dịch vụ bán rời**. Nghĩa là hôm nay
+> mọi ví và dApp khác **không mua được nữa**. Đó là chỗ chúng em đứng."*
+
+Phantom mua Blowfish năm 2024, và thông báo mua lại ghi rõ *"the current service has
+been sunset"*; `blowfish.xyz` giờ là tên miền hết hạn (tra 22/08/2026).
+
+Đây là **market validation do người khác trả tiền chứng minh**, không phải lập luận
+đội tự nghĩ. Nó làm ba việc trong một câu: chứng minh thị trường có thật, giải thích
+vì sao có khoảng trống, và chặn trước câu *"Phantom có rồi mà?"*.
+
+⚠️ Nói ở **thì quá khứ**. *"Blowfish — công ty Phantom đã mua"*, không nói *"Blowfish
+đang cung cấp"*. Giám khảo theo mảng này biết chuyện đó.
+
+### Chi phí biên — đo được, không ước lượng
+
+Trung vị **6,5 lượt gọi RPC** mỗi lượt kiểm tra (thấp 4, cao 9), đo trên 20 giao dịch
+mainnet thật. Phần mô hình ngôn ngữ có **trần cứng 400 token đầu ra**.
+
+Chi phí biên nằm ở hàng phần nghìn đến phần trăm nghìn đô la — **nhỏ hơn chi phí RPC
+mà chính ví đó đang trả để gửi giao dịch đi**. Chi tiết và phần còn thiếu:
+`docs/DON-VI-KINH-TE.md`.
+
+> Chưa có biên lợi nhuận, vì chưa có giá bán của Custos. Nói *"biên gộp 90%"* hôm nay
+> là bịa.
+
+### Trình tự tiếp cận khách hàng
+
+| Giai đoạn | Ai | Dấu hiệu đúng hướng |
+|---|---|---|
+| 0–3 tháng | 2–3 ví/dApp Việt qua Superteam Vietnam | 1 đội tích hợp bản miễn phí |
+| 3–9 tháng | Nền tảng ví nhúng mở rộng sang ĐNÁ (Privy có hỗ trợ Solana) | Hợp đồng trả tiền đầu tiên |
+| 9 tháng+ | Ví khu vực ngoài Việt Nam | Doanh thu định kỳ, kèm SLA |
+
+**Điểm bán:** *Custos giúp ví và dApp Solana bổ sung transaction intelligence tiếng Việt thông qua một SDK call.*
 
 ---
 
@@ -498,13 +552,22 @@ nó chưa hiểu.**
 
 ## 13 — Tự chấm theo rubric Track Best Product & Business
 
-| Tiêu chí | Trọng số | Tự chấm | Lý do |
-|---|---:|---:|---|
-| Bài toán thị trường & người dùng | 25% | 9/10 | Nỗi đau ai cũng hiểu tức thì; khách hàng đầu tiên đã thu hẹp đúng |
-| Giải pháp, demo, trải nghiệm | 30% | 9/10 | Cùng một giao dịch, hai kết cục; rủi ro nằm ở việc kịp làm Demo Wallet |
-| Mô hình kinh doanh & GTM | 25% | 8/10 | Đã có đường đi từ dùng thử sang trả tiền — nhưng vẫn chưa có cam kết nào từ ví/dApp |
-| Trình bày & phản biện | 20% | 9/10 | Năm vòng phản biện đã lấp phần lớn câu hỏi khó, kể cả hai mâu thuẫn nội tại |
-| **Tổng có trọng số** | | **8,8/10** | Ước lượng của chính đội |
+> **Sửa lại 23/08.** Bảng cũ tự chấm **8,8/10** ở giai đoạn còn là ý tưởng. Chấm lại
+> theo trạng thái đo được (`docs/CHAM-DIEM-GIA-DINH.md`) thì ra **6,95**. Giữ con số
+> cũ trong một repo public là rủi ro lớn hơn 1,85 điểm: **nó làm mọi con số khác
+> trong tài liệu này mất giá**, kể cả những con số đội đo rất cẩn thận.
+
+| Tiêu chí | Trọng số | **Hôm nay** | Trần thấy được | Vì sao |
+|---|---:|---:|---:|---|
+| Bài toán thị trường & người dùng | 25% | **6,5** | 8,5 | Nỗi đau hiểu tức thì và khách hàng đã thu hẹp đúng, nhưng **0 người dùng thật đã được hỏi**. Chân dung người dùng vẫn là giả thuyết |
+| Giải pháp, demo, trải nghiệm | 30% | **8,5** | 9,0 | Demo devnet thật, 0 cáo buộc sai trên mainnet, dòng coverage là ý tưởng sản phẩm mạnh nhất. Trừ vì **chưa ai ngoài đội tích hợp SDK** |
+| Mô hình kinh doanh & GTM | 25% | **5,5** | 8,0 | Có neo giá công khai và đơn vị kinh tế đo được (mục 08). Thiếu: **giá bán của chính Custos**, và **0 cuộc trò chuyện với khách hàng** |
+| Trình bày & phản biện | 20% | **7,0** | 8,5 | Tài liệu phản biện tốt, nhưng **chưa có slide, chưa có video, chưa tập lần nào** |
+| **Tổng có trọng số** | | **6,95** | **8,4** | |
+
+**Khoảng cách 1,45 điểm giữa hôm nay và trần không phải khoảng cách kỹ năng.** Nó là
+bốn buổi tối làm việc không giống lập trình: hỏi 12 người dùng, nhắn 8 ví/dApp, quay
+video, tập nói. Xem `docs/VIEC-CUA-BAN.md`.
 
 ---
 
@@ -564,7 +627,7 @@ không viết code. Một bên là trần cứng, một bên là việc đang l�
 
 - Bối cảnh pháp lý (Luật Công nghiệp Công nghệ số hiệu lực 01/01/2026, Nghị quyết 05/2025), nhận định "chưa tồn tại lớp bảo vệ tiếng Việt", và các dẫn chứng về Blowfish / Blockaid / Unruggable lấy từ **trang Idea Pools chính thức của UniHackfest** (bản cập nhật 8/2026).
 - **Rubric chấm điểm** lấy từ *Thể lệ UniHackfest 2026*, xác nhận trùng khớp trên trang sự kiện Vòng loại Văn Lang.
-- **Các mẫu tấn công ở mục 01 và 12 luật ở mục 04** là mô tả kỹ thuật của đội về hành vi có thật của SPL Token, Token-2022 và Address Lookup Table trên Solana — không trích từ tài liệu BTC.
+- **Các mẫu tấn công ở mục 01 và 14 luật ở mục 04** là mô tả kỹ thuật của đội về hành vi có thật của SPL Token, Token-2022 và Address Lookup Table trên Solana — không trích từ tài liệu BTC.
 - **Điểm số, nhận xét và các đề xuất được trích dẫn** đến từ bốn vòng phản hồi giám khảo ngày 21/08/2026.
 
 *Custos là tên tạm.*

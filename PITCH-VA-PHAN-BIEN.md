@@ -16,9 +16,27 @@ Nghiên cứu ngày 21/8 (`NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng
 | Luận điểm | "Ví lớn chỉ hiện chênh lệch số dư" | "Mô phỏng giao dịch là kỹ thuật đã có. **Vấn đề là lúc mô phỏng không hiểu hết**" |
 | Chỗ đứng | Cạnh tranh phát hiện | Cạnh tranh ở **sự im lặng**: khi không hiểu, ví hiện tại không nói gì |
 | Bằng chứng | Không có | Ca Coinspect: Blowfish bỏ lọt `assign`, ví chỉ hiện vế hợp lệ |
-| Thể hiện trên màn hình | Không có gì | Dòng **"đã phân tích 10/11 instruction"** |
+| Thể hiện trên màn hình | Không có gì | Dòng **"đã đọc hiểu N trên M lệnh"** — đọc đúng số đang hiện, xem mục 1 |
 
 Cấu trúc mới nhượng bộ ngay câu phản đối hiển nhiên, rồi biến nó thành bàn đạp. Đây cũng là cách an toàn nhất về liêm chính: không nói sai một chữ nào về đối thủ.
+
+### Bổ sung 23/08 — nói cùng sự thật đó bằng ngôn ngữ track này
+
+Trục *"mô phỏng không hiểu hết"* **đúng và sắc**, nhưng nó là nhận định của kỹ sư.
+Hội đồng track *Best Product & Business* gồm người làm quỹ và người làm sản phẩm.
+Với họ, câu đó cần một lớp dịch — **không đổi nội dung, chỉ đổi cách phát âm**:
+
+| Đang nói (ngôn ngữ kỹ sư) | Nói ở track này |
+|---|---|
+| "Mô phỏng giao dịch không hiểu hết" | "Ví hiện tại **im lặng về phần chúng không hiểu**. Custos là cái duy nhất chịu nói ra" |
+| "Coverage 2/3 lệnh" | "Nó tự khai nó chưa hiểu một phần — và **đó là lý do bạn tin được 10 phần kia**" |
+| "Engine luật 14 luật xác định" | "Máy quyết định cảnh báo, không phải AI. AI sai thì cảnh báo vẫn đúng" |
+| "0 false positive trên 20 giao dịch mainnet" | "Không kêu oan lần nào. Một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua" |
+
+**Câu một hơi thở, dùng ở giây 40:**
+
+> *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Khác nhau ở chỗ có ví nào
+> chịu nói ra không."*
 
 ### Cập nhật 22/08 — Blowfish đã bị Phantom mua và đóng dịch vụ
 
@@ -44,7 +62,7 @@ Và chuẩn bị sẵn cho câu hỏi ngược: *"Phantom có rồi, sao còn c�
 
 ---
 
-## ⚠️ 1 · Một chỗ hở giữa câu chuyện và thiết kế demo — phải sửa trước 24/8
+## ⚠️ 1 · Một chỗ hở giữa câu chuyện và thiết kế demo — ĐÃ VÁ MỘT NỬA
 
 Giao dịch demo hiện thiết kế là: **swap-legs + `Transfer` + `SetAuthority`**. Cả ba đều decode được.
 
@@ -58,6 +76,21 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 
 > Nếu không sửa: đến ngày tập pitch mới phát hiện câu chốt không có gì trên màn hình đỡ lưng.
 
+### Cập nhật 23/08 — vá được vế quan trọng, vế còn lại thành một quyết định
+
+**Đã vá:** lệnh Memo có thật trong giao dịch tấn công (`scripts/tan-cong.ts`), nên
+coverage **thật sự khuyết**, không phải 11/11. Dòng coverage có chỗ dựa.
+
+**Chưa vá:** giao dịch chỉ có **3 lệnh**, không phải 11. Coverage thật đo được là
+**2/3**. Các lệnh swap mô tả trong `CUSTOS.md` mục 07 chưa được dựng.
+
+> **KHÔNG ĐƯỢC NÓI "10/11" NỮA.** Con số đó đã bị gỡ khỏi toàn bộ tài liệu. Trên sân
+> khấu **đọc đúng con số đang hiện trên màn hình**, dù nó là bao nhiêu. Nói một số
+> mà màn hình chiếu một số khác là đúng cái thể lệ gọi là trình bày sai về dữ liệu —
+> và giám khảo đang nhìn thẳng vào màn hình lúc bạn nói.
+
+Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mất ở `CUSTOS.md` mục 07.
+
 ---
 
 ## 2 · Cấu trúc 4 phút
@@ -69,15 +102,16 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 | **0:40–0:55** | **Đường nối.** "Vấn đề là lúc mô phỏng **không hiểu hết**. Coinspect công bố một ca mô phỏng bỏ lọt instruction đổi quyền sở hữu — ví chỉ hiện vế hợp lệ và im lặng về phần còn lại." | Đây là bản lề. Nói chậm |
 | **0:55–2:15** | **Demo.** Nhịp 1 mất tiền → nhịp 2 được cứu, **cùng một giao dịch** | Chỉ tay vào dòng coverage: *"nó nói luôn phần nó chưa hiểu"* |
 | **2:15–2:25** | **Một SDK call** trên màn hình | 5–7 giây. Nói: *"Một SDK call để thêm lớp này vào ví hoặc dApp"* |
-| **2:25–3:00** | **Sản phẩm và khách hàng.** SDK cho ví và dApp. Người dùng cuối miễn phí, ví trả tiền. Nêu phản hồi thật từ ví/dApp nếu có | Nếu có một chữ "có" từ một đội ví — đây là chỗ nói. Nếu không có thì nói "chúng tôi đang liên hệ", đừng phóng đại |
-| **3:00–3:30** | **Vì sao AI, và giới hạn của AI.** AI gộp instruction thành hành động chính. Nhưng verdict do engine luật quyết, AI không được xác nhận an toàn | Câu "AI không được xác nhận an toàn" là câu ghi điểm với giám khảo bảo mật |
+| **2:25–3:10** | **Sản phẩm, khách hàng, và tiền.** SDK cho ví và dApp; người dùng cuối miễn phí. **Mở bằng câu Phantom mua Blowfish rồi đóng dịch vụ bán rời.** Rồi chi phí biên đo được và ba tầng giá | ⚠️ **Đã nới từ 35 giây lên 45.** Ô này chiếm 25% điểm mà bản cũ chỉ cho nó 35 giây, lại chia với phần AI. Cắt 15 giây ở đoạn nhượng bộ và 15 giây ở đoạn AI để bù |
+| **3:10–3:30** | **Giới hạn của AI.** Verdict do engine luật quyết, AI không được xác nhận an toàn | Rút còn 20 giây. Giữ **nguyên văn** câu "AI không được xác nhận an toàn" — đó là câu ghi điểm; phần giải thích AI gộp instruction thì bỏ, để dành cho Q&A câu 2 |
 | **3:30–4:00** | **Con số thật.** Bao nhiêu luật, bao nhiêu mẫu test, false positive đo trên bao nhiêu giao dịch mainnet thật. Bước tiếp theo | Đọc đúng số. Không làm tròn lên |
 
-**Ba câu phải thuộc lòng nguyên văn:**
+**Bốn câu phải thuộc lòng nguyên văn:**
 
 1. *"Ví lớn đã có mô phỏng giao dịch. Chúng tôi không cạnh tranh ở đó."*
-2. *"Vấn đề là lúc mô phỏng không hiểu hết — và ví hiện tại im lặng về phần đó."*
+2. *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Khác nhau ở chỗ có ví nào chịu nói ra không."*
 3. *"Custos không bao giờ nói an toàn khi nó chưa chắc."*
+4. *"Phantom mua đứt Blowfish rồi đóng dịch vụ bán rời — nghĩa là mọi ví khác giờ không mua được năng lực này nữa."*
 
 ---
 
@@ -144,6 +178,61 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 
 ---
 
+## 4b · Ba câu bổ sung 23/08 — sinh từ bản chấm thử
+
+### 10. ⭐ "Vì sao một ví lớn mua của các em, thay vì tự làm trong hai tuần?"
+
+**Đây là câu quyết định của track này, và chín câu trên KHÔNG có nó.** Câu 1
+(*"Phantom có rồi mà?"*) hỏi về **đối thủ**; câu này hỏi về **lý do đội tồn tại với
+tư cách một công ty**. Trả lời được thì mở khoá cả ô mô hình kinh doanh.
+
+> "Mô phỏng thì họ tự làm được trong hai tuần. Ba thứ còn lại thì không:
+>
+> **Một — tập luật đã hiệu chỉnh.** Chúng em đo trên giao dịch mainnet thật để đưa số
+> cáo buộc sai về 0. Bản đầu của **chính chúng em** kêu oan những lệnh mua bình
+> thường — ví nhỏ tiêu 63% số SOL để mua token thì bị gắn cờ. Ai tự làm cũng sẽ đi
+> lại đúng đoạn đường đó.
+>
+> **Hai — kỷ luật không bao giờ nói 'an toàn'.** Đó là quyết định sản phẩm, không phải
+> dòng code. Một đội tự làm trong sprint sẽ để AI phán 'giao dịch này an toàn', và
+> ngày nó sai là ngày ví mất khách.
+>
+> **Ba — dữ liệu người Việt có thật sự hiểu cảnh báo không.** Cái đó chỉ đo được bằng
+> cách ngồi với người Việt."
+
+⚠️ **Vế ba chỉ được nói SAU KHI đã phỏng vấn xong.** Trước đó thì bỏ vế đó đi, giữ
+hai vế đầu — cả hai đều có bằng chứng trong repo.
+
+### 11. "Coverage của các bạn 77%. Của Phantom là bao nhiêu?"
+
+**Đừng trả lời bằng số.** Không đo được của họ, và đoán là vi phạm liêm chính. Trả
+lời bằng **cấu trúc**:
+
+> "Chúng em không đo được của họ, và sẽ không đoán. Điều đo được là: **họ không hiển
+> thị con số đó.** Người dùng không có cách nào biết ví vừa hiểu bao nhiêu phần giao
+> dịch. Custos luôn nói ra. Khác biệt không phải ở việc hiểu nhiều hơn — mà ở chỗ
+> **chịu khai phần mình chưa hiểu**."
+
+### 12. "Custos báo vàng, người dùng vẫn ký và mất tiền. Ai chịu trách nhiệm?"
+
+Câu gài. Trả lời sai là hứa điều không giữ được.
+
+> "Custos không nhận trách nhiệm thay người dùng, và cũng không được phép — đó chính
+> là lý do nó **không bao giờ nói 'an toàn'**. Nó không phải một lời bảo đảm, nó là
+> một lớp thông tin: nói ra hậu quả đo được, và nói ra phần chưa đo được. Một sản
+> phẩm bảo mật hứa 'ký cái này an toàn' là sản phẩm sẽ nói dối vào đúng ngày quan
+> trọng nhất."
+
+### 13. "README ghi devnet-only, nhưng số liệu lại đo trên mainnet?"
+
+Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đúng, nhưng phải nói rõ:
+
+> "Chúng em **đọc và mô phỏng** mainnet để đo — đó là lý do con số báo nhầm có giá
+> trị; đo trên giao dịch tự dựng thì con số không nói lên gì. Nhãn devnet-only là về
+> **khuyến nghị triển khai**, không phải giới hạn kỹ thuật."
+
+---
+
 ## 5 · Những câu **không được nói**
 
 Thể lệ BTC: *trình bày sai về tính năng, dữ liệu hoặc mức hoàn thiện bị trừ điểm hoặc loại.*
@@ -152,7 +241,7 @@ Thể lệ BTC: *trình bày sai về tính năng, dữ liệu hoặc mức hoà
 |---|---|
 | "Ví lớn chỉ hiển thị chênh lệch số dư" | "Ví lớn đã có mô phỏng. Chúng tôi khác ở chỗ nói ra phần chưa hiểu" |
 | "Phantom có lỗ hổng này" | "Đã từng có một ca được công bố và đã được vá. Vấn đề là cấu trúc" |
-| "Chúng tôi phát hiện được scam" | "Engine luật phát hiện các hậu quả xác định trong danh sách 12 luật" |
+| "Chúng tôi phát hiện được scam" | "Engine luật phát hiện các hậu quả xác định trong danh sách 14 luật" |
 | "Dataset của chúng tôi là lợi thế cạnh tranh" | "Đây là bộ kiểm thử. Moat là thứ tích luỹ sau này" |
 | "Nhiều ví quan tâm" (khi chưa có ai trả lời) | "Chúng tôi đã liên hệ N đội, hiện có M phản hồi" |
 | Làm tròn số mẫu hoặc số luật lên | Đọc đúng con số đang có |
@@ -176,4 +265,7 @@ Thể lệ BTC: *trình bày sai về tính năng, dữ liệu hoặc mức hoà
 | **2/9** | Sau buổi đọc code chéo — mỗi người tập trả lời 3 câu ngẫu nhiên trong 9 câu ở trên |
 | **4/9** | **Ít nhất 5 lượt.** Một người đóng vai giám khảo khó tính, hỏi liên tiếp không nương tay |
 
-**Tiêu chí đạt:** 4 phút không tràn, và cả bốn người trả lời được câu 1 và câu 3 mà không cần nhìn giấy.
+**Tiêu chí đạt:** 4 phút không tràn, và cả bốn người trả lời được **câu 1, câu 3 và câu 10** mà không cần nhìn giấy.
+
+> Câu 10 là câu build-vs-buy. Ở track này nó quan trọng ngang câu 1 — và nó là câu
+> duy nhất trong danh sách mà **không ai trong đội từng tập trả lời** trước 23/08.

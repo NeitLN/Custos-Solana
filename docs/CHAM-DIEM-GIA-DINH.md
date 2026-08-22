@@ -92,7 +92,7 @@ người làm sản phẩm. Với họ, câu đó cần một lớp dịch:
 | Đang nói | Nên nói ở track này |
 |---|---|
 | "Mô phỏng giao dịch không hiểu hết" | "Ví hiện tại **im lặng về phần chúng không hiểu**. Custos là cái duy nhất chịu nói ra" |
-| "Coverage 10/11 instruction" | "Nó tự khai nó chưa hiểu 1 phần — và đó là lý do bạn tin được 10 phần kia" |
+| "Coverage 2/3 lệnh" | "Nó tự khai nó chưa hiểu một phần — và đó là lý do bạn tin được phần kia" |
 
 Cùng một sự thật, nhưng vế phải bán được. **Đừng đổi nội dung, đổi cách phát âm.**
 
@@ -116,7 +116,7 @@ Không TAM, không SAM, không số ví Solana, không số người dùng crypt
 - Demo **chạy trên devnet thật**, có hiện trường thật, không phải mockup.
 - Con số báo nhầm đo trên **giao dịch mainnet thật**, và đội **không** gộp mẫu tự
   dựng vào con số đó. Kỷ luật này hiếm.
-- Dòng *"đã đọc hiểu 10/11 lệnh"* là **ý tưởng sản phẩm tốt nhất trong toàn bộ dự
+- Dòng *"đã đọc hiểu N trên M lệnh"* là **ý tưởng sản phẩm tốt nhất trong toàn bộ dự
   án**, và tôi nghĩ đội chưa nhận ra nó tốt đến mức nào. Nó biến điểm yếu (không
   đọc hiểu hết) thành thứ duy nhất tạo được lòng tin. Không đối thủ nào hiển thị
   con số đó. **Đây mới là cái nên đóng khung trên slide, không phải 14 luật.**
@@ -359,4 +359,28 @@ tối làm những việc không giống lập trình**: gọi điện, hỏi ng
 tính chi phí, và tập nói. Đó là phần khó chịu nhất với một đội kỹ thuật giỏi, và
 cũng là phần duy nhất còn lại có giá.
 
-*— Chấm ngày 23/08/2026, tại commit `9e5e0f3`*
+---
+
+## Phụ lục — đã làm gì sau bản chấm này
+
+Cập nhật 23/08, sau khi thực thi. Bảng ở mục 4 là bảng gốc; đây là trạng thái thật.
+
+| # | Việc | Của ai | Trạng thái |
+|---|---|---|---|
+| 1 | Đơn vị kinh tế tính từ code | Claude | ✅ `docs/DON-VI-KINH-TE.md` — thiếu biên lợi nhuận (cần khoá, bảng credit, giá bán) |
+| 2 | Phỏng vấn 12 người | Đội | ⬜ công cụ đã dựng: `/phong-van.html` |
+| 3 | Chế độ "nếu không có Custos" | Claude | ✅ |
+| 4 | Nhắn 8 ví/dApp | Đội | ⬜ |
+| 5 | Câu build-vs-buy + 2 câu Q&A thiếu | Claude | ✅ `PITCH-VA-PHAN-BIEN.md` mục 4b — thành 4 câu |
+| 6 | Dev ngoài đội tích hợp thử | Đội | ⬜ |
+| 7 | Sửa mục 13 `CUSTOS.md` | Claude | ✅ 8,8 → 6,95, kèm cột trần thấy được |
+| 8 | Dịch trục câu chuyện sang ngôn ngữ kinh doanh | Claude | ✅ `PITCH` mục 0, bảng bốn dòng |
+
+**Ngoài bảng, hai việc phát sinh khi thực thi:**
+
+- Trang số liệu công khai `/so-lieu.html` và bộ đo phỏng vấn `/phong-van.html`
+- **Một lỗi trình bày nghiêm trọng bị bắt khi kiểm chứng:** mọi tài liệu ghi coverage
+  demo là **10/11**; đo thật ra **2/3**. Con số đã bị gỡ khỏi toàn bộ tài liệu, và
+  chỗ hở giữa thiết kế với bản dựng ghi thành một quyết định ở `CUSTOS.md` mục 07.
+
+*— Chấm ngày 23/08/2026, tại commit `9e5e0f3`; phụ lục cập nhật cùng ngày*
