@@ -7,7 +7,7 @@ giải quyết*, cộng những gì đo được trên mainnet hôm nay.
 
 | | |
 |---|---:|
-| Test | 227 PASS |
+| Test | 232 PASS |
 | Cohort | 20 chữ ký, làm mới 23/08 |
 | Luật | 14 |
 | Coverage trung bình | **82 %** |
@@ -288,8 +288,27 @@ lệnh, mã lý do, chương trình chưa xác minh.
 Đặc tả ghi rõ: *"thiếu thời gian thì cắt mức 3 trước, không cắt mức 2."* Nên nó
 đứng cuối.
 
-**Files:** `packages/ai/src/mucKyThuat.ts`, `CanhBao.tsx`
-**Ước:** 2 giờ
+**XONG 23/08.** Nhưng phần đáng kể không phải viết mức 3 — mà là **gỡ mức 3 ra
+khỏi mức 1**.
+
+Ví đang hiện thẳng dãy chip mã lý do cho mọi người dùng:
+
+```
+SPL_SET_AUTHORITY__ACCOUNT_OWNER   SOL_ROI_VI   CHUONG_TRINH_CHUA_XAC_MINH
+```
+
+Người bình thường nhìn cái đó chỉ thấy nhiễu, và nhiễu nằm ngay dưới đúng cái câu
+mà mục 7 dùng để **đo mức độ hiểu** — con số sẽ lên sân khấu. Ba mức sinh ra chính
+để tách chuyện này. Giờ mã lý do nằm trong bảng "+ Kỹ thuật", đóng sẵn, một cú bấm
+là mở.
+
+Mức 3 **thôi dịch**, ngược với hai mức kia: người đọc nó muốn tự kiểm chứng, và với
+họ `SPL_SET_AUTHORITY__ACCOUNT_OWNER` hữu ích hơn "tài khoản token của bạn đổi chủ".
+Nó dựng từ `InspectResult` và **không tự tính lại gì** — có test buộc con số của nó
+khớp mức Ngắn, vì ba mức nói ba con số khác nhau là cách nhanh nhất mất lòng tin.
+
+**Files:** `packages/ai/src/mucKyThuat.ts`, `CanhBao.tsx`, test
+**Thực tế:** ~1 giờ
 
 ---
 
@@ -313,7 +332,7 @@ P1-G  phí chính xác     XONG — gỡ luôn chữ "(ước tính)" khỏi nh�
 P1-C  rent              XONG
 P1-D  enum SPL Token    XONG
 P1-E  thêm IDL          XONG
-P2-F  mức Kỹ thuật
+P2-F  mức Kỹ thuật      XONG
 ```
 
 Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục trước chưa xanh.
@@ -328,4 +347,4 @@ Sau mỗi mục: `npm run check` + đo cohort. Không sang mục sau khi mục t
 | P1-G | **PASS** — phí khớp từng lamport trên 4 giao dịch mainnet |
 | P1-D | **PASS** — 86% decode, 0 lệnh sót trong chương trình đã xác minh |
 | P1-E | **PASS** — thêm 1/4 (ba cái kia không có IDL) |
-| P2-F | TODO |
+| P2-F | **PASS** — 5 ca test, và gỡ mã lý do khỏi màn hình mặc định |

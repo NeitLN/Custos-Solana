@@ -1,6 +1,6 @@
 import type { InspectResult } from "@custos/types";
 import { chiLaThongTin } from "@custos/core";
-import { tomTat } from "@custos/ai";
+import { tomTat, chiTietKyThuat } from "@custos/ai";
 import { useState } from "react";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
@@ -44,6 +44,7 @@ export function CanhBao({
   //
   // `level` KHÔNG đổi — fail-safe giữ nguyên. Chỉ cách nói đổi.
   const [moRong, setMoRong] = useState(false);
+  const [moKyThuat, setMoKyThuat] = useState(false);
   const chiLaChuaHieu =
     ketQua.level === "warning" &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
@@ -157,15 +158,30 @@ export function CanhBao({
           {unverifiedPrograms > 0 && ` ${unverifiedPrograms} chương trình chưa xác minh.`}
         </div>
 
-        {ketQua.reasonCodes.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {ketQua.reasonCodes.map((c) => (
-              <span key={c} className="rounded border border-white/15 px-1.5 py-0.5 font-mono text-[10px] text-slate-400">
-                {c}
-              </span>
-            ))}
-          </div>
-        )}
+        {/* MỨC 3 — KỸ THUẬT. Đóng sẵn, và phải đóng sẵn.
+            Trước đây mã lý do hiện thẳng ra cho mọi người dùng: một người bình
+            thường nhìn `SPL_SET_AUTHORITY__ACCOUNT_OWNER` thì chỉ thấy nhiễu, và
+            nhiễu làm loãng đúng cái câu mà mục 7 dùng để đo mức độ hiểu. Đây là
+            thứ ba mức sinh ra để tách. Ai muốn tự kiểm chứng thì bấm một cái. */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setMoKyThuat((v) => !v)}
+            className="font-mono text-[11px] uppercase tracking-[0.12em] text-slate-500 hover:text-slate-300"
+          >
+            {moKyThuat ? "− Kỹ thuật" : "+ Kỹ thuật"}
+          </button>
+          {moKyThuat && (
+            <div className="mt-2 space-y-1 rounded-lg border border-white/10 bg-black/40 p-3 font-mono text-[11px] text-slate-400">
+              {chiTietKyThuat(ketQua).map((d, i) => (
+                <div key={i} className="flex flex-wrap gap-x-2">
+                  <span className="text-slate-500">{d.nhan}:</span>
+                  <span className="break-all text-slate-300">{d.giaTri}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
           <button
