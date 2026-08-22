@@ -231,3 +231,102 @@ test("SOL · CÓ nguoiDung ⇒ phát hiện ĐẦY ĐỦ vụ đổi chủ, khô
     "đã biết người dùng là ai thì không cảnh báo phạm vi nữa",
   );
 });
+
+// ── Wrapped SOL ───────────────────────────────────────────────────
+//
+// wSOL là SOL bọc trong một tài khoản token: số dư token CHÍNH LÀ lamport nằm
+// trong tài khoản đó. Trước bản vá, Custos xử lý nó như token thường, nên luật 13
+// (đọc `solDelta[signer]`) không thấy gì — lamport nằm ở địa chỉ tài khoản token,
+// không phải ví người ký.
+//
+// Tái hiện được: đóng tài khoản wSOL 5 SOL, lamport về ví lạ ⇒ verdict `safe`,
+// mã lý do RỖNG. Xem docs/ROADMAP-BUILD.md — P0-A.
+
+const WSOL = "So11111111111111111111111111111111111111112";
+const ATA_WSOL = "AtaWsolCuaNguoiDung11111111111111111111111111";
+const TOK = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+const mintWsol = () => ({
+  address: WSOL, mintAuthority: null, freezeAuthority: null, permanentDelegate: null,
+  transferHookProgramId: null, isToken2022: false, decimals: 9, kyHieu: "SOL",
+});
+
+const taWsol = (truoc: bigint, sau: bigint, chuSau: string | null = TOI): TokenAccountFact => ({
+  address: ATA_WSOL, mint: WSOL, ownerBefore: TOI, ownerAfter: chuSau,
+  amountBefore: truoc, amountAfter: sau,
+  delegateBefore: null, delegateAfter: null, delegatedAmountAfter: 0n,
+  closeAuthorityBefore: null, closeAuthorityAfter: null,
+  programOwnerBefore: TOK, programOwnerAfter: chuSau === null ? null : TOK,
+});
+
+test("wSOL · đóng tài khoản, lamport về VÍ LẠ ⇒ KHÔNG được safe", () => {
+  const viTruoc = 100_000_000n;
+  const f = facts({
+    accounts: [
+      acc({ address: TOI, isSigner: true, lamportsBefore: viTruoc, lamportsAfter: viTruoc - PHI }),
+      acc({ address: LA, lamportsBefore: 0n, lamportsAfter: 5_002_039_280n }),
+    ],
+    tokenAccounts: [taWsol(5_000_000_000n, 0n, null)],
+    mints: [mintWsol()],
+    solDelta: { [TOI]: -PHI, [LA]: 5_002_039_280n },
+    instructions: [{
+      index: 0, programId: TOK, isInner: false, parentIndex: null,
+      decoded: { kind: "closeAccount" }, fromLookupTable: false, chamTaiSanNguoiKy: true,
+    }],
+  });
+  const r = danhGia(f);
+  assert.notEqual(r.level, "safe", "5 SOL biến mất mà nói Bình thường là bỏ lọt");
+  assert.ok(
+    r.reasonCodes.includes(REASON.SOL_ROI_VI),
+    `phải có mã lý do, đang có: ${r.reasonCodes.join(", ") || "(rỗng)"}`,
+  );
+});
+
+test("wSOL · ÂM TÍNH — mở gói về CHÍNH VÍ MÌNH ⇒ không gắn cờ", () => {
+  // Đây là bước cuối bình thường của MỌI giao dịch swap dùng wSOL. Gắn cờ ca này
+  // là gắn cờ mọi lần swap — đúng cái bẫy luật 11 đã sập một lần.
+  const viTruoc = 100_000_000n;
+  const f = facts({
+    accounts: [
+      acc({
+        address: TOI, isSigner: true,
+        lamportsBefore: viTruoc,
+        lamportsAfter: viTruoc + 5_000_000_000n - PHI, // nhận lại đúng số wSOL
+      }),
+    ],
+    tokenAccounts: [taWsol(5_000_000_000n, 0n, null)],
+    mints: [mintWsol()],
+    solDelta: { [TOI]: 5_000_000_000n - PHI },
+    instructions: [{
+      index: 0, programId: TOK, isInner: false, parentIndex: null,
+      decoded: { kind: "closeAccount" }, fromLookupTable: false, chamTaiSanNguoiKy: true,
+    }],
+  });
+  const r = danhGia(f);
+  assert.ok(
+    !r.reasonCodes.includes(REASON.SOL_ROI_VI),
+    "mở gói wSOL về ví mình thì tổng SOL không đổi — không được báo động",
+  );
+});
+
+test("wSOL · ÂM TÍNH — bọc SOL vào wSOL để swap ⇒ không gắn cờ", () => {
+  // Chiều ngược lại: ví mất lamport nhưng wSOL tăng đúng bằng chừng đó.
+  const viTruoc = 6_000_000_000n;
+  const f = facts({
+    accounts: [
+      acc({ address: TOI, isSigner: true, lamportsBefore: viTruoc, lamportsAfter: viTruoc - 5_000_000_000n - PHI }),
+    ],
+    tokenAccounts: [taWsol(0n, 5_000_000_000n)],
+    mints: [mintWsol()],
+    solDelta: { [TOI]: -(5_000_000_000n + PHI) },
+    instructions: [{
+      index: 0, programId: TOK, isInner: false, parentIndex: null,
+      decoded: { kind: "syncNative" }, fromLookupTable: false, chamTaiSanNguoiKy: true,
+    }],
+  });
+  const r = danhGia(f);
+  assert.ok(
+    !r.reasonCodes.includes(REASON.SOL_ROI_VI),
+    "bọc SOL thành wSOL là chuyển hình dạng, không phải mất tiền",
+  );
+});
