@@ -58,7 +58,7 @@ test("SOL · chỉ có phí mạng ⇒ verdict không đổi, hiện đúng mộ
 
   const bang = dungBangChenhLech(f, r.hits);
   assert.ok(dong(f, "Phí mạng"), "phải có dòng phí");
-  assert.equal(dong(f, "Chuyển SOL"), undefined, "không có khoản chuyển nào thì không được vẽ ra");
+  assert.equal(dong(f, "Tổng SOL"), undefined, "chỉ mất phí thì không cần dòng tổng SOL");
   assert.equal(bang.filter((d) => d.label.includes("Phí mạng")).length, 1);
 });
 
@@ -78,11 +78,13 @@ test("SOL · chuyển 0,1 SOL hợp lệ ⇒ tách khỏi phí, KHÔNG bị gắ
   assert.notEqual(r.level, "danger", "gửi tiền là hành vi thường gặp nhất của một cái ví");
 
   const phi = dong(f, "Phí mạng");
-  const chuyenSol = dong(f, "Chuyển SOL");
-  assert.ok(chuyenSol, "khoản chuyển phải có dòng riêng, không được gộp vào phí");
+  const tongSol = dong(f, "Tổng SOL");
+  assert.ok(tongSol, "khoản chuyển phải có dòng riêng, không được gộp vào phí");
   assert.ok(phi, "phí vẫn phải hiện");
   assert.ok(!phi!.after.includes("0,100"), `phí bị gộp chung với khoản chuyển: ${phi!.after}`);
-  assert.ok(chuyenSol!.after.includes("0,1"), `số tiền chuyển sai: ${chuyenSol!.after}`);
+  // Quy ước số dư → số dư: 5 SOL còn lại 4,9 sau khi chuyển 0,1.
+  assert.ok(tongSol!.before.startsWith("5"), `cột trái phải là số dư trước: ${tongSol!.before}`);
+  assert.ok(tongSol!.after.startsWith("4,89"), `cột phải phải là số dư sau: ${tongSol!.after}`);
 });
 
 // ── Ca 3 · rút phần lớn SOL ───────────────────────────────────────
@@ -104,8 +106,8 @@ test("SOL · rút sạch 5 SOL ⇒ KHÔNG bao giờ safe, có mã lý do hành �
   );
   assert.ok(!chiLaThongTin(r.reasonCodes), "đây là CÁO BUỘC về chính giao dịch, không phải thông tin");
 
-  const d = dong(f, "Chuyển SOL");
-  assert.ok(d, "phải có dòng chuyển SOL");
+  const d = dong(f, "Tổng SOL");
+  assert.ok(d, "phải có dòng tổng SOL");
   assert.notEqual(d!.severity, "info", "5 SOL rời ví không được hiển thị với giọng thông tin");
 });
 
@@ -136,7 +138,15 @@ test("SOL · đóng account hoàn rent ⇒ hiện là NHẬN, không phải phí
     !phi || !phi.after.startsWith("0,002"),
     `SOL tăng mà hiển thị thành phí mạng dương là vô nghĩa: ${phi?.after}`,
   );
-  assert.ok(dong(f, "Nhận SOL"), "SOL tăng phải hiện là nhận");
+  // Quy ước số dư → số dư nói được cả chiều tăng mà không cần nhãn "Nhận SOL"
+  // riêng: người đọc thấy thẳng số dư đi lên.
+  const tongSol = dong(f, "Tổng SOL");
+  assert.ok(tongSol, "SOL tăng vẫn phải có dòng tổng");
+  assert.ok(
+    Number(tongSol!.after.replace(/\./g, "").replace(",", ".")) >
+      Number(tongSol!.before.replace(/\./g, "").replace(",", ".")),
+    `số dư phải đi lên: ${tongSol!.before} -> ${tongSol!.after}`,
+  );
 });
 
 // ── Ca 6 · người ký không phải người dùng ─────────────────────────

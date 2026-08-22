@@ -2,6 +2,7 @@ import type { DiffEntry } from "@custos/types";
 import type { Facts } from "./facts.ts";
 import type { RuleHit } from "./l2/rules.ts";
 import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
+import { tinhSolNguoiDung, WSOL_MINT } from "./sol.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);
 
@@ -61,8 +62,10 @@ export const NHAN = {
   DUOC_PHEP_RUT: "Được phép rút ",
   QUYEN_DONG: "Quyền đóng tài khoản ",
   CHUONG_TRINH: "Chương trình điều khiển ",
-  CHUYEN_SOL: "Chuyển SOL đi",
-  NHAN_SOL: "Nhận SOL",
+  /** CỐ Ý không bắt đầu bằng "Số dư " — nếu trùng tiền tố với `SO_DU` thì mọi
+   *  chỗ dò bằng `startsWith(NHAN.SO_DU)` sẽ nuốt luôn dòng này. `mucNgan.ts`
+   *  dò đúng như vậy, và dòng SOL đã rơi nhầm vào nhánh token. */
+  SO_DU_SOL: "Tổng SOL của bạn",
   PHI: "Phí mạng (ước tính)",
   CHUA_DOC: "Phần chưa đọc được",
 } as const;
@@ -87,6 +90,8 @@ export function dungBangChenhLech(
 
   for (const t of facts.tokenAccounts) {
     if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
+    // wSOL đã nằm trong dòng "Số dư SOL của bạn" — hiện thêm ở đây là đếm hai lần.
+    if (t.mint === WSOL_MINT) continue;
     const dec = decimalsCua.get(t.mint) ?? 0;
     // Người dùng không đọc được base58. Mục đích duy nhất của sản phẩm là làm
     // người ta HIỂU KỊP trước khi bấm ký, nên hiện ký hiệu khi biết.
@@ -150,49 +155,37 @@ export function dungBangChenhLech(
 
   // ── SOL của người được bảo vệ ───────────────────────────────────
   //
-  // Bản trước gán TOÀN BỘ chênh lệch lamport của người ký vào một dòng tên
-  // "Phí mạng" với severity "info". Nghĩa là một giao dịch rút 5 SOL hiện ra
-  // đúng như một khoản phí. Xem SECURITY-AUDIT.md — F1.
+  // MỘT dòng số dư duy nhất, và nó gộp cả wrapped SOL — vì wSOL LÀ SOL. Hai dòng
+  // cùng nói về SOL bắt người đọc tự cộng trừ trong đầu, ngay lúc họ đang vội bấm nút.
   //
-  // Giờ tách làm ba phần rõ ràng: phí, khoản rời ví, khoản vào ví.
-  const solNguoiKy = facts.solDelta[facts.signer];
-  if (solNguoiKy !== undefined && solNguoiKy !== 0n) {
-    const phi = facts.phiUocTinh ?? 0n;
+  // Quy ước của cả bảng: cột trái và cột phải đều là SỐ DƯ. Bản trước trộn ba
+  // quy ước trong cùng một bảng — dòng token là số dư → số dư, dòng "Chuyển SOL
+  // đi" là số dư → mức thay đổi, dòng phí là số 0 giả → mức thay đổi.
+  const sol = tinhSolNguoiDung(facts);
+  const phi = facts.phiUocTinh ?? 0n;
 
-    if (solNguoiKy < 0n) {
-      const raKhoiVi = -solNguoiKy;
-      const phiHienThi = raKhoiVi < phi ? raKhoiVi : phi;
-      const chuyenDi = raKhoiVi - phiHienThi;
+  if (sol.roi !== 0n && (sol.roi > phi || sol.roi < 0n)) {
+    // Màu lấy THẲNG từ việc luật 13 có kích hoạt hay không, không dò chuỗi.
+    // Trước đây màu của dòng token dò theo `coHitO(địa chỉ)`, mà luật 13 nói về
+    // SOL của người dùng chứ không nhắc địa chỉ tài khoản nào — nên dòng wSOL
+    // không bao giờ được tô đỏ dù engine đã gắn cờ.
+    const luat13 = hits.some((h) => h.ruleId === 13);
+    out.push({
+      label: NHAN.SO_DU_SOL,
+      before: dinhDangSo(sol.truoc, LAMPORTS_DECIMALS),
+      after: dinhDangSo(sol.sau, LAMPORTS_DECIMALS),
+      severity: luat13 ? "danger" : "info",
+    });
+  }
 
-      if (phiHienThi > 0n) {
-        out.push({
-          label: NHAN.PHI,
-          before: "0",
-          after: `−${dinhDangSo(phiHienThi, LAMPORTS_DECIMALS)} SOL`,
-          severity: "info",
-        });
-      }
-      if (chuyenDi > 0n) {
-        // Nặng hay nhẹ đo bằng TỈ LỆ số dư, không bằng con số tuyệt đối — đội
-        // không có dữ liệu giá để biết bao nhiêu là "nhiều".
-        const truoc = facts.accounts.find((a) => a.address === facts.signer)?.lamportsBefore ?? 0n;
-        const phanLon = truoc > 0n && (chuyenDi * 100n) / truoc >= NGUONG_SOL_PHAN_TRAM;
-        out.push({
-          label: NHAN.CHUYEN_SOL,
-          before: dinhDangSo(truoc, LAMPORTS_DECIMALS),
-          after: `−${dinhDangSo(chuyenDi, LAMPORTS_DECIMALS)} SOL`,
-          severity: phanLon ? "danger" : "info",
-        });
-      }
-    } else {
-      // SOL TĂNG. Hiển thị nó như "phí mạng dương" là vô nghĩa.
-      out.push({
-        label: NHAN.NHAN_SOL,
-        before: "0",
-        after: `${dinhDangSo(solNguoiKy, LAMPORTS_DECIMALS)} SOL`,
-        severity: "info",
-      });
-    }
+  // Phí KHÔNG phải số dư, nên cột trái là "—" chứ không phải số 0 giả.
+  if (phi > 0n && facts.solDelta[facts.signer] !== undefined) {
+    out.push({
+      label: NHAN.PHI,
+      before: "—",
+      after: `${dinhDangSo(phi, LAMPORTS_DECIMALS)} SOL`,
+      severity: "info",
+    });
   }
 
   // Bảng có thể đang thiếu — nói ra ngay trong bảng, không chỉ trong mã lý do.

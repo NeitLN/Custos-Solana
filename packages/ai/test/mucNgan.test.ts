@@ -81,7 +81,9 @@ test("NGẮN · dòng thông tin KHÔNG được lọt vào", () => {
   assert.ok(!c.includes("Phí mạng"), c);
 });
 
-test("NGẮN · phần lớn SOL rời ví ⇒ nêu số tiền trước", () => {
-  const c = tomTat(kq({ diff: [d(NHAN.CHUYEN_SOL, "5,0", "−4,9 SOL")] }));
-  assert.match(c, /^4,9 SOL/, `số tiền phải đứng đầu câu: ${c}`);
+test("NGẮN · phần lớn SOL rời ví ⇒ nói theo đúng quy ước số dư của bảng", () => {
+  // Bảng dùng quy ước `số dư → số dư`. Mức Ngắn phải nói cùng con số đó, để
+  // người đọc đối chiếu được ngay — không tự suy ngược ra mức thay đổi.
+  const c = tomTat(kq({ diff: [d(NHAN.SO_DU_SOL, "5,0", "0,1")] }));
+  assert.ok(c.includes("5,0") && c.includes("0,1"), `phải nêu cả trước lẫn sau: ${c}`);
 });
