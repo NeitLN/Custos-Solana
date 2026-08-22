@@ -4,6 +4,7 @@ import type { Facts, AccountFact, TokenAccountFact } from "../src/facts.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import { dungBangChenhLech } from "../src/diff.ts";
 import { REASON, chiLaThongTin } from "../src/constants.ts";
+import { tinhSolNguoiDung } from "../src/sol.ts";
 
 /**
  * NATIVE SOL.
@@ -329,4 +330,17 @@ test("wSOL · ÂM TÍNH — bọc SOL vào wSOL để swap ⇒ không gắn cờ
     !r.reasonCodes.includes(REASON.SOL_ROI_VI),
     "bọc SOL thành wSOL là chuyển hình dạng, không phải mất tiền",
   );
+});
+
+test("wSOL · BẤT BIẾN — accounts và solDelta không được lệch nhau", () => {
+  // Luật 13 sau bản vá đọc `facts.accounts`, trong khi bản trước đọc `solDelta`.
+  // Hai nguồn này hiện luôn đi cùng nhau (cùng lọc theo afterByIndex trong
+  // l1/fetch.ts). Nếu một lần refactor làm chúng lệch, hậu quả là luật 13 IM
+  // LẶNG — tính ra 0 lamport rời ví trong khi solDelta biết rõ 5 SOL đã đi.
+  const f = facts({
+    accounts: [], // ví người ký KHÔNG có ở đây
+    solDelta: { [TOI]: -5_000_000_000n }, // nhưng solDelta biết
+  });
+  const { roi } = tinhSolNguoiDung(f);
+  assert.equal(roi, 5_000_000_000n, "phải dựng lại được từ solDelta thay vì trả 0");
 });
