@@ -68,6 +68,9 @@ export function parseMint(address: string, info: AccountInfo<Buffer> | null): Mi
       transferHookProgramId,
       isToken2022,
       decimals: m.decimals,
+      // Ký hiệu điền sau, ở fetch.ts — đọc nó cần thêm một lượt gọi RPC nên
+      // không thuộc việc của hàm giải mã thuần tuý này.
+      kyHieu: null,
     };
   } catch {
     return null;

@@ -21,6 +21,12 @@ export type TokenAccountFact = {
 
 export type MintFact = {
   address: string;
+  /** Ký hiệu token đọc TỪ CHUỖI (Metaplex, hoặc extension metadata của Token-2022).
+   *
+   *  `null` = không đọc được, và khi đó hiển thị quay về địa chỉ rút gọn. Đây là
+   *  chuỗi do NGƯỜI PHÁT HÀNH TOKEN đặt, nên vẫn là dữ liệu không đáng tin: nó đã
+   *  đi qua cùng bộ lọc hình dạng với `kyHieuToken` do dApp truyền vào. */
+  kyHieu: string | null;
   mintAuthority: string | null;
   freezeAuthority: string | null;
   permanentDelegate: string | null;

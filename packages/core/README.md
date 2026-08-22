@@ -221,6 +221,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | **Coverage chưa đủ trên DeFi** | **trung bình 69 %** trên cohort 22/08; riêng lệnh chạm được tài sản của bạn: **39 %**. Con số dao động mạnh theo mẻ mẫu. Chưa có decoder cho các chương trình DEX không công bố IDL trên chuỗi |
 | **Phí mạng là ƯỚC TÍNH** | Phí cơ bản 5000 lamport mỗi chữ ký thì chắc chắn; phí ưu tiên chỉ tính được khi giao dịch có cả `setComputeUnitPrice` lẫn `setComputeUnitLimit`. Nhãn ghi rõ "(ước tính)" |
 | **SOL: chỉ bắt theo tỉ lệ** | Luật 13 kích hoạt khi phần SOL rời ví vượt 50 % số dư. Khoản nhỏ vẫn hiện trong bảng chênh lệch nhưng không gắn cờ. Rent tạo/đóng account chưa tách riêng khỏi khoản chuyển |
+| **Ký hiệu token đọc từ chuỗi** | Custos tự đọc ký hiệu từ Metaplex và extension metadata của Token-2022 — không cần khoá của nhà cung cấp nào. Token không công bố metadata thì hiển thị địa chỉ rút gọn. `kyHieuToken` bạn truyền vào vẫn được ưu tiên trước |
 | **Không đo được thì nói ra** | Account vượt trần 100 của RPC, hoặc RPC không trả dữ liệu, sẽ thành `TRANG_THAI_DO_KHUYET` và verdict không bao giờ là `Bình thường` |
 | **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
 | **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |

@@ -8,6 +8,7 @@ import {
 import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact } from "../facts.ts";
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
 import { decodeInstruction, VI_TRI_AUTHORITY } from "./decode.ts";
+import { docKyHieuToken } from "./ten-token.ts";
 import { giaiBase58 } from "./base58.ts";
 import { computeCoverage } from "./coverage.ts";
 
@@ -311,6 +312,26 @@ export async function extractFacts(
       // Không lấy được mint thì `decimals` khuyết. Không làm sập lượt kiểm tra —
       // bảng chênh lệch vẫn hiện, chỉ kém chính xác về cách hiển thị số.
     }
+  }
+
+  // Ký hiệu token — đọc TỪ CHUỖI, không qua nhà cung cấp nào.
+  //
+  // Không có bước này thì bảng chênh lệch hiện `Agsm…Lf4Z` thay vì `USDC`. Demo
+  // hiện đúng ký hiệu chỉ vì ví mẫu tự truyền `kyHieuToken`; giao dịch mainnet
+  // thật thì không ai truyền. Xem ten-token.ts.
+  //
+  // Best-effort: hỏng thì ký hiệu để `null` và hiển thị quay về địa chỉ rút gọn.
+  try {
+    const duLieuMint = new Map(
+      mints.map((m) => {
+        const i = allKeys.findIndex((k) => k.toBase58() === m.address);
+        return [m.address, i >= 0 ? (before[i] ?? null) : null] as const;
+      }),
+    );
+    const kyHieu = await docKyHieuToken(conn, duLieuMint);
+    for (const m of mints) m.kyHieu = kyHieu.get(m.address) ?? null;
+  } catch {
+    // giữ nguyên null
   }
 
   // Phí mạng ước tính. Phí cơ bản là 5000 lamport MỖI CHỮ KÝ — hằng số của giao

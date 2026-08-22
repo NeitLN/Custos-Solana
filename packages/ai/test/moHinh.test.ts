@@ -44,7 +44,7 @@ function facts(p: Partial<Facts> = {}): Facts {
     simulationError: null,
     accounts: [],
     tokenAccounts: [],
-    mints: [{ address: MINT, mintAuthority: null, freezeAuthority: null, permanentDelegate: null, transferHookProgramId: null, isToken2022: false, decimals: 6 }],
+    mints: [{ address: MINT, mintAuthority: null, freezeAuthority: null, permanentDelegate: null, transferHookProgramId: null, isToken2022: false, decimals: 6 , kyHieu: null}],
     solDelta: {},
     tuoiViNhan: {},
     instructions: [],
