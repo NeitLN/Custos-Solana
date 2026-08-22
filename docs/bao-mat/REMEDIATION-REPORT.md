@@ -5,15 +5,15 @@
 | Commit được audit | `92cca153f62dd6451b9a5f20cf9c6c0ee3f844d6` (`main`) |
 | Ngày | 21–22/08/2026 |
 | Baseline | `npm run check` → **167/167 PASS**, worktree sạch |
-| Sau khắc phục | `npm run check` → **188/188 PASS** |
+| Sau khắc phục | `npm run check` → **197/197 PASS** |
 | Trạng thái commit | **CHƯA commit, CHƯA push** — người dùng tự làm |
 
 ## Kết luận re-audit
 
 > **PASS WITH KNOWN LIMITATIONS**
 
-P0 hoàn thành và qua toàn bộ cổng. P1 hoàn thành phần lõi. P2 chưa làm, và một
-phần bị chặn vì thiếu khoá API.
+P0 hoàn thành và qua toàn bộ cổng. P1 hoàn thành phần lõi. P2: mức diễn đạt Ngắn
+đã cài, live-model đã chạy thật với Haiku; còn mức Kỹ thuật chưa làm.
 
 Giới hạn quan trọng nhất còn lại nằm ở mục *Vấn đề chưa giải quyết* bên dưới —
 **không được đọc "PASS" mà bỏ qua mục đó**.
@@ -31,8 +31,8 @@ Giới hạn quan trọng nhất còn lại nằm ở mục *Vấn đề chưa g
 | **A2** Fail-safe không có mã lý do | Mô phỏng hỏng ⇒ `warning`, `reasonCodes: []` | `MO_PHONG_HONG` | `do-khuyet.test.ts`, bất biến ở `ai/test/templates.test.ts` | **ĐÃ SỬA** |
 | **F3** Luật PD không biết ai ra tay | Luôn Vàng | `authority` bóc từ danh sách account; chính PD ra tay ⇒ Đỏ; không bóc được ⇒ giữ Vàng | `core/test/authority.test.ts` (6 ca) | **ĐÃ SỬA** |
 | **F4** Coverage | 53 % · chạm tài sản 21 % | 69 % · chạm tài sản 39 % (cohort 22/08) | `scripts/do-cohort.ts` | **CẢI THIỆN** |
-| **F5** Ba mức diễn đạt | Chỉ mức "Đầy đủ" | không đổi | — | **CHƯA LÀM** |
-| **F6** Model layer chạy thật | Chưa chạy lần nào | không đổi | — | **BLOCKED_BY_SECRET** |
+| **F5** Ba mức diễn đạt | Chỉ mức "Đầy đủ" | Thêm mức **Ngắn** (mặc định) + nút "Xem chi tiết"; mức Kỹ thuật chưa làm | `ai/test/mucNgan.test.ts` (8 ca) | **MỘT PHẦN** |
+| **F6** Model layer chạy thật | Chưa chạy lần nào | Chạy thật với Haiku 4.5: 12/12 mẫu dùng được, latency 2430ms | `scripts/danh-gia-mo-hinh.ts` · `docs/bao-mat/DANH-GIA-claude-haiku-*.md` | **ĐÃ CHẠY** |
 
 ---
 
@@ -42,8 +42,8 @@ Giới hạn quan trọng nhất còn lại nằm ở mục *Vấn đề chưa g
 
 | | Trước | Sau |
 |---|---:|---:|
-| Test | 167 | **188** |
-| File test mới | — | `sol.test.ts`, `do-khuyet.test.ts`, `authority.test.ts` |
+| Test | 167 | **197** |
+| File test mới | — | `sol.test.ts`, `do-khuyet.test.ts`, `authority.test.ts`, `ai/test/mucNgan.test.ts` |
 
 ### Coverage — đo trên cohort cố định
 
@@ -104,6 +104,10 @@ mặc định ở `giaiDongBangFacts`.
 | `scripts/do-cohort.ts` | đo trên cohort CỐ ĐỊNH, kèm so sánh một lượt |
 | `scripts/lay-idl-onchain.ts` | lấy IDL Anchor từ chuỗi |
 | `scripts/tao-bang-idl.ts` | sinh `bang-idl.ts` |
+| `scripts/smoke-model.ts` | gọi thật một lượt để kiểm adapter |
+| `scripts/danh-gia-mo-hinh.ts` | bộ đánh giá 12 mẫu cố định, chạy qua ĐƯỜNG SẢN XUẤT |
+| `packages/ai/src/anthropic.ts` | adapter Anthropic — file duy nhất biết tên nhà cung cấp |
+| `packages/ai/src/mucNgan.ts` | mức diễn đạt Ngắn |
 
 **Tài liệu**: `CUSTOS.md`, `README.md`, `CLAUDE.md`, `packages/core/README.md`,
 `docs/bao-mat/*`.
@@ -161,10 +165,20 @@ Lệnh **chạm được tài sản người dùng** mới đọc hiểu 39 %. C
 bố IDL trên chuỗi thì không có cách nào đọc hiểu mà không phỏng đoán, nên vẫn bị
 đếm là chưa xác minh.
 
-### 6. F5 và F6 chưa làm
+### 6. F5 mới xong một phần
 
-- **F5** ba mức diễn đạt: chưa cài. Mức "Đầy đủ" đang chạy đúng như đặc tả yêu cầu giữ.
-- **F6** live-model: `BLOCKED_BY_SECRET`.
+- **F5**: mức **Ngắn** đã cài và là mặc định trên màn cảnh báo; mức **Đầy đủ** nằm
+  sau nút "Xem chi tiết". Mức **Kỹ thuật** chưa làm — đặc tả `DAC-TA-L3.md` mục 6
+  ghi rõ nếu thiếu thời gian thì cắt mức 3 trước.
+- **F6** live-model: **đã chạy thật** với `claude-haiku-4-5-20251001` ngày 22/08.
+  12/12 mẫu mô hình trả lời được, 0 lượt rơi về câu mẫu cứng, 0 lượt phá bất đối
+  xứng `aiAdvisory`, latency trung bình 2430ms.
+
+  **Opus 5 KHÔNG dùng được với cấu hình hiện tại:** đo được 7864ms cho một lượt
+  gọi với payload thật, sát ngay dưới hạn 8000ms của `boiThoiHan`, nên trên thực
+  tế mọi lượt đều quá hạn và rơi về câu mẫu cứng. Muốn dùng Opus thì phải nâng
+  thời hạn — nhưng 8 giây đã là quá lâu để bắt người dùng chờ ở màn hình ký.
+  Haiku ở 2,4 giây là lựa chọn đúng cho việc này.
 
 ---
 

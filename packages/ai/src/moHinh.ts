@@ -1,4 +1,4 @@
-import { kyHieuAnToan, type Interpreter, type Facts } from "@custos/core";
+import { kyHieuAnToan, dinhDangSo, type Interpreter, type Facts } from "@custos/core";
 import type { AiAdvisory, PrimaryAction } from "@custos/types";
 import { dienGiaiKhongAI } from "./index.ts";
 import { nhanDien } from "./nhanDien.ts";
@@ -90,6 +90,8 @@ function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<st
   // đặt, nên nó không được đi thẳng vào prompt — đó là bề mặt tấn công chính
   // của mọi sản phẩm đưa dữ liệu on-chain vào mô hình ngôn ngữ.
   const ten = (mint: string) => kyHieuAnToan(mint, kyHieu);
+  const decimalsCua = (mint: string) => facts.mints.find((m) => m.address === mint)?.decimals ?? 0;
+
   return {
     reasonCodes,
     coverage: facts.coverage,
@@ -99,8 +101,13 @@ function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<st
       .map((t) => ({
         token: ten(t.mint),
         cuaNguoiKy: t.ownerBefore === facts.signer,
-        truoc: t.amountBefore.toString(),
-        sau: t.amountAfter.toString(),
+        // Gửi số ĐÃ CHIA DECIMALS, không gửi đơn vị thô. Bản trước gửi
+        // amountBefore.toString() nguyên văn — mô hình đọc lại "500000000" thay
+        // vì "500" khi decimals=6, lệch đúng 10^decimals lần. Phát hiện được
+        // ngay lượt gọi thật đầu tiên với Haiku. Đúng loại lỗi CUSTOS.md quyết
+        // định 7 cảnh báo: hiển thị sai độ lớn trong sản phẩm bảo mật là nguy hiểm.
+        truoc: dinhDangSo(t.amountBefore, decimalsCua(t.mint)),
+        sau: dinhDangSo(t.amountAfter, decimalsCua(t.mint)),
         doiChu: t.ownerBefore !== t.ownerAfter,
         delegateMoi: t.delegateAfter !== t.delegateBefore ? t.delegateAfter : null,
       })),

@@ -153,7 +153,7 @@ thành `safe`.
 
 | # | Task | Vai | Phụ thuộc |
 |---|---|---|---|
-| P2-1 | Live-model adapter + smoke test | E | P0, P1 core PASS · **BLOCKED_BY_SECRET** |
+| P2-1 | Live-model adapter + smoke test | E | P0, P1 core PASS |
 | P2-2 | Evaluation tiếng Việt trên tập cố định | E | P2-1 |
 | P2-3 | Mức diễn đạt **Ngắn** | E | P0 PASS |
 | P2-4 | Mức diễn đạt **Kỹ thuật** | E | P2-3 |
@@ -171,5 +171,6 @@ Mọi mức diễn đạt phải giữ nguyên facts, con số và `reasonCodes`
 | P1-3 (decoder từ IDL trên chuỗi, 6 chương trình) | **PASS** |
 | P1-4 (đo lại cùng cohort) | **PASS** |
 | P1-5 (cập nhật tài liệu) | **PASS** |
-| P2-1, P2-2 | **BLOCKED** — không có khoá API trong environment |
+| P2-1 (live-model adapter + smoke test) | **PASS** — chạy thật với Haiku 22/08 |
+| P2-2 (evaluation tiếng Việt) | **PASS** — 12/12 mẫu, 0 rơi về câu mẫu |
 | P2-3, P2-4 (ba mức diễn đạt) | TODO |
