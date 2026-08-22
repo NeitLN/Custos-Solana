@@ -84,18 +84,18 @@ export type Facts = {
   /** Ví/dApp có chỉ định rõ người dùng không. */
   nguoiDungDuocChiDinh: boolean;
   /**
-   * Phí mạng ước tính, tính bằng lamport.
+   * Phí mạng, tính bằng lamport.
    *
-   * ĐÂY LÀ CẬN DƯỚI, không phải con số chính xác: phí cơ bản 5000 lamport mỗi
-   * chữ ký thì chắc chắn, còn phí ưu tiên chỉ tính được khi giao dịch có CẢ
-   * `setComputeUnitPrice` lẫn `setComputeUnitLimit` đọc được. Thiếu một trong
-   * hai thì phần ưu tiên bỏ qua thay vì đoán.
+   * Lấy từ `getFeeForMessage` của RPC — con số CHÍNH XÁC, kể cả phí ưu tiên.
+   * Kiểm trên bốn giao dịch mainnet: khớp từng lamport với `meta.fee` thật.
    *
-   * Vì là cận dưới, phần lamport rời ví vượt quá con số này có thể vẫn còn lẫn
-   * một ít phí. Luật dùng ngưỡng theo TỈ LỆ số dư nên sai số đó không đủ để
-   * kích hoạt cảnh báo — nhãn hiển thị thì có thể lệch vài nghìn lamport.
+   * Lui về ước tính (5000 mỗi chữ ký, cộng phí ưu tiên nếu đọc được cả giá lẫn
+   * hạn mức compute unit) khi RPC không trả lời. Khi đó `phiChinhXac` là `false`
+   * và nhãn hiển thị phải nói rõ là ước tính.
    */
   phiUocTinh: bigint;
+  /** Phí ở trên có phải số chính xác từ RPC không, hay chỉ là cận dưới. */
+  phiChinhXac: boolean;
   simulationOk: boolean;
   simulationError: string | null;
   accounts: AccountFact[];

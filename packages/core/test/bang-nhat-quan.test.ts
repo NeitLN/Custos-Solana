@@ -42,7 +42,7 @@ const facts = (p: Partial<Facts>): Facts => ({
   signer: TOI, simulationOk: true, simulationError: null,
   accounts: [], tokenAccounts: [], mints: [], solDelta: {}, tuoiViNhan: {},
   instructions: [], lookupTables: [], accountKhongDoDuoc: [],
-  nguoiKy: [TOI], nguoiDungDuocChiDinh: true, phiUocTinh: PHI,
+  nguoiKy: [TOI], nguoiDungDuocChiDinh: true, phiUocTinh: PHI, phiChinhXac: true,
   coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 }, ...p,
 });
 
@@ -175,4 +175,43 @@ test("SOL · chỉ hiện dòng số dư khi có thay đổi VƯỢT tiền phí
   });
   assert.equal(timDong(f, NHAN.SO_DU_SOL), undefined, "chỉ mất phí thì không cần dòng số dư SOL");
   assert.ok(timDong(f, NHAN.PHI), "nhưng vẫn phải cho biết đã trả phí");
+});
+
+// ── Phí chính xác vs ước tính ─────────────────────────────────────
+test("PHÍ · lấy được số chính xác ⇒ nhãn KHÔNG nói 'ước tính'", () => {
+  const f = facts({
+    phiChinhXac: true,
+    accounts: [acc({ address: TOI, isSigner: true, lamportsBefore: 5_000_000_000n, lamportsAfter: 5_000_000_000n - PHI })],
+    solDelta: { [TOI]: -PHI },
+  });
+  const d = bang(f).find((x) => x.label.includes("hí mạng"));
+  assert.ok(d, "phải có dòng phí");
+  assert.equal(d!.label, NHAN.PHI);
+  assert.ok(!d!.label.includes("ước tính"), "số chính xác mà vẫn nói ước tính là tự hạ thấp mình");
+});
+
+test("PHÍ · RPC không trả lời ⇒ nhãn PHẢI nói rõ là ước tính", () => {
+  // Lui về cận dưới thì phải nói ra. Trình bày một cận dưới như số chính xác
+  // là loại nói quá mà sản phẩm này cấm.
+  const f = facts({
+    phiChinhXac: false,
+    accounts: [acc({ address: TOI, isSigner: true, lamportsBefore: 5_000_000_000n, lamportsAfter: 5_000_000_000n - PHI })],
+    solDelta: { [TOI]: -PHI },
+  });
+  const d = bang(f).find((x) => x.label.includes("hí mạng"));
+  assert.ok(d, "phải có dòng phí");
+  assert.ok(d!.label.includes("Ước tính"), `phải nói rõ là ước tính: ${d!.label}`);
+});
+
+test("PHÍ chính xác ⇒ giao dịch chỉ trả phí KHÔNG hiện dòng tổng SOL", () => {
+  // Đây là lý do P1-G tồn tại: ước tính là cận dưới nên phần "vượt quá phí"
+  // luôn lẫn một ít phí thật. Đo mainnet: phí thật 5203, ước tính 5000 -> dòng
+  // số dư SOL hiện ra cho một thay đổi 203 lamport.
+  const phiThat = 5_203n;
+  const f = facts({
+    phiUocTinh: phiThat, phiChinhXac: true,
+    accounts: [acc({ address: TOI, isSigner: true, lamportsBefore: 5_000_000_000n, lamportsAfter: 5_000_000_000n - phiThat })],
+    solDelta: { [TOI]: -phiThat },
+  });
+  assert.equal(timDong(f, NHAN.SO_DU_SOL), undefined, "chỉ trả phí thì không cần dòng tổng SOL");
 });

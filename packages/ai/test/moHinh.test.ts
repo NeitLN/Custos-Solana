@@ -52,7 +52,7 @@ function facts(p: Partial<Facts> = {}): Facts {
     accountKhongDoDuoc: [],
     nguoiKy: [TOI],
     nguoiDungDuocChiDinh: false,
-    phiUocTinh: 5_000n,
+    phiUocTinh: 5_000n, phiChinhXac: true,
     coverage: { analyzed: 11, total: 11, unverifiedPrograms: 0 },
     ...p,
   };
