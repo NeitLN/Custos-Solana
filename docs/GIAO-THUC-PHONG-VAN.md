@@ -140,6 +140,26 @@ chúng em còn phải làm nhiều"* mạnh hơn một con số tròn trịa.
 
 ## 7 · Ghi kết quả
 
+Biên bản: `docs/ket-qua-phong-van.md` — điền cả **khối nguồn gốc** ở đầu (ngày, ai
+hỏi, ghi tay hay ghi âm, commit của màn hình đã chiếu). Đó là phần giám khảo soi kỹ
+nhất, và là phần một bản dựng lại từ trí nhớ không có.
+
+Đếm và soi bằng script, đừng đếm tay:
+
+```
+node --experimental-strip-types scripts/kiem-phong-van.ts
+```
+
+Nó in con số công bố, và nêu những chỗ **chấm có vẻ lệch với câu nguyên văn** —
+bốn người chấm 12 người qua nhiều buổi thì thang chấm trôi mà không ai nhận ra.
+Script **không tự sửa nhãn**: một script tự đổi ĐÚNG thành SAI theo từ khoá là một
+script đang bịa dữ liệu.
+
+Nó cũng cảnh báo khi 12 câu trả lời **dài gần bằng nhau** — người thật nói dài ngắn
+rất khác nhau, nên sự đều đặn là dấu hiệu văn bản đã bị viết lại cho gọn.
+
+
+
 Xong 12 người → bấm **Sao chép toàn bộ (JSON)** trên trang → dán vào
 `data/seed/phong-van.json` → commit.
 
