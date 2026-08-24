@@ -12,7 +12,7 @@ quay màn hình thật, đứng nói thật. Xếp theo **điểm đổi đượ
 | # | Việc | Ai | Thời gian | Hạn | Đổi được |
 |---|---|---|---|---|---|
 | 1 | Nộp form BTC | 1 người | 15 phút | **Càng sớm càng tốt** | Bắt buộc, thiếu là không được xếp lịch |
-| 2 | Phỏng vấn 12 người | Cả 4 | 3 người/bạn | 31/08 | ~9 điểm |
+| 2 | ~~Phỏng vấn 12 người~~ **ĐÃ BỎ 24/08** — không bắt buộc, xem `ket-qua-phong-van.md` | — | — | — | — |
 | 3 | Nhắn ví/dApp hỏi định giá | 1 người | 1 tối | 31/08 | ~7 điểm |
 | 4 | RPC key riêng | 1 người | 10 phút | Trước 04/09 | Chống demo chết |
 | 5 | Quay video 60–90 giây | 2 người | 2 tiếng | 03/09 | Bắt buộc nộp |
@@ -55,7 +55,15 @@ Repo: https://github.com/NeitLN/Custos-Solana
 
 ---
 
-## 2 · Phỏng vấn 12 người — việc quan trọng nhất
+## 2 · Phỏng vấn — ĐÃ BỎ ngày 24/08
+
+> Quyết định: bỏ phần phỏng vấn, dồn thời gian còn lại cho ba hạng mục **bắt buộc**
+> (form BTC · video · slide) vì thiếu chúng thì hồ sơ có thể bị loại, còn thiếu
+> phỏng vấn thì chỉ mất điểm ở một tiêu chí. Xem `docs/ket-qua-phong-van.md`.
+>
+> Phần dưới giữ lại để dùng nếu còn kịp.
+
+### Nội dung cũ
 
 **Kịch bản đầy đủ: [PHONG-VAN-NGUOI-DUNG.md](PHONG-VAN-NGUOI-DUNG.md)** — đọc file đó trước khi hỏi ai.
 
