@@ -14,6 +14,10 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 
 ## Slide
 
+**Nền sáng** (giấy hơi ngả ấm `#F7F6F2`, không trắng tinh — trắng tuyệt đối trên máy
+chiếu hội trường bị chói và làm chữ mảnh khó đọc). Khối code ở slide 5 cố ý giữ nền
+tối: trình soạn thảo vốn tối, và nó cho mắt một điểm nghỉ giữa deck toàn giấy sáng.
+
 `CUSTOS-PITCH.pptx` — 10 slide, khớp đúng nhịp 4 phút trong `PITCH-VA-PHAN-BIEN.md` mục 2.
 
 **Mỗi slide có ghi chú người nói**, kèm mốc thời gian và những chỗ dễ nói hớ. Mở
@@ -30,13 +34,28 @@ nên đo lại rồi sinh lại là số tự đúng.
 
 ```bash
 npm install pptxgenjs          # không phải phụ thuộc của repo, cài riêng khi cần
-node scripts/tao-deck.js docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json
+node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json
 ```
 
-> **Chưa soi được bằng mắt.** Máy dựng không có LibreOffice nên không render ra ảnh
-> được; mới kiểm bằng hình học (tràn hộp, đè nhau, lòi mép) và bằng cách đọc lại
-> toàn bộ chữ. **Mở một lượt trong PowerPoint trước khi nộp** — nhất là xem hai
-> tiêu đề dài ở slide 3 và 8 có xuống dòng xấu không.
+Đuôi `.cjs` là bắt buộc: repo đặt `"type": "module"` nên `.js` bị coi là ESM và
+`require()` ném lỗi.
+
+### Kiểm trước khi nộp
+
+**Máy này không cài ứng dụng nào mở được `.pptx`** — không PowerPoint, không
+LibreOffice, không WPS. Nên deck **chưa được nhìn bằng mắt trong PowerPoint**.
+
+Đã kiểm được ba thứ bằng máy:
+
+| Kiểm gì | Cách |
+|---|---|
+| Tràn hộp · hai khối chữ đè nhau · lòi mép slide | đo hình học từng hộp |
+| Tương phản chữ trên nền | tính tỉ lệ tương phản, có tính cả panel nằm dưới chữ |
+| Chữ, số, chính tả | đọc lại toàn bộ text trong file |
+
+**Vẫn phải mở một lượt bằng mắt trước khi nộp.** Cách nhanh nhất: kéo file vào
+`drive.google.com` để xem bằng Google Slides. Nhìn kỹ hai tiêu đề dài nhất
+(slide 3 và 8) xem có xuống dòng xấu không, và kiểm phông tiếng Việt có vỡ dấu không.
 
 ### Phông chữ
 

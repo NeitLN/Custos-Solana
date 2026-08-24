@@ -1,3 +1,4 @@
+// Đuôi .cjs là bắt buộc: repo đặt "type": "module" nên .js bị coi là ESM và require() ném lỗi.
 // Deck pitch 4 phút — Custos · Track Best Product & Business
 // Bảng màu lấy thẳng từ giao diện sản phẩm (slate-950 + hổ phách + hồng cảnh báo),
 // nên slide và demo trông như một thứ chứ không phải hai.
@@ -7,17 +8,29 @@ const fs = require("fs");
 const S = JSON.parse(fs.readFileSync(process.argv[3], "utf8"));
 
 const C = {
-  bg: "0A0F1C",
-  surface: "151E33",
-  surface2: "1E2A44",
-  line: "2A3852",
-  text: "E8EDF5",
-  muted: "94A3B8",
-  dim: "64748B",
-  amber: "F5A524",
-  rose: "FB7185",
-  emerald: "34D399",
-  indigo: "9BA8F5",
+  // NỀN SÁNG. Giấy hơi ngả ấm chứ không trắng tinh — trắng FFFFFF trên máy chiếu
+  // hội trường chói và làm chữ mảnh khó đọc.
+  bg: "F7F6F2",
+  bgAlt: "EFEDE6",
+  surface: "FFFFFF",
+  amberSoft: "FDF3E3",
+  roseSoft: "FDF2F4",
+  line: "DCD9D0",
+  code: "12161F",
+
+  // Màu CHỮ — đã hạ độ sáng cho đọc được trên giấy. Bản nền tối dùng F5A524 và
+  // 34D399; đặt nguyên hai màu đó lên nền sáng là tụt dưới ngưỡng tương phản.
+  text: "14181F",
+  muted: "525A66",
+  dim: "5E6673",   // đậm hơn ngưỡng AA một nấc: máy chiếu hội trường làm nhòe chữ nhỏ
+  amber: "B45309",
+  rose: "BE123C",
+  emerald: "047857",
+  indigo: "4338CA",
+
+  // Màu chỉ để TÔ, không bao giờ làm chữ — nên giữ nguyên độ tươi.
+  amberFill: "F5A524",
+  roseFill: "E11D48",
 };
 const F = { head: "Trebuchet MS", body: "Calibri", mono: "Consolas" };
 
@@ -36,7 +49,7 @@ function nen(s, mau = C.bg) {
 
 // Vạch hổ phách mép trái — mô-típ lặp lại ở mọi slide nội dung.
 function vach(s, y = 0.62, h = 0.62) {
-  s.addShape(p.ShapeType.rect, { x: 0, y, w: 0.09, h, fill: { color: C.amber } });
+  s.addShape(p.ShapeType.rect, { x: 0, y, w: 0.09, h, fill: { color: C.amberFill } });
 }
 
 function tieuDe(s, t, y = 0.6, size = 34) {
@@ -63,7 +76,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 // ─────────────────────────────────────────── 1 · Bìa
 {
   const s = p.addSlide(); nen(s);
-  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.amber } });
+  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.amberFill } });
   s.addText("Custos", {
     x: M, y: 2.05, w: W, h: 1.25, fontFace: F.head, fontSize: 64, bold: true,
     color: C.text, margin: 0, valign: "bottom",
@@ -96,7 +109,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     { x: M + 0.35, y: 2.62, w: cw - 0.7, h: 2.55, fontFace: F.mono, fontSize: 13, color: C.muted, lineSpacing: 26, margin: 0 },
   );
 
-  the(s, M + cw + 0.55, 1.95, cw, 3.5, C.surface2, C.amber);
+  the(s, M + cw + 0.55, 1.95, cw, 3.5, C.amberSoft, C.amberFill);
   chip(s, "THỨ HỌ CẦN BIẾT", M + cw + 0.9, 2.2, cw - 0.7, C.amber);
   s.addText("Toàn bộ token của bạn sẽ bị chuyển đi,\nvà tài khoản sẽ đổi chủ.\n\nSau khi ký, bạn không lấy lại được.", {
     x: M + cw + 0.9, y: 2.7, w: cw - 0.7, h: 2.4, fontFace: F.body, fontSize: 19, color: C.text, lineSpacing: 30, margin: 0,
@@ -119,7 +132,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     x: M + 0.4, y: 1.95, w: W - 0.8, h: 1.15, fontFace: F.body, fontSize: 17, color: C.muted, valign: "middle", margin: 0,
   });
 
-  the(s, M, 3.32, W, 1.9, C.surface2, C.amber);
+  the(s, M, 3.32, W, 1.9, C.amberSoft, C.amberFill);
   s.addText("Vấn đề là lúc mô phỏng KHÔNG hiểu hết —", {
     x: M + 0.4, y: 3.55, w: W - 0.8, h: 0.5, fontFace: F.head, fontSize: 23, bold: true, color: C.text, margin: 0,
   });
@@ -139,8 +152,8 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 
 // ─────────────────────────────────────────── 4 · Demo
 {
-  const s = p.addSlide(); nen(s, "060A14");
-  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.rose } });
+  const s = p.addSlide(); nen(s, C.bgAlt);
+  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.roseFill } });
   s.addText("DEMO", {
     x: M, y: 1.5, w: W, h: 1.1, fontFace: F.head, fontSize: 54, bold: true, color: C.text, margin: 0, charSpacing: 3,
   });
@@ -155,7 +168,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     ["3", "Dòng “đã đọc hiểu 2 trên 3 lệnh” — nó tự khai phần nó chưa hiểu"],
   ];
   noi.forEach(([n, t], i) => {
-    s.addShape(p.ShapeType.ellipse, { x: M, y: ys[i], w: 0.46, h: 0.46, fill: { color: C.surface2 }, line: { color: C.rose, width: 1 } });
+    s.addShape(p.ShapeType.ellipse, { x: M, y: ys[i], w: 0.46, h: 0.46, fill: { color: C.surface }, line: { color: C.roseFill, width: 1.5 } });
     s.addText(n, { x: M, y: ys[i], w: 0.46, h: 0.46, fontFace: F.mono, fontSize: 14, bold: true, color: C.rose, align: "center", valign: "middle", margin: 0 });
     s.addText(t, { x: M + 0.72, y: ys[i], w: W - 0.72, h: 0.46, fontFace: F.body, fontSize: 16.5, color: C.text, valign: "middle", margin: 0 });
   });
@@ -168,10 +181,10 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   vach(s);
   tieuDe(s, "Chi phí tích hợp: một lần gọi");
 
-  the(s, M, 2.05, W, 2.5, "0D1424", C.line);
+  the(s, M, 2.05, W, 2.5, C.code, C.code);
   s.addText(
     "const ketQua = await inspect(\n    { connection, interpret },\n    transaction,          // CHƯA ký\n    { locale: \"vi\" },\n);",
-    { x: M + 0.45, y: 2.28, w: W - 0.9, h: 2.05, fontFace: F.mono, fontSize: 15, color: C.emerald, lineSpacing: 25, margin: 0 },
+    { x: M + 0.45, y: 2.28, w: W - 0.9, h: 2.05, fontFace: F.mono, fontSize: 15, color: "6EE7B7", lineSpacing: 25, margin: 0 },
   );
 
   s.addText("Custos không hiển thị gì cả. Nó trả dữ liệu — ví toàn quyền quyết định giao diện.", {
@@ -198,7 +211,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   ];
   bs.forEach(([k, t, mau], i) => {
     const x = M + i * (bw + 0.55);
-    the(s, x, 2.05, bw, 2.35, i === 2 ? C.surface2 : C.surface, i === 2 ? C.amber : C.line);
+    the(s, x, 2.05, bw, 2.35, i === 2 ? C.amberSoft : C.surface, i === 2 ? C.amberFill : C.line);
     s.addText(k, { x: x + 0.3, y: 2.28, w: bw - 0.6, h: 0.45, fontFace: F.mono, fontSize: 15, bold: true, color: mau, margin: 0, charSpacing: 1.5 });
     s.addText(t, { x: x + 0.3, y: 2.82, w: bw - 0.6, h: 1.4, fontFace: F.body, fontSize: 15, color: C.text, lineSpacing: 22, margin: 0 });
   });
@@ -222,7 +235,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   tieuDe(s, "Chi phí một lượt kiểm tra: đo được");
 
   const cw = (W - 0.55) / 2;
-  the(s, M, 2.05, cw, 2.15, C.surface2, C.emerald);
+  the(s, M, 2.05, cw, 2.15, C.surface, C.emerald);
   s.addText(String(S.chiPhi.luotGoiRpc.trungVi).replace(".", ","), {
     x: M + 0.4, y: 2.25, w: cw - 0.8, h: 1.0, fontFace: F.head, fontSize: 52, bold: true, color: C.emerald, margin: 0,
   });
@@ -233,7 +246,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     x: M + 0.4, y: 3.62, w: cw - 0.8, h: 0.4, fontFace: F.mono, fontSize: 11, color: C.muted, margin: 0,
   });
 
-  the(s, M + cw + 0.55, 2.05, cw, 2.15, C.surface2, C.emerald);
+  the(s, M + cw + 0.55, 2.05, cw, 2.15, C.surface, C.emerald);
   s.addText("400", {
     x: M + cw + 0.95, y: 2.25, w: cw - 0.8, h: 1.0, fontFace: F.head, fontSize: 52, bold: true, color: C.emerald, margin: 0,
   });
@@ -260,7 +273,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   vach(s);
   tieuDe(s, "AI làm gì, và tuyệt đối không được làm gì");
 
-  the(s, M, 2.05, W, 1.35, C.surface2, C.rose);
+  the(s, M, 2.05, W, 1.35, C.roseSoft, C.roseFill);
   s.addText("AI không được xác nhận giao dịch an toàn, cũng không được kết luận giao dịch nguy hiểm.", {
     x: M + 0.4, y: 2.05, w: W - 0.8, h: 1.35, fontFace: F.head, fontSize: 21, bold: true, color: C.text, valign: "middle", margin: 0,
   });
@@ -325,8 +338,8 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 
 // ─────────────────────────────────────────── 10 · Kết
 {
-  const s = p.addSlide(); nen(s, "060A14");
-  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.amber } });
+  const s = p.addSlide(); nen(s, C.bgAlt);
+  s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: 0.14, h: 7.5, fill: { color: C.amberFill } });
   s.addText("Custos không bao giờ nói “an toàn”\nkhi nó chưa chắc.", {
     x: M, y: 2.35, w: 11.4, h: 1.8, fontFace: F.head, fontSize: 38, bold: true, color: C.text, lineSpacing: 52, margin: 0,
   });
