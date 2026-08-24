@@ -7,20 +7,16 @@ Kế hoạch này chọn theo **đường găng**: việc nào chặn việc kh�
 
 ---
 
-## 0 · Việc gấp nhất, và nó không nằm trong danh sách nào cả
+## 0 · ✅ XONG 25/08 — đã commit và push (`e9da28b`)
 
-> ### 20 file thay đổi của vòng review đang **chưa commit**.
->
-> Repo công khai vẫn đang nói **188 test · coverage 46 % · SDK không cài được**.
-> Thể lệ bắt nộp repo public, và giám khảo mở nó.
+CI xanh, 4 trang live, số liệu công khai khớp: **249 test · coverage 82 % · 0 gắn cờ**.
 
-Nghĩa là toàn bộ vòng review vừa rồi **hiện chưa tồn tại với BTC**. Đây là việc rẻ nhất
-và gấp nhất trong cả bản kế hoạch.
-
-**Trước khi commit, đọc diff của bốn file này** — chúng chạm sản phẩm, không chỉ chữ:
+**Vẫn nên đọc diff bốn file này** — chúng chạm sản phẩm, không chỉ chữ. Nếu không đồng ý
+chỗ nào thì `git revert e9da28b` rồi báo:
 
 | File | Đọc kỹ chỗ nào |
 |---|---|
+| `packages/core/src/l2/rules.ts` | **Luật 12 giờ bỏ qua lệnh đóng tài khoản** — kiểm chốt "về System **VÀ** lamport về 0" có đủ chặt không |
 | `packages/core/src/l2/evaluate.ts` | Nhánh mới phát `CHUONG_TRINH_KHONG_RO` — kiểm nó không đổi ngưỡng verdict nào |
 | `packages/core/src/constants.ts` | Mã mới xếp vào `MA_THONG_TIN` — đồng ý với cách xếp đó không? |
 | `packages/{types,core,ai}/package.json` | `exports` trong repo **giữ nguyên `.ts`**; chỉ tarball mới trỏ `dist` |
@@ -65,7 +61,26 @@ thì gỡ ra.
 
 ---
 
-## 3 · Nút thắt 2 — cohort đang rụng mẫu *(vai A, trước 30/08)*
+## 3 · ✅ XONG 25/08 — cohort đã neo lại, và nó bắt được một cáo buộc sai
+
+Neo cohort mới ngay hôm nay thay vì đợi 30/08, vì mẫu rụng nhanh hơn dự kiến. **Lượt đo
+đầu tiên trên cohort mới ra 1 Đỏ và 1 cáo buộc** — trước đó luôn 0.
+
+Soi ra: một giao dịch DeFi bình thường có **mở gói wSOL**. Đóng tài khoản token luôn trả
+nó về System Program và rút lamport về 0, luật 12 thấy "đổi chương trình sở hữu" và gắn
+Đỏ. Nghĩa là Custos **đang báo Đỏ cho mọi lệnh unwrap wSOL trên mainnet**.
+
+Cohort cũ không bắt được vì trong 12 mẫu sống sót của nó **không có lệnh đóng tài khoản
+wSOL nào**. Một bộ mẫu cố định lâu ngày không chỉ teo đi — nó teo **lệch**.
+
+Đã vá, đã kiểm loại trừ "mẫu rụng nên hết cáo buộc" bằng cách chạy thẳng đúng giao dịch
+đó. Chi tiết: `SEED-DATASET.md` mục 0b5.
+
+> **Vẫn phải neo lại lần nữa quanh 02/09.** Mẫu tụt 12 → 9 chỉ trong vài phút giữa hai
+> lượt đo. Số công bố trên sân khấu phải là số đo **cùng tuần với buổi thi**.
+
+<details>
+<summary>Hướng dẫn cũ, giữ để chạy lại lần sau</summary>
 
 ```
 22/08:  12/20 mẫu đo được
@@ -94,8 +109,10 @@ node --experimental-strip-types scripts/tao-so-lieu.ts
 node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json
 ```
 
-**Acceptance:** ≥12 mẫu đo được · `cảnh báo KHÔNG có mã lý do = 0` · trang số liệu và
+**Acceptance:** ≥9 mẫu đo được · `cảnh báo KHÔNG có mã lý do = 0` · trang số liệu và
 slide 9 khớp nhau · có một đoạn trong `SEED-DATASET.md` ghi lý do neo lại.
+
+</details>
 
 ---
 
@@ -103,7 +120,7 @@ slide 9 khớp nhau · có một đoạn trong `SEED-DATASET.md` ghi lý do neo 
 
 | Ngày | Việc | Ai | Hạng |
 |---|---|---|---|
-| **25/08 (nay)** | Đọc diff, **commit + push** vòng review | người dùng | 🔴 gấp |
+| ~~25/08~~ | ~~commit + push vòng review~~ · ~~neo lại cohort~~ · ~~vá luật 12~~ | ✅ xong | — |
 | | Quyết định giao dịch demo (A hay B) | B | 🔴 chặn video |
 | **26/08** | Cắm **RPC key riêng** vào `.env.development.local` | 1 người · 10 ph | 🟠 chống sập |
 | | Nếu chọn B: dựng lệnh swap + test | B · 2 h | 🔴 |
@@ -111,7 +128,7 @@ slide 9 khớp nhau · có một đoạn trong `SEED-DATASET.md` ghi lý do neo 
 | | **Outreach 10–15 ví/dApp** — đính kèm tarball SDK | D · 1 tối | 🟡 đắt điểm |
 | **29/08** | Đo **latency p50/p95** trên RPC riêng | A · 1 h | 🟡 |
 | | Chạy `do-token-mo-hinh.ts` với `ANTHROPIC_API_KEY` | A · 5 ph | 🟡 |
-| **30/08** | **Neo lại cohort** + sinh lại số liệu + sinh lại deck | A · 1 h | 🔴 chặn số liệu |
+| **02/09** | **Neo lại cohort lần nữa** + sinh lại số liệu + deck — số phải cùng tuần với buổi thi | A · 1 h | 🔴 |
 | **31/08** | Đổ kết quả phỏng vấn, chạy `kiem-phong-van.ts` | D | 🟡 |
 | | Thêm câu Q&A về **Blockaid** | D · 20 ph | 🟡 |
 | **01/09** | Mở deck bằng **Google Slides**, kiểm mắt, xuất PDF | D · 30 ph | 🟠 |
@@ -170,7 +187,7 @@ Cắt theo thứ tự này, cắt từ dưới lên:
 | Hạng mục | Trạng thái |
 |---|---|
 | Sản phẩm chạy được | ✅ 4 trang live |
-| Mã nguồn public có lịch sử commit | ✅ — **nhưng đang thiếu 20 file chưa commit** |
-| Slide pitch | ✅ — cần kiểm mắt + sinh lại sau khi neo cohort |
+| Mã nguồn public có lịch sử commit | ✅ |
+| Slide pitch | ✅ sinh lại theo số mới — **còn cần kiểm mắt** |
 | Video demo 60–90 giây | ⏸ chặn bởi §2 |
 | Thông tin đăng ký | ✅ nộp 24/08 |
