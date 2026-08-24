@@ -186,35 +186,40 @@ export default function App() {
   const chuaDung = ht === null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200">
-      <div className="bg-amber-600 px-4 py-1.5 text-center font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-black">
-        Demo Wallet — Devnet Only
+    <div className="min-h-screen bg-nen text-chu">
+      {/* Dải phạm vi. Giữ nguyên độ chói: nó nói "đây là bản demo trên devnet", và
+          làm nó dịu đi là bắt đầu mờ hoá ranh giới giữa demo và sản phẩm thật. */}
+      <div className="bg-canh px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-nen">
+        Demo Wallet · Devnet Only
       </div>
 
       {cheDo?.loai === "mock" && (
-        <div className="bg-rose-700 px-4 py-1.5 text-center font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-white">
+        <div className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-nen">
           ⚠ Đang xem dữ liệu mock &quot;{cheDo.ten}&quot; — không phải kết quả thật
         </div>
       )}
 
-      <div className="mx-auto max-w-xl px-5 py-8">
-        <h1 className="font-mono text-sm font-bold uppercase tracking-[0.18em]">
-          Custos<span className="text-indigo-400">.</span>
-        </h1>
-        <p className="mt-1 text-[13px] text-slate-400">
-          Ví mẫu để minh hoạ cách một ví tích hợp Custos. Không phải sản phẩm bán ra.
+      <div className="mx-auto max-w-xl px-5 pb-16 pt-8">
+        <header className="flex items-baseline justify-between gap-4">
+          <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-chu">
+            Custos<span className="text-nhan">.</span>
+          </h1>
+          <a
+            href={`${import.meta.env.BASE_URL}so-lieu.html`}
+            className="text-[13px] text-nhan transition-colors hover:text-chu"
+          >
+            Số liệu →
+          </a>
+        </header>
+        <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-chu-mo">
+          Ví mẫu minh hoạ cách một ví tích hợp Custos. Không phải sản phẩm bán ra.
         </p>
-        <a
-          href={`${import.meta.env.BASE_URL}so-lieu.html`}
-          className="mt-2 inline-block text-[13px] text-indigo-400 underline underline-offset-2 hover:text-indigo-300"
-        >
-          Custos đo được những gì →
-        </a>
 
         {chuaDung && (
-          <div className="mt-6 rounded-lg border border-amber-700/50 bg-amber-950/40 p-4 text-[13px]">
-            <div className="font-semibold text-amber-300">Chưa dựng hiện trường devnet</div>
-            <pre className="mt-2 overflow-x-auto rounded bg-black/40 p-2 font-mono text-[11px] text-slate-300">
+          <div className="mt-7 rounded-xl border border-canh/40 bg-canh/[0.07] p-5">
+            <div className="text-[15px] font-medium text-chu">Chưa dựng hiện trường devnet</div>
+            <p className="mt-1 text-[13px] text-chu-mo">Chạy lệnh này rồi tải lại trang:</p>
+            <pre className="mt-2.5 overflow-x-auto rounded-lg bg-nen p-3 font-mono text-[11.5px] text-chu-nhat">
               node --experimental-strip-types scripts/dung-hien-truong.ts
             </pre>
           </div>
@@ -222,63 +227,92 @@ export default function App() {
 
         {ht && (
           <>
-            <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
-                Tài khoản token của bạn
+            {/* SỐ DƯ LÀ THỨ NHÌN ĐẦU TIÊN trong một cái ví, nên nó phải to nhất
+                màn hình. Bản trước để 20px — nhỏ hơn cả chữ trong màn cảnh báo,
+                nên mắt không biết bắt đầu từ đâu. */}
+            <section className="mt-7 rounded-xl border border-vien bg-the px-5 py-5">
+              <div className="text-[12px] text-chu-mo">Tài khoản token của bạn</div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="so text-[42px] font-semibold leading-none text-chu">
+                  {soDuToken ?? "—"}
+                </span>
+                <span className="text-[15px] text-chu-nhat">{ht.kyHieu ?? "token"}</span>
               </div>
-              <div className="mt-1 break-all font-mono text-[12px] text-slate-300">{ht.taiKhoanNanNhan}</div>
-              <div className="mt-2 text-[20px] font-semibold tabular-nums">
-                {soDuToken ?? "…"} <span className="text-[13px] font-normal text-slate-400">token</span>
+              <div className="mt-3 truncate font-mono text-[11.5px] text-chu-mo" title={ht.taiKhoanNanNhan}>
+                {ht.taiKhoanNanNhan}
               </div>
-            </div>
+            </section>
 
-            <label className="mt-4 flex cursor-pointer items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
-              <span className="text-[14px]">
-                Custos{" "}
-                <span className={batCustos ? "font-semibold text-emerald-400" : "font-semibold text-rose-400"}>
-                  {batCustos ? "ĐANG BẬT" : "ĐANG TẮT"}
+            {/* Công tắc này LÀ cơ chế của cả bản demo — cùng một giao dịch, hai kết
+                cục. Nên trạng thái của nó phải đọc được từ cuối phòng, không phải
+                một ô kiểm 20px. */}
+            <label
+              className={`mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-colors ${
+                batCustos ? "border-thuong/40 bg-thuong/[0.07]" : "border-nguy/40 bg-nguy/[0.07]"
+              }`}
+            >
+              <span>
+                <span className="block text-[15px] font-medium text-chu">
+                  Custos {batCustos ? "đang bật" : "đang tắt"}
+                </span>
+                <span className="mt-0.5 block text-[12.5px] text-chu-mo">
+                  {batCustos
+                    ? "Giao dịch được kiểm tra trước khi bạn ký"
+                    : "Ký thẳng, không ai kiểm tra gì"}
                 </span>
               </span>
               <input
                 type="checkbox"
                 checked={batCustos}
                 onChange={(e) => setBatCustos(e.target.checked)}
-                className="h-5 w-5 accent-indigo-500"
+                aria-label="Bật hoặc tắt Custos"
+                className="h-6 w-6 shrink-0 accent-nhan"
               />
             </label>
 
-            <div className="mt-4 grid gap-2">
+            <div className="mt-3 grid gap-2.5">
               <button
                 onClick={() => void bam("tanCong")}
                 disabled={dangChay}
-                className="rounded-md bg-indigo-600 px-4 py-3 text-[14px] font-semibold text-white hover:bg-indigo-500 disabled:opacity-50"
+                className="rounded-xl bg-nhan px-5 py-3.5 text-[15px] font-semibold text-nen transition-colors hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
               >
-                🎁 Nhận quà tặng
+                Nhận quà tặng
               </button>
               <button
                 onClick={() => void bam("lanhTinh")}
                 disabled={dangChay}
-                className="rounded-md border border-white/20 px-4 py-3 text-[14px] text-slate-200 hover:bg-white/5 disabled:opacity-50"
+                className="rounded-xl border border-vien bg-the px-5 py-3.5 text-[15px] text-chu-nhat transition-colors hover:border-chu-mo hover:text-chu disabled:cursor-not-allowed disabled:opacity-45"
               >
                 Gửi 10 token cho bạn bè
               </button>
             </div>
 
+            {/* TRẠNG THÁI ĐANG CHẠY. Mô phỏng mất 2–4 giây, và trước đây màn hình
+                không nói gì trong suốt quãng đó — đúng lúc sản phẩm đang làm việc
+                thì nó trông như bị treo. Câu chữ ở đây mô tả việc THẬT đang diễn ra,
+                không phải chữ trấn an cho đỡ trống. */}
+            {dangChay && (
+              <div className="hien mt-3 flex items-center gap-3 rounded-xl border border-vien bg-the px-5 py-3.5">
+                <span className="tho h-2 w-2 shrink-0 rounded-full bg-nhan" />
+                <span className="text-[13.5px] text-chu-nhat">
+                  Đang chạy thử giao dịch trên devnet để xem nó làm gì…
+                </span>
+              </div>
+            )}
+
             {/* Nút thứ hai không phải cho vui: một sản phẩm lúc nào cũng báo Đỏ
                 thì không chứng minh được gì. Phải thấy nó KHÔNG báo Đỏ với giao
                 dịch bình thường thì cảnh báo mới có giá trị. */}
-            <p className="mt-2 text-[12px] text-slate-500">
+            <p className="mt-3 max-w-[56ch] text-[12.5px] leading-relaxed text-chu-mo">
               Nút thứ hai là giao dịch bình thường — dùng để thấy Custos không gắn cờ bừa.
             </p>
           </>
         )}
 
         {tuDApp && (
-          <div className="mt-5 rounded-lg border border-violet-600/40 bg-violet-950/30 px-4 py-3 text-[13px]">
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-violet-300">
-              Yêu cầu ký từ một trang web
-            </span>
-            <div className="mt-1 text-slate-200">{tuDApp}</div>
+          <div className="hien mt-5 rounded-xl border border-nhan/35 bg-nhan/[0.08] px-5 py-3.5">
+            <div className="text-[12.5px] text-chu-mo">Yêu cầu ký từ một trang web</div>
+            <div className="mt-1 text-[14.5px] text-chu">{tuDApp}</div>
           </div>
         )}
 
@@ -316,9 +350,14 @@ export default function App() {
         )}
 
         {nhatKy.length > 0 && (
-          <pre className="mt-5 overflow-x-auto rounded-lg border border-white/10 bg-black/40 p-3 font-mono text-[11px] text-slate-400">
-            {nhatKy.join("\n")}
-          </pre>
+          <details className="mt-6" open>
+            <summary className="cursor-pointer text-[12.5px] text-chu-mo transition-colors hover:text-chu-nhat">
+              Nhật ký kỹ thuật
+            </summary>
+            <pre className="mt-2 overflow-x-auto rounded-xl border border-vien bg-nen p-3.5 font-mono text-[11.5px] leading-relaxed text-chu-mo">
+              {nhatKy.join("\n")}
+            </pre>
+          </details>
         )}
       </div>
     </div>
