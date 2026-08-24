@@ -112,6 +112,16 @@ export function CanhBao({
 
         {ketQua.diff.length > 0 && (
           <div className="divide-y divide-white/10 overflow-hidden rounded-lg border border-white/10 bg-black/30">
+            {/* Nhãn cột. Không có nó, `500,0 → 0,0` đọc được theo cả hai chiều —
+                mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
+            <div className="flex items-baseline justify-between gap-4 bg-white/[0.03] px-3 py-1.5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                Thay đổi nếu bạn ký
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                trước <span className="px-1">→</span> sau
+              </span>
+            </div>
             {ketQua.diff.map((d, i) => (
               <div key={i} className="flex items-baseline justify-between gap-4 px-3 py-2">
                 <span className={`text-[13px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-300"}`}>
@@ -144,8 +154,19 @@ export function CanhBao({
           </div>
         )}
 
+        {/* AI KHÔNG quyết định mức cảnh báo — quyết định đã khoá số 1. Dòng cũ
+            chỉ ghi "AI đề nghị kiểm tra thủ công", và một người đọc bình thường
+            hoàn toàn có thể hiểu thành AI là bên chấm Đỏ/Vàng/Xanh. Hiểu nhầm đó
+            đánh thẳng vào tuyên bố quan trọng nhất của sản phẩm, nên phải chặn
+            ngay tại chỗ nó sinh ra. */}
         {ketQua.aiAdvisory === "review_required" && (
-          <div className="text-[13px] text-amber-300">⚑ AI đề nghị kiểm tra thủ công</div>
+          <div className="rounded-lg border border-amber-700/40 bg-amber-950/20 px-3 py-2">
+            <div className="text-[13px] text-amber-300">⚑ AI đề nghị kiểm tra thủ công</div>
+            <div className="mt-0.5 text-[11px] leading-relaxed text-slate-400">
+              Mức cảnh báo ở trên do engine luật quyết định, không phải AI. AI chỉ được
+              đề nghị bạn xem kỹ — nó không xác nhận an toàn và không kết luận nguy hiểm.
+            </div>
+          </div>
         )}
 
         {/*
@@ -153,9 +174,15 @@ export function CanhBao({
           Sinh từ `coverage` bằng code, KHÔNG BAO GIỜ do mô hình viết —
           để nó cố định và chính xác. Đây là trục khác biệt của Custos.
         */}
-        <div className="font-mono text-[11px] text-slate-400">
+        <div className="font-mono text-[11px] leading-relaxed text-slate-400">
           Đã đọc hiểu {analyzed} trên {total} lệnh.
           {unverifiedPrograms > 0 && ` ${unverifiedPrograms} chương trình chưa xác minh.`}
+          {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,
+              và nói nhầm nó thành điểm an toàn là đúng thứ sản phẩm này sinh ra để
+              không làm. Một câu, đứng ngay cạnh con số. */}
+          {analyzed < total && (
+            <span className="text-slate-500"> Đây là mức đọc hiểu, không phải mức an toàn.</span>
+          )}
         </div>
 
         {/* MỨC 3 — KỸ THUẬT. Đóng sẵn, và phải đóng sẵn.

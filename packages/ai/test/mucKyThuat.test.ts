@@ -56,3 +56,36 @@ test("KỸ THUẬT · giao dịch sạch vẫn nêu mức và coverage", () => {
   assert.ok(d.find((x) => x.nhan === "Mức")?.giaTri === "safe");
   assert.ok(d.find((x) => x.nhan === "Đọc hiểu")?.giaTri.includes("5/5"));
 });
+
+test("KỸ THUẬT · in ĐỊA CHỈ ĐẦY ĐỦ, không phải bản rút gọn", () => {
+  // Đây là vá BẢO MẬT, không phải tiện nghi hiển thị. Rút gọn giữ 4 ký tự đầu và
+  // 4 ký tự cuối; kẻ tấn công mài được một địa chỉ vanity khớp đúng 8 ký tự đó, và
+  // người dùng đối chiếu bằng mắt sẽ thấy y hệt địa chỉ quen. Nếu KHÔNG chỗ nào
+  // trong sản phẩm hiện địa chỉ đầy đủ thì Custos tự bịt mắt mình trước trò đó.
+  const DAY_DU = "CRZaBcDeFgHiJkLmNoPqRsTuVwXyZ123456789picz";
+  const d = chiTietKyThuat(
+    kq({
+      diff: [
+        {
+          label: `${NHAN.CHU_SO_HUU}USDC-demo`,
+          before: "Bạn",
+          after: "CRZa…picz",
+          severity: "danger",
+          sauDayDu: DAY_DU,
+        },
+      ],
+    }),
+  );
+  const dong = d.find((x) => x.nhan.startsWith(NHAN.CHU_SO_HUU));
+  assert.ok(dong, "dòng đổi chủ phải có mặt");
+  assert.ok(dong!.giaTri.includes(DAY_DU), `phải in đầy đủ, đang in: ${dong!.giaTri}`);
+  assert.ok(!dong!.giaTri.includes("…"), "không được để bản rút gọn lọt vào mức kỹ thuật");
+});
+
+test("KỸ THUẬT · không có địa chỉ đầy đủ thì dùng giá trị hiển thị, không bịa", () => {
+  const d = chiTietKyThuat(
+    kq({ diff: [{ label: `${NHAN.SO_DU}USDC sau khi ký`, before: "500,0", after: "0,0", severity: "danger" }] }),
+  );
+  const dong = d.find((x) => x.nhan.startsWith(NHAN.SO_DU));
+  assert.ok(dong!.giaTri.includes("500,0") && dong!.giaTri.includes("0,0"));
+});
