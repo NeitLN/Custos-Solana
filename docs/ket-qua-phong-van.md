@@ -1,76 +1,50 @@
-# Kết quả phỏng vấn người dùng — BIÊN BẢN THẬT
+# Kết quả phỏng vấn người dùng — CHƯA THỰC HIỆN
 
-> **File này chỉ chứa lời của người thật.** Không có dòng nào do AI sinh, không có
-> dòng nào viết lại từ trí nhớ mà không ghi rõ là từ trí nhớ. Nếu một ô chưa có thì
-> để trống — ô trống trung thực hơn một ô điền cho đủ.
->
-> Bản role-play dùng để luyện người điều phối **không** được trộn vào đây. Nó là
-> giả thuyết thiết kế, và đã dùng đúng vai trò đó (xem `docs/GIAO-THUC-PHONG-VAN.md` mục 0).
+**Trạng thái tính đến 24/08/2026: chưa phỏng vấn người dùng nào.**
+
+Ghi rõ ở đây thay vì để file trống lửng lơ, vì một biên bản rỗng dễ bị đọc thành
+"đã làm mà chưa chép". Chưa làm thì nói chưa làm.
 
 ---
 
-## Nguồn gốc — điền trước, đây là phần giám khảo soi kỹ nhất
+## Điều này ảnh hưởng gì tới bài thi
+
+Phỏng vấn **không** nằm trong 5 hạng mục nộp bài bắt buộc của thể lệ. Nó chỉ nuôi
+tiêu chí *"Độ rõ ràng của bài toán thị trường và người dùng mục tiêu"*, và vì thiếu
+nó nên `CUSTOS.md` mục 13 tự chấm ô đó **6,5/10** thay vì cao hơn.
+
+**Câu trả lời khi bị hỏi trên sân khấu — nói thẳng, đừng vòng:**
+
+> *"Chưa. Chúng em chưa phỏng vấn người dùng nào. Đó là khoảng trống lớn nhất còn
+> lại của dự án, và chúng em biết nó nằm ở đâu: bộ đo đã dựng sẵn tại
+> `/phong-van.html`, giao thức đã viết, chỉ chưa chạy kịp trước hạn."*
+
+Trả lời như vậy mất một ít điểm ở ô đó. Nhưng nó **giữ nguyên** độ tin của mọi con
+số khác — 242 test, 0 cáo buộc sai trên giao dịch mainnet thật, chi phí biên đo
+được — và đó là phần lớn hơn nhiều.
+
+---
+
+## Nếu vẫn kịp làm trước hạn
+
+Bộ đồ nghề còn nguyên, chạy được ngay:
 
 | | |
 |---|---|
-| Ngày thực hiện | |
-| Ai phỏng vấn | |
-| Màn hình đã chiếu | `https://neitln.github.io/Custos-Solana/` · commit ______ |
-| Cách ghi | ghi chép tay / ghi âm / cả hai — **ghi rõ từng buổi nếu khác nhau** |
-| Có xin phép trước không | |
-| Nơi lưu bản gốc | *(không commit ghi âm hay tên người vào repo)* |
+| Công cụ | https://neitln.github.io/Custos-Solana/phong-van.html |
+| Giao thức | `docs/GIAO-THUC-PHONG-VAN.md` |
+| Đếm và soi | `node --experimental-strip-types scripts/kiem-phong-van.ts` |
 
-> Nếu một số buổi ghi âm và một số chỉ ghi tay thì **nói ra**. Một biên bản thừa
-> nhận chỗ yếu của chính nó đáng tin hơn một biên bản đều tăm tắp.
+**5 người cũng đủ.** Con số công bố là số thật đã hỏi, không phải số đã định hỏi:
+*"5 người, không ai làm trong ngành, 4 nêu được hậu quả"* là câu dùng được.
 
----
-
-## Bảng
-
-Mã `P01–P12`. **Không ghi tên, không ghi số điện thoại, không ghi nơi làm việc.**
-
-| Mã | Ngày | Tuổi | Kinh nghiệm crypto | Câu họ nói (NGUYÊN VĂN) | Chấm | Sẽ bấm | Chữ họ vấp |
-|---|---|---|---|---|---|---|---|
-| P01 | | | | | | | |
-| P02 | | | | | | | |
-| P03 | | | | | | | |
-| P04 | | | | | | | |
-| P05 | | | | | | | |
-| P06 | | | | | | | |
-| P07 | | | | | | | |
-| P08 | | | | | | | |
-| P09 | | | | | | | |
-| P10 | | | | | | | |
-| P11 | | | | | | | |
-| P12 | | | | | | | |
-
-**Cột "câu họ nói" là cột quan trọng nhất, và nó phải LỘN XỘN.** Câu cụt, câu lạc
-đề, câu "ờ… em không biết" — giữ nguyên hết. Mười hai câu trả lời trau chuốt đều
-nhau là thứ đầu tiên làm người đọc nghi ngờ, vì người thật không nói như vậy.
-
-Chấm: `ĐÚNG` / `MỘT PHẦN` / `SAI` · Sẽ bấm: `HUỶ` / `KIỂM TRA THÊM` / `VẪN KÝ`
-Định nghĩa từng mức ở `docs/GIAO-THUC-PHONG-VAN.md` mục 4.
+Khi có kết quả, đổ vào `data/seed/phong-van.json` rồi chạy script — nó tự đếm và nêu
+chỗ chấm lệch.
 
 ---
 
-## Con số công bố
+## Không được làm
 
-**Đừng đếm tay.** Đổ bảng trên vào `data/seed/phong-van.json` rồi chạy:
-
-```
-node --experimental-strip-types scripts/kiem-phong-van.ts
-```
-
-Nó tự đếm, và cảnh báo những chỗ chấm có vẻ lệch với câu nguyên văn.
-
----
-
-## Nếu con số thấp
-
-Đọc đúng con số đó, kèm một câu về việc đang sửa. `docs/CHAM-DIEM-GIA-DINH.md` đã
-ghi vì sao: một con số thật kèm kế hoạch sửa đáng tin hơn một con số đẹp không ai
-kiểm chứng được — và giám khảo phân biệt được hai thứ đó.
-
-Riêng trường hợp **hiểu đúng mà vẫn ký**: đó là phát hiện mạnh nhất bạn có thể mang
-lên sân khấu. Nó chứng minh phép đo là thật, vì không ai bịa ra một kết quả bất lợi
-cho chính mình.
+Không dựng biên bản từ dữ liệu mô phỏng, dữ liệu role-play, hay trí nhớ không có
+ghi chép. Thể lệ: *trình bày sai về tính năng, dữ liệu, mức hoàn thiện bị trừ điểm
+hoặc loại* — và con số bịa kéo theo cả những con số thật xuống cùng.
