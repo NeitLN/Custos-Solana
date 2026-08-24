@@ -57,11 +57,24 @@ export function danhGia(facts: Facts, luat: Rule[] = LUAT): KetQuaL2 {
   // thì không hại được người ký TRONG giao dịch này. Con số coverage vẫn hiển
   // thị nguyên vẹn — ta vẫn nói rõ mình chưa hiểu gì. Chỉ là không đẩy verdict
   // lên vì một thứ không chạm tới được người dùng.
-  const chuaHieuMaChamDuoc = facts.instructions.some(
+  const chuaHieuMaChamDuoc = facts.instructions.filter(
     (ix) => ix.decoded === null && ix.chamTaiSanNguoiKy,
   );
-  if (facts.coverage.analyzed < facts.coverage.total && chuaHieuMaChamDuoc) {
+  if (facts.coverage.analyzed < facts.coverage.total && chuaHieuMaChamDuoc.length > 0) {
     level = caoHon(level, "warning");
+
+    // Luật 9 phát `PROGRAM_CHUA_XAC_MINH` cho lệnh BIẾT tên chương trình, nhưng nó
+    // lọc `p !== ""`. Lệnh có `programId` rỗng — sinh ra thật ở `l1/fetch.ts` khi RPC
+    // trả inner instruction thiếu `programId` — rơi qua cả hai: luật 9 im, fail-safe
+    // này vẫn nâng verdict. Kết quả là `level: "warning"` với `reasonCodes: []`, đúng
+    // thứ đoạn chú thích phía trên nói là không được phép.
+    //
+    // Mã RIÊNG chứ không tái dùng `PROGRAM_CHUA_XAC_MINH`: hai ca khác nhau thật.
+    // "Chưa đọc hiểu chương trình X" thì ví còn hiện được địa chỉ X cho người dùng
+    // tra cứu; "không biết đó là chương trình gì" thì không có gì để hiện.
+    if (chuaHieuMaChamDuoc.some((ix) => ix.programId === "")) {
+      maFailSafe.push(REASON.CHUONG_TRINH_KHONG_RO);
+    }
   }
 
   // Fail-safe 3 — có lookup table không giải được: danh sách account có thể thiếu,

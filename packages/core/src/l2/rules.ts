@@ -3,6 +3,9 @@ import type { Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
 
+/** System Program. Đích của mọi lệnh đóng tài khoản token. */
+const SYSTEM_PROGRAM = "11111111111111111111111111111111";
+
 export type RuleHit = {
   ruleId: number;
   level: Level;
@@ -119,6 +122,26 @@ export const luat12: Rule = {
     for (const a of f.accounts) {
       if (a.programOwnerBefore === null || a.programOwnerAfter === null) continue;
       if (a.programOwnerBefore === a.programOwnerAfter) continue;
+
+      // ĐÓNG TÀI KHOẢN KHÔNG PHẢI LÀ TẤN CÔNG.
+      //
+      // Đóng một tài khoản token luôn trả nó về System Program và rút lamport về 0.
+      // Đó là nửa sau của mẫu chuẩn trong mọi giao dịch DeFi có bọc SOL: bọc, dùng,
+      // rồi mở gói lấy lại tiền đặt cọc.
+      //
+      // Không có chốt này, Custos báo Đỏ cho MỌI lệnh unwrap wSOL. Tái hiện được
+      // trên mainnet: `Ke3aksXuxC75Zs6dYPA1HykM…` — transfer, syncNative,
+      // add_liquidity (Meteora DLMM), closeAccount.
+      //
+      // Chữ VÀ ở đây là quan trọng: về System mà lamport CÒN NGUYÊN thì không phải
+      // đóng tài khoản, và về một chương trình KHÁC thì càng không. Cả hai ca đó
+      // vẫn Đỏ, có test riêng.
+      //
+      // Tiền đặt cọc chảy đi đâu thì phép tính SOL của người dùng lo — nếu nó không
+      // về ví người ký thì luật 13 thấy, và bảng chênh lệch hiện ra.
+      const laDongTaiKhoan = a.programOwnerAfter === SYSTEM_PROGRAM && a.lamportsAfter === 0n;
+      if (laDongTaiKhoan) continue;
+
       hits.push({
         ruleId: 12,
         level: "danger",

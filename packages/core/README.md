@@ -6,6 +6,30 @@ Lớp phân tích giao dịch: mô phỏng giao dịch **trước khi người d
 
 ---
 
+## Cài đặt
+
+Ba gói chưa lên npm registry công khai. Đóng gói tarball từ repo:
+
+```bash
+git clone https://github.com/NeitLN/Custos-Solana && cd Custos-Solana
+npm ci
+node scripts/dong-goi-sdk.mjs goi-sdk
+```
+
+Rồi cài vào project của bạn:
+
+```bash
+npm install /duong-dan/Custos-Solana/goi-sdk/*.tgz
+```
+
+Chạy được bằng `node` thường, không cần cờ nào — tarball chứa `.js` và `.d.ts` đã biên dịch.
+
+> Trong repo, `exports` của ba gói trỏ thẳng vào `.ts` để vòng lặp dev không có bước
+> build. Người ngoài không dùng được cách đó — Node từ chối bóc kiểu TypeScript cho file
+> trong `node_modules` — nên tarball là đường tích hợp chính thức.
+
+---
+
 ## Tích hợp — một lần gọi
 
 ```ts
@@ -15,13 +39,25 @@ import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
 const ketQua = await inspect(
   { connection, interpret: boiThoiHan(dienGiaiKhongAI) },
   transaction,          // VersionedTransaction CHƯA ký
-  { locale: "vi" },
+  {
+    locale: "vi",
+    nguoiDung: viNguoiDung.toBase58(),   // ← ĐỪNG BỎ, xem ngay dưới
+  },
 );
 
 if (ketQua.level !== "safe" || ketQua.aiAdvisory) {
   hienCanhBao(ketQua);  // ví tự quyết định hiển thị thế nào
 }
 ```
+
+> ### ⚠️ `nguoiDung` — trường dễ bỏ nhất, và bỏ là hỏng
+>
+> Không truyền `nguoiDung` thì Custos bảo vệ **người trả phí** của giao dịch. Trong một
+> dApp trả phí hộ, người trả phí là **dApp** — nghĩa là bảng chênh lệch, luật SOL và
+> toàn bộ verdict đang tính trên **ví sai**.
+>
+> Ví luôn biết địa chỉ của chính nó, nên nó phải nói ra. Custos **không** suy ra được
+> điều này, và cố ý không đoán.
 
 Custos **không** hiển thị gì cả. Nó trả dữ liệu; ví toàn quyền quyết định giao diện.
 
@@ -34,7 +70,17 @@ type InspectResult = {
   level: "safe" | "warning" | "danger";
   aiAdvisory: "review_required" | null;
   detectedPrimaryAction: { type: string; from?: string; to?: string } | null;
-  diff: Array<{ label: string; before: string; after: string; severity: string }>;
+  diff: Array<{
+    label: string;
+    before: string;
+    after: string;
+    severity: string;
+    /** Địa chỉ ĐẦY ĐỦ, chỉ có mặt khi `before`/`after` là địa chỉ đã rút gọn.
+     *  Rút gọn giữ 4 ký tự đầu + 4 cuối, mà kẻ tấn công mài được địa chỉ vanity
+     *  khớp đúng 8 ký tự đó. Hiện bản đầy đủ ở mức kỹ thuật để người dùng đối chiếu. */
+    truocDayDu?: string;
+    sauDayDu?: string;
+  }>;
   reasonCodes: string[];
   coverage: { analyzed: number; total: number; unverifiedPrograms: number };
   explanation: string;
@@ -46,7 +92,7 @@ type InspectResult = {
 |---|---|
 | `level` | Quyết định chặn hay cho qua. **Chỉ engine luật sinh ra giá trị này** |
 | `diff` | Bảng "trước → sau" cho người dùng. Dữ liệu đo được, không phải phỏng đoán |
-| `coverage` | Hiển thị *"đã đọc hiểu 10/11 lệnh"*. Xem [Vì sao phải hiển thị](#vì-sao-phải-hiển-thị-coverage) |
+| `coverage` | Hiển thị *"đã đọc hiểu 2 trên 3 lệnh"* — đọc đúng số đang có. Xem [Vì sao phải hiển thị](#vì-sao-phải-hiển-thị-coverage) |
 | `reasonCodes` | Mã ổn định để ví tự phân loại, ghi log, hoặc dịch sang ngôn ngữ khác |
 | `explanation` | Câu tiếng Việt sẵn dùng |
 | `aiAdvisory` | Đề nghị người dùng kiểm tra thủ công. **Không** phải verdict |
@@ -237,7 +283,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ```bash
 npm install
-npm run check                # 138 test, chạy offline
+npm run check                # 249 test, chạy offline
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
 npm run vi                   # ví mẫu      → localhost:5188

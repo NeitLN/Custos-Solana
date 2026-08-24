@@ -15,7 +15,7 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 | `NGHIEN-CUU-21-08.md` | Khử rủi ro trước build: đường đi giao dịch devnet đã tra cứu, bẫy Web3.js v2, và bản sửa tuyên bố về đối thủ |
 | `SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, danh sách 25 mẫu phải đi tìm, quy tắc đo false positive |
 | `PITCH-VA-PHAN-BIEN.md` | Cấu trúc 4 phút, 9 câu hỏi khó có sẵn câu trả lời, danh sách câu không được nói |
-| `DAC-TA-CORE.md` | Đặc tả kỹ thuật: trình tự L1, ranh giới L2/L3, 12 luật theo nguồn dữ liệu, lịch làm của vai A |
+| `DAC-TA-CORE.md` | Đặc tả kỹ thuật: trình tự L1, ranh giới L2/L3, luật theo nguồn dữ liệu (đặc tả 12, đã thực thi **14**), lịch làm của vai A |
 | `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
 | `packages/core/README.md` | **Tài liệu tích hợp SDK** — thứ bên ngoài đọc để quyết định có dùng không. Ví dụ trong đó có test chạy thật (`readme.test.ts`) |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
@@ -25,20 +25,28 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT ĐẦU BUILD`) đã qua.
 Không cần xin duyệt để viết code nữa.
 
-**Đã có:** L1 bóc tách + L2 mười bốn luật + SDK · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 29 mẫu dữ liệu · 188 test · lớp mô hình ngôn ngữ cho
+**Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
+hiện trường devnet thật · 29 mẫu dữ liệu · 249 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
-**Chưa có:** deck · video demo · phỏng vấn người dùng · decoder cho chương
-trình DEX (coverage đang 46 %).
+**Chưa có:** video demo · phỏng vấn người dùng · decoder cho chương trình DEX.
+Deck đã có ở `docs/nop-bai/CUSTOS-PITCH.pptx`.
 
-Lớp mô hình ngôn ngữ đã dựng xong và có test đối kháng, nhưng **chưa chạy với
-mô hình thật lần nào** — cần khoá API, và bản demo công khai cố ý không nhúng khoá.
+Lớp mô hình ngôn ngữ đã dựng xong, có test đối kháng, và **đã chạy với mô hình thật**
+một lượt — biên bản ở `docs/bao-mat/DANH-GIA-claude-haiku-4-5-20251001-2026-08-22.md`.
+Chưa đo được số token thật vì cần khoá API; bản demo công khai cố ý không nhúng khoá.
 
-Đo được, không ước lượng: 0 verdict Đỏ sai trên 20 giao dịch SPL mainnet ngẫu
-nhiên; coverage trung bình 46 % (trước khi mở rộng decoder là 4 %). Lệnh chạm
-tài sản người ký mới đọc hiểu được 21 %. Xem `SEED-DATASET.md` mục 0b3 và 0b4.
+Đo được, không ước lượng — cohort **neo lại 25/08**, 20 giao dịch, **9 mẫu còn mô phỏng
+được**: 0 giao dịch bị gắn cờ; coverage trung bình 82 %; lệnh chạm tài sản người ký đọc
+hiểu được 65 % (13/20).
+
+Cohort cũ (21/08) giữ trong repo để đối chiếu, **không so sánh trực tiếp** với cohort mới —
+hai mẻ mẫu khác nhau. Xem `SEED-DATASET.md` mục 0b5.
+
+Nói **"bị gắn cờ"**, không nói **"báo nhầm"**: chưa kiểm chứng từng giao dịch trong
+cohort là lành nên chưa có ground truth. Xem `SEED-DATASET.md` mục 0b3 và 0b4, và
+`docs/review/UPDATE-REPORT.md` mục 4 về việc cohort đang rụng mẫu.
 
 ## Quyết định thiết kế đã khoá — không tự ý đảo lại
 

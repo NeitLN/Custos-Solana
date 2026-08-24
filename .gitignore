@@ -29,3 +29,6 @@ Thumbs.db
 # Hiện trường demo devnet CÓ được commit: nó chỉ chứa địa chỉ công khai
 # (mint, tài khoản token, ví). Không có khoá riêng nào. Bản deploy công khai
 # cần file này mới chạy được. Đã kiểm bằng grep trước khi bỏ khỏi danh sách.
+
+# Bản build của gói SDK — sinh ra bởi `npm pack`, không commit.
+packages/*/dist/

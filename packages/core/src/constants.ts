@@ -60,6 +60,10 @@ export const REASON = {
   SOL_ROI_VI: "SOL_ROI_VI",
   PERMANENT_DELEGATE_RA_TAY: "TOKEN2022_PERMANENT_DELEGATE_RA_TAY",
   NGUOI_DUNG_KHONG_RO: "NGUOI_DUNG_KHONG_RO",
+  /** Có lệnh chạm tài sản người ký mà KHÔNG XÁC ĐỊNH ĐƯỢC chương trình nào phát ra.
+   *  Khác `PROGRAM_CHUA_XAC_MINH`: ở đó ta biết địa chỉ chương trình và hiện được
+   *  cho người dùng tra cứu; ở đây không có gì để hiện. */
+  CHUONG_TRINH_KHONG_RO: "CHUONG_TRINH_KHONG_RO",
 } as const;
 
 /**
@@ -97,6 +101,10 @@ export const MA_THONG_TIN: ReadonlySet<string> = new Set([
   // phải cáo buộc nhắm vào giao dịch. Giọng phải là thông tin.
   REASON.TRANG_THAI_DO_KHUYET,
   REASON.MO_PHONG_HONG,
+  // `CHUONG_TRINH_KHONG_RO` cùng họ với `PROGRAM_CHUA_XAC_MINH`: cả hai đều là lời
+  // thú nhận "chúng tôi chưa đọc hiểu được phần này", không phải cáo buộc nhắm vào
+  // giao dịch. Xếp khác nhau thì hai ca gần như giống hệt lại có giọng khác nhau.
+  REASON.CHUONG_TRINH_KHONG_RO,
   // `NGUOI_DUNG_KHONG_RO` là giới hạn phạm vi phân tích, không phải cáo buộc.
   // `SOL_ROI_VI` thì NGƯỢC LẠI — nó nói về chính giao dịch đang chờ ký, nên
   // cố ý KHÔNG nằm trong danh sách này.
