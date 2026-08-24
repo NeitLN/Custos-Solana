@@ -174,7 +174,12 @@ export function CanhBao({
           Sinh từ `coverage` bằng code, KHÔNG BAO GIỜ do mô hình viết —
           để nó cố định và chính xác. Đây là trục khác biệt của Custos.
         */}
-        <div className="font-mono text-[11px] leading-relaxed text-slate-400">
+        {/* ĐÂY LÀ TRỤC KHÁC BIỆT CỦA SẢN PHẨM, và nó đang được style như chú thích
+            chân trang 11px — nhỏ hơn mọi thứ quanh nó. Không ví nào khác hiển thị
+            con số này; nó là lý do người dùng tin được phần Custos ĐÃ đọc hiểu.
+            Nâng nó lên đúng tầm, nhưng KHÔNG đổi một chữ nào: câu chữ đã được cân
+            để không nghe như trấn an, và làm nó to hơn không được phép làm nó êm hơn. */}
+        <div className="rounded-lg border border-white/10 bg-black/25 px-3.5 py-3 font-mono text-[12.5px] leading-relaxed text-slate-300">
           Đã đọc hiểu {analyzed} trên {total} lệnh.
           {unverifiedPrograms > 0 && ` ${unverifiedPrograms} chương trình chưa xác minh.`}
           {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,

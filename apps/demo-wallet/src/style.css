@@ -1,1 +1,93 @@
 @import "tailwindcss";
+
+/*
+ * HỆ THỐNG THIẾT KẾ — chính thức hoá thứ đã dùng, không bịa thêm.
+ *
+ * Trước file này chỉ có một dòng `@import`, nên mọi màu nằm rải trong JSX và mọi
+ * thẻ dùng chung đúng một kiểu `border-white/10 bg-white/[0.03]`. Hệ quả: năm khối
+ * có vai trò khác hẳn nhau — số dư, công tắc, cảnh báo, nhật ký — trông giống hệt
+ * nhau, và mắt không biết nhìn đâu trước.
+ *
+ * Bảng màu KHÔNG đổi. Slate-950 / indigo / hổ phách / hồng / ngọc đã dùng nhất quán
+ * từ đầu và mang đúng nghĩa. Việc ở đây là đặt tên cho chúng và **phân tầng bề mặt**,
+ * để phân cấp làm được việc của nó.
+ *
+ * MỘT RÀNG BUỘC KHÔNG ĐƯỢC PHÁ: không trau chuốt nào được làm màn cảnh báo dịu đi
+ * hay tạo cảm giác trấn an. Sản phẩm này bán sự thẳng thắn; giao diện đẹp mà làm
+ * người dùng yên tâm sai chỗ thì tệ hơn giao diện xấu.
+ */
+
+@theme {
+  /* Ba tầng bề mặt. Trước đây chỉ có một, nên không có gì nổi lên được. */
+  --color-nen: oklch(0.16 0.018 265);
+  --color-vo: oklch(0.20 0.020 265);
+  --color-the: oklch(0.235 0.021 265);
+  --color-vien: oklch(0.31 0.022 265);
+
+  --color-chu: oklch(0.96 0.005 265);
+  --color-chu-nhat: oklch(0.79 0.014 265);
+  --color-chu-mo: oklch(0.66 0.017 265);
+
+  --color-nhan: oklch(0.70 0.15 273);
+  --color-canh: oklch(0.79 0.14 78);
+  --color-nguy: oklch(0.71 0.17 18);
+  --color-thuong: oklch(0.76 0.14 163);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-nen);
+  color: var(--color-chu);
+  /* Một họ chữ, theo hệ điều hành. KHÔNG tải phông từ mạng: demo chạy trên wifi
+     hội trường, và một request phông hỏng là màn hình vỡ chữ đúng lúc đang chiếu. */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Số tiền phải thẳng cột khi đổi giá trị, nếu không mắt đọc thành nhảy số. */
+.so {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Chuyển trạng thái: 150–250ms. Người dùng đang trong luồng thao tác, không xem
+   trình diễn. Và mọi chuyển động đều có đường thoát cho ai tắt hiệu ứng. */
+@media (prefers-reduced-motion: no-preference) {
+  .hien {
+    animation: hien 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes hien {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Nhịp thở của trạng thái ĐANG CHẠY. Đây là lúc Custos thật sự làm việc — mô phỏng
+   mất 2–4 giây — và trước đây màn hình không nói gì cả. Chuyển động ở đây truyền
+   TRẠNG THÁI, không trang trí. */
+@media (prefers-reduced-motion: no-preference) {
+  .tho {
+    animation: tho 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes tho {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Vòng lấy nét nhìn thấy được ở mọi thứ bấm được. Bàn phím là đường dùng chính của
+   người khiếm thị, và mặc định của trình duyệt biến mất trên nền tối. */
+:where(button, a, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-nhan);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
