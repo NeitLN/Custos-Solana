@@ -24,6 +24,51 @@ chỗ nào thì `git revert e9da28b` rồi báo:
 
 ---
 
+## 0b · Quyết định TREO — chờ mentor xem demo (dự kiến 26/08)
+
+### "Cần ví thật chứ không phải demo"
+
+Ý tưởng nêu ra 25/08, **chưa triển khai**, chờ mentor xem rồi mới quyết. Ghi phân tích
+sẵn ở đây để mai bàn trên nền có số, không bàn tay không.
+
+Ba cách hiểu, ba cái giá rất khác nhau:
+
+| Cách hiểu | Giá | Hệ quả |
+|---|---|---|
+| Custos **trở thành** một cái ví | Nhiều tháng · phải giữ khoá riêng người dùng | **Đổi chỗ đứng từ "bán cho ví" sang "cạnh tranh với ví"** — mà ví chính là khách hàng trả tiền (`CUSTOS.md` mục 02). Và một lớp bảo mật tự ôm khoá riêng là tự tạo bề mặt tấn công lớn nhất |
+| Custos **được tích hợp vào** ví thật | Cần ví đồng ý | Đúng đích cuối, không phải chuyện 11 ngày. Nay đã có tarball để gửi khi họ hỏi |
+| Custos **chạy trên giao dịch mainnet thật**, bấm được | Vài giờ | ✅ Khả thi ngay |
+
+**Khoảng hở có thật mà ý tưởng này chỉ đúng:** mọi thứ giám khảo **bấm được** đều là
+devnet + hiện trường dàn sẵn. Câu *"cái này chạy được với giao dịch thật không?"* có câu
+trả lời — cohort mainnet, 249 test — nhưng nó nằm trong repo, **không bấm được**.
+
+Trớ trêu là engine **đã** đọc và mô phỏng mainnet rồi; đó chính là cách đo cohort. Chỉ
+có ví mẫu là devnet. Và `scripts/soi-mot-giao-dich.ts` đã làm đúng việc "soi một giao
+dịch mainnet bất kỳ" trên dòng lệnh — docstring của nó viết thẳng: *"cách nhanh nhất để
+trả lời câu sản phẩm chạy thật hay chỉ demo"*.
+
+> **Đề xuất khi mentor hỏi:** không làm ví, làm **một trang cho dán chữ ký mainnet bất
+> kỳ vào và xem Custos phân tích trực tiếp**. Không giữ khoá, không ký, không dàn dựng.
+> Nó chứng minh "chạy thật" mạnh hơn mọi cái ví tự dựng — vì dữ liệu do **người xem tự
+> chọn**, không phải do đội chuẩn bị.
+
+### Hỏi mentor gì để lấy được góp ý dùng được
+
+Mentor mới nói *"UI đẹp + hoạt động tốt là đc"* — đó là hướng ưu tiên, chưa phải góp ý
+về sản phẩm. Góp ý chung chung thì không sửa được gì, nên hỏi câu hẹp:
+
+1. Bấm **Nhận quà tặng** rồi dừng ở màn cảnh báo — **anh hiểu chuyện gì sắp xảy ra không?**
+2. Dòng *"đã đọc hiểu N trên M lệnh"* — anh đọc nó thành **"đã kiểm tra được bao nhiêu"**
+   hay thành **"an toàn bao nhiêu phần trăm"**?
+3. Giao dịch demo hiện có **3 lệnh**. Nên dựng thêm lệnh swap cho giống tấn công thật không?
+4. Nếu anh là một đội ví — thiếu gì thì anh **không** cắm cái này vào?
+
+Câu 2 là câu đáng giá nhất: nó đo đúng chỗ sản phẩm dễ bị hiểu ngược nhất, và không ai
+trong đội trả lời hộ được vì cả đội đã biết trước đáp án.
+
+---
+
 ## 1 · Đường găng
 
 ```
