@@ -7,8 +7,8 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 | Sản phẩm chạy được | Link demo live hoặc devnet truy cập được | ✅ `neitln.github.io/Custos-Solana` |
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
 | **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
-| **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | ⬜ kịch bản ở `docs/KICH-BAN-VIDEO.md` |
-| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | ⬜ nội dung điền ở `docs/VIEC-CUA-BAN.md` mục 1 |
+| **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | ⏸ **hoãn tới khi chốt sản phẩm** — kịch bản sẵn ở `docs/KICH-BAN-VIDEO.md` |
+| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | ✅ **đã nộp 24/08** |
 
 ---
 
@@ -61,3 +61,28 @@ LibreOffice, không WPS. Nên deck **chưa được nhìn bằng mắt trong Pow
 
 Trebuchet MS · Calibri · Consolas — đều có sẵn trên Windows và hỗ trợ tiếng Việt.
 Nếu BTC mở trên máy khác mà chữ vỡ dấu thì xuất PDF nộp kèm.
+
+
+---
+
+## Việc còn lại: chỉ còn video
+
+Form đã nộp 24/08. Sản phẩm và repo đã xong. Slide đã xong.
+
+**Video hoãn tới khi chốt sản phẩm** — hợp lý, vì quay xong mà màn hình còn đổi thì
+phải quay lại. Nhưng cần chốt trước **một quyết định duy nhất còn mở**, vì nó đổi đúng
+cái con số đọc trong video:
+
+> `CUSTOS.md` mục 07 — giao dịch tấn công demo hiện có **3 lệnh**, coverage **2/3**.
+> Thiết kế gốc mô tả nó nằm giữa các lệnh swap hợp lệ, tức khoảng 10–11 lệnh.
+> Chưa dựng phần swap đó.
+
+| Chọn | Video nói | Phải làm gì trước khi quay |
+|---|---|---|
+| **Giữ 3 lệnh** | "đã đọc hiểu 2 trên 3 lệnh" | Không phải làm gì — quay được ngay |
+| **Dựng đủ lệnh swap** | "đã đọc hiểu 10 trên 11 lệnh" | Vai B thêm lệnh vào `scripts/tan-cong.ts`, và **mọi lệnh thêm vào phải là lệnh một giao dịch swap thật sự có** |
+
+**Chốt cái này trước, rồi mới quay.** Quay trước rồi đổi giao dịch sau là quay lại từ đầu.
+
+Và cắm **RPC key riêng** trước khi bấm quay (`docs/VIEC-CUA-BAN.md` mục 4) — endpoint
+công khai chặn tốc độ `429` giữa chừng là hỏng cả lượt quay.
