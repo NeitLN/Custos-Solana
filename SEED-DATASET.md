@@ -414,3 +414,67 @@ Kế hoạch 15 ngày cắt xuống **8 luật** để kịp: 1, 2, 3, 4, 6, 8, 
 Nghĩa là ở bản thi, nhóm A cần **9 ca dương tính** chứ không phải 12; các ca của luật 5, 7, 10 vẫn nên thu thập nhưng để ở P1.
 
 **Quy tắc đã chốt trong kế hoạch:** *một luật chưa có ca dương tính và ca âm tính tương ứng thì chưa tính là xong.* Bộ dữ liệu này chính là định nghĩa của chữ "xong".
+
+---
+
+## 0b5 · Neo lại cohort — 25/08, và một cáo buộc sai lộ ra
+
+Cohort neo ngày 21/08 rụng mẫu nhanh hơn dự kiến:
+
+```
+22/08:  12/20 mẫu còn mô phỏng được
+25/08:   7/20 mẫu
+```
+
+Mô phỏng phụ thuộc trạng thái chuỗi **hiện tại**, nên giao dịch càng cũ càng dễ hỏng.
+Đến ngày thi, con số công bố có thể đang đứng trên 3 mẫu — và *"0 giao dịch bị gắn cờ
+trên 3 giao dịch"* là câu không nói được.
+
+**Đã neo cohort mới ngày 25/08.** Cohort cũ giữ nguyên trong repo để đối chiếu:
+`data/seed/cohort-audit-22-08.json` và `cohort-ket-qua-22-08.json`.
+
+> **Hai cohort KHÔNG so sánh trực tiếp được.** Coverage 85 % của cohort mới không phải
+> "tăng từ 77 %" — đó là hai mẻ mẫu khác nhau. Nói "coverage tăng" ở đây là đúng loại
+> sai mà mục 0b3 sinh ra để chặn.
+
+### Cohort mới bắt ngay một cáo buộc sai mà cohort cũ không có
+
+Lượt đo đầu tiên trên cohort mới: **1 Đỏ, 1 cáo buộc** — trước đó luôn là 0. Soi ra:
+
+```
+Ke3aksXuxC75Zs6dYPA1HykM…
+  transfer SOL → syncNative → add_liquidity (Meteora DLMM) → closeAccount
+  account TokenkegQfeZ… → 11111111111111111111111111111111
+  lamports 2.039.280 → 0
+```
+
+Đó là **mẫu chuẩn của mọi giao dịch DeFi có bọc SOL**: bọc, dùng, rồi mở gói lấy lại tiền
+đặt cọc. Đóng một tài khoản token luôn trả nó về System Program và rút lamport về 0 — luật
+12 thấy "đổi chương trình sở hữu" và gắn Đỏ.
+
+Nghĩa là Custos đang báo Đỏ cho **mọi lệnh unwrap wSOL trên mainnet**.
+
+**Cohort cũ không bắt được** vì trong 12 mẫu sống sót của nó không có lệnh đóng tài khoản
+wSOL nào. Đây chính là lý do phải neo lại cohort thay vì đo mãi một mẻ: một bộ mẫu cố định
+lâu ngày không chỉ teo đi, nó còn **teo lệch** — mất dần đúng những hình dạng chưa từng
+làm lộ lỗi.
+
+### Kiểm bản vá — loại trừ khả năng "mẫu rụng nên hết cáo buộc"
+
+Giữa hai lượt đo, số mẫu tụt 12 → 9 chỉ trong vài phút. Nên không được kết luận từ con số
+tổng. Kiểm thẳng đúng giao dịch đó sau khi vá:
+
+```
+mô phỏng chạy được : true      ← mẫu VẪN sống, không phải rụng
+level              : safe
+reasonCodes        : []
+```
+
+| | Trước vá | Sau vá |
+|---|---|---|
+| `Ke3aksXuxC75…` | `danger` · `SYSTEM_ASSIGN_DOI_OWNER` | `safe` · `[]` |
+| Cohort (n khác nhau) | 1 Đỏ · 1 cáo buộc | 0 Đỏ · 0 cáo buộc |
+
+Ba ca tấn công vẫn Đỏ, có test riêng: giao account cho chương trình lạ · về System mà
+lamport còn nguyên · token account giao cho chương trình lạ. Xem
+`packages/core/test/dong-tai-khoan.test.ts`.

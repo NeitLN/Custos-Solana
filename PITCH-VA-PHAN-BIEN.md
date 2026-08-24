@@ -203,7 +203,21 @@ tư cách một công ty**. Trả lời được thì mở khoá cả ô mô hì
 ⚠️ **Vế ba chỉ được nói SAU KHI đã phỏng vấn xong.** Trước đó thì bỏ vế đó đi, giữ
 hai vế đầu — cả hai đều có bằng chứng trong repo.
 
-### 11. "Coverage của các bạn 77%. Của Phantom là bao nhiêu?"
+### 10b. "Sao không dùng Blockaid?"
+
+Câu này hay đi kèm câu Blowfish, và trả lời sai là mất uy tín ngay.
+
+> "Blockaid là bên cung cấp thật và họ làm tốt — chúng em **không** nói họ thiếu gì.
+> Khác biệt của chúng em không nằm ở việc phát hiện giỏi hơn, mà ở ba chỗ khác:
+> **tiếng Việt cho người mới**, **nói ra phần chưa đọc hiểu được**, và **SDK cắm thẳng
+> vào ví Việt Nam**.
+>
+> Còn một điều thật hơn: chúng em **chưa đo được** Blockaid trên cùng bộ mẫu, nên sẽ không
+> tuyên bố hơn kém. Cái chúng em đo được là của chính mình, và số đó công khai."
+
+⚠️ **Không nói** Blockaid bỏ lọt gì, không so tỉ lệ phát hiện. Chưa đo thì không so.
+
+### 11. "Coverage của các bạn chỉ chừng đó. Của Phantom là bao nhiêu?"
 
 **Đừng trả lời bằng số.** Không đo được của họ, và đoán là vi phạm liêm chính. Trả
 lời bằng **cấu trúc**:

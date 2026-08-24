@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 188 test
+npm run check      # typecheck + 249 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -81,17 +81,29 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **188**, chạy trong `npm run check` |
+| Test | **249**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
-| Verdict **Đỏ sai** trên 20 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
-| Coverage trung bình trên giao dịch mainnet thật | **69 %** trên cohort đo ngày 22/08 |
+| Giao dịch **bị gắn cờ** trên 9 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
+| Coverage trung bình trên giao dịch mainnet thật | **82 %** · cohort **neo lại 25/08** |
 
-**Coverage 46 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
+> Số cập nhật theo lần đo gần nhất tại **[/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html)** — mỗi con số kèm cách đo và ngày đo.
+> *"Bị gắn cờ"* chứ không phải *"báo nhầm"*: chúng tôi chưa kiểm chứng từng giao dịch trong cohort là lành, nên chưa có ground truth để nói tỉ lệ false positive.
+
+### Phụ thuộc có lỗ hổng đã biết
+
+`npm audit` ngày 25/08: **8 lỗ hổng — 5 moderate, 3 high**, nằm trong nhánh
+`@solana/web3.js` v1 (`bigint-buffer`, `jayson`, `uuid`).
+
+Dứt điểm cần lên web3.js v2 — breaking change lớn, và đội chọn **không** làm trước hạn thi.
+Nói ra ở đây thay vì im lặng: một sản phẩm bảo mật giấu cây phụ thuộc của chính nó thì
+không đáng tin hơn cái nó đang cảnh báo.
+
+**Coverage 82 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
 cho các chương trình DEX, nên hơn một nửa một giao dịch DeFi là thứ nó chưa đọc
 hiểu. Sản phẩm hiển thị đúng điều đó — *"đã đọc hiểu 2 trên 3 lệnh"* — thay vì
 im lặng và để người dùng tưởng là đã kiểm hết.
 
-Con số này từng là **4 %**. Nó tăng lên không phải nhờ nới lỏng định nghĩa, mà
+Con số này từng là **4 %**, rồi 46 %. Nó tăng lên không phải nhờ nới lỏng định nghĩa, mà
 nhờ đọc hiểu thêm những thứ đội thật sự hiểu: lệnh `ComputeBudget`, lệnh gọi
 lồng nhau (CPI), toàn bộ tập lệnh của các chương trình vốn đã trong danh sách
 xác minh, và sáu chương trình Anchor có **IDL công bố ngay trên chuỗi**.

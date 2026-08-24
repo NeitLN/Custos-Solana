@@ -86,8 +86,8 @@ export function SoLieu() {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <O
                 so={String(d.cohort.caoBuoc)}
-                nhan="cáo buộc sai"
-                cachDo={`Số giao dịch bình thường bị Custos gắn cờ đáng ngờ, trên ${d.cohort.mauDoDuoc} giao dịch mainnet ngẫu nhiên. Đây là con số quan trọng nhất: một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua.`}
+                nhan="giao dịch bị gắn cờ"
+                cachDo={`Trên ${d.cohort.mauDoDuoc} giao dịch SPL mainnet lấy ngẫu nhiên. Chúng tôi CHƯA kiểm chứng từng giao dịch là lành, nên đây là số lần gắn cờ — không phải tỉ lệ báo nhầm đã chứng minh. Một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua.`}
               />
               <O
                 so={`${d.cohort.coveragePhanTram}%`}
@@ -137,7 +137,7 @@ export function SoLieu() {
               cachDo={`Chạy thật lúc sinh trang này, không đếm file. ${d.test.fail} test hỏng. Mỗi luật phải có cả ca nguy hiểm lẫn ca an toàn tương tự mới tính là xong.`}
             />
           )}
-          <O so={String(d.soMau)} nhan="mẫu kiểm thử" cachDo="Mỗi mẫu ghi rõ nguồn gốc. Con số cáo buộc sai chỉ đo trên mẫu mainnet thật, không gộp mẫu đội tự dựng trên devnet." />
+          <O so={String(d.soMau)} nhan="mẫu kiểm thử" cachDo="Mỗi mẫu ghi rõ nguồn gốc. Con số gắn cờ chỉ đo trên mẫu mainnet thật, không gộp mẫu đội tự dựng trên devnet." />
           {d.chiPhi && (
             <O
               so={String(d.chiPhi.luotGoiRpc.trungVi)}

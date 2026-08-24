@@ -71,6 +71,15 @@ function cauCho(ma: string, facts: Facts): string | null {
     case REASON.PROGRAM_CHUA_XAC_MINH:
       return "Giao dịch gọi một chương trình chúng tôi chưa xác minh. Chúng tôi không biết nó làm gì.";
 
+    // Khác câu trên ở một điểm người dùng cảm nhận được: ở đó ta còn nêu được
+    // "một chương trình", ở đây ta không xác định nổi lệnh đó đến từ đâu. Nói
+    // đúng mức đó, không nói hơn — và không doạ.
+    case REASON.CHUONG_TRINH_KHONG_RO:
+      return (
+        "Có một lệnh ghi vào tài khoản của bạn mà chúng tôi không xác định được " +
+        "nó đến từ chương trình nào."
+      );
+
     case REASON.OUTFLOW_KHONG_KHOP: {
       // Cộng theo từng loại token: khoản nào rời ví mà giao dịch không trả lại gì.
       const theoMint = new Map<string, bigint>();

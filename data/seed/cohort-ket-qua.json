@@ -1,18 +1,18 @@
 {
-  "doLuc": "2026-08-22T20:45:41.358Z",
-  "nhan": "23/08 · vòng 2",
+  "doLuc": "2026-08-24T17:51:38.637Z",
+  "nhan": "sau vá luật 12",
   "rpc": "public mainnet-beta",
-  "coMauDo": 12,
+  "coMauDo": 9,
   "coCohort": 20,
-  "boQua": 8,
-  "coverageTrungBinh": 0.7708333333333334,
+  "boQua": 11,
+  "coverageTrungBinh": 0.8203703703703704,
   "chamTaiSan": {
-    "hieu": 28,
-    "tong": 38
+    "hieu": 13,
+    "tong": 20
   },
   "verdict": {
     "danger": 0,
-    "warning": 10,
+    "warning": 7,
     "safe": 2
   },
   "caoBuoc": 0,

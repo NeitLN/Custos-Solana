@@ -311,7 +311,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 
   const bw = (W - 1.65) / 4;
   const so = [
-    [String(S.cohort.caoBuoc), "cáo buộc sai", `trên ${S.cohort.mauDoDuoc} giao dịch mainnet ngẫu nhiên`, C.emerald],
+    [String(S.cohort.caoBuoc), "giao dịch bị gắn cờ", `trên ${S.cohort.mauDoDuoc} giao dịch SPL mainnet ngẫu nhiên · chưa kiểm chứng từng giao dịch là lành`, C.emerald],
     [String(S.test.pass), "test tự động", "chạy lại mỗi lần deploy", C.text],
     [String(S.soLuat), "luật xác định", `${S.soMau} mẫu kiểm thử`, C.text],
     [`${S.cohort.coveragePhanTram}%`, "lệnh đọc hiểu được", "phần còn lại KHÔNG đoán", C.amber],
