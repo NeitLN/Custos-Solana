@@ -32,6 +32,18 @@ export type DiffEntry = {
   after: string;
   /** Giữ nguyên `string` theo hợp đồng đã đóng băng. Giá trị dùng: "danger" | "warning" | "info". */
   severity: string;
+  /**
+   * Địa chỉ ĐẦY ĐỦ, chỉ có mặt khi `before`/`after` là địa chỉ đã rút gọn.
+   *
+   * Đây KHÔNG phải tiện nghi hiển thị mà là một vá bảo mật. Rút gọn `CRZa…picz`
+   * giữ 4 ký tự đầu và 4 ký tự cuối; kẻ tấn công mài được một địa chỉ vanity khớp
+   * đúng 8 ký tự đó, và người dùng đối chiếu bằng mắt sẽ thấy y hệt địa chỉ quen.
+   * Một lớp bảo mật chỉ hiện bản rút gọn thì tự bịt mắt mình trước đúng trò đó.
+   *
+   * Trường tuỳ chọn nên không phá hợp đồng đã đóng băng: mã cũ bỏ qua được.
+   */
+  truocDayDu?: string;
+  sauDayDu?: string;
 };
 
 export type Coverage = {

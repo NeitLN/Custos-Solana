@@ -191,3 +191,22 @@ test("ÂM TÍNH — chuyển tiền bình thường cho bạn KHÔNG bị gắn 
   );
   assert.notEqual(r.level, "danger", `chuyển tiền hợp lệ bị gắn Đỏ là báo nhầm: ${r.reasonCodes}`);
 });
+
+test("ĐẦU-CUỐI · BẢO MẬT — bảng chênh lệch phải mang theo địa chỉ ĐẦY ĐỦ", async () => {
+  // Bản rút gọn `CRZa…picz` giữ 4 ký tự đầu và 4 ký tự cuối. Kẻ tấn công mài được
+  // một địa chỉ vanity khớp đúng 8 ký tự đó, và người dùng đối chiếu bằng mắt sẽ
+  // thấy y hệt địa chỉ quen. Nếu KHÔNG chỗ nào trong kết quả có địa chỉ đầy đủ thì
+  // không giao diện nào cứu được — nên bảo đảm phải nằm ở tầng dữ liệu, không phải
+  // ở tầng hiển thị. Mức Kỹ thuật là nơi đọc nó ra.
+  const r = await inspect(
+    { connection: rpcGia({ doiChu: true, chuyenTien: true }), interpret: dienGiaiKhongAI },
+    txTanCong(),
+    { locale: "vi" },
+  );
+
+  const doiChu = r.diff.find((d) => d.label.startsWith("Chủ sở hữu tài khoản "));
+  assert.ok(doiChu, "phải có dòng đổi chủ");
+  assert.ok(doiChu!.after.includes("…"), "cột hiển thị vẫn rút gọn cho dễ đọc");
+  assert.equal(doiChu!.sauDayDu, keTanCong.toBase58(), "địa chỉ đầy đủ phải khớp ví kẻ tấn công");
+  assert.ok(!doiChu!.sauDayDu!.includes("…"), "địa chỉ đầy đủ không được rút gọn");
+});

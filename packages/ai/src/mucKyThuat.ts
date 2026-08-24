@@ -51,8 +51,16 @@ export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
   }
 
   // Bảng chênh lệch ở dạng thô: nhãn và hai đầu giá trị, không diễn giải.
+  //
+  // ĐỊA CHỈ Ở ĐÂY LÀ ĐỊA CHỈ ĐẦY ĐỦ, và đó là lý do chính mức này tồn tại chứ
+  // không phải để trang trí. Bảng chênh lệch rút gọn `CRZa…picz` giữ 4 ký tự đầu
+  // và 4 ký tự cuối; kẻ tấn công mài được một địa chỉ vanity khớp đúng 8 ký tự
+  // đó, và người dùng đối chiếu bằng mắt sẽ thấy y hệt địa chỉ quen. Một lớp bảo
+  // mật chỉ hiện bản rút gọn thì tự bịt mắt mình trước đúng trò đó.
   for (const d of ketQua.diff) {
-    ra.push({ nhan: d.label, giaTri: `${d.before} → ${d.after}  [${d.severity}]` });
+    const truoc = d.truocDayDu ?? d.before;
+    const sau = d.sauDayDu ?? d.after;
+    ra.push({ nhan: d.label, giaTri: `${truoc} → ${sau}  [${d.severity}]` });
   }
 
   if (ketQua.loiKhaiLech) {

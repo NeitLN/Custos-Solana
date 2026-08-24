@@ -121,6 +121,8 @@ export function dungBangChenhLech(
         before: t.ownerBefore === facts.signer ? "Bạn" : rutGon(t.ownerBefore),
         after: t.ownerAfter === facts.signer ? "Bạn" : rutGon(t.ownerAfter),
         severity: "danger",
+        ...(t.ownerBefore === facts.signer ? {} : { truocDayDu: t.ownerBefore }),
+        ...(t.ownerAfter === facts.signer ? {} : { sauDayDu: t.ownerAfter }),
       });
     }
 
@@ -130,6 +132,8 @@ export function dungBangChenhLech(
         before: t.delegateBefore ? rutGon(t.delegateBefore) : "không ai",
         after: `${rutGon(t.delegateAfter)} — tới ${dinhDangSo(t.delegatedAmountAfter, dec)}`,
         severity: coHitO(t.address) ? "danger" : "warning",
+        ...(t.delegateBefore ? { truocDayDu: t.delegateBefore } : {}),
+        sauDayDu: t.delegateAfter,
       });
     }
 
@@ -142,6 +146,8 @@ export function dungBangChenhLech(
         before: t.closeAuthorityBefore ? rutGon(t.closeAuthorityBefore) : "không ai",
         after: rutGon(t.closeAuthorityAfter),
         severity: "danger",
+        ...(t.closeAuthorityBefore ? { truocDayDu: t.closeAuthorityBefore } : {}),
+        sauDayDu: t.closeAuthorityAfter,
       });
     }
   }
@@ -154,6 +160,8 @@ export function dungBangChenhLech(
       before: rutGon(a.programOwnerBefore),
       after: rutGon(a.programOwnerAfter),
       severity: "danger",
+      truocDayDu: a.programOwnerBefore,
+      sauDayDu: a.programOwnerAfter,
     });
   }
 
