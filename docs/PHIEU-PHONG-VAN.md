@@ -40,11 +40,19 @@ mà họ nghĩ là "đúng", và phép đo hỏng ngay từ đầu.
 
 ---
 
-## 2 · Đưa màn hình — rồi IM LẶNG
+## 2 · Đưa màn hình — rồi IM LẶNG, và QUAN SÁT
 
 Đưa điện thoại. **Không nói gì thêm.** Để họ đọc bao lâu tuỳ họ.
 
 Im lặng sẽ khó chịu. Cứ để im lặng.
+
+**Trong lúc đó ghi lại thứ quan sát được.** Đây là dữ liệu duy nhất không phụ thuộc vào
+lời họ kể, nên nó thật hơn mọi câu trả lời:
+
+- Đọc bao lâu? *(ước chừng mấy giây)*
+- **Dừng lâu ở dòng nào?**
+- Có cuộn xuống không, hay chỉ nhìn phần đầu?
+- Nhìn nhãn "Nguy hiểm" trước, hay nhìn con số trước?
 
 ---
 
@@ -133,7 +141,8 @@ có nút xoá** từng người. Hai cái đầu phụ thuộc vào bạn.
 ## 9 · Xong rồi làm gì
 
 1. Bấm **Sao chép toàn bộ (JSON)** trên trang
-2. Gửi cho Claude → xếp biên bản + chạy `scripts/kiem-phong-van.ts`
+2. Hoặc điền thẳng vào `docs/BIEN-BAN-PHONG-VAN.md` — bản trống, không câu mẫu nào
+3. Gửi cho Claude → xếp biên bản + chạy `scripts/kiem-phong-van.ts`
 3. Con số công bố: **ĐÚNG / TỔNG** và **VẪN KÝ / TỔNG**
 
 > **"MỘT PHẦN" không được gộp vào "ĐÚNG".** Gộp một lần là mất độ tin của mọi con số khác
