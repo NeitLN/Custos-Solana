@@ -1,6 +1,6 @@
 # Việc của đội — những thứ Claude không làm thay được
 
-Cập nhật 25/08/2026. Còn **10 ngày** tới mốc kỷ luật tự đặt 04/09.
+Cập nhật **30/08/2026**. Còn **5 ngày** tới mốc kỷ luật tự đặt 04/09, 6 ngày tới giờ thi.
 
 Mỗi việc dưới đây đều là thứ **chỉ người thật làm được**: nói chuyện với người thật,
 quay màn hình thật, đứng nói thật. Xếp theo **điểm đổi được**, không theo độ dễ.
@@ -235,17 +235,22 @@ commit**, kể cả commit nhỏ như thêm kết quả phỏng vấn.
 
 ---
 
-## Lịch đề xuất
+## Lịch 5 ngày còn lại
 
-| Ngày | Việc |
-|---|---|
-| **22/08 tối** | #1 nộp form · #4 lấy RPC key |
-| 23–30/08 | #2 phỏng vấn (2 người/ngày là đủ) · #3 nhắn ví/dApp |
-| 31/08 | Tổng kết con số phỏng vấn, đưa Claude để cập nhật tài liệu |
-| 01–02/09 | #6 dựng slide từ nội dung Claude soạn |
-| 03/09 | #5 quay video |
-| **04/09** | **NỘP HỒ SƠ** · #7 tập pitch 5 lần |
-| 05/09 | 08:00 thi. Chỉ tập và kiểm thiết bị, **không sửa code** |
+| Ngày | Việc | Ai |
+|---|---|---|
+| **30/08 tối** | #4 lấy RPC key — **thêm một dòng** `VITE_RPC=` vào `apps/demo-wallet/.env.development.local` đã có sẵn. **Đừng tạo file mới**, `VITE_DEMO_SECRET` đang nằm trong đó | 1 người, 10 phút |
+| **31/08** | #5 **quay video** — chọn **Bản A** (ký thật). Khoá ký đã có, hiện trường còn 500 token. Quay ít nhất 2 lần, chạy lại `npm run hien-truong` sau mỗi lần | 2 người |
+| 01–02/09 | #6 dựng slide từ `docs/nop-bai/CUSTOS-PITCH.pptx` | 1 người |
+| 02/09 | Dựng lại hiện trường + kiểm số dư lần cuối, đo lại cohort | Claude |
+| 03/09 | #7 tập pitch 5 lần, có người đóng vai giám khảo | Cả 4 |
+| **04/09** | **NỘP HỒ SƠ** — đóng băng code | Cả 4 |
+| 05/09 | 08:00 thi. Chỉ kiểm thiết bị, **không sửa code** | Cả 4 |
+
+> **#2 phỏng vấn và #3 hỏi giá không nằm trong lịch này** vì đội đã nói không làm được.
+> Chúng vẫn là hai ô trống lớn nhất của bài — câu trả lời cho sân khấu đã soạn ở
+> `docs/ket-qua-phong-van.md`. Nếu bất ngờ có 30 phút rảnh, **3 người bạn cùng phòng
+> trong một buổi tối** là đủ để lấp ô thứ nhất.
 
 ---
 
