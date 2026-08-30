@@ -14,6 +14,29 @@ export type HienTruong = {
 };
 
 /**
+ * Chọn endpoint RPC để ví mẫu nói chuyện với devnet.
+ *
+ * Thứ tự: `VITE_RPC` (chỉ chế độ dev) → `rpc` trong hiện trường → endpoint công cộng.
+ *
+ * VÌ SAO CÓ NẤC ĐẦU. Endpoint công cộng `api.devnet.solana.com` chặn tốc độ
+ * (`429`) khá thường. Nếu nó chặn đúng lúc đang demo trên sân khấu thì demo đứng
+ * hình. Nấc này cho phép cắm một endpoint riêng vào **máy đang diễn** mà không
+ * bao giờ đưa khoá vào bản build.
+ *
+ * VÌ SAO CHỈ CHẾ ĐỘ DEV. Vite chỉ nạp `.env.development.local` khi chạy `vite dev`;
+ * `vite build` không thấy file đó. Cái chốt `import.meta.env.DEV` là lớp thứ hai,
+ * phòng trường hợp ai đó đặt nhầm vào `.env.production.local`.
+ *
+ * ⚠️ KHÔNG dùng `.env.local` — Vite nạp file đó ở MỌI chế độ, kể cả build, nên
+ * khoá sẽ bị nhúng thẳng vào JS công khai. Lớp 3 của `scripts/soi-ro-ri-khoa.mjs`
+ * là lưới cuối bắt đúng ca đó.
+ */
+export function chonRpc(ht: HienTruong | null | undefined): string {
+  const rieng = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
+  return rieng || ht?.rpc || "https://api.devnet.solana.com";
+}
+
+/**
  * Đọc hiện trường devnet do `scripts/dung-hien-truong.ts` dựng ra.
  *
  * Trả null nếu chưa dựng — giao diện sẽ hướng dẫn thay vì im lặng hỏng.

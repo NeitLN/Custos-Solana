@@ -7,7 +7,7 @@ import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-
 import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
-import { docHienTruong, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
 
@@ -28,7 +28,7 @@ export default function App() {
   const [nhatKy, setNhatKy] = useState<string[]>([]);
 
   const ghi = (s: string) => setNhatKy((n) => [...n, s]);
-  const conn = useCallback(() => new Connection(ht?.rpc ?? "https://api.devnet.solana.com", "confirmed"), [ht]);
+  const conn = useCallback(() => new Connection(chonRpc(ht), "confirmed"), [ht]);
 
   const [tuDApp, setTuDApp] = useState<string | null>(null);
   const daXuLyYeuCau = useRef(false);

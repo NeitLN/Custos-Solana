@@ -111,9 +111,30 @@ async function main() {
 
   mkdirSync(".devnet", { recursive: true });
   mkdirSync("apps/demo-wallet/public", { recursive: true });
+
+  // BẢN CÔNG KHAI KHÔNG ĐƯỢC MANG KHOÁ RPC.
+  //
+  // `RPC` đọc từ `CUSTOS_RPC`, và một endpoint riêng thường có dạng
+  // `https://devnet.helius-rpc.com/?api-key=...`. File này được commit và deploy lên
+  // GitHub Pages — ghi nguyên URL đó vào là đẩy khoá lên mạng công khai.
+  //
+  // Bản trong `.devnet/` (đã gitignore) giữ URL đầy đủ để script chạy nhanh; bản công
+  // khai luôn dùng endpoint công cộng. Người xem demo cũng KHÔNG nên tiêu hạn mức của
+  // đội — nên đây vừa là vá bảo mật vừa là hành vi đúng.
+  const boKhoa = (u: string) => {
+    try {
+      const url = new URL(u);
+      if (!url.search && !url.username) return u;
+      return "https://api.devnet.solana.com";
+    } catch {
+      return "https://api.devnet.solana.com";
+    }
+  };
+
   const noiDung = JSON.stringify(ht, null, 2);
+  const noiDungCongKhai = JSON.stringify({ ...ht, rpc: boKhoa(ht.rpc) }, null, 2);
   writeFileSync(HO_SO, noiDung);
-  writeFileSync(CONG_KHAI, noiDung);
+  writeFileSync(CONG_KHAI, noiDungCongKhai);
 
   console.log("\n✓ hiện trường sẵn sàng");
   console.log("  ", HO_SO);

@@ -120,27 +120,61 @@ Requests`) **hàng chục lần**.
 
 **Nếu nó chặn đúng lúc bạn đang demo, demo đứng hình.**
 
-### Cách làm — 10 phút
+### Lấy key — 10 phút
 
-1. Đăng ký tài khoản miễn phí tại **helius.dev** hoặc **alchemy.com**
-2. Tạo API key cho **Solana Devnet** (demo chạy devnet)
+1. Đăng ký tài khoản miễn phí tại **helius.dev** (gói Free có sẵn, không cần thẻ)
+2. Tạo API key cho **Solana Devnet** — demo chạy devnet
 3. Lấy URL dạng `https://devnet.helius-rpc.com/?api-key=...`
 
-### Đặt vào đâu
+> Gói trả tiền đầu tiên là **$49/tháng — 10 triệu credit**. Bạn **không cần trả tiền**
+> cho buổi thi; gói Free đã hơn đủ. Con số $49 xuất hiện ở đây vì nó là **neo giá**
+> dùng khi nhắn ví/dApp (mục 3) và trong `docs/DON-VI-KINH-TE.md`.
 
-**KHÔNG** dán key vào code hay commit lên repo. Đặt vào biến môi trường:
+### Đặt vào đâu — ⚠️ ĐỌC KỸ, chỗ này có một cái bẫy thật
 
-```powershell
-$env:CUSTOS_RPC = "https://devnet.helius-rpc.com/?api-key=..."
+Khoá Helius nằm **trong chính URL**. Nghĩa là bất kỳ chỗ nào ghi URL đó ra file là
+công khai khoá. Có đúng **một** chỗ đúng:
+
+```
+apps/demo-wallet/.env.development.local
 ```
 
-> Bản demo công khai trên GitHub Pages vẫn dùng endpoint mặc định — nhúng key vào
-> trang tĩnh là công khai key cho cả thế giới. Key này để chạy script và để **máy
-> bạn** dùng lúc demo.
+Nội dung một dòng:
 
-Nhắn Claude sau khi có key, sẽ nối nó vào ví mẫu cho buổi thi.
+```
+VITE_RPC=https://devnet.helius-rpc.com/?api-key=...
+```
 
----
+Rồi chạy ví mẫu **trên máy bạn** lúc demo:
+
+```
+npm run vi
+```
+
+### Ba chỗ KHÔNG được đặt
+
+| Chỗ | Chuyện gì xảy ra |
+|---|---|
+| `.env.local` | Vite nạp file này ở **mọi** chế độ, kể cả `build` → khoá bị nhúng vào JS đẩy lên GitHub Pages |
+| `$env:CUSTOS_RPC` rồi chạy `npm run hien-truong` | Biến đó **từng** bị ghi thẳng vào `apps/demo-wallet/public/hien-truong.json` — file được commit và deploy công khai |
+| Dán thẳng vào code | Khỏi bàn |
+
+> **Hướng dẫn cũ ở chính mục này bảo đặt `$env:CUSTOS_RPC`.** Đó là hàng thứ hai
+> trong bảng trên — làm đúng lời khuyên cũ là rò khoá. Đã sửa cả hướng dẫn lẫn code
+> ngày 30/08.
+
+### Ba lớp chặn đã dựng sẵn trong repo
+
+Bạn không phải nhớ những điều trên — code đã tự chặn:
+
+| Lớp | Ở đâu | Chặn gì |
+|---|---|---|
+| 1 | `scripts/dung-hien-truong.ts` | Lọc phần query khỏi URL trước khi ghi bản công khai. Bản đầy đủ chỉ nằm ở `.devnet/` (đã gitignore) |
+| 2 | `apps/demo-wallet/src/hienTruong.ts` — `chonRpc()` | `VITE_RPC` chỉ đọc ở chế độ dev. Đã thử: đặt key vào `.env.production.local` rồi build → **không** lọt vào `dist/` |
+| 3 | `scripts/soi-ro-ri-khoa.mjs` | Bắt `api-key=` trong URL, `sk-ant-…`, và URL có mật khẩu. Chạy trong CI trước mỗi lần deploy, và **không in giá trị khoá ra log** |
+
+**Bản deploy công khai vẫn dùng endpoint công cộng, cố ý.** Người lạ xem demo không
+nên tiêu hạn mức của đội. Key này để **máy bạn** dùng lúc demo.
 
 ## 5 · Quay video demo 60–90 giây
 
