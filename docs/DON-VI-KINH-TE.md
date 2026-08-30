@@ -37,32 +37,28 @@ riêng để không thể lẫn.
 
 ---
 
-## 2 · Một phát hiện từ chính phép đo
+## 2 · Một phát hiện từ phép đo, và một giả thuyết đã bị bác bỏ
 
 `getSignaturesForAddress` xuất hiện tới **3 lượt** ở đuôi phân bố. Nó đến từ
 [`traTuoiVi()`](../packages/core/src/l1/fetch.ts) — tra tuổi ví nhận để nuôi luật
 "ví mới tạo", gọi với `limit: 1000`.
 
-**Nhiều khả năng đây là lượt gọi nặng nhất trong cả danh sách** — bốn phương thức
-kia đọc một hoặc một nhúm tài khoản, cái này quét lịch sử chữ ký của một địa chỉ.
+**Giả thuyết đó SAI, và bảng credit đã trả lời.**
 
-> **Chưa xác nhận, và phải xác nhận trước khi kết luận:** đội chưa tra bảng trọng số
-> credit của Helius. Câu trên là suy đoán từ bản chất phép tính, không phải số liệu.
-> Tra bảng là việc 20 phút — làm trước khi đưa vào bất kỳ slide nào.
+Tra `helius.dev/docs/billing/credits` ngày 30/08: *"All RPC calls except those listed
+separately"* tốn **1 credit**. `getSignaturesForAddress` nằm nhóm Historical Data và cũng
+**1 credit**. Nghĩa là cả năm phương thức Custos dùng đều **cùng giá**.
 
-Nếu đúng thì **một tính năng làm giàu dữ liệu đang chiếm phần lớn chi phí biên** của
-sản phẩm, trong khi nó chỉ phục vụ một luật.
+> Tôi từng viết ở đây rằng *"nhiều khả năng đây là lượt gọi nặng nhất"* và đề xuất ba cách
+> giảm tải. Suy đoán đó dựa trên bản chất phép tính — quét lịch sử chữ ký thì nặng hơn đọc
+> một tài khoản — nhưng Helius không tính tiền theo cách đó. **Đã tra, đã sai, ghi lại thay
+> vì sửa lặng lẽ.**
 
-**Không tự sửa** — đây là quyết định sản phẩm, không phải lỗi. Ba lựa chọn:
+Hệ quả: **không cần tối ưu `traTuoiVi()` vì lý do chi phí.** Nếu sau này muốn giảm, lý do
+phải là độ trễ, không phải tiền.
 
-| Cách | Được | Mất |
-|---|---|---|
-| Giữ nguyên | Luật "ví mới" chạy đủ | Chi phí biên cao nhất, không biết cao bao nhiêu cho tới khi tra bảng credit |
-| Hạ `limit` 1000 → 100 | Rẻ hơn nhiều | Ví già hơn 100 giao dịch vẫn nhận ra được; chỉ mất độ chính xác của **tuổi**, mà luật chỉ cần biết "mới hay không" |
-| Đệm kết quả theo địa chỉ | Rẻ nhất khi có lưu lượng thật | Thêm trạng thái; tuổi ví thay đổi chậm nên đệm 24 giờ gần như không mất gì |
-
-> Đội đã chặn đúng hai chỗ quan trọng: tối đa 3 ví tra (`MAX_VI_TRA`) và thời hạn
-> 2,5 giây (`HAN_LAM_GIAU_MS`). Chặn số lượt thì có; chặn **độ nặng mỗi lượt** thì chưa.
+> Đội đã chặn sẵn hai chỗ: tối đa 3 ví tra (`MAX_VI_TRA`) và thời hạn 2,5 giây
+> (`HAN_LAM_GIAU_MS`). Với giá 1 credit mỗi lượt, hai chốt đó là đủ.
 
 ---
 
@@ -90,39 +86,43 @@ thể trôi. Đây là câu trả lời tốt cho câu hỏi *"chi phí AI của
 
 ---
 
-## 4 · Quy ra tiền — và vì sao kết luận đứng vững dù chưa biết chính xác
+## 4 · Quy ra tiền — trọng số credit đã tra được
 
 Helius bán **$5 / triệu credit** ([bảng giá](https://www.helius.dev/pricing)), tầng
 trả tiền đầu tiên **$49/tháng**. QuickNode cũng đặt tầng đầu ở **$49/tháng**
 ([bảng giá](https://www.quicknode.com/pricing)).
 
-**Không tự chế trọng số credit.** Mỗi phương thức có hạng riêng trong bảng của nhà
-cung cấp, và bịa ra rồi đưa lên sân khấu là đúng loại số liệu mà thể lệ phạt. Nhưng
-kết luận **không phụ thuộc** vào việc biết chính xác trọng số — vì nó đứng vững trên
-cả một dải rộng:
+**Trọng số credit nay đã tra được, nên không còn phải trình bày theo dải.**
 
-| Giả định trọng số | Chi phí RPC / lượt kiểm tra | $49 mua được bao nhiêu lượt |
+| Nguồn | Số liệu | Tra ngày |
+|---|---|---|
+| [Bảng credit Helius](https://www.helius.dev/docs/billing/credits) | Mọi lời gọi RPC tiêu chuẩn = **1 credit** | 30/08/2026 |
+| [Bảng giá Helius](https://www.helius.dev/pricing) | Developer **$49/tháng — 10M credit** · credit thêm **$5/triệu** | 30/08/2026 |
+
+Nhân ra:
+
+| | Credit | Chi phí RPC mỗi lượt kiểm tra |
 |---|---:|---:|
-| 1 credit mỗi lượt gọi | ~$0,000033 | ~1,5 triệu |
-| 10 credit mỗi lượt gọi | ~$0,00033 | ~150 nghìn |
-| 50 credit mỗi lượt gọi | ~$0,0016 | ~30 nghìn |
+| Thấp nhất | 4 | **$0,000020** |
+| **Trung vị** | **6,5** | **$0,0000325** |
+| Cao nhất | 9 | **$0,000045** |
 
-*(6,5 lượt gọi × trọng số × $5/triệu credit. Trọng số thật phải tra bảng Helius trước khi lên slide.)*
+**Tầng $49/tháng của Helius (10M credit) mua được:**
 
-**Kết luận đứng vững trên cả ba dòng:** chi phí RPC của một lượt kiểm tra nằm ở
-**hàng phần nghìn đến phần trăm nghìn đô la**. Một ví xử lý 30 nghìn lượt ký mỗi
-tháng — đã là ví có quy mô thật — vẫn nằm trong tầm chi phí hạ tầng mà chính họ
-đang trả cho RPC hôm nay.
+| | Số lượt `inspect()` |
+|---|---:|
+| Ở mức trung vị | **≈ 1,54 triệu** |
+| Ở mức cao nhất | **≈ 1,11 triệu** |
 
-**Câu nói được trên sân khấu:**
+### Câu nói được trên sân khấu
 
-> *"Chi phí biên một lượt kiểm tra nhỏ hơn chi phí RPC mà chính ví đó đang trả để
-> gửi giao dịch đi. Chúng em đo trên 20 giao dịch mainnet thật: trung vị 6,5 lượt
-> gọi RPC, cao nhất 9. Phần AI có trần cứng 400 token đầu ra."*
+> *"Chi phí RPC cho một lượt kiểm tra là **ba phần trăm nghìn đô la**. Cùng gói $49 một
+> tháng mà một ví đang trả cho hạ tầng RPC của chính họ, Custos chạy được **hơn một triệu
+> rưỡi lượt kiểm tra**. Đo trên 20 giao dịch mainnet thật, trọng số credit tra từ bảng giá
+> công khai của Helius."*
 
-**Câu KHÔNG được nói:** một con số biên lợi nhuận cụ thể. Chưa tra bảng credit, chưa
-đo token, và **chưa có giá bán của chính Custos** — ba ô trống thì không ra được một
-tỉ lệ. Nói *"biên gộp 90 %"* hôm nay là bịa.
+**Vẫn KHÔNG nói được:** một tỉ lệ biên lợi nhuận. Còn thiếu hai ô — token mô hình (cần
+khoá) và **giá bán của chính Custos** (cần hỏi khách hàng). Ba ô mới ra được một tỉ lệ.
 
 ---
 
@@ -130,7 +130,7 @@ tỉ lệ. Nói *"biên gộp 90 %"* hôm nay là bịa.
 
 | Ô | Cách lấp | Mất bao lâu |
 |---|---|---|
-| Trọng số credit từng phương thức | Tra bảng Helius, ghi lại ngày tra | 20 phút |
+| ~~Trọng số credit từng phương thức~~ | ✅ **xong 30/08** — mọi lời gọi = 1 credit | — |
 | Token vào/ra thật | Chạy `do-token-mo-hinh.ts` với khoá | 5 phút |
 | Giá bán của Custos | Cần hỏi ví/dApp — `docs/VIEC-CUA-BAN.md` mục 3 | 1 buổi tối |
 
