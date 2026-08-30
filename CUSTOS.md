@@ -440,6 +440,17 @@ mà chính ví đó đang trả để gửi giao dịch đi**. Chi tiết và ph
 > Chưa có biên lợi nhuận, vì chưa có giá bán của Custos. Nói *"biên gộp 90%"* hôm nay
 > là bịa.
 
+### Số liệu thị trường — chỗ còn trống, và nguồn tra được
+
+Mục này **chưa có TAM/SAM**, và đó là khoảng trống thật ở một track chấm thị trường.
+
+Nguồn công khai đáng tra nhất: **Chainalysis Global Crypto Adoption Index** — Việt Nam nhiều
+năm đứng nhóm đầu thế giới. Nếu đúng như vậy khi tra lại, đó là số liệu bên thứ ba, miễn phí,
+và nói đúng điều cần nói: thị trường này không nhỏ, và không phải đội tự nghĩ ra.
+
+> **Phải tự tra bản mới nhất và ghi rõ năm trước khi đưa lên slide.** Trích một thứ hạng cũ
+> rồi bị hỏi "số năm nào?" thì mất nhiều hơn được.
+
 ### Sau cuộc thi — đường đi là grant, không phải gọi vốn
 
 Câu *"sau cuộc thi các em làm gì?"* gần như luôn được hỏi ở vòng cuối.
@@ -574,7 +585,8 @@ nó chưa hiểu.**
 ## 13 — Tự chấm theo rubric Track Best Product & Business
 
 > **Sửa lại 23/08.** Bảng cũ tự chấm **8,8/10** ở giai đoạn còn là ý tưởng. Chấm lại
-> theo trạng thái đo được (`docs/CHAM-DIEM-GIA-DINH.md`) thì ra **6,95**. Giữ con số
+> theo trạng thái đo được thì ra **6,95** (bản chấm chi tiết nằm trong lịch sử git,
+> `docs/CHAM-DIEM-GIA-DINH.md`, và bản mới hơn ở `docs/MENTOR-REVIEW-25-08.md`). Giữ con số
 > cũ trong một repo public là rủi ro lớn hơn 1,85 điểm: **nó làm mọi con số khác
 > trong tài liệu này mất giá**, kể cả những con số đội đo rất cẩn thận.
 
@@ -615,7 +627,7 @@ video, tập nói. Xem `docs/VIEC-CUA-BAN.md`.
 ### Vì sao KHÔNG chuyển sang Track 2 — cân lại 23/08
 
 Câu hỏi hợp lý: đội mạnh kỹ thuật, sao thi track không chấm chủ yếu kỹ thuật?
-Chấm thử Custos theo rubric Track 2 (chi tiết ở `docs/CHAM-DIEM-GIA-DINH.md`):
+Chấm thử Custos theo rubric Track 2:
 
 | Tiêu chí Track 2 | Trọng số | Ước điểm |
 |---|---:|---:|

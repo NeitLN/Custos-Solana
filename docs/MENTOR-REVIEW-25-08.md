@@ -11,12 +11,12 @@ Bản này nhìn như **mentor** — quỹ đạo, và cái gì sẽ thật sự
 Tôi đếm tài liệu trong repo các em:
 
 ```
-docs/review/PRODUCT-REVIEW.md          474 dòng
-docs/CHAM-DIEM-GIA-DINH.md             386 dòng
-docs/ROADMAP-BUILD.md                  350 dòng
-docs/ROADMAP-DIEM-SO.md                245 dòng
-docs/KE-HOACH-11-NGAY-CUOI.md          238 dòng
-docs/review/IMPROVEMENT-ROADMAP.md     199 dòng
+PRODUCT-REVIEW.md                      474 dòng
+CHAM-DIEM-GIA-DINH.md                  386 dòng   (nay đã xoá khỏi HEAD)
+ROADMAP-BUILD.md                       350 dòng   (nay đã xoá khỏi HEAD)
+ROADMAP-DIEM-SO.md                     245 dòng   (nay đã xoá khỏi HEAD)
+KE-HOACH-11-NGAY-CUOI.md               238 dòng
+IMPROVEMENT-ROADMAP.md                 199 dòng   (nay đã xoá khỏi HEAD)
 ───────────────────────────────────────────────
 TỔNG tài liệu tự phân tích           1.892 dòng
 
