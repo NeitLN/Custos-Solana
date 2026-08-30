@@ -10,8 +10,6 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 | File | Vai trò |
 |---|---|
 | `CUSTOS.md` | **Nguồn quyết định duy nhất về sản phẩm.** Đã qua 5 vòng phản biện giám khảo (8,2 → 9,0/10). Phạm vi đã khoá |
-| `KE-HOACH-15-NGAY.md` | Lịch thực thi 22/8 → 5/9, chia việc 4 người, 4 cổng cắt bỏ |
-| `KHOI-DONG-22-08.md` | Gói khởi động Ngày 1: câu hỏi BTC, tin nhắn ví/dApp, spike devnet, cấu trúc thư mục và ranh giới sở hữu |
 | `NGHIEN-CUU-21-08.md` | Khử rủi ro trước build: đường đi giao dịch devnet đã tra cứu, bẫy Web3.js v2, và bản sửa tuyên bố về đối thủ |
 | `SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, danh sách 25 mẫu phải đi tìm, quy tắc đo false positive |
 | `PITCH-VA-PHAN-BIEN.md` | Cấu trúc 4 phút, 9 câu hỏi khó có sẵn câu trả lời, danh sách câu không được nói |
@@ -19,6 +17,11 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 | `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
 | `packages/core/README.md` | **Tài liệu tích hợp SDK** — thứ bên ngoài đọc để quyết định có dùng không. Ví dụ trong đó có test chạy thật (`readme.test.ts`) |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
+
+> **Tài liệu lập kế hoạch đã hoàn thành nằm trong lịch sử git, không ở HEAD.**
+> `KE-HOACH-15-NGAY.md`, `KHOI-DONG-22-08.md`, `ROADMAP-BUILD.md`, `ROADMAP-DIEM-SO.md`,
+> `IMPROVEMENT-ROADMAP.md`, `CHAM-DIEM-GIA-DINH.md` — tất cả đã đóng 100 % mục. Xoá khỏi
+> HEAD để thứ đang dùng không bị chôn; `git log` vẫn giữ nguyên quá trình.
 
 ## Trạng thái: ĐANG BUILD — cả hai cổng đã mở
 

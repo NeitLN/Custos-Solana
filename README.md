@@ -36,8 +36,6 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 ## Tài liệu
 
 - **[CUSTOS.md](CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
-- **[KE-HOACH-15-NGAY.md](KE-HOACH-15-NGAY.md)** — lịch thực thi 22/8 → 5/9
-- **[KHOI-DONG-22-08.md](KHOI-DONG-22-08.md)** — gói khởi động Ngày 1: câu hỏi cho BTC, tin nhắn gửi ví/dApp, quy trình spike devnet, cấu trúc thư mục
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
 - **[SEED-DATASET.md](SEED-DATASET.md)** — bộ kiểm thử: 25 mẫu phải thu thập, định dạng, quy tắc đo false positive
 - **[docs/docs/PHIEU-PHONG-VAN.md](docs/docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật

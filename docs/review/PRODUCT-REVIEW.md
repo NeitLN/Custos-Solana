@@ -55,7 +55,7 @@ lỗi, và nó đắt theo một cách riêng: giám khảo mở `README.md` th�
 trang `/so-lieu.html` thấy *77 % · 242 test*. Chênh lệch đó đọc ra là cẩu thả, và tệ hơn
 là **làm người đọc nghi ngờ luôn con số cao hơn**.
 
-Hai file `docs/CHAM-DIEM-GIA-DINH.md` và `docs/ROADMAP-DIEM-SO.md` ghi 232 test / 80 %
+Hai file `CHAM-DIEM-GIA-DINH.md` và `ROADMAP-DIEM-SO.md` (nay chỉ còn trong lịch sử git) ghi 232 test / 80 %
 coverage — chúng là **ảnh chụp có ghi ngày** của một vòng review trước, nên không tính
 là mâu thuẫn, nhưng nên đánh dấu rõ là số liệu tại thời điểm đó.
 
