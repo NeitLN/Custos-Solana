@@ -1,7 +1,13 @@
-# Nghiên cứu người dùng — KHÔNG THỰC HIỆN (quyết định 25/08)
+# Nghiên cứu người dùng — ĐANG MỞ LẠI (25/08)
 
-**Trạng thái: đội quyết định không phỏng vấn người dùng trong khuôn khổ cuộc thi.**
-Không đủ thời gian và điều kiện. Ghi rõ ở đây thay vì để lửng lơ.
+**Trạng thái: đội đã lấy phiếu đi hỏi.** Chưa có kết quả.
+
+> Sáng 25/08 đội quyết định bỏ vì không đủ thời gian; cùng ngày quyết định làm lại ở quy mô
+> nhỏ. Phiếu đi hỏi: `docs/PHIEU-PHONG-VAN.md`.
+>
+> **Mốc tối thiểu dùng được là 3 người.** Không cần đủ 5, và càng không cần 12.
+
+Phần dưới giữ nguyên — nó là phương án nếu cuối cùng vẫn không kịp.
 
 Bộ đồ nghề vẫn nằm trong repo (`/phong-van.html`, `docs/GIAO-THUC-PHONG-VAN.md`,
 `scripts/kiem-phong-van.ts`) — dùng được sau cuộc thi.

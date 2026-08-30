@@ -6,6 +6,11 @@
 
 ---
 
+> ### Đi hỏi thì cầm `docs/PHIEU-PHONG-VAN.md`
+>
+> File này giải thích **vì sao** — đọc một lần rồi thôi. Phiếu kia là thứ cầm theo lúc hỏi:
+> một trang, có sẵn lời mở đầu đọc nguyên văn, hai câu hỏi, khung chấm, và phiếu giấy dự phòng.
+
 ## 0 · Nguồn gốc tài liệu này — đọc trước
 
 Bộ câu hỏi và khung mã hoá dưới đây lấy từ một **kịch bản mô phỏng do AI sinh**
