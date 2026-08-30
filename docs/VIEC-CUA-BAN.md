@@ -1,6 +1,6 @@
 # Việc của đội — những thứ Claude không làm thay được
 
-Cập nhật 22/08/2026. Còn **13 ngày** tới mốc kỷ luật tự đặt 04/09.
+Cập nhật 25/08/2026. Còn **10 ngày** tới mốc kỷ luật tự đặt 04/09.
 
 Mỗi việc dưới đây đều là thứ **chỉ người thật làm được**: nói chuyện với người thật,
 quay màn hình thật, đứng nói thật. Xếp theo **điểm đổi được**, không theo độ dễ.
@@ -12,7 +12,7 @@ quay màn hình thật, đứng nói thật. Xếp theo **điểm đổi đượ
 | # | Việc | Ai | Thời gian | Hạn | Đổi được |
 |---|---|---|---|---|---|
 | 1 | Nộp form BTC | 1 người | 15 phút | **Càng sớm càng tốt** | Bắt buộc, thiếu là không được xếp lịch |
-| 2 | ~~Phỏng vấn 12 người~~ **ĐÃ BỎ 24/08** — không bắt buộc, xem `ket-qua-phong-van.md` | — | — | — | — |
+| 2 | Phỏng vấn **3 người** — phiếu ở `docs/PHIEU-PHONG-VAN.md` | cả 4 | 15 phút | 03/09 | ~+0,4 |
 | 3 | Nhắn ví/dApp hỏi định giá | 1 người | 1 tối | 31/08 | ~7 điểm |
 | 4 | RPC key riêng | 1 người | 10 phút | Trước 04/09 | Chống demo chết |
 | 5 | Quay video 60–90 giây | 2 người | 2 tiếng | 03/09 | Bắt buộc nộp |
@@ -55,87 +55,19 @@ Repo: https://github.com/NeitLN/Custos-Solana
 
 ---
 
-## 2 · Phỏng vấn — ĐÃ BỎ ngày 24/08
+## 2 · Phỏng vấn người dùng
 
-> Quyết định: bỏ phần phỏng vấn, dồn thời gian còn lại cho ba hạng mục **bắt buộc**
-> (form BTC · video · slide) vì thiếu chúng thì hồ sơ có thể bị loại, còn thiếu
-> phỏng vấn thì chỉ mất điểm ở một tiêu chí. Xem `docs/ket-qua-phong-van.md`.
->
-> Phần dưới giữ lại để dùng nếu còn kịp.
+**Trạng thái 25/08: mở lại ở quy mô nhỏ.** Mốc dùng được là **3 người**, không cần 5.
 
-### Nội dung cũ
-
-**Kịch bản đầy đủ: [PHONG-VAN-NGUOI-DUNG.md](PHONG-VAN-NGUOI-DUNG.md)** — đọc file đó trước khi hỏi ai.
-
-### Tóm tắt để khỏi mở file
-
-**Chuẩn bị:** mở https://neitln.github.io/Custos-Solana/ trên điện thoại, bấm
-**"🎁 Nhận quà tặng"**, chờ 5 giây. Dừng ở màn cảnh báo. Đừng bấm "Xem chi tiết".
-
-**Hỏi ai:** người Việt, dùng crypto **dưới 12 tháng** hoặc chưa dùng bao giờ.
-**Không** hỏi người trong đội, **không** hỏi dev Web3.
-
-**Ba bước, 5 phút:**
-
-1. Đưa màn hình. **Im lặng.** Không giải thích gì.
-2. Hỏi đúng một câu: **"Nếu bạn bấm ký, chuyện gì sẽ xảy ra?"** → ghi **nguyên văn**
-3. Hỏi tiếp: **"Bạn sẽ bấm gì?"** → Huỷ / Ký / Không biết
-
-**Chấm (tự chấm, không nói ra):**
-
-| | |
+| Cần gì | Ở đâu |
 |---|---|
-| **ĐÚNG** | Nêu được **mất tiền** HOẶC **mất quyền kiểm soát** |
-| **SAI** | Hiểu ngược, hoặc nói chuyện không liên quan |
-| **MỘT PHẦN** | Nêu được một vế, hoặc "chắc có gì đó nguy hiểm" mà không nói được là gì |
+| Phiếu cầm theo lúc hỏi | `docs/PHIEU-PHONG-VAN.md` |
+| Biên bản trống để điền | `docs/BIEN-BAN-PHONG-VAN.md` |
+| Vì sao làm như vậy | `docs/GIAO-THUC-PHONG-VAN.md` — đọc một lần |
+| Trang đo | https://neitln.github.io/Custos-Solana/phong-van.html |
+| Nếu cuối cùng không kịp | `docs/ket-qua-phong-van.md` — câu trả lời sân khấu đã soạn |
 
-Và đo thêm **quyết định**: HUỶ / KIỂM TRA THÊM / VẪN KÝ. Người hiểu đúng mà vẫn ký là phát hiện quan trọng nhất — xem giao thức.
-
-### Bốn cách tự phá hỏng phép đo
-
-| Đừng | Vì sao |
-|---|---|
-| Giải thích trước khi hỏi | Đang đo trí nhớ của họ về lời bạn, không đo sản phẩm |
-| Hỏi "bạn thấy dễ hiểu không?" | Ai cũng trả lời "dễ hiểu" cho vui lòng |
-| Bỏ người trả lời sai | Gian lận, và dễ bị hỏi lộ nhất |
-| Hỏi dev Web3 | Họ biết trước rồi, con số đẹp mà vô nghĩa |
-
-### Dùng trang đo sẵn — mở trên điện thoại là hỏi được
-
-**https://neitln.github.io/Custos-Solana/phong-van.html**
-
-Giao thức đầy đủ — tuyển người, mẫu xin phép, khung chấm, con số nào được nói —
-nằm ở `docs/GIAO-THUC-PHONG-VAN.md`. Đọc một lần trước cuộc đầu tiên.
-
-Nó chiếu **đúng màn cảnh báo thật** (chạy `inspect()` thật, không phải ảnh chụp),
-hỏi hai câu tách nhau (hậu quả, rồi quyết định), và có ô chép nguyên văn. Nó chặn
-sẵn ba cách phá hỏng phép đo:
-
-- 4 người hỏi 4 kiểu → ai cũng thấy đúng một màn hình
-- vô tình chấm trước rồi mới chép → nút chấm chỉ mở **sau khi** đã ghi nguyên văn
-- bỏ người trả lời sai → không có nút xoá từng mục
-
-Xong 12 người thì bấm **Sao chép toàn bộ (JSON)**, dán vào `data/seed/phong-van.json`,
-commit. Dữ liệu nằm trong trình duyệt máy bạn, không gửi đi đâu.
-
-> Con số công bố là **ĐÚNG / TỔNG**. "Không chắc" **không** được gộp vào "đúng" —
-> đó là thứ dễ bị hỏi lộ nhất, và gộp một lần là mất luôn độ tin của mọi con số khác.
-
-### Ghi kết quả vào đâu
-
-Tạo file `docs/ket-qua-phong-van.md`, bảng có sẵn trong `PHONG-VAN-NGUOI-DUNG.md` mục 3.
-
-**Cột quan trọng nhất là "câu họ nói nguyên văn".** Câu người dùng tự nói thường hay
-hơn câu đội tự nghĩ — và nó là nguồn để sửa chữ trong sản phẩm.
-
-### Con số sẽ nói trên sân khấu
-
-> *"12 người, không ai làm trong ngành, được xem màn cảnh báo và không được giải
-> thích gì. **X người** nói đúng chuyện gì sẽ xảy ra nếu họ ký."*
-
-Nếu chỉ mời được 8 người thì **nói 8**. Nếu X thấp thì **đọc đúng con số đó** kèm
-câu "chúng em đang sửa". Con số thật kèm kế hoạch sửa đáng tin hơn con số đẹp
-không kiểm chứng được — và giám khảo phân biệt được.
+Con số công bố: **ĐÚNG / TỔNG** và **VẪN KÝ / TỔNG**. "MỘT PHẦN" không gộp vào "ĐÚNG".
 
 ---
 

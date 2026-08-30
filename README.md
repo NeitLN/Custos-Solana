@@ -40,7 +40,7 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 - **[KHOI-DONG-22-08.md](KHOI-DONG-22-08.md)** — gói khởi động Ngày 1: câu hỏi cho BTC, tin nhắn gửi ví/dApp, quy trình spike devnet, cấu trúc thư mục
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
 - **[SEED-DATASET.md](SEED-DATASET.md)** — bộ kiểm thử: 25 mẫu phải thu thập, định dạng, quy tắc đo false positive
-- **[docs/PHONG-VAN-NGUOI-DUNG.md](docs/PHONG-VAN-NGUOI-DUNG.md)** — kịch bản đo mức độ hiểu của người dùng thật
+- **[docs/docs/PHIEU-PHONG-VAN.md](docs/docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
 - **[docs/bao-mat/](docs/bao-mat/)** — audit bảo mật, roadmap khắc phục, báo cáo, đánh giá mô hình
 - **[PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
 - **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 12 luật, lịch làm của vai A
