@@ -169,12 +169,10 @@ slide 9 khớp nhau · có một đoạn trong `SEED-DATASET.md` ghi lý do neo 
 | | Quyết định giao dịch demo (A hay B) | B | 🔴 chặn video |
 | **26/08** | Cắm **RPC key riêng** vào `.env.development.local` | 1 người · 10 ph | 🟠 chống sập |
 | | Nếu chọn B: dựng lệnh swap + test | B · 2 h | 🔴 |
-| **27–28/08** | **Phỏng vấn ≥5 người thật** qua `/phong-van.html` | cả 4 | 🟡 đắt điểm |
-| | **Outreach 10–15 ví/dApp** — đính kèm tarball SDK | D · 1 tối | 🟡 đắt điểm |
+| ~~27–28/08~~ | ~~Phỏng vấn~~ · ~~outreach~~ — **ĐÃ BỎ 25/08**, không đủ thời gian. Câu trả lời sân khấu ở `docs/ket-qua-phong-van.md` | — | — |
 | **29/08** | Đo **latency p50/p95** trên RPC riêng | A · 1 h | 🟡 |
 | | Chạy `do-token-mo-hinh.ts` với `ANTHROPIC_API_KEY` | A · 5 ph | 🟡 |
 | **02/09** | **Neo lại cohort lần nữa** + sinh lại số liệu + deck — số phải cùng tuần với buổi thi | A · 1 h | 🔴 |
-| **31/08** | Đổ kết quả phỏng vấn, chạy `kiem-phong-van.ts` | D | 🟡 |
 | | Thêm câu Q&A về **Blockaid** | D · 20 ph | 🟡 |
 | **01/09** | Mở deck bằng **Google Slides**, kiểm mắt, xuất PDF | D · 30 ph | 🟠 |
 | **02/09** | **Quay video 60–90 giây** — kịch bản `docs/KICH-BAN-VIDEO.md` | 2 người · 2 h | 🔴 bắt buộc |

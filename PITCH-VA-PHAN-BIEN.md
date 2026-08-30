@@ -178,6 +178,47 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 
 ---
 
+## 4a · Câu chuyện mạnh nhất đội đang có mà chưa dùng
+
+Ngày 25/08, hệ thống đo của chính đội bắt được **sản phẩm của mình cáo buộc oan**:
+
+```
+Ke3aksXuxC75Zs6dYPA1HykM…
+transfer SOL → syncNative → add_liquidity (Meteora DLMM) → closeAccount
+Custos gắn: ĐỎ
+```
+
+Đó là một giao dịch DeFi hoàn toàn bình thường có **mở gói wSOL**. Đóng tài khoản
+token luôn trả nó về System Program — luật 12 thấy "đổi chương trình sở hữu" và kêu.
+Nghĩa là Custos đang báo Đỏ cho **gần như mọi giao dịch DeFi có dùng SOL trên mainnet**.
+
+Đã vá trong buổi chiều, có test riêng cho ba ca tấn công để không nới nhầm.
+
+### Vì sao đây là tài sản chứ không phải vết nhơ
+
+**Hầu hết đội hackathon không có cơ chế nào phát hiện được lỗi loại này.** Họ demo một
+ca đẹp, không đo trên lưu lượng thật, và không bao giờ biết sản phẩm mình kêu oan.
+
+**Nói ở phần con số thật, 3:30–3:55:**
+
+> *"Mười ngày trước hôm nay, phép đo của bọn em bắt chính sản phẩm bọn em báo Đỏ cho
+> một giao dịch DeFi bình thường — chỉ vì nó mở gói wSOL. Bọn em vá trong buổi chiều
+> và viết test để nó không tái phát.*
+>
+> *Bọn em kể chuyện này vì đó là thứ phân biệt một sản phẩm bảo mật **đo được** với
+> một sản phẩm bảo mật **nghe có vẻ đúng**."*
+
+Câu này mạnh hơn *"0 giao dịch bị gắn cờ"* rất nhiều:
+
+| | |
+|---|---|
+| Con số 0 | Đội nào cũng đọc được, và không ai kiểm chứng được tại chỗ |
+| Chuyện tự bắt lỗi mình | **Không đội nào bịa được**, và nó chặn trước câu *"làm sao biết các em không kêu oan?"* — vì bạn vừa kể một lần đã kêu oan |
+
+⚠️ Chỉ kể được nếu số công bố là số **sau khi vá**. Đừng kể chuyện này rồi đọc số cũ.
+
+---
+
 ## 4b · Ba câu bổ sung 23/08 — sinh từ bản chấm thử
 
 ### 10. ⭐ "Vì sao một ví lớn mua của các em, thay vì tự làm trong hai tuần?"

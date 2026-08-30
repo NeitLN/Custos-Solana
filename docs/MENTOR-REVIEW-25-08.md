@@ -183,12 +183,21 @@ Tiết kiệm được 2 giờ của vai B, và tháo chặn video ngay hôm nay
 
 ---
 
+> ### Cập nhật 25/08 — đội quyết KHÔNG phỏng vấn, KHÔNG outreach
+>
+> Không đủ thời gian và điều kiện. Quyết định có ý thức, đã ghi ở
+> `docs/ket-qua-phong-van.md` kèm câu trả lời cho sân khấu.
+>
+> **Trần mới ≈ 7,7** thay vì 8,3. Hai ô 25 % đứng nguyên; toàn bộ phần còn lại dồn vào
+> **demo (30 %)** và **trình bày (20 %)** — nơi đội mạnh nhất. Mục 5 dưới đây giữ
+> nguyên để đối chiếu, nhưng hai dòng đầu đã gạch.
+
 ## 5 · Việc phải làm, xếp theo điểm đổi được
 
 | # | Việc | Ai | Thời gian | Đổi |
 |---|---|---|---|---:|
-| 1 | **Hỏi 5 người thật** qua `/phong-van.html` | cả 4 · mỗi người 2 | 1 tối | **+0,5** |
-| 2 | **Nhắn 10 ví/dApp**, đính tarball SDK | 1 người | 1 tối | **+0,4** |
+| ~~1~~ | ~~Hỏi 5 người thật~~ — **đội đã quyết KHÔNG làm 25/08**, không đủ thời gian | — | — | — |
+| ~~2~~ | ~~Nhắn 10 ví/dApp~~ — bỏ cùng lý do | — | — | — |
 | 3 | Chốt A cho giao dịch demo → **quay video** | B + 2 người | 2 giờ | *bắt buộc* |
 | 4 | Đưa **chuyện tự bắt lỗi wSOL** vào pitch | 1 người | 30 phút | **+0,3** |
 | 5 | Thêm đoạn **Solana grant** vào `CUSTOS.md` §08 | 1 người | 20 phút | **+0,2** |

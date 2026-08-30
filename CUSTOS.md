@@ -440,6 +440,27 @@ mà chính ví đó đang trả để gửi giao dịch đi**. Chi tiết và ph
 > Chưa có biên lợi nhuận, vì chưa có giá bán của Custos. Nói *"biên gộp 90%"* hôm nay
 > là bịa.
 
+### Sau cuộc thi — đường đi là grant, không phải gọi vốn
+
+Câu *"sau cuộc thi các em làm gì?"* gần như luôn được hỏi ở vòng cuối.
+
+Custos là **hạ tầng cho hệ sinh thái**, không phải app tiêu dùng: không giữ tài sản,
+không phát token, không cần vốn lớn để vận hành. Dạng đó hợp với **grant của Solana
+Foundation** hơn là gọi vốn mạo hiểm.
+
+Ba thứ cần có trước khi nộp grant, và đội đã có một:
+
+| Cần | Trạng thái |
+|---|---|
+| Số liệu trên lưu lượng thật | ✅ đo trên giao dịch mainnet, công khai ở `/so-lieu.html` |
+| Một ví hoặc dApp thật tích hợp | ⬜ chưa |
+| Audit bên thứ ba | ⬜ chưa — và **tự rà soát không thay thế được** |
+
+> Nói rõ ranh giới khi bị hỏi: đội **đã tự rà soát bảo mật** và tìm ra 4 lỗ hổng
+> Critical (`docs/bao-mat/SECURITY-AUDIT.md`). Đó **không** phải audit. "Audit" nghĩa
+> là một công ty bên thứ ba đọc và ký tên chịu trách nhiệm. Nói nhầm hai thứ này là
+> mất uy tín ở đúng nhóm giám khảo hiểu rõ nhất.
+
 ### Trình tự tiếp cận khách hàng
 
 | Giai đoạn | Ai | Dấu hiệu đúng hướng |
