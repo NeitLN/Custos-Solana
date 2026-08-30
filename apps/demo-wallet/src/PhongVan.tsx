@@ -4,7 +4,7 @@ import type { InspectResult } from "@custos/types";
 import { inspect } from "@custos/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
-import { docHienTruong, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { CanhBao } from "./CanhBao.tsx";
 
 /**
@@ -85,7 +85,7 @@ export function PhongVan() {
   const [daChep, setDaChep] = useState(false);
 
   const dung = useCallback(async (ht: HienTruong) => {
-    const c = new Connection(ht.rpc ?? "https://api.devnet.solana.com", "confirmed");
+    const c = new Connection(chonRpc(ht), "confirmed");
     const { blockhash } = await c.getLatestBlockhash();
     const tx: VersionedTransaction = dungGiaoDichTanCong({
       nanNhan: new PublicKey(ht.nanNhan),

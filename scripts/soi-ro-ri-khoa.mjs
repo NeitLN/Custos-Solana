@@ -63,6 +63,35 @@ for (const f of files) {
   if (m) loi.push(`mảng ${m[0].split(",").length} số trông giống keypair trong ${f}`);
 }
 
+// ── lớp 3: khoá API nhúng trong URL hoặc chuỗi ──────────────────
+//
+// Hai lớp trên chỉ bắt được KHOÁ VÍ. Chúng hoàn toàn mù với khoá API — mà đường
+// rò rỉ khoá API lại có thật và rất dễ đi vào:
+//
+//   `dung-hien-truong.ts` đọc biến `CUSTOS_RPC` rồi ghi thẳng vào
+//   `apps/demo-wallet/public/hien-truong.json` — file được commit và deploy công khai.
+//   Đặt `CUSTOS_RPC=https://devnet.helius-rpc.com/?api-key=...` rồi dựng lại hiện
+//   trường là đủ để đẩy khoá lên GitHub Pages.
+//
+// Script đó nay đã tự lọc phần query trước khi ghi bản công khai. Lớp này là chốt
+// thứ hai, cho những đường rò rỉ chưa nghĩ ra.
+//
+// Ngưỡng độ dài để tránh kêu oan: thư viện hay chứa chuỗi mẫu `api-key=` rỗng hoặc
+// `?api-key=${key}`. Chỉ báo khi sau dấu `=` có một giá trị thật đủ dài.
+const MAU_KHOA_API = [
+  [/[?&](?:api[-_]?key|apikey|access[-_]?token)=[A-Za-z0-9_-]{16,}/i, "khoá API trong URL"],
+  [/sk-ant-[A-Za-z0-9_-]{20,}/, "khoá Anthropic (sk-ant-…)"],
+  [/https?:\/\/[^\s"'`]*:[^\s"'`@/]{8,}@/, "URL có nhúng mật khẩu"],
+];
+for (const f of files) {
+  const noiDung = readFileSync(f, "utf8");
+  for (const [mau, ten] of MAU_KHOA_API) {
+    const m = noiDung.match(mau);
+    // KHÔNG in giá trị khớp ra log — CI công khai, in ra là rò rỉ lần hai.
+    if (m) loi.push(`${ten} trong ${f} (vị trí ${m.index}, ${m[0].length} ký tự)`);
+  }
+}
+
 if (loi.length) {
   console.error("\n✗ PHÁT HIỆN RÒ RỈ KHOÁ TRONG BẢN BUILD\n");
   for (const l of loi) console.error("  •", l);
