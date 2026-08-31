@@ -100,12 +100,21 @@ test("TRUNG THỰC — mô phỏng hỏng thì KHÔNG được bịa hậu quả
   const f = await extractFacts(rpcCoSoDuNhungHongMoPhong(nguoiKy), txDonGian(nguoiKy));
 
   assert.equal(f.simulationOk, false, "tiền đề của ca này: mô phỏng phải hỏng");
+  // ĐÁNH ĐỔI CÓ CHỦ Ý, ghi ra để lần sau không ai tưởng là lỗi.
+  //
+  // Sau bản vá gốc, mô phỏng hỏng làm `facts.accounts` RỖNG — mất luôn trạng thái
+  // TRƯỚC, dù số dư trước đọc được từ `getMultipleAccountsInfo`. Lý do: `accounts`
+  // lọc theo `afterByIndex`, nên bỏ vế "sau" là bỏ cả bản ghi.
+  //
+  // Chấp nhận, vì phương án còn lại tệ hơn: giữ 551 SOL ở cột trái cạnh một cột phải
+  // trống là mời người đọc tự điền số 0 vào đầu. Dòng "Phần chưa đọc được" nói đúng
+  // tình trạng mà không gợi ý hậu quả nào.
+  assert.equal(tinhSolNguoiDung(f).roi, 0n, "không được kết luận có SOL rời ví");
   assert.equal(
-    tinhSolNguoiDung(f).sau,
-    0n,
-    "tiền đề thứ hai: trạng thái SAU bằng 0 vì không đọc được — đây chính là cái bẫy",
+    f.accounts.length,
+    0,
+    "mô phỏng hỏng thì không bản ghi tài khoản nào được coi là đọc được",
   );
-  assert.equal(tinhSolNguoiDung(f).truoc, SO_DU_TRUOC, "và trạng thái TRƯỚC thì đọc được");
 
   const kq = danhGia(f);
   const bang = dungBangChenhLech(f, kq.hits);
@@ -126,9 +135,38 @@ test("TRUNG THỰC — mô phỏng hỏng thì KHÔNG được bịa hậu quả
 
   // NHƯNG dòng trung thực thì phải CÒN. Bản vá đầu của tôi `return []` ngay đầu hàm
   // và xoá luôn dòng này — mất đúng thông tin hữu ích nhất lúc mô phỏng hỏng.
+  // Dòng TRUNG THỰC phải CÒN. Bản vá đầu của tôi `return []` ngay đầu `dungBangChenhLech`
+  // và xoá luôn dòng này — mất đúng thông tin hữu ích nhất lúc mô phỏng hỏng.
   assert.ok(
-    bang.some((d) => /phí/i.test(d.label)),
-    "dòng phí không suy ra từ mô phỏng (nó đến từ getFeeForMessage), nên phải giữ lại",
+    bang.some((d) => d.label === "Phần chưa đọc được"),
+    "dòng 'Phần chưa đọc được' không suy ra từ mô phỏng, nên phải giữ lại",
+  );
+
+  // ── CHỐT CHẶN CHO LỖI TỆ NHẤT: L2 đọc số bịa ────────────────────
+  //
+  // Bản vá đầu chỉ chặn ở `diff.ts`, nên bảng sạch nhưng LUẬT vẫn nổ trên trạng thái
+  // sau bịa ra: `SOL_ROI_VI` xuất hiện, và câu giải thích nói "551 SOL sẽ rời khỏi ví
+  // bạn" ngay cạnh câu "chúng tôi không chạy thử được giao dịch này". Hai câu mâu
+  // thuẫn trong cùng một đoạn, trên đúng trang mà một nửa giao dịch hỏng mô phỏng.
+  //
+  // Gốc nằm ở `l1/fetch.ts`: `Array.isArray(v.accounts)` nhận mảng toàn null của một
+  // mô phỏng LỖI là dữ liệu thật.
+  assert.ok(
+    !kq.reasonCodes.includes("SOL_ROI_VI"),
+    "không được kết luận SOL rời ví khi chưa hề đọc được trạng thái sau",
+  );
+  assert.ok(
+    !kq.reasonCodes.includes("OUTFLOW_KHONG_KHOP"),
+    "cùng lý do: luật dòng tiền không được chạy trên số bịa",
+  );
+  assert.ok(
+    kq.reasonCodes.includes("TRANG_THAI_DO_KHUYET"),
+    "và phải nói rõ trạng thái đo được đang khuyết",
+  );
+  assert.notEqual(
+    f.accountKhongDoDuoc?.length ?? 0,
+    0,
+    "mọi tài khoản trong lượt mô phỏng hỏng đều phải bị đánh dấu là không đọc được",
   );
 
   // Người dùng KHÔNG bị mất thông tin vì bảng trống: cảnh báo vẫn còn nguyên.

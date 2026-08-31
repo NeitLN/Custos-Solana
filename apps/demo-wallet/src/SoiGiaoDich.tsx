@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import { inspect, REASON } from "@custos/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
@@ -162,7 +162,8 @@ export function SoiGiaoDich() {
   const [rpcRieng, setRpcRieng] = useState(docRpcDaLuu);
   const [tt, setTt] = useState<TrangThai>({ loai: "nghi" });
 
-  async function chay(sig: string) {
+  /** Thân việc, KHÔNG có chốt chặn — chốt nằm ở hai điểm vào bên dưới. */
+  async function chayNoiBo(sig: string) {
     const s = sig.trim();
     if (!s) return;
 
@@ -205,18 +206,42 @@ export function SoiGiaoDich() {
         tx.transaction.signatures.map(() => new Uint8Array(64)),
       );
 
-      // Người trả phí luôn là khoá đầu tiên. Nếu người dùng không chỉ định ví nào
-      // khác thì đây là chủ thể hợp lý để bảo vệ — và trang nói rõ nó đang bảo vệ ai,
-      // vì chọn sai ví là chọn sai toàn bộ verdict (xem README mục `nguoiDung`).
-      const phiTra = tx.transaction.message.staticAccountKeys[0]?.toBase58() ?? "";
-      const nguoiDung = viTuyChon.trim() || phiTra;
+      const msg = tx.transaction.message;
+      const phiTra = msg.staticAccountKeys[0]?.toBase58() ?? "";
+      const nguoiKy = msg.staticAccountKeys
+        .slice(0, msg.header.numRequiredSignatures)
+        .map((k) => k.toBase58());
+
+      // KHÔNG truyền `nguoiDung` khi người dùng không chỉ định.
+      //
+      // Trông thì tiện: mặc định lấy ví trả phí, khỏi bắt ai gõ gì. Nhưng core đặt
+      // `nguoiDungDuocChiDinh = true` cho MỌI giá trị nằm trong danh sách người ký —
+      // và ví trả phí luôn nằm trong đó. Hệ quả là luật 14 (`NGUOI_DUNG_KHONG_RO`)
+      // không bao giờ nổ, dù đây đúng là tình huống nó sinh ra để cảnh báo: một
+      // người lạ dán giao dịch nhiều chữ ký vào, và KHÔNG AI biết ví nào là của họ.
+      //
+      // Để trống thì core tự lùi về ví trả phí y hệt, nhưng luật 14 vẫn nói được
+      // phần nó cần nói.
+      const chiDinh = viTuyChon.trim();
+      if (chiDinh && !nguoiKy.includes(chiDinh)) {
+        setTt({
+          loai: "loi",
+          tieuDe: "Ví bạn chỉ định không ký giao dịch này",
+          thongDiep:
+            `Giao dịch này có ${nguoiKy.length} người ký, và địa chỉ bạn nhập không ` +
+            "nằm trong số đó. Custos chỉ bảo vệ được một ví có ký. Xoá ô đó để dùng " +
+            "ví trả phí, hoặc nhập một trong các địa chỉ ký thật.",
+        });
+        return;
+      }
 
       setTt({ loai: "dangChay", buoc: "đang mô phỏng và chấm luật…" });
       const ketQua = await inspect(
         { connection: conn, interpret: boiThoiHan(dienGiaiKhongAI) },
         vt,
-        { locale: "vi", ...(nguoiDung ? { nguoiDung } : {}) },
+        { locale: "vi", ...(chiDinh ? { nguoiDung: chiDinh } : {}) },
       );
+      const nguoiDung = chiDinh || phiTra;
       setTt({ loai: "xong", ketQua, nguoiDung, phiTra });
     } catch (e) {
       setTt({
@@ -230,12 +255,40 @@ export function SoiGiaoDich() {
     }
   }
 
+  /**
+   * Chốt chặn chạy chồng, đặt ở ĐIỂM VÀO chứ không trong thân việc.
+   *
+   * Nút có `disabled`, nhưng phím Enter trong ô nhập không đi qua nút. Không chặn
+   * thì hai lượt chạy song song và lượt CŨ về sau ghi đè lượt mới — người dùng đọc
+   * kết quả của một giao dịch khác với cái đang hiện trên ô.
+   *
+   * Dùng ref chứ không dùng state: `tt` trong closure là ảnh chụp của lần render
+   * trước, nên đọc nó ra quyết định là đọc quá khứ.
+   *
+   * Bản đầu tôi đặt chốt ngay trong thân `chay()`, và nó chặn luôn lượt gọi NỘI BỘ
+   * từ `layNgauNhien` — nút "lấy giao dịch" đứng im hoàn toàn. Chốt phải ở cửa, không
+   * ở giữa phòng.
+   */
+  const dangChayRef = useRef(false);
+
+  async function chay(sig: string) {
+    if (dangChayRef.current) return;
+    dangChayRef.current = true;
+    try {
+      await chayNoiBo(sig);
+    } finally {
+      dangChayRef.current = false;
+    }
+  }
+
   async function layNgauNhien() {
+    if (dangChayRef.current) return;
+    dangChayRef.current = true;
     setTt({ loai: "dangChay", buoc: "đang lấy một giao dịch vừa lên chuỗi…" });
     try {
       const sig = await layGiaoDichMoi(rpcRieng.trim() || RPC_MAC_DINH);
       setChuKy(sig);
-      await chay(sig);
+      await chayNoiBo(sig);
     } catch (e) {
       setTt({
         loai: "loi",
@@ -244,6 +297,8 @@ export function SoiGiaoDich() {
           (e instanceof Error ? e.message : String(e)) +
           " — thử lại, hoặc tự dán một chữ ký vào ô trên.",
       });
+    } finally {
+      dangChayRef.current = false;
     }
   }
 
