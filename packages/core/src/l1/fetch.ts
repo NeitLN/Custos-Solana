@@ -205,7 +205,21 @@ export async function extractFacts(
       simOk = false;
       simErr = typeof v.err === "string" ? v.err : JSON.stringify(v.err);
     }
-    coDuLieuAccount = Array.isArray(v.accounts);
+    // MÔ PHỎNG LỖI THÌ MẢNG `accounts` KHÔNG PHẢI DỮ LIỆU.
+    //
+    // Solana vẫn trả về `accounts` khi mô phỏng thất bại — nhưng mọi ô là null. Đó là
+    // chỗ trống mang hình dạng của dữ liệu, và `Array.isArray` không phân biệt được.
+    //
+    // Hậu quả khi không có vế `!v.err`: mỗi `lamportsAfter` thành 0 và được coi là
+    // ĐỌC ĐƯỢC. Luật 13 thấy 551 SOL rời ví nên bắn `SOL_ROI_VI`; câu giải thích nói
+    // "551 SOL sẽ rời khỏi ví bạn" ngay cạnh câu "chúng tôi không chạy thử được giao
+    // dịch này". Đồng thời `accountKhongDoDuoc` rỗng, nên dòng "Phần chưa đọc được" —
+    // thứ DUY NHẤT đáng hiện lúc này — lại im.
+    //
+    // Bịt ở đây chứ không ở `diff.ts`: chặn tại bảng chênh lệch chỉ giấu triệu chứng,
+    // trong khi L2 và L3 vẫn đang đọc số bịa. Trạng thái sau không đọc được thì phải
+    // KHÔNG TỒN TẠI ngay từ L1, để mọi tầng phía sau tự động nhất quán.
+    coDuLieuAccount = Array.isArray(v.accounts) && !v.err;
     after = simIdx.map((_, k) => {
       const a = v.accounts?.[k];
       if (!a) return null;

@@ -69,9 +69,18 @@ export function SoLieu() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="mx-auto max-w-2xl px-5 py-10">
-        <a href={import.meta.env.BASE_URL} className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 hover:text-slate-300">
-          ← Ví mẫu
-        </a>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
+          <a href={import.meta.env.BASE_URL} className="hover:text-slate-300">
+            ← Ví mẫu
+          </a>
+          {/* Trang soi mainnet phải có đường vào, không thì nó tồn tại mà không ai
+              tới được. CHƯA đặt link ở ví mẫu `/`: video quay hôm nay dùng đúng màn
+              đó, và thêm chữ vào khung hình sát giờ quay là tự chuốc rủi ro. Đặt ở
+              đây trước, ví mẫu bổ sung sau khi quay xong — Phase 4. */}
+          <a href={`${import.meta.env.BASE_URL}soi.html`} className="hover:text-slate-300">
+            Soi giao dịch mainnet →
+          </a>
+        </div>
         <h1 className="mt-4 text-[22px] font-semibold text-slate-50">Custos đo được những gì</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-slate-400">
           Mỗi con số dưới đây sinh ra từ một phép đo có file trong repo, không có số nào gõ tay.
