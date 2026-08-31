@@ -17,7 +17,7 @@
     "vi": "npm run dev -w @custos-solana/demo-wallet",
     "tan-cong": "npm run dev -w @custos-solana/trang-tan-cong",
     "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site",
-    "publish-sdk": "npm publish -w @custos-solana/types && npm publish -w @custos-solana/core && npm publish -w @custos-solana/ai",
+    "publish-sdk": "node scripts/dong-goi-sdk.mjs --publish",
     "thu-publish": "npm publish --dry-run -w @custos-solana/types && npm publish --dry-run -w @custos-solana/core && npm publish --dry-run -w @custos-solana/ai"
   },
   "devDependencies": {
