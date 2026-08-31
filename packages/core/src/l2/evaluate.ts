@@ -1,4 +1,4 @@
-import type { Level } from "@custos/types";
+import type { Level } from "@custos-solana/types";
 import type { Facts } from "../facts.ts";
 import { LUAT, type Rule, type RuleHit } from "./rules.ts";
 import { REASON } from "../constants.ts";

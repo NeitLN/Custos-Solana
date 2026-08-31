@@ -1,5 +1,5 @@
 import type { Connection, VersionedTransaction } from "@solana/web3.js";
-import type { InspectResult, InspectOptions, PrimaryAction, AiAdvisory } from "@custos/types";
+import type { InspectResult, InspectOptions, PrimaryAction, AiAdvisory } from "@custos-solana/types";
 import { extractFacts } from "./l1/fetch.ts";
 import { danhGia } from "./l2/evaluate.ts";
 import { dungBangChenhLech } from "./diff.ts";

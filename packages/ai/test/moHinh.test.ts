@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { Facts, TokenAccountFact } from "@custos/core";
-import { REASON } from "@custos/core";
+import type { Facts, TokenAccountFact } from "@custos-solana/core";
+import { REASON } from "@custos-solana/core";
 import { dienGiaiBangMoHinh, soiDauRa, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
 
 /**

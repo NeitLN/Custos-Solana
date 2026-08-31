@@ -1,5 +1,5 @@
-import { kyHieuAnToan, type Facts } from "@custos/core";
-import type { PrimaryAction } from "@custos/types";
+import { kyHieuAnToan, type Facts } from "@custos-solana/core";
+import type { PrimaryAction } from "@custos-solana/types";
 
 /**
  * LÕI XÁC ĐỊNH CỦA L3 — nhận diện hành động chính và hậu quả lệch khỏi nó.

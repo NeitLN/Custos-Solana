@@ -1,5 +1,5 @@
 {
-  "name": "@custos/types",
+  "name": "@custos-solana/types",
   "version": "0.1.0",
   "type": "module",
   "main": "./src/index.ts",

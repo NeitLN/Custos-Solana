@@ -132,7 +132,7 @@ sai về mức độ hoàn thiện bị trừ điểm hoặc loại*.
 
 ## Phase 3 · Publish SDK lên npm — 30 phút
 
-**Đổi câu trả lời từ *"cài bằng file .tgz"* thành *"npm i @custos/core"*.**
+**Đổi câu trả lời từ *"cài bằng file .tgz"* thành *"npm i @custos-solana/core"*.**
 
 ### Việc
 

@@ -55,7 +55,7 @@ code** — chúng cần khoá API, người thật, và một quyết định c�
 
 Ghi lại thay vì sửa lặng lẽ — đây là điều quy trình review sinh ra để bắt:
 
-1. **R4-01 root cause sai ở vòng đầu.** Tôi kết luận *"E404 vì `@custos/types` chưa
+1. **R4-01 root cause sai ở vòng đầu.** Tôi kết luận *"E404 vì `@custos-solana/types` chưa
    publish"*. Test tái hiện bác bỏ: pack cả ba gói rồi cài **cùng một lượt** thì npm giải
    được — 77 gói, sạch. Root cause thật là Node không bóc kiểu TS trong `node_modules`.
 2. **R2-01 severity vế giao diện đánh giá quá nặng.** Tôi viết "trạng thái êm nhất sản

@@ -1,4 +1,4 @@
-import type { DiffEntry } from "@custos/types";
+import type { DiffEntry } from "@custos-solana/types";
 import type { Facts } from "./facts.ts";
 import type { RuleHit } from "./l2/rules.ts";
 import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
@@ -52,7 +52,7 @@ const LAMPORTS_DECIMALS = 9;
 /**
  * Tiền tố nhãn của từng loại dòng trong bảng chênh lệch.
  *
- * Đưa ra hằng số vì mức diễn đạt NGẮN (@custos/ai) phải nhận ra loại dòng để
+ * Đưa ra hằng số vì mức diễn đạt NGẮN (@custos-solana/ai) phải nhận ra loại dòng để
  * rút thành một câu. Nếu mỗi bên tự viết chuỗi của mình thì đổi chữ ở đây sẽ
  * làm câu tóm tắt im lặng hỏng — có test khoá lại chuyện đó.
  */

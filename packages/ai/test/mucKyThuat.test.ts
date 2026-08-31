@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { InspectResult } from "@custos/types";
+import type { InspectResult } from "@custos-solana/types";
 import { chiTietKyThuat, tomTat } from "../src/index.ts";
-import { NHAN } from "@custos/core";
+import { NHAN } from "@custos-solana/core";
 
 /**
  * MỨC 3 — KỸ THUẬT.

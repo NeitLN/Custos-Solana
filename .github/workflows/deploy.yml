@@ -52,10 +52,10 @@ jobs:
       # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
       # xem chú thích trong file đó để biết vì sao.
       - name: Build ví mẫu
-        run: npm run build -w @custos/demo-wallet
+        run: npm run build -w @custos-solana/demo-wallet
 
       - name: Build trang tấn công giả
-        run: npm run build -w @custos/trang-tan-cong
+        run: npm run build -w @custos-solana/trang-tan-cong
 
       - name: Kiểm tra base path đã đúng
         run: |

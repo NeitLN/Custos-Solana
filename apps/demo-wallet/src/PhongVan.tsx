@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
-import type { InspectResult } from "@custos/types";
-import { inspect } from "@custos/core";
-import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
+import type { InspectResult } from "@custos-solana/types";
+import { inspect } from "@custos-solana/core";
+import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { CanhBao } from "./CanhBao.tsx";

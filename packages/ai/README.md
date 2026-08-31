@@ -1,16 +1,16 @@
-# @custos/ai
+# @custos-solana/ai
 
 Lớp diễn giải của [Custos](https://github.com/NeitLN/Custos-Solana): biến kết quả luật
 thành câu tiếng Việt người thường đọc được.
 
 ```
-npm i @custos/ai
+npm i @custos-solana/ai
 ```
 
 ## Điều gói này KHÔNG làm
 
 **Nó không quyết định mức độ nguy hiểm.** `level` đến từ engine luật tất định trong
-`@custos/core`; gói này không tạo và không sửa nó. Trường riêng của nó là `aiAdvisory`,
+`@custos-solana/core`; gói này không tạo và không sửa nó. Trường riêng của nó là `aiAdvisory`,
 và giá trị duy nhất nó được phép đặt là `"review_required"` — yêu cầu người dùng tự
 kiểm tra.
 
@@ -22,8 +22,8 @@ cho khéo.
 ## Dùng không cần mô hình
 
 ```ts
-import { inspect } from "@custos/core";
-import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
+import { inspect } from "@custos-solana/core";
+import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 
 const kq = await inspect(
   { connection, interpret: boiThoiHan(dienGiaiKhongAI) },

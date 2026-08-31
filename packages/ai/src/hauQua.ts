@@ -1,5 +1,5 @@
-import type { InspectResult } from "@custos/types";
-import { NHAN } from "@custos/core";
+import type { InspectResult } from "@custos-solana/types";
+import { NHAN } from "@custos-solana/core";
 
 /**
  * "NẾU BẠN KÝ MÀ KHÔNG CÓ CUSTOS" — dựng nội dung màn hậu quả.
@@ -22,7 +22,7 @@ import { NHAN } from "@custos/core";
  *      `CLAUDE.md`, áp dụng cho màn này y như cho bảng chênh lệch. Có test.
  *   3. Không sinh ra đường ký nào.
  *
- * Vì sao đặt ở `@custos/ai` chứ không trong ví: đây là chữ tiếng Việt cho người
+ * Vì sao đặt ở `@custos-solana/ai` chứ không trong ví: đây là chữ tiếng Việt cho người
  * dùng cuối — cùng loại với `mucNgan.ts` và `mucKyThuat.ts`, và cùng chủ sở hữu.
  * Đặt trong ví thì bộ test không chạm tới được (`packages/**` mới nằm trong glob).
  */

@@ -1,13 +1,13 @@
-# @custos/types
+# @custos-solana/types
 
 Kiểu dữ liệu dùng chung của [Custos](https://github.com/NeitLN/Custos-Solana) — SDK
 phân tích giao dịch Solana trước khi người dùng ký.
 
-Gói này **không có logic**. Nó tồn tại để `@custos/core` và `@custos/ai` không phụ
+Gói này **không có logic**. Nó tồn tại để `@custos-solana/core` và `@custos-solana/ai` không phụ
 thuộc vòng vào nhau, và để bên tích hợp gõ đúng kiểu mà không phải cài cả hai.
 
 ```
-npm i @custos/types
+npm i @custos-solana/types
 ```
 
 ## Giao kèo
@@ -29,6 +29,6 @@ hình ngôn ngữ không bao giờ tạo và không bao giờ sửa nó. AI ch�
 thủ công qua `aiAdvisory` — nó không có thẩm quyền tuyên bố một giao dịch an toàn,
 cũng không có thẩm quyền kết luận một giao dịch nguy hiểm.
 
-Tài liệu tích hợp đầy đủ: [`@custos/core`](https://www.npmjs.com/package/@custos/core).
+Tài liệu tích hợp đầy đủ: [`@custos-solana/core`](https://www.npmjs.com/package/@custos-solana/core).
 
 MIT

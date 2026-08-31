@@ -1,5 +1,5 @@
 {
-  "name": "@custos/ai",
+  "name": "@custos-solana/ai",
   "version": "0.1.0",
   "type": "module",
   "main": "./src/index.ts",
@@ -8,8 +8,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@custos/core": "^0.1.0",
-    "@custos/types": "^0.1.0"
+    "@custos-solana/core": "^0.1.0",
+    "@custos-solana/types": "^0.1.0"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.120.0"

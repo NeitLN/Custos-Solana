@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { InspectResult, DiffEntry } from "@custos/types";
+import type { InspectResult, DiffEntry } from "@custos-solana/types";
 import { dungHauQua } from "../src/index.ts";
-import { NHAN } from "@custos/core";
+import { NHAN } from "@custos-solana/core";
 
 /**
  * MÀN "NẾU BẠN KÝ MÀ KHÔNG CÓ CUSTOS".
