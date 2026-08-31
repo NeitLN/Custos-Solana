@@ -136,13 +136,17 @@ sai về mức độ hoàn thiện bị trừ điểm hoặc loại*.
 
 ### Việc
 
-| # | Việc | Ai |
-|---|---|---|
-| 3.1 | Kiểm scope `@custos` trên npm còn trống không | nhóm |
-| 3.2 | Tạo tài khoản npm + `npm login` | **Bạn** — nhóm không có credential |
-| 3.3 | Bỏ `private: true`, thêm `publishConfig.access: "public"` cho 3 gói lib | nhóm |
-| 3.4 | `npm publish` theo thứ tự `types` → `core` → `ai` | nhóm, sau khi bạn login |
-| 3.5 | Thử cài từ máy sạch: `npm i @custos/core` trong thư mục trống | nhóm |
+| # | Việc | Ai | Xong |
+|---|---|---|---|
+| 3.1 | Kiểm tên gói còn trống | nhóm | ✅ cả 5 phương án đều trống |
+| 3.2 | Bỏ `private`, thêm `license`/`description`/`repository`/`keywords` | nhóm | ✅ |
+| 3.3 | `publishConfig.access: "public"` — thiếu là lỗi 402 với tài khoản free | nhóm | ✅ |
+| 3.4 | LICENSE + README cho từng gói | nhóm | ✅ MIT, README riêng cho `types` và `ai` |
+| 3.5 | Kiểm bằng `npm publish --dry-run` (áp `publishConfig` thật, khác `npm pack`) | nhóm | ✅ 9 / 51 / 27 file |
+| 3.6 | Cài tarball vào project sạch ngoài repo, chạy `inspect()` thật | nhóm | ✅ JS thuần, không TypeScript |
+| **3.7** | **`npm login` + tạo org `custos`** | **Bạn** | ☐ |
+| 3.8 | `npm run publish-sdk` | nhóm, sau khi bạn login | ☐ |
+| 3.9 | Đổi hướng dẫn cài trong `packages/core/README.md` từ tarball sang `npm i` | nhóm, **sau** khi publish thật | ☐ |
 
 > **Thứ tự bắt buộc.** `core` phụ thuộc `types`; publish ngược thứ tự là gãy.
 
@@ -200,7 +204,7 @@ Phase dễ quên nhất, và là phase **biến code thành điểm**. Code khô
 | 0 · Ranh giới | — | — | ✅ xong |
 | 1 · Trang soi mainnet | **31/08 22:00** | **Quá giờ → bỏ hết** | ◐ nháp `Soi.tsx` xong |
 | 2 · Trung thực & lỗi | 31/08 23:00 | Quá giờ → bỏ Phase 1 luôn | ☐ |
-| 3 · npm publish | 31/08 chiều | Không tạo được org → đổi tên gói | ◐ tài khoản đã có |
+| 3 · npm publish | 31/08 chiều | Không tạo được org → đổi tên gói | ◐ **chỉ còn chờ `npm login`** |
 | 4 · Nghiệm thu + vào bài | 02/09 | **Không qua → không merge** | ☐ |
 
 ---

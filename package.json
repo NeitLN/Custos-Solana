@@ -16,7 +16,9 @@
     "hien-truong": "node --experimental-strip-types scripts/dung-hien-truong.ts",
     "vi": "npm run dev -w @custos/demo-wallet",
     "tan-cong": "npm run dev -w @custos/trang-tan-cong",
-    "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site"
+    "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site",
+    "publish-sdk": "npm publish -w @custos/types && npm publish -w @custos/core && npm publish -w @custos/ai",
+    "thu-publish": "npm publish --dry-run -w @custos/types && npm publish --dry-run -w @custos/core && npm publish --dry-run -w @custos/ai"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
@@ -25,5 +27,6 @@
   "dependencies": {
     "@solana/spl-token": "^0.4.15",
     "@solana/web3.js": "^1.98.4"
-  }
+  },
+  "license": "MIT"
 }
