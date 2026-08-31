@@ -1,7 +1,6 @@
 {
   "name": "@custos/types",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -11,7 +10,8 @@
   "files": [
     "dist",
     "src",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -25,6 +25,29 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       }
-    }
-  }
+    },
+    "access": "public"
+  },
+  "description": "Kiểu dữ liệu dùng chung cho Custos — SDK phân tích giao dịch Solana trước khi ký.",
+  "license": "MIT",
+  "author": "Team Too Hard",
+  "homepage": "https://github.com/NeitLN/Custos-Solana#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeitLN/Custos-Solana.git",
+    "directory": "packages/types"
+  },
+  "bugs": {
+    "url": "https://github.com/NeitLN/Custos-Solana/issues"
+  },
+  "keywords": [
+    "solana",
+    "wallet",
+    "security",
+    "transaction",
+    "simulation",
+    "web3",
+    "sdk",
+    "custos"
+  ]
 }
