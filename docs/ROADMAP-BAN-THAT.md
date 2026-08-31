@@ -144,9 +144,10 @@ sai về mức độ hoàn thiện bị trừ điểm hoặc loại*.
 | 3.4 | LICENSE + README cho từng gói | Claude | ✅ MIT, README riêng cho `types` và `ai` |
 | 3.5 | Kiểm bằng `npm publish --dry-run` (áp `publishConfig` thật, khác `npm pack`) | Claude | ✅ 9 / 51 / 27 file |
 | 3.6 | Cài tarball vào project sạch ngoài repo, chạy `inspect()` thật | Claude | ✅ JS thuần, không TypeScript |
-| **3.7** | **`npm login` + tạo org `custos`** | **Bạn** | ☐ |
-| 3.8 | `npm run publish-sdk` | Claude, sau khi bạn login | ☐ |
-| 3.9 | Đổi hướng dẫn cài trong `packages/core/README.md` từ tarball sang `npm i` | Claude, **sau** khi publish thật | ☐ |
+| 3.7 | `npm login` + tạo org | Bạn | ✅ org `custos-solana` (tên `custos` đã có chủ) |
+| 3.8 | `npm run publish-sdk` | Bạn (npm bắt 2FA) | ✅ **0.1.1 đã lên, cài từ npm chạy được** |
+| 3.9 | Đổi hướng dẫn cài sang `npm i` | Claude | ✅ |
+| **3.10** | **`npm deprecate` ba bản `0.1.0` hỏng** | **Bạn** (cần OTP) | ☐ |
 
 > **Thứ tự bắt buộc.** `core` phụ thuộc `types`; publish ngược thứ tự là gãy.
 
@@ -202,9 +203,9 @@ Phase dễ quên nhất, và là phase **biến code thành điểm**. Code khô
 | Phase | Hạn | Cổng dừng | Trạng thái |
 |---|---|---|---|
 | 0 · Ranh giới | — | — | ✅ xong |
-| 1 · Trang soi mainnet | **31/08 22:00** | **Quá giờ → bỏ hết** | ◐ nháp `Soi.tsx` xong |
-| 2 · Trung thực & lỗi | 31/08 23:00 | Quá giờ → bỏ Phase 1 luôn | ☐ |
-| 3 · npm publish | 31/08 chiều | Không tạo được org → đổi tên gói | ◐ **chỉ còn chờ `npm login`** |
+| 1 · Trang soi mainnet | **31/08 22:00** | — | ✅ xong, 6/6 kiểm trong trình duyệt |
+| 2 · Trung thực & lỗi | 31/08 | — | ✅ xong cùng Phase 1 |
+| 3 · npm publish | 31/08 | — | ✅ **xong**, còn mỗi deprecate 0.1.0 |
 | 4 · Nghiệm thu + vào bài | 02/09 | **Không qua → không merge** | ☐ |
 
 ---
