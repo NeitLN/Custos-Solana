@@ -8,25 +8,34 @@ Lớp phân tích giao dịch: mô phỏng giao dịch **trước khi người d
 
 ## Cài đặt
 
-Ba gói chưa lên npm registry công khai. Đóng gói tarball từ repo:
+```bash
+npm install @custos-solana/core @custos-solana/ai
+```
+
+Chạy được bằng `node` thường, không cần cờ nào — gói đã publish chứa `.js` và `.d.ts`
+biên dịch sẵn.
+
+> **Đừng dùng `0.1.0`.** Bản đó lên registry với `main` trỏ vào TypeScript nguồn nên
+> không cài được từ JavaScript. Đã đánh dấu deprecated. Dùng **`0.1.1`** trở lên.
+
+`@custos-solana/types` được kéo theo tự động; chỉ cài riêng khi bạn cần gõ kiểu mà
+không dùng tới engine.
+
+### Dựng tarball từ nguồn
+
+Cần bản chưa publish, hoặc muốn kiểm bằng mã nguồn trước mắt:
 
 ```bash
 git clone https://github.com/NeitLN/Custos-Solana && cd Custos-Solana
 npm ci
 node scripts/dong-goi-sdk.mjs goi-sdk
-```
-
-Rồi cài vào project của bạn:
-
-```bash
 npm install /duong-dan/Custos-Solana/goi-sdk/*.tgz
 ```
 
-Chạy được bằng `node` thường, không cần cờ nào — tarball chứa `.js` và `.d.ts` đã biên dịch.
-
 > Trong repo, `exports` của ba gói trỏ thẳng vào `.ts` để vòng lặp dev không có bước
 > build. Người ngoài không dùng được cách đó — Node từ chối bóc kiểu TypeScript cho file
-> trong `node_modules` — nên tarball là đường tích hợp chính thức.
+> trong `node_modules`. Vì vậy cả tarball lẫn gói trên npm đều được dựng từ một thư mục
+> dàn có `package.json` viết lại trỏ `dist`; xem đầu `scripts/dong-goi-sdk.mjs`.
 
 ---
 
