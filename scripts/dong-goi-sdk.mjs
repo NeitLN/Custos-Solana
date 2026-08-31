@@ -83,10 +83,28 @@ for (const g of GOI) {
   p.files = ["dist", "README.md", "LICENSE"];
   writeFileSync(join(dan, "package.json"), JSON.stringify(p, null, 2) + "\n");
 
-  // 3. Pack từ thư mục dàn.
-  const ra = chay(npm, ["pack", "--pack-destination", DICH], dan);
-  console.log("✓", ra.trim().split("\n").pop());
+  // 3. Pack — hoặc publish — từ thư mục dàn.
+  if (DAY_LEN) {
+    // `--access public` trên dòng lệnh chứ không qua `publishConfig`: gói có scope
+    // mặc định bị coi là riêng tư, và tài khoản miễn phí sẽ ăn lỗi 402.
+    //
+    // stdio "inherit" là BẮT BUỘC — npm hỏi mã 2FA và người dùng phải gõ được vào.
+    console.log(`
+→ publish ${p.name}@${p.version}`);
+    execFileSync(npm, ["publish", "--access", "public"], {
+      cwd: dan,
+      stdio: "inherit",
+      shell: process.platform === "win32",
+    });
+  } else {
+    const ra = chay(npm, ["pack", "--pack-destination", DICH], dan);
+    console.log("✓", ra.trim().split("\n").pop());
+  }
 }
 
-console.log(`\nBa tarball nằm ở: ${DICH}`);
-console.log("Cài vào một project bất kỳ:  npm install <thư-mục>/*.tgz");
+if (DAY_LEN) {
+  console.log("\n✓ Đã publish cả ba gói lên registry.");
+} else {
+  console.log(`\nBa tarball nằm ở: ${DICH}`);
+  console.log("Cài vào một project bất kỳ:  npm install <thư-mục>/*.tgz");
+}
