@@ -32,3 +32,6 @@ Thumbs.db
 
 # Bản build của gói SDK — sinh ra bởi `npm pack`, không commit.
 packages/*/dist/
+
+# Tarball SDK do `scripts/dong-goi-sdk.mjs` sinh ra — dựng lại được, không commit.
+goi-sdk/
