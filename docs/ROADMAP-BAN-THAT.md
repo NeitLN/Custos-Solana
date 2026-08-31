@@ -1,6 +1,7 @@
 # Roadmap "demo → bản thật" — 5 ngày cuối
 
-**Lập 30/08/2026.** Hạn nộp tự đặt **04/09**, thi **05/09 08:00**.
+**Lập 31/08/2026** *(bản đầu ghi nhầm 30/08 — đã sửa, và nó làm mất một ngày đệm).*
+Hạn nộp tự đặt **04/09**, thi **05/09 08:00**. **Còn 4 ngày.**
 Phạm vi đã chốt: **Mức 1 + Mức 2**. Mức 3 (cắm Phantom) và Mức 4 (khách hàng thật) **loại**.
 
 ---
@@ -25,21 +26,27 @@ Từ đó ra ba luật không được vi phạm:
 ## Sơ đồ thời gian
 
 ```
-30/08 tối   ├── Phase 0  ranh giới an toàn        (30 phút)
-            ├── Phase 1  trang soi mainnet chạy   (2–3 tiếng)   ← CỔNG DỪNG 23:30
+31/08 chiều ├── Phase 0  ranh giới an toàn        ✅ xong
+            ├── Phase 3  publish npm              (30 phút)   ← chạy trước, cần bạn
+            ├── Phase 1  trang soi mainnet chạy   (2–3 tiếng) ← CỔNG DỪNG 22:00
             └── Phase 2  trung thực & lỗi         (1 tiếng)
 
-31/08       ├── Phase 3  publish npm              (30 phút)     ← cần tài khoản npm
-            └──── QUAY VIDEO ────  ưu tiên tuyệt đối, không build gì thêm
+31/08 tối   └──── QUAY VIDEO ────  ưu tiên tuyệt đối, không build gì thêm
 
-01–02/09    └── Phase 4  nghiệm thu + đưa vào bài (2 tiếng)     ← CỔNG MERGE
+01–02/09    └── Phase 4  nghiệm thu + đưa vào bài (2 tiếng)   ← CỔNG MERGE
 
 03/09       tập pitch · KHÔNG BUILD
 04/09       nộp · đóng băng code
 05/09       thi
 ```
 
-**Nếu 31/08 sáng Phase 1 chưa xong:** bỏ hết, quay lại `main`, quay video. Không thương lượng.
+> **Phase 3 lên trước Phase 1.** Nó chỉ 30 phút, không phụ thuộc gì, và phần việc của
+> bạn (tạo org + `npm login`) chạy song song được với phần việc của Claude. Xếp sau
+> thì nó thành thứ bị cắt khi hết giờ, dù nó rẻ nhất.
+
+**VIDEO LÀ VIỆC CỦA HÔM NAY.** Nếu 22:00 Phase 1 chưa xong: `git checkout main`, quay
+video, bỏ hết phần còn lại. Không thương lượng — video là thứ **bắt buộc nộp**, trang
+soi mainnet thì không.
 
 ---
 
@@ -92,7 +99,7 @@ không phải phát minh gì mới.
 | Giao dịch quá cũ, node đã cắt lịch sử | Đã có nhánh xử lý `tx === null` với câu tiếng Việt |
 | Bundle phình vì thêm web3.js vào trang mới | Đo `dist/` trước–sau. Trang mới tách chunk riêng, không ảnh hưởng `/` |
 
-**CỔNG DỪNG: 23:30 ngày 30/08.** Chưa qua 4 ô tiêu chí thì dừng, để nhánh đó đấy, ngủ.
+**CỔNG DỪNG: 22:00 ngày 31/08.** Chưa qua 4 ô tiêu chí thì dừng, để nhánh đó đấy, đi quay video.
 
 ---
 
@@ -146,7 +153,7 @@ sai về mức độ hoàn thiện bị trừ điểm hoặc loại*.
 
 ### Cổng bỏ qua
 
-Không có tài khoản npm trước trưa 31/08 → **bỏ Phase 3**. Câu *"SDK cài được"* vẫn
+Không tạo được org `custos` → **đổi sang tên không scope `custos-solana`** (đã kiểm: còn trống). Vẫn bí thì bỏ Phase 3. Câu *"SDK cài được"* vẫn
 đúng nhờ tarball đã test thật; chỉ là không nói được *"một dòng"*.
 
 ---
@@ -190,10 +197,10 @@ Phase dễ quên nhất, và là phase **biến code thành điểm**. Code khô
 
 | Phase | Hạn | Cổng dừng | Trạng thái |
 |---|---|---|---|
-| 0 · Ranh giới | 30/08 21:00 | — | ☐ |
-| 1 · Trang soi mainnet | 30/08 23:30 | **Quá giờ → bỏ hết** | ◐ nháp `Soi.tsx` xong |
-| 2 · Trung thực & lỗi | 31/08 sáng | Quá giờ → bỏ Phase 1 luôn | ☐ |
-| 3 · npm publish | 31/08 trưa | Không có tài khoản → bỏ | ☐ |
+| 0 · Ranh giới | — | — | ✅ xong |
+| 1 · Trang soi mainnet | **31/08 22:00** | **Quá giờ → bỏ hết** | ◐ nháp `Soi.tsx` xong |
+| 2 · Trung thực & lỗi | 31/08 23:00 | Quá giờ → bỏ Phase 1 luôn | ☐ |
+| 3 · npm publish | 31/08 chiều | Không tạo được org → đổi tên gói | ◐ tài khoản đã có |
 | 4 · Nghiệm thu + vào bài | 02/09 | **Không qua → không merge** | ☐ |
 
 ---
