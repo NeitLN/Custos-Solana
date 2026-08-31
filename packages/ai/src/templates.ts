@@ -1,5 +1,5 @@
-import type { Facts } from "@custos/core";
-import { REASON, dinhDangSo, tinhSolNguoiDung } from "@custos/core";
+import type { Facts } from "@custos-solana/core";
+import { REASON, dinhDangSo, tinhSolNguoiDung } from "@custos-solana/core";
 
 /**
  * CÂU MẪU CỨNG — bản dự phòng khi mô hình hỏng, quá hạn, hoặc mất mạng.

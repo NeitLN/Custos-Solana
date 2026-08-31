@@ -1,5 +1,5 @@
 {
-  "name": "@custos/demo-wallet",
+  "name": "@custos-solana/demo-wallet",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@custos/core": "*",
-    "@custos/ai": "*",
-    "@custos/types": "*",
+    "@custos-solana/core": "*",
+    "@custos-solana/ai": "*",
+    "@custos-solana/types": "*",
     "@solana/web3.js": "^1",
     "@solana/spl-token": "^0.4",
     "react": "^19",

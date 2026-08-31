@@ -1,5 +1,5 @@
-import type { Interpreter, Facts } from "@custos/core";
-import type { AiAdvisory } from "@custos/types";
+import type { Interpreter, Facts } from "@custos-solana/core";
+import type { AiAdvisory } from "@custos-solana/types";
 import { dienGiaiMau } from "./templates.ts";
 import { nhanDien, moTaHanhDong, moTaLech } from "./nhanDien.ts";
 

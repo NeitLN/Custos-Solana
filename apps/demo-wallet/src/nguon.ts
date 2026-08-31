@@ -1,4 +1,4 @@
-import type { InspectResult } from "@custos/types";
+import type { InspectResult } from "@custos-solana/types";
 
 /**
  * CHỐT CHẶN CHỐNG MOCK LỌT VÀO DEMO.

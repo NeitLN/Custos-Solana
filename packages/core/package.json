@@ -1,5 +1,5 @@
 {
-  "name": "@custos/core",
+  "name": "@custos-solana/core",
   "version": "0.1.0",
   "type": "module",
   "main": "./src/index.ts",
@@ -8,7 +8,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@custos/types": "^0.1.0",
+    "@custos-solana/types": "^0.1.0",
     "@solana/web3.js": "^1",
     "@solana/spl-token": "^0.4"
   },

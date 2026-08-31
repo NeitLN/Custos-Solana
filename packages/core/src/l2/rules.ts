@@ -1,4 +1,4 @@
-import type { Level } from "@custos/types";
+import type { Level } from "@custos-solana/types";
 import type { Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";

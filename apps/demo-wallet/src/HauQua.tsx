@@ -1,5 +1,5 @@
-import type { InspectResult } from "@custos/types";
-import { dungHauQua } from "@custos/ai";
+import type { InspectResult } from "@custos-solana/types";
+import { dungHauQua } from "@custos-solana/ai";
 
 /**
  * MÀN "NẾU BẠN KÝ MÀ KHÔNG CÓ CUSTOS" — nhịp 1 của kịch bản demo, dựng lại mà

@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
-import { inspect, REASON } from "@custos/core";
-import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
-import type { InspectResult } from "@custos/types";
+import { inspect, REASON } from "@custos-solana/core";
+import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
+import type { InspectResult } from "@custos-solana/types";
 import { CanhBao } from "./CanhBao.tsx";
 
 /**
@@ -129,7 +129,7 @@ async function layGiaoDichMoi(rpc: string): Promise<string> {
  * blocked" từ **20 địa chỉ trở lên**. Đo trong trình duyệt: 5 và 10 qua, 20/30/50/100
  * đều bị chặn.
  *
- * VÌ SAO VÁ Ở ĐÂY CHỨ KHÔNG SỬA CORE. Trần 100 của `@custos/core` là đúng với giao
+ * VÌ SAO VÁ Ở ĐÂY CHỨ KHÔNG SỬA CORE. Trần 100 của `@custos-solana/core` là đúng với giao
  * thức và đúng với endpoint mà một ví thật sẽ dùng. Hạ nó xuống 10 cho cả SDK là
  * trừng phạt mọi người dùng vì giới hạn của một endpoint miễn phí. Đây là chuyện của
  * riêng trang này, nên nó ở lại trang này.

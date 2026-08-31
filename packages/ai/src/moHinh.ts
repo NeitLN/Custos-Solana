@@ -1,5 +1,5 @@
-import { kyHieuAnToan, dinhDangSo, type Interpreter, type Facts } from "@custos/core";
-import type { AiAdvisory, PrimaryAction } from "@custos/types";
+import { kyHieuAnToan, dinhDangSo, type Interpreter, type Facts } from "@custos-solana/core";
+import type { AiAdvisory, PrimaryAction } from "@custos-solana/types";
 import { dienGiaiKhongAI } from "./index.ts";
 import { nhanDien } from "./nhanDien.ts";
 

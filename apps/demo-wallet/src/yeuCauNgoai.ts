@@ -1,5 +1,5 @@
 import { VersionedTransaction } from "@solana/web3.js";
-import type { PrimaryAction } from "@custos/types";
+import type { PrimaryAction } from "@custos-solana/types";
 
 export type YeuCauNgoai = {
   tx: VersionedTransaction;

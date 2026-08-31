@@ -33,8 +33,8 @@ Chạy được bằng `node` thường, không cần cờ nào — tarball ch�
 ## Tích hợp — một lần gọi
 
 ```ts
-import { inspect } from "@custos/core";
-import { dienGiaiKhongAI, boiThoiHan } from "@custos/ai";
+import { inspect } from "@custos-solana/core";
+import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 
 const ketQua = await inspect(
   { connection, interpret: boiThoiHan(dienGiaiKhongAI) },
@@ -111,7 +111,7 @@ type InspectResult = {
 ### Hai loại `warning` rất khác nhau
 
 ```ts
-import { chiLaThongTin } from "@custos/core";
+import { chiLaThongTin } from "@custos-solana/core";
 
 const chiLaChuaHieu =
   ketQua.level === "warning" &&
@@ -189,8 +189,8 @@ Custos **không nhúng SDK của nhà cung cấp nào và không giữ khoá API
 tiền thế nào:
 
 ```ts
-import { inspect } from "@custos/core";
-import { dienGiaiBangMoHinh, boiThoiHan } from "@custos/ai";
+import { inspect } from "@custos-solana/core";
+import { dienGiaiBangMoHinh, boiThoiHan } from "@custos-solana/ai";
 
 const interpret = boiThoiHan(
   dienGiaiBangMoHinh(async ({ system, user }) => {

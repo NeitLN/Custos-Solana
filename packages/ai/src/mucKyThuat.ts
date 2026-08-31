@@ -1,4 +1,4 @@
-import type { InspectResult } from "@custos/types";
+import type { InspectResult } from "@custos-solana/types";
 
 /**
  * MỨC 3 — KỸ THUẬT. `DAC-TA-L3.md` mục 6.

@@ -1,6 +1,6 @@
-import type { InspectResult } from "@custos/types";
-import { chiLaThongTin } from "@custos/core";
-import { tomTat, chiTietKyThuat } from "@custos/ai";
+import type { InspectResult } from "@custos-solana/types";
+import { chiLaThongTin } from "@custos-solana/core";
+import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
 import { useState } from "react";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —

@@ -184,19 +184,19 @@ Affected files:    packages/core/package.json · packages/ai/package.json
 
 ```bash
 mkdir vi-thu && cd vi-thu && npm init -y
-npm install @custos/core
+npm install @custos-solana/core
 # npm error code E404 — 404 Not Found - GET https://registry.npmjs.org/@custos%2fcore
 
 npm install --install-links file:<repo>/packages/core
-# npm error 404  '@custos/types@*' could not be found
+# npm error 404  '@custos-solana/types@*' could not be found
 ```
 
 **Root cause — ĐÃ SỬA LẠI sau khi test tái hiện bác bỏ giả thuyết đầu.**
 
-> Vòng đầu tôi ghi root cause là *"`@custos/types@*` chưa publish nên E404"*. **Sai.**
+> Vòng đầu tôi ghi root cause là *"`@custos-solana/types@*` chưa publish nên E404"*. **Sai.**
 > Test tái hiện cho thấy `npm pack` cả ba gói rồi cài **cùng một lượt** thì npm giải
-> được `@custos/types@*` từ tarball đồng cấp — 77 gói, không lỗi. E404 ban đầu chỉ vì
-> tôi cài **mỗi** `@custos/core`. Ghi lại đây thay vì sửa lặng lẽ: đó chính là lỗi
+> được `@custos-solana/types@*` từ tarball đồng cấp — 77 gói, không lỗi. E404 ban đầu chỉ vì
+> tôi cài **mỗi** `@custos-solana/core`. Ghi lại đây thay vì sửa lặng lẽ: đó chính là lỗi
 > "kết luận trước khi tái hiện" mà quy trình review này sinh ra để chặn.
 
 Root cause thật:
@@ -212,7 +212,7 @@ giới hạn của Node, không phải cấu hình sai. Không runtime nào tiê
 Phụ: version `0.0.0`, `private: true`, không `files`, không bước build.
 
 **Ảnh hưởng.** `packages/core/README.md` mở đầu bằng đoạn `import { inspect } from
-"@custos/core"` và **không có bước cài đặt nào**. Một đội ví làm đúng tài liệu sẽ dừng ở
+"@custos-solana/core"` và **không có bước cài đặt nào**. Một đội ví làm đúng tài liệu sẽ dừng ở
 dòng lệnh đầu tiên. Kết luận bắt buộc của vai này:
 
 > **Chưa đạt technical pilot.** Không phải "chưa production" — mà là **bên thứ ba hiện

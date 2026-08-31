@@ -1,7 +1,7 @@
 import type { GoiMoHinh } from "./moHinh.ts";
 
 /**
- * Adapter GỌI THẬT tới Anthropic — file DUY NHẤT trong `@custos/ai` biết tên
+ * Adapter GỌI THẬT tới Anthropic — file DUY NHẤT trong `@custos-solana/ai` biết tên
  * một nhà cung cấp mô hình cụ thể.
  *
  * Ranh giới đã khoá: Custos không nhúng SDK nhà cung cấp nào vào LÕI. File này
@@ -41,7 +41,7 @@ export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
   }
 
   return async ({ system, user }) => {
-    // Import động: chỉ tải SDK khi thực sự gọi, để phần còn lại của @custos/ai
+    // Import động: chỉ tải SDK khi thực sự gọi, để phần còn lại của @custos-solana/ai
     // không kéo theo phụ thuộc này nếu bên tích hợp không dùng adapter này.
     const { default: Anthropic } = await import("@anthropic-ai/sdk");
     const client = new Anthropic({ apiKey });

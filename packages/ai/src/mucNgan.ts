@@ -1,5 +1,5 @@
-import type { InspectResult } from "@custos/types";
-import { NHAN, chiLaThongTin } from "@custos/core";
+import type { InspectResult } from "@custos-solana/types";
+import { NHAN, chiLaThongTin } from "@custos-solana/core";
 
 /**
  * MỨC 1 — NGẮN. `DAC-TA-L3.md` mục 6.
