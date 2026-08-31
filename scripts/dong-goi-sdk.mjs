@@ -13,21 +13,29 @@
  *   cho file nằm trong `node_modules` — `ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`.
  *   Đây là giới hạn của Node, không phải cấu hình sai.
  *
- *   `publishConfig` không cứu được: npm chỉ áp nó khi `npm publish`, không áp khi
- *   `npm pack` (đã thử, `exports` trong tarball vẫn là `.ts`).
+ *   `publishConfig` KHÔNG cứu được, và điều này đã phải học hai lần:
+ *
+ *     - lần 1: npm chỉ áp nó khi `npm publish`, không áp khi `npm pack`.
+ *     - lần 2, đắt hơn: npm đã BỎ HỖ TRỢ `publishConfig.main/types/exports` hoàn
+ *       toàn. Nó chỉ in `npm warn Unknown publishConfig config "main"` rồi lờ đi.
+ *       Ba gói 0.1.0 đã lên registry với `main: "./src/index.ts"` — tức là hỏng với
+ *       mọi người cài bằng JavaScript. Và npm không cho publish đè một bản đã có.
  *
  * Nên: build ra `dist`, chép package.json sang THƯ MỤC DÀN với `exports` trỏ `dist`,
- * rồi pack từ đó. Repo không bị sửa, luồng dev không đổi một dòng nào.
+ * rồi pack — hoặc publish — TỪ ĐÓ. Repo không bị sửa, luồng dev không đổi một dòng.
  *
- * KHÔNG publish lên registry. Publish là hành động đối ngoại không hoàn tác được —
- * người dùng tự quyết định và tự chạy.
+ *   node scripts/dong-goi-sdk.mjs --publish
+ *
+ * Publish là hành động đối ngoại không hoàn tác được, nên nó KHÔNG phải mặc định:
+ * phải gõ cờ, và npm sẽ hỏi mã 2FA của chính chủ tài khoản.
  */
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const GOI = ["types", "core", "ai"];
-const DICH = resolve(process.argv[2] ?? "goi-sdk");
+const DAY_LEN = process.argv.includes("--publish");
+const DICH = resolve(process.argv.filter((a) => a !== "--publish")[2] ?? "goi-sdk");
 const DAN = resolve("node_modules/.dan-sdk");
 
 rmSync(DICH, { recursive: true, force: true });
@@ -57,10 +65,12 @@ for (const g of GOI) {
   const dan = join(DAN, g);
   mkdirSync(dan, { recursive: true });
   cpSync(join(nguon, "dist"), join(dan, "dist"), { recursive: true });
-  try {
-    cpSync(join(nguon, "README.md"), join(dan, "README.md"));
-  } catch {
-    /* không phải gói nào cũng có README */
+  for (const f of ["README.md", "LICENSE"]) {
+    try {
+      cpSync(join(nguon, f), join(dan, f));
+    } catch {
+      /* thiếu file nào thì bỏ qua file đó, không chặn cả lượt đóng gói */
+    }
   }
 
   const p = JSON.parse(readFileSync(join(nguon, "package.json"), "utf8"));
@@ -70,7 +80,7 @@ for (const g of GOI) {
   p.main = "./dist/index.js";
   p.types = "./dist/index.d.ts";
   p.exports = { ".": { types: "./dist/index.d.ts", default: "./dist/index.js" } };
-  p.files = ["dist", "README.md"];
+  p.files = ["dist", "README.md", "LICENSE"];
   writeFileSync(join(dan, "package.json"), JSON.stringify(p, null, 2) + "\n");
 
   // 3. Pack từ thư mục dàn.
