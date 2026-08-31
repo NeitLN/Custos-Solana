@@ -88,11 +88,31 @@ export function dungBangChenhLech(
   kyHieu?: Record<string, string>,
 ): DiffEntry[] {
   const out: DiffEntry[] = [];
+
+  // MÔ PHỎNG HỎNG THÌ KHÔNG CÓ TRẠNG THÁI "SAU".
+  //
+  // Không có vế này, mọi giá trị `*After` rơi về mặc định 0 và bảng chênh lệch tuyên
+  // bố "551 SOL -> 0" cho một giao dịch mà ta CHƯA HỀ đo được hậu quả. Đó là khẳng
+  // định một điều không biết, và nó khẳng định đúng điều đáng sợ nhất.
+  //
+  // Bắt được khi dựng trang soi giao dịch mainnet: mô phỏng lại một giao dịch đã thực
+  // thi thì hỏng khoảng một nửa số lần, và mỗi lần như vậy Custos lại báo người dùng
+  // sắp mất sạch ví.
+  //
+  // CHẶN ĐÚNG PHẠM VI, KHÔNG CHẶN CẢ BẢNG. Bản vá đầu tiên của tôi `return out` ngay
+  // tại đây — và nó xoá luôn dòng "Phần chưa đọc được", dòng TRUNG THỰC và là dòng
+  // hữu ích nhất đúng lúc mô phỏng hỏng. Chỉ những dòng suy ra từ trạng thái SAU mới
+  // phải im: số dư token, quyền sở hữu, chủ chương trình, số dư SOL, tiền đặt cọc.
+  //
+  // Quyết định thiết kế đã khoá số 7: bảng chênh lệch hiển thị ĐÚNG những gì giao
+  // dịch làm, không hơn — và cũng không ít hơn.
+  const doDuocHauQua = facts.simulationOk;
+
   const decimalsCua = new Map(facts.mints.map((m) => [m.address, m.decimals]));
   const kyHieuChuoi = new Map(facts.mints.map((m) => [m.address, m.kyHieu ?? null]));
   const coHitO = (chuoi: string) => hits.some((h) => h.detail.includes(chuoi));
 
-  for (const t of facts.tokenAccounts) {
+  for (const t of doDuocHauQua ? facts.tokenAccounts : []) {
     if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
     // wSOL đã nằm trong dòng "Số dư SOL của bạn" — hiện thêm ở đây là đếm hai lần.
     if (t.mint === WSOL_MINT) continue;
@@ -152,7 +172,7 @@ export function dungBangChenhLech(
     }
   }
 
-  for (const a of facts.accounts) {
+  for (const a of doDuocHauQua ? facts.accounts : []) {
     if (a.programOwnerBefore === null || a.programOwnerAfter === null) continue;
     if (a.programOwnerBefore === a.programOwnerAfter) continue;
     out.push({
@@ -176,7 +196,7 @@ export function dungBangChenhLech(
   const sol = tinhSolNguoiDung(facts);
   const phi = facts.phiUocTinh ?? 0n;
 
-  if (sol.roi !== 0n && (sol.roi > phi || sol.roi < 0n)) {
+  if (doDuocHauQua && sol.roi !== 0n && (sol.roi > phi || sol.roi < 0n)) {
     // Màu lấy THẲNG từ việc luật 13 có kích hoạt hay không, không dò chuỗi.
     // Trước đây màu của dòng token dò theo `coHitO(địa chỉ)`, mà luật 13 nói về
     // SOL của người dùng chứ không nhắc địa chỉ tài khoản nào — nên dòng wSOL
@@ -193,7 +213,7 @@ export function dungBangChenhLech(
   // Đặt cọc KHÔNG phải mất tiền — nói ra để người dùng không hoảng khi thấy số
   // dư SOL tụt xuống vì tạo vài tài khoản token.
   const datCoc = tinhTienDatCoc(facts);
-  if (datCoc > 0n) {
+  if (doDuocHauQua && datCoc > 0n) {
     out.push({
       label: NHAN.DAT_COC,
       before: "—",
