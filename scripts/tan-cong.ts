@@ -91,4 +91,48 @@ export function dungGiaoDichLanhTinh(p: Omit<ThamSoTanCong, "keTanCong"> & { ban
   );
 }
 
+export type ThamSoTanCongSol = {
+  nanNhan: PublicKey;
+  keTanCong: PublicKey;
+  /** Số lamport rút đi. */
+  soLamport: bigint;
+  blockhash: string;
+};
+
+/**
+ * Bản MAINNET của giao dịch tấn công: rút SOL thật.
+ *
+ * VÌ SAO RIÊNG MỘT HÀM. Bản token ở trên cần một mint — trên devnet đội tự mint
+ * USDC-demo. Mainnet không mint token giả được, nên bản thật rút SOL native. Custos
+ * bắt bằng luật 13 (SOL rời ví), không phải luật token.
+ *
+ * TRUNG THỰC (quyết định 7): hàm chỉ chứa đúng một Memo "vô hại" và một
+ * SystemProgram.transfer. Bảng chênh lệch sẽ hiện SOL rời ví đúng bằng số thật
+ * chuyển đi — không thêm SetAuthority (SOL native không có tài khoản để đoạt quyền).
+ *
+ * Memo đứng trước làm lệnh Custos cố ý không decode được, để coverage khuyết một
+ * cách trung thực — y như bản token.
+ */
+export function dungGiaoDichTanCongSol(p: ThamSoTanCongSol): VersionedTransaction {
+  const lenh: TransactionInstruction[] = [
+    new TransactionInstruction({
+      keys: [],
+      programId: MEMO_PROGRAM,
+      data: Buffer.from("nhan qua tang", "utf8"),
+    }),
+    SystemProgram.transfer({
+      fromPubkey: p.nanNhan,
+      toPubkey: p.keTanCong,
+      lamports: p.soLamport,
+    }),
+  ];
+  return new VersionedTransaction(
+    new TransactionMessage({
+      payerKey: p.nanNhan,
+      recentBlockhash: p.blockhash,
+      instructions: lenh,
+    }).compileToV0Message(),
+  );
+}
+
 export { Keypair, SystemProgram };

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { Connection, LAMPORTS_PER_SOL, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
-import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
+import { dungGiaoDichTanCong, dungGiaoDichLanhTinh, dungGiaoDichTanCongSol } from "../../../scripts/tan-cong.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
@@ -50,17 +50,24 @@ export default function App() {
     daXuLyYeuCau.current = true;
     setTuDApp(yc.khai ? `dApp khai đây là: ${yc.khai.type}` : "dApp không khai gì");
     setDangChay(true);
-    const c = new Connection("https://api.devnet.solana.com", "confirmed");
     // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
     // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
     // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
+    //
+    // RPC lấy từ hiện trường qua `chonRpc`, KHÔNG hardcode devnet nữa: chế độ thật
+    // (`?that=1`) chạy mainnet, và một endpoint devnet cứng ở đây thì mọi mô phỏng
+    // trên mainnet đều hỏng.
     void docHienTruong().then((htNay) =>
-      inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, yc.tx, {
-        locale: "vi",
-        ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
-        ...(yc.khai ? { expectedAction: yc.khai } : {}),
-        ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
-      }),
+      inspect(
+        { connection: new Connection(chonRpc(htNay), "confirmed"), interpret: boiThoiHan(dienGiaiKhongAI) },
+        yc.tx,
+        {
+          locale: "vi",
+          ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
+          ...(yc.khai ? { expectedAction: yc.khai } : {}),
+          ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
+        },
+      ),
     )
       .then((r) => {
         ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
@@ -75,8 +82,14 @@ export default function App() {
   const doSoDu = useCallback(async () => {
     if (!ht) return;
     try {
-      const b = await conn().getTokenAccountBalance(new PublicKey(ht.taiKhoanNanNhan));
-      setSoDuToken(b.value.uiAmountString ?? "0");
+      if (ht.loai === "sol") {
+        // Hiện trường mainnet: hiện SỐ DƯ SOL THẬT của ví, không có token account.
+        const lam = await conn().getBalance(new PublicKey(ht.nanNhan));
+        setSoDuToken((lam / LAMPORTS_PER_SOL).toString());
+      } else {
+        const b = await conn().getTokenAccountBalance(new PublicKey(ht.taiKhoanNanNhan));
+        setSoDuToken(b.value.uiAmountString ?? "0");
+      }
     } catch {
       setSoDuToken("—");
     }
@@ -88,6 +101,28 @@ export default function App() {
 
   function dungTx(kich: Kich, blockhash: string): VersionedTransaction {
     if (!ht) throw new Error("chưa có hiện trường");
+
+    // Hiện trường MAINNET rút SOL: cả hai kịch đều là chuyển SOL.
+    //   - tấn công: rút phần lớn SOL về ví kẻ tấn công
+    //   - lành tính: chuyển một khoản nhỏ VỀ CHÍNH MÌNH (net ≈ 0), nên luật 13
+    //     không kích hoạt — đúng nghĩa "an toàn" để đo báo nhầm.
+    if (ht.loai === "sol") {
+      const nanNhan = new PublicKey(ht.nanNhan);
+      return kich === "tanCong"
+        ? dungGiaoDichTanCongSol({
+            nanNhan,
+            keTanCong: new PublicKey(ht.keTanCong),
+            soLamport: BigInt(ht.soLamport ?? "0"),
+            blockhash,
+          })
+        : dungGiaoDichTanCongSol({
+            nanNhan,
+            keTanCong: nanNhan,
+            soLamport: BigInt(Math.floor(0.001 * LAMPORTS_PER_SOL)),
+            blockhash,
+          });
+    }
+
     const chung = {
       nanNhan: new PublicKey(ht.nanNhan),
       mint: new PublicKey(ht.mint),
