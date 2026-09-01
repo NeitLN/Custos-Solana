@@ -45,8 +45,16 @@ export function CanhBao({
   // `level` KHÔNG đổi — fail-safe giữ nguyên. Chỉ cách nói đổi.
   const [moRong, setMoRong] = useState(false);
   const [moKyThuat, setMoKyThuat] = useState(false);
+  // "Chưa đọc hiểu hết" CHỈ đúng khi coverage THẬT SỰ còn khuyết.
+  //
+  // Bản trước thiếu vế `analyzed < total`, nên một giao dịch coverage 1/1 (đọc hiểu
+  // hoàn toàn) mà mang một mã THÔNG TIN — ví dụ token còn quyền phát hành — vẫn bị
+  // dán "Chưa đọc hiểu hết". Đó là nói sai: đọc hết rồi, chỉ là có một thuộc tính
+  // đáng nhắc. Nút "gửi cho bạn bè" trong demo dính đúng ca này và trông như báo nhầm.
+  const chuaHetCoverage = analyzed < total;
   const chiLaChuaHieu =
     ketQua.level === "warning" &&
+    chuaHetCoverage &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
   const n = chiLaChuaHieu
     ? { chu: "Chưa đọc hiểu hết", vien: "border-slate-600/50", nen: "bg-slate-900/60", chip: "bg-slate-600" }
