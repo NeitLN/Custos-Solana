@@ -169,10 +169,12 @@ export function CanhBao({
             ngay tại chỗ nó sinh ra. */}
         {ketQua.aiAdvisory === "review_required" && (
           <div className="rounded-lg border border-amber-700/40 bg-amber-950/20 px-3 py-2">
-            <div className="text-[13px] text-amber-300">⚑ AI đề nghị kiểm tra thủ công</div>
+            <div className="text-[13px] text-amber-300">⚑ Custos đề nghị kiểm tra thủ công</div>
             <div className="mt-0.5 text-[11px] leading-relaxed text-slate-400">
-              Mức cảnh báo ở trên do engine luật quyết định, không phải AI. AI chỉ được
-              đề nghị bạn xem kỹ — nó không xác nhận an toàn và không kết luận nguy hiểm.
+              Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
+              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai
+              chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là
+              tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.
             </div>
           </div>
         )}
