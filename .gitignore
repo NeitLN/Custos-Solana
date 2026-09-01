@@ -35,3 +35,6 @@ packages/*/dist/
 
 # Tarball SDK do `scripts/dong-goi-sdk.mjs` sinh ra — dựng lại được, không commit.
 goi-sdk/
+
+# Hiện trường mainnet — CHỈ sống trên máy quay, không bao giờ lên deploy công khai.
+apps/demo-wallet/public/hien-truong-mainnet.json
