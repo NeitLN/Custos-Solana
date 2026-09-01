@@ -10,6 +10,17 @@ import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
+import {
+  ArrowIcon,
+  CheckIcon,
+  CopyIcon,
+  ExternalIcon,
+  GiftIcon,
+  ScanIcon,
+  SendIcon,
+  ShieldIcon,
+  WalletIcon,
+} from "./Icons.tsx";
 
 type Kich = "tanCong" | "lanhTinh";
 
@@ -26,6 +37,7 @@ export default function App() {
   const [txCho, setTxCho] = useState<VersionedTransaction | null>(null);
   const [dangChay, setDangChay] = useState(false);
   const [nhatKy, setNhatKy] = useState<string[]>([]);
+  const [daSaoChep, setDaSaoChep] = useState(false);
 
   const ghi = (s: string) => setNhatKy((n) => [...n, s]);
   const conn = useCallback(() => new Connection(chonRpc(ht), "confirmed"), [ht]);
@@ -190,186 +202,292 @@ export default function App() {
   }
 
   const chuaDung = ht === null;
+  const diaChiRutGon = ht
+    ? `${ht.nanNhan.slice(0, 5)}…${ht.nanNhan.slice(-5)}`
+    : "Chưa có tài khoản";
+
+  async function saoChepDiaChi() {
+    if (!ht) return;
+    try {
+      await navigator.clipboard.writeText(ht.nanNhan);
+      setDaSaoChep(true);
+      window.setTimeout(() => setDaSaoChep(false), 1600);
+    } catch {
+      ghi("không thể sao chép địa chỉ ví");
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-nen text-chu">
-      {/* Dải phạm vi. Giữ nguyên độ chói: nó nói "đây là bản demo trên devnet", và
-          làm nó dịu đi là bắt đầu mờ hoá ranh giới giữa demo và sản phẩm thật. */}
-      <div className="bg-canh px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-nen">
-        Demo Wallet · Devnet Only
+    <div className="app-shell min-h-screen bg-nen text-chu">
+      <div className="scope-bar px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.18em] sm:text-[11px]">
+        <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+        Bản trình diễn · Solana Devnet · Không dùng tài sản thật
       </div>
 
       {cheDo?.loai === "mock" && (
-        <div className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-nen">
+        <div className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white">
           ⚠ Đang xem dữ liệu mock &quot;{cheDo.ten}&quot; — không phải kết quả thật
         </div>
       )}
 
-      <div className="mx-auto max-w-xl px-5 pb-16 pt-8">
-        <header className="flex items-baseline justify-between gap-4">
-          <h1 className="text-[26px] font-semibold tracking-[-0.02em] text-chu">
-            Custos<span className="text-nhan">.</span>
-          </h1>
-          <a
-            href={`${import.meta.env.BASE_URL}so-lieu.html`}
-            className="text-[13px] text-nhan transition-colors hover:text-chu"
-          >
-            Số liệu →
-          </a>
+      <div className="relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
+        <header className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="brand-mark grid h-10 w-10 place-items-center rounded-[11px] text-white">
+              <ShieldIcon className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
+                Custos Wallet
+              </h1>
+              <p className="mt-1.5 hidden text-[11px] uppercase tracking-[0.16em] text-chu-mo sm:block">
+                Ví Devnet · Bảo vệ trước khi ký
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="network-pill flex items-center gap-2 rounded-full px-3 py-2 text-[11px] font-semibold text-thuong">
+              <span className="h-1.5 w-1.5 rounded-full bg-thuong shadow-[0_0_12px_currentColor]" />
+              DEVNET
+            </div>
+            <a
+              href={`${import.meta.env.BASE_URL}so-lieu.html`}
+              className="icon-link flex items-center gap-2 rounded-full px-3 py-2 text-[12px] text-chu-nhat transition-colors hover:text-chu"
+            >
+              <span className="hidden sm:inline">Số liệu</span>
+              <ExternalIcon className="h-4 w-4" />
+            </a>
+          </div>
         </header>
-        <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-chu-mo">
-          Ví mẫu minh hoạ cách một ví tích hợp Custos. Không phải sản phẩm bán ra.
-        </p>
 
         {chuaDung && (
-          <div className="mt-7 rounded-xl border border-canh/40 bg-canh/[0.07] p-5">
-            <div className="text-[15px] font-medium text-chu">Chưa dựng hiện trường devnet</div>
-            <p className="mt-1 text-[13px] text-chu-mo">Chạy lệnh này rồi tải lại trang:</p>
-            <pre className="mt-2.5 overflow-x-auto rounded-lg bg-nen p-3 font-mono text-[11.5px] text-chu-nhat">
+            <div className="glass-card mt-7 rounded-2xl border border-canh/30 p-5">
+            <div className="text-[15px] font-semibold text-chu">Chưa dựng hiện trường Devnet</div>
+            <p className="mt-1 text-[13px] text-chu-mo">Chạy lệnh dưới đây rồi tải lại trang:</p>
+            <pre className="mt-3 overflow-x-auto rounded-xl border border-vien bg-slate-50 p-3 font-mono text-[11.5px] text-chu-nhat">
               node --experimental-strip-types scripts/dung-hien-truong.ts
             </pre>
           </div>
         )}
 
         {ht && (
-          <>
-            {/* SỐ DƯ LÀ THỨ NHÌN ĐẦU TIÊN trong một cái ví, nên nó phải to nhất
-                màn hình. Bản trước để 20px — nhỏ hơn cả chữ trong màn cảnh báo,
-                nên mắt không biết bắt đầu từ đâu. */}
-            <section className="mt-7 rounded-xl border border-vien bg-the px-5 py-5">
-              <div className="text-[12px] text-chu-mo">
-                Tài khoản token của bạn
+          <main className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,0.88fr)_minmax(520px,1.12fr)] lg:gap-5">
+            <section className="wallet-card reveal-card overflow-hidden rounded-[20px]">
+              <div className="wallet-card__top px-5 pb-5 pt-5 sm:px-6 sm:pt-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-nhan">
+                      <WalletIcon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[11px] uppercase tracking-[0.13em] text-chu-mo">Ví đang hoạt động</div>
+                      <div className="mt-0.5 truncate text-[14px] font-semibold text-chu">Custos Demo 01</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => void saoChepDiaChi()}
+                    className={`address-pill flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${daSaoChep ? "is-copied" : ""}`}
+                    title={ht.nanNhan}
+                  >
+                    <span>{daSaoChep ? "Đã sao chép" : diaChiRutGon}</span>
+                    {daSaoChep ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
+                  </button>
+                </div>
+
+                <div className="mt-8">
+                  <div className="flex items-center gap-2 text-[12px] text-chu-mo">
+                    Tổng tài sản thử nghiệm
+                    <span className="token-badge rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-chu-nhat">SPL</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="so balance-number text-[48px] font-semibold leading-none text-chu sm:text-[56px]">
+                      {soDuToken ?? "—"}
+                    </span>
+                    <span className="text-[16px] font-medium text-chu-nhat">{ht.kyHieu ?? "token"}</span>
+                  </div>
+                  <p className="mt-2 text-[12px] text-chu-mo">Token thử nghiệm trên Devnet · không có giá trị quy đổi</p>
+                </div>
               </div>
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className="so text-[42px] font-semibold leading-none text-chu">
-                  {soDuToken ?? "—"}
-                </span>
-                <span className="text-[15px] text-chu-nhat">{ht.kyHieu ?? "token"}</span>
-              </div>
-              <div
-                className="mt-3 truncate font-mono text-[11.5px] text-chu-mo"
-                title={ht.taiKhoanNanNhan}
-              >
-                {ht.taiKhoanNanNhan}
+
+              <div className="wallet-actions border-t px-5 py-5 sm:px-6">
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="text-[12px] font-semibold uppercase tracking-[0.13em] text-chu-nhat">Kịch bản demo</h2>
+                  <span className="text-[11px] text-chu-mo">Chọn một giao dịch</span>
+                </div>
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <button
+                    onClick={() => void bam("tanCong")}
+                    disabled={dangChay}
+                    className="action-card action-card--primary group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45"
+                  >
+                    <div className="flex w-full items-start justify-between gap-3">
+                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-nhan/15 text-nhan"><GiftIcon className="h-5 w-5" /></span>
+                      <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                    <span>
+                      <span className="block text-[14px] font-semibold text-chu">Nhận quà tặng</span>
+                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Giao dịch giả mạo</span>
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => void bam("lanhTinh")}
+                    disabled={dangChay}
+                    className="action-card group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45"
+                  >
+                    <div className="flex w-full items-start justify-between gap-3">
+                      <span className="action-icon grid h-9 w-9 place-items-center rounded-xl text-chu-nhat"><SendIcon className="h-5 w-5" /></span>
+                      <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                    <span>
+                      <span className="block text-[14px] font-semibold text-chu">Gửi 10 token</span>
+                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Giao dịch bình thường</span>
+                    </span>
+                  </button>
+                </div>
+
+                <label className={`protection-switch mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-4 ${batCustos ? "is-on" : "is-off"}`}>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="protection-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl"><ShieldIcon className="h-5 w-5" /></span>
+                    <span>
+                      <span className="flex items-center gap-2 text-[14px] font-semibold text-chu">
+                        Lớp bảo vệ Custos
+                        <span className={`h-1.5 w-1.5 rounded-full ${batCustos ? "bg-thuong shadow-[0_0_10px_currentColor]" : "bg-nguy"}`} />
+                      </span>
+                      <span className="mt-0.5 block text-[11.5px] leading-relaxed text-chu-mo">
+                        {batCustos ? "Mô phỏng và giải thích trước khi ký" : "Tắt kiểm tra — giao dịch đi thẳng tới bước ký"}
+                      </span>
+                    </span>
+                  </span>
+                  <span className="toggle-track relative h-7 w-12 shrink-0 rounded-full" aria-hidden="true">
+                    <span className="toggle-thumb absolute top-1 h-5 w-5 rounded-full" />
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={batCustos}
+                    onChange={(e) => setBatCustos(e.target.checked)}
+                    aria-label="Bật hoặc tắt Custos"
+                    className="sr-only"
+                  />
+                </label>
               </div>
             </section>
 
-            {/* Công tắc này LÀ cơ chế của cả bản demo — cùng một giao dịch, hai kết
-                cục. Nên trạng thái của nó phải đọc được từ cuối phòng, không phải
-                một ô kiểm 20px. */}
-            <label
-              className={`mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-colors ${
-                batCustos ? "border-thuong/40 bg-thuong/[0.07]" : "border-nguy/40 bg-nguy/[0.07]"
-              }`}
-            >
-              <span>
-                <span className="block text-[15px] font-medium text-chu">
-                  Custos {batCustos ? "đang bật" : "đang tắt"}
-                </span>
-                <span className="mt-0.5 block text-[12.5px] text-chu-mo">
-                  {batCustos
-                    ? "Giao dịch được kiểm tra trước khi bạn ký"
-                    : "Ký thẳng, không ai kiểm tra gì"}
-                </span>
-              </span>
-              <input
-                type="checkbox"
-                checked={batCustos}
-                onChange={(e) => setBatCustos(e.target.checked)}
-                aria-label="Bật hoặc tắt Custos"
-                className="h-6 w-6 shrink-0 accent-nhan"
-              />
-            </label>
-
-            <div className="mt-3 grid gap-2.5">
-              <button
-                onClick={() => void bam("tanCong")}
-                disabled={dangChay}
-                className="rounded-xl bg-nhan px-5 py-3.5 text-[15px] font-semibold text-nen transition-colors hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                Nhận quà tặng
-              </button>
-              <button
-                onClick={() => void bam("lanhTinh")}
-                disabled={dangChay}
-                className="rounded-xl border border-vien bg-the px-5 py-3.5 text-[15px] text-chu-nhat transition-colors hover:border-chu-mo hover:text-chu disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                Gửi 10 token cho bạn bè
-              </button>
-            </div>
-
-            {/* TRẠNG THÁI ĐANG CHẠY. Mô phỏng mất 2–4 giây, và trước đây màn hình
-                không nói gì trong suốt quãng đó — đúng lúc sản phẩm đang làm việc
-                thì nó trông như bị treo. Câu chữ ở đây mô tả việc THẬT đang diễn ra,
-                không phải chữ trấn an cho đỡ trống. */}
-            {dangChay && (
-              <div className="hien mt-3 flex items-center gap-3 rounded-xl border border-vien bg-the px-5 py-3.5">
-                <span className="tho h-2 w-2 shrink-0 rounded-full bg-nhan" />
-                <span className="text-[13.5px] text-chu-nhat">
-                  Đang chạy thử giao dịch trên devnet để xem nó làm gì…
-                </span>
+            <section className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
+              <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-chu-mo">Trung tâm kiểm tra</div>
+                  <h2 className="mt-1 text-[17px] font-semibold tracking-[-0.015em] text-chu">Kiểm tra trước khi ký</h2>
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11px] text-nhan">
+                  <ShieldIcon className="h-3.5 w-3.5" />
+                  Pre-sign
+                </div>
               </div>
-            )}
 
-            {/* Nút thứ hai không phải cho vui: một sản phẩm lúc nào cũng báo Đỏ
-                thì không chứng minh được gì. Phải thấy nó KHÔNG báo Đỏ với giao
-                dịch bình thường thì cảnh báo mới có giá trị. */}
-            <p className="mt-3 max-w-[56ch] text-[12.5px] leading-relaxed text-chu-mo">
-              Nút thứ hai là giao dịch bình thường — dùng để thấy Custos không gắn cờ bừa.
-            </p>
-          </>
+              <div className="review-body p-4 sm:p-5">
+                {tuDApp && (
+                  <div className="hien dapp-request mb-4 flex items-start gap-3 rounded-xl px-4 py-3">
+                    <ExternalIcon className="mt-0.5 h-4 w-4 shrink-0 text-nhan" />
+                    <div>
+                      <div className="text-[10px] uppercase tracking-[0.13em] text-chu-mo">Yêu cầu từ dApp bên ngoài</div>
+                      <div className="mt-1 text-[13px] text-chu">{tuDApp}</div>
+                    </div>
+                  </div>
+                )}
+
+                {!dangChay && !hauQua && !ketQua && (
+                  <div className="empty-review flex min-h-[430px] flex-col items-center justify-center rounded-2xl px-5 py-10 text-center">
+                    <div className="scan-orbit grid h-20 w-20 place-items-center rounded-full">
+                      <ScanIcon className="h-9 w-9 text-nhan" />
+                    </div>
+                    <h3 className="mt-6 text-[19px] font-semibold tracking-[-0.02em] text-chu">Sẵn sàng kiểm tra</h3>
+                    <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
+                      Chọn một kịch bản ở ví bên cạnh. Custos sẽ chạy thử giao dịch trên Devnet và cho bạn thấy tác động trước khi ký.
+                    </p>
+                    <div className="mt-7 grid w-full max-w-sm grid-cols-3 gap-2">
+                      {["Mô phỏng", "Đối chiếu", "Giải thích"].map((buoc, i) => (
+                        <div key={buoc} className="process-step rounded-xl px-2 py-3">
+                          <div className="font-mono text-[10px] text-nhan">0{i + 1}</div>
+                          <div className="mt-1 text-[11px] text-chu-nhat">{buoc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {dangChay && (
+                  <div className="hien scanning-panel flex min-h-[430px] flex-col items-center justify-center rounded-2xl px-5 py-10 text-center" role="status">
+                    <div className="scanner relative grid h-24 w-24 place-items-center rounded-full">
+                      <div className="scanner-ring absolute inset-0 rounded-full" />
+                      <ShieldIcon className="h-9 w-9 text-nhan" />
+                    </div>
+                    <h3 className="mt-6 text-[18px] font-semibold text-chu">Đang mô phỏng giao dịch</h3>
+                    <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
+                      Custos đang đọc từng instruction và đối chiếu thay đổi tài sản trên Devnet.
+                    </p>
+                    <div className="mt-6 w-full max-w-xs space-y-2">
+                      <div className="scan-line h-1.5 overflow-hidden rounded-full"><span /></div>
+                      <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-chu-mo">
+                        <span>Simulation</span><span>In progress</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {hauQua && (
+                  <div className="hien">
+                    <HauQua
+                      ketQua={hauQua}
+                      onDong={() => setHauQua(null)}
+                      onXemCustos={() => {
+                        setHauQua(null);
+                        setBatCustos(true);
+                        ghi("bật Custos, chạy lại đúng giao dịch đó");
+                        void bam(kichCuoi, true);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {ketQua && (
+                  <div className="hien">
+                    <CanhBao
+                      ketQua={ketQua}
+                      onHuy={() => {
+                        ghi("người dùng huỷ giao dịch");
+                        setKetQua(null);
+                        setTxCho(null);
+                      }}
+                      choPhepKy={kyDuoc()}
+                      onKy={() => {
+                        ghi("người dùng chọn vẫn ký dù đã được cảnh báo");
+                        if (txCho) void kyVaGui(txCho);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {nhatKy.length > 0 && (
+                  <details className="mt-4">
+                    <summary className="cursor-pointer text-[11px] uppercase tracking-[0.12em] text-chu-mo transition-colors hover:text-chu-nhat">
+                      Nhật ký kỹ thuật · {nhatKy.length} sự kiện
+                    </summary>
+                    <pre className="technical-log mt-2 max-h-32 overflow-auto rounded-xl p-3 font-mono text-[10.5px] leading-relaxed text-chu-mo">
+                      {nhatKy.join("\n")}
+                    </pre>
+                  </details>
+                )}
+              </div>
+            </section>
+          </main>
         )}
 
-        {tuDApp && (
-          <div className="hien mt-5 rounded-xl border border-nhan/35 bg-nhan/[0.08] px-5 py-3.5">
-            <div className="text-[12.5px] text-chu-mo">Yêu cầu ký từ một trang web</div>
-            <div className="mt-1 text-[14.5px] text-chu">{tuDApp}</div>
-          </div>
-        )}
-
-        {hauQua && (
-          <div className="mt-5">
-            <HauQua
-              ketQua={hauQua}
-              onDong={() => setHauQua(null)}
-              onXemCustos={() => {
-                setHauQua(null);
-                setBatCustos(true);
-                ghi("bật Custos, chạy lại đúng giao dịch đó");
-                void bam(kichCuoi, true);
-              }}
-            />
-          </div>
-        )}
-
-        {ketQua && (
-          <div className="mt-5">
-            <CanhBao
-              ketQua={ketQua}
-              onHuy={() => {
-                ghi("người dùng huỷ giao dịch");
-                setKetQua(null);
-                setTxCho(null);
-              }}
-              choPhepKy={kyDuoc()}
-              onKy={() => {
-                ghi("người dùng chọn vẫn ký dù đã được cảnh báo");
-                if (txCho) void kyVaGui(txCho);
-              }}
-            />
-          </div>
-        )}
-
-        {nhatKy.length > 0 && (
-          <details className="mt-6" open>
-            <summary className="cursor-pointer text-[12.5px] text-chu-mo transition-colors hover:text-chu-nhat">
-              Nhật ký kỹ thuật
-            </summary>
-            <pre className="mt-2 overflow-x-auto rounded-xl border border-vien bg-nen p-3.5 font-mono text-[11.5px] leading-relaxed text-chu-mo">
-              {nhatKy.join("\n")}
-            </pre>
-          </details>
-        )}
+        <footer className="mt-5 flex flex-col gap-2 px-1 text-[10.5px] leading-relaxed text-chu-mo sm:flex-row sm:items-center sm:justify-between">
+          <span>Ví mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.</span>
+          <span className="font-mono uppercase tracking-[0.1em]">Rule engine quyết định verdict · AI không đổi mức cảnh báo</span>
+        </footer>
       </div>
     </div>
   );
