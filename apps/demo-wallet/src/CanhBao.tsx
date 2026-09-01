@@ -2,20 +2,48 @@ import type { InspectResult } from "@custos-solana/types";
 import { chiLaThongTin } from "@custos-solana/core";
 import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
 import { useState } from "react";
+import { AlertIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
  *  Xem DAC-TA-L3.md mục 4. */
 const NHAN = {
-  safe: { chu: "Bình thường", vien: "border-emerald-700/50", nen: "bg-emerald-950/40", chip: "bg-emerald-600" },
-  warning: { chu: "Cần xem kỹ", vien: "border-amber-700/50", nen: "bg-amber-950/40", chip: "bg-amber-600" },
-  danger: { chu: "Nguy hiểm", vien: "border-rose-700/60", nen: "bg-rose-950/50", chip: "bg-rose-600" },
+  safe: {
+    chu: "Bình thường",
+    muc: "Không có cờ đỏ",
+    phu: "Không phát hiện dấu hiệu nguy hiểm trong phần đã đọc",
+    vien: "border-emerald-200",
+    nen: "bg-emerald-50/70",
+    chip: "border-emerald-200 bg-white text-emerald-700",
+    icon: "border-emerald-200 bg-white text-emerald-600",
+    thanh: "bg-emerald-500",
+  },
+  warning: {
+    chu: "Cần xem kỹ",
+    muc: "Cần xác minh",
+    phu: "Có thông tin bạn cần xác minh trước khi tiếp tục",
+    vien: "border-amber-200",
+    nen: "bg-amber-50/75",
+    chip: "border-amber-200 bg-white text-amber-700",
+    icon: "border-amber-200 bg-white text-amber-600",
+    thanh: "bg-amber-500",
+  },
+  danger: {
+    chu: "Nguy hiểm",
+    muc: "Rủi ro cao",
+    phu: "Không nên ký giao dịch này",
+    vien: "border-rose-200",
+    nen: "bg-rose-50/75",
+    chip: "border-rose-200 bg-white text-rose-700",
+    icon: "border-rose-200 bg-white text-rose-600",
+    thanh: "bg-rose-500",
+  },
 } as const;
 
 const MAU_DONG = {
-  danger: "text-rose-300",
-  warning: "text-amber-300",
-  info: "text-slate-300",
+  danger: "text-rose-700",
+  warning: "text-amber-700",
+  info: "text-slate-700",
 } as const;
 
 export function CanhBao({
@@ -57,37 +85,58 @@ export function CanhBao({
     chuaHetCoverage &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
   const n = chiLaChuaHieu
-    ? { chu: "Chưa đọc hiểu hết", vien: "border-slate-600/50", nen: "bg-slate-900/60", chip: "bg-slate-600" }
+    ? {
+        chu: "Chưa đọc hiểu hết",
+        muc: "Phạm vi còn khuyết",
+        phu: "Một phần giao dịch chưa thể xác minh",
+        vien: "border-slate-200",
+        nen: "bg-slate-50",
+        chip: "border-slate-200 bg-white text-slate-700",
+        icon: "border-slate-200 bg-white text-slate-600",
+        thanh: "bg-slate-500",
+      }
     : NHAN[ketQua.level];
+  const phanTramCoverage = total > 0 ? Math.min(100, Math.round((analyzed / total) * 100)) : 0;
+  const IconTrangThai = ketQua.level === "danger" ? AlertIcon : ShieldIcon;
 
   return (
-    <div className={`rounded-xl border ${n.vien} ${n.nen} overflow-hidden`}>
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
-        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-300">
-          Được kiểm tra bởi Custos
-        </span>
-        <span className={`${n.chip} rounded px-2 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-white`}>
-          {n.chu}
-        </span>
+    <div className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}>
+      <div className="border-b border-slate-200/80 px-4 py-4 sm:px-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 items-start gap-3.5">
+            <div className={`status-icon ${ketQua.level === "danger" ? "status-icon--danger" : ""} grid h-11 w-11 shrink-0 place-items-center rounded-xl border ${n.icon}`}>
+              <IconTrangThai className="h-6 w-6" />
+            </div>
+            <div className="min-w-0">
+              <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-500">Kết quả kiểm tra</div>
+              <h3 className="mt-1 text-[22px] font-semibold leading-none tracking-[-0.025em] text-slate-950">{n.chu}</h3>
+              <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">{n.phu}</p>
+            </div>
+          </div>
+          <span className={`${n.chip} shrink-0 rounded-full border px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]`}>
+            {n.muc}
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-4 px-4 py-4">
+      <div className="space-y-4 p-4 sm:p-5">
         {ketQua.detectedPrimaryAction && (
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
-              Hành động chính được nhận diện
+          <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-3 shadow-[0_1px_1px_rgba(20,28,45,0.025)]">
+            <div className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.13em] text-slate-500">
+              <ScanIcon className="h-3.5 w-3.5" />
+              Custos nhận diện giao dịch
             </div>
-            <div className="mt-1 text-[15px] text-slate-100">
+            <div className="mt-1.5 break-words text-[14px] font-medium leading-relaxed text-slate-900">
               {ketQua.detectedPrimaryAction.type}
               {ketQua.detectedPrimaryAction.from && ketQua.detectedPrimaryAction.to
-                ? ` ${ketQua.detectedPrimaryAction.from} sang ${ketQua.detectedPrimaryAction.to}`
+                ? ` · ${ketQua.detectedPrimaryAction.from} → ${ketQua.detectedPrimaryAction.to}`
                 : ""}
             </div>
           </div>
         )}
 
         {chiLaChuaHieu && (
-          <p className="text-[14px] leading-relaxed text-slate-300">
+          <p className="rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[13.5px] leading-relaxed text-slate-700">
             Không thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa
             đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.
           </p>
@@ -98,20 +147,20 @@ export function CanhBao({
             {/* MỨC 1 — NGẮN. Mặc định, hiện ngay. Đây là câu duy nhất phần lớn
                 người dùng sẽ đọc, và cũng là màn hình dùng để đo mức độ hiểu
                 (DAC-TA-L3.md mục 6 và 7). */}
-            <p className="text-[16px] leading-relaxed font-medium text-slate-50">{tomTat(ketQua)}</p>
+            <p className="text-[16px] font-medium leading-relaxed text-slate-950">{tomTat(ketQua)}</p>
 
             {ketQua.explanation && (
               <>
                 <button
                   type="button"
                   onClick={() => setMoRong((v) => !v)}
-                  className="text-[13px] text-slate-400 underline underline-offset-2 hover:text-slate-200"
+                  className="text-[12px] text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-950"
                 >
                   {moRong ? "Thu gọn" : "Xem chi tiết"}
                 </button>
                 {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
                 {moRong && (
-                  <p className="text-[15px] leading-relaxed text-slate-300">{ketQua.explanation}</p>
+                  <p className="border-l-2 border-slate-200 pl-3 text-[13px] leading-relaxed text-slate-700">{ketQua.explanation}</p>
                 )}
               </>
             )}
@@ -119,10 +168,10 @@ export function CanhBao({
         )}
 
         {ketQua.diff.length > 0 && (
-          <div className="divide-y divide-white/10 overflow-hidden rounded-lg border border-white/10 bg-black/30">
+          <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
             {/* Nhãn cột. Không có nó, `500,0 → 0,0` đọc được theo cả hai chiều —
                 mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
-            <div className="flex items-baseline justify-between gap-4 bg-white/[0.03] px-3 py-1.5">
+            <div className="flex items-baseline justify-between gap-4 bg-slate-50 px-3.5 py-2">
               <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500">
                 Thay đổi nếu bạn ký
               </span>
@@ -131,12 +180,12 @@ export function CanhBao({
               </span>
             </div>
             {ketQua.diff.map((d, i) => (
-              <div key={i} className="flex items-baseline justify-between gap-4 px-3 py-2">
-                <span className={`text-[13px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-300"}`}>
+              <div key={i} className="grid gap-1 px-3.5 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4">
+                <span className={`text-[12.5px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}>
                   {d.label}
                 </span>
-                <span className={`font-mono text-[13px] tabular-nums whitespace-nowrap ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-300"}`}>
-                  {d.before} <span className="px-1 text-slate-500">→</span> {d.after}
+                <span className={`break-all font-mono text-[12px] tabular-nums sm:text-right ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}>
+                  {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
                 </span>
               </div>
             ))}
@@ -147,16 +196,16 @@ export function CanhBao({
             Chỉ hiện khi LỆCH. Khớp thì không hiện gì, và tuyệt đối không làm
             giảm verdict: dApp độc hại hoàn toàn có thể khai đúng để trông hiền. */}
         {ketQua.loiKhaiLech && (
-          <div className="rounded-lg border border-amber-600/50 bg-amber-950/40 p-3">
-            <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-amber-300">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3.5">
+            <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-amber-800">
               Trang web nói một đằng, giao dịch làm một nẻo
             </div>
-            <div className="mt-1.5 grid gap-1 text-[13px]">
+            <div className="mt-2 grid gap-1.5 text-[12.5px] leading-relaxed">
               <div>
-                Trang web khai: <span className="font-semibold text-slate-100">{ketQua.loiKhaiLech.khai}</span>
+                Trang web khai: <span className="font-semibold text-slate-950">{ketQua.loiKhaiLech.khai}</span>
               </div>
               <div>
-                Giao dịch thật sự: <span className="font-semibold text-amber-200">{ketQua.loiKhaiLech.nhanDien}</span>
+                Giao dịch thật sự: <span className="font-semibold text-amber-800">{ketQua.loiKhaiLech.nhanDien}</span>
               </div>
             </div>
           </div>
@@ -168,9 +217,9 @@ export function CanhBao({
             đánh thẳng vào tuyên bố quan trọng nhất của sản phẩm, nên phải chặn
             ngay tại chỗ nó sinh ra. */}
         {ketQua.aiAdvisory === "review_required" && (
-          <div className="rounded-lg border border-amber-700/40 bg-amber-950/20 px-3 py-2">
-            <div className="text-[13px] text-amber-300">⚑ Custos đề nghị kiểm tra thủ công</div>
-            <div className="mt-0.5 text-[11px] leading-relaxed text-slate-400">
+          <div className="rounded-xl border border-amber-200 bg-white px-3.5 py-3">
+            <div className="text-[12.5px] font-medium text-amber-800">Custos đề nghị kiểm tra thủ công</div>
+            <div className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
               Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
               xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai
               chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là
@@ -189,15 +238,24 @@ export function CanhBao({
             con số này; nó là lý do người dùng tin được phần Custos ĐÃ đọc hiểu.
             Nâng nó lên đúng tầm, nhưng KHÔNG đổi một chữ nào: câu chữ đã được cân
             để không nghe như trấn an, và làm nó to hơn không được phép làm nó êm hơn. */}
-        <div className="rounded-lg border border-white/10 bg-black/25 px-3.5 py-3 font-mono text-[12.5px] leading-relaxed text-slate-300">
-          Đã đọc hiểu {analyzed} trên {total} lệnh.
-          {unverifiedPrograms > 0 && ` ${unverifiedPrograms} chương trình chưa xác minh.`}
+        <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-3">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="font-mono text-[9.5px] uppercase tracking-[0.13em] text-slate-500">Mức đọc hiểu</div>
+              <div className="mt-1 text-[13px] font-medium text-slate-800">{analyzed} trên {total} lệnh</div>
+            </div>
+            <div className="font-mono text-[16px] font-semibold text-slate-800">{phanTramCoverage}%</div>
+          </div>
+          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
+            <div className={`coverage-fill h-full rounded-full ${n.thanh}`} style={{ width: `${phanTramCoverage}%` }} />
+          </div>
+          <div className="mt-2 font-mono text-[10.5px] leading-relaxed text-slate-500">
+            {unverifiedPrograms > 0 && `${unverifiedPrograms} chương trình chưa xác minh. `}
           {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,
               và nói nhầm nó thành điểm an toàn là đúng thứ sản phẩm này sinh ra để
               không làm. Một câu, đứng ngay cạnh con số. */}
-          {analyzed < total && (
-            <span className="text-slate-500"> Đây là mức đọc hiểu, không phải mức an toàn.</span>
-          )}
+            {analyzed < total && <span>Đây là mức đọc hiểu, không phải mức an toàn.</span>}
+          </div>
         </div>
 
         {/* MỨC 3 — KỸ THUẬT. Đóng sẵn, và phải đóng sẵn.
@@ -209,39 +267,39 @@ export function CanhBao({
           <button
             type="button"
             onClick={() => setMoKyThuat((v) => !v)}
-            className="font-mono text-[11px] uppercase tracking-[0.12em] text-slate-500 hover:text-slate-300"
+            className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500 hover:text-slate-900"
           >
             {moKyThuat ? "− Kỹ thuật" : "+ Kỹ thuật"}
           </button>
           {moKyThuat && (
-            <div className="mt-2 space-y-1 rounded-lg border border-white/10 bg-black/40 p-3 font-mono text-[11px] text-slate-400">
+            <div className="mt-2 space-y-1 rounded-xl border border-slate-200 bg-white p-3 font-mono text-[10.5px] text-slate-600">
               {chiTietKyThuat(ketQua).map((d, i) => (
                 <div key={i} className="flex flex-wrap gap-x-2">
                   <span className="text-slate-500">{d.nhan}:</span>
-                  <span className="break-all text-slate-300">{d.giaTri}</span>
+                  <span className="break-all text-slate-800">{d.giaTri}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 pt-1">
+        <div className="grid gap-2 pt-1 sm:grid-cols-2">
           <button
             onClick={onHuy}
-            className="rounded-md bg-rose-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-rose-500"
+            className="rounded-xl bg-rose-600 px-4 py-3 text-[13px] font-semibold text-white shadow-[0_6px_16px_rgba(225,29,72,0.16)] transition-all hover:-translate-y-0.5 hover:bg-rose-700 active:translate-y-0"
           >
-            Huỷ giao dịch
+            {ketQua.level === "danger" ? "Chặn & huỷ giao dịch" : "Huỷ giao dịch"}
           </button>
           {choPhepKy ? (
             <button
               onClick={onKy}
-              className="rounded-md border border-white/20 px-4 py-2 text-[13px] text-slate-300 hover:bg-white/5"
+              className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-[12.5px] text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50"
             >
               Vẫn ký — tôi hiểu rủi ro
             </button>
           ) : (
-            <span className="self-center text-[12px] text-slate-500">
-              Bản công khai chỉ để xem — không nhúng khoá ký
+            <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-center text-[10.5px] leading-relaxed text-slate-500">
+              Demo chỉ mô phỏng · không nhúng khoá ký
             </span>
           )}
         </div>
