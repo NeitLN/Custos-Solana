@@ -1,37 +1,28 @@
 @import "tailwindcss";
 
 /*
- * HỆ THỐNG THIẾT KẾ — chính thức hoá thứ đã dùng, không bịa thêm.
+ * LIGHT DESIGN SYSTEM
  *
- * Trước file này chỉ có một dòng `@import`, nên mọi màu nằm rải trong JSX và mọi
- * thẻ dùng chung đúng một kiểu `border-white/10 bg-white/[0.03]`. Hệ quả: năm khối
- * có vai trò khác hẳn nhau — số dư, công tắc, cảnh báo, nhật ký — trông giống hệt
- * nhau, và mắt không biết nhìn đâu trước.
- *
- * Bảng màu KHÔNG đổi. Slate-950 / indigo / hổ phách / hồng / ngọc đã dùng nhất quán
- * từ đầu và mang đúng nghĩa. Việc ở đây là đặt tên cho chúng và **phân tầng bề mặt**,
- * để phân cấp làm được việc của nó.
- *
- * MỘT RÀNG BUỘC KHÔNG ĐƯỢC PHÁ: không trau chuốt nào được làm màn cảnh báo dịu đi
- * hay tạo cảm giác trấn an. Sản phẩm này bán sự thẳng thắn; giao diện đẹp mà làm
- * người dùng yên tâm sai chỗ thì tệ hơn giao diện xấu.
+ * Hướng thị giác: ví fintech sáng, tiết chế, ưu tiên khả năng đọc khi trình chiếu.
+ * Không glassmorphism, không neon, không nền gradient trang trí. Chuyển động chỉ
+ * xuất hiện khi giao diện cần diễn đạt trạng thái: mở trang, quét giao dịch,
+ * chuyển công tắc, hoặc phản hồi thao tác.
  */
 
 @theme {
-  /* Ba tầng bề mặt. Trước đây chỉ có một, nên không có gì nổi lên được. */
-  --color-nen: oklch(0.16 0.018 265);
-  --color-vo: oklch(0.20 0.020 265);
-  --color-the: oklch(0.235 0.021 265);
-  --color-vien: oklch(0.31 0.022 265);
+  --color-nen: oklch(0.975 0.005 255);
+  --color-vo: oklch(1 0 0);
+  --color-the: oklch(0.986 0.004 255);
+  --color-vien: oklch(0.89 0.012 255);
 
-  --color-chu: oklch(0.96 0.005 265);
-  --color-chu-nhat: oklch(0.79 0.014 265);
-  --color-chu-mo: oklch(0.66 0.017 265);
+  --color-chu: oklch(0.22 0.025 260);
+  --color-chu-nhat: oklch(0.43 0.024 260);
+  --color-chu-mo: oklch(0.58 0.02 260);
 
-  --color-nhan: oklch(0.70 0.15 273);
-  --color-canh: oklch(0.79 0.14 78);
-  --color-nguy: oklch(0.71 0.17 18);
-  --color-thuong: oklch(0.76 0.14 163);
+  --color-nhan: oklch(0.54 0.19 267);
+  --color-canh: oklch(0.72 0.14 76);
+  --color-nguy: oklch(0.59 0.21 22);
+  --color-thuong: oklch(0.57 0.14 157);
 }
 
 html {
@@ -39,55 +30,484 @@ html {
 }
 
 body {
+  min-width: 320px;
+  margin: 0;
   background: var(--color-nen);
   color: var(--color-chu);
-  /* Một họ chữ, theo hệ điều hành. KHÔNG tải phông từ mạng: demo chạy trên wifi
-     hội trường, và một request phông hỏng là màn hình vỡ chữ đúng lúc đang chiếu. */
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Số tiền phải thẳng cột khi đổi giá trị, nếu không mắt đọc thành nhảy số. */
+button,
+a,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  color-scheme: light;
+  background:
+    linear-gradient(to right, transparent calc(50% - 640px), rgba(49, 77, 183, 0.035) calc(50% - 640px), rgba(49, 77, 183, 0.035) calc(50% - 639px), transparent calc(50% - 639px)),
+    var(--color-nen);
+}
+
+.app-shell::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(57, 67, 89, 0.09) 0.65px, transparent 0.75px);
+  background-size: 18px 18px;
+  opacity: 0.18;
+  mask-image: linear-gradient(to bottom, black, transparent 62%);
+}
+
+.scope-bar {
+  color: #72510c;
+  background: #fff4d6;
+  border-bottom: 1px solid #edd99f;
+}
+
+.scope-dot {
+  background: #a97508;
+}
+
+.brand-mark {
+  background: #3155c6;
+  box-shadow: 3px 3px 0 #d8dff5;
+}
+
+.network-pill,
+.icon-link {
+  border: 1px solid #dfe3ea;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 2px rgba(25, 32, 47, 0.04);
+}
+
+.icon-link:hover {
+  border-color: #c8cfda;
+  background: #fff;
+}
+
+.glass-card,
+.wallet-card,
+.review-card {
+  border: 1px solid #dfe3ea;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(22, 30, 46, 0.04),
+    0 16px 38px rgba(34, 46, 72, 0.07);
+}
+
+.wallet-card {
+  border-top: 4px solid #3155c6;
+}
+
+.wallet-card__top {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+}
+
+.wallet-card__top::after {
+  position: absolute;
+  right: -45px;
+  bottom: -100px;
+  width: 230px;
+  height: 230px;
+  content: "";
+  border: 1px solid rgba(49, 85, 198, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 34px rgba(49, 85, 198, 0.025),
+    0 0 0 68px rgba(49, 85, 198, 0.018);
+  pointer-events: none;
+}
+
+.avatar {
+  border: 1px solid #dce3f9;
+  background: #eef2ff;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.address-pill {
+  color: #60697a;
+  border: 1px solid #dfe3ea;
+  background: #f8f9fb;
+}
+
+.address-pill:hover {
+  color: #3155c6;
+  border-color: #c7d1f1;
+  background: #f4f6ff;
+}
+
+.address-pill.is-copied {
+  color: #237954;
+  border-color: #bfe3d2;
+  background: #effaf5;
+}
+
+.token-badge {
+  border: 1px solid #e0e4eb;
+  background: #f5f6f8;
+}
+
+.balance-number {
+  color: #1c2330;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+}
+
 .so {
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
 }
 
-/* Chuyển trạng thái: 150–250ms. Người dùng đang trong luồng thao tác, không xem
-   trình diễn. Và mọi chuyển động đều có đường thoát cho ai tắt hiệu ứng. */
+.wallet-actions {
+  border-color: #e6e9ef;
+  background: #fafbfc;
+}
+
+.action-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e0e4eb;
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(22, 30, 46, 0.025);
+  transition:
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    transform 170ms ease;
+}
+
+.action-card::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  content: "";
+  background: transparent;
+}
+
+.action-card--primary {
+  border-color: #cfd8f5;
+  background: #f8f9ff;
+}
+
+.action-card--primary::before {
+  background: #3155c6;
+}
+
+.action-icon {
+  border: 1px solid #e2e6ec;
+  background: #f4f6f8;
+}
+
+@media (hover: hover) {
+  .action-card:hover {
+    z-index: 1;
+    border-color: #b9c5ea;
+    box-shadow: 0 8px 22px rgba(38, 58, 112, 0.09);
+    transform: translateY(-2px);
+  }
+}
+
+.action-card:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.protection-switch {
+  border: 1px solid #dfe4e9;
+  background: #fff;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.protection-switch.is-on {
+  border-color: #b9ddcd;
+  background: #f2faf6;
+  box-shadow: inset 3px 0 0 #38a375;
+}
+
+.protection-switch.is-off {
+  border-color: #edc7cd;
+  background: #fff6f7;
+  box-shadow: inset 3px 0 0 #d84e63;
+}
+
+.protection-icon {
+  color: #71798a;
+  border: 1px solid #e1e5eb;
+  background: #f4f6f8;
+}
+
+.is-on .protection-icon {
+  color: #24805a;
+  border-color: #c5e7d7;
+  background: #e7f6ee;
+}
+
+.toggle-track {
+  border: 1px solid #cfd5df;
+  background: #e8ebf0;
+}
+
+.toggle-thumb {
+  left: 4px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(32, 40, 55, 0.22);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.is-on .toggle-track {
+  border-color: #2d9369;
+  background: #38a375;
+}
+
+.is-on .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.protection-switch:focus-within {
+  outline: 3px solid rgba(49, 85, 198, 0.2);
+  outline-offset: 2px;
+}
+
+.review-card {
+  min-height: 620px;
+}
+
+.review-header {
+  border-color: #e5e8ed;
+  background: #fff;
+}
+
+.review-body {
+  background: #fcfcfd;
+}
+
+.dapp-request {
+  color: #34446d;
+  border: 1px solid #d9e0f6;
+  background: #f4f6fd;
+}
+
+.empty-review,
+.scanning-panel {
+  border: 1px dashed #d9dee7;
+  background:
+    linear-gradient(#fbfcfe, #fbfcfe) padding-box,
+    #fbfcfe;
+}
+
+.scan-orbit {
+  position: relative;
+  color: #3155c6;
+  border: 1px solid #d3dcf7;
+  background: #f0f3ff;
+  box-shadow: 0 0 0 10px #f8f9fe;
+}
+
+.scan-orbit::after {
+  position: absolute;
+  inset: -10px;
+  content: "";
+  border: 1px solid rgba(49, 85, 198, 0.12);
+  border-radius: 50%;
+}
+
+.process-step {
+  border: 1px solid #e1e5eb;
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(24, 32, 48, 0.025);
+}
+
+.scanner {
+  color: #3155c6;
+  background: #f1f4ff;
+  box-shadow: 0 0 0 10px #f8f9fe;
+}
+
+.scanner-ring {
+  border: 2px solid #d9e0f7;
+  border-top-color: #3155c6;
+}
+
+.scan-line {
+  background: #e9ecf2;
+}
+
+.scan-line span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: #3155c6;
+}
+
+.technical-log {
+  color: #626b7b;
+  border: 1px solid #e0e4ea;
+  background: #f5f6f8;
+}
+
+.result-card {
+  box-shadow: 0 8px 24px rgba(35, 44, 65, 0.055);
+}
+
+.coverage-fill {
+  transform-origin: left;
+}
+
+.reveal-card {
+  animation: card-in 460ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.reveal-card--delay {
+  animation-delay: 90ms;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .hien {
-    animation: hien 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation: content-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .scope-dot {
+    animation: status-pulse 2.2s ease-in-out infinite;
+  }
+
+  .scan-orbit::after {
+    animation: orbit-pulse 2.4s ease-out infinite;
+  }
+
+  .scanner-ring {
+    animation: rotate 1.25s linear infinite;
+  }
+
+  .scan-line span {
+    animation: scan 1.45s ease-in-out infinite;
+  }
+
+  .result-card {
+    animation: result-in 320ms cubic-bezier(0.2, 0.78, 0.2, 1) both;
+  }
+
+  .status-icon--danger {
+    animation: danger-emphasis 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 160ms both;
+  }
+
+  .coverage-fill {
+    animation: coverage-grow 620ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
   }
 }
 
-@keyframes hien {
+@keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(12px);
   }
 }
 
-/* Nhịp thở của trạng thái ĐANG CHẠY. Đây là lúc Custos thật sự làm việc — mô phỏng
-   mất 2–4 giây — và trước đây màn hình không nói gì cả. Chuyển động ở đây truyền
-   TRẠNG THÁI, không trang trí. */
-@media (prefers-reduced-motion: no-preference) {
-  .tho {
-    animation: tho 1.4s ease-in-out infinite;
+@keyframes content-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
   }
 }
 
-@keyframes tho {
+@keyframes result-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.993);
+  }
+}
+
+@keyframes danger-emphasis {
+  0% {
+    opacity: 0;
+    transform: scale(0.78);
+  }
+  65% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes coverage-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes status-pulse {
   50% {
-    opacity: 0.45;
+    box-shadow: 0 0 0 4px rgba(169, 117, 8, 0.12);
   }
 }
 
-/* Vòng lấy nét nhìn thấy được ở mọi thứ bấm được. Bàn phím là đường dùng chính của
-   người khiếm thị, và mặc định của trình duyệt biến mất trên nền tối. */
+@keyframes orbit-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.94);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.16);
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+@media (max-width: 1023px) {
+  .review-card {
+    min-height: 0;
+  }
+
+  .empty-review,
+  .scanning-panel {
+    min-height: 350px;
+  }
+}
+
 :where(button, a, input, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-nhan);
+  outline: 3px solid rgba(49, 85, 198, 0.22);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
