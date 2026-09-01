@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { dungGiaoDichTanCong, dungGiaoDichTanCongSol } from "../../../scripts/tan-cong.ts";
+import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 
 /**
  * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
@@ -22,13 +22,7 @@ type HienTruong = {
   nanNhan: string; taiKhoanNanNhan: string;
   keTanCong: string; taiKhoanKeTanCong: string;
   soLuong: string;
-  loai?: "sol"; soLamport?: string;
 };
-
-/** Chế độ mainnet: `?that=1`. Bản deploy công khai không có tham số này nên luôn devnet. */
-const CHE_DO_THAT = (() => {
-  try { return new URLSearchParams(location.search).get("that") === "1"; } catch { return false; }
-})();
 
 // Địa chỉ ví mẫu. Khi chạy cục bộ là cổng 5188; khi deploy lên GitHub Pages
 // thì trang tấn công nằm ở /tan-cong/ nên ví là thư mục cha.
@@ -45,7 +39,7 @@ export default function App() {
   const [loi, setLoi] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${VI}/${CHE_DO_THAT ? "hien-truong-mainnet.json" : "hien-truong.json"}`, { cache: "no-store" })
+    fetch(`${VI}/hien-truong.json`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then(setHt)
       .catch(() => setHt(null));
@@ -57,35 +51,23 @@ export default function App() {
       const conn = new Connection(ht.rpc, "confirmed");
       const { blockhash } = await conn.getLatestBlockhash();
 
-      // Hiện trường "sol" = mainnet rút SOL thật; còn lại là devnet token như cũ.
-      const tx =
-        ht.loai === "sol"
-          ? dungGiaoDichTanCongSol({
-              nanNhan: new PublicKey(ht.nanNhan),
-              keTanCong: new PublicKey(ht.keTanCong),
-              soLamport: BigInt(ht.soLamport ?? "0"),
-              blockhash,
-            })
-          : dungGiaoDichTanCong({
-              nanNhan: new PublicKey(ht.nanNhan),
-              keTanCong: new PublicKey(ht.keTanCong),
-              mint: new PublicKey(ht.mint),
-              soLuong: BigInt(ht.soLuong),
-              blockhash,
-              taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
-              taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-            });
+      const tx = dungGiaoDichTanCong({
+        nanNhan: new PublicKey(ht.nanNhan),
+        keTanCong: new PublicKey(ht.keTanCong),
+        mint: new PublicKey(ht.mint),
+        soLuong: BigInt(ht.soLuong),
+        blockhash,
+        taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
+        taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
+      });
 
       const b64 = btoa(String.fromCharCode(...tx.serialize()));
       // Lời khai gian: trang nói đây là airdrop.
       const khai = encodeURIComponent(JSON.stringify({ type: "airdrop" }));
-      const kyHieu =
-        ht.loai !== "sol" && ht.kyHieu
-          ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht.mint]: ht.kyHieu }))}`
-          : "";
-      // `?that=1` phải theo sang ví để ví đọc đúng hiện trường mainnet và dùng đúng RPC.
-      const q = CHE_DO_THAT ? "?that=1" : "";
-      window.open(`${VI}/${q}#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`, "_blank", "noopener");
+      const kyHieu = ht.kyHieu
+        ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht.mint]: ht.kyHieu }))}`
+        : "";
+      window.open(`${VI}/#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`, "_blank", "noopener");
     } catch (e) {
       setLoi(e instanceof Error ? e.message : String(e));
     }

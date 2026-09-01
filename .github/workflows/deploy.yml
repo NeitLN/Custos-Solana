@@ -62,7 +62,6 @@ jobs:
           grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/index.html
           grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/so-lieu.html
           grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/phong-van.html
-          grep -q 'src="/Custos-Solana/assets/' apps/demo-wallet/dist/soi.html
           grep -q 'src="/Custos-Solana/tan-cong/assets/' apps/trang-tan-cong/dist/index.html
           echo "✓ base path đúng"
 

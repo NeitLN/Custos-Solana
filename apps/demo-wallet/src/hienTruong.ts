@@ -11,22 +11,7 @@ export type HienTruong = {
   taiKhoanBanBe: string;
   soLuong: string;
   dungLuc: string;
-  /** "sol" = hiện trường MAINNET rút SOL thật (xem dung-hien-truong-mainnet).
-   *  Vắng = hiện trường devnet token như cũ. */
-  loai?: "sol";
-  /** Số lamport rút đi, chỉ có ở hiện trường "sol". */
-  soLamport?: string;
 };
-
-/** Chế độ mainnet bật bằng `?that=1` trên URL — dùng KHI QUAY, không phải mặc định.
- *  Bản deploy công khai không bao giờ có tham số này, nên luôn ở devnet an toàn. */
-export function laCheDoThat(): boolean {
-  try {
-    return new URLSearchParams(location.search).get("that") === "1";
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Chọn endpoint RPC để ví mẫu nói chuyện với devnet.
@@ -47,10 +32,6 @@ export function laCheDoThat(): boolean {
  * là lưới cuối bắt đúng ca đó.
  */
 export function chonRpc(ht: HienTruong | null | undefined): string {
-  // Hiện trường MAINNET: dùng đúng rpc của nó. `VITE_RPC` là endpoint DEVNET để
-  // né 429 — để nó đè lên mainnet thì ví nói chuyện nhầm mạng, và mọi số dư đọc
-  // ra đều sai. Đây là cái bẫy dễ dính nhất khi thêm chế độ thật.
-  if (ht?.loai === "sol") return ht.rpc;
   const rieng = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
   return rieng || ht?.rpc || "https://api.devnet.solana.com";
 }
@@ -67,8 +48,7 @@ export async function docHienTruong(): Promise<HienTruong | null> {
     // PHẢI dùng BASE_URL, không được dùng "/hien-truong.json".
     // Đường dẫn tuyệt đối trỏ về gốc tên miền, nhưng GitHub Pages phục vụ site
     // ở /Custos-Solana/ nên nó 404 và giao diện tưởng chưa dựng hiện trường.
-    const ten = laCheDoThat() ? "hien-truong-mainnet.json" : "hien-truong.json";
-    const r = await fetch(`${import.meta.env.BASE_URL}${ten}`, { cache: "no-store" });
+    const r = await fetch(`${import.meta.env.BASE_URL}hien-truong.json`, { cache: "no-store" });
     if (!r.ok) return null;
     return (await r.json()) as HienTruong;
   } catch {

@@ -69,18 +69,12 @@ export function SoLieu() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="mx-auto max-w-2xl px-5 py-10">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
-          <a href={import.meta.env.BASE_URL} className="hover:text-slate-300">
-            ← Ví mẫu
-          </a>
-          {/* Trang soi mainnet phải có đường vào, không thì nó tồn tại mà không ai
-              tới được. CHƯA đặt link ở ví mẫu `/`: video quay hôm nay dùng đúng màn
-              đó, và thêm chữ vào khung hình sát giờ quay là tự chuốc rủi ro. Đặt ở
-              đây trước, ví mẫu bổ sung sau khi quay xong — Phase 4. */}
-          <a href={`${import.meta.env.BASE_URL}soi.html`} className="hover:text-slate-300">
-            Soi giao dịch mainnet →
-          </a>
-        </div>
+        <a
+          href={import.meta.env.BASE_URL}
+          className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 hover:text-slate-300"
+        >
+          ← Ví mẫu
+        </a>
         <h1 className="mt-4 text-[22px] font-semibold text-slate-50">Custos đo được những gì</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-slate-400">
           Mỗi con số dưới đây sinh ra từ một phép đo có file trong repo, không có số nào gõ tay.
@@ -90,13 +84,19 @@ export function SoLieu() {
         {d.cohort && (
           <>
             <h2 className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
-              Đo trên giao dịch mainnet thật · {ngay(d.cohort.ngayDo)}
+              Kiểm engine trên dữ liệu công khai đã lưu offline · {ngay(d.cohort.ngayDo)}
             </h2>
+            <p className="mt-2 rounded-lg border border-white/10 bg-black/30 p-3 text-[12px] leading-relaxed text-slate-400">
+              <span className="font-semibold text-slate-300">Đây là dữ liệu lịch sử, không phải runtime.</span>{" "}
+              Một số giao dịch công khai đã được lưu thành dữ liệu offline để kiểm engine.
+              Demo và sản phẩm dự thi vận hành <strong>hoàn toàn trên Devnet</strong> — lúc
+              demo Custos không kết nối mạng chính.
+            </p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <O
                 so={String(d.cohort.caoBuoc)}
                 nhan="giao dịch bị CÁO BUỘC"
-                cachDo={`Cáo buộc = có mã lý do BUỘC TỘI một hành vi cụ thể. KHÁC với mức Vàng: ${d.cohort.verdict.warning} giao dịch ở mức Vàng là do THÔNG TIN hoặc coverage khuyết (ví dụ "chương trình chưa xác minh", "mô phỏng hỏng") — thận trọng, không phải buộc tội. Đó là lý do số này là ${d.cohort.caoBuoc} dù có ${d.cohort.verdict.warning} Vàng. Trên ${d.cohort.mauDoDuoc} giao dịch SPL mainnet ngẫu nhiên, chưa kiểm chứng từng cái là lành nên đây không phải tỉ lệ báo nhầm đã chứng minh.`}
+                cachDo={`Cáo buộc = có mã lý do BUỘC TỘI một hành vi cụ thể. KHÁC với mức Vàng: ${d.cohort.verdict.warning} giao dịch ở mức Vàng là do THÔNG TIN hoặc coverage khuyết (ví dụ "chương trình chưa xác minh", "mô phỏng hỏng") — thận trọng, không phải buộc tội. Đó là lý do số này là ${d.cohort.caoBuoc} dù có ${d.cohort.verdict.warning} Vàng. Trên ${d.cohort.mauDoDuoc} giao dịch SPL công khai đã lưu offline, chưa gán nhãn ground truth nên đây KHÔNG phải precision/recall hay tỉ lệ báo nhầm.`}
               />
               <O
                 so={`${d.cohort.coveragePhanTram}%`}
@@ -149,12 +149,12 @@ export function SoLieu() {
               cachDo={`Chạy thật lúc sinh trang này, không đếm file. ${d.test.fail} test hỏng. Mỗi luật phải có cả ca nguy hiểm lẫn ca an toàn tương tự mới tính là xong.`}
             />
           )}
-          <O so={String(d.soMau)} nhan="mẫu kiểm thử" cachDo="Mỗi mẫu ghi rõ nguồn gốc. Con số gắn cờ chỉ đo trên mẫu mainnet thật, không gộp mẫu đội tự dựng trên devnet." />
+          <O so={String(d.soMau)} nhan="mẫu kiểm thử" cachDo="Mỗi mẫu ghi rõ nguồn gốc. Con số cáo buộc chỉ đo trên mẫu công khai đã lưu offline, không gộp mẫu đội tự dựng." />
           {d.chiPhi && (
             <O
               so={String(d.chiPhi.luotGoiRpc.trungVi)}
               nhan="lượt gọi RPC mỗi lượt kiểm tra"
-              cachDo={`Trung vị, thấp nhất ${d.chiPhi.luotGoiRpc.thap} cao nhất ${d.chiPhi.luotGoiRpc.cao}, đo trên ${d.chiPhi.soMau} giao dịch mainnet ngày ${ngay(d.chiPhi.ngayDo)}. Không tính lượt lấy giao dịch về — ví đã có sẵn nó.`}
+              cachDo={`Trung vị, thấp nhất ${d.chiPhi.luotGoiRpc.thap} cao nhất ${d.chiPhi.luotGoiRpc.cao}, đo trên ${d.chiPhi.soMau} giao dịch công khai đã lưu offline, ngày ${ngay(d.chiPhi.ngayDo)}. Không tính lượt lấy giao dịch về — ví đã có sẵn nó.`}
             />
           )}
         </div>

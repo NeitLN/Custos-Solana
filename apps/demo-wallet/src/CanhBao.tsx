@@ -38,7 +38,7 @@ export function CanhBao({
   //   a) có luật kích hoạt  -> thật sự có dấu hiệu đáng ngờ
   //   b) không luật nào kích hoạt, chỉ là chưa đọc hiểu hết -> đây là THÔNG TIN
   //
-  // Đo trên 15 giao dịch mainnet ngẫu nhiên: 15/15 rơi vào (b), coverage trung
+  // Đo offline trên 15 giao dịch công khai ngẫu nhiên: 15/15 rơi vào (b), coverage trung
   // bình 8%. Nếu báo động cả (b) thì người dùng học được cách bỏ qua cảnh báo,
   // và lúc (a) xảy ra thật thì họ cũng bỏ qua nốt.
   //
