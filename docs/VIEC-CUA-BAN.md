@@ -120,6 +120,12 @@ Requests`) **hàng chục lần**.
 
 **Nếu nó chặn đúng lúc bạn đang demo, demo đứng hình.**
 
+> **Đo ngày 31/08 (8 lượt, endpoint công cộng devnet):** median **973ms** (~1 giây,
+> rất nhanh), nhưng **p95 9,2 giây** — vì MỘT lượt dính `429` rồi backoff
+> 0,5→1→2→4s. Độ trễ 18-20s mà người xem thấy KHÔNG phải Custos chậm; là endpoint
+> công cộng chặn tốc độ. RPC riêng bỏ hẳn cái đuôi này — median giữ ~1s, không còn
+> spike. Đây là lý do việc này đáng làm, kèm số cụ thể để nói trên sân khấu.
+
 ### Lấy key — 10 phút
 
 1. Đăng ký tài khoản miễn phí tại **helius.dev** (gói Free có sẵn, không cần thẻ)
