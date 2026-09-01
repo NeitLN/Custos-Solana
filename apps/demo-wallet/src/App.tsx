@@ -8,6 +8,7 @@ import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
+import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
 import {
@@ -240,8 +241,8 @@ export default function App() {
               <h1 className="text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
                 Custos Wallet
               </h1>
-              <p className="mt-1.5 hidden text-[11px] uppercase tracking-[0.16em] text-chu-mo sm:block">
-                Ví Devnet · Bảo vệ trước khi ký
+              <p className="mt-1 hidden text-[12.5px] text-chu-mo sm:block">
+                Ví Devnet · kiểm tra giao dịch trước khi ký
               </p>
             </div>
           </div>
@@ -281,8 +282,8 @@ export default function App() {
                       <WalletIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[11px] uppercase tracking-[0.13em] text-chu-mo">Ví đang hoạt động</div>
-                      <div className="mt-0.5 truncate text-[14px] font-semibold text-chu">Custos Demo 01</div>
+                      <div className="truncate text-[15px] font-semibold text-chu">Custos Demo 01</div>
+                      <div className="text-[12px] text-chu-mo">Ví thử nghiệm của bạn</div>
                     </div>
                   </div>
                   <button
@@ -312,10 +313,9 @@ export default function App() {
               </div>
 
               <div className="wallet-actions border-t px-5 py-5 sm:px-6">
-                <div className="mb-3 flex items-center justify-between">
-                  <h2 className="text-[12px] font-semibold uppercase tracking-[0.13em] text-chu-nhat">Kịch bản demo</h2>
-                  <span className="text-[11px] text-chu-mo">Chọn một giao dịch</span>
-                </div>
+                <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
+                  Chọn một giao dịch để thử
+                </h2>
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   <button
                     onClick={() => void bam("tanCong")}
@@ -372,17 +372,19 @@ export default function App() {
                   />
                 </label>
               </div>
+
+              <HoatDong rpc={chonRpc(ht)} diaChi={ht.nanNhan} />
             </section>
 
             <section className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
               <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-chu-mo">Trung tâm kiểm tra</div>
-                  <h2 className="mt-1 text-[17px] font-semibold tracking-[-0.015em] text-chu">Kiểm tra trước khi ký</h2>
+                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu">Kiểm tra trước khi ký</h2>
+                  <p className="mt-0.5 text-[12.5px] text-chu-mo">Mô phỏng giao dịch rồi giải thích hậu quả</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11px] text-nhan">
-                  <ShieldIcon className="h-3.5 w-3.5" />
-                  Pre-sign
+                <div className="flex shrink-0 items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11.5px] font-medium text-nhan">
+                  <ShieldIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                  Chạy trước khi ký
                 </div>
               </div>
 
@@ -391,8 +393,8 @@ export default function App() {
                   <div className="hien dapp-request mb-4 flex items-start gap-3 rounded-xl px-4 py-3">
                     <ExternalIcon className="mt-0.5 h-4 w-4 shrink-0 text-nhan" />
                     <div>
-                      <div className="text-[10px] uppercase tracking-[0.13em] text-chu-mo">Yêu cầu từ dApp bên ngoài</div>
-                      <div className="mt-1 text-[13px] text-chu">{tuDApp}</div>
+                      <div className="text-[12px] text-chu-mo">Yêu cầu ký đến từ một trang web bên ngoài</div>
+                      <div className="mt-0.5 text-[13.5px] font-medium text-chu">{tuDApp}</div>
                     </div>
                   </div>
                 )}
@@ -429,8 +431,9 @@ export default function App() {
                     </p>
                     <div className="mt-6 w-full max-w-xs space-y-2">
                       <div className="scan-line h-1.5 overflow-hidden rounded-full"><span /></div>
-                      <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-chu-mo">
-                        <span>Simulation</span><span>In progress</span>
+                      <div className="flex justify-between text-[12px] text-chu-mo">
+                        <span>Đang mô phỏng trên Devnet</span>
+                        <span aria-hidden="true">…</span>
                       </div>
                     </div>
                   </div>
@@ -471,7 +474,7 @@ export default function App() {
 
                 {nhatKy.length > 0 && (
                   <details className="mt-4">
-                    <summary className="cursor-pointer text-[11px] uppercase tracking-[0.12em] text-chu-mo transition-colors hover:text-chu-nhat">
+                    <summary className="cursor-pointer text-[12.5px] text-chu-mo transition-colors hover:text-chu-nhat">
                       Nhật ký kỹ thuật · {nhatKy.length} sự kiện
                     </summary>
                     <pre className="technical-log mt-2 max-h-32 overflow-auto rounded-xl p-3 font-mono text-[10.5px] leading-relaxed text-chu-mo">
@@ -486,7 +489,7 @@ export default function App() {
 
         <footer className="mt-5 flex flex-col gap-2 px-1 text-[10.5px] leading-relaxed text-chu-mo sm:flex-row sm:items-center sm:justify-between">
           <span>Ví mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.</span>
-          <span className="font-mono uppercase tracking-[0.1em]">Rule engine quyết định verdict · AI không đổi mức cảnh báo</span>
+          <span className="text-chu-nhat">Engine luật quyết định mức cảnh báo · AI không được đổi mức</span>
         </footer>
       </div>
     </div>
