@@ -6,8 +6,9 @@
  * Chạy lại được bao nhiêu lần tuỳ ý — và PHẢI chạy lại sau mỗi lần diễn nhịp 1,
  * vì `SetAuthority` làm tài khoản token đổi chủ, dùng lại không được nữa.
  *
- * Mint chỉ tạo một lần rồi giữ nguyên; mỗi lần dựng lại chỉ tạo tài khoản token
- * mới cho nạn nhân. Vì vậy dựng lại nhanh, hợp cho lúc tập pitch.
+ * Mỗi lần dựng tạo một mint MỚI, mint đủ token rồi THU HỒI quyền phát hành — nhờ
+ * vậy giao dịch lành tính (chuyển token) không bị gắn cờ oan. Xem chú thích ở
+ * chỗ tạo mint bên dưới.
  */
 import {
   Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction,
@@ -16,6 +17,7 @@ import {
 import {
   ACCOUNT_SIZE, TOKEN_PROGRAM_ID, createMint, createInitializeAccountInstruction,
   getMinimumBalanceForRentExemptAccount, getOrCreateAssociatedTokenAccount, mintTo,
+  setAuthority, AuthorityType,
 } from "@solana/spl-token";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { napVi, RPC } from "./vi-devnet.ts";
@@ -66,16 +68,13 @@ async function main() {
     ? (JSON.parse(readFileSync(HO_SO, "utf8")) as HienTruong)
     : {};
 
-  // Mint giữ nguyên giữa các lần dựng lại — đỡ tốn thời gian lúc tập pitch.
-  let mint: PublicKey;
-  if (cu.mint) {
-    mint = new PublicKey(cu.mint);
-    console.log("dùng lại mint:", mint.toBase58());
-  } else {
-    console.log("tạo mint mới…");
-    mint = await createMint(conn, nanNhan, nanNhan.publicKey, null, DEC);
-    console.log("  mint:", mint.toBase58());
-  }
+  // LUÔN tạo mint MỚI, không tái dùng. Lý do: cuối hàm ta THU HỒI quyền phát hành
+  // để giao dịch lành tính (chuyển token) không bị luật MINT_AUTHORITY_CHUA_THU_HOI
+  // gắn cờ. Mint đã thu hồi thì không mintTo lại được — nên mỗi lần dựng phải là
+  // mint mới, mint đủ 500 rồi mới khoá.
+  console.log("tạo mint mới…");
+  const mint = await createMint(conn, nanNhan, nanNhan.publicKey, null, DEC);
+  console.log("  mint:", mint.toBase58());
 
   const keTanCong = cu.keTanCong ? new PublicKey(cu.keTanCong) : Keypair.generate().publicKey;
   const banBe = cu.banBe ? new PublicKey(cu.banBe) : Keypair.generate().publicKey;
@@ -86,13 +85,19 @@ async function main() {
   console.log("  tài khoản:", tkNanNhan.toBase58());
   console.log("  số dư    :", (await conn.getTokenAccountBalance(tkNanNhan)).value.uiAmountString);
 
+  // THU HỒI quyền phát hành — token demo trở thành token "đàng hoàng".
+  // Không có bước này, mọi giao dịch chạm token (kể cả chuyển cho bạn bè) đều mang
+  // mã MINT_AUTHORITY_CHUA_THU_HOI, và nút demo lành tính trông như báo nhầm.
+  await setAuthority(conn, nanNhan, mint, nanNhan, AuthorityType.MintTokens, null);
+  console.log("  đã thu hồi quyền phát hành mint");
+
   // Bên nhận phải tồn tại sẵn, nếu không Transfer sẽ lỗi.
-  const tkKeTanCong = cu.taiKhoanKeTanCong
-    ? new PublicKey(cu.taiKhoanKeTanCong)
-    : (await getOrCreateAssociatedTokenAccount(conn, nanNhan, mint, keTanCong)).address;
-  const tkBanBe = cu.taiKhoanBanBe
-    ? new PublicKey(cu.taiKhoanBanBe)
-    : (await getOrCreateAssociatedTokenAccount(conn, nanNhan, mint, banBe)).address;
+  //
+  // KHÔNG tái dùng ATA từ hiện trường cũ: mint nay tạo mới mỗi lần dựng, nên ATA cũ
+  // thuộc mint CŨ và Transfer sẽ lỗi "Account not associated with this Mint". Ví
+  // (keTanCong/banBe) giữ nguyên được — ATA suy ra từ ví + mint, tự khớp mint mới.
+  const tkKeTanCong = (await getOrCreateAssociatedTokenAccount(conn, nanNhan, mint, keTanCong)).address;
+  const tkBanBe = (await getOrCreateAssociatedTokenAccount(conn, nanNhan, mint, banBe)).address;
 
   const ht: HienTruong = {
     rpc: RPC,
