@@ -290,9 +290,9 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > trị; đo trên giao dịch tự dựng thì con số không nói lên gì. Nhãn devnet-only là về
 > **khuyến nghị triển khai**, không phải giới hạn kỹ thuật."
 
-### 14. "249 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "250 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 249 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 250 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 

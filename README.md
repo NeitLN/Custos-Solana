@@ -24,7 +24,7 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ```bash
 npm install
-npm run check      # typecheck + 249 test
+npm run check      # typecheck + 250 test
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -38,10 +38,10 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 - **[CUSTOS.md](CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
 - **[SEED-DATASET.md](SEED-DATASET.md)** — bộ kiểm thử: 25 mẫu phải thu thập, định dạng, quy tắc đo false positive
-- **[docs/docs/PHIEU-PHONG-VAN.md](docs/docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
+- **[docs/PHIEU-PHONG-VAN.md](docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
 - **[docs/bao-mat/](docs/bao-mat/)** — audit bảo mật, roadmap khắc phục, báo cáo, đánh giá mô hình
 - **[PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
-- **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 12 luật, lịch làm của vai A
+- **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 14 luật, lịch làm của vai A
 - **[DAC-TA-L3.md](DAC-TA-L3.md)** — đặc tả L3 và chữ tiếng Việt: từ vựng, câu mẫu dự phòng, prompt
 - **[packages/core/README.md](packages/core/README.md)** — **tài liệu tích hợp SDK** dành cho ví và dApp
 - **[CLAUDE.md](CLAUDE.md)** — bối cảnh cho Claude Code, và các quyết định thiết kế đã khoá
@@ -79,13 +79,13 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **249**, chạy trong `npm run check` |
+| Test | **250**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
-| Giao dịch **bị gắn cờ** trên 9 giao dịch SPL mainnet lấy ngẫu nhiên | **0** |
-| Coverage trung bình trên giao dịch mainnet thật | **82 %** · cohort **neo lại 25/08** |
+| Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
+| Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
 
 > Số cập nhật theo lần đo gần nhất tại **[/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html)** — mỗi con số kèm cách đo và ngày đo.
-> *"Bị gắn cờ"* chứ không phải *"báo nhầm"*: chúng tôi chưa kiểm chứng từng giao dịch trong cohort là lành, nên chưa có ground truth để nói tỉ lệ false positive.
+> *"Bị cáo buộc"* chứ không phải *"báo nhầm"*: chúng tôi chưa gán nhãn ground truth cho cohort, nên đây KHÔNG phải precision/recall hay tỉ lệ false positive. Cohort là dữ liệu lưu **offline** để kiểm engine — demo chạy hoàn toàn trên **Devnet**.
 
 ### Phụ thuộc có lỗ hổng đã biết
 

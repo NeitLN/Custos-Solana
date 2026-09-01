@@ -85,6 +85,22 @@ for (const g of GOI) {
 
   // 3. Pack — hoặc publish — từ thư mục dàn.
   if (DAY_LEN) {
+    // BỎ QUA version đã có trên registry: npm không cho publish đè, và khi chỉ một
+    // gói đổi (ví dụ ai@0.1.2) thì hai gói kia vẫn ở version cũ — publish lại chúng
+    // là chắc chắn ăn E409 rồi dừng cả chuỗi.
+    let daCo = false;
+    try {
+      const url = "https://registry.npmjs.org/" + p.name.replace("/", "%2f");
+      const j = await fetch(url).then((r) => (r.ok ? r.json() : null));
+      daCo = Boolean(j && j.versions && j.versions[p.version]);
+    } catch {
+      /* mạng lỗi thì cứ thử publish, npm sẽ tự báo nếu trùng */
+    }
+    if (daCo) {
+      console.log(`
+· bỏ qua ${p.name}@${p.version} — đã có trên registry`);
+      continue;
+    }
     // `--access public` trên dòng lệnh chứ không qua `publishConfig`: gói có scope
     // mặc định bị coi là riêng tư, và tài khoản miễn phí sẽ ăn lỗi 402.
     //
