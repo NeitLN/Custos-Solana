@@ -14,8 +14,8 @@
     },
     {
       "label": "Phí mạng",
-      "before": "0",
-      "after": "−0,000005 SOL",
+      "before": "—",
+      "after": "0,000005 SOL",
       "severity": "info"
     }
   ],

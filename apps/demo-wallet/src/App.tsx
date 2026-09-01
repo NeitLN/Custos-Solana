@@ -400,22 +400,62 @@ export default function App() {
                 )}
 
                 {!dangChay && !hauQua && !ketQua && (
-                  <div className="empty-review flex min-h-[430px] flex-col items-center justify-center rounded-2xl px-5 py-10 text-center">
-                    <div className="scan-orbit grid h-20 w-20 place-items-center rounded-full">
-                      <ScanIcon className="h-9 w-9 text-nhan" />
+                  /* MÀN CHỜ PHẢI TỰ DẠY ĐƯỢC GIÁ TRỊ.
+                     Bản trước để một khung viền đứt cao 430px với ba ô rỗng
+                     "01 Mô phỏng / 02 Đối chiếu / 03 Giải thích" — ba động từ trừu
+                     tượng, không dạy được gì. Ai không bấm thì rời trang mà không
+                     biết Custos khác ví thường ở chỗ nào.
+                     Nay nói thẳng ba thứ sẽ thấy, kèm ví dụ thật, và đặt trục khác
+                     biệt (phần CHƯA đọc hiểu) ở vị trí cuối — chỗ mắt dừng lại. */
+                  <div className="empty-review rounded-2xl px-5 py-7 sm:px-6">
+                    <div className="flex items-start gap-3.5">
+                      <div className="scan-orbit grid h-12 w-12 shrink-0 place-items-center rounded-full">
+                        <ScanIcon className="h-6 w-6 text-nhan" />
+                      </div>
+                      <div>
+                        <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-chu">
+                          Chọn một giao dịch ở ví bên cạnh
+                        </h3>
+                        <p className="mt-1 text-[13px] leading-relaxed text-chu-mo">
+                          Custos chạy thử nó trên Devnet trước, rồi cho bạn thấy ba điều:
+                        </p>
+                      </div>
                     </div>
-                    <h3 className="mt-6 text-[19px] font-semibold tracking-[-0.02em] text-chu">Sẵn sàng kiểm tra</h3>
-                    <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
-                      Chọn một kịch bản ở ví bên cạnh. Custos sẽ chạy thử giao dịch trên Devnet và cho bạn thấy tác động trước khi ký.
-                    </p>
-                    <div className="mt-7 grid w-full max-w-sm grid-cols-3 gap-2">
-                      {["Mô phỏng", "Đối chiếu", "Giải thích"].map((buoc, i) => (
-                        <div key={buoc} className="process-step rounded-xl px-2 py-3">
-                          <div className="font-mono text-[10px] text-nhan">0{i + 1}</div>
-                          <div className="mt-1 text-[11px] text-chu-nhat">{buoc}</div>
-                        </div>
+
+                    <ul className="mt-5 space-y-3">
+                      {[
+                        {
+                          tieuDe: "Tài sản của bạn thay đổi ra sao",
+                          mo: "Số dư và quyền sở hữu, trước và sau khi ký.",
+                          viDu: "500,0 → 0,0",
+                        },
+                        {
+                          tieuDe: "Vì sao nguy hiểm, bằng tiếng Việt",
+                          mo: "Một câu nói rõ hậu quả, không phải mã lỗi.",
+                          viDu: "“tài khoản sẽ đổi chủ”",
+                        },
+                        {
+                          tieuDe: "Phần Custos CHƯA đọc hiểu",
+                          mo: "Không ví nào khác nói ra con số này.",
+                          viDu: "2 trên 3 lệnh",
+                          nhanManh: true,
+                        },
+                      ].map((m) => (
+                        <li key={m.tieuDe} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <div className="min-w-0 flex-1">
+                            <p
+                              className={`text-[13.5px] font-medium ${m.nhanManh ? "text-nhan" : "text-chu"}`}
+                            >
+                              {m.tieuDe}
+                            </p>
+                            <p className="text-[12.5px] leading-relaxed text-chu-mo">{m.mo}</p>
+                          </div>
+                          <span className="shrink-0 rounded-md bg-white px-2 py-1 font-mono text-[11.5px] text-chu-nhat ring-1 ring-vien">
+                            {m.viDu}
+                          </span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 )}
 
@@ -427,7 +467,7 @@ export default function App() {
                     </div>
                     <h3 className="mt-6 text-[18px] font-semibold text-chu">Đang mô phỏng giao dịch</h3>
                     <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
-                      Custos đang đọc từng instruction và đối chiếu thay đổi tài sản trên Devnet.
+                      Custos đang đọc từng lệnh trong giao dịch và đối chiếu thay đổi tài sản trên Devnet.
                     </p>
                     <div className="mt-6 w-full max-w-xs space-y-2">
                       <div className="scan-line h-1.5 overflow-hidden rounded-full"><span /></div>
