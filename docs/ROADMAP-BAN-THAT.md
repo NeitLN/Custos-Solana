@@ -57,7 +57,7 @@ Làm trước khi gõ dòng code nào, vì đây là thứ cho phép làm nhanh 
 | Việc | Tiêu chí xong |
 |---|---|
 | Tạo nhánh `ban-that` từ `main` | `git branch` hiện nhánh mới |
-| Ghi lại "trạng thái vàng" của demo hiện tại | Chụp lại: 249 test qua · hiện trường còn 500 token · hai trang deploy chạy |
+| Ghi lại "trạng thái vàng" của demo hiện tại | Chụp lại: 250 test qua · hiện trường còn 500 token · hai trang deploy chạy |
 | Liệt kê file **cấm chạm** | `App.tsx`, `vi.ts`, `yeuCauNgoai.ts`, `hienTruong.ts`, `dung-hien-truong.ts` |
 
 **Cổng ra:** biết chính xác lệnh nào đưa mọi thứ về nguyên trạng (`git checkout main`).
@@ -88,7 +88,7 @@ không phải phát minh gì mới.
 
 - [ ] Dán **3 chữ ký cohort** → cả ba ra kết quả, không trắng trang
 - [ ] Dán **một chữ ký rác** → hiện thông báo lỗi tiếng Việt, không phải stack trace
-- [ ] `npm run check` vẫn **249/249**
+- [ ] `npm run check` vẫn **250/250**
 - [ ] Ví mẫu devnet ở `/` vẫn chạy y nguyên *(mở bằng tay, không tin vào build xanh)*
 
 ### Rủi ro đã biết
@@ -169,7 +169,7 @@ Phase dễ quên nhất, và là phase **biến code thành điểm**. Code khô
 
 ### 4a · Nghiệm thu trước khi merge
 
-- [ ] `npm run check` — 249/249
+- [ ] `npm run check` — 250/250
 - [ ] Build cả hai app, gộp `site/`, chạy `soi-ro-ri-khoa.mjs` → sạch
 - [ ] Mở **bằng tay** cả 4 trang: `/`, `/soi.html`, `/so-lieu.html`, `/phong-van.html`
 - [ ] Kiểm số dư hiện trường devnet vẫn 500 token *(đọc số dư thật, không tin HTTP 200)*

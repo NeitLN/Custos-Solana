@@ -16,7 +16,7 @@ Chạy được bằng `node` thường, không cần cờ nào — gói đã pu
 biên dịch sẵn.
 
 > **Đừng dùng `0.1.0`.** Bản đó lên registry với `main` trỏ vào TypeScript nguồn nên
-> không cài được từ JavaScript. Đã đánh dấu deprecated. Dùng **`0.1.1`** trở lên.
+> không cài được từ JavaScript. Dùng **`0.1.1` trở lên** (`@custos-solana/ai` từ `0.1.2`).
 
 `@custos-solana/types` được kéo theo tự động; chỉ cài riêng khi bạn cần gõ kiểu mà
 không dùng tới engine.
@@ -278,7 +278,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | **SOL: chỉ bắt theo tỉ lệ** | Luật 13 kích hoạt khi phần SOL rời ví vượt 50 % số dư. Khoản nhỏ vẫn hiện trong bảng chênh lệch nhưng không gắn cờ. Rent tạo/đóng account chưa tách riêng khỏi khoản chuyển |
 | **Ký hiệu token đọc từ chuỗi** | Custos tự đọc ký hiệu từ Metaplex và extension metadata của Token-2022 — không cần khoá của nhà cung cấp nào. Token không công bố metadata thì hiển thị địa chỉ rút gọn. `kyHieuToken` bạn truyền vào vẫn được ưu tiên trước |
 | **Không đo được thì nói ra** | Account vượt trần 100 của RPC, hoặc RPC không trả dữ liệu, sẽ thành `TRANG_THAI_DO_KHUYET` và verdict không bao giờ là `Bình thường` |
-| **12 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
+| **14 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
 | **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
@@ -292,7 +292,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ```bash
 npm install
-npm run check                # 249 test, chạy offline
+npm run check                # 250 test, chạy offline
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
 npm run vi                   # ví mẫu      → localhost:5188
@@ -301,4 +301,4 @@ npm run tan-cong             # trang lừa đảo → localhost:5189
 
 Bấm **Nhận thưởng ngay** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
-Bộ kiểm thử gồm **29 mẫu gắn nhãn** (19 tự dựng trên devnet, 10 giao dịch mainnet thật), phủ cả 12 luật — `data/seed/`.
+Bộ kiểm thử gồm **29 mẫu gắn nhãn** (19 tự dựng trên devnet, 10 giao dịch công khai lưu offline), phủ cả 14 luật — `data/seed/`.

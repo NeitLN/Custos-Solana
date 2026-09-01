@@ -43,7 +43,20 @@ export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
   return async ({ system, user }) => {
     // Import động: chỉ tải SDK khi thực sự gọi, để phần còn lại của @custos-solana/ai
     // không kéo theo phụ thuộc này nếu bên tích hợp không dùng adapter này.
-    const { default: Anthropic } = await import("@anthropic-ai/sdk");
+    //
+    // `@anthropic-ai/sdk` là OPTIONAL PEER DEPENDENCY: cài @custos-solana/ai một mình
+    // thì đường tất định (`dienGiaiKhongAI`) chạy đủ, không cần SDK. Chỉ adapter này
+    // cần nó — nên nếu thiếu, báo lỗi RÕ RÀNG thay vì để ERR_MODULE_NOT_FOUND khó hiểu.
+    let Anthropic: typeof import("@anthropic-ai/sdk").default;
+    try {
+      ({ default: Anthropic } = await import("@anthropic-ai/sdk"));
+    } catch {
+      throw new Error(
+        "Adapter Anthropic cần gói '@anthropic-ai/sdk' mà project chưa cài. " +
+          "Chạy `npm i @anthropic-ai/sdk`, hoặc dùng `dienGiaiKhongAI` (đường tất định, " +
+          "không cần mô hình).",
+      );
+    }
     const client = new Anthropic({ apiKey });
 
     const r = await client.messages.create({

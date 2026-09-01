@@ -476,7 +476,7 @@ Ba thứ cần có trước khi nộp grant, và đội đã có một:
 
 | Cần | Trạng thái |
 |---|---|
-| Số liệu trên lưu lượng thật | ✅ đo trên giao dịch mainnet, công khai ở `/so-lieu.html` |
+| Số liệu trên lưu lượng thật | ✅ đo offline trên giao dịch công khai đã lưu, hiện ở `/so-lieu.html` (demo chạy Devnet) |
 | Một ví hoặc dApp thật tích hợp | ⬜ chưa |
 | Audit bên thứ ba | ⬜ chưa — và **tự rà soát không thay thế được** |
 
@@ -606,7 +606,7 @@ nó chưa hiểu.**
 | Tiêu chí | Trọng số | **Hôm nay** | Trần thấy được | Vì sao |
 |---|---:|---:|---:|---|
 | Bài toán thị trường & người dùng | 25% | **6,5** | 8,5 | Nỗi đau hiểu tức thì và khách hàng đã thu hẹp đúng, nhưng **0 người dùng thật đã được hỏi**. Chân dung người dùng vẫn là giả thuyết |
-| Giải pháp, demo, trải nghiệm | 30% | **8,5** | 9,0 | Demo devnet thật, 0 cáo buộc sai trên mainnet, dòng coverage là ý tưởng sản phẩm mạnh nhất. Trừ vì **chưa ai ngoài đội tích hợp SDK** |
+| Giải pháp, demo, trải nghiệm | 30% | **8,5** | 9,0 | Demo devnet thật, 0 giao dịch bị luật buộc tội trên cohort công khai lưu offline, dòng coverage là ý tưởng sản phẩm mạnh nhất. Trừ vì **chưa ai ngoài đội tích hợp SDK** |
 | Mô hình kinh doanh & GTM | 25% | **5,5** | 8,0 | Có neo giá công khai và đơn vị kinh tế đo được (mục 08). Thiếu: **giá bán của chính Custos**, và **0 cuộc trò chuyện với khách hàng** |
 | Trình bày & phản biện | 20% | **7,0** | 8,5 | Tài liệu phản biện tốt, nhưng **chưa có slide, chưa có video, chưa tập lần nào** |
 | **Tổng có trọng số** | | **6,95** | **8,4** | |
