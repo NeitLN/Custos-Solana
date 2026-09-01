@@ -13,7 +13,7 @@ const NHAN = {
     muc: "Không có cờ đỏ",
     phu: "Không phát hiện dấu hiệu nguy hiểm trong phần đã đọc",
     vien: "border-emerald-200",
-    nen: "bg-emerald-50/70",
+    nen: "bg-emerald-50/60",
     chip: "border-emerald-200 bg-white text-emerald-700",
     icon: "border-emerald-200 bg-white text-emerald-600",
     thanh: "bg-emerald-500",
@@ -23,7 +23,7 @@ const NHAN = {
     muc: "Cần xác minh",
     phu: "Có thông tin bạn cần xác minh trước khi tiếp tục",
     vien: "border-amber-200",
-    nen: "bg-amber-50/75",
+    nen: "bg-amber-50/60",
     chip: "border-amber-200 bg-white text-amber-700",
     icon: "border-amber-200 bg-white text-amber-600",
     thanh: "bg-amber-500",
@@ -33,11 +33,31 @@ const NHAN = {
     muc: "Rủi ro cao",
     phu: "Không nên ký giao dịch này",
     vien: "border-rose-200",
-    nen: "bg-rose-50/75",
+    nen: "bg-rose-50/60",
     chip: "border-rose-200 bg-white text-rose-700",
     icon: "border-rose-200 bg-white text-rose-600",
     thanh: "bg-rose-500",
   },
+} as const;
+
+/**
+ * HÀNH ĐỘNG ĐỔI THEO MỨC ĐỘ — đây là bản sửa một lỗi UX thật.
+ *
+ * Bản trước để nút huỷ màu đỏ đặc CỐ ĐỊNH cho cả ba mức. Nghĩa là một giao dịch
+ * "Bình thường" vẫn hiện một nút đỏ to đùng. Hai cái sai trong một:
+ *
+ *   1. Đỏ dùng ở nơi không có nguy hiểm thì lần sau đỏ thật không còn nghĩa gì.
+ *   2. Với giao dịch bình thường, việc người dùng muốn làm là KÝ. Bắt họ đọc một
+ *      nút đỏ trước là tạo ma sát sai chỗ.
+ *
+ * Ma sát phải tỉ lệ với rủi ro: mức càng nguy thì đường "vẫn ký" càng nhạt và
+ * đường "dừng lại" càng nổi. Đây KHÔNG phải Custos xác nhận an toàn — nhãn vẫn là
+ * "Bình thường", và câu chữ vẫn nói rõ phạm vi "trong phần đã đọc".
+ */
+const HANH_DONG = {
+  safe: { huy: "Huỷ", huyChinh: false, ky: "Ký giao dịch" },
+  warning: { huy: "Huỷ giao dịch", huyChinh: true, ky: "Vẫn ký — tôi đã kiểm tra" },
+  danger: { huy: "Chặn & huỷ giao dịch", huyChinh: true, ky: "Vẫn ký — tôi hiểu rủi ro" },
 } as const;
 
 const MAU_DONG = {
@@ -96,54 +116,45 @@ export function CanhBao({
         thanh: "bg-slate-500",
       }
     : NHAN[ketQua.level];
+  const hd = HANH_DONG[ketQua.level];
   const phanTramCoverage = total > 0 ? Math.min(100, Math.round((analyzed / total) * 100)) : 0;
   const IconTrangThai = ketQua.level === "danger" ? AlertIcon : ShieldIcon;
 
   return (
-    <div className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}>
-      <div className="border-b border-slate-200/80 px-4 py-4 sm:px-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex min-w-0 items-start gap-3.5">
-            <div className={`status-icon ${ketQua.level === "danger" ? "status-icon--danger" : ""} grid h-11 w-11 shrink-0 place-items-center rounded-xl border ${n.icon}`}>
-              <IconTrangThai className="h-6 w-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-slate-500">Kết quả kiểm tra</div>
-              <h3 className="mt-1 text-[22px] font-semibold leading-none tracking-[-0.025em] text-slate-950">{n.chu}</h3>
-              <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">{n.phu}</p>
-            </div>
+    <section
+      aria-live="polite"
+      className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}
+    >
+      {/* PHÁN QUYẾT ĐỨNG ĐẦU. Người dùng đang chuẩn bị ký; thứ họ cần biết trước
+          tiên là có nên dừng lại không, không phải metadata của giao dịch. */}
+      <header className={`flex items-start justify-between gap-4 border-b ${n.vien} px-4 py-4 sm:px-5`}>
+        <div className="flex min-w-0 items-start gap-3.5">
+          <div
+            className={`status-icon ${ketQua.level === "danger" ? "status-icon--danger" : ""} grid h-11 w-11 shrink-0 place-items-center rounded-xl border ${n.icon}`}
+          >
+            <IconTrangThai className="h-6 w-6" />
           </div>
-          <span className={`${n.chip} shrink-0 rounded-full border px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]`}>
-            {n.muc}
-          </span>
+          <div className="min-w-0">
+            <h3 className="text-[22px] font-semibold leading-none tracking-[-0.025em] text-slate-950">
+              {n.chu}
+            </h3>
+            <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-600">{n.phu}</p>
+          </div>
         </div>
-      </div>
+        <span
+          className={`${n.chip} shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold`}
+        >
+          {n.muc}
+        </span>
+      </header>
 
-      <div className="space-y-4 p-4 sm:p-5">
-        {ketQua.detectedPrimaryAction && (
-          <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-3 shadow-[0_1px_1px_rgba(20,28,45,0.025)]">
-            <div className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.13em] text-slate-500">
-              <ScanIcon className="h-3.5 w-3.5" />
-              Custos nhận diện giao dịch
-            </div>
-            <div className="mt-1.5 break-words text-[14px] font-medium leading-relaxed text-slate-900">
-              {ketQua.detectedPrimaryAction.type}
-              {ketQua.detectedPrimaryAction.from && ketQua.detectedPrimaryAction.to
-                ? ` · ${ketQua.detectedPrimaryAction.from} → ${ketQua.detectedPrimaryAction.to}`
-                : ""}
-            </div>
-          </div>
-        )}
-
-        {chiLaChuaHieu && (
-          <p className="rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[13.5px] leading-relaxed text-slate-700">
-            Không thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa
-            đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.
-          </p>
-        )}
-
+      {/* MỘT KHUNG, NHIỀU VÙNG NGĂN BẰNG ĐƯỜNG KẺ MẢNH.
+          Bản trước lồng năm cái card trắng bên trong card cảnh báo — hộp trong hộp
+          trong hộp. Mỗi viền thừa lấy đi một chút chú ý khỏi con số thật sự quan
+          trọng. Giờ chỉ còn một đường kẻ giữa các vùng. */}
+      <div className="divide-y divide-slate-200/80 bg-white/70">
         {!chiLaChuaHieu && (
-          <div className="space-y-2">
+          <div className="space-y-2 px-4 py-4 sm:px-5">
             {/* MỨC 1 — NGẮN. Mặc định, hiện ngay. Đây là câu duy nhất phần lớn
                 người dùng sẽ đọc, và cũng là màn hình dùng để đo mức độ hiểu
                 (DAC-TA-L3.md mục 6 và 7). */}
@@ -153,77 +164,97 @@ export function CanhBao({
               <>
                 <button
                   type="button"
+                  aria-expanded={moRong}
                   onClick={() => setMoRong((v) => !v)}
-                  className="text-[12px] text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-950"
+                  className="lien-ket text-[12.5px] text-slate-600 hover:text-slate-950"
                 >
                   {moRong ? "Thu gọn" : "Xem chi tiết"}
                 </button>
                 {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
                 {moRong && (
-                  <p className="border-l-2 border-slate-200 pl-3 text-[13px] leading-relaxed text-slate-700">{ketQua.explanation}</p>
+                  <p className="mo-ra text-[13.5px] leading-relaxed text-slate-700">
+                    {ketQua.explanation}
+                  </p>
                 )}
               </>
             )}
           </div>
         )}
 
-        {ketQua.diff.length > 0 && (
-          <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
-            {/* Nhãn cột. Không có nó, `500,0 → 0,0` đọc được theo cả hai chiều —
-                mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
-            <div className="flex items-baseline justify-between gap-4 bg-slate-50 px-3.5 py-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500">
-                Thay đổi nếu bạn ký
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500">
-                trước <span className="px-1">→</span> sau
-              </span>
-            </div>
-            {ketQua.diff.map((d, i) => (
-              <div key={i} className="grid gap-1 px-3.5 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4">
-                <span className={`text-[12.5px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}>
-                  {d.label}
-                </span>
-                <span className={`break-all font-mono text-[12px] tabular-nums sm:text-right ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}>
-                  {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
-                </span>
-              </div>
-            ))}
-          </div>
+        {chiLaChuaHieu && (
+          <p className="px-4 py-4 text-[14px] leading-relaxed text-slate-700 sm:px-5">
+            Không thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa
+            đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.
+          </p>
         )}
 
         {/* ĐỐI CHIẾU LỜI KHAI — đây là quy tắc bất đối xứng hiện thành hình.
             Chỉ hiện khi LỆCH. Khớp thì không hiện gì, và tuyệt đối không làm
-            giảm verdict: dApp độc hại hoàn toàn có thể khai đúng để trông hiền. */}
+            giảm verdict: dApp độc hại hoàn toàn có thể khai đúng để trông hiền.
+
+            Đưa lên NGAY SAU câu tóm tắt: đây là bằng chứng mạnh nhất cho phán
+            quyết, nên nó phải đứng cạnh phán quyết chứ không nằm lẫn phía dưới. */}
         {ketQua.loiKhaiLech && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3.5">
-            <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-amber-800">
+          <div className="bg-amber-50/70 px-4 py-3.5 sm:px-5">
+            <p className="text-[13px] font-semibold text-amber-900">
               Trang web nói một đằng, giao dịch làm một nẻo
-            </div>
-            <div className="mt-2 grid gap-1.5 text-[12.5px] leading-relaxed">
-              <div>
-                Trang web khai: <span className="font-semibold text-slate-950">{ketQua.loiKhaiLech.khai}</span>
+            </p>
+            <dl className="mt-2 grid gap-1 text-[13px] leading-relaxed text-slate-700">
+              <div className="flex flex-wrap gap-x-1.5">
+                <dt>Trang web khai:</dt>
+                <dd className="font-semibold text-slate-950">{ketQua.loiKhaiLech.khai}</dd>
               </div>
-              <div>
-                Giao dịch thật sự: <span className="font-semibold text-amber-800">{ketQua.loiKhaiLech.nhanDien}</span>
+              <div className="flex flex-wrap gap-x-1.5">
+                <dt>Giao dịch thật sự:</dt>
+                <dd className="font-semibold text-amber-900">{ketQua.loiKhaiLech.nhanDien}</dd>
               </div>
-            </div>
+            </dl>
           </div>
         )}
 
-        {/* AI KHÔNG quyết định mức cảnh báo — quyết định đã khoá số 1. Dòng cũ
-            chỉ ghi "AI đề nghị kiểm tra thủ công", và một người đọc bình thường
-            hoàn toàn có thể hiểu thành AI là bên chấm Đỏ/Vàng/Xanh. Hiểu nhầm đó
-            đánh thẳng vào tuyên bố quan trọng nhất của sản phẩm, nên phải chặn
-            ngay tại chỗ nó sinh ra. */}
-        {ketQua.aiAdvisory === "review_required" && (
-          <div className="rounded-xl border border-amber-200 bg-white px-3.5 py-3">
-            <div className="text-[12.5px] font-medium text-amber-800">Custos đề nghị kiểm tra thủ công</div>
-            <div className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
-              Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
-              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai
-              chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là
-              tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.
+        {ketQua.detectedPrimaryAction && (
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-4 py-3 sm:px-5">
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] text-slate-500">
+              <ScanIcon className="h-3.5 w-3.5" aria-hidden="true" />
+              Custos nhận diện
+            </span>
+            <span className="min-w-0 break-words text-[13.5px] font-medium text-slate-900">
+              {ketQua.detectedPrimaryAction.type}
+              {ketQua.detectedPrimaryAction.from && ketQua.detectedPrimaryAction.to
+                ? ` · ${ketQua.detectedPrimaryAction.from} → ${ketQua.detectedPrimaryAction.to}`
+                : ""}
+            </span>
+          </div>
+        )}
+
+        {ketQua.diff.length > 0 && (
+          <div>
+            {/* Nhãn cột. Không có nó, `500,0 → 0,0` đọc được theo cả hai chiều —
+                mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
+            <div className="flex items-baseline justify-between gap-4 px-4 pb-1 pt-3.5 text-[12px] text-slate-500 sm:px-5">
+              <span>Thay đổi nếu bạn ký</span>
+              <span className="font-mono tabular-nums">
+                trước <span className="px-0.5">→</span> sau
+              </span>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {ketQua.diff.map((d, i) => (
+                <div
+                  key={i}
+                  className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5"
+                >
+                  <span
+                    className={`text-[13px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}
+                  >
+                    {d.label}
+                  </span>
+                  <span
+                    className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}
+                  >
+                    {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -231,79 +262,116 @@ export function CanhBao({
         {/*
           CÂU CHỮ KÝ CỦA SẢN PHẨM.
           Sinh từ `coverage` bằng code, KHÔNG BAO GIỜ do mô hình viết —
-          để nó cố định và chính xác. Đây là trục khác biệt của Custos.
+          để nó cố định và chính xác. Đây là trục khác biệt của Custos: không ví nào
+          khác nói ra phần nó CHƯA đọc hiểu. Câu chữ đã được cân để không nghe như
+          trấn an — làm nó rõ hơn không được phép làm nó êm hơn.
         */}
-        {/* ĐÂY LÀ TRỤC KHÁC BIỆT CỦA SẢN PHẨM, và nó đang được style như chú thích
-            chân trang 11px — nhỏ hơn mọi thứ quanh nó. Không ví nào khác hiển thị
-            con số này; nó là lý do người dùng tin được phần Custos ĐÃ đọc hiểu.
-            Nâng nó lên đúng tầm, nhưng KHÔNG đổi một chữ nào: câu chữ đã được cân
-            để không nghe như trấn an, và làm nó to hơn không được phép làm nó êm hơn. */}
-        <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-3">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="font-mono text-[9.5px] uppercase tracking-[0.13em] text-slate-500">Mức đọc hiểu</div>
-              <div className="mt-1 text-[13px] font-medium text-slate-800">{analyzed} trên {total} lệnh</div>
-            </div>
-            <div className="font-mono text-[16px] font-semibold text-slate-800">{phanTramCoverage}%</div>
+        <div className="px-4 py-3.5 sm:px-5">
+          <div className="flex items-baseline justify-between gap-4">
+            <p className="text-[13px] text-slate-700">
+              Đã đọc hiểu <span className="font-semibold text-slate-950">{analyzed} trên {total}</span> lệnh
+            </p>
+            <span className="font-mono text-[15px] font-semibold tabular-nums text-slate-800">
+              {phanTramCoverage}%
+            </span>
           </div>
-          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
-            <div className={`coverage-fill h-full rounded-full ${n.thanh}`} style={{ width: `${phanTramCoverage}%` }} />
+          <div
+            className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200"
+            role="progressbar"
+            aria-valuenow={phanTramCoverage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Mức đọc hiểu giao dịch"
+          >
+            <div
+              className={`coverage-fill h-full rounded-full ${n.thanh}`}
+              style={{ width: `${phanTramCoverage}%` }}
+            />
           </div>
-          <div className="mt-2 font-mono text-[10.5px] leading-relaxed text-slate-500">
+          <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
             {unverifiedPrograms > 0 && `${unverifiedPrograms} chương trình chưa xác minh. `}
-          {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,
-              và nói nhầm nó thành điểm an toàn là đúng thứ sản phẩm này sinh ra để
-              không làm. Một câu, đứng ngay cạnh con số. */}
+            {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,
+                và nói nhầm nó thành điểm an toàn là đúng thứ sản phẩm này sinh ra để
+                không làm. Một câu, đứng ngay cạnh con số. */}
             {analyzed < total && <span>Đây là mức đọc hiểu, không phải mức an toàn.</span>}
-          </div>
+          </p>
         </div>
+
+        {/* AI KHÔNG quyết định mức cảnh báo — quyết định đã khoá số 1. Dòng cũ
+            chỉ ghi "AI đề nghị kiểm tra thủ công", và một người đọc bình thường
+            hoàn toàn có thể hiểu thành AI là bên chấm Đỏ/Vàng/Xanh. Hiểu nhầm đó
+            đánh thẳng vào tuyên bố quan trọng nhất của sản phẩm, nên phải chặn
+            ngay tại chỗ nó sinh ra. */}
+        {ketQua.aiAdvisory === "review_required" && (
+          <div className="px-4 py-3.5 sm:px-5">
+            <p className="text-[13px] font-medium text-amber-900">Custos đề nghị kiểm tra thủ công</p>
+            <p className="mt-1 text-[12px] leading-relaxed text-slate-600">
+              Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
+              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai
+              chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là
+              tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.
+            </p>
+          </div>
+        )}
 
         {/* MỨC 3 — KỸ THUẬT. Đóng sẵn, và phải đóng sẵn.
             Trước đây mã lý do hiện thẳng ra cho mọi người dùng: một người bình
             thường nhìn `SPL_SET_AUTHORITY__ACCOUNT_OWNER` thì chỉ thấy nhiễu, và
             nhiễu làm loãng đúng cái câu mà mục 7 dùng để đo mức độ hiểu. Đây là
             thứ ba mức sinh ra để tách. Ai muốn tự kiểm chứng thì bấm một cái. */}
-        <div>
+        <div className="px-4 py-3 sm:px-5">
           <button
             type="button"
+            aria-expanded={moKyThuat}
             onClick={() => setMoKyThuat((v) => !v)}
-            className="font-mono text-[10px] uppercase tracking-[0.12em] text-slate-500 hover:text-slate-900"
+            className="lien-ket text-[12.5px] text-slate-500 hover:text-slate-900"
           >
-            {moKyThuat ? "− Kỹ thuật" : "+ Kỹ thuật"}
+            {moKyThuat ? "Ẩn chi tiết kỹ thuật" : "Chi tiết kỹ thuật"}
           </button>
           {moKyThuat && (
-            <div className="mt-2 space-y-1 rounded-xl border border-slate-200 bg-white p-3 font-mono text-[10.5px] text-slate-600">
+            <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
               {chiTietKyThuat(ketQua).map((d, i) => (
                 <div key={i} className="flex flex-wrap gap-x-2">
-                  <span className="text-slate-500">{d.nhan}:</span>
-                  <span className="break-all text-slate-800">{d.giaTri}</span>
+                  <dt className="text-slate-500">{d.nhan}:</dt>
+                  <dd className="break-all text-slate-800">{d.giaTri}</dd>
                 </div>
               ))}
-            </div>
-          )}
-        </div>
-
-        <div className="grid gap-2 pt-1 sm:grid-cols-2">
-          <button
-            onClick={onHuy}
-            className="rounded-xl bg-rose-600 px-4 py-3 text-[13px] font-semibold text-white shadow-[0_6px_16px_rgba(225,29,72,0.16)] transition-all hover:-translate-y-0.5 hover:bg-rose-700 active:translate-y-0"
-          >
-            {ketQua.level === "danger" ? "Chặn & huỷ giao dịch" : "Huỷ giao dịch"}
-          </button>
-          {choPhepKy ? (
-            <button
-              onClick={onKy}
-              className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-[12.5px] text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50"
-            >
-              Vẫn ký — tôi hiểu rủi ro
-            </button>
-          ) : (
-            <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-center text-[10.5px] leading-relaxed text-slate-500">
-              Demo chỉ mô phỏng · không nhúng khoá ký
-            </span>
+            </dl>
           )}
         </div>
       </div>
-    </div>
+
+      {/* MA SÁT TỈ LỆ VỚI RỦI RO — xem chú thích ở HANH_DONG. */}
+      <div className="grid gap-2 border-t border-slate-200/80 px-4 py-4 sm:grid-cols-2 sm:px-5">
+        {choPhepKy && !hd.huyChinh ? (
+          <>
+            <button onClick={onKy} className="nut nut-chinh sm:order-2">
+              {hd.ky}
+            </button>
+            <button onClick={onHuy} className="nut nut-phu sm:order-1">
+              {hd.huy}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={onHuy}
+              className={`nut ${ketQua.level === "danger" ? "nut-nguy" : "nut-chinh"}`}
+            >
+              {hd.huy}
+            </button>
+            {choPhepKy ? (
+              <button onClick={onKy} className="nut nut-phu">
+                {hd.ky}
+              </button>
+            ) : (
+              <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[11.5px] leading-relaxed text-slate-500">
+                Demo chỉ mô phỏng · không nhúng khoá ký
+              </span>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   );
 }

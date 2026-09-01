@@ -10,23 +10,32 @@
  */
 
 @theme {
+  /* Nền và viền */
   --color-nen: oklch(0.975 0.005 255);
-  --color-vo: oklch(1 0 0);
-  --color-the: oklch(0.986 0.004 255);
   --color-vien: oklch(0.89 0.012 255);
 
+  /* Ba bậc chữ.
+     `chu-mo` ĐÃ ĐƯỢC LÀM ĐẬM LÊN: bản trước ở L 0.58, đo bằng pixel thật chỉ được
+     3,98:1 trên nền trang và 4,28:1 trên trắng — dưới ngưỡng WCAG AA 4,5:1 cho chữ
+     thường. Nó là màu của mọi dòng phụ trong ví (mốc thời gian, chú thích số dư),
+     nên đây không phải lỗi hiếm gặp mà là lỗi ở khắp nơi. */
   --color-chu: oklch(0.22 0.025 260);
   --color-chu-nhat: oklch(0.43 0.024 260);
-  --color-chu-mo: oklch(0.58 0.02 260);
+  --color-chu-mo: oklch(0.52 0.021 260);
 
+  /* Màu trạng thái. `thuong` cũng phải đậm hơn bản trước (L 0.57 -> 0.5) vì nó
+     được dùng làm MÀU CHỮ cho nhãn mạng, không chỉ làm nền. */
   --color-nhan: oklch(0.54 0.19 267);
   --color-canh: oklch(0.72 0.14 76);
   --color-nguy: oklch(0.59 0.21 22);
-  --color-thuong: oklch(0.57 0.14 157);
+  --color-thuong: oklch(0.5 0.125 157);
 }
 
 html {
-  color-scheme: dark;
+  /* Giao diện là light hoàn toàn. Khai `dark` ở đây làm trình duyệt vẽ thanh cuộn,
+     form control gốc và vùng ngoài `.app-shell` theo bảng màu tối — lệch hẳn với
+     phần còn lại. Bản trước khai dark rồi phải ghi đè `light` trong `.app-shell`. */
+  color-scheme: light;
 }
 
 body {
@@ -44,6 +53,22 @@ button,
 a,
 label {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Chống mồ côi chữ cuối dòng. Tiếng Việt nhiều từ một âm tiết nên trên màn hẹp
+   rất hay còn đúng một chữ ở dòng cuối; `pretty` kéo nó lên. `balance` cho tiêu đề
+   để hai dòng dài gần bằng nhau thay vì dài–cụt. */
+p,
+li,
+dd,
+summary {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
 button {
@@ -364,12 +389,144 @@ button {
   background: #f5f6f8;
 }
 
+/*
+ * HỆ NÚT.
+ *
+ * Ba cấp, dùng chung toàn bộ ví: `nut-chinh` (hành động người dùng muốn làm),
+ * `nut-phu` (đường thoát), `nut-nguy` (dừng lại khi có nguy hiểm). Định nghĩa một
+ * chỗ để nút "huỷ" ở hai màn hình không bao giờ trông khác nhau.
+ *
+ * Mỗi cấp có đủ default / hover / active / disabled. Thiếu một trạng thái là nút
+ * "chết" dưới tay người dùng mà không ai biết vì sao.
+ */
+.nut {
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nut:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.nut-chinh {
+  color: #fff;
+  background: #2f49a6;
+  box-shadow: 0 6px 16px rgba(47, 73, 166, 0.18);
+}
+
+.nut-nguy {
+  color: #fff;
+  background: #c2183c;
+  box-shadow: 0 6px 16px rgba(194, 24, 60, 0.18);
+}
+
+.nut-phu {
+  color: #414a5c;
+  background: #fff;
+  border-color: #cdd3dd;
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .nut-chinh:hover:not(:disabled) {
+    background: #263d8e;
+    transform: translateY(-1px);
+  }
+
+  .nut-nguy:hover:not(:disabled) {
+    background: #a51433;
+    transform: translateY(-1px);
+  }
+
+  .nut-phu:hover:not(:disabled) {
+    color: #141c2d;
+    border-color: #9aa3b2;
+    background: #f6f7f9;
+  }
+}
+
+.nut:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Nút trông như liên kết: dùng cho "xem chi tiết", "chi tiết kỹ thuật".
+   Gạch chân mảnh, cách chữ 4px để dấu tiếng Việt không chạm vào đường kẻ. */
+.lien-ket {
+  text-decoration: underline;
+  text-decoration-color: #c3cad6;
+  text-underline-offset: 4px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.lien-ket:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Khung xương lúc tải: nhịp thở chậm, không nhấp nháy. Tắt theo reduced-motion
+   ở cuối file — lúc đó nó vẫn là một mảng xám tĩnh, vẫn báo đúng "đang tải". */
+.xuong-khung {
+  background: linear-gradient(90deg, #e8ebf0 25%, #f2f4f7 50%, #e8ebf0 75%);
+  background-size: 200% 100%;
+  animation: xuong-khung 1.4s ease-in-out infinite;
+}
+
+@keyframes xuong-khung {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.hang-hoat-dong {
+  transition: background-color 140ms ease;
+}
+
+@media (hover: hover) {
+  .hang-hoat-dong:hover {
+    background: #f4f6f9;
+  }
+}
+
 .result-card {
   box-shadow: 0 8px 24px rgba(35, 44, 65, 0.055);
 }
 
 .coverage-fill {
   transform-origin: left;
+}
+
+/* Vùng chi tiết bung ra: chỉ mờ + trượt nhẹ, không animate chiều cao (gây layout
+   thrash). `@media (prefers-reduced-motion: reduce)` ở cuối file đã vô hiệu hoá. */
+.mo-ra {
+  animation: mo-ra 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes mo-ra {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .reveal-card {
