@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Connection, LAMPORTS_PER_SOL, PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
-import { dungGiaoDichTanCong, dungGiaoDichLanhTinh, dungGiaoDichTanCongSol } from "../../../scripts/tan-cong.ts";
+import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
@@ -54,9 +54,8 @@ export default function App() {
     // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
     // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
     //
-    // RPC lấy từ hiện trường qua `chonRpc`, KHÔNG hardcode devnet nữa: chế độ thật
-    // (`?that=1`) chạy mainnet, và một endpoint devnet cứng ở đây thì mọi mô phỏng
-    // trên mainnet đều hỏng.
+    // RPC lấy từ hiện trường qua `chonRpc` (endpoint riêng ở chế độ dev, còn lại là
+    // devnet công cộng), không hardcode chuỗi endpoint tại chỗ này.
     void docHienTruong().then((htNay) =>
       inspect(
         { connection: new Connection(chonRpc(htNay), "confirmed"), interpret: boiThoiHan(dienGiaiKhongAI) },
@@ -82,14 +81,8 @@ export default function App() {
   const doSoDu = useCallback(async () => {
     if (!ht) return;
     try {
-      if (ht.loai === "sol") {
-        // Hiện trường mainnet: hiện SỐ DƯ SOL THẬT của ví, không có token account.
-        const lam = await conn().getBalance(new PublicKey(ht.nanNhan));
-        setSoDuToken((lam / LAMPORTS_PER_SOL).toString());
-      } else {
-        const b = await conn().getTokenAccountBalance(new PublicKey(ht.taiKhoanNanNhan));
-        setSoDuToken(b.value.uiAmountString ?? "0");
-      }
+      const b = await conn().getTokenAccountBalance(new PublicKey(ht.taiKhoanNanNhan));
+      setSoDuToken(b.value.uiAmountString ?? "0");
     } catch {
       setSoDuToken("—");
     }
@@ -101,28 +94,6 @@ export default function App() {
 
   function dungTx(kich: Kich, blockhash: string): VersionedTransaction {
     if (!ht) throw new Error("chưa có hiện trường");
-
-    // Hiện trường MAINNET rút SOL: cả hai kịch đều là chuyển SOL.
-    //   - tấn công: rút phần lớn SOL về ví kẻ tấn công
-    //   - lành tính: chuyển một khoản nhỏ VỀ CHÍNH MÌNH (net ≈ 0), nên luật 13
-    //     không kích hoạt — đúng nghĩa "an toàn" để đo báo nhầm.
-    if (ht.loai === "sol") {
-      const nanNhan = new PublicKey(ht.nanNhan);
-      return kich === "tanCong"
-        ? dungGiaoDichTanCongSol({
-            nanNhan,
-            keTanCong: new PublicKey(ht.keTanCong),
-            soLamport: BigInt(ht.soLamport ?? "0"),
-            blockhash,
-          })
-        : dungGiaoDichTanCongSol({
-            nanNhan,
-            keTanCong: nanNhan,
-            soLamport: BigInt(Math.floor(0.001 * LAMPORTS_PER_SOL)),
-            blockhash,
-          });
-    }
-
     const chung = {
       nanNhan: new PublicKey(ht.nanNhan),
       mint: new PublicKey(ht.mint),
@@ -267,7 +238,7 @@ export default function App() {
                 nên mắt không biết bắt đầu từ đâu. */}
             <section className="mt-7 rounded-xl border border-vien bg-the px-5 py-5">
               <div className="text-[12px] text-chu-mo">
-                {ht.loai === "sol" ? "Số dư ví của bạn" : "Tài khoản token của bạn"}
+                Tài khoản token của bạn
               </div>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="so text-[42px] font-semibold leading-none text-chu">
@@ -277,7 +248,7 @@ export default function App() {
               </div>
               <div
                 className="mt-3 truncate font-mono text-[11.5px] text-chu-mo"
-                title={ht.loai === "sol" ? ht.nanNhan : ht.taiKhoanNanNhan}
+                title={ht.taiKhoanNanNhan}
               >
                 {ht.taiKhoanNanNhan}
               </div>
@@ -323,7 +294,7 @@ export default function App() {
                 disabled={dangChay}
                 className="rounded-xl border border-vien bg-the px-5 py-3.5 text-[15px] text-chu-nhat transition-colors hover:border-chu-mo hover:text-chu disabled:cursor-not-allowed disabled:opacity-45"
               >
-                {ht.loai === "sol" ? "Gửi một ít về chính mình" : "Gửi 10 token cho bạn bè"}
+                Gửi 10 token cho bạn bè
               </button>
             </div>
 
