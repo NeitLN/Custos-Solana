@@ -266,14 +266,19 @@ export default function App() {
                 màn hình. Bản trước để 20px — nhỏ hơn cả chữ trong màn cảnh báo,
                 nên mắt không biết bắt đầu từ đâu. */}
             <section className="mt-7 rounded-xl border border-vien bg-the px-5 py-5">
-              <div className="text-[12px] text-chu-mo">Tài khoản token của bạn</div>
+              <div className="text-[12px] text-chu-mo">
+                {ht.loai === "sol" ? "Số dư ví của bạn" : "Tài khoản token của bạn"}
+              </div>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="so text-[42px] font-semibold leading-none text-chu">
                   {soDuToken ?? "—"}
                 </span>
                 <span className="text-[15px] text-chu-nhat">{ht.kyHieu ?? "token"}</span>
               </div>
-              <div className="mt-3 truncate font-mono text-[11.5px] text-chu-mo" title={ht.taiKhoanNanNhan}>
+              <div
+                className="mt-3 truncate font-mono text-[11.5px] text-chu-mo"
+                title={ht.loai === "sol" ? ht.nanNhan : ht.taiKhoanNanNhan}
+              >
                 {ht.taiKhoanNanNhan}
               </div>
             </section>
@@ -318,7 +323,7 @@ export default function App() {
                 disabled={dangChay}
                 className="rounded-xl border border-vien bg-the px-5 py-3.5 text-[15px] text-chu-nhat transition-colors hover:border-chu-mo hover:text-chu disabled:cursor-not-allowed disabled:opacity-45"
               >
-                Gửi 10 token cho bạn bè
+                {ht.loai === "sol" ? "Gửi một ít về chính mình" : "Gửi 10 token cho bạn bè"}
               </button>
             </div>
 
