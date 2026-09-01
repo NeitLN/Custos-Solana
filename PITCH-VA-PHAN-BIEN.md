@@ -53,9 +53,13 @@ chứng minh, không phải lập luận đội tự nghĩ.
 
 Câu để dành cho phần mô hình kinh doanh:
 
-> *"Chúng em không cần chứng minh thị trường này có tồn tại. Phantom đã chứng minh
-> hộ — họ mua đứt Blowfish rồi đóng dịch vụ bán rời. Nghĩa là mọi ví và dApp khác
-> giờ không mua được năng lực này nữa."*
+> *"Chúng em không cần chứng minh thị trường này có tồn tại. Phantom mua đứt Blowfish
+> rồi đóng dịch vụ bán rời của nó — ví lớn nhất Solana trả tiền cho đúng năng lực này.
+> Thị trường có thật, và có một chỗ trống."*
+
+> ⚠️ **KHÔNG nói "mọi ví khác không mua được nữa"** — Blockaid vẫn bán cho ví khác,
+> nói vậy là sai và tự mâu thuẫn với slide đối thủ. Blowfish chứng minh thị trường
+> có thật, không chứng minh hết đối thủ.
 
 Và chuẩn bị sẵn cho câu hỏi ngược: *"Phantom có rồi, sao còn cần các em?"* — trả lời
 ở mục 9 bên dưới.
@@ -111,7 +115,7 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 1. *"Ví lớn đã có mô phỏng giao dịch. Chúng tôi không cạnh tranh ở đó."*
 2. *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Khác nhau ở chỗ có ví nào chịu nói ra không."*
 3. *"Custos không bao giờ nói an toàn khi nó chưa chắc."*
-4. *"Phantom mua đứt Blowfish rồi đóng dịch vụ bán rời — nghĩa là mọi ví khác giờ không mua được năng lực này nữa."*
+4. *"Phantom mua đứt Blowfish rồi đóng dịch vụ bán rời của nó — thị trường này ví lớn nhất Solana đã trả tiền chứng minh."* (KHÔNG thêm "không ai mua được nữa" — Blockaid vẫn còn.)
 
 ---
 

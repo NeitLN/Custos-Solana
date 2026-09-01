@@ -207,7 +207,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   const bs = [
     ["2024", "Phantom — ví lớn nhất Solana — mua đứt Blowfish", C.muted],
     ["SUNSET", "Dịch vụ bán rời bị đóng. blowfish.xyz nay là tên miền hết hạn", C.rose],
-    ["HÔM NAY", "Mọi ví và dApp khác không mua được năng lực này nữa", C.amber],
+    ["HÔM NAY", "Dịch vụ bán rời của Blowfish đã dừng — thị trường có thật, có chỗ trống", C.amber],
   ];
   bs.forEach(([k, t, mau], i) => {
     const x = M + i * (bw + 0.55);
