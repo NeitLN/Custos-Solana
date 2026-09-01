@@ -415,18 +415,31 @@ mục tiêu đã quen trả khoảng $49/tháng để bắt đầu, và quen v�
 ### Thị trường này đã được người khác chứng minh hộ
 
 > *"Chúng em không cần chứng minh thị trường này có tồn tại. Ví lớn nhất Solana đã
-> bỏ tiền mua đúng năng lực này — rồi **đóng cửa dịch vụ bán rời**. Nghĩa là hôm nay
-> mọi ví và dApp khác **không mua được nữa**. Đó là chỗ chúng em đứng."*
+> bỏ tiền mua đúng năng lực này — Phantom mua Blowfish, rồi **đóng cửa dịch vụ bán
+> rời của Blowfish**. Thị trường có thật, và có người rời khỏi bàn."*
 
 Phantom mua Blowfish năm 2024, và thông báo mua lại ghi rõ *"the current service has
 been sunset"*; `blowfish.xyz` giờ là tên miền hết hạn (tra 22/08/2026).
 
-Đây là **market validation do người khác trả tiền chứng minh**, không phải lập luận
-đội tự nghĩ. Nó làm ba việc trong một câu: chứng minh thị trường có thật, giải thích
-vì sao có khoảng trống, và chặn trước câu *"Phantom có rồi mà?"*.
+⚠️ **KHÔNG nói "mọi ví khác không mua được nữa".** Đó là quá rộng và SAI: **Blockaid**
+vẫn cung cấp transaction security cho ví khác (đúng như bảng đối thủ ở mục dưới của
+chính file này). Chỉ **dịch vụ bán rời của Blowfish** đã dừng, không phải cả thị
+trường đóng lại. Nói quá là mất điểm với giám khảo biết mảng này, và tự mâu thuẫn với
+slide đối thủ.
 
-⚠️ Nói ở **thì quá khứ**. *"Blowfish — công ty Phantom đã mua"*, không nói *"Blowfish
-đang cung cấp"*. Giám khảo theo mảng này biết chuyện đó.
+Vậy Blowfish chứng minh điều gì cho pitch: **thị trường có thật** (ví lớn nhất trả
+tiền mua), và **có một khoảng trống cụ thể** (một nhà cung cấp rời đi). Nó KHÔNG chứng
+minh "không còn đối thủ". Khác biệt của Custos phải đến từ chỗ khác, không từ chỗ
+"không ai làm":
+
+- **Giải thích tiếng Việt** — không đối thủ nào có.
+- **Công khai coverage và phần chưa hiểu** — Blockaid/Blowfish là hộp đen.
+- **Rule engine đặc thù Solana**, verdict tất định truy được về luật.
+- **AI không được đổi verdict** — ràng buộc an toàn, không phải giới hạn.
+- **Cắm nhẹ vào ví/dApp nhỏ** — khách hàng Blockaid là ví Mỹ lớn, tiếng Anh.
+
+⚠️ Nói ở **thì quá khứ** về Blowfish: *"công ty Phantom đã mua"*, không nói *"đang
+cung cấp"*.
 
 ### Chi phí biên — đo được, không ước lượng
 
