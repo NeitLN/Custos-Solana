@@ -95,8 +95,8 @@ export function SoLieu() {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <O
                 so={String(d.cohort.caoBuoc)}
-                nhan="giao dịch bị gắn cờ"
-                cachDo={`Trên ${d.cohort.mauDoDuoc} giao dịch SPL mainnet lấy ngẫu nhiên. Chúng tôi CHƯA kiểm chứng từng giao dịch là lành, nên đây là số lần gắn cờ — không phải tỉ lệ báo nhầm đã chứng minh. Một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua.`}
+                nhan="giao dịch bị CÁO BUỘC"
+                cachDo={`Cáo buộc = có mã lý do BUỘC TỘI một hành vi cụ thể. KHÁC với mức Vàng: ${d.cohort.verdict.warning} giao dịch ở mức Vàng là do THÔNG TIN hoặc coverage khuyết (ví dụ "chương trình chưa xác minh", "mô phỏng hỏng") — thận trọng, không phải buộc tội. Đó là lý do số này là ${d.cohort.caoBuoc} dù có ${d.cohort.verdict.warning} Vàng. Trên ${d.cohort.mauDoDuoc} giao dịch SPL mainnet ngẫu nhiên, chưa kiểm chứng từng cái là lành nên đây không phải tỉ lệ báo nhầm đã chứng minh.`}
               />
               <O
                 so={`${d.cohort.coveragePhanTram}%`}
@@ -126,12 +126,15 @@ export function SoLieu() {
             </p>
 
             <div className="mt-3 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px]">
-              <span className="text-slate-400">Kết luận trên {d.cohort.mauDoDuoc} giao dịch đó: </span>
+              <span className="text-slate-400">Verdict trên {d.cohort.mauDoDuoc} giao dịch mô phỏng được: </span>
               <span className="text-rose-300">{d.cohort.verdict.danger} Đỏ</span>
               {" · "}
               <span className="text-amber-300">{d.cohort.verdict.warning} Vàng</span>
               {" · "}
               <span className="text-emerald-300">{d.cohort.verdict.safe} Xanh</span>
+              <span className="text-slate-500">
+                {" "}— trong đó {d.cohort.caoBuoc} giao dịch bị cáo buộc (mã buộc tội), phần Vàng còn lại là thông tin/coverage.
+              </span>
             </div>
           </>
         )}

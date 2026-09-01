@@ -29,7 +29,7 @@ export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
   ra.push({ nhan: "Mức", giaTri: ketQua.level });
 
   if (ketQua.aiAdvisory) {
-    ra.push({ nhan: "AI đề nghị", giaTri: ketQua.aiAdvisory });
+    ra.push({ nhan: "Custos đề nghị", giaTri: ketQua.aiAdvisory });
   }
 
   if (ketQua.detectedPrimaryAction) {
