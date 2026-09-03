@@ -15,7 +15,7 @@ Video còn là **phao cứu sinh**: nếu demo chết trên sân khấu, BTC chi
 node --experimental-strip-types scripts/dung-hien-truong.ts
 
 # 2. Hai server
-npm run dev -w @custos-solana/demo-wallet -- --port 5188 --strictPort
+npm run vi              # cổng 5188, đã ghim trong package.json
 npm run tan-cong        # cổng 5189
 ```
 
