@@ -29,9 +29,11 @@ type Mau = {
 const GOC = new URL("../../../data/seed/", import.meta.url);
 const coDuLieu = existsSync(new URL("index.json", GOC));
 
-const hoSo: { mau: Mau[] } = coDuLieu
-  ? (JSON.parse(readFileSync(new URL("index.json", GOC), "utf8")) as { mau: Mau[] })
-  : { mau: [] };
+type HoSo = { mau: Mau[]; soMau: number };
+
+const hoSo: HoSo = coDuLieu
+  ? (JSON.parse(readFileSync(new URL("index.json", GOC), "utf8")) as HoSo)
+  : { mau: [], soMau: 0 };
 
 const docFacts = (m: Mau) => giaiDongBangFacts(readFileSync(new URL(m.facts, GOC), "utf8"));
 
@@ -92,26 +94,40 @@ test("SANITY trên giao dịch công khai — KHÔNG phải tỉ lệ báo nhầ
  * Test này TỰ CHỐT LẤY MỘT CÂU TRONG TÀI LIỆU CÔNG KHAI.
  *
  * `packages/core/README.md` — file được publish lên npm — nói seed dataset phủ
- * **luật 1–12**. Nếu câu đó đúng thì test này phải đỏ ngay khi một luật mất mẫu.
+ * **cả 14 luật**. Nếu câu đó đúng thì test này phải đỏ ngay khi một luật mất mẫu.
  *
  * Bản trước dùng `assert.ok(phu.size >= 4)`: chỉ đòi bốn luật, trong khi README
  * lúc đó còn ghi "phủ cả 14 luật". Nghĩa là claim sai gấp ba lần rưỡi mà bộ test
  * vẫn xanh — một câu khẳng định không có gì canh giữ.
  *
- * Luật 13 và 14 CỐ Ý không nằm trong danh sách: chúng chưa có ca đóng băng trong
- * `data/seed/`, và README nay nói đúng như vậy. Thêm mẫu cho chúng thì thêm số
- * vào `CAN_PHU` — test sẽ tự canh luôn.
+ * Luật 13 và 14 nay ĐÃ có ca đóng băng (R13-pos/neg, R14-pos/neg), nên danh sách
+ * đủ 1–14. Mỗi cặp khác nhau đúng MỘT điều, để chứng minh luật phân biệt được
+ * chứ không phải luôn bật.
  */
-const CAN_PHU = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const CAN_PHU = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
-test("seed dataset phủ đúng những luật README tuyên bố (1-12)", () => {
+/*
+ * `soMau` trong index.json là con số tài liệu và deck đọc ra. Nó ĐÃ TỪNG lệch với
+ * mảng thật (khai 29 khi đã có 33) mà không gì bắt được — vì không ai đọc cả hai
+ * cùng lúc. Test này đọc cả hai.
+ */
+test("soMau khai báo khớp số mẫu thật", () => {
+  assert.equal(
+    hoSo.soMau,
+    hoSo.mau.length,
+    `index.json khai soMau=${hoSo.soMau} nhưng mảng có ${hoSo.mau.length} mẫu. ` +
+      `Con số này đi thẳng vào trang số liệu và deck, nên lệch là nói sai ra ngoài.`,
+  );
+});
+
+test("seed dataset phủ đúng những luật README tuyên bố (1-14)", () => {
   const phu = new Set(hoSo.mau.filter((m) => m.cuc === "duong").map((m) => m.luat));
   const thieu = CAN_PHU.filter((l) => !phu.has(l));
 
   console.log(`
     luật đã phủ  : ${[...phu].filter((x) => x !== null).sort((a, b) => a! - b!).join(", ")}`);
   console.log(`    còn thiếu    : ${thieu.length ? thieu.join(", ") : "(không)"}`);
-  console.log(`    ngoài phạm vi: 13, 14 — chưa có mẫu đóng băng, README đã nói rõ`);
+    console.log(`    cặp dương/âm: R13-pos·R13-neg · R14-pos·R14-neg`);
 
   assert.deepEqual(
     thieu,

@@ -52,7 +52,7 @@ mainnet; soi khoá sạch.
 
 - [ ] Merge `ban-that` → `main`, đợi CI xanh
 - [ ] Mở link công khai bằng cửa sổ ẩn danh, thử cả ví và trang tấn công
-- [ ] Trang số liệu hiện **250 test**
+- [ ] Trang số liệu hiện **255 test**
 - [ ] Xác nhận xong **mới quay video**
 
 ## Giai đoạn 5 — Tăng điểm Product & Business (việc của đội)

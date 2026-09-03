@@ -1,0 +1,48 @@
+{
+  "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+  "nguoiKy": [
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+    "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+  ],
+  "nguoiDungDuocChiDinh": true,
+  "simulationOk": true,
+  "simulationError": null,
+  "phiUocTinh": "5000n",
+  "phiChinhXac": true,
+  "accounts": [
+    {
+      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+      "isSigner": true,
+      "programOwnerBefore": "11111111111111111111111111111111",
+      "programOwnerAfter": "11111111111111111111111111111111",
+      "lamportsBefore": "1000000000n",
+      "lamportsAfter": "999990000n"
+    }
+  ],
+  "tokenAccounts": [],
+  "mints": [],
+  "solDelta": {
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-10000n"
+  },
+  "instructions": [
+    {
+      "index": 0,
+      "programId": "11111111111111111111111111111111",
+      "isInner": false,
+      "parentIndex": null,
+      "decoded": {
+        "kind": "transfer"
+      },
+      "fromLookupTable": false,
+      "chamTaiSanNguoiKy": true
+    }
+  ],
+  "lookupTables": [],
+  "tuoiViNhan": {},
+  "accountKhongDoDuoc": [],
+  "coverage": {
+    "analyzed": 1,
+    "total": 1,
+    "unverifiedPrograms": 0
+  }
+}

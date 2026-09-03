@@ -1,7 +1,7 @@
 {
   "thuLuc": "2026-08-21T00:24:40.946Z",
   "themLuc": "2026-08-21T15:25:30.431Z",
-  "soMau": 29,
+  "soMau": 33,
   "mau": [
     {
       "id": "R01-pos",
@@ -515,6 +515,70 @@
       },
       "bangChung": "Giao dịch dùng bảng tra địa chỉ thật, giải được bình thường. ALT là kỹ thuật hợp lệ và phổ biến — 7/10 giao dịch mainnet trong bộ dữ liệu có dùng.",
       "ganNhanLuc": "2026-08-21T15:25:30.430Z"
+    },
+    {
+      "id": "R13-pos",
+      "luat": 13,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 13",
+      "facts": "facts/R13-pos.json",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "SOL_ROI_VI"
+        ]
+      },
+      "bangChung": "Gần như toàn bộ SOL rời ví sang một địa chỉ lạ, trừ phí và tiền đặt cọc vẫn còn 99%, và người ký KHÔNG nhận lại tài sản nào.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z"
+    },
+    {
+      "id": "R13-neg",
+      "luat": 13,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 13",
+      "facts": "facts/R13-neg.json",
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "SOL_ROI_VI"
+        ]
+      },
+      "bangChung": "CÙNG khoản SOL đi ra như R13-pos, khác đúng một điều: người ký nhận lại token. Đây là lệnh mua, không phải bị rút — luật 13 phải im.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z"
+    },
+    {
+      "id": "R14-pos",
+      "luat": 14,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 14",
+      "facts": "facts/R14-pos.json",
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "NGUOI_DUNG_KHONG_RO"
+        ]
+      },
+      "bangChung": "Giao dịch cần hai chữ ký và ví không cho biết địa chỉ nào là của người dùng, nên Custos không chắc đang bảo vệ ai.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z"
+    },
+    {
+      "id": "R14-neg",
+      "luat": 14,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 14",
+      "facts": "facts/R14-neg.json",
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "NGUOI_DUNG_KHONG_RO"
+        ]
+      },
+      "bangChung": "CÙNG hai người ký như R14-pos, khác đúng một điều: ví đã chỉ định người dùng. Custos biết đang bảo vệ ai nên luật 14 phải im.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z"
     }
   ]
 }
