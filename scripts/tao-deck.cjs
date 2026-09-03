@@ -136,10 +136,10 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("Vấn đề là lúc mô phỏng KHÔNG hiểu hết —", {
     x: M + 0.4, y: 3.55, w: W - 0.8, h: 0.5, fontFace: F.head, fontSize: 23, bold: true, color: C.text, margin: 0,
   });
-  s.addText("và ví hiện tại im lặng về phần đó.", {
+  s.addText("Custos nói ra phần đó — đó là chỗ khác biệt.", {
     x: M + 0.4, y: 4.08, w: W - 0.8, h: 0.5, fontFace: F.head, fontSize: 23, bold: true, color: C.amber, margin: 0,
   });
-  s.addText("Coinspect từng công bố một ca mô phỏng bỏ lọt lệnh đổi quyền sở hữu. Ví chỉ hiện vế hợp lệ.", {
+  s.addText("Coinspect từng công bố một ca mô phỏng bỏ lọt lệnh đổi quyền sở hữu; lỗi đó đã được vá. Luận điểm ở đây là cấu trúc, không phải cáo buộc.", {
     x: M + 0.4, y: 4.62, w: W - 0.8, h: 0.45, fontFace: F.body, fontSize: 13.5, color: C.muted, margin: 0,
   });
 

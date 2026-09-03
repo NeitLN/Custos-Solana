@@ -65,7 +65,9 @@ Vẫn trung thực tuyệt đối vì con số đến từ mô phỏng thật. M
 | **36–44** | Đợi `inspect()` chạy — **đừng cắt** | "Nó mô phỏng giao dịch trước khi ký." |
 | **44–56** | Màn cảnh báo. Chỉ vào câu đầu | "Toàn bộ token bị chuyển đi, và tài khoản đổi chủ. Một câu, không thuật ngữ." |
 | **56–66** | Chỉ vào bảng chênh lệch, cột **trước → sau** | "Đây là hậu quả đo được, không phải danh sách lệnh." |
-| **66–78** | **Chỉ vào dòng "Đã đọc hiểu 2 trên 3 lệnh"** | "Và đây là chỗ khác biệt: nó tự khai phần nó **chưa** hiểu. Ví hiện tại im lặng về phần đó." |
+| **66–78** | **Chỉ vào dòng "Đã đọc hiểu 2 trên 3 lệnh"** | "Và đây là chỗ khác biệt: nó tự khai phần nó **chưa** hiểu. Đây là con số tụi em chưa thấy ví nào hiển thị." |
+
+> ⚠️ **Đừng nói "ví hiện tại im lặng về phần đó."** Đó là khẳng định tuyệt đối về sản phẩm của người khác mà đội không đo được, và một giám khảo theo mảng này sẽ bắt ngay. Nói đúng phạm vi quan sát của mình: *"con số tụi em chưa thấy ví nào hiển thị"*.
 | **78–85** | Bấm **Chặn & huỷ giao dịch** | "Người dùng huỷ. Mất hai giây thay vì mất sạch ví." |
 
 **Câu ở giây 66–78 là câu quan trọng nhất của cả video.** Nếu phải cắt cho vừa 90

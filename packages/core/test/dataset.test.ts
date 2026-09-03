@@ -59,7 +59,15 @@ for (const m of hoSo.mau) {
   });
 }
 
-test("TỈ LỆ BÁO NHẦM — chỉ tính trên mẫu mainnet thật", () => {
+test("SANITY trên giao dịch công khai — KHÔNG phải tỉ lệ báo nhầm", () => {
+  // TÊN CŨ LÀ "TỈ LỆ BÁO NHẦM", VÀ ĐÓ LÀ NÓI QUÁ.
+  //
+  // Muốn nói "báo nhầm" thì phải biết mẫu nào THẬT SỰ lành — tức phải có ground
+  // truth do người gán nhãn. Tập này chưa có. Cái đo được ở đây hẹp hơn nhiều:
+  // engine KHÔNG gắn Đỏ cho một mẻ giao dịch công khai lấy ngẫu nhiên. Đó là một
+  // phép kiểm hồi quy, không phải precision/recall/false-positive rate.
+  //
+  // Tên test lọt vào ảnh chụp output rồi lên slide, nên tên sai là số sai.
   // Mẫu tự dựng KHÔNG được vào mẫu số. Đội tự tạo đầu vào rồi tự đo đầu ra thì
   // con số không nói lên điều gì. Xem SEED-DATASET.md mục 0.
   const that = hoSo.mau.filter((m) => m.nguonGoc === "real-mainnet");
@@ -80,16 +88,35 @@ test("TỈ LỆ BÁO NHẦM — chỉ tính trên mẫu mainnet thật", () => {
   assert.equal(do_.length, 0, "có mẫu mainnet bị gắn Đỏ — phải soi tay từng cái trước khi bỏ qua");
 });
 
-test("mỗi luật có ca dương tính đều được bộ dữ liệu phủ", () => {
+/**
+ * Test này TỰ CHỐT LẤY MỘT CÂU TRONG TÀI LIỆU CÔNG KHAI.
+ *
+ * `packages/core/README.md` — file được publish lên npm — nói seed dataset phủ
+ * **luật 1–12**. Nếu câu đó đúng thì test này phải đỏ ngay khi một luật mất mẫu.
+ *
+ * Bản trước dùng `assert.ok(phu.size >= 4)`: chỉ đòi bốn luật, trong khi README
+ * lúc đó còn ghi "phủ cả 14 luật". Nghĩa là claim sai gấp ba lần rưỡi mà bộ test
+ * vẫn xanh — một câu khẳng định không có gì canh giữ.
+ *
+ * Luật 13 và 14 CỐ Ý không nằm trong danh sách: chúng chưa có ca đóng băng trong
+ * `data/seed/`, và README nay nói đúng như vậy. Thêm mẫu cho chúng thì thêm số
+ * vào `CAN_PHU` — test sẽ tự canh luôn.
+ */
+const CAN_PHU = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+test("seed dataset phủ đúng những luật README tuyên bố (1-12)", () => {
   const phu = new Set(hoSo.mau.filter((m) => m.cuc === "duong").map((m) => m.luat));
-  const canPhu = [1, 2, 3, 4, 6, 8, 9, 11, 12];
-  const thieu = canPhu.filter((l) => !phu.has(l));
+  const thieu = CAN_PHU.filter((l) => !phu.has(l));
 
-  // Báo cáo trung thực thay vì im lặng. Luật chưa có mẫu thì chưa được coi là
-  // đã kiểm chứng — kế hoạch ghi rõ: "một luật chưa có ca nguy hiểm + ca an
-  // toàn tương tự thì chưa tính là xong".
-  console.log(`\n    luật đã phủ : ${[...phu].filter((x) => x !== null).sort((a, b) => a! - b!).join(", ")}`);
-  console.log(`    còn thiếu   : ${thieu.length ? thieu.join(", ") : "(không)"}`);
+  console.log(`
+    luật đã phủ  : ${[...phu].filter((x) => x !== null).sort((a, b) => a! - b!).join(", ")}`);
+  console.log(`    còn thiếu    : ${thieu.length ? thieu.join(", ") : "(không)"}`);
+  console.log(`    ngoài phạm vi: 13, 14 — chưa có mẫu đóng băng, README đã nói rõ`);
 
-  assert.ok(phu.size >= 4, "phải phủ được ít nhất bốn luật");
+  assert.deepEqual(
+    thieu,
+    [],
+    `README nói seed phủ luật ${CAN_PHU.join(",")} nhưng thiếu: ${thieu.join(", ")}. ` +
+      "Hoặc thêm mẫu, hoặc sửa README — không được để hai bên nói khác nhau.",
+  );
 });
