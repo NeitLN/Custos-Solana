@@ -37,6 +37,22 @@ export const kyDuoc = (): boolean => {
   return Boolean(import.meta.env["VITE_DEMO_SECRET"]);
 };
 
+/**
+ * Khoá chỉ được ghi xuống đĩa khi việc đó THẬT SỰ mua được gì.
+ *
+ * Nó mua được đúng một thứ: giữ ví qua reload trên máy người đang phát triển,
+ * để nạp devnet một lần rồi làm việc tiếp. Trên bản deploy công khai nó không
+ * mua gì cả — ở đó `kyDuoc()` là false, `napVi()` chỉ được gọi trong nhánh ký,
+ * nên khoá sinh ra không bao giờ ký gì.
+ *
+ * Trước đây bản công khai vẫn ghi khoá riêng thô vào `localStorage` của MỌI
+ * người xem, rồi không dùng vào việc gì. Rủi ro thật thì nhỏ — khoá devnet rỗng,
+ * sinh tại chỗ, không rời máy — nhưng nó không đổi lấy được gì, và "khoá riêng
+ * trong localStorage" là thứ không nên có mặt trong một sản phẩm bảo mật kể cả
+ * khi vô hại. Cách rẻ nhất để không phải giải thích là đừng ghi.
+ */
+const luuDuocXuongDia = (): boolean => import.meta.env.DEV;
+
 export function napVi(): Keypair {
   const tuEnv = import.meta.env["VITE_DEMO_SECRET"];
   if (tuEnv) {
@@ -45,6 +61,17 @@ export function napVi(): Keypair {
     } catch {
       console.warn("[custos] VITE_DEMO_SECRET không đọc được — bỏ qua");
     }
+  }
+
+  if (!luuDuocXuongDia()) {
+    // Dọn cả khoá do bản cũ để lại: người đã mở trang trước lần sửa này vẫn còn
+    // một khoá nằm trong máy họ, và chỉ ngừng ghi thì không lấy nó đi.
+    try {
+      localStorage.removeItem(KHOA_LUU);
+    } catch {
+      /* trình duyệt chặn storage thì cũng chẳng có gì để dọn */
+    }
+    return Keypair.generate(); // chỉ sống trong bộ nhớ, mất khi đóng tab
   }
 
   const daLuu = localStorage.getItem(KHOA_LUU);
