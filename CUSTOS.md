@@ -181,7 +181,7 @@ Nói ngắn: ngữ cảnh chỉ được phép làm sản phẩm **thận trọn
 │  SPL_SET_AUTHORITY__ACCOUNT_OWNER                        │
 │  SPL_TRANSFER_NGOAI_HANH_DONG_CHINH   VI_NHAN_TUOI_4H    │
 │                                                          │
-│  [ Huỷ giao dịch ]   [ Vẫn ký — tôi hiểu rủi ro ]        │
+│  [ Chặn & huỷ giao dịch ]  [ Vẫn ký — tôi hiểu rủi ro ]  │
 └──────────────────────────────────────────────────────────┘
                                     Ảnh dựng. Sản phẩm chưa build.
 ```

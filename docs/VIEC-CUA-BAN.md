@@ -190,11 +190,11 @@ Thể lệ: *"quay màn hình thao tác live, **không dùng mockup dàn dựng*
 
 | Giây | Cảnh |
 |---|---|
-| 0–10 | Mở trang lừa đảo giả, bấm "Nhận thưởng ngay" |
+| 0–10 | Mở trang lừa đảo giả, bấm "Nhận 1.000 SOLB" |
 | 10–25 | Ví mở ra, Custos chạy — quay cả lúc chờ, **đừng cắt** |
 | 25–50 | Màn cảnh báo: đọc to câu mức Ngắn, chỉ vào bảng chênh lệch |
 | 50–70 | Chỉ vào dòng "Đã đọc hiểu 2 trên 3 lệnh" — đây là trục khác biệt |
-| 70–90 | Bấm "Huỷ giao dịch" |
+| 70–90 | Bấm "Chặn & huỷ giao dịch" |
 
 ### Lưu ý kỹ thuật
 
