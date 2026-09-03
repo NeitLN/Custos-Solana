@@ -254,6 +254,12 @@ export default function App() {
             </div>
             <a
               href={`${import.meta.env.BASE_URL}so-lieu.html`}
+              /* Dưới 640px chữ "Số liệu" bị ẩn và icon thì `aria-hidden`, nên link
+                 KHÔNG còn tên nào — trình đọc màn hình chỉ đọc "liên kết". axe-core
+                 bắt được ở khung 375px, không bắt ở khung máy tính: lỗi chỉ tồn tại
+                 ở một cỡ màn hình. Nhãn để đúng chữ đang hiện, để người dùng điều
+                 khiển bằng giọng nói gọi được đúng tên họ nhìn thấy (WCAG 2.5.3). */
+              aria-label="Số liệu"
               className="icon-link flex items-center gap-2 rounded-full px-3 py-2 text-[12px] text-chu-nhat transition-colors hover:text-chu"
             >
               <span className="hidden sm:inline">Số liệu</span>

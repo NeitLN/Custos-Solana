@@ -128,7 +128,7 @@ export function PhongVan() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="mx-auto max-w-xl px-5 py-8">
-        <a href={import.meta.env.BASE_URL} className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 hover:text-slate-300">
+        <a href={import.meta.env.BASE_URL} className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400 hover:text-slate-300">
           ← Ví mẫu
         </a>
 
@@ -150,11 +150,23 @@ export function PhongVan() {
           </div>
         )}
 
-        {!ketQua && !loi && <div className="mt-6 text-slate-500">đang dựng màn hình thật…</div>}
+        {!ketQua && !loi && <div className="mt-6 text-slate-400">đang dựng màn hình thật…</div>}
 
         {ketQua && (
           <>
-            <div className="mt-5">
+            {/* `CanhBao` là component nền SÁNG của ví, và card của nó trong suốt 60 %.
+                Đặt thẳng lên trang nền `bg-slate-950` thì nó phối màu ra một mảng xám
+                đục: axe-core đo được 11 chỗ dưới ngưỡng WCAG AA, thấp nhất 2:1.
+
+                Nhưng lỗi thật nặng hơn tương phản. Trang này là thứ đưa cho NGƯỜI
+                PHỎNG VẤN xem, và cả bài phỏng vấn dựa trên việc họ đang nhìn đúng màn
+                hình mà người dùng thật sẽ nhìn. Card đổi màu ở đây nghĩa là dữ liệu
+                phỏng vấn đang đo một vật khác với sản phẩm.
+
+                Nên không chỉnh màu chữ cho vừa nền tối — làm vậy là để hai bản khác
+                nhau. Đặt lại đúng mặt nền mà ví dùng (`.review-body`, #fcfcfd), để
+                card phối màu y hệt trong ví. */}
+            <div className="review-body mt-5 rounded-2xl border border-[#dfe3ea] p-4 sm:p-5">
               <CanhBao ketQua={ketQua} onHuy={() => {}} onKy={() => {}} choPhepKy={false} />
             </div>
 
@@ -193,7 +205,7 @@ export function PhongVan() {
             ) : (
               <div className="mt-3 space-y-4">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
                     Mức hiểu hậu quả
                   </div>
                   <div className="mt-1.5 grid gap-2">
@@ -214,7 +226,7 @@ export function PhongVan() {
                 </div>
 
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
                     Họ nói sẽ làm gì
                   </div>
                   <div className="mt-1.5 flex flex-wrap gap-2">
@@ -245,7 +257,7 @@ export function PhongVan() {
             )}
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
                 Đã ghi {ban.length} người
               </div>
               <div className="mt-1 text-[15px] tabular-nums">
@@ -265,7 +277,7 @@ export function PhongVan() {
               </div>
               {/* Con số công bố phải là ĐÚNG / TỔNG. Gộp "một phần" vào "đúng" là
                   tự nâng điểm, và là thứ dễ bị hỏi lộ nhất. */}
-              <div className="mt-2 text-[12px] leading-relaxed text-slate-500">
+              <div className="mt-2 text-[12px] leading-relaxed text-slate-400">
                 Con số nói trên sân khấu: <span className="text-slate-400">{dem("dung")}/{ban.length} nêu
                 được hậu quả</span> và <span className="text-slate-400">{demQD("ky")}/{ban.length} vẫn ký</span>.
                 &quot;Một phần&quot; KHÔNG được gộp vào &quot;đúng&quot;. Nếu có người hiểu đúng mà vẫn
@@ -284,7 +296,7 @@ export function PhongVan() {
               >
                 {daChep ? "đã sao chép" : "Sao chép toàn bộ (JSON)"}
               </button>
-              <div className="mt-2 text-[11px] leading-relaxed text-slate-500">
+              <div className="mt-2 text-[11px] leading-relaxed text-slate-400">
                 Dữ liệu nằm trong trình duyệt máy này. Dán vào `data/seed/phong-van.json` rồi commit.
                 Không có nút xoá từng mục — bỏ người trả lời sai là gian lận, và là thứ dễ bị hỏi lộ nhất.
               </div>

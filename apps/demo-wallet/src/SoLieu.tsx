@@ -48,7 +48,7 @@ function O({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: string }) {
     <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
       <div className="text-[28px] font-semibold tabular-nums text-slate-50">{so}</div>
       <div className="mt-0.5 text-[14px] text-slate-200">{nhan}</div>
-      <div className="mt-2 text-[12px] leading-relaxed text-slate-500">{cachDo}</div>
+      <div className="mt-2 text-[12px] leading-relaxed text-slate-400">{cachDo}</div>
     </div>
   );
 }
@@ -63,7 +63,7 @@ export function SoLieu() {
       .catch(() => setD(null));
   }, []);
 
-  if (d === undefined) return <div className="p-8 text-slate-500">đang tải…</div>;
+  if (d === undefined) return <div className="p-8 text-slate-400">đang tải…</div>;
   if (d === null) return <div className="p-8 text-slate-400">Chưa sinh số liệu. Chạy <code>scripts/tao-so-lieu.ts</code>.</div>;
 
   return (
@@ -71,7 +71,7 @@ export function SoLieu() {
       <div className="mx-auto max-w-2xl px-5 py-10">
         <a
           href={import.meta.env.BASE_URL}
-          className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 hover:text-slate-300"
+          className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400 hover:text-slate-300"
         >
           ← Ví mẫu
         </a>
@@ -83,7 +83,7 @@ export function SoLieu() {
 
         {d.cohort && (
           <>
-            <h2 className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
+            <h2 className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
               Kiểm engine trên dữ liệu công khai đã lưu offline · {ngay(d.cohort.ngayDo)}
             </h2>
             <p className="mt-2 rounded-lg border border-white/10 bg-black/30 p-3 text-[12px] leading-relaxed text-slate-400">
@@ -132,14 +132,14 @@ export function SoLieu() {
               <span className="text-amber-300">{d.cohort.verdict.warning} Vàng</span>
               {" · "}
               <span className="text-emerald-300">{d.cohort.verdict.safe} Xanh</span>
-              <span className="text-slate-500">
+              <span className="text-slate-400">
                 {" "}— trong đó {d.cohort.caoBuoc} giao dịch bị cáo buộc (mã buộc tội), phần Vàng còn lại là thông tin/coverage.
               </span>
             </div>
           </>
         )}
 
-        <h2 className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">Sản phẩm</h2>
+        <h2 className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">Sản phẩm</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <O so={String(d.soLuat)} nhan="luật xác định" cachDo="Engine luật quyết định verdict. AI không tạo và không sửa verdict — nó có trường riêng và chỉ được đề nghị kiểm tra thủ công." />
           {d.test && (
@@ -159,7 +159,7 @@ export function SoLieu() {
           )}
         </div>
 
-        <p className="mt-8 text-[12px] leading-relaxed text-slate-500">
+        <p className="mt-8 text-[12px] leading-relaxed text-slate-400">
           Sinh lúc {new Date(d.sinhLuc).toLocaleString("vi-VN")} bởi{" "}
           <code className="text-slate-400">scripts/tao-so-lieu.ts</code>. Cách đo của từng con số nằm trong{" "}
           <code className="text-slate-400">SEED-DATASET.md</code> và{" "}
