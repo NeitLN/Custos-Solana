@@ -3,6 +3,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { inspect } from "../src/inspect.ts";
+import { danhGia } from "../src/l2/evaluate.ts";
+import { dungBangChenhLech } from "../src/diff.ts";
+import { computeCoverage } from "../src/l1/coverage.ts";
+import { giaiDongBangFacts } from "../src/facts-io.ts";
 import { chiLaThongTin } from "../src/constants.ts";
 import { dienGiaiKhongAI, boiThoiHan } from "../../ai/src/index.ts";
 import { validateInspectResult } from "../../types/src/validate.ts";
@@ -55,6 +59,27 @@ test("đoạn mã phân biệt hai loại warning trong README chạy được",
     ketQua.level === "warning" &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
   assert.equal(typeof chiLaChuaHieu, "boolean");
+});
+
+/*
+ * Mục "Hàm bậc thấp" dạy ba chữ ký mà tôi đã tự đoán nhầm hai khi viết bài kiểm
+ * người-ngoài: `dungBangChenhLech` cần `hits`, `computeCoverage` nhận MẢNG LỆNH
+ * chứ không nhận Facts. Đoán nhầm cho lỗi `Cannot read properties of undefined`,
+ * không chỉ ra chỗ sai. Nên đoạn mã ấy phải chạy thật ở đây, không chỉ nằm trong
+ * tài liệu.
+ */
+test("đoạn mã hàm bậc thấp trong README chạy được", () => {
+  const facts = giaiDongBangFacts(
+    readFileSync(new URL("../../../data/seed/facts/R14-pos.json", import.meta.url), "utf8"),
+  );
+
+  const { level, reasonCodes, hits } = danhGia(facts);
+  const bang = dungBangChenhLech(facts, hits);
+  const phu = computeCoverage(facts.instructions);
+
+  assert.ok(["safe", "warning", "danger"].includes(level));
+  assert.ok(Array.isArray(reasonCodes) && Array.isArray(bang));
+  assert.equal(phu.analyzed, facts.coverage.analyzed);
 });
 
 test("README KHÔNG hướng dẫn hiển thị chữ 'an toàn' cho mức safe", () => {
