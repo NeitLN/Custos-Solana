@@ -39,14 +39,6 @@ jobs:
       - name: Kiểm thử trước khi deploy
         run: npm run check
 
-      # Gói publish lên npm KHÔNG được kiểm bởi `npm run check` — check chạy mã
-      # nguồn trong repo, nơi `exports` cố ý trỏ vào `.ts`. Bản 0.1.0 đã lên
-      # registry hỏng với đúng khoảng mù đó. Bước này cài tarball vào một project
-      # trống ngoài monorepo rồi chạy bằng `node` trần, nên nó soi đúng thứ mà
-      # người ngoài nhận được.
-      - name: Gói có dùng được từ ngoài không
-        run: npm run thu-goi
-
       # Sinh lại số liệu TRƯỚC khi build. Trang số liệu công khai đọc file này,
       # và số test trong đó phải là số của chính commit đang deploy — số cũ còn
       # sót lại là số sai, mà con số sai trên một trang công khai thì đúng loại
@@ -86,6 +78,33 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+
+  # Kiểm gói SDK — CỐ Ý là job riêng, và `deploy` KHÔNG phụ thuộc vào nó.
+  #
+  # `npm run check` không soi được gói publish: nó chạy mã nguồn trong repo, nơi
+  # `exports` cố ý trỏ vào `.ts`. Bản 0.1.0 lên registry hỏng đúng ở khoảng mù đó.
+  # Bước này cài tarball vào một project trống ngoài monorepo rồi chạy `node` trần,
+  # nên nó soi đúng thứ người ngoài nhận được.
+  #
+  # Vì sao tách khỏi `build`: bước này gọi `npm install` thật ra registry để lấy
+  # `@solana/web3.js`. Để nó trong `build` thì một trục trặc mạng phía npm sẽ CHẶN
+  # deploy trang demo công khai — trong khi tarball SDK không liên quan gì tới trang
+  # mà người xem mở. Hỏng ở đây phải hiện đỏ rõ ràng, nhưng không được kéo demo
+  # xuống theo.
+  goi-sdk:
+    runs-on: ubuntu-latest
+    # Quyền `pages: write` và `id-token: write` khai ở cấp workflow là để cho job
+    # deploy. Job này chỉ đọc mã nguồn, nên hạ xuống đúng mức nó cần.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.12.0"
+      - run: npm ci
+      - name: Gói có dùng được từ ngoài không
+        run: npm run thu-goi
 
   deploy:
     needs: build
