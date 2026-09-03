@@ -554,8 +554,11 @@ lừa đã chặn, hơn 18 tỉ USD tài sản được bảo vệ.
 
 Nếu giám khảo hỏi *"Phantom đã có rồi, sao còn cần các em?"* — câu trả lời không phải
 "chúng em làm tốt hơn". Câu trả lời là: **Phantom có, bằng tiếng Anh, cho người dùng
-Phantom.** Ví và dApp khác phục vụ người Việt thì không có gì, và họ không mua được
-Blowfish nữa vì nó đã đóng.
+Phantom.** Lựa chọn cho ví/dApp nhỏ phục vụ người Việt thì hẹp: Blowfish đã đóng dịch
+vụ bán rời sau khi Phantom mua, còn Blockaid thì tiếng Anh và nhắm ví lớn.
+
+⚠️ **Không nói "họ không có gì".** Blockaid vẫn bán SDK cho ví khác — nói vậy là sai và
+tự mâu thuẫn với chính bảng đối thủ ở mục dưới.
 
 Cùng hình dạng sản phẩm với Blockaid (SDK bán cho ví). Khác ở thị trường mục tiêu,
 và ở một lựa chọn kiến trúc: **Custos nói cho người dùng biết phần nào của giao dịch

@@ -301,4 +301,8 @@ npm run tan-cong             # trang lừa đảo → localhost:5189
 
 Bấm **Nhận 1.000 SOLB** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
-Bộ kiểm thử gồm **29 mẫu gắn nhãn** (19 tự dựng trên devnet, 10 giao dịch công khai lưu offline), phủ cả 14 luật — `data/seed/`.
+Bộ kiểm thử gồm **29 mẫu gắn nhãn**: 19 ca dương tự dựng trên devnet (phủ **luật 1–12**),
+và 10 giao dịch công khai lưu offline làm tập âm (kỳ vọng *không phải* Đỏ) — `data/seed/`.
+
+> **Luật 13 và 14 chưa có mẫu trong seed dataset.** Chúng có unit test riêng nhưng chưa
+> có ca đóng băng trong `data/seed/`. Nói "dataset phủ cả 14 luật" là sai.
