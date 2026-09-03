@@ -1,1 +1,139 @@
 @import "tailwindcss";
+
+/*
+ * TRANG LỪA ĐẢO GIẢ — hệ màu RIÊNG, cố ý.
+ *
+ * Trang này KHÔNG dùng bảng màu của ví. Một trang lừa đảo thật là một bên thứ ba;
+ * nó có thương hiệu riêng. Nếu nó trông giống hệt ví thì người xem sẽ tưởng hai
+ * thứ là một sản phẩm, mà cả demo dựa trên việc chúng là hai bên khác nhau.
+ *
+ * Cái nó DÙNG CHUNG với ví là nền tảng kỹ thuật, không phải màu: cùng font, cùng
+ * thang bo góc, cùng mức shadow tiết chế, cùng chuẩn tương phản. Nhờ vậy nó trông
+ * như một sản phẩm được làm tử tế — mà đó chính là điều làm phishing lừa được.
+ *
+ * Vì sao bỏ nền tối gradient tím: trang lừa đảo hiệu quả trông như trang marketing
+ * bình thường. Nền tím đen kiểu "crypto" lại tự tố cáo nó là hàng dựng, và làm
+ * người xem cảnh giác trước khi Custos kịp làm việc của mình.
+ */
+
+@theme {
+  --color-giay: oklch(0.985 0.006 95);
+  --color-muc: oklch(0.25 0.02 60);
+  --color-muc-nhat: oklch(0.48 0.02 60);
+  --color-vien-nhat: oklch(0.9 0.012 80);
+  --color-hieu: oklch(0.55 0.16 42);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--color-giay);
+  color: var(--color-muc);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+/* Băng cảnh báo — thứ DUY NHẤT trên trang nói thật. Không bao giờ được gỡ, và
+   cố ý không đẹp: nó phải cắt ngang thẩm mỹ của trang. */
+.bang-that {
+  color: #fff;
+  background: #b0173a;
+}
+
+.the-thuong {
+  border: 1px solid var(--color-vien-nhat);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(60, 45, 30, 0.04),
+    0 12px 32px rgba(60, 45, 30, 0.06);
+}
+
+.nut-nhan {
+  color: #fff;
+  background: var(--color-hieu);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(180, 95, 40, 0.22);
+  transition:
+    background-color 160ms ease,
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 160ms ease;
+}
+
+@media (hover: hover) {
+  .nut-nhan:hover:not(:disabled) {
+    background: oklch(0.49 0.16 42);
+    transform: translateY(-1px);
+  }
+}
+
+.nut-nhan:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.nut-nhan:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.vien-dut {
+  border: 1px dashed var(--color-vien-nhat);
+}
+
+.dau-tick {
+  color: oklch(0.52 0.13 155);
+}
+
+/* Vào trang một nhịp, không dàn dựng nhiều lớp. */
+.vao {
+  animation: vao 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes vao {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:where(button, a, input, [tabindex]):focus-visible {
+  outline: 3px solid rgba(180, 95, 40, 0.35);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
