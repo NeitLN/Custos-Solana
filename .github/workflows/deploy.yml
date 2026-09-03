@@ -39,6 +39,14 @@ jobs:
       - name: Kiểm thử trước khi deploy
         run: npm run check
 
+      # Gói publish lên npm KHÔNG được kiểm bởi `npm run check` — check chạy mã
+      # nguồn trong repo, nơi `exports` cố ý trỏ vào `.ts`. Bản 0.1.0 đã lên
+      # registry hỏng với đúng khoảng mù đó. Bước này cài tarball vào một project
+      # trống ngoài monorepo rồi chạy bằng `node` trần, nên nó soi đúng thứ mà
+      # người ngoài nhận được.
+      - name: Gói có dùng được từ ngoài không
+        run: npm run thu-goi
+
       # Sinh lại số liệu TRƯỚC khi build. Trang số liệu công khai đọc file này,
       # và số test trong đó phải là số của chính commit đang deploy — số cũ còn
       # sót lại là số sai, mà con số sai trên một trang công khai thì đúng loại

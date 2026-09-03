@@ -288,11 +288,31 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ---
 
+## Hàm bậc thấp — chỉ cần khi bạn tự dựng đường ống
+
+`inspect()` đã trả sẵn `diff` và `coverage`, nên **hầu hết bên tích hợp không cần
+mục này**. Nó dành cho ai đã có Facts từ nguồn khác và muốn chạy từng tầng riêng.
+
+```ts
+import { danhGia, dungBangChenhLech, computeCoverage } from "@custos-solana/core";
+
+const { level, reasonCodes, hits } = danhGia(facts);        // L2 — nơi DUY NHẤT sinh level
+const bang = dungBangChenhLech(facts, hits);                // cần `hits`, không chỉ facts
+const phu = computeCoverage(facts.instructions);            // nhận MẢNG LỆNH, không nhận Facts
+```
+
+Hai chữ ký cuối dễ đoán nhầm, và đoán nhầm thì lỗi báo rất tối (`Cannot read
+properties of undefined`). `dungBangChenhLech` cố ý đòi `hits` để bảng chênh lệch
+luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập rồi nói khác.
+
+---
+
 ## Chạy thử tại chỗ
 
 ```bash
 npm install
-npm run check                # 255 test, chạy offline
+npm run check                # 256 test, chạy offline
+npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
 npm run vi                   # ví mẫu      → localhost:5188
