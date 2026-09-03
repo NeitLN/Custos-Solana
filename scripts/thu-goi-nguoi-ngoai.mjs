@@ -54,7 +54,8 @@ const chay = (cmd, args, cwd, keThua = false) =>
 const TIEU_THU = `import assert from "node:assert/strict";
 import { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { inspect, danhGia, LUAT, REASON, dungBangChenhLech, computeCoverage } from "@custos-solana/core";
-import { dienGiaiKhongAI, boiThoiHan, dienGiaiMau } from "@custos-solana/ai";
+import { dienGiaiKhongAI, boiThoiHan, dienGiaiMau, dungGoiAnthropic } from "@custos-solana/ai";
+import { existsSync } from "node:fs";
 
 const VI = "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF";
 const KHACH = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM";
@@ -158,6 +159,33 @@ assert.notEqual(ketQua.level, "safe", "mô phỏng hỏng mà nói safe là vi p
 assert.equal(typeof ketQua.explanation, "string");
 assert.ok(Array.isArray(ketQua.diff), "phải có bảng chênh lệch");
 assert.ok(ketQua.coverage && typeof ketQua.coverage.total === "number", "phải có coverage");
+
+/*
+ * @anthropic-ai/sdk là peer dependency OPTIONAL. Chú thích trong mã nói vậy và
+ * package.json khai đúng \`optional: true\` — nhưng cả hai đều chỉ là lời khai.
+ * Kiểm nó từ ngoài:
+ *
+ *   1. npm KHÔNG được tự kéo SDK Anthropic về máy người chỉ dùng đường tất định.
+ *      Một lớp bảo mật kéo theo SDK của nhà cung cấp mà bên tích hợp không hề
+ *      chọn là mở rộng bề mặt phụ thuộc sau lưng họ.
+ *   2. Khi thiếu SDK, adapter phải báo lỗi ĐỌC ĐƯỢC, không phải
+ *      ERR_MODULE_NOT_FOUND — đó là điều khác biệt giữa "chưa cài" và "gói hỏng".
+ */
+assert.ok(
+  !existsSync("node_modules/@anthropic-ai"),
+  "npm đã kéo @anthropic-ai/sdk về dù bên tích hợp không hề yêu cầu — peer dep chưa thật sự optional",
+);
+
+const goi = dungGoiAnthropic({ apiKey: "khong-phai-khoa-that-chi-de-qua-buoc-kiem" });
+await assert.rejects(
+  () => goi({ system: "s", user: "u" }),
+  (e) => {
+    assert.ok(e.message.includes("@anthropic-ai/sdk"), "lỗi phải nêu tên gói còn thiếu: " + e.message);
+    assert.ok(e.message.includes("dienGiaiKhongAI"), "lỗi phải chỉ ra đường đi không cần mô hình");
+    assert.ok(!e.message.includes("ERR_MODULE_NOT_FOUND"), "lỗi phải đọc được, không phải lỗi loader thô");
+    return true;
+  },
+);
 
 console.log("luat:", LUAT.length, "| ca duong:", bat.level, bat.reasonCodes.join(","), "| ca doi chung:", im.level);
 console.log("inspect():", ketQua.level, "| coverage", ketQua.coverage.analyzed + "/" + ketQua.coverage.total);
