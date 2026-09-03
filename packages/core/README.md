@@ -299,6 +299,6 @@ npm run vi                   # ví mẫu      → localhost:5188
 npm run tan-cong             # trang lừa đảo → localhost:5189
 ```
 
-Bấm **Nhận thưởng ngay** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
+Bấm **Nhận 1.000 SOLB** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
 Bộ kiểm thử gồm **29 mẫu gắn nhãn** (19 tự dựng trên devnet, 10 giao dịch công khai lưu offline), phủ cả 14 luật — `data/seed/`.
