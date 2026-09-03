@@ -292,7 +292,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ```bash
 npm install
-npm run check                # 250 test, chạy offline
+npm run check                # 255 test, chạy offline
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
 npm run vi                   # ví mẫu      → localhost:5188
@@ -301,8 +301,9 @@ npm run tan-cong             # trang lừa đảo → localhost:5189
 
 Bấm **Nhận 1.000 SOLB** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
-Bộ kiểm thử gồm **29 mẫu gắn nhãn**: 19 ca dương tự dựng trên devnet (phủ **luật 1–12**),
-và 10 giao dịch công khai lưu offline làm tập âm (kỳ vọng *không phải* Đỏ) — `data/seed/`.
+Bộ kiểm thử gồm **33 mẫu gắn nhãn**: 23 ca tự dựng phủ **cả 14 luật** (mỗi luật có ca
+kích hoạt, và luật 13–14 có thêm ca ĐỐI CHỨNG khác đúng một điều), cùng 10 giao dịch
+công khai lưu offline làm tập âm (kỳ vọng *không phải* Đỏ) — `data/seed/`.
 
-> **Luật 13 và 14 chưa có mẫu trong seed dataset.** Chúng có unit test riêng nhưng chưa
-> có ca đóng băng trong `data/seed/`. Nói "dataset phủ cả 14 luật" là sai.
+> Câu "phủ cả 14 luật" ở trên **có test canh giữ**: `dataset.test.ts` sẽ đỏ ngay khi
+> một luật mất mẫu, nên tài liệu không thể trôi khỏi dữ liệu.
