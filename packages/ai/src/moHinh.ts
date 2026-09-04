@@ -147,7 +147,38 @@ function bocJson(tho: string): unknown {
  * Thà không có câu của mô hình còn hơn có một câu sai. Người dùng đang chuẩn bị
  * ký một thứ không hoàn lại được.
  */
-export function soiDauRa(tho: string): DauRa | null {
+/*
+ * NEO — thứ mô hình ĐƯỢC PHÉP nhắc tới.
+ *
+ * `soiDauRa` trước đây chỉ kiểm schema và câu trấn an. Nó không kiểm lời văn có
+ * căn cứ hay không, nên một mô hình bịa ra địa chỉ ví hoặc số tiền vẫn đi lọt và
+ * hiện lên đúng màn hình người dùng đọc trước khi ký. Đo được bằng
+ * `scripts/eval-ai.ts`: hai bẫy "bịa địa chỉ" và "bịa số tiền" lọt qua toàn bộ
+ * bộ chắn.
+ *
+ * Trong một sản phẩm bảo mật, một địa chỉ ví bịa còn nguy hiểm hơn một câu sai:
+ * người dùng có thể đối chiếu nó với ví họ định gửi tới, và tin nhầm.
+ *
+ * Hai neo:
+ *   · ĐỊA CHỈ — whitelist gửi mô hình KHÔNG chứa địa chỉ đầy đủ nào, nên bất kỳ
+ *     chuỗi base58 dài nào trong đầu ra cũng là do mô hình nghĩ ra.
+ *   · SỐ — chỉ những số có trong dữ liệu đã gửi, hoặc số mà chính câu mẫu tất
+ *     định cũng in ra. Câu mẫu dựng chữ từ facts nên nó grounded theo định nghĩa.
+ *
+ * Giới hạn: neo bắt số BỊA RA, không bắt số grounded nhưng GHÉP SAI chỗ. Loại
+ * thứ hai cần người đọc — xem `docs/AI-EVALUATION.md`.
+ */
+const DIA_CHI_DAY_DU = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/;
+
+/** Chữ số đứng riêng như một lượng — không tính chữ số trong `43JG…4tjd`. */
+const soTrong = (chu: string): string[] =>
+  [...chu.matchAll(/(?<![\w\u2026])\d[\d.,]*(?![\w\u2026])/g)].map((m) => m[0].replace(/[.,]$/, ""));
+
+export function dungNeo(duLieuGui: string, cauMau: string): Set<string> {
+  return new Set([...soTrong(duLieuGui), ...soTrong(cauMau)]);
+}
+
+export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
   const o = bocJson(tho);
   if (o === null || typeof o !== "object") return null;
   const r = o as Record<string, unknown>;
@@ -156,6 +187,10 @@ export function soiDauRa(tho: string): DauRa | null {
   const explanation = r["explanation"].trim();
   if (explanation.length === 0 || explanation.length > GIOI_HAN_CHU) return null;
   if (CHU_CAM.some((re) => re.test(explanation))) return null;
+
+  // Mô hình không bao giờ nhận được địa chỉ đầy đủ, nên thấy là bịa.
+  if (DIA_CHI_DAY_DU.test(explanation)) return null;
+  if (neo && soTrong(explanation).some((x) => !neo.has(x))) return null;
 
   const adv = r["aiAdvisory"];
   if (adv !== null && adv !== "review_required" && adv !== undefined) return null;
@@ -190,17 +225,18 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
   return async (facts, reasonCodes, locale, options) => {
     const nen = await dienGiaiKhongAI(facts, reasonCodes, locale, options);
 
+    const duLieuGui = JSON.stringify(duLieuChoMoHinh(facts, reasonCodes, options?.kyHieuToken));
+
     let tho: string;
     try {
-      tho = await goi({
-        system: SYSTEM_PROMPT,
-        user: JSON.stringify(duLieuChoMoHinh(facts, reasonCodes, options?.kyHieuToken)),
-      });
+      tho = await goi({ system: SYSTEM_PROMPT, user: duLieuGui });
     } catch {
       return nen; // mô hình hỏng ⇒ lõi xác định, người dùng không mất gì
     }
 
-    const ra = soiDauRa(tho);
+    // Neo dựng từ ĐÚNG dữ liệu vừa gửi, cộng câu mẫu tất định — không phải từ một
+    // danh sách gõ tay ở nơi khác, thứ sẽ lệch sau hai lần sửa.
+    const ra = soiDauRa(tho, dungNeo(duLieuGui, nen.explanation));
     if (ra === null) return nen;
 
     // Hành động chính: lõi xác định đọc thẳng từ chênh lệch số dư, nên nó ĐÚNG
