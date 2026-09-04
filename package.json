@@ -20,7 +20,8 @@
     "tan-cong": "npm run dev -w @custos-solana/trang-tan-cong",
     "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site",
     "publish-sdk": "node scripts/dong-goi-sdk.mjs --publish",
-    "thu-goi": "node scripts/thu-goi-nguoi-ngoai.mjs"
+    "thu-goi": "node scripts/thu-goi-nguoi-ngoai.mjs",
+    "thu-tich-hop": "node scripts/thu-tich-hop.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

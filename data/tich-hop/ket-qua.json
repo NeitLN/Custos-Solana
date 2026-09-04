@@ -1,0 +1,39 @@
+{
+  "doLuc": "2026-09-04T17:43:36.908Z",
+  "msCaiDat": 6563,
+  "msChay": 4287,
+  "rpc": "https://api.devnet.solana.com",
+  "msMotLuotKiem": 1247,
+  "kiem": [
+    {
+      "ten": "giao dịch bình thường không bị CHẶN",
+      "dat": true,
+      "chiTiet": "bị chặn: safe"
+    },
+    {
+      "ten": "giao dịch giả danh airdrop bị CHẶN",
+      "dat": true,
+      "chiTiet": "quyết định \"chan\""
+    },
+    {
+      "ten": "có mã lý do kèm theo, không chặn suông",
+      "dat": true,
+      "chiTiet": "không có mã lý do"
+    },
+    {
+      "ten": "RPC hỏng KHÔNG trở thành ký được",
+      "dat": true,
+      "chiTiet": "quyết định \"chan\""
+    },
+    {
+      "ten": "có lý do kỹ thuật để hiển thị",
+      "dat": true,
+      "chiTiet": "không có thông điệp lỗi"
+    }
+  ],
+  "dat": true,
+  "dongMaTichHop": 29,
+  "msDenKetQuaDauTien": 10850,
+  "doiTac": null,
+  "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos."
+}

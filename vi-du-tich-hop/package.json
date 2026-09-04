@@ -1,0 +1,14 @@
+{
+  "name": "custos-vi-du-tich-hop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "dApp mẫu tích hợp Custos SDK — cài gói như người ngoài, gọi inspect() trước khi ký.",
+  "scripts": {
+    "chay": "node src/chay.js"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0"
+  }
+}
