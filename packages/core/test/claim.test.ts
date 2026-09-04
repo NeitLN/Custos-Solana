@@ -42,6 +42,8 @@ const SO_LIEU = JSON.parse(doc("apps/demo-wallet/public/so-lieu.json")) as {
     hieu: { dung: number; motPhan: number; sai: number };
     quyetDinh: { huy: number; kiemTraThem: number; ky: number };
     hieuDungVanKy: number;
+    /** Khoảng ngày phỏng vấn, chép từ biên bản. `null` khi biên bản chưa ghi. */
+    khoangPhongVan: string | null;
   } | null;
   cohort: {
     coveragePhanTram: number;
@@ -334,6 +336,215 @@ const BE_MAT_PUBLIC = [
   "apps/demo-wallet/src/PhongVan.tsx",
   "apps/trang-tan-cong/src/App.tsx",
 ];
+
+/*
+ * KIỂM THEO ĐOẠN VĂN, KHÔNG THEO TỪNG DÒNG.
+ *
+ * Đo được ở bản trước: chèn bốn claim vào pitch thì guard chỉ bắt MỘT.
+ *
+ *   ✗ "Mọi ví và dApp khác phục vụ người Việt thì không có"
+ *        -> `mọi ví` không nằm trong danh sách cấm
+ *   ✗ "đọc và mô phỏng mainnet để đo — con số báo nhầm có giá trị"
+ *        -> bài kiểm mainnet chỉ tìm cụm tiếng Anh `false positive`
+ *   ✗ "Custos là giải pháp\n  duy nhất chịu nói ra phần chưa hiểu"
+ *        -> Markdown NGẮT DÒNG giữa câu, mà guard đọc từng dòng một
+ *   ✓ "Blockaid đóng"
+ *
+ * Ngắt dòng là cách lọt rẻ nhất: người viết không cố ý, `prettier` cũng làm được,
+ * và guard thì im lặng. Nên chuẩn hoá trước khi kiểm.
+ *
+ * Gom theo ĐOẠN chứ không gom cả file: vẫn giữ được số dòng để báo lỗi chỉ đúng
+ * chỗ. Một guard nói "có claim ở đâu đó trong file này" thì gần như vô dụng.
+ */
+/*
+ * Bỏ dấu nhấn Markdown trước khi so khớp. Hai lý do, cả hai đều đo được:
+ *
+ *   1. `**duy nhất**` không khớp với mẫu `duy nhất` — viết đậm là lọt guard.
+ *   2. Câu hỏi tu từ kết thúc bằng `không?**` làm bộ tách câu không thấy dấu `?`,
+ *      nên câu hỏi dính vào câu sau. Đo được: một câu hỏi trong SEED-DATASET dính
+ *      với câu kế tiếp thành cặp `kêu oan` + `mainnet` mà không ai từng viết.
+ */
+const sach = (s: string) => s.replace(/\*+/g, "").replace(/\s+/g, " ").trim();
+
+function doanVanBan(noiDung: string): Array<{ dong: number; chu: string }> {
+  const ra: Array<{ dong: number; chu: string }> = [];
+  const dong = noiDung.split("\n");
+  let batDau = 0;
+  let gom: string[] = [];
+  let trongFence = false;
+
+  const day = () => {
+    if (gom.length > 0) {
+      ra.push({ dong: batDau + 1, chu: sach(gom.join(" ")) });
+    }
+    gom = [];
+  };
+
+  dong.forEach((d, i) => {
+    // Bỏ khối mã: nó chứa tên biến, log mẫu, không phải lời tuyên bố.
+    if (d.trimStart().startsWith("```")) {
+      day();
+      trongFence = !trongFence;
+      return;
+    }
+    if (trongFence) return;
+    if (d.trim() === "") {
+      day();
+      return;
+    }
+    // HÀNG BẢNG ĐỨNG RIÊNG. Gom cả bảng thành một khối thì `báo nhầm` ở hàng này
+    // ghép với `mainnet` ở hàng kia thành một "câu" chưa ai từng viết — guard tự
+    // dựng claim rồi tự bắt. Đo được: gom bảng đẻ ra 4 báo nhầm trong SEED-DATASET.
+    if (d.trimStart().startsWith("|")) {
+      day();
+      ra.push({ dong: i + 1, chu: sach(d) });
+      return;
+    }
+    if (gom.length === 0) batDau = i;
+    gom.push(d.replace(/^\s*>\s?/, ""));
+  });
+  day();
+  return ra;
+}
+
+const thuong = (s: string) => s.toLocaleLowerCase("vi");
+
+/*
+ * Cụm cấm — mỗi cụm là một CÂU KHẲNG ĐỊNH không chứng minh được.
+ *
+ * "duy nhất" một mình thì KHÔNG cấm: repo dùng nó hợp lệ ở nhiều chỗ ("nguồn quyết
+ * định duy nhất về sản phẩm", "câu duy nhất phần lớn người dùng sẽ đọc"). Chỉ cấm
+ * những tổ hợp mang nghĩa độc quyền thị trường.
+ */
+const CUM_CAM_DOAN: Array<[string, RegExp]> = [
+  ["tuyên bố không ví nào khác làm được", /không ví nào|ví nào khác (không|đều không)/],
+  ["tuyên bố Custos là duy nhất", /custos là (cái )?duy nhất|giải pháp duy nhất|duy nhất chịu nói|cái duy nhất chịu/],
+  ["nói Blockaid đã đóng cửa", /blockaid (đã )?đóng(?! cửa\)| cửa)(?!.{0,24}mã đóng)/],
+  ["tuyên bố 0 false positive", /0 false positive|0 báo nhầm|không kêu oan lần nào/],
+  ["tuyên bố độ chính xác khi chưa có ground truth", /\d+\s*% chính xác/],
+  ["tuyên bố bắt được mọi drainer", /mọi drainer|bắt được mọi/],
+];
+
+/**
+ * `mọi ví` cần ngữ cảnh: câu trung tính ("mọi ví đều có lúc không hiểu") không phải
+ * claim độc quyền. Chỉ cấm khi nó đi kèm một mệnh đề PHỦ ĐỊNH về ví khác.
+ */
+/**
+ * Cụm cấm CÓ PHỦ ĐỊNH đứng trước thì không phải claim — nó là lời đính chính.
+ *
+ * Đo được: bản đầu chặn chính câu sửa lỗi ở STEP 1 — "Chúng em KHÔNG tuyên bố là
+ * giải pháp duy nhất." Guard mà chặn câu đính chính thì người ta sẽ tắt guard, và
+ * lúc đó nó không bảo vệ được gì nữa.
+ */
+const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.]{0,40}$/;
+
+function viPhamCum(t: string, moc: RegExp): boolean {
+  const m = moc.exec(t);
+  if (!m) return false;
+  return !PHU_DINH_TRUOC.test(t.slice(0, m.index));
+}
+
+/** Tách câu sau khi đã gộp dòng — cùng đoạn nhưng khác câu thì không phải một claim. */
+const cauTrongDoan = (chu: string) =>
+  chu.split(/(?<=[.!?][)"”’]?)\s+|(?<=\|)\s*/).filter((c) => c.trim() !== "");
+
+const MOI_VI_DOC_QUYEN = /mọi ví[^.]{0,80}(thì không có|đều không|không có|im lặng|không nói)/;
+
+/** Một đoạn được miễn khi nó KHÔNG khẳng định — dặn đừng nói, hoặc trích câu hỏi. */
+const laDoanMienTru = (chu: string) =>
+  /không nói|không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi|thêm)|bị cấm|không thêm/i.test(chu) ||
+  /["“][^"”]*\?["”]/.test(chu);
+
+test("không có claim độc quyền tuyệt đối — kiểm theo ĐOẠN, chịu được ngắt dòng", () => {
+  const pham: string[] = [];
+  for (const f of BE_MAT_PUBLIC) {
+    for (const { dong, chu } of doanVanBan(doc(f))) {
+      if (laDoanMienTru(chu)) continue;
+      const t = thuong(chu);
+      for (const [ten, moc] of CUM_CAM_DOAN) {
+        if (viPhamCum(t, moc)) pham.push(`${f}:${dong} — ${ten}\n      ${chu.slice(0, 110)}`);
+      }
+      if (viPhamCum(t, MOI_VI_DOC_QUYEN)) {
+        pham.push(`${f}:${dong} — tuyên bố mọi ví khác đều không có\n      ${chu.slice(0, 110)}`);
+      }
+    }
+  }
+  assert.deepEqual(
+    pham,
+    [],
+    "Claim không chứng minh được đã quay lại. Nói việc Custos LÀM, đừng nói việc người khác KHÔNG làm:\n" +
+      pham.join("\n"),
+  );
+});
+
+/*
+ * Cohort + tuyên bố tỉ lệ sai = phải có disclaimer ground truth.
+ *
+ * Bản trước chỉ bắt cụm tiếng Anh `false positive`, nên câu kịch bản "đọc và mô
+ * phỏng mainnet để đo — đó là lý do con số BÁO NHẦM có giá trị" đi thẳng qua.
+ */
+const NOI_TI_LE_SAI = /false positive|báo nhầm|kêu oan|precision|recall|độ chính xác/;
+const NOI_COHORT = /mainnet|cohort/;
+const CO_DISCLAIMER = /ground truth|chưa gán nhãn|không phải (tỉ lệ|phép đo)|chưa phải|quan sát/;
+
+test("không tuyên bố tỉ lệ báo nhầm dựa trên cohort chưa gán nhãn", () => {
+  const pham: string[] = [];
+  for (const f of BE_MAT_PUBLIC) {
+    for (const { dong, chu } of doanVanBan(doc(f))) {
+      if (laDoanMienTru(chu)) continue;
+      for (const cau of cauTrongDoan(thuong(chu))) {
+        if (!(NOI_TI_LE_SAI.test(cau) && NOI_COHORT.test(cau) && !CO_DISCLAIMER.test(cau))) continue;
+        pham.push(`${f}:${dong} — nói tỉ lệ sai dựa trên cohort mà thiếu disclaimer ground truth\n      ${chu.slice(0, 120)}`);
+      }
+    }
+  }
+  assert.deepEqual(pham, [], "Cohort chưa gán nhãn ground truth thì kết quả là QUAN SÁT, không phải tỉ lệ:\n" + pham.join("\n"));
+});
+
+/*
+ * Regression trực tiếp: bốn câu ĐÃ TỪNG LỌT phải bị từ chối, và ba cách nói ĐÚNG
+ * phải được chấp nhận. Không có phần thứ hai thì guard dễ bị siết tới mức chặn cả
+ * câu đính chính, rồi người ta tắt nó đi.
+ */
+const PHAI_TU_CHOI = [
+  "Mọi ví và dApp khác phục vụ người Việt thì không có.",
+  "Chúng em đọc và mô phỏng mainnet để đo — đó là lý do con số báo nhầm có giá trị.",
+  "Custos là giải pháp\nduy nhất chịu nói ra phần chưa hiểu.",
+  "Blockaid đóng nên thị trường không còn ai khác.",
+  // Viết đậm từng làm claim lọt: `**duy nhất**` không khớp mẫu `duy nhất`.
+  "Custos là giải pháp **duy nhất** chịu nói ra phần chưa hiểu.",
+];
+
+const PHAI_CHAP_NHAN = [
+  "Runtime và demo chỉ chạy Devnet; cohort công khai lịch sử được lưu offline.",
+  // Hai câu dưới đây bản guard đầu tiên đã chặn NHẦM. Giữ lại làm regression:
+  // một guard chặn cả lời đính chính thì tệ hơn không có guard.
+  "Chúng em không tuyên bố là giải pháp duy nhất.",
+  ["| `synthetic-devnet` | 13 | **Không** vào mẫu số báo nhầm |", "| Solscan | `real-mainnet` | Lọc theo instruction |"].join("\n"),
+  "Cohort chưa có ground truth nên đây không phải tỉ lệ false positive.",
+  "Phantom và Blockaid đã chứng minh nhu cầu; Custos khác ở mã nguồn mở và coverage transparency.",
+];
+
+function bacBo(vanBan: string): boolean {
+  for (const { chu } of doanVanBan(vanBan)) {
+    if (laDoanMienTru(chu)) continue;
+    const t = thuong(chu);
+    if (CUM_CAM_DOAN.some(([, m]) => viPhamCum(t, m))) return true;
+    if (viPhamCum(t, MOI_VI_DOC_QUYEN)) return true;
+    if (cauTrongDoan(t).some((c) => NOI_TI_LE_SAI.test(c) && NOI_COHORT.test(c) && !CO_DISCLAIMER.test(c))) return true;
+  }
+  return false;
+}
+
+test("guard bác bỏ đúng bốn câu đã từng lọt", () => {
+  const lot = PHAI_TU_CHOI.filter((c) => !bacBo(c));
+  assert.deepEqual(lot, [], "Những câu này phải bị chặn nhưng vẫn lọt:\n" + lot.join("\n"));
+});
+
+test("guard KHÔNG chặn nhầm cách nói đúng", () => {
+  const oan = PHAI_CHAP_NHAN.filter((c) => bacBo(c));
+  assert.deepEqual(oan, [], "Guard đang chặn nhầm câu đúng — siết quá thì người ta sẽ tắt nó:\n" + oan.join("\n"));
+});
 
 test("không có claim độc quyền tuyệt đối trên bề mặt public", () => {
   const pham: string[] = [];

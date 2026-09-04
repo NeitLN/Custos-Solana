@@ -54,10 +54,12 @@ Ba cách hiểu, ba cái giá rất khác nhau:
 
 **Khoảng hở có thật mà ý tưởng này chỉ đúng:** mọi thứ giám khảo **bấm được** đều là
 devnet + hiện trường dàn sẵn. Câu *"cái này chạy được với giao dịch thật không?"* có câu
-trả lời — cohort mainnet, 249 test — nhưng nó nằm trong repo, **không bấm được**.
+trả lời — cohort giao dịch công khai lưu offline, 249 test — nhưng nó nằm trong repo,
+**không bấm được**.
 
-Trớ trêu là engine **đã** đọc và mô phỏng mainnet rồi; đó chính là cách đo cohort. Chỉ
-có ví mẫu là devnet. Và `scripts/soi-mot-giao-dich.ts` đã làm đúng việc "soi một giao
+Trớ trêu là engine **đã** đọc và mô phỏng những giao dịch công khai có thật rồi — đó
+chính là cách đo cohort, chạy tay khi thu dữ liệu chứ không phải trong runtime. Ví mẫu
+và toàn bộ demo thì Devnet-only. Và `scripts/soi-mot-giao-dich.ts` đã làm đúng việc "soi một giao
 dịch mainnet bất kỳ" trên dòng lệnh — docstring của nó viết thẳng: *"cách nhanh nhất để
 trả lời câu sản phẩm chạy thật hay chỉ demo"*.
 
@@ -162,7 +164,8 @@ giao dịch"* là câu không nói được trên sân khấu.
 
 ```bash
 mv data/seed/cohort-audit.json data/seed/cohort-audit-22-08.json
-node --experimental-strip-types scripts/do-cohort.ts "neo lại 30/08" 20
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/do-cohort.ts "neo lại 30/08" 20
 node --experimental-strip-types scripts/tao-so-lieu.ts
 node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json
 ```
