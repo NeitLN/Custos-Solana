@@ -126,7 +126,10 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 > "Có, và họ làm tốt — **Phantom mua đứt Blowfish năm 2024** để có năng lực đó.
 > Chúng tôi không cạnh tranh ở chỗ Phantom mạnh.
 > Chỗ khác là khi mô phỏng **không** hiểu hết giao dịch. Coinspect từng công bố một ca mô phỏng bỏ lọt instruction `assign` — ví chỉ hiện vế hợp lệ, im lặng về phần còn lại. Custos luôn nói ra phần nó chưa hiểu, và không bao giờ nói 'an toàn' khi chưa chắc.
-> Và quan trọng hơn: **Phantom có, cho người dùng Phantom, bằng tiếng Anh.** Mọi ví và dApp khác phục vụ người Việt thì không có — vì Blowfish đã đóng dịch vụ bán rời sau khi bị mua."
+> Và Phantom làm điều đó **cho người dùng Phantom, bằng tiếng Anh.** Custos đóng gói
+> năng lực kiểm tra thành **SDK** để một ví hoặc dApp nhỏ tự cắm vào được — mã nguồn
+> mở, tất định, tiếng Việt, và công khai phần chưa đọc hiểu. Chúng em không tuyên bố
+> là giải pháp duy nhất."
 
 ⚠️ **Phải nói thêm nếu bị hỏi tiếp:** lỗi cụ thể đó **đã được vá**. Luận điểm là về **cấu trúc** — ví cần phương án dự phòng khi mô phỏng thất bại — không phải cáo buộc Phantom đang có lỗ hổng. Nói sai chỗ này là mất điểm liêm chính.
 
@@ -288,24 +291,28 @@ Câu gài. Trả lời sai là hứa điều không giữ được.
 
 Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đúng, nhưng phải nói rõ:
 
-> "Chúng em **đọc và mô phỏng** mainnet để đo — đó là lý do con số báo nhầm có giá
-> trị; đo trên giao dịch tự dựng thì con số không nói lên gì. Nhãn devnet-only là về
-> **khuyến nghị triển khai**, không phải giới hạn kỹ thuật."
+> "Runtime và demo của Custos **chỉ chạy trên Devnet**. Để kiểm engine, đội dùng một
+> cohort giao dịch công khai lịch sử đã **lưu offline** — đo trên giao dịch tự dựng
+> thì con số không nói lên gì.
+>
+> Trong 20 giao dịch của cohort, 9 còn mô phỏng được: **0 mã cáo buộc, 7 cảnh báo,
+> 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
+> false positive, precision hay recall — nó là một quan sát."
 
-### 14. "294 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "309 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 294 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 309 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (294)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (309)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
-| **Cohort mainnet (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
+| **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 294 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 309 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*
