@@ -40,12 +40,31 @@ type ChiPhi = {
   tongLuotGoi: { trungVi: number; thap: number; cao: number };
 };
 
+/**
+ * Lấy CHÍNH danh sách glob mà `npm run test` dùng, thay vì chép lại.
+ *
+ * Đã lệch một lần: glob test mở rộng sang `apps/**` cho bốn ca mới, còn script này
+ * vẫn chỉ quét `packages/**` — nên nó đo 263 trong khi bộ test thật có 267, và
+ * trang số liệu CÔNG KHAI suýt đăng con số thiếu. Guard đối chiếu tài liệu với
+ * so-lieu.json không bắt được: cả hai cùng sai một kiểu.
+ *
+ * Đọc từ package.json thì hai bên không thể lệch nữa.
+ */
+function globTest(): string[] {
+  const lenh = (JSON.parse(readFileSync("package.json", "utf8")) as { scripts: Record<string, string> })
+    .scripts["test"];
+  if (!lenh) throw new Error("package.json không có script `test`");
+  const g = [...lenh.matchAll(/"([^"]*test[^"]*)"/g)].map((m) => m[1] as string);
+  if (g.length === 0) throw new Error(`không rút được glob nào từ: ${lenh}`);
+  return g;
+}
+
 /** Chạy bộ test thật và đọc số ca. Đếm file thì sai — một file có thể có 20 ca. */
 function demTest(): { pass: number; fail: number } | null {
   try {
     const ra = execFileSync(
       process.execPath,
-      ["--test", "--experimental-strip-types", "packages/**/test/*.test.ts"],
+      ["--test", "--experimental-strip-types", ...globTest()],
       {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
