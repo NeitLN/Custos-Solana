@@ -39,4 +39,26 @@ thì trả câu dự phòng thay vì để người dùng ngồi nhìn màn hìn
 Cắm mô hình thật thì thay `dienGiaiKhongAI` bằng interpreter của bạn. Giao diện là
 một hàm, nên bên tích hợp tự chọn nhà cung cấp.
 
+## Adapter Anthropic — và vì sao nó không làm gói này nặng thêm
+
+```ts
+// Đường tường minh, khuyến nghị cho bên tích hợp mới:
+import { dungGoiAnthropic } from "@custos-solana/ai/anthropic";
+
+// Vẫn dùng được từ gốc — bản 0.1.2 đã phát hành nên đường này không bị bỏ:
+import { dungGoiAnthropic } from "@custos-solana/ai";
+```
+
+`@anthropic-ai/sdk` là **optional peer dependency**, và adapter nạp nó bằng `await
+import()` chứ không phải `import` ở đầu file. Hai điều đó cộng lại nghĩa là:
+
+- cài `@custos-solana/ai` một mình vẫn chạy đủ đường tất định `dienGiaiKhongAI`;
+- SDK không đi vào bundle trình duyệt của bên tích hợp.
+
+Vế thứ hai được **đo** chứ không suy: bản build công khai ngày 04/09 nặng 654 KB và
+không chứa chuỗi `anthropic` nào. Nếu ai đó đổi lời gọi động thành `import` tĩnh thì
+build vẫn xanh và test vẫn xanh — chỉ có bản công khai nặng thêm, mang theo code của
+một SDK gọi API có khoá. Nên có một bài kiểm canh đúng chỗ đó:
+`packages/core/test/khongKeoSdk.test.ts`.
+
 MIT
