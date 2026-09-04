@@ -1,6 +1,8 @@
 # Pitch 4 phút và phản biện 2 phút
 
-**Vòng loại VLU 05/09** · 4 phút pitch + demo · 2 phút Q&A · 1 phút chuyển tiếp
+**4 phút pitch + demo · 2 phút Q&A · 1 phút chuyển tiếp** — đúng định dạng Vòng Loại
+Online Toàn Quốc trong thể lệ BTC. Vòng của hạn 19/09 CHƯA xác nhận dùng định dạng
+này; kiểm `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md` trước khi tập theo đồng hồ.
 Rubric: *trình bày và phản biện* chiếm **20%**, *giải pháp và demo* chiếm **30%** — nửa số điểm nằm ở sáu phút này.
 
 ---
@@ -14,7 +16,7 @@ Nghiên cứu ngày 21/8 (`NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng
 | | Cũ — bỏ đi | Mới |
 |---|---|---|
 | Luận điểm | "Ví lớn chỉ hiện chênh lệch số dư" | "Mô phỏng giao dịch là kỹ thuật đã có. **Vấn đề là lúc mô phỏng không hiểu hết**" |
-| Chỗ đứng | Cạnh tranh phát hiện | Cạnh tranh ở **sự im lặng**: khi không hiểu, ví hiện tại không nói gì |
+| Chỗ đứng | Cạnh tranh phát hiện | Cạnh tranh ở **hợp đồng coverage**: Custos luôn trả ra phần nó chưa đọc hiểu, và hiển thị phần đó |
 | Bằng chứng | Không có | Ca Coinspect: Blowfish bỏ lọt `assign`, ví chỉ hiện vế hợp lệ |
 | Thể hiện trên màn hình | Không có gì | Dòng **"đã đọc hiểu N trên M lệnh"** — đọc đúng số đang hiện, xem mục 1 |
 
@@ -113,7 +115,9 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 **Bốn câu phải thuộc lòng nguyên văn:**
 
 1. *"Ví lớn đã có mô phỏng giao dịch. Chúng tôi không cạnh tranh ở đó."*
-2. *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Khác nhau ở chỗ có ví nào chịu nói ra không."*
+2. *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Custos biến phần chưa hiểu đó
+   thành một con số trả về cho ví và hiện lên cho người dùng."* (Nói việc Custos LÀM.
+   Đừng chuyển thành câu hỏi tu từ về việc ví khác có làm hay không — đội không đo được.)
 3. *"Custos không bao giờ nói an toàn khi nó chưa chắc."*
 4. *"Phantom mua đứt Blowfish rồi đóng dịch vụ bán rời của nó — thị trường này ví lớn nhất Solana đã trả tiền chứng minh."* (KHÔNG thêm "không ai mua được nữa" — Blockaid vẫn còn.)
 
@@ -272,10 +276,13 @@ Câu này hay đi kèm câu Blowfish, và trả lời sai là mất uy tín ngay
 **Đừng trả lời bằng số.** Không đo được của họ, và đoán là vi phạm liêm chính. Trả
 lời bằng **cấu trúc**:
 
-> "Chúng em không đo được của họ, và sẽ không đoán. Điều đo được là: **họ không hiển
-> thị con số đó.** Người dùng không có cách nào biết ví vừa hiểu bao nhiêu phần giao
-> dịch. Custos luôn nói ra. Khác biệt không phải ở việc hiểu nhiều hơn — mà ở chỗ
-> **chịu khai phần mình chưa hiểu**."
+> "Chúng em không đo được của họ, và sẽ không đoán. Trong tài liệu công khai và các
+> bản dựng chúng em kiểm được, **chưa tìm thấy** một trường coverage ở mức từng lệnh
+> tương đương — nhưng chúng em không suy rộng sang mọi ví hay mọi phiên bản.
+>
+> Điều chúng em **đo được** là về chính Custos: nó luôn trả `coverage.analyzed/total`
+> và luôn hiển thị con số đó. Khác biệt chúng em nhận là ở chỗ **coverage nằm trong
+> hợp đồng của SDK**, không phải ở chỗ hiểu nhiều hơn ai."
 
 ### 12. "Custos báo vàng, người dùng vẫn ký và mất tiền. Ai chịu trách nhiệm?"
 
@@ -299,20 +306,20 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
-### 14. "309 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "318 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 309 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 318 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (309)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (318)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 309 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 318 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*

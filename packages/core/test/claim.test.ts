@@ -423,6 +423,12 @@ const CUM_CAM_DOAN: Array<[string, RegExp]> = [
   ["tuyên bố 0 false positive", /0 false positive|0 báo nhầm|không kêu oan lần nào/],
   ["tuyên bố độ chính xác khi chưa có ground truth", /\d+\s*% chính xác/],
   ["tuyên bố bắt được mọi drainer", /mọi drainer|bắt được mọi/],
+  // Ba mẫu dưới đây từ vòng review 05/09: claim về SỰ IM LẶNG của ví khác. Đội không
+  // có cách nào đo được mọi ví ở mọi phiên bản, nên đây là claim không chứng minh nổi.
+  // Chúng cũng không cần thiết: Custos bán được nhờ việc nó LÀM, không nhờ việc ai không làm.
+  ["tuyên bố ví khác im lặng", /ví hiện tại không nói gì|ví (khác|nào) (đều )?(im lặng|không nói)|không ví nào chịu nói/],
+  ["hỏi tu từ ví nào chịu nói ra", /có ví nào chịu nói ra không/],
+  ["tuyên bố đối thủ không hiển thị", /họ không hiển thị|họ đều không|không ai hiển thị/],
 ];
 
 /**
@@ -436,7 +442,10 @@ const CUM_CAM_DOAN: Array<[string, RegExp]> = [
  * giải pháp duy nhất." Guard mà chặn câu đính chính thì người ta sẽ tắt guard, và
  * lúc đó nó không bảo vệ được gì nữa.
  */
-const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.]{0,40}$/;
+// Phủ định phải NGAY TRƯỚC cụm cấm và không nhảy qua dấu câu. Bản trước cho phép
+// 40 ký tự bất kỳ, nên "khi KHÔNG hiểu, ví hiện tại không nói gì" được tha: chữ
+// "không" thuộc mệnh đề khác đã đủ làm guard tưởng đây là lời đính chính.
+const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.,:;]{0,25}$/;
 
 function viPhamCum(t: string, moc: RegExp): boolean {
   const m = moc.exec(t);
@@ -452,7 +461,13 @@ const MOI_VI_DOC_QUYEN = /mọi ví[^.]{0,80}(thì không có|đều không|khô
 
 /** Một đoạn được miễn khi nó KHÔNG khẳng định — dặn đừng nói, hoặc trích câu hỏi. */
 const laDoanMienTru = (chu: string) =>
-  /không nói|không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi|thêm)|bị cấm|không thêm/i.test(chu) ||
+  /không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi|thêm)|bị cấm|không thêm/i.test(chu) ||
+  // `KHÔNG` viết hoa là quy ước dặn dò của repo. Bản trước nhận cả `không nói`
+  // thường, nên chính nó miễn trừ câu "ví hiện tại KHÔNG NÓI gì" — một claim, không
+  // phải lời dặn. Guard tự tha cho thứ nó sinh ra để bắt.
+  /KHÔNG (nói|viết|gọi|dùng|được)/.test(chu) ||
+  // `không nói "an toàn"` — dặn dò thật thì thường trích nguyên văn câu bị cấm.
+  /không (nói|gọi)\s*(là\s*)?["“']/.test(chu) ||
   /["“][^"”]*\?["”]/.test(chu);
 
 test("không có claim độc quyền tuyệt đối — kiểm theo ĐOẠN, chịu được ngắt dòng", () => {
@@ -511,6 +526,10 @@ const PHAI_TU_CHOI = [
   "Chúng em đọc và mô phỏng mainnet để đo — đó là lý do con số báo nhầm có giá trị.",
   "Custos là giải pháp\nduy nhất chịu nói ra phần chưa hiểu.",
   "Blockaid đóng nên thị trường không còn ai khác.",
+  // Vòng review 05/09: ba claim về sự im lặng của ví khác, đã gỡ khỏi pitch.
+  "Cạnh tranh ở sự im lặng: khi không hiểu, ví hiện tại không nói gì.",
+  "Khác nhau ở chỗ có ví nào chịu nói ra không.",
+  "Điều đo được là: họ không hiển thị con số đó.",
   // Viết đậm từng làm claim lọt: `**duy nhất**` không khớp mẫu `duy nhất`.
   "Custos là giải pháp **duy nhất** chịu nói ra phần chưa hiểu.",
 ];
@@ -523,6 +542,10 @@ const PHAI_CHAP_NHAN = [
   ["| `synthetic-devnet` | 13 | **Không** vào mẫu số báo nhầm |", "| Solscan | `real-mainnet` | Lọc theo instruction |"].join("\n"),
   "Cohort chưa có ground truth nên đây không phải tỉ lệ false positive.",
   "Phantom và Blockaid đã chứng minh nhu cầu; Custos khác ở mã nguồn mở và coverage transparency.",
+  // Câu CÓ PHẠM VI phải đi lọt: nêu rõ đã kiểm ở đâu và từ chối suy rộng. Chặn cả câu
+  // này thì guard đang cấm đội nói sự thật, và đội sẽ tắt guard.
+  "Trong tài liệu công khai chúng em kiểm được, chưa tìm thấy trường coverage ở mức từng lệnh tương đương; chúng em không suy rộng sang mọi ví hay mọi phiên bản.",
+  "Custos luôn trả coverage.analyzed/total và luôn hiển thị con số đó.",
 ];
 
 function bacBo(vanBan: string): boolean {
@@ -536,7 +559,7 @@ function bacBo(vanBan: string): boolean {
   return false;
 }
 
-test("guard bác bỏ đúng bốn câu đã từng lọt", () => {
+test("guard bác bỏ mọi câu đã từng lọt", () => {
   const lot = PHAI_TU_CHOI.filter((c) => !bacBo(c));
   assert.deepEqual(lot, [], "Những câu này phải bị chặn nhưng vẫn lọt:\n" + lot.join("\n"));
 });
