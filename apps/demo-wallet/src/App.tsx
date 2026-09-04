@@ -11,6 +11,7 @@ import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
+import { coHan, LoiQuaHan } from "./coHan.ts";
 import {
   ArrowIcon,
   CheckIcon,
@@ -40,6 +41,30 @@ export default function App() {
   const [nhatKy, setNhatKy] = useState<string[]>([]);
   const [daSaoChep, setDaSaoChep] = useState(false);
 
+  /*
+   * TRẠNG THÁI LỖI RIÊNG cho việc kiểm tra giao dịch.
+   *
+   * Trước đây lỗi `inspect()` chỉ được `ghi()` vào nhật ký kỹ thuật — một khối gập
+   * lại ở cuối trang. Khi Devnet lỗi, người xem thấy vòng quay biến mất rồi vùng
+   * kết quả TRỐNG RỖNG, không một chữ giải thích. Trên sân khấu đó là khoảng lặng
+   * không ai cứu được.
+   *
+   * `thuLaiRef` giữ đúng việc vừa hỏng — kịch bản người dùng vừa bấm, hoặc giao dịch
+   * dApp vừa đẩy sang — để nút "Thử lại" chạy lại CHÍNH nó, không phải một giao dịch
+   * dựng mới. Dùng ref chứ không dùng state: đây là thứ để gọi lại, không phải thứ
+   * để render, nên nó không cần kích hoạt một vòng vẽ lại.
+   */
+  const [loi, setLoi] = useState<string | null>(null);
+  const thuLaiRef = useRef<(() => void) | null>(null);
+
+  /** Hạn cho một lượt kiểm tra. Đủ dài cho Devnet chậm, đủ ngắn để không ai đứng chờ. */
+  const HAN_MS = 12_000;
+
+  const moTaLoi = (e: unknown) =>
+    e instanceof LoiQuaHan
+      ? "Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau 12 giây."
+      : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
+
   const ghi = (s: string) => setNhatKy((n) => [...n, s]);
   const conn = useCallback(() => new Connection(chonRpc(ht), "confirmed"), [ht]);
 
@@ -62,32 +87,51 @@ export default function App() {
     if (!yc) return;
     daXuLyYeuCau.current = true;
     setTuDApp(yc.khai ? `dApp khai đây là: ${yc.khai.type}` : "dApp không khai gì");
-    setDangChay(true);
-    // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
-    // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
-    // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
-    //
-    // RPC lấy từ hiện trường qua `chonRpc` (endpoint riêng ở chế độ dev, còn lại là
-    // devnet công cộng), không hardcode chuỗi endpoint tại chỗ này.
-    void docHienTruong().then((htNay) =>
-      inspect(
-        { connection: new Connection(chonRpc(htNay), "confirmed"), interpret: boiThoiHan(dienGiaiKhongAI) },
-        yc.tx,
-        {
-          locale: "vi",
-          ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
-          ...(yc.khai ? { expectedAction: yc.khai } : {}),
-          ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
-        },
-      ),
-    )
-      .then((r) => {
-        ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
-        setKetQua(r);
-        setTxCho(yc.tx);
-      })
-      .catch((e: unknown) => ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`))
-      .finally(() => setDangChay(false));
+    // Tách thành hàm có tên để nút "Thử lại" chạy lại ĐÚNG giao dịch dApp đã đẩy
+    // sang, chứ không dựng một giao dịch mới — giao dịch mới là một phép thử khác.
+    const chay = () => {
+      setDangChay(true);
+      setLoi(null);
+      // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
+      // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
+      // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
+      //
+      // RPC lấy từ hiện trường qua `chonRpc` (endpoint riêng ở chế độ dev, còn lại là
+      // devnet công cộng), không hardcode chuỗi endpoint tại chỗ này.
+      // Hạn bọc CẢ chuỗi (đọc hiện trường + mô phỏng), cùng lý do như ở `bam()`:
+      // đặt hạn quanh một chặng bên trong thì chặng còn lại vẫn treo được.
+      void coHan(
+        docHienTruong().then((htNay) =>
+          inspect(
+            {
+              connection: new Connection(chonRpc(htNay), "confirmed"),
+              interpret: boiThoiHan(dienGiaiKhongAI),
+            },
+            yc.tx,
+            {
+              locale: "vi",
+              ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
+              ...(yc.khai ? { expectedAction: yc.khai } : {}),
+              ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
+            },
+          ),
+        ),
+        HAN_MS,
+      )
+        .then((r) => {
+          ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+          setKetQua(r);
+          setTxCho(yc.tx);
+        })
+        .catch((e: unknown) => {
+          ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
+          setKetQua(null);
+          setLoi(moTaLoi(e));
+        })
+        .finally(() => setDangChay(false));
+    };
+    thuLaiRef.current = chay;
+    chay();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -138,14 +182,46 @@ export default function App() {
       return;
     }
     if (!ht) return;
+    // Nút "Thử lại" phải chạy lại ĐÚNG kịch bản vừa bấm, kèm đúng cờ Custos đang
+    // dùng — chạy lại một kịch bản khác thì người dùng không biết mình vừa thử gì.
+    thuLaiRef.current = () => void bam(kich, epBatCustos);
     setDangChay(true);
+    setLoi(null);
     setKetQua(null);
     setTxCho(null);
     setHauQua(null);
     try {
+      /*
+       * HẠN BỌC CẢ LƯỢT KIỂM TRA, không chỉ `inspect()`.
+       *
+       * Bản đầu của bản vá này chỉ bọc `inspect()`. Nhưng lời gọi RPC ĐẦU TIÊN là
+       * `getLatestBlockhash()`, và nó nằm ngoài hạn — nên khi Devnet nhận kết nối
+       * rồi không hồi âm, ví treo cho tới lúc mạng tự bỏ cuộc. Đo trên trình duyệt
+       * thật: thẻ lỗi hiện ở giây thứ 30, không phải giây 12, và nội dung là "không
+       * kết nối được" thay vì "quá hạn".
+       *
+       * Người dùng chờ MỘT việc — "Custos kiểm tra giao dịch này" — nên hạn phải
+       * đặt quanh đúng việc đó, không quanh một chặng bên trong nó.
+       */
       const c = conn();
-      const { blockhash } = await c.getLatestBlockhash();
-      const tx = dungTx(kich, blockhash);
+      const { tx, r } = await coHan(
+        (async () => {
+          const { blockhash } = await c.getLatestBlockhash();
+          const txNay = dungTx(kich, blockhash);
+          if (!coCustos) return { tx: txNay, r: null };
+          ghi("đang chạy thử giao dịch trên devnet…");
+          return {
+            tx: txNay,
+            r: await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, txNay, {
+              locale: "vi",
+              // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
+              nguoiDung: ht.nanNhan,
+              ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
+            }),
+          };
+        })(),
+        HAN_MS,
+      );
 
       if (!coCustos) {
         // NHỊP 1 — người dùng ký thẳng, không có ai cảnh báo.
@@ -161,27 +237,28 @@ export default function App() {
         // Mô phỏng KHÔNG cần chữ ký, nên hậu quả vẫn tính ra được thật. Chạy
         // `inspect()` và hiện trạng thái sau, dán nhãn rõ là kết quả mô phỏng.
         ghi("Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng");
-        const rTat = await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
-          locale: "vi",
-          nguoiDung: ht.nanNhan,
-          ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
-        });
+        const rTat = await coHan(
+          inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
+            locale: "vi",
+            nguoiDung: ht.nanNhan,
+            ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
+          }),
+          HAN_MS,
+        );
         setHauQua(rTat);
         return;
       }
 
-      ghi("đang chạy thử giao dịch trên devnet…");
-      const r = await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
-        locale: "vi",
-        // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
-        nguoiDung: ht.nanNhan,
-        ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
-      });
+      if (!r) throw new Error("không dựng được kết quả kiểm tra");
       ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
       setKetQua(r);
       setTxCho(tx);
     } catch (e) {
+      // Ghi nhật ký kỹ thuật cho đội, VÀ dựng thẻ lỗi cho người dùng. Trước đây chỉ
+      // có vế đầu, nên người xem chỉ thấy một vùng trống không giải thích gì.
       ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
+      setKetQua(null);
+      setLoi(moTaLoi(e));
     } finally {
       setDangChay(false);
     }
@@ -405,7 +482,7 @@ export default function App() {
                   </div>
                 )}
 
-                {!dangChay && !hauQua && !ketQua && (
+                {!dangChay && !hauQua && !ketQua && !loi && (
                   /* MÀN CHỜ PHẢI TỰ DẠY ĐƯỢC GIÁ TRỊ.
                      Bản trước để một khung viền đứt cao 430px với ba ô rỗng
                      "01 Mô phỏng / 02 Đối chiếu / 03 Giải thích" — ba động từ trừu
@@ -486,6 +563,41 @@ export default function App() {
                         <span aria-hidden="true">…</span>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/*
+                  THẺ LỖI. `role="alert"` để trình đọc màn hình đọc ngay khi nó xuất
+                  hiện — người dùng đang chờ một phán quyết, im lặng ở đây là tệ nhất.
+
+                  Tuyệt đối KHÔNG hiện mức Xanh ở nhánh này: không mô phỏng được thì
+                  Custos không có thẩm quyền nói gì về giao dịch, và fail-safe của lõi
+                  cũng đúng nguyên tắc ấy.
+                */}
+                {loi && (
+                  <div
+                    role="alert"
+                    className="hien flex min-h-[430px] flex-col items-center justify-center rounded-2xl border border-vien bg-white px-6 py-10 text-center"
+                  >
+                    <div className="grid h-14 w-14 place-items-center rounded-full bg-[#fdf2f2]">
+                      <ShieldIcon className="h-7 w-7 text-nguy" />
+                    </div>
+                    <h3 className="mt-5 text-[18px] font-semibold text-chu">Không thể kiểm tra giao dịch</h3>
+                    <p className="mt-2 max-w-[42ch] text-[13.5px] leading-relaxed text-chu-mo">
+                      {loi} Chúng tôi <span className="font-medium text-chu">chưa thể kết luận</span> giao
+                      dịch này an toàn.
+                    </p>
+                    <button
+                      type="button"
+                      className="nut nut-chinh mt-6"
+                      onClick={() => {
+                        setLoi(null);
+                        ghi("người dùng bấm thử lại");
+                        thuLaiRef.current?.();
+                      }}
+                    >
+                      Thử lại
+                    </button>
                   </div>
                 )}
 
