@@ -283,6 +283,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
 | **Luật 4 không phân biệt được authority** | Permanent delegate luôn ở mức Vàng, vì `Facts` chưa bóc trường `authority` của lệnh Transfer |
+| **Adapter Anthropic gây cảnh báo lúc build web** | Entry mặc định của `@custos-solana/ai` xuất `dungGoiAnthropic`, nên bundler thấy `@anthropic-ai/sdk` trong đồ thị module và cảnh báo `node:fs`/`node:path` bị externalize. **Đã đo: SDK KHÔNG nằm trong bundle** — tree-shake sạch, `dist` không chứa chuỗi `anthropic` nào. Đây là tiếng ồn build, không phải chuyện đẩy SDK tới người xem. Cách dứt điểm là tách `@custos-solana/ai/anthropic` thành subpath riêng; hoãn sau cuộc thi vì thêm entry point là thêm đúng bề mặt đã làm hỏng bản 0.1.0 |
 
 **Đã đo được:** trên 9 giao dịch công khai còn mô phỏng được (cohort 20 giao dịch, **lưu offline** để kiểm engine — runtime của demo chạy hoàn toàn trên Devnet), **0 lần gắn mã cáo buộc**. Cohort chưa gán nhãn ground truth, nên đây KHÔNG phải tỉ lệ false positive: không có cáo buộc nghĩa là không luật buộc tội nào bật, không chứng minh cả 9 giao dịch đều lành.
 
