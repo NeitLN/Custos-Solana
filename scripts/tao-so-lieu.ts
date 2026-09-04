@@ -133,9 +133,11 @@ if (!test) {
  * nên nó là ô đắt nhất để nói sai.
  */
 function docPhongVan() {
-  const t = docJson<{ laViDu?: boolean; ban: Array<Record<string, string>> }>(
-    "data/seed/phong-van.json",
-  );
+  const t = docJson<{
+    laViDu?: boolean;
+    nguonGoc?: { khoangPhongVan?: string };
+    ban: Array<Record<string, string>>;
+  }>("data/seed/phong-van.json");
   if (!t || !Array.isArray(t.ban) || t.ban.length === 0) return null;
   // File ví dụ mang cờ `laViDu`. Số minh hoạ KHÔNG được ra khỏi máy dev.
   if (t.laViDu) {
@@ -145,6 +147,10 @@ function docPhongVan() {
   const dem = (truong: string, gt: string) => t.ban.filter((b) => b[truong] === gt).length;
   return {
     n: t.ban.length,
+    // Ngày phỏng vấn chảy từ biên bản ra, không gõ tay ở ba nơi. Bản trước ghi cứng
+    // "29–30/08" trong trang số liệu VÀ trong deck — hai bản sao của cùng một sự
+    // thật thì sớm muộn cũng lệch, và lệch ở đây là nói sai ngày đo trước giám khảo.
+    khoangPhongVan: t.nguonGoc?.khoangPhongVan ?? null,
     hieu: { dung: dem("cham", "dung"), motPhan: dem("cham", "motPhan"), sai: dem("cham", "sai") },
     quyetDinh: {
       huy: dem("quyetDinh", "huy"),
