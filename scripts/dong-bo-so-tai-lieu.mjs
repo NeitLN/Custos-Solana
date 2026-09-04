@@ -28,6 +28,32 @@ if (!process.argv.includes("--da-do")) {
 }
 const { mauDoDuoc: DO, mauTrongCohort: TONG, coveragePhanTram: COV, chamTaiSan: CT } = S.cohort;
 const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
+/*
+ * KHÔNG RẢI SỐ VÔ NGHĨA VÀO TÀI LIỆU CÔNG KHAI.
+ *
+ * `CT_PT` là `Math.round(0 * 100 / 0)` khi cohort không đo được mẫu nào — tức là
+ * `NaN`. Chuyện đã xảy ra thật: một lượt đo hỏng ghi ra hồ sơ toàn số 0, script này
+ * đọc và viết "**NaN % (0/0)**" vào bảng giới hạn trong README của gói core — đúng
+ * tài liệu mà bên tích hợp đọc để quyết định có dùng SDK không.
+ *
+ * Nguồn đã được vá (`do-cohort.ts` không ghi hồ sơ 0 mẫu nữa), nhưng chặn ở đây
+ * nữa vì đây là cửa cuối trước khi con số thành chữ trong tài liệu.
+ */
+for (const [ten, gt] of [
+  ["coveragePhanTram", COV],
+  ["mauDoDuoc", DO],
+  ["mauTrongCohort", TONG],
+  ["chạm tài sản %", CT_PT],
+  ["test.pass", S.test?.pass],
+]) {
+  if (!Number.isFinite(gt)) {
+    console.error(`✖ ${ten} = ${gt} — KHÔNG đồng bộ tài liệu.`);
+    console.error("  Số này vô nghĩa, thường là dấu hiệu một lượt đo hỏng (0 mẫu).");
+    console.error("  Chạy lại phép đo cho ra số thật rồi mới đồng bộ.");
+    process.exit(1);
+  }
+}
+
 
 /** Thay dòng khớp `moc` bằng `dung(dòng cũ)`. Vắng mốc là lỗi: tài liệu đã đổi cấu trúc. */
 function thayDong(duong, viec) {
