@@ -11,7 +11,7 @@ Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **
 |---|---|
 | `CUSTOS.md` | **Nguồn quyết định duy nhất về sản phẩm.** Đã qua 5 vòng phản biện giám khảo (8,2 → 9,0/10). Phạm vi đã khoá |
 | `NGHIEN-CUU-21-08.md` | Khử rủi ro trước build: đường đi giao dịch devnet đã tra cứu, bẫy Web3.js v2, và bản sửa tuyên bố về đối thủ |
-| `SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, danh sách 25 mẫu phải đi tìm, quy tắc đo false positive |
+| `SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và vì sao KHÔNG được gọi kết quả trên tập âm là tỉ lệ false positive |
 | `PITCH-VA-PHAN-BIEN.md` | Cấu trúc 4 phút, 9 câu hỏi khó có sẵn câu trả lời, danh sách câu không được nói |
 | `DAC-TA-CORE.md` | Đặc tả kỹ thuật: trình tự L1, ranh giới L2/L3, luật theo nguồn dữ liệu (đặc tả 12, đã thực thi **14**), lịch làm của vai A |
 | `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
@@ -29,7 +29,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 33 mẫu dữ liệu · 256 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 33 mẫu dữ liệu · 292 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
@@ -41,7 +41,9 @@ một lượt — biên bản ở `docs/bao-mat/DANH-GIA-claude-haiku-4-5-202510
 Chưa đo được số token thật vì cần khoá API; bản demo công khai cố ý không nhúng khoá.
 
 Đo được, không ước lượng — cohort **neo lại 25/08**, 20 giao dịch, **9 mẫu còn mô phỏng
-được**: 0 giao dịch bị gắn cờ; coverage trung bình 82 %; lệnh chạm tài sản người ký đọc
+được**: **0 giao dịch bị gắn mã CÁO BUỘC** (7 giao dịch ở mức Cần xem kỹ — gắn cờ vì
+thông tin hoặc coverage khuyết, KHÔNG phải buộc tội); coverage trung bình 82 %; lệnh
+chạm tài sản người ký đọc
 hiểu được 65 % (13/20).
 
 Cohort cũ (21/08) giữ trong repo để đối chiếu, **không so sánh trực tiếp** với cohort mới —

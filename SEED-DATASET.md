@@ -2,6 +2,10 @@
 
 **Chủ sở hữu: vai D** (thu thập, gắn nhãn) · **vai A** dùng làm bộ test cho engine luật · bắt đầu **22/08**, xong **29/08**
 
+> **Khung thời gian:** con số **25 mẫu** dưới đây là MỤC TIÊU KẾ HOẠCH ban đầu. Dataset
+> hiện tại có **33 mẫu** — xem `data/seed/index.json`. Giữ phần kế hoạch lại vì nó
+> giải thích *đi tìm cái gì*, thứ vẫn còn đúng.
+
 `CUSTOS.md` và kế hoạch đã chốt con số **25 mẫu**, nhưng chưa nói **đi tìm cái gì**. Tài liệu này biến "thu thập 25 mẫu" thành một danh sách 25 dòng, mỗi dòng có mô tả cụ thể phải tìm.
 
 ---
@@ -10,22 +14,24 @@
 
 > **Tỉ lệ false positive chỉ có ý nghĩa khi đo trên giao dịch thật.**
 
-Nếu cả 25 mẫu đều do đội tự dựng trên devnet, con số false positive công bố trên sân khấu **không nói lên điều gì** — đội tự tạo đầu vào rồi tự đo đầu ra. Một giám khảo hỏi *"mẫu an toàn của các bạn lấy từ đâu?"* là toàn bộ phần bằng chứng sụp.
+Nếu mọi mẫu đều do đội tự dựng trên devnet thì con số công bố trên sân khấu **không nói lên điều gì** — đội tự tạo đầu vào rồi tự đo đầu ra. Một giám khảo hỏi *"mẫu an toàn của các bạn lấy từ đâu?"* là toàn bộ phần bằng chứng sụp.
 
 Nên mỗi mẫu **bắt buộc** ghi nguồn gốc, và có ba loại:
 
 | `provenance` | Nghĩa | Dùng để |
 |---|---|---|
-| `real-mainnet` | Giao dịch thật trên mainnet, lấy từ Explorer | **Đo false positive.** Đây là loại có giá trị nhất |
+| `real-mainnet` | Giao dịch công khai có thật, lấy từ Explorer rồi **lưu offline** | **Tập âm** — kỳ vọng *không phải* Đỏ. Loại có giá trị nhất. ⚠️ **KHÔNG được gọi** kết quả trên tập này là *tỉ lệ false positive* khi chưa gán nhãn ground truth cho từng giao dịch; chưa gán thì chỉ nói được *số giao dịch bị cáo buộc* |
 | `real-devnet` | Giao dịch thật trên devnet của người khác | Bổ sung |
-| `synthetic-devnet` | Đội tự dựng trên devnet | Kiểm thử đơn vị cho luật. Hợp lệ, nhưng **không được tính vào tỉ lệ false positive** |
+| `synthetic-devnet` | Đội tự dựng trên devnet | Kiểm thử đơn vị cho luật. Hợp lệ, nhưng **không được gộp vào con số đo trên tập âm** |
 
 **Ràng buộc cứng:** nhóm mẫu **an toàn** phải có **ít nhất 6 mẫu `real-mainnet`**. Mẫu nguy hiểm được phép `synthetic-devnet` — vì để kích hoạt một luật thì đầu vào do ta dựng vẫn kiểm tra đúng thứ cần kiểm tra.
 
 **Cách công bố trên sân khấu:**
-> *"12 luật, 25 mẫu kiểm thử. Tỉ lệ báo nhầm đo trên 10 giao dịch mainnet thật: X/10."*
+> *"14 luật, 33 mẫu kiểm thử. Trên 9/20 giao dịch công khai còn mô phỏng
+> được (lưu offline), Custos không gắn mã cáo buộc nào; 7 giao dịch ở mức Cần xem kỹ."*
 
-Không gộp mẫu tự dựng vào con số đó.
+Không gộp mẫu tự dựng vào con số đó. Và **không gọi nó là tỉ lệ báo nhầm** — cohort chưa
+gán nhãn ground truth, nên đó là một quan sát, không phải một tỉ lệ.
 
 ---
 
@@ -255,9 +261,11 @@ Gộp hai loại là cách nhanh nhất tạo mệt mỏi cảnh báo: `PROGRAM_
 
 ### Cách đọc con số cho đúng trên sân khấu
 
-- **0 báo Đỏ sai trên 20 giao dịch mainnet thật** — nói được.
+- **0 giao dịch bị gắn mã cáo buộc trên 9/20 giao dịch công khai lưu offline** — nói được.
+  KHÔNG nói "0 báo sai" hay "0 false positive": muốn dùng chữ đó phải có nhãn đúng/sai
+  cho từng giao dịch, mà cohort này chưa gán.
 - Mẫu ngẫu nhiên **không bảo đảm** mọi mẫu đều lành tính. Không có Đỏ nghĩa là không cờ nào bật, **không** chứng minh cả 20 cái đều sạch.
-- **Coverage 40 %** (con số hiện tại — xem mục 0b3; bảng ngay trên là số của bản 9 luật, giữ lại làm lịch sử). Phải nói ra: Custos vẫn chưa đọc hiểu hơn một nửa một giao dịch DeFi, và nó nói thẳng điều đó thay vì giả vờ hiểu.
+- **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được; riêng lệnh chạm tài sản người ký: **65 % (13/20)** (xem mục 0b3; bảng ngay trên là số của bản 9 luật, giữ lại làm lịch sử). Phải nói ra: Custos vẫn chưa đọc hiểu hơn một nửa một giao dịch DeFi, và nó nói thẳng điều đó thay vì giả vờ hiểu.
 
 ### Việc còn lại để coverage khá hơn
 
