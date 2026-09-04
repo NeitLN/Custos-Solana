@@ -1,15 +1,36 @@
 # Kiểm trên trình duyệt thật
 
 ```bash
-# cài một lần
-pip install playwright && playwright install chromium
-npm install --no-save axe-core
+# cài một lần — phiên bản đã GHIM, xem "Vì sao ghim" bên dưới
+pip install -r scripts/kiem-trinh-duyet/requirements.txt
+playwright install chromium
+npm ci                        # axe-core 4.13.0, ghim trong devDependencies
 
 # chạy — cần HAI server đang bật
 npm run vi          # 5188
 npm run tan-cong    # 5189
 python scripts/kiem-trinh-duyet/soi-trinh-duyet.py
 ```
+
+## Vì sao ghim phiên bản
+
+Bộ này sinh ra câu *"0 vi phạm axe"*. Câu đó chỉ có nghĩa khi nói rõ **axe nào**:
+axe-core đổi bộ luật giữa các bản nhỏ, và Chromium mới tính lại màu lẫn kích thước
+thật. Chạy bản khác rồi ghi cùng một kết luận là so hai phép đo khác nhau rồi gọi
+chúng là một.
+
+Nên mỗi lần chạy in đúng bộ công cụ đã đo ở dòng đầu:
+
+```
+Chromium 149.0.7827.55 · Playwright 1.61.0 · axe-core 4.13.0
+```
+
+Lệch bản axe là **FAIL** — nó ghim trong `package.json` nên lệch nghĩa là có người
+cài đè, và kết quả lúc đó không so được với lần trước. Lệch bản Playwright chỉ
+**cảnh báo**: máy khác có thể chưa `pip install -r`, mà chặn cứng ở đó thì người ta
+bỏ luôn việc chạy bộ kiểm thay vì sửa cho khớp.
+
+Số đo hiện tại: **40 PASS** trên đúng ba phiên bản ở trên.
 
 ## ⚠️ KHÔNG nằm trong CI, và cố ý như vậy
 

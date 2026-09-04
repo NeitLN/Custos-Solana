@@ -11,8 +11,9 @@ viết nó lặp lại được kết quả — và một bằng chứng không 
 bằng chứng.
 
 Cài một lần:
-    pip install playwright && playwright install chromium
-    npm install --no-save axe-core
+    pip install -r scripts/kiem-trinh-duyet/requirements.txt
+    playwright install chromium
+    npm ci          # axe-core ghim trong devDependencies
 
 Những lỗi bộ này đã tìm ra, mà bộ test đơn vị KHÔNG thấy:
   · `huyRef` mắc kẹt `true` vì StrictMode chạy effect hai lượt -> bấm nút không
@@ -24,6 +25,14 @@ Những lỗi bộ này đã tìm ra, mà bộ test đơn vị KHÔNG thấy:
 
 import asyncio
 import sys
+
+# Console Windows mặc định là cp1252 và chết ngay trên chữ tiếng Việt — mọi nhãn
+# kiểm trong bộ này đều có dấu. Đặt ở đây thay vì bắt người chạy nhớ PYTHONIOENCODING.
+for _luong in (sys.stdout, sys.stderr):
+    try:
+        _luong.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -73,13 +82,59 @@ async def cho_ket_qua(pg, giay: int = 60) -> bool:
         return False
 
 
+AXE_GHIM = "4.13.0"
+PLAYWRIGHT_GHIM = "1.61.0"
+
+
+def phien_ban_axe() -> str:
+    """Đọc số phiên bản axe-core từ package.json của chính gói đó."""
+    import json
+
+    pkg = AXE.parent / "package.json"
+    try:
+        return json.loads(pkg.read_text(encoding="utf-8"))["version"]
+    except Exception:
+        return "?"
+
+
+def in_phien_ban(chromium: str) -> None:
+    """Ghi đúng bộ công cụ đã đo, ngay đầu báo cáo.
+
+    "0 vi phạm axe" là một tuyên bố về MỘT bộ luật cụ thể. axe-core đổi luật giữa các
+    bản nhỏ, và Chromium mới tính lại màu lẫn kích thước. Không ghi phiên bản thì
+    người đọc không lặp lại được kết quả, mà kết quả không lặp lại được thì không
+    dùng làm bằng chứng được — đó cũng là lý do bộ này nằm trong repo ngay từ đầu.
+    """
+    from importlib.metadata import version as _v
+
+    axe = phien_ban_axe()
+    # Gói `playwright` không phơi `__version__`; số phiên bản nằm ở metadata bản cài.
+    try:
+        pw = _v("playwright")
+    except Exception:
+        pw = "?"
+    print(f"\nChromium {chromium} · Playwright {pw} · axe-core {axe}")
+    print(datetime.now(timezone.utc).isoformat(timespec="seconds") + "\n")
+
+    # axe ghim trong package.json, nên lệch là dấu hiệu ai đó cài đè — FAIL thật,
+    # vì kết quả lúc đó không so được với lần đo trước.
+    ck(f"axe-core đúng bản ghim ({AXE_GHIM})", axe == AXE_GHIM, f"đang chạy {axe}")
+
+    # Playwright thì chỉ cảnh báo: máy khác có thể chưa `pip install -r`, và chặn ở
+    # đây sẽ khiến người ta bỏ chạy bộ kiểm thay vì sửa cho khớp.
+    if pw != PLAYWRIGHT_GHIM:
+        print(f"  CẢNH BÁO  Playwright {pw} ≠ bản ghim {PLAYWRIGHT_GHIM}")
+        print(f"            kết quả bên dưới KHÔNG so trực tiếp được với lần đo trước")
+        print(f"            pip install -r scripts/kiem-trinh-duyet/requirements.txt")
+
+
 async def main() -> None:
     if not AXE.exists():
-        sys.exit(f"Chưa có {AXE}\n  npm install --no-save axe-core")
+        sys.exit(f"Chưa có {AXE}\n  npm ci   (axe-core ghim trong devDependencies)")
 
     async with async_playwright() as p:
         b = await p.chromium.launch(headless=True)
-        print(f"\nChromium {b.version} · {datetime.now(timezone.utc).isoformat(timespec='seconds')}\n")
+        in_phien_ban(b.version)
 
         # ── A · giao dịch nguy hiểm trong ví ────────────────────────────────
         print("A · ví — giao dịch nguy hiểm")
