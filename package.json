@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test --experimental-strip-types \"packages/**/test/*.test.ts\" \"apps/**/test/*.test.ts\"",
     "check": "npm run typecheck && npm run test",
+    "so-lieu": "node --experimental-strip-types scripts/tao-so-lieu.ts && node scripts/dong-bo-so-tai-lieu.mjs --da-do",
     "hien-truong": "node --experimental-strip-types scripts/dung-hien-truong.ts",
     "vi": "npm run dev -w @custos-solana/demo-wallet",
     "tan-cong": "npm run dev -w @custos-solana/trang-tan-cong",
