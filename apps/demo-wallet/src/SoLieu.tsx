@@ -38,6 +38,12 @@ type SoLieu = {
     luotGoiRpc: { trungVi: number; thap: number; cao: number };
   } | null;
   test: { pass: number; fail: number } | null;
+  phongVan: {
+    n: number;
+    hieu: { dung: number; motPhan: number; sai: number };
+    quyetDinh: { huy: number; kiemTraThem: number; ky: number };
+    hieuDungVanKy: number;
+  } | null;
   soLuat: number;
   soMau: number;
 };
@@ -207,6 +213,51 @@ export function SoLieu() {
                 còn lại là thông tin hoặc coverage khuyết.
               </p>
             </div>
+          </section>
+        )}
+
+        {d.phongVan && (
+          <section className="mt-10">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
+              Người thật có hiểu cảnh báo không
+            </h2>
+            <p className="mt-1 text-[14px] text-chu-mo">
+              {d.phongVan.n} người · hỏi ngày 29–30/08/2026
+            </p>
+
+            <GioiHan tieuDe="Đo trên bản giao diện LÚC ĐÓ.">
+              Tấm cảnh báo được thiết kế lại sau đợt phỏng vấn (01/09 và 04/09). Nội dung
+              không đổi — vẫn mức <em>Nguy hiểm</em>, vẫn bảng 500 → 0, vẫn dòng đổi chủ
+              tài khoản, vẫn <em>&quot;đã đọc hiểu 2 trên 3 lệnh&quot;</em> — nhưng hình thức thì
+              khác. Con số dưới đây <strong className="font-semibold text-chu">không phải</strong> đo
+              trên đúng bản đang chạy.
+            </GioiHan>
+
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.phongVan.hieu.dung}/${d.phongVan.n}`}
+                nhan="nêu được hậu quả"
+                cachDo={`Chiếu màn hình rồi hỏi "nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?" — không giải thích trước. Tính là ĐÚNG khi nêu được mất tiền HOẶC mất quyền kiểm soát. ${d.phongVan.hieu.motPhan} người hiểu một phần và ${d.phongVan.hieu.sai} người hiểu sai; "một phần" KHÔNG gộp vào "đúng".`}
+              />
+              <PhepDo
+                so={`${d.phongVan.quyetDinh.ky}/${d.phongVan.n}`}
+                nhan="vẫn ký dù đã thấy cảnh báo"
+                cachDo={`Hỏi TÁCH RA sau khi đã chép xong câu trả lời đầu — hỏi cùng lúc thì chính câu này đã mách rằng có gì đó đáng huỷ. Trong ${d.phongVan.quyetDinh.ky} người: ${d.phongVan.hieuDungVanKy} người HIỂU ĐÚNG hậu quả rồi vẫn ký có ý thức (ví phụ, token demo không giá trị), nên chỉ ${d.phongVan.quyetDinh.ky - d.phongVan.hieuDungVanKy} người ký vì đọc nhầm màn hình. Đó mới là chỗ sản phẩm thất bại, và đội giữ nguyên con số thay vì gộp cho đẹp.`}
+              />
+              <PhepDo
+                so={String(d.phongVan.quyetDinh.huy)}
+                nhan="huỷ giao dịch"
+                cachDo={`Còn ${d.phongVan.quyetDinh.kiemTraThem} người nói sẽ kiểm tra thêm rồi mới quyết. Hiểu và hành động là HAI biến khác nhau — đo mỗi mức hiểu là đo nửa câu chuyện, và là nửa dễ đẹp hơn.`}
+              />
+            </div>
+
+            <GioiHan tieuDe="Giới hạn của phép đo:">
+              một người hỏi cả {d.phongVan.n} — không có trôi thang chấm giữa nhiều người
+              hỏi, nhưng cũng không có ai chấm chéo. Hỏi qua tin nhắn và video call, nên
+              phần qua tin nhắn không quan sát được thời gian đọc, và người trả lời có thời
+              gian tra cứu. Biên bản đã ẩn danh nằm ở <code className="font-mono text-[13px]">docs/BIEN-BAN-PHONG-VAN.md</code>;
+              số đếm bằng <code className="font-mono text-[13px]">scripts/kiem-phong-van.ts</code>, không đếm tay.
+            </GioiHan>
           </section>
         )}
 
