@@ -5,18 +5,44 @@ Không ghi tên, email, số điện thoại. Chỉ mã P01–P20.
 
 Điền xong: `node scripts/doc-bien-ban.mjs --ghi`
 
-## Nguồn gốc — phần giám khảo soi kỹ nhất
+## Nguồn gốc
 
 | | |
 |---|---|
-| Ngày phỏng vấn | |
-| Ai phỏng vấn | |
-| Ghi bằng gì | ghi tay / ghi âm / gõ thẳng — ghi rõ nếu các buổi khác nhau |
-| Màn hình đã chiếu | `neitln.github.io/Custos-Solana/phong-van.html` |
-| Có xin phép trước | |
+| Ngày phỏng vấn | **29/08 và 30/08/2026** |
+| Ai phỏng vấn | **Võ Việt Tiến** — một người hỏi cả 20 |
+| Cách hỏi | **tin nhắn** và **video call** |
+| Ghi bằng gì | ghi lại bằng note trong lúc hỏi |
+| Có xin phép trước | **Có** |
+| Màn hình đã chiếu | `/phong-van.html` ở trạng thái repo ngày 29–30/08 (trước `b90aad8`) |
 
-> Ba ô trên **chưa điền**. Không có chúng thì con số ở dưới không bảo vệ được trước
-> câu hỏi *"các em hỏi ai, ngày nào, ghi bằng gì?"* — và đó là câu hỏi đầu tiên.
+### Bốn giới hạn của phép đo này — nói ra trước khi bị hỏi
+
+**1 · Màn hình đã đổi sau khi phỏng vấn.** Hôm 29–30/08 tấm cảnh báo là **nền tối**
+(`bg-slate-900/60`) đặt trên trang tối — nhất quán, không có lỗi tương phản. Nó được
+thiết kế lại sang nền sáng ngày **01/09** (`5713f46`) và trang phỏng vấn được đưa về
+cùng hệ nền sáng ngày **04/09** (`a6e58ba`).
+
+Nội dung không đổi: vẫn mức *Nguy hiểm*, vẫn bảng `500 → 0`, vẫn dòng đổi chủ tài
+khoản, vẫn *"đã đọc hiểu 2 trên 3 lệnh"*. Nhưng **hình thức thì khác**, nên con số
+dưới đây đo trên một bản giao diện cũ hơn bản đang demo. Đừng nói *"đo trên đúng màn
+hình các anh chị vừa xem"*.
+
+**2 · Hỏi qua tin nhắn thì không quan sát được, và người trả lời có thời gian.**
+Giao thức gốc là chiếu màn hình rồi im lặng, đo cả thời gian đọc và chỗ họ dừng lâu.
+Qua tin nhắn thì không có dữ liệu đó, và người trả lời có thể tra cứu hoặc hỏi người
+khác trước khi nhắn lại. Phần qua **video call** gần giao thức hơn.
+
+**3 · Biên bản không ghi ai hỏi qua tin nhắn, ai qua video call.** Không suy đoán
+ngược được, nên không tách được hai nhóm để so.
+
+**4 · Một người hỏi cả 20.** Không có trôi thang chấm giữa nhiều người hỏi — đó là
+điểm mạnh. Nhưng cũng không có ai chấm chéo để bắt lỗi thiên lệch của chính người
+hỏi — đó là điểm yếu, và nó chưa được khử.
+
+> Câu trả lời qua tin nhắn thường tròn trịa hơn lời nói. Điều đó giải thích vì sao
+> hầu như không có câu nào cụt hay lấp lửng trong biên bản này — **không phải vì đã
+> sửa lại lời họ**, mà vì phần lớn là chữ họ tự gõ.
 
 ---
 

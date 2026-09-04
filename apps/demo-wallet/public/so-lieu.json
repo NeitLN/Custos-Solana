@@ -1,5 +1,19 @@
 {
-  "sinhLuc": "2026-09-04T05:51:56.514Z",
+  "sinhLuc": "2026-09-04T08:38:53.377Z",
+  "phongVan": {
+    "n": 20,
+    "hieu": {
+      "dung": 13,
+      "motPhan": 5,
+      "sai": 2
+    },
+    "quyetDinh": {
+      "huy": 10,
+      "kiemTraThem": 6,
+      "ky": 4
+    },
+    "hieuDungVanKy": 2
+  },
   "cohort": {
     "ngayDo": "2026-08-24T17:51:38.637Z",
     "mauDoDuoc": 9,

@@ -125,8 +125,41 @@ if (!test) {
   process.exit(1);
 }
 
+/**
+ * Số phỏng vấn người dùng — đọc từ file đã thu, KHÔNG gõ tay.
+ *
+ * Vắng file là trạng thái hợp lệ: đội chưa đi hỏi thì `phongVan` là null, và deck
+ * lẫn trang số liệu phải nói "chưa đo" chứ không được bịa. Đây là ô 25 % rubric,
+ * nên nó là ô đắt nhất để nói sai.
+ */
+function docPhongVan() {
+  const t = docJson<{ laViDu?: boolean; ban: Array<Record<string, string>> }>(
+    "data/seed/phong-van.json",
+  );
+  if (!t || !Array.isArray(t.ban) || t.ban.length === 0) return null;
+  // File ví dụ mang cờ `laViDu`. Số minh hoạ KHÔNG được ra khỏi máy dev.
+  if (t.laViDu) {
+    console.warn("⚠ data/seed/phong-van.json là FILE VÍ DỤ — bỏ qua, không đưa số vào");
+    return null;
+  }
+  const dem = (truong: string, gt: string) => t.ban.filter((b) => b[truong] === gt).length;
+  return {
+    n: t.ban.length,
+    hieu: { dung: dem("cham", "dung"), motPhan: dem("cham", "motPhan"), sai: dem("cham", "sai") },
+    quyetDinh: {
+      huy: dem("quyetDinh", "huy"),
+      kiemTraThem: dem("quyetDinh", "kiemTraThem"),
+      ky: dem("quyetDinh", "ky"),
+    },
+    // Người hiểu ĐÚNG mà vẫn ký: phát hiện đáng giá nhất, và là con số dễ bị gộp
+    // mất nhất. Tách sẵn ở đây để không ai phải tự tính rồi tính nhầm.
+    hieuDungVanKy: t.ban.filter((b) => b["cham"] === "dung" && b["quyetDinh"] === "ky").length,
+  };
+}
+
 const soLieu = {
   sinhLuc: new Date().toISOString(),
+  phongVan: docPhongVan(),
   cohort: cohort && {
     ngayDo: cohort.doLuc,
     mauDoDuoc: cohort.coMauDo,

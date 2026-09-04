@@ -394,14 +394,36 @@ giấu, coverage sẽ trông như đang cải thiện trong khi thật ra chỉ 
 
 ### 18. "Có dữ liệu người dùng thật chưa?"
 
-**Trả lời đúng trạng thái tại lúc trình bày. Không có thì nói không có.**
+**Rồi — 20 người, ngày 29–30/08/2026.**
 
-Đội có sẵn bộ đồ nghề — `/phong-van.html` chiếu đúng màn hình thật, giao thức hỏi
-hai câu tách nhau, script đếm `scripts/kiem-phong-van.ts` — nhưng bộ đồ nghề **không
-phải** dữ liệu.
+> *"Chúng em hỏi 20 người, chiếu đúng màn hình cảnh báo rồi hỏi hai câu tách nhau.
+> **13/20 nêu được hậu quả** — mất tiền hoặc mất quyền kiểm soát. 5 người hiểu
+> một phần, 2 người hiểu sai.*
+>
+> *Và **4/20 vẫn ký** dù đã thấy cảnh báo. Nhưng 2 trong số đó **hiểu đúng** hậu quả
+> rồi vẫn ký có ý thức, vì họ dùng ví phụ và token demo không có giá trị. Chỉ
+> **2 người ký vì đọc nhầm màn hình** — và đó mới là chỗ sản phẩm thất bại."*
 
-Khi đã hỏi: đọc `x/n`, kèm mẫu số, **không gộp "một phần" vào "đúng"**, và nói cả số
-người hiểu đúng mà vẫn ký. Chưa hỏi: nói *"chưa đo"*.
+**Ba điều phải nói kèm, đừng bỏ điều nào:**
+
+1. **"Một phần" KHÔNG gộp vào "đúng".** Gộp một lần là mất độ tin của mọi con số khác.
+2. **Đo trên bản giao diện ngày 29–30/08.** Tấm cảnh báo đã được thiết kế lại sau đó
+   (01/09 và 04/09). Nội dung không đổi, hình thức thì đổi — **đừng nói *"đo trên
+   đúng màn hình các anh chị vừa xem"***.
+3. **Một người hỏi cả 20, qua tin nhắn và video call.** Không trôi thang chấm giữa
+   nhiều người hỏi, nhưng cũng **không có ai chấm chéo**. Qua tin nhắn thì không quan
+   sát được thời gian đọc, và người trả lời có thời gian tra cứu.
+
+**Hai phát hiện đáng nói hơn con số:**
+
+- Cả 2 người ký nhầm đều **neo vào một chi tiết trấn an**, không phải vì thiếu cảnh
+  báo: một người bám dòng phí *"0,000005 SOL, chắc chỉ trừ đúng phí đó"*, một người
+  bám chữ *"demo"*. Cảnh báo hiện đủ; thứ kéo họ đi là chi tiết nhỏ bên cạnh.
+- Người **hiểu đúng mà vẫn ký** không phải lỗi sản phẩm — họ nói rõ đang dùng ví phụ.
+  Giữ nguyên con số đó thay vì giấu; nó chứng minh đội đọc được cả kết quả xấu.
+
+Biên bản đầy đủ, đã ẩn danh: `docs/BIEN-BAN-PHONG-VAN.md`. Số đếm bằng
+`scripts/kiem-phong-van.ts`, không đếm tay.
 
 > ⚠️ File ví dụ `data/seed/phong-van.example.json` mang cờ `laViDu` và script **từ
 > chối** in con số sân khấu cho nó. Đừng đọc số minh hoạ.
