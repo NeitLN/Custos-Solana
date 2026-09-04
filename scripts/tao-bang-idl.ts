@@ -12,8 +12,12 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { inflateSync } from "node:zlib";
 import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("tao-bang-idl.ts", RPC);
 
 /** Chọn theo TẦN SUẤT đo được trên lưu lượng mainnet, không theo tiếng tăm.
  *  Xem scripts/khao-sat-chuong-trinh.ts. */

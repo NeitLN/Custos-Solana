@@ -198,7 +198,9 @@ bố IDL trên chuỗi thì không có cách nào đọc hiểu mà không phỏ
 
 ```bash
 npm run check                                             # 188 test
-node --experimental-strip-types scripts/do-cohort.ts x    # đo trên cohort cố định
-node --experimental-strip-types scripts/soi-lenh-chua-decode.ts
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/do-cohort.ts x    # đo trên cohort cố định
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/soi-lenh-chua-decode.ts
 node scripts/soi-ro-ri-khoa.mjs site                      # sau khi build
 ```

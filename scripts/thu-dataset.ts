@@ -26,12 +26,16 @@ import {
   createMint, createSetAuthorityInstruction, createTransferInstruction,
   getMinimumBalanceForRentExemptAccount, getMintLen, mintTo,
 } from "@solana/spl-token";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { extractFacts } from "../packages/core/src/l1/fetch.ts";
 import { dongBangFacts } from "../packages/core/src/facts-io.ts";
 import { napVi, RPC } from "./vi-devnet.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const MAINNET = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("thu-dataset.ts", MAINNET);
 const TOKEN_PROGRAM_MAINNET = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const THU_MUC = "data/seed";
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -395,9 +399,35 @@ async function main() {
   await thuDevnet();
   await thuMainnet(10);
 
+  /*
+   * KHÔNG GHI ĐÈ BỘ DỮ LIỆU BẰNG MỘT MẺ TEO LẠI.
+   *
+   * Vòng lấy mẫu mainnet ở trên `catch {}` từng mẫu một — cố ý, vì một giao dịch
+   * không lấy được không nên làm hỏng cả lượt thu. Nhưng khi RPC chết hoặc bị giới
+   * hạn tốc độ thì MỌI mẫu đều rơi vào nhánh đó, và script vẫn đi tới đây rồi ghi
+   * một `index.json` chỉ còn mẫu devnet — trông hợp lệ, chỉ là nhỏ hơn. Sau đó
+   * `npm run so-lieu` công bố con số nhỏ hơn ấy.
+   *
+   * Đúng chuyện này đã xảy ra với `cohort-ket-qua.json`: một lượt đo hỏng ghi đè
+   * lên 9 mẫu thật, rồi số 0 chảy vào bốn tài liệu mà không lệnh nào báo lỗi.
+   *
+   * Nên mẻ mới phải ÍT NHẤT bằng mẻ cũ. Muốn thu nhỏ bộ dữ liệu thật thì xoá file
+   * cũ đi — đó là một hành động có chủ ý, không phải một tác dụng phụ.
+   */
+  const DUONG = `${THU_MUC}/index.json`;
+  if (existsSync(DUONG)) {
+    const cu = JSON.parse(readFileSync(DUONG, "utf8")) as { soMau?: number };
+    if (typeof cu.soMau === "number" && mau.length < cu.soMau) {
+      console.error(`\n✖ mẻ này chỉ có ${mau.length} mẫu, ít hơn ${cu.soMau} mẫu đang lưu — KHÔNG ghi ${DUONG}.`);
+      console.error("  Thường là dấu hiệu RPC hỏng hoặc bị giới hạn tốc độ giữa chừng.");
+      console.error("  Thu lại cho đủ, hoặc xoá file cũ nếu thật sự muốn thu nhỏ bộ dữ liệu.");
+      process.exit(1);
+    }
+  }
+
   mkdirSync(THU_MUC, { recursive: true });
   writeFileSync(
-    `${THU_MUC}/index.json`,
+    DUONG,
     JSON.stringify({ thuLuc: new Date().toISOString(), soMau: mau.length, mau }, null, 2),
   );
 

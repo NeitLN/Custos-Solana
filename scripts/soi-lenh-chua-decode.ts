@@ -11,8 +11,12 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { VERIFIED_PROGRAMS } from "../packages/core/src/constants.ts";
 import { decodeInstruction } from "../packages/core/src/l1/decode.ts";
 import { giaiBase58 } from "../packages/core/src/l1/base58.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("soi-lenh-chua-decode.ts", RPC);
 const TOKEN = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
