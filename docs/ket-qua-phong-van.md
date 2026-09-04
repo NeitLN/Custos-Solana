@@ -39,8 +39,8 @@ Câu này **chắc chắn bị hỏi**. Trả lời vòng vo là mất nhiều h
 > *Bọn em biết nó nằm ở đâu: bộ đo đã dựng sẵn ở `/phong-van.html`, giao thức đã
 > viết, chỉ chưa chạy kịp trước hạn.*
 >
-> *Thứ bọn em có là loại bằng chứng khác — bọn em đo trên **giao dịch mainnet thật**
-> chứ không đo trên mẫu tự dựng. Và chính phép đo đó bắt được sản phẩm của bọn em
+> *Thứ bọn em có là loại bằng chứng khác — bọn em đo trên **giao dịch công khai có thật**
+> (lưu offline để kiểm engine) chứ không đo trên mẫu tự dựng. Và chính phép đo đó bắt được sản phẩm của bọn em
 > báo Đỏ nhầm một giao dịch DeFi bình thường, mười ngày trước hôm nay."*
 
 ### Vì sao câu này đứng được

@@ -49,8 +49,17 @@ hiểu được 65 % (13/20).
 Cohort cũ (21/08) giữ trong repo để đối chiếu, **không so sánh trực tiếp** với cohort mới —
 hai mẻ mẫu khác nhau. Xem `SEED-DATASET.md` mục 0b5.
 
-Nói **"bị gắn cờ"**, không nói **"báo nhầm"**: chưa kiểm chứng từng giao dịch trong
-cohort là lành nên chưa có ground truth. Xem `SEED-DATASET.md` mục 0b3 và 0b4, và
+Ba chữ, ba nghĩa khác nhau — dùng lẫn là nói sai về chính mình:
+
+| Chữ | Nghĩa | Số hiện tại |
+|---|---|---|
+| **bị cáo buộc** | có mã lý do BUỘC TỘI một hành vi cụ thể | **0** |
+| **bị gắn cờ** | verdict khác Xanh, gồm cả cờ vì thiếu thông tin | **7** |
+| **báo nhầm** | gắn cờ SAI — cần ground truth mới nói được | **chưa đo được** |
+
+Nói *"0 giao dịch bị gắn cờ"* là SAI: 7 giao dịch đã bị gắn cờ. Con số 0 là số
+**cáo buộc**. Và không được gọi nó là *"báo nhầm"*: chưa kiểm chứng từng giao dịch
+trong cohort là lành nên chưa có ground truth. Xem `SEED-DATASET.md` mục 0b3 và 0b4, và
 `docs/review/UPDATE-REPORT.md` mục 4 về việc cohort đang rụng mẫu.
 
 ## Quyết định thiết kế đã khoá — không tự ý đảo lại

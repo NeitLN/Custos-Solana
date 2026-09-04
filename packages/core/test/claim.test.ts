@@ -190,6 +190,8 @@ const TAI_LIEU_HIEN_HANH = [
   "CUSTOS.md",
   "PITCH-VA-PHAN-BIEN.md",
   "SEED-DATASET.md",
+  // Trang số liệu CÔNG KHAI liên kết thẳng tới file này, nên nó là bề mặt public.
+  "docs/DON-VI-KINH-TE.md",
   "packages/core/README.md",
   "packages/ai/README.md",
 ];
