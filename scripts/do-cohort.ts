@@ -22,8 +22,12 @@ import { danhGia } from "../packages/core/src/l2/evaluate.ts";
 import { chiLaThongTin } from "../packages/core/src/constants.ts";
 import { BANG_IDL } from "../packages/core/src/l1/bang-idl.ts";
 import { VERIFIED_PROGRAMS } from "../packages/core/src/constants.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("do-cohort.ts", RPC);
 const TOKEN = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const HO_SO = "data/seed/cohort-audit.json";
 /** Kết quả đo, để trang số liệu công khai đọc thay vì có người gõ tay. */
@@ -98,6 +102,28 @@ async function main() {
   console.log(`  verdict  Đỏ / Vàng / Xanh : ${danger} / ${warning} / ${safe}`);
   console.log(`  cảnh báo mang tính cáo buộc: ${caoBuoc}`);
   console.log(`  cảnh báo KHÔNG có mã lý do : ${warningKhongLyDo}   <- phải là 0`);
+
+  /*
+   * KHÔNG ĐO ĐƯỢC MẪU NÀO THÌ KHÔNG GHI GÌ CẢ.
+   *
+   * Chuyện đã xảy ra thật: một lượt chạy với RPC không kết nối được đã ghi đè kết
+   * quả cohort đã commit (9 mẫu · coverage 82 % · chạm tài sản 13/20) bằng một hồ
+   * sơ toàn số 0 — hợp lệ về hình thức, `coverageTrungBinh: 0` do nhánh `n ? … : 0`
+   * ngay bên dưới. Rồi `npm run so-lieu` đọc nó và rải "coverage 0 %" vào README,
+   * CLAUDE.md, PITCH và README gói core. Không lệnh nào báo lỗi.
+   *
+   * "Đo được 0 mẫu" KHÔNG phải một phép đo — nó là phép đo THẤT BẠI. Ghi nó ra
+   * cùng một file với phép đo thật là để hai thứ khác hẳn nhau trông giống nhau,
+   * và cái mới thì luôn thắng.
+   */
+  if (n === 0) {
+    console.error(`\n✖ không mô phỏng được mẫu nào trong ${chuKy.length} chữ ký — KHÔNG ghi ${KET_QUA}.`);
+    console.error("  Đây là lượt đo hỏng, không phải kết quả 0 %. Nguyên nhân thường gặp:");
+    console.error("    · RPC không kết nối được, hoặc bị giới hạn tốc độ");
+    console.error("    · cohort đã cũ tới mức mọi giao dịch đều mô phỏng hỏng");
+    console.error(`  Kết quả lần đo trước trong ${KET_QUA} được giữ nguyên.`);
+    process.exit(1);
+  }
 
   // Ghi ra file. Trước đây script chỉ in ra màn hình, nên mọi con số muốn dùng ở
   // chỗ khác đều phải có người chép tay — và số chép tay là số sẽ lệch sau hai

@@ -18,8 +18,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { inspect } from "../packages/core/src/inspect.ts";
 import { dienGiaiKhongAI } from "../packages/ai/src/index.ts";
 import { chiLaThongTin } from "../packages/core/src/constants.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("do-bao-nham.ts", RPC);
 const TOKEN_PROGRAM = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const SO_MAU = Number(process.argv[2] ?? 20);
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -102,6 +106,20 @@ async function main() {
     console.log("  Không được tính vào cột nào trước khi có người xem.");
   } else {
     console.log("\n  ✓ không có verdict Đỏ nào trên mẫu ngẫu nhiên này");
+  }
+
+  /*
+   * Không đo được mẫu nào thì KHÔNG ghi — cùng lý do như `do-cohort.ts`.
+   *
+   * Một lượt chạy hỏng (RPC chết, bị giới hạn tốc độ) vẫn đi tới đây với `mau` rỗng
+   * và ghi ra một hồ sơ `soMau: 0` trông hợp lệ. Hồ sơ đó rồi được đọc như một phép
+   * đo thật. Chuyện này đã xảy ra với `cohort-ket-qua.json`: số 0 ghi đè lên 9 mẫu
+   * đo thật rồi chảy vào bốn tài liệu, không lệnh nào báo lỗi.
+   */
+  if (mau.length === 0) {
+    console.error("\n✖ không mô phỏng được mẫu nào — KHÔNG ghi data/seed/do-bao-nham.json.");
+    console.error("  Đây là lượt đo hỏng, không phải kết quả 0. Kết quả lần trước giữ nguyên.");
+    process.exit(1);
   }
 
   mkdirSync("data/seed", { recursive: true });

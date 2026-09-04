@@ -32,8 +32,12 @@ import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { inspect } from "../packages/core/src/index.ts";
 import { dienGiaiKhongAI, boiThoiHan } from "../packages/ai/src/index.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("do-chi-phi.ts", RPC);
 const HO_SO = "data/seed/cohort-audit.json";
 const KET_QUA = "data/seed/chi-phi.json";
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));

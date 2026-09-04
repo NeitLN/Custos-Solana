@@ -9,8 +9,12 @@
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import { inspect } from "../packages/core/src/inspect.ts";
 import { dienGiaiKhongAI, boiThoiHan } from "../packages/ai/src/index.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("soi-mot-giao-dich.ts", RPC);
 const TOKEN = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
 async function main() {

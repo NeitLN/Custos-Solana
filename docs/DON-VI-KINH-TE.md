@@ -74,7 +74,8 @@ Ký tự **không phải** token, và tiếng Việt có dấu tách token tệ 
 nhiều — nên không quy đổi. Đo thật mất một lượt chạy có khoá:
 
 ```
-node --experimental-strip-types scripts/do-token-mo-hinh.ts 6
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/do-token-mo-hinh.ts 6
 ```
 
 Script đi qua **đúng đường sản xuất** (`dienGiaiBangMoHinh` tự dựng payload) và lấy
@@ -142,8 +143,10 @@ lợi nhuận**, và nó không lấp được bằng code — phải có ngư�
 ## 6 · Cách đo lại
 
 ```
-node --experimental-strip-types scripts/do-chi-phi.ts          # phần RPC
-node --experimental-strip-types scripts/do-token-mo-hinh.ts 6  # phần mô hình, cần khoá
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/do-chi-phi.ts          # phần RPC
+CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
+  node --experimental-strip-types scripts/do-token-mo-hinh.ts 6  # phần mô hình, cần khoá
 ```
 
 Kết quả ghi vào `data/seed/chi-phi.json` và `data/seed/chi-phi-mo-hinh.json`.

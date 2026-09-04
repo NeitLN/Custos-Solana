@@ -13,8 +13,12 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { inflateSync } from "node:zlib";
 import { createHash } from "node:crypto";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("lay-idl-onchain.ts", RPC);
 
 async function diaChiIdl(programId: PublicKey): Promise<PublicKey> {
   const [base] = PublicKey.findProgramAddressSync([], programId);

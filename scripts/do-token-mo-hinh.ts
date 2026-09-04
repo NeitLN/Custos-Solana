@@ -24,8 +24,12 @@ import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { inspect } from "../packages/core/src/index.ts";
 import { dienGiaiBangMoHinh, dungGoiAnthropic, type GoiMoHinh } from "../packages/ai/src/index.ts";
+import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";
+
+// Chạm mainnet phải là hành động có chủ ý — xem `scripts/congMainnet.ts`.
+chanNeuChuaChoPhep("do-token-mo-hinh.ts", RPC);
 const HO_SO = "data/seed/cohort-audit.json";
 const KET_QUA = "data/seed/chi-phi-mo-hinh.json";
 const nghi = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -106,6 +110,12 @@ async function main() {
 
   console.log(`  token VÀO : trung vị ${trungVi(tokenVao)}, thấp ${Math.min(...tokenVao)}, cao ${Math.max(...tokenVao)}`);
   console.log(`  token RA  : trung vị ${trungVi(tokenRa)}, thấp ${Math.min(...tokenRa)}, cao ${Math.max(...tokenRa)}`);
+
+  // Không đo được mẫu nào thì không ghi — xem `do-cohort.ts` để biết vì sao.
+  if (n === 0) {
+    console.error(`\n✖ không đo được mẫu nào — KHÔNG ghi ${KET_QUA}. Kết quả lần trước giữ nguyên.`);
+    process.exit(1);
+  }
 
   writeFileSync(
     KET_QUA,
