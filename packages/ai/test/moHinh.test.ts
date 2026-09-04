@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Facts, TokenAccountFact } from "@custos-solana/core";
 import { REASON } from "@custos-solana/core";
-import { dienGiaiBangMoHinh, soiDauRa, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
+import { dienGiaiBangMoHinh, soiDauRa, dungNeo, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
 
 /**
  * Bộ test này giả định mô hình LÀ BÊN KHÔNG ĐÁNG TIN.
@@ -253,4 +253,56 @@ test("dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn v�
 test("system prompt cấm mô hình kết luận an toàn hay nguy hiểm", () => {
   assert.match(SYSTEM_PROMPT, /Không được kết luận giao dịch an toàn hay nguy hiểm/);
   assert.match(SYSTEM_PROMPT, /Không chắc hành động chính là gì thì trả về null/);
+});
+
+/*
+ * NEO — mô hình chỉ được nhắc số và địa chỉ CÓ CĂN CỨ.
+ *
+ * Tìm ra bằng `scripts/eval-ai.ts`: bộ chắn cũ kiểm schema và câu trấn an, nhưng
+ * KHÔNG kiểm lời văn có căn cứ hay không. Hai bẫy "bịa địa chỉ ví" và "bịa số
+ * tiền" đi thẳng qua, và hiện lên đúng màn hình người dùng đọc trước khi ký.
+ *
+ * Một địa chỉ ví bịa nguy hiểm hơn một câu sai: người dùng có thể đối chiếu nó
+ * với ví họ định gửi tới, rồi tin nhầm.
+ */
+test("NEO · địa chỉ đầy đủ trong lời văn là bịa — mô hình không hề nhận được cái nào", () => {
+  const r = soiDauRa(
+    JSON.stringify({
+      explanation: "Token của bạn sẽ chuyển sang ví 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM.",
+      aiAdvisory: null,
+    }),
+    dungNeo("{}", "Giao dịch đổi chủ tài khoản token."),
+  );
+  assert.equal(r, null, "địa chỉ base58 đầy đủ phải bị từ chối");
+});
+
+test("NEO · số không có trong dữ liệu đã gửi thì bị từ chối", () => {
+  const neo = dungNeo('{"truoc":"500","sau":"0"}', "Số dư còn 0.");
+  assert.equal(
+    soiDauRa(JSON.stringify({ explanation: "Bạn sẽ mất khoảng 12345 token.", aiAdvisory: null }), neo),
+    null,
+    "số mô hình tự nghĩ ra phải bị từ chối",
+  );
+  assert.ok(
+    soiDauRa(JSON.stringify({ explanation: "Số dư đi từ 500 xuống 0.", aiAdvisory: null }), neo),
+    "số CÓ trong dữ liệu đã gửi phải được chấp nhận",
+  );
+});
+
+test("NEO · địa chỉ viết tắt vẫn dùng được — không chặn quá tay", () => {
+  // Câu mẫu tất định viết tắt địa chỉ thành `HaVR…EXTT`. Chặn dạng này thì chính
+  // lời văn đúng của sản phẩm cũng bị vứt.
+  const r = soiDauRa(
+    JSON.stringify({ explanation: "Tài khoản token đổi chủ sang HaVR…EXTT.", aiAdvisory: "review_required" }),
+    dungNeo("{}", "Giao dịch đổi chủ tài khoản token sang HaVR…EXTT."),
+  );
+  assert.ok(r, "địa chỉ viết tắt là cách sản phẩm vẫn hiển thị — phải đi lọt");
+});
+
+test("NEO · không truyền neo thì giữ nguyên hành vi cũ", () => {
+  // `soiDauRa` là API công khai. Thêm tham số bắt buộc là phá bên tích hợp đang dùng.
+  assert.ok(
+    soiDauRa(JSON.stringify({ explanation: "Bạn sẽ mất 12345 token.", aiAdvisory: null })),
+    "không có neo thì không kiểm số — tương thích ngược",
+  );
 });

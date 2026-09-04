@@ -1,0 +1,521 @@
+{
+  "doLuc": "2026-09-04T17:57:31.974Z",
+  "soMau": 33,
+  "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
+  "template": {
+    "treTrungViMs": 0,
+    "treCaoNhatMs": 1,
+    "soCaBiaDiaChi": 0,
+    "soCaBiaSo": 0
+  },
+  "boChan": {
+    "soBay": 6,
+    "soBayChanDuoc": 6,
+    "chiTiet": [
+      {
+        "bay": "bịa địa chỉ ví",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "bịa số tiền",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trấn an người dùng",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "tự chen level vào",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trả rác không phải JSON",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trả JSON rỗng",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      }
+    ]
+  },
+  "moHinhThat": {
+    "trangThai": "BLOCKED_BY_SECRET",
+    "vaSao": "chưa có ANTHROPIC_API_KEY trong môi trường; không đo được độ trễ và token thật"
+  },
+  "cases": [
+    {
+      "id": "R01-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 1,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 121,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R02-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 2,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 123,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R03-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 3,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 123,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R03-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 3,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 123,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R08-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 8,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 247,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R11-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 11,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "2/2",
+      "template": {
+        "soChu": 293,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R12-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 12,
+      "level": "danger",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 63,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R09-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 9,
+      "level": "warning",
+      "soMa": 4,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 393,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R09-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 9,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 299,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R06-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 6,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R06-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 6,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R04-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 4,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 244,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R11-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 11,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-01",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "0/3",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-02",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/14",
+      "template": {
+        "soChu": 140,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-03",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "0/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-04",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/8",
+      "template": {
+        "soChu": 315,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-05",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-06",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-07",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/12",
+      "template": {
+        "soChu": 322,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-08",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/11",
+      "template": {
+        "soChu": 321,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-09",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 6,
+      "coverage": "0/10",
+      "template": {
+        "soChu": 627,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-10",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/5",
+      "template": {
+        "soChu": 323,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R05-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 5,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "1/2",
+      "template": {
+        "soChu": 348,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R05-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 5,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/2",
+      "template": {
+        "soChu": 206,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R07-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 7,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 205,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R07-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 7,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R10-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 10,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 329,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R10-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 10,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 227,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R13-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 13,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 135,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R13-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 13,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 47,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R14-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 14,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 137,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R14-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 14,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 68,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    }
+  ]
+}
