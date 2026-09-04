@@ -71,3 +71,36 @@ bịa kéo theo cả những con số thật xuống cùng.
 
 Repo này đã hai lần nhận dữ liệu phỏng vấn do AI sinh và **từ chối cả hai lần**. Giữ
 nguyên như vậy.
+
+---
+
+## Nhập kết quả thật — bốn bước
+
+Trang `/phong-van.html` giữ dữ liệu trong `localStorage` của **chính máy người phỏng
+vấn**. Không có backend, không gửi đi đâu. Muốn nó thành con số dùng được thì phải
+đưa ra file:
+
+```bash
+# 1. Trên máy đã phỏng vấn: bấm "Sao chép toàn bộ (JSON)" ở cuối /phong-van.html
+# 2. Dán vào file này (tạo mới nếu chưa có):
+#      data/seed/phong-van.json
+# 3. Đếm và soi:
+node --experimental-strip-types scripts/kiem-phong-van.ts
+# 4. Đọc phần cảnh báo, sửa những chỗ nó nêu, chạy lại.
+```
+
+Định dạng xem ở `data/seed/phong-van.example.json`. File ví dụ mang cờ
+`"laViDu": true`; script **từ chối in con số sân khấu** cho bất kỳ file nào có cờ đó,
+nên không thể vô tình lấy số minh hoạ đưa vào deck.
+
+### Bốn quy tắc script sẽ canh giúp
+
+| Quy tắc | Vì sao |
+|---|---|
+| **Không ghi tên, email, số điện thoại** | File này vào repo công khai, và lịch sử git không gỡ lại được. Dùng mã `P1`, `P2`… Script quét và cảnh báo |
+| **Công bố `x/n`, không chỉ phần trăm** | Với n nhỏ, phần trăm làm mẫu số biến mất — "67 %" nghe như đo trên trăm người trong khi thật ra là 2/3 |
+| **Không gộp "một phần" vào "đúng"** | Cách dễ nhất để một con số xấu trông đẹp lên, và là điều đầu tiên giám khảo hỏi lại |
+| **Giữ nguyên người hiểu đúng mà vẫn ký** | Đó là phát hiện quan trọng nhất của cả đợt, không phải dữ liệu xấu cần giấu |
+
+**Chưa có dữ liệu thì không công bố tỉ lệ nào.** Ghi "chưa đo" — thiếu bằng chứng là
+một trạng thái nói ra được; bịa thì không.

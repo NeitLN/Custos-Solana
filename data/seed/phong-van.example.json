@@ -1,0 +1,32 @@
+{
+  "_doc": "FILE VÍ DỤ — CHỈ ĐỂ XEM ĐỊNH DẠNG. Không phải người thật, không phải kết quả. Đừng đọc con số nào từ đây lên sân khấu. Xuất bản thật bằng nút 'Sao chép toàn bộ (JSON)' ở /phong-van.html, lưu thành data/seed/phong-van.json.",
+  "phienBan": 1,
+  "laViDu": true,
+  "xuatLuc": "1970-01-01T00:00:00.000Z",
+  "ban": [
+    {
+      "ma": "P1",
+      "luc": "1970-01-01T00:00:00.000Z",
+      "nguyenVan": "(chép NGUYÊN VĂN câu người được hỏi nói — kể cả khi họ nói sai)",
+      "cham": "dung",
+      "quyetDinh": "huy",
+      "ghiChu": "(tuổi, đã dùng crypto bao lâu — KHÔNG ghi tên, email, số điện thoại)"
+    },
+    {
+      "ma": "P2",
+      "luc": "1970-01-01T00:00:00.000Z",
+      "nguyenVan": "(ô này không được để trống — câu nguyên văn là bằng chứng duy nhất cho nhãn đã chấm)",
+      "cham": "motPhan",
+      "quyetDinh": "kiemTraThem",
+      "ghiChu": ""
+    },
+    {
+      "ma": "P3",
+      "luc": "1970-01-01T00:00:00.000Z",
+      "nguyenVan": "(người hiểu ĐÚNG hậu quả mà vẫn ký thì giữ nguyên — đó là phát hiện quan trọng nhất, đừng bỏ)",
+      "cham": "dung",
+      "quyetDinh": "ky",
+      "ghiChu": ""
+    }
+  ]
+}
