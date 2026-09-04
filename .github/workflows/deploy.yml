@@ -34,6 +34,20 @@ jobs:
           # hỏng dù lockfile hợp lệ. CI phải chạy đúng bộ công cụ mà đội đang chạy.
           node-version: "24.12.0"
 
+      # GHIM npm, KHÔNG dựa vào bản đi kèm Node.
+      #
+      # Đo được: `npm@11.9.0` chạy `npm ci` là hỏng với `EUSAGE — Missing:
+      # bufferutil@4.1.0 from lock file`, vì nó dựng cây phụ thuộc khác cho
+      # peerOptional native của `ws`. setup-node cài bản npm đi kèm Node, và bản đó
+      # có thể đổi giữa hai bản vá Node mà không ai để ý — runner từng lấy 24.19
+      # trong khi máy dev là 24.12, và `npm ci` vỡ đúng vì chuyện này.
+      #
+      # `packageManager` trong package.json KHÔNG tự ép binary `npm` đổi phiên bản
+      # khi chưa bật Corepack, nên phải cài thẳng.
+      - name: Ghim npm 11.6.2
+        run: |
+          npm install -g npm@11.6.2
+          npm --version
       - run: npm ci
 
       # Sinh lại số liệu TRƯỚC `npm run check`, KHÔNG phải sau.
@@ -112,6 +126,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24.12.0"
+      # GHIM npm, KHÔNG dựa vào bản đi kèm Node.
+      #
+      # Đo được: `npm@11.9.0` chạy `npm ci` là hỏng với `EUSAGE — Missing:
+      # bufferutil@4.1.0 from lock file`, vì nó dựng cây phụ thuộc khác cho
+      # peerOptional native của `ws`. setup-node cài bản npm đi kèm Node, và bản đó
+      # có thể đổi giữa hai bản vá Node mà không ai để ý — runner từng lấy 24.19
+      # trong khi máy dev là 24.12, và `npm ci` vỡ đúng vì chuyện này.
+      #
+      # `packageManager` trong package.json KHÔNG tự ép binary `npm` đổi phiên bản
+      # khi chưa bật Corepack, nên phải cài thẳng.
+      - name: Ghim npm 11.6.2
+        run: |
+          npm install -g npm@11.6.2
+          npm --version
       - run: npm ci
       - name: Gói có dùng được từ ngoài không
         run: npm run thu-goi
