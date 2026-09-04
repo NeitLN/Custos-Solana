@@ -290,15 +290,15 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > trị; đo trên giao dịch tự dựng thì con số không nói lên gì. Nhãn devnet-only là về
 > **khuyến nghị triển khai**, không phải giới hạn kỹ thuật."
 
-### 14. "256 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "283 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 256 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 283 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (283)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (285)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort mainnet (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
@@ -334,6 +334,109 @@ Thể lệ BTC: *trình bày sai về tính năng, dữ liệu hoặc mức hoà
 2. Video 60–90 giây đã nộp trước, có sẵn trong tay BTC.
 3. Người pitch tiếp tục nói trong lúc video chạy — đừng đứng im.
 4. Đã chuẩn bị: ví nạp sẵn, RPC riêng, giao dịch fixture dựng sẵn không phụ thuộc mạng.
+
+---
+
+
+### 15. "14 luật có đủ để bảo vệ người dùng không?"
+
+**Không, và Custos không tuyên bố như vậy.**
+
+14 luật phủ một nhóm hậu quả **có tên cụ thể**: đổi chủ tài khoản, cấp quyền rút,
+đổi chương trình điều khiển, SOL rời ví, các cơ chế Token-2022. Chúng *không* hiểu
+ngữ nghĩa của chương trình DEX.
+
+Điều làm sản phẩm này dùng được không phải là con số 14, mà là việc phần **chưa**
+hiểu được hiển thị ra chứ không bị im lặng bỏ qua: *"đã đọc hiểu 2 trên 3 lệnh"*.
+Một lớp bảo vệ giấu giới hạn của mình còn nguy hiểm hơn không có lớp nào — vì
+người dùng sẽ tin nó ở đúng chỗ nó mù.
+
+> Câu chốt: *"14 luật bắt được nhóm hậu quả chúng em định nghĩa được. Phần còn lại
+> Custos nói thẳng là chưa đọc hiểu, và giữ phán quyết ở mức thận trọng."*
+
+---
+
+### 16. "82 % coverage có phải là 82 % chính xác không?" — ĐỪNG gật
+
+**Không. Hai đại lượng khác nhau, và gộp chúng là sai nặng nhất trong cả bài.**
+
+| | Đo cái gì | Cần gì để đo |
+|---|---|---|
+| **Coverage 82 %** | tỉ lệ lệnh Custos **đọc hiểu được** | chỉ cần chạy engine |
+| **Độ chính xác** | tỉ lệ phán quyết **đúng** | cần ground truth cho từng giao dịch |
+
+Cohort chưa gán nhãn ground truth, nên đội **không có** con số chính xác và không
+công bố con số nào như vậy. Hai chiều đều xảy ra được: coverage cao mà luật sai thì vẫn ra phán quyết sai;
+coverage thấp mà luật đúng thì vẫn gắn cờ đúng chỗ.
+
+> Câu chốt: *"82 % là phần Custos đọc hiểu được, không phải phần nó đoán đúng.
+> Muốn nói độ chính xác thì phải có nhãn đúng/sai cho từng giao dịch — chúng em
+> chưa gán, nên chưa nói."*
+
+---
+
+### 17. "Tại sao 11 trên 20 giao dịch không còn mô phỏng được?"
+
+`simulateTransaction` chạy trên **trạng thái chuỗi hiện tại**, không phải trạng thái
+lúc giao dịch xảy ra. Giao dịch lịch sử tham chiếu tới tài khoản đã đóng, số dư đã
+đổi, blockhash đã hết hạn — càng cũ càng dễ hỏng. Đây là tính chất của cách đo, không
+phải code kém đi.
+
+Điều đáng nói là **script đếm và báo số bỏ qua** thay vì lặng lẽ thu nhỏ mẫu số. Nếu
+giấu, coverage sẽ trông như đang cải thiện trong khi thật ra chỉ còn lại những mẫu dễ.
+
+> Câu chốt: *"Mẫu rụng vì mô phỏng chạy trên trạng thái chuỗi hôm nay. Chúng em báo
+> 9/20 chứ không âm thầm báo 100 % của 9."*
+
+---
+
+### 18. "Có dữ liệu người dùng thật chưa?"
+
+**Trả lời đúng trạng thái tại lúc trình bày. Không có thì nói không có.**
+
+Đội có sẵn bộ đồ nghề — `/phong-van.html` chiếu đúng màn hình thật, giao thức hỏi
+hai câu tách nhau, script đếm `scripts/kiem-phong-van.ts` — nhưng bộ đồ nghề **không
+phải** dữ liệu.
+
+Khi đã hỏi: đọc `x/n`, kèm mẫu số, **không gộp "một phần" vào "đúng"**, và nói cả số
+người hiểu đúng mà vẫn ký. Chưa hỏi: nói *"chưa đo"*.
+
+> ⚠️ File ví dụ `data/seed/phong-van.example.json` mang cờ `laViDu` và script **từ
+> chối** in con số sân khấu cho nó. Đừng đọc số minh hoạ.
+
+---
+
+### 19. "SDK đã ai tích hợp từ ngoài chưa?"
+
+Phân biệt hai câu hỏi khác nhau, và trả lời cả hai:
+
+| Câu hỏi | Trả lời |
+|---|---|
+| Gói **cài được** từ ngoài monorepo chưa? | **Rồi, có kiểm tự động.** `npm run thu-goi` cài tarball vào một project trống ngoài repo và chạy bằng `node` trần từ JavaScript thuần. Chạy trong CI mỗi lần đẩy code |
+| Đã có **ví bên thứ ba** nào tích hợp chưa? | **Chưa.** Đó là bước tiếp theo, không phải thứ đã xong |
+
+Gói nằm trên npm: `@custos-solana/core`, `@custos-solana/ai`, `@custos-solana/types`.
+Bản `0.1.0` **hỏng** (`main` trỏ vào TypeScript nguồn) — đã deprecate; dùng `0.1.1`
+trở lên. Đội nói ra chuyện đó thay vì lờ đi.
+
+---
+
+### 20. "Cây phụ thuộc của các em có lỗ hổng không?"
+
+**Có, và số đó nằm ngay trong README.**
+
+`npm audit` cho 9 lỗ hổng (3 high, 6 moderate) tính tới ngày đo gần nhất, tất cả
+trong nhánh `@solana/web3.js` v1 — `bigint-buffer`, `jayson`, `stream-json`, `uuid`.
+
+Dứt điểm cần lên web3.js v2, một breaking change lớn, và đội **chọn không** làm
+trước hạn thi. Đó là đánh đổi có ý thức, nói ra được.
+
+Con số này đo bằng `scripts/do-lo-hong.mjs`, lưu kèm ngày, và **có test canh** để
+README không trôi khỏi phép đo. Nó tăng theo thời gian khi có CVE mới, nên phải đo
+lại trước buổi thi.
+
+> Câu chốt: *"Có. Một sản phẩm bảo mật giấu cây phụ thuộc của chính nó thì không
+> đáng tin hơn cái nó đang cảnh báo — nên chúng em in số đó ra."*
 
 ---
 

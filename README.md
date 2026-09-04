@@ -32,7 +32,7 @@ nhau cho một peerOptional native.
 ```bash
 nvm use            # đọc .nvmrc → 24.12.0
 npm ci             # dùng ci, không dùng install: khoá đúng lockfile
-npm run check      # typecheck + 283 test
+npm run check      # typecheck + 285 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -88,7 +88,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **283**, chạy trong `npm run check` |
+| Test | **285**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **33** — cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
@@ -98,8 +98,12 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 ### Phụ thuộc có lỗ hổng đã biết
 
-`npm audit` ngày 25/08: **8 lỗ hổng — 5 moderate, 3 high**, nằm trong nhánh
-`@solana/web3.js` v1 (`bigint-buffer`, `jayson`, `uuid`).
+`npm audit` ngày 04/09/2026: **9 lỗ hổng — 3 high · 6 moderate**, nằm trong nhánh
+`@solana/web3.js` v1 (`bigint-buffer`, `jayson`, `stream-json`, `uuid`).
+
+> Con số này đo bằng `node scripts/do-lo-hong.mjs` và lưu ở `data/seed/lo-hong.json`
+> kèm ngày đo. Có test canh: README lệch với file đo là bộ test đỏ. Nó TĂNG theo
+> thời gian khi có CVE mới — đọc số cũ trên sân khấu là nói sai về chính mình.
 
 Dứt điểm cần lên web3.js v2 — breaking change lớn, và đội chọn **không** làm trước hạn thi.
 Nói ra ở đây thay vì im lặng: một sản phẩm bảo mật giấu cây phụ thuộc của chính nó thì
