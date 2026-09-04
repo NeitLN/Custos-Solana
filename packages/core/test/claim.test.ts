@@ -37,6 +37,12 @@ const SO_LIEU = JSON.parse(doc("apps/demo-wallet/public/so-lieu.json")) as {
   test: { pass: number } | null;
   soMau: number;
   soLuat: number;
+  phongVan: {
+    n: number;
+    hieu: { dung: number; motPhan: number; sai: number };
+    quyetDinh: { huy: number; kiemTraThem: number; ky: number };
+    hieuDungVanKy: number;
+  } | null;
   cohort: {
     coveragePhanTram: number;
     mauDoDuoc: number;
@@ -276,6 +282,42 @@ test("mọi mốc mà script đồng bộ dựa vào đều còn tìm thấy dò
     [],
     "Mốc của `scripts/dong-bo-so-tai-lieu.mjs` đã gãy. Sửa mốc trong script VÀ trong danh sách này, đừng xoá dòng khỏi tài liệu rồi bỏ qua.",
   );
+});
+
+test("số phỏng vấn trong PITCH khớp dữ liệu đã thu", boQuaKhiDo, () => {
+  // Đây là ô 25 % rubric và là con số dễ trôi nhất: nó đổi mỗi lần đội hỏi thêm
+  // người, mà pitch thì viết tay. Guard đọc thẳng `so-lieu.json`, vốn đọc từ
+  // `data/seed/phong-van.json`.
+  const pv = SO_LIEU.phongVan;
+  if (!pv) return; // chưa đi hỏi thì không có gì để canh — trạng thái hợp lệ
+  const so = soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /^\*\*Rồi — \d+ người/);
+  assert.ok(so.includes(pv.n), `PITCH nói ${so.join("/")} người, dữ liệu có ${pv.n}`);
+
+  const than = doc("PITCH-VA-PHAN-BIEN.md");
+  for (const [ten, cum] of [
+    ["hiểu đúng", `${pv.hieu.dung}/${pv.n} nêu được hậu quả`],
+    ["vẫn ký", `${pv.quyetDinh.ky}/${pv.n} vẫn ký`],
+  ] as const) {
+    assert.ok(
+      than.includes(cum),
+      `PITCH thiếu hoặc sai con số ${ten}: chờ "${cum}". Chạy lại tao-so-lieu.ts rồi sửa câu 18.`,
+    );
+  }
+});
+
+test("KHÔNG gộp 'một phần' vào 'đúng' ở bất kỳ đâu trên bề mặt public", () => {
+  // Cách gian dễ nhất và khó thấy nhất: cộng `dung + motPhan` rồi gọi là "hiểu
+  // được". Guard tính sẵn con số gộp đó và cấm nó xuất hiện cạnh mẫu số.
+  const pv = SO_LIEU.phongVan;
+  if (!pv) return;
+  const gop = pv.hieu.dung + pv.hieu.motPhan;
+  if (gop === pv.hieu.dung) return; // không có ai "một phần" thì không gộp được
+  for (const f of BE_MAT_PUBLIC) {
+    assert.ok(
+      !doc(f).includes(`${gop}/${pv.n} nêu được`),
+      `${f}: "${gop}/${pv.n}" là ĐÚNG cộng MỘT PHẦN. Con số được nói là ${pv.hieu.dung}/${pv.n}.`,
+    );
+  }
 });
 
 const BE_MAT_PUBLIC = [

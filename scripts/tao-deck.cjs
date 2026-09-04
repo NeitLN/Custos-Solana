@@ -340,10 +340,27 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("neitln.github.io/Custos-Solana/so-lieu.html  —  mỗi con số kèm cách đo và ngày đo", {
     x: M, y: 5.44, w: W, h: 0.4, fontFace: F.mono, fontSize: 12, color: C.amber, margin: 0,
   });
-  s.addText("Chưa có: phỏng vấn người dùng, và chưa ví/dApp nào cam kết tích hợp. Chúng em nói thẳng chỗ còn thiếu.", {
+  // Dòng "còn thiếu gì" phải theo dữ liệu THẬT, không phải theo lúc viết deck.
+  // Bản trước ghi cứng "Chưa có: phỏng vấn người dùng" — đội đã hỏi 20 người ngày
+  // 29–30/08 và dòng đó thành nói sai về chính mình, theo hướng khiêm tốn quá mức.
+  const pv = S.phongVan;
+  const dongThieu = pv
+    ? `Đã hỏi ${pv.n} người (29–30/08): ${pv.hieu.dung}/${pv.n} nêu được hậu quả · ${pv.quyetDinh.ky}/${pv.n} vẫn ký. Chưa ví/dApp nào cam kết tích hợp.`
+    : "Chưa có: phỏng vấn người dùng, và chưa ví/dApp nào cam kết tích hợp. Chúng em nói thẳng chỗ còn thiếu.";
+  s.addText(dongThieu, {
     x: M, y: 5.92, w: W, h: 0.42, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
   });
-  s.addNotes("3:30–3:55 — Đọc đúng số, không làm tròn lên.\n\nDÒNG CUỐI CÙNG LÀ DÒNG QUAN TRỌNG NHẤT SLIDE NÀY: tự nói ra chỗ còn thiếu (chưa phỏng vấn người dùng, chưa ví/dApp nào cam kết). Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn.");
+  const ghiChuPV = pv
+    ? `\n\nSỐ NGƯỜI DÙNG — nói kèm ĐÚNG ba mệnh đề này, đừng bỏ mệnh đề nào:\n` +
+      `  · ${pv.hieu.dung}/${pv.n} nêu được hậu quả. "Một phần" (${pv.hieu.motPhan}) KHÔNG gộp vào.\n` +
+      `  · ${pv.quyetDinh.ky}/${pv.n} vẫn ký — nhưng ${pv.hieuDungVanKy} trong số đó HIỂU ĐÚNG và cố ý chấp nhận rủi ro trên ví phụ. Chỉ ${pv.quyetDinh.ky - pv.hieuDungVanKy} người ký vì đọc nhầm.\n` +
+      `  · Đo ngày 29–30/08 trên bản giao diện LÚC ĐÓ; tấm cảnh báo đã được thiết kế lại sau đó. ĐỪNG nói "đo trên đúng màn hình các anh chị vừa xem".\n` +
+      `[!] Hỏi qua tin nhắn và video call, một người hỏi cả 20 — không có chấm chéo. Nói ra nếu bị hỏi về phương pháp.`
+    : "";
+  s.addNotes(
+    "3:30–3:55 — Đọc đúng số, không làm tròn lên.\n\nDÒNG CUỐI CÙNG LÀ DÒNG QUAN TRỌNG NHẤT SLIDE NÀY: tự nói ra chỗ còn thiếu. Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn." +
+      ghiChuPV,
+  );
 }
 
 // ─────────────────────────────────────────── 10 · Kết
