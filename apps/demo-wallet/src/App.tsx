@@ -11,7 +11,7 @@ import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
-import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
+import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import {
   ArrowIcon,
   CheckIcon,
@@ -57,12 +57,21 @@ export default function App() {
   const [loi, setLoi] = useState<string | null>(null);
   const thuLaiRef = useRef<(() => void) | null>(null);
 
-  /** Hạn cho một lượt kiểm tra. Đủ dài cho Devnet chậm, đủ ngắn để không ai đứng chờ. */
+  /**
+   * Hạn cho MỘT LƯỢT kiểm tra — không phải cho mỗi chặng bên trong nó.
+   *
+   * Nhánh Custos-TẮT chạy hai chặng nối tiếp: lấy blockhash rồi mô phỏng lại. Mỗi
+   * chặng một `coHan(…, HAN_MS)` riêng nghĩa là ngân sách thật gấp đôi — người dùng
+   * đứng chờ tới 24 giây trong khi thẻ lỗi vẫn ghi "sau 12 giây". `moHan` mở một
+   * ngân sách chung cho cả lượt, các chặng chia nhau phần còn lại.
+   */
   const HAN_MS = 12_000;
 
+  // Con số trong câu lỗi đọc từ chính `LoiQuaHan`, không gõ tay. Gõ tay thì đổi hạn
+  // ở một nơi mà câu nói với người dùng vẫn giữ số cũ — vẫn sai, chỉ khó thấy hơn.
   const moTaLoi = (e: unknown) =>
     e instanceof LoiQuaHan
-      ? "Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau 12 giây."
+      ? `Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau ${Math.round(e.ms / 1000)} giây.`
       : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
 
   const ghi = (s: string) => setNhatKy((n) => [...n, s]);
@@ -204,7 +213,10 @@ export default function App() {
        * đặt quanh đúng việc đó, không quanh một chặng bên trong nó.
        */
       const c = conn();
-      const { tx, r } = await coHan(
+      // MỘT ngân sách cho cả lượt. Nhánh Custos-TẮT bên dưới còn một chặng mô phỏng
+      // nữa; nó phải tiêu nốt phần còn lại của 12 giây này, không được cấp 12 giây mới.
+      const han = moHan(HAN_MS);
+      const { tx, r } = await coHanChung(
         (async () => {
           const { blockhash } = await c.getLatestBlockhash();
           const txNay = dungTx(kich, blockhash);
@@ -220,7 +232,7 @@ export default function App() {
             }),
           };
         })(),
-        HAN_MS,
+        han,
       );
 
       if (!coCustos) {
@@ -237,13 +249,13 @@ export default function App() {
         // Mô phỏng KHÔNG cần chữ ký, nên hậu quả vẫn tính ra được thật. Chạy
         // `inspect()` và hiện trạng thái sau, dán nhãn rõ là kết quả mô phỏng.
         ghi("Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng");
-        const rTat = await coHan(
+        const rTat = await coHanChung(
           inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
             locale: "vi",
             nguoiDung: ht.nanNhan,
             ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
           }),
-          HAN_MS,
+          han,
         );
         setHauQua(rTat);
         return;
