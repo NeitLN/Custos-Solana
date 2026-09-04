@@ -22,9 +22,18 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ## Chạy thử tại máy
 
+**Cần Node 24.12.x và npm 11+.** Không phải "Node mới là được": mọi script chạy
+`--experimental-strip-types`, cờ này không tồn tại trước Node 22.6, và bộ công cụ
+đội thật sự chạy và CI ghim là **24.12.0** (`.nvmrc`). `engine-strict=true` trong
+`.npmrc` sẽ dừng ngay với thông báo nói rõ bản cần, thay vì để bạn hỏng sâu trong
+cây phụ thuộc — runner từng lấy 24.19 và `npm ci` vỡ vì hai bản npm dựng cây khác
+nhau cho một peerOptional native.
+
 ```bash
-npm install
-npm run check      # typecheck + 256 test
+nvm use            # đọc .nvmrc → 24.12.0
+npm ci             # dùng ci, không dùng install: khoá đúng lockfile
+npm run check      # typecheck + 283 test
+npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
 ```
@@ -79,7 +88,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **282**, chạy trong `npm run check` |
+| Test | **283**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **33** — cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
