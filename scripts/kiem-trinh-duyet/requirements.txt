@@ -1,0 +1,16 @@
+# GHIM PHIÊN BẢN — kết quả khả năng tiếp cận phải lặp lại được.
+#
+# "0 vi phạm axe" chỉ có nghĩa khi nói rõ axe NÀO. Bộ luật của axe-core đổi giữa các
+# bản nhỏ: 4.x đã thêm luật mới và siết ngưỡng cũ nhiều lần. Chạy bản khác rồi ghi
+# cùng một câu kết luận là so hai phép đo khác nhau và gọi chúng là một.
+#
+# Chromium cũng vậy — nó là thứ tính ra màu và kích thước thật sự. Bản đo được ghi
+# ở đầu báo cáo mỗi lần chạy, không ghim cứng ở đây: `playwright install chromium`
+# gắn liền phiên bản trình duyệt với phiên bản Playwright bên dưới.
+#
+#     pip install -r scripts/kiem-trinh-duyet/requirements.txt
+#     playwright install chromium
+#
+# axe-core ghim ở `devDependencies` trong `package.json` gốc, để `npm ci` cố định nó
+# như mọi phụ thuộc khác thay vì kéo bản mới nhất qua `npm install --no-save`.
+playwright==1.61.0
