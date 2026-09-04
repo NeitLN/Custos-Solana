@@ -10,7 +10,7 @@ Mọi con số dưới đây **đo được** hoặc **tra được từ trang g
 
 ---
 
-## 1 · Chi phí RPC — đo trên 20 giao dịch mainnet thật
+## 1 · Chi phí RPC — đo trên 20 giao dịch công khai đã lưu offline
 
 Đo bằng cách bọc `Connection` trong một Proxy đếm lượt gọi, rồi chạy `inspect()`
 trên đúng cohort cố định ở `data/seed/cohort-audit.json` — cùng tập mà `do-cohort.ts`
@@ -118,7 +118,7 @@ Nhân ra:
 
 > *"Chi phí RPC cho một lượt kiểm tra là **ba phần trăm nghìn đô la**. Cùng gói $49 một
 > tháng mà một ví đang trả cho hạ tầng RPC của chính họ, Custos chạy được **hơn một triệu
-> rưỡi lượt kiểm tra**. Đo trên 20 giao dịch mainnet thật, trọng số credit tra từ bảng giá
+> rưỡi lượt kiểm tra**. Đo trên 20 giao dịch công khai đã lưu offline, trọng số credit tra từ bảng giá
 > công khai của Helius."*
 
 **Vẫn KHÔNG nói được:** một tỉ lệ biên lợi nhuận. Còn thiếu hai ô — token mô hình (cần

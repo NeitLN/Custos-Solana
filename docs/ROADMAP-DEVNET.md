@@ -33,7 +33,7 @@ mainnet; soi khoá sạch.
 ## Giai đoạn 2 — Nghiệm thu kỹ thuật (từ fresh clone)
 
 - [x] `npm ci` từ fresh clone
-- [x] `npm run check` — **250/250**
+- [x] `npm run check` — **292/292**
 - [ ] Build ví mẫu + trang tấn công, gộp `site/`, soi khoá
 - [ ] Không còn chuỗi `mainnet` / `?that=1` / `dungGiaoDichTanCongSol` / `hien-truong-mainnet`
       trong bản build *(ngoại lệ: `scripts/` đo offline và dataset — không vào build)*
@@ -52,7 +52,7 @@ mainnet; soi khoá sạch.
 
 - [ ] Merge `ban-that` → `main`, đợi CI xanh
 - [ ] Mở link công khai bằng cửa sổ ẩn danh, thử cả ví và trang tấn công
-- [ ] Trang số liệu hiện **256 test**
+- [ ] Trang số liệu hiện **292 test**
 - [ ] Xác nhận xong **mới quay video**
 
 ## Giai đoạn 5 — Tăng điểm Product & Business (việc của đội)

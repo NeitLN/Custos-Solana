@@ -1,5 +1,13 @@
 # Kế hoạch 11 ngày cuối — 25/08 → 05/09
 
+> <!-- so-lich-su --> ⚠️ **TÀI LIỆU LẬP KẾ HOẠCH, viết ngày 25/08/2026.** Mọi con số
+> trong file này là số CỦA LÚC ĐÓ (249 test, cohort neo lại 25/08). Số hiện tại nằm ở
+> `apps/demo-wallet/public/so-lieu.json` và trang `/so-lieu.html`.
+>
+> Hai cách nói trong file này nay **không được dùng nữa**: *"0 giao dịch bị gắn cờ"*
+> (con số 0 là số CÁO BUỘC; 7 giao dịch đã bị gắn cờ) và *"giao dịch mainnet thật"*
+> (cohort là dữ liệu lưu offline; runtime chạy hoàn toàn trên Devnet).
+
 **Nguồn:** `docs/review/UPDATE-REPORT.md` · **Hạn cứng:** 05/09/2026 08:00 · **Kỷ luật đội:** 04/09
 
 Hai roadmap trước chọn việc theo *"cái này có sai không"* rồi *"cái này đổi mấy điểm"*.
@@ -10,6 +18,11 @@ Kế hoạch này chọn theo **đường găng**: việc nào chặn việc kh�
 ## 0 · ✅ XONG 25/08 — đã commit và push (`e9da28b`)
 
 CI xanh, 4 trang live, số liệu công khai khớp: **249 test · coverage 82 % · 0 gắn cờ**.
+
+> <!-- so-lich-su --> **Số của thời điểm viết tài liệu này.** Số hiện tại nằm ở
+> `apps/demo-wallet/public/so-lieu.json` và trang `/so-lieu.html`. Và cụm "0 gắn cờ"
+> ở trên là cách nói KHÔNG được dùng nữa — con số 0 là số CÁO BUỘC, còn 7 giao dịch
+> thật sự đã bị gắn cờ ở mức Cần xem kỹ.
 
 **Vẫn nên đọc diff bốn file này** — chúng chạm sản phẩm, không chỉ chữ. Nếu không đồng ý
 chỗ nào thì `git revert e9da28b` rồi báo:
