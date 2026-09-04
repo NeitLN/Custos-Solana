@@ -75,6 +75,16 @@ test("README công bố đúng số test và số mẫu của lần đo hiện t
   );
 });
 
+test("README hướng dẫn chạy cũng nói đúng số test", boQuaKhiDo, () => {
+  // Dòng này nằm trong khối lệnh, không phải trong bảng số liệu — nên bài kiểm
+  // bảng ở trên không phủ nó, và nó đã trôi thật (README nói 256 khi thật là 282).
+  // Số liệu rò rỉ ra ngoài bảng thì guard phải đi theo tới đó.
+  assert.ok(
+    soTrenDong(doc("README.md"), /^npm run check /).includes(SO_TEST),
+    `README mục "Chạy thử tại máy" nói số test khác so-lieu.json (${SO_TEST}).`,
+  );
+});
+
 test("PITCH không giữ số test cũ", boQuaKhiDo, () => {
   assert.ok(
     soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /Unit\/integration/).includes(SO_TEST),
