@@ -40,3 +40,38 @@ export function coHan<T>(viec: Promise<T>, ms: number): Promise<T> {
   });
   return Promise.race([viec, chuong]).finally(() => clearTimeout(dongHo));
 }
+
+/**
+ * MỘT HẠN CHUNG CHO CẢ LƯỢT, KHÔNG PHẢI MỖI CHẶNG MỘT HẠN.
+ *
+ * `coHan(viec, 12_000)` gọi hai lần nối tiếp là hai ngân sách 12 giây riêng —
+ * người dùng chờ tới 24 giây trong khi thẻ lỗi vẫn ghi "sau 12 giây". Đo được
+ * trong ví: nhánh Custos-TẮT lấy blockhash (chặng 1) rồi mô phỏng lại (chặng 2),
+ * mỗi chặng một hạn mới.
+ *
+ * Người dùng chờ MỘT việc — "kiểm tra giao dịch này" — nên ngân sách thuộc về
+ * việc đó, và mọi chặng bên trong chia nhau phần còn lại. Hết giờ ở chặng hai thì
+ * lỗi phải nói ra con số người dùng thật sự đã chờ, tức là tổng, không phải phần.
+ */
+export type Han = {
+  /** Mili-giây còn lại; ≤ 0 nghĩa là đã hết. */
+  conLai(): number;
+  /** Tổng ngân sách ban đầu — con số nói với người dùng. */
+  readonly tong: number;
+};
+
+export function moHan(tong: number, bayGio: () => number = Date.now): Han {
+  const het = bayGio() + tong;
+  return { conLai: () => het - bayGio(), tong };
+}
+
+/** Như `coHan`, nhưng lấy phần còn lại của ngân sách chung thay vì một hạn mới. */
+export function coHanChung<T>(viec: Promise<T>, han: Han): Promise<T> {
+  const con = han.conLai();
+  // Hết ngân sách trước cả khi chặng này bắt đầu: từ chối ngay, đừng cấp thêm giờ.
+  // Báo `tong` chứ không báo `con`, vì đó mới là khoảng người dùng đã đứng chờ.
+  if (con <= 0) return Promise.reject(new LoiQuaHan(han.tong));
+  return coHan(viec, con).catch((e) => {
+    throw e instanceof LoiQuaHan ? new LoiQuaHan(han.tong) : e;
+  });
+}
