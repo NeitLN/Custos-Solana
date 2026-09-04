@@ -28,15 +28,15 @@ Với họ, câu đó cần một lớp dịch — **không đổi nội dung, c
 
 | Đang nói (ngôn ngữ kỹ sư) | Nói ở track này |
 |---|---|
-| "Mô phỏng giao dịch không hiểu hết" | "Ví hiện tại **im lặng về phần chúng không hiểu**. Custos là cái duy nhất chịu nói ra" |
+| "Mô phỏng giao dịch không hiểu hết" | "Custos biến **phần nó chưa hiểu** thành một tín hiệu hiển thị ngay lúc ký, và giữ phán quyết ở mức thận trọng" |
 | "Coverage 2/3 lệnh" | "Nó tự khai nó chưa hiểu một phần — và **đó là lý do bạn tin được 10 phần kia**" |
 | "Engine luật 14 luật xác định" | "Máy quyết định cảnh báo, không phải AI. AI sai thì cảnh báo vẫn đúng" |
-| "0 false positive trên 20 giao dịch mainnet" | "Không kêu oan lần nào. Một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua" |
+| "0 giao dịch bị gắn mã cáo buộc trên 9/20 giao dịch công khai lưu offline" | "Nó không tri hô bừa. Một sản phẩm kêu oan là sản phẩm người dùng học được cách bỏ qua — nhưng cohort này chưa gán nhãn ground truth, nên đây chưa phải tỉ lệ báo nhầm" |
 
 **Câu một hơi thở, dùng ở giây 40:**
 
-> *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Khác nhau ở chỗ có ví nào
-> chịu nói ra không."*
+> *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Custos cho bạn thấy đúng
+> phần nó chưa hiểu, ngay trước khi bạn bấm."*
 
 ### Cập nhật 22/08 — Blowfish đã bị Phantom mua và đóng dịch vụ
 
@@ -108,7 +108,7 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 | **2:15–2:25** | **Một SDK call** trên màn hình | 5–7 giây. Nói: *"Một SDK call để thêm lớp này vào ví hoặc dApp"* |
 | **2:25–3:10** | **Sản phẩm, khách hàng, và tiền.** SDK cho ví và dApp; người dùng cuối miễn phí. **Mở bằng câu Phantom mua Blowfish rồi đóng dịch vụ bán rời.** Rồi chi phí biên đo được và ba tầng giá | ⚠️ **Đã nới từ 35 giây lên 45.** Ô này chiếm 25% điểm mà bản cũ chỉ cho nó 35 giây, lại chia với phần AI. Cắt 15 giây ở đoạn nhượng bộ và 15 giây ở đoạn AI để bù |
 | **3:10–3:30** | **Giới hạn của AI.** Verdict do engine luật quyết, AI không được xác nhận an toàn | Rút còn 20 giây. Giữ **nguyên văn** câu "AI không được xác nhận an toàn" — đó là câu ghi điểm; phần giải thích AI gộp instruction thì bỏ, để dành cho Q&A câu 2 |
-| **3:30–4:00** | **Con số thật.** Bao nhiêu luật, bao nhiêu mẫu test, false positive đo trên bao nhiêu giao dịch mainnet thật. Bước tiếp theo | Đọc đúng số. Không làm tròn lên |
+| **3:30–4:00** | **Con số thật.** Bao nhiêu luật, bao nhiêu mẫu test, và **0 giao dịch bị gắn mã cáo buộc** trên cohort công khai lưu offline — kèm mẫu số. Bước tiếp theo | Đọc đúng số, không làm tròn lên. ⚠️ **Không gọi con số đó là "false positive"**: cohort chưa gán nhãn ground truth. Và **không nói "mainnet"** — cohort là dữ liệu lưu offline để kiểm engine, còn demo chạy trên Devnet |
 
 **Bốn câu phải thuộc lòng nguyên văn:**
 
@@ -298,7 +298,7 @@ nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (250)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (263)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort mainnet (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |

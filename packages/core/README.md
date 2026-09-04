@@ -132,7 +132,7 @@ const chiLaChuaHieu =
 | Có luật hành vi kích hoạt | **Cần xem kỹ** | cảnh báo |
 | Chỉ là thuộc tính token / chưa đọc hiểu hết | **Chưa đọc hiểu hết** | thông tin |
 
-Đo trên 20 giao dịch mainnet ngẫu nhiên: **19/20 rơi vào loại thứ hai**. Báo động cho cả hai là cách nhanh nhất dạy người dùng bỏ qua cảnh báo — và lúc nguy hiểm thật thì họ cũng bỏ qua nốt.
+Đo trên cohort 20 giao dịch công khai **lưu offline** để kiểm engine (không phải runtime — demo chạy hoàn toàn trên Devnet): **19/20 rơi vào loại thứ hai**. Báo động cho cả hai là cách nhanh nhất dạy người dùng bỏ qua cảnh báo — và lúc nguy hiểm thật thì họ cũng bỏ qua nốt.
 
 ---
 
@@ -273,7 +273,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 | Giới hạn | Chi tiết |
 |---|---|
-| **Coverage chưa đủ trên DeFi** | **trung bình 69 %** trên cohort 22/08; riêng lệnh chạm được tài sản của bạn: **39 %**. Con số dao động mạnh theo mẻ mẫu. Chưa có decoder cho các chương trình DEX không công bố IDL trên chuỗi |
+| **Coverage chưa đủ trên DeFi** | **trung bình 82 %** trên 9/20 giao dịch còn mô phỏng được của cohort neo lại 2026-08-24 (lưu offline); riêng lệnh chạm được tài sản của bạn: **65 % (13/20)**. Con số dao động mạnh theo mẻ mẫu. Chưa có decoder cho các chương trình DEX không công bố IDL trên chuỗi |
 | **Phí mạng là ƯỚC TÍNH** | Phí cơ bản 5000 lamport mỗi chữ ký thì chắc chắn; phí ưu tiên chỉ tính được khi giao dịch có cả `setComputeUnitPrice` lẫn `setComputeUnitLimit`. Nhãn ghi rõ "(ước tính)" |
 | **SOL: chỉ bắt theo tỉ lệ** | Luật 13 kích hoạt khi phần SOL rời ví vượt 50 % số dư. Khoản nhỏ vẫn hiện trong bảng chênh lệch nhưng không gắn cờ. Rent tạo/đóng account chưa tách riêng khỏi khoản chuyển |
 | **Ký hiệu token đọc từ chuỗi** | Custos tự đọc ký hiệu từ Metaplex và extension metadata của Token-2022 — không cần khoá của nhà cung cấp nào. Token không công bố metadata thì hiển thị địa chỉ rút gọn. `kyHieuToken` bạn truyền vào vẫn được ưu tiên trước |
@@ -284,7 +284,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
 | **Luật 4 không phân biệt được authority** | Permanent delegate luôn ở mức Vàng, vì `Facts` chưa bóc trường `authority` của lệnh Transfer |
 
-**Đã đo được:** trên 10 giao dịch mainnet ngẫu nhiên, **0 lần gắn Đỏ**. Nhưng mẫu ngẫu nhiên không bảo đảm mọi mẫu đều lành tính — không có Đỏ nghĩa là không cờ nào bật, không chứng minh cả 10 cái đều sạch.
+**Đã đo được:** trên 9 giao dịch công khai còn mô phỏng được (cohort 20 giao dịch, **lưu offline** để kiểm engine — runtime của demo chạy hoàn toàn trên Devnet), **0 lần gắn mã cáo buộc**. Cohort chưa gán nhãn ground truth, nên đây KHÔNG phải tỉ lệ false positive: không có cáo buộc nghĩa là không luật buộc tội nào bật, không chứng minh cả 9 giao dịch đều lành.
 
 ---
 
@@ -311,7 +311,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npm run check                # 256 test, chạy offline
+npm run check                # 263 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet

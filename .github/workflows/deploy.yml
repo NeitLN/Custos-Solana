@@ -36,10 +36,14 @@ jobs:
 
       - run: npm ci
 
-      - name: Kiểm thử trước khi deploy
-        run: npm run check
-
-      # Sinh lại số liệu TRƯỚC khi build. Trang số liệu công khai đọc file này,
+      # Sinh lại số liệu TRƯỚC `npm run check`, KHÔNG phải sau.
+      #
+      # `claim.test.ts` đối chiếu số trong README/pitch với `so-lieu.json`. Chạy
+      # check trước thì nó đối chiếu với file CŨ — tài liệu cũ và file cũ khớp
+      # nhau nên vẫn xanh, rồi bước sinh số liệu ghi ra con số mới mà không tài
+      # liệu nào nói. Đúng kiểu guard tồn tại nhưng soi nhầm thời điểm.
+      #
+      # Sinh lại TRƯỚC. Trang số liệu công khai đọc file này,
       # và số test trong đó phải là số của chính commit đang deploy — số cũ còn
       # sót lại là số sai, mà con số sai trên một trang công khai thì đúng loại
       # "trình bày sai về dữ liệu" mà thể lệ phạt.
@@ -48,6 +52,12 @@ jobs:
       # nên bước này không gọi mainnet RPC từ CI.
       - name: Sinh lại số liệu công khai
         run: node --experimental-strip-types scripts/tao-so-lieu.ts
+
+      # Chạy SAU bước trên, để `claim.test.ts` đối chiếu tài liệu với số vừa đo.
+      # `tao-so-lieu.ts` cũng chạy bộ test (để đếm ca), nhưng KHÔNG chạy typecheck
+      # và không phải là cổng kiểm thử — cổng là bước này.
+      - name: Kiểm thử trước khi deploy
+        run: npm run check
 
       # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
       # xem chú thích trong file đó để biết vì sao.
