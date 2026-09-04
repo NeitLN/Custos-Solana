@@ -400,6 +400,15 @@ button {
  * "chết" dưới tay người dùng mà không ai biết vì sao.
  */
 .nut {
+  /* Vùng bấm tối thiểu 44px.
+     Đo được: padding 12px + line-height 1.2 x 13px cho đúng 42px — thiếu 2px so với
+     ngưỡng, và đây là lớp của HAI nút quan trọng nhất sản phẩm ("Chặn & huỷ giao
+     dịch", "Vẫn ký"). 2px nghe như không đáng kể cho tới lúc ai đó bấm trượt đúng
+     nút chặn trên điện thoại. `inline-flex` để chữ vẫn nằm giữa khi khung cao lên. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 0.75rem 1rem;
   font-size: 13px;
   font-weight: 600;
