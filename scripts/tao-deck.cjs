@@ -344,8 +344,10 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   // Bản trước ghi cứng "Chưa có: phỏng vấn người dùng" — đội đã hỏi 20 người ngày
   // 29–30/08 và dòng đó thành nói sai về chính mình, theo hướng khiêm tốn quá mức.
   const pv = S.phongVan;
+  // Vắng ngày thì KHÔNG bịa ngày — nói số trần còn hơn nói sai mốc đo.
+  const ngayPV = pv && pv.khoangPhongVan ? ` (${pv.khoangPhongVan})` : "";
   const dongThieu = pv
-    ? `Đã hỏi ${pv.n} người (29–30/08): ${pv.hieu.dung}/${pv.n} nêu được hậu quả · ${pv.quyetDinh.ky}/${pv.n} vẫn ký. Chưa ví/dApp nào cam kết tích hợp.`
+    ? `Đã hỏi ${pv.n} người${ngayPV}: ${pv.hieu.dung}/${pv.n} nêu được hậu quả · ${pv.quyetDinh.ky}/${pv.n} vẫn ký. Chưa ví/dApp nào cam kết tích hợp.`
     : "Chưa có: phỏng vấn người dùng, và chưa ví/dApp nào cam kết tích hợp. Chúng em nói thẳng chỗ còn thiếu.";
   s.addText(dongThieu, {
     x: M, y: 5.92, w: W, h: 0.42, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
@@ -354,7 +356,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     ? `\n\nSỐ NGƯỜI DÙNG — nói kèm ĐÚNG ba mệnh đề này, đừng bỏ mệnh đề nào:\n` +
       `  · ${pv.hieu.dung}/${pv.n} nêu được hậu quả. "Một phần" (${pv.hieu.motPhan}) KHÔNG gộp vào.\n` +
       `  · ${pv.quyetDinh.ky}/${pv.n} vẫn ký — nhưng ${pv.hieuDungVanKy} trong số đó HIỂU ĐÚNG và cố ý chấp nhận rủi ro trên ví phụ. Chỉ ${pv.quyetDinh.ky - pv.hieuDungVanKy} người ký vì đọc nhầm.\n` +
-      `  · Đo ngày 29–30/08 trên bản giao diện LÚC ĐÓ; tấm cảnh báo đã được thiết kế lại sau đó. ĐỪNG nói "đo trên đúng màn hình các anh chị vừa xem".\n` +
+      `  · Đo${ngayPV ? ` ngày ${pv.khoangPhongVan}` : ""} trên bản giao diện LÚC ĐÓ; tấm cảnh báo đã được thiết kế lại sau đó. ĐỪNG nói "đo trên đúng màn hình các anh chị vừa xem".\n` +
       `[!] Hỏi qua tin nhắn và video call, một người hỏi cả 20 — không có chấm chéo. Nói ra nếu bị hỏi về phương pháp.`
     : "";
   s.addNotes(

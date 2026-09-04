@@ -15,10 +15,35 @@ export const PHIEN_BAN_LUOC_DO = 1;
 export type Cham = "dung" | "motPhan" | "sai";
 export type QuyetDinh = "huy" | "kiemTraThem" | "ky";
 
+/**
+ * Nguồn gốc phép đo — chép từ bảng đầu `docs/BIEN-BAN-PHONG-VAN.md`, không gõ tay
+ * lần hai. Một con số phỏng vấn không kèm nguồn gốc thì giám khảo không kiểm được,
+ * mà không kiểm được thì nó không đáng tin hơn một con số bịa.
+ */
+export type NguonGoc = {
+  /** Nguyên văn ô "Ngày phỏng vấn" — một KHOẢNG, ví dụ "29/08 và 30/08/2026". */
+  khoangPhongVan: string;
+  aiHoi: string;
+  cachHoi: string;
+};
+
 export type Ban = {
   /** Mã ẩn danh do người phỏng vấn đặt (P1, P2…). KHÔNG BAO GIỜ là tên thật. */
   ma?: string;
-  luc: string;
+  /**
+   * Lúc bản ghi được SỐ HOÁ, không phải lúc cuộc phỏng vấn diễn ra.
+   *
+   * Hai thứ này lệch nhau nhiều ngày và đã từng bị đọc nhầm thành một: bản JSON
+   * đầu tiên có cả 20 mốc thời gian nằm cách nhau ĐÚNG 1 mili-giây trong ngày
+   * 04/09 — dấu vết của lần chạy `doc-bien-ban.mjs`, trong khi người thật được
+   * hỏi ngày 29 và 30/08. Ai đọc field tên `luc` cũng sẽ hiểu là giờ phỏng vấn,
+   * và kết luận cả 20 cuộc diễn ra trong 3 mili-giây.
+   *
+   * Ngày phỏng vấn thật nằm ở `nguonGoc.khoangPhongVan` — theo KHOẢNG, vì biên
+   * bản chỉ ghi tới mức khoảng. Không suy ra ngày cho từng người: không ai ghi
+   * lại ai được hỏi hôm nào, và đoán ra thì đó là bịa.
+   */
+  nhapLuc: string;
   nguyenVan: string;
   cham: Cham;
   quyetDinh: QuyetDinh;
@@ -31,6 +56,8 @@ export type HoSoPhongVan = {
   /** true nghĩa là DỮ LIỆU MINH HOẠ, không phải người thật. Xem `laViDu()`. */
   laViDu?: boolean;
   xuatLuc: string;
+  /** Vắng khi bản ghi được nhập trực tiếp trong trang, chưa qua biên bản markdown. */
+  nguonGoc?: NguonGoc;
   ban: Ban[];
 };
 
