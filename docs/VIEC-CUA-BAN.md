@@ -1,5 +1,10 @@
 # Việc của đội — những thứ Claude không làm thay được
 
+> ⚠️ **TÀI LIỆU LỊCH SỬ — viết 30/08 cho hạn 05/09, không còn là lịch hiện hành.**
+> Giữ nguyên để làm dấu vết: nó ghi đội "không làm được" phỏng vấn, mà sau đó đội
+> đã hỏi 20 người ngày 29–30/08. Lịch đang dùng:
+> `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`.
+
 Cập nhật **30/08/2026**. Còn **5 ngày** tới mốc kỷ luật tự đặt 04/09, 6 ngày tới giờ thi.
 
 Mỗi việc dưới đây đều là thứ **chỉ người thật làm được**: nói chuyện với người thật,

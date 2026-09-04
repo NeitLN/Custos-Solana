@@ -1,5 +1,9 @@
 # Kế hoạch 11 ngày cuối — 25/08 → 05/09
 
+> ⚠️ **TÀI LIỆU LỊCH SỬ — viết cho hạn 05/09, không còn là lịch hiện hành.**
+> Giữ nguyên nội dung để làm dấu vết quá trình. Lịch đang dùng:
+> `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`.
+
 > <!-- so-lich-su --> ⚠️ **TÀI LIỆU LẬP KẾ HOẠCH, viết ngày 25/08/2026.** Mọi con số
 > trong file này là số CỦA LÚC ĐÓ (249 test, cohort neo lại 25/08). Số hiện tại nằm ở
 > `apps/demo-wallet/public/so-lieu.json` và trang `/so-lieu.html`.

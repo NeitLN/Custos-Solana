@@ -1,6 +1,6 @@
 # Custos — Transaction-intelligence SDK cho ví và dApp Solana
 
-**Bản mô tả sản phẩm — phạm vi đã khoá** · UniHackfest 2026 · Vòng loại cấp trường 05/09/2026, phòng J.5.3, Đại học Văn Lang
+**Bản mô tả sản phẩm — phạm vi đã khoá** · UniHackfest 2026 · lịch ở `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`
 
 | | |
 |---|---|
@@ -592,7 +592,7 @@ nó chưa hiểu.**
 | Rủi ro | Giảm thiểu |
 |---|---|
 | Demo Wallet ngốn thời gian hơn dự tính | Đã chốt mức tối giản: burner keypair, hiển thị, gọi `inspect`, ký |
-| Không có ví/dApp thật nào tích hợp trước 05/09 | Demo Wallet + một SDK call là bằng chứng về *khả năng* tích hợp. Không tuyên bố có khách hàng |
+| Không có ví/dApp thật nào tích hợp trước hạn | Demo Wallet + một SDK call là bằng chứng về *khả năng* tích hợp. Không tuyên bố có khách hàng |
 | Bị hỏi *"AI ở đây có gì hơn template?"* | Mục 04; nhịp 2 của demo chứng minh bằng hình ảnh |
 | Bị hỏi *"AI có tham gia quyết định verdict không?"* | Không. `level` chỉ do L2 tạo; AI có trường riêng `aiAdvisory` |
 | Bị hỏi *"làm sao biết người dùng muốn gì?"* | Mục 03: sản phẩm chỉ tuyên bố **nhận diện hành động chính**, không tuyên bố biết mong muốn của người dùng |

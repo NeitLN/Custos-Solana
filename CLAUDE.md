@@ -3,7 +3,10 @@
 Transaction-intelligence SDK cho ví và dApp Solana: phát hiện hậu quả **không thuộc về hành động chính** của một giao dịch, và giải thích bằng tiếng Việt trước khi người dùng ký.
 
 Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **AI × Web3**.
-**Hạn cứng: 05/09/2026, 08:00** — vòng loại cấp trường tại Đại học Văn Lang.
+**Hạn tiếp theo: 19/09/2026** — giờ và tên vòng CHƯA xác nhận.
+Lịch nằm ở `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`, không ghi ngày ở chỗ khác.
+Mốc 05/09 tại Văn Lang không còn là mốc hiện tại; hai văn bản BTC trong repo còn
+mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được chọn bừa một cái.
 
 ## Tài liệu
 
@@ -29,7 +32,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 33 mẫu dữ liệu · 309 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 33 mẫu dữ liệu · 318 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
