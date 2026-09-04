@@ -18,18 +18,19 @@
  * này sinh ra để chặn.
  */
 import { existsSync, readFileSync } from "node:fs";
+import {
+  chuanCham,
+  docHoSo,
+  soiDuLieuCaNhan,
+  tongHop,
+  type Ban as BanChuan,
+} from "../apps/demo-wallet/src/phongVan.ts";
 
 const F = process.argv[2] ?? "data/seed/phong-van.json";
 
-type Ban = {
-  ma?: string;
-  luc?: string;
-  ngay?: string;
-  nguyenVan: string;
-  cham: "dung" | "motPhan" | "sai" | "ĐÚNG" | "MỘT PHẦN" | "SAI";
-  quyetDinh?: "huy" | "kiemTraThem" | "ky" | "HUỶ" | "KIỂM TRA THÊM" | "VẪN KÝ";
-  ghiChu?: string;
-};
+// Lược đồ và phép đếm sống ở `apps/demo-wallet/src/phongVan.ts` — cùng một nơi với
+// trang nhập liệu, để hai bên không mô tả cùng một thứ theo hai kiểu rồi trôi.
+type Ban = BanChuan & { ngay?: string };
 
 if (!existsSync(F)) {
   console.error(`Chưa có ${F}.`);
@@ -38,31 +39,38 @@ if (!existsSync(F)) {
   process.exit(1);
 }
 
-const ban = JSON.parse(readFileSync(F, "utf8")) as Ban[];
-if (!Array.isArray(ban) || ban.length === 0) {
-  console.error("File rỗng hoặc không phải mảng.");
+const hoSo = docHoSo(JSON.parse(readFileSync(F, "utf8")));
+const ban = hoSo.ban as Ban[];
+if (ban.length === 0) {
+  console.error("Hồ sơ rỗng — chưa có người nào được ghi.");
   process.exit(1);
 }
 
-const chuanCham = (c: string) =>
-  ({ "ĐÚNG": "dung", "MỘT PHẦN": "motPhan", "SAI": "sai" } as Record<string, string>)[c] ?? c;
-const chuanQD = (q?: string) =>
-  q === undefined
-    ? undefined
-    : (({ "HUỶ": "huy", "KIỂM TRA THÊM": "kiemTraThem", "VẪN KÝ": "ky" } as Record<string, string>)[q] ?? q);
-
-const n = ban.length;
-const dem = (c: string) => ban.filter((b) => chuanCham(b.cham) === c).length;
-const demQD = (q: string) => ban.filter((b) => chuanQD(b.quyetDinh) === q).length;
+const t = tongHop(ban);
+const n = t.n;
 
 console.log(`\n=== ${n} người ===\n`);
-console.log(`  mức hiểu   : ${dem("dung")} đúng · ${dem("motPhan")} một phần · ${dem("sai")} sai`);
-console.log(`  quyết định : ${demQD("huy")} huỷ · ${demQD("kiemTraThem")} kiểm tra thêm · ${demQD("ky")} vẫn ký`);
+console.log(`  mức hiểu   : ${t.hieu.dung} đúng · ${t.hieu.motPhan} một phần · ${t.hieu.sai} sai`);
+console.log(
+  `  quyết định : ${t.quyetDinh.huy} huỷ · ${t.quyetDinh.kiemTraThem} kiểm tra thêm · ${t.quyetDinh.ky} vẫn ký`,
+);
 
-console.log(`\n--- CON SỐ ĐƯỢC NÓI TRÊN SÂN KHẤU ---`);
-console.log(`  ${dem("dung")}/${n} nêu được hậu quả`);
-console.log(`  ${demQD("ky")}/${n} vẫn ký dù đã thấy cảnh báo`);
-console.log(`  "một phần" KHÔNG gộp vào "đúng".`);
+if (hoSo.laViDu) {
+  // CHẶN Ở ĐÂY. File ví dụ tồn tại để đội biết ĐỊNH DẠNG, không phải để lấy SỐ.
+  // Không có chốt này thì con đường ngắn nhất tới một slide sai là chạy script
+  // trên file mẫu rồi chép con số đẹp ra ngoài.
+  console.log(`\n⚠ ĐÂY LÀ FILE VÍ DỤ (laViDu: true) — DỮ LIỆU MINH HOẠ, KHÔNG PHẢI NGƯỜI THẬT.`);
+  console.log(`  KHÔNG được đọc bất kỳ con số nào ở trên lên sân khấu hay đưa vào deck.`);
+  console.log(`  Thay bằng bản xuất thật từ /phong-van.html rồi chạy lại.`);
+} else {
+  console.log(`\n--- CON SỐ ĐƯỢC NÓI TRÊN SÂN KHẤU ---`);
+  console.log(`  ${t.hieu.dung}/${n} nêu được hậu quả`);
+  console.log(`  ${t.quyetDinh.ky}/${n} vẫn ký dù đã thấy cảnh báo`);
+  console.log(`  "một phần" KHÔNG gộp vào "đúng".`);
+  if (n < 3) {
+    console.log(`\n⚠ mới ${n} người — mốc tối thiểu dùng được là 3. Nói rõ mẫu số khi trình bày.`);
+  }
+}
 
 // ── Soi ───────────────────────────────────────────────────────────
 // Từ khoá chỉ để GỢI Ý xem lại. Người ta diễn đạt trăm kiểu, nên vắng từ khoá
@@ -96,6 +104,13 @@ if (doDai.length >= 5) {
       `TOÀN BỘ: câu trả lời dài gần bằng nhau (lệch chuẩn ${lech.toFixed(0)} trên trung bình ${tb.toFixed(0)}). ` +
         `Người thật nói dài ngắn rất khác nhau — kiểm xem có bị viết lại cho gọn không.`,
     );
+}
+
+// Dữ liệu này đi vào một repo công khai, và lịch sử git không gỡ lại được.
+const caNhan = soiDuLieuCaNhan(ban);
+if (caNhan.length > 0) {
+  console.log(`\n--- ⚠ ${caNhan.length} CHỖ CÓ THỂ LỘ DANH TÍNH — GỠ TRƯỚC KHI COMMIT ---\n`);
+  for (const c of caNhan) console.log(`  · ${c}`);
 }
 
 if (canXem.length === 0) {

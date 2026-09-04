@@ -6,6 +6,15 @@ import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { CanhBao } from "./CanhBao.tsx";
+import {
+  NHAN_CHAM,
+  NHAN_QD,
+  PHIEN_BAN_LUOC_DO,
+  type Ban,
+  type Cham,
+  type HoSoPhongVan,
+  type QuyetDinh,
+} from "./phongVan.ts";
 
 /**
  * BỘ ĐO PHỎNG VẤN — `docs/VIEC-CUA-BAN.md` mục 2.
@@ -33,34 +42,7 @@ import { CanhBao } from "./CanhBao.tsx";
  * có người bấm sao chép. Không gửi đi đâu, không có backend.
  */
 
-type Cham = "dung" | "motPhan" | "sai";
-/**
- * QUYẾT ĐỊNH mới là biến kết quả thật, và bản đầu của trang này thiếu nó.
- *
- * Hiểu và hành động không đi cùng nhau: một người nói được "mất 500 token" rồi
- * vẫn bấm ký thì sản phẩm đã thất bại, dù ô "hiểu" chấm ĐÚNG. Đo mỗi mức hiểu là
- * đo nửa câu chuyện — và là nửa dễ đẹp hơn.
- */
-type QuyetDinh = "huy" | "kiemTraThem" | "ky";
-type Ban = {
-  luc: string;
-  nguyenVan: string;
-  cham: Cham;
-  quyetDinh: QuyetDinh;
-  ghiChu: string;
-};
-
 const KHOA = "custos.phong-van";
-const NHAN_CHAM: Record<Cham, string> = {
-  dung: "ĐÚNG — nêu được mất tiền HOẶC mất quyền kiểm soát",
-  motPhan: "MỘT PHẦN — nêu được một vế, hoặc chỉ biết có gì đó nguy hiểm",
-  sai: "SAI — hiểu ngược, hoặc nói chuyện không liên quan",
-};
-const NHAN_QD: Record<QuyetDinh, string> = {
-  huy: "HUỶ",
-  kiemTraThem: "KIỂM TRA THÊM rồi mới quyết",
-  ky: "VẪN KÝ",
-};
 
 const doc = (): Ban[] => {
   try {
@@ -286,7 +268,16 @@ export function PhongVan() {
 
               <button
                 onClick={() => {
-                  void navigator.clipboard.writeText(JSON.stringify(ban, null, 2)).then(() => {
+                  // Xuất theo CẤU TRÚC CÓ PHIÊN BẢN, không phải mảng trần. Mảng trần
+                  // không mang thông tin nào về chính nó, nên một file nằm trong
+                  // `data/seed/` sáu tháng sau là một đống bản ghi không ai dám tin.
+                  // `laViDu` vắng mặt ở đây là có chủ đích: chỉ file mẫu mới mang cờ đó.
+                  const hoSo: HoSoPhongVan = {
+                    phienBan: PHIEN_BAN_LUOC_DO,
+                    xuatLuc: new Date().toISOString(),
+                    ban,
+                  };
+                  void navigator.clipboard.writeText(JSON.stringify(hoSo, null, 2)).then(() => {
                     setDaChep(true);
                     setTimeout(() => setDaChep(false), 2000);
                   });
