@@ -36,3 +36,12 @@ packages/*/dist/
 # Tarball SDK do `scripts/dong-goi-sdk.mjs` sinh ra — dựng lại được, không commit.
 goi-sdk/
 
+
+# Bản trình diễn mang đi — sinh ra bằng scripts/dong-goi-ban-trinh-dien.mjs,
+# không commit: nó là bản dựng, và nó nặng.
+# Dấu `/` đầu là BẮT BUỘC: không có nó, mẫu khớp ở MỌI độ sâu và nuốt luôn
+# `scripts/ban-trinh-dien/` — nơi giữ bộ khởi chạy. Khi đó clone sạch sẽ sinh ra
+# một thư mục không có CHAY.cmd lẫn phuc-vu.mjs, tức chạy không được, mà script
+# vẫn báo thành công.
+/ban-trinh-dien/
+/Custos-ban-trinh-dien.zip

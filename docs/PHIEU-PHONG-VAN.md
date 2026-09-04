@@ -140,9 +140,11 @@ có nút xoá** từng người. Hai cái đầu phụ thuộc vào bạn.
 
 ## 9 · Xong rồi làm gì
 
-1. Bấm **Sao chép toàn bộ (JSON)** trên trang
-2. Hoặc điền thẳng vào `docs/BIEN-BAN-PHONG-VAN.md` — bản trống, không câu mẫu nào
-3. Gửi cho Claude → xếp biên bản + chạy `scripts/kiem-phong-van.ts`
+1. Bấm **Sao chép toàn bộ (JSON)** trên trang → dán vào `data/seed/phong-van.json`
+2. **Hoặc** điền thẳng vào `docs/BIEN-BAN-PHONG-VAN.md` (bản trống, không câu mẫu nào),
+   rồi `node scripts/doc-bien-ban.mjs --ghi` để chuyển thành JSON
+3. `node --experimental-strip-types scripts/kiem-phong-van.ts` — nó đếm và nêu chỗ
+   chấm có vẻ lệch với câu nguyên văn
 3. Con số công bố: **ĐÚNG / TỔNG** và **VẪN KÝ / TỔNG**
 
 > **"MỘT PHẦN" không được gộp vào "ĐÚNG".** Gộp một lần là mất độ tin của mọi con số khác

@@ -166,9 +166,17 @@ không dịch sang từ kỹ thuật.
 
 ## 4 · Con số — ĐỪNG ĐẾM TAY
 
+Điền xong biên bản này thì chuyển nó thành dữ liệu rồi mới đếm — **không gõ tay JSON**:
+
 ```bash
+node scripts/doc-bien-ban.mjs          # xem trước: ai đủ, ai còn thiếu gì
+node scripts/doc-bien-ban.mjs --ghi    # ghi data/seed/phong-van.json
 node --experimental-strip-types scripts/kiem-phong-van.ts
 ```
+
+> Người chưa hỏi được **bỏ qua**, không thành bản ghi rỗng — một bản ghi rỗng vẫn
+> làm tăng mẫu số. Ô chấm còn nguyên `ĐÚNG / MỘT PHẦN / SAI` nghĩa là **chưa chấm**;
+> xoá bớt lựa chọn thừa, để lại đúng một.
 
 Script đếm, và nêu chỗ **chấm có vẻ lệch với câu nguyên văn**. Nó **không** tự sửa nhãn.
 
@@ -210,4 +218,4 @@ biết trước đáp án nên không ai trong đội trả lời hộ được.
 
 Không sao, và **không được bịa**. Câu trả lời cho sân khấu đã soạn sẵn ở
 `docs/ket-qua-phong-van.md` — thừa nhận thẳng, rồi đổi trục sang loại bằng chứng đội thật sự
-có: đo trên giao dịch mainnet thật, và tự bắt được lỗi của chính mình.
+có: đo trên giao dịch công khai có thật (lưu offline), và tự bắt được lỗi của chính mình.
