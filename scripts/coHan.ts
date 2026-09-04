@@ -1,6 +1,11 @@
 /**
  * GIỚI HẠN THỜI GIAN CHO MỘT VIỆC BẤT ĐỒNG BỘ.
  *
+ * Đặt ở `scripts/` vì CẢ HAI app đều cần: ví bọc `inspect()`, trang tấn công bọc
+ * lượt lấy blockhash. `scripts/` đã là lớp dùng chung sẵn có (`tan-cong.ts` được cả
+ * hai import). Nhân bản 30 dòng này sang app thứ hai thì sớm muộn hai bản lệch nhau;
+ * để app này import app kia thì tạo phụ thuộc sai chiều.
+ *
  * Vì sao cần: `inspect()` gọi RPC Devnet. Devnet chậm hoặc mất mạng thì lời hứa
  * không bao giờ giải quyết — vòng quay cứ quay, và trên sân khấu thì đó là im
  * lặng vô hạn trước mặt giám khảo. Không có timeout thì không có đường thoát.
