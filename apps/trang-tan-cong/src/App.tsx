@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
+import { conDungDuoc } from "./blockhash.ts";
 
 /**
  * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
@@ -79,7 +80,9 @@ export default function App() {
    * nên popup nằm gọn trong cử chỉ. Blockhash Solana sống khoảng 60–90 giây nên
    * làm mới mỗi 30 giây là dư.
    */
-  const blockhashRef = useRef<string | null>(null);
+  // Lưu kèm THỜI ĐIỂM lấy: xem `blockhash.ts` — `setInterval` bị trình duyệt bóp
+  // khi tab chạy nền, nên "đã lấy" không đồng nghĩa với "còn dùng được".
+  const blockhashRef = useRef<{ ma: string; luc: number } | null>(null);
   /** URL bàn giao của lần bấm gần nhất — dùng cho đường lui khi ví không tự mở. */
   const [urlLui, setUrlLui] = useState<string | null>(null);
 
@@ -105,15 +108,23 @@ export default function App() {
       conn
         .getLatestBlockhash()
         .then(({ blockhash }) => {
-          if (!huy) blockhashRef.current = blockhash;
+          if (!huy) blockhashRef.current = { ma: blockhash, luc: Date.now() };
         })
         .catch(() => {});
     };
     lay();
     const id = setInterval(lay, 30_000);
+    // Làm mới NGAY khi tab được nhìn lại. Đây là ca thật của buổi demo: mở trang,
+    // chuyển sang tab khác nói vài phút, rồi quay lại bấm. Suốt lúc chạy nền
+    // `setInterval` bị bóp, nên nếu chỉ dựa vào nó thì cái đang giữ là blockhash chết.
+    const khiHien = () => {
+      if (document.visibilityState === "visible") lay();
+    };
+    document.addEventListener("visibilitychange", khiHien);
     return () => {
       huy = true;
       clearInterval(id);
+      document.removeEventListener("visibilitychange", khiHien);
     };
   }, [ht]);
 
@@ -152,10 +163,12 @@ export default function App() {
     if (!ht || dangGui) return;
     setLoi(null);
 
+    // Hỏi TUỔI, không hỏi "đã lấy chưa". Cache quá hạn thì bỏ, rơi xuống đường
+    // cùng-tab bên dưới — chậm hơn một nhịp, nhưng giao dịch còn sống.
     const bh = blockhashRef.current;
-    if (bh) {
+    if (bh && conDungDuoc(bh.luc)) {
       try {
-        const url = dungUrl(bh);
+        const url = dungUrl(bh.ma);
         setUrlLui(url);
         window.open(url, "_blank", "noopener");
       } catch (e) {
@@ -164,13 +177,15 @@ export default function App() {
       return;
     }
 
-    // Chưa kịp lấy blockhash (mới mở trang, hoặc RPC đang lỗi). Lúc này buộc phải
-    // chờ mạng, nên popup sẽ bị chặn — điều hướng CÙNG TAB thay vì mở tab mới.
+    // Chưa kịp lấy blockhash (mới mở trang, RPC đang lỗi), HOẶC cache đã quá hạn.
+    // Lúc này buộc phải chờ mạng, nên popup sẽ bị chặn — điều hướng CÙNG TAB thay
+    // vì mở tab mới.
     // Cùng tab thì không trình duyệt nào chặn, và demo vẫn chạy tiếp.
     setDangGui(true);
     new Connection(ht.rpc, "confirmed")
       .getLatestBlockhash()
       .then(({ blockhash }) => {
+        blockhashRef.current = { ma: blockhash, luc: Date.now() };
         const url = dungUrl(blockhash);
         setUrlLui(url);
         window.location.href = url;
