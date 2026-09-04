@@ -108,165 +108,226 @@ export function PhongVan() {
   const demQD = (q: QuyetDinh) => ban.filter((b) => b.quyetDinh === q).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-xl px-5 py-8">
-        <a href={import.meta.env.BASE_URL} className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400 hover:text-slate-300">
-          ← Ví mẫu
+        <a
+          href={import.meta.env.BASE_URL}
+          className="lien-ket -ml-1 inline-flex min-h-[44px] items-center gap-1.5 px-1 text-[14px] text-chu-nhat"
+        >
+          <span aria-hidden="true">←</span> Ví mẫu
         </a>
 
-        {/* Dải này dành cho NGƯỜI PHỎNG VẤN, và phải cuộn qua trước khi tới màn hình.
-            Người được hỏi không cần đọc nó. */}
-        <div className="mt-4 rounded-lg border border-amber-700/50 bg-amber-950/30 p-3 text-[12px] leading-relaxed text-amber-100">
-          <span className="font-semibold">Người phỏng vấn đọc trước:</span> chiếu màn hình dưới,{" "}
-          <span className="font-semibold">không giải thích gì cả</span>, chỉ hỏi đúng câu in đậm.
-          Đừng hỏi &quot;bạn thấy dễ hiểu không&quot; — ai cũng trả lời có. Chép nguyên văn lời họ nói,
-          kể cả khi sai. Chấm sau khi đã chép.
-        </div>
+        {/*
+          KHU CỦA NGƯỜI PHỎNG VẤN.
+
+          Trước đây cả trang nền tối, nên "phần dành cho người phỏng vấn" chẳng khác gì
+          phần còn lại — nó chỉ là một dải màu hổ phách trong biển đen. Nay trang sáng
+          cùng hệ với ví, và ranh giới được vẽ bằng CẤU TRÚC: khu này có mặt nền khác,
+          viền nét đứt, và một nhãn nói thẳng ai được đọc. Người ngồi trả lời chỉ cần
+          nhìn tấm cảnh báo và câu hỏi bên dưới.
+        */}
+        <section
+          aria-label="Hướng dẫn cho người phỏng vấn"
+          className="mt-2 rounded-xl border border-dashed border-[#d8b571] bg-[#fdf8ee] p-4"
+        >
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[#7a5a17]">
+            Chỉ người phỏng vấn đọc phần này
+          </h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-[#5c4514]">
+            Chiếu màn hình dưới, <span className="font-semibold">không giải thích gì cả</span>, chỉ
+            hỏi đúng câu in đậm. Đừng hỏi &quot;bạn thấy dễ hiểu không&quot; — ai cũng trả lời có.
+            Chép nguyên văn lời họ nói, kể cả khi sai. Chấm sau khi đã chép.
+          </p>
+        </section>
 
         {loi && (
-          <div className="mt-4 rounded-lg border border-rose-700/50 bg-rose-950/40 p-3 text-[13px] text-rose-200">
-            Không dựng được màn hình thật: {loi}
-            <div className="mt-1 text-[12px] text-rose-300/80">
-              Không có bản dự phòng cố ý — đo trên một màn hình giả thì con số thu được cũng giả.
-            </div>
+          <div
+            role="alert"
+            className="mt-4 rounded-xl border border-[#e7b3bd] bg-[#fdf2f4] p-4 text-[14px] leading-relaxed text-[#7d1229]"
+          >
+            <span className="font-semibold">Không dựng được màn hình thật:</span> {loi}
+            <p className="mt-1.5 text-[13.5px] text-[#93384c]">
+              Không có bản dự phòng, và đó là chủ ý — đo trên một màn hình giả thì con số thu
+              được cũng giả.
+            </p>
           </div>
         )}
 
-        {!ketQua && !loi && <div className="mt-6 text-slate-400">đang dựng màn hình thật…</div>}
+        {!ketQua && !loi && (
+          <div role="status" className="mt-6 text-[15px] text-chu-nhat">
+            Đang dựng màn hình thật…
+          </div>
+        )}
 
         {ketQua && (
           <>
-            {/* `CanhBao` là component nền SÁNG của ví, và card của nó trong suốt 60 %.
-                Đặt thẳng lên trang nền `bg-slate-950` thì nó phối màu ra một mảng xám
-                đục: axe-core đo được 11 chỗ dưới ngưỡng WCAG AA, thấp nhất 2:1.
+            {/*
+              `CanhBao` là component của ví và card của nó trong suốt 60 %. Đặt nó lên
+              đúng mặt nền mà ví dùng (`.review-body`) để nó phối màu Y HỆT trong ví.
 
-                Nhưng lỗi thật nặng hơn tương phản. Trang này là thứ đưa cho NGƯỜI
-                PHỎNG VẤN xem, và cả bài phỏng vấn dựa trên việc họ đang nhìn đúng màn
-                hình mà người dùng thật sẽ nhìn. Card đổi màu ở đây nghĩa là dữ liệu
-                phỏng vấn đang đo một vật khác với sản phẩm.
-
-                Nên không chỉnh màu chữ cho vừa nền tối — làm vậy là để hai bản khác
-                nhau. Đặt lại đúng mặt nền mà ví dùng (`.review-body`, #fcfcfd), để
-                card phối màu y hệt trong ví. */}
-            <div className="review-body mt-5 rounded-2xl border border-[#dfe3ea] p-4 sm:p-5">
+              Đây không phải chuyện thẩm mỹ: cả bài phỏng vấn dựa trên việc người được
+              hỏi đang nhìn ĐÚNG màn hình mà người dùng thật sẽ nhìn. Card khác đi một
+              chút nghĩa là số liệu thu được đang đo một vật khác với sản phẩm.
+            */}
+            <div className="review-body mt-5 rounded-2xl border border-vien p-4 sm:p-5">
               <CanhBao ketQua={ketQua} onHuy={() => {}} onKy={() => {}} choPhepKy={false} />
             </div>
 
-            <p className="mt-6 text-[17px] font-semibold leading-relaxed text-slate-50">
+            <p className="mt-7 text-[18px] font-semibold leading-relaxed text-chu">
               Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?
             </p>
 
+            <label className="sr-only" htmlFor="nguyen-van">
+              Câu trả lời nguyên văn
+            </label>
             <textarea
+              id="nguyen-van"
               value={nguyenVan}
               onChange={(e) => setNguyenVan(e.target.value)}
               rows={4}
               placeholder="Chép nguyên văn lời họ nói…"
-              className="mt-3 w-full rounded-lg border border-white/15 bg-black/40 p-3 text-[14px] text-slate-100 outline-none focus:border-indigo-500"
+              className="mt-3 w-full rounded-xl border border-vien bg-white p-3 text-[15px] leading-relaxed text-chu outline-none transition-colors placeholder:text-chu-mo focus:border-nhan"
             />
+            <label className="sr-only" htmlFor="ghi-chu">
+              Ghi chú ẩn danh
+            </label>
             <input
+              id="ghi-chu"
               value={ghiChu}
               onChange={(e) => setGhiChu(e.target.value)}
               placeholder="Ghi chú (tuổi, có dùng crypto bao lâu…) — không ghi tên"
-              className="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-[13px] text-slate-200 outline-none focus:border-indigo-500"
+              className="mt-2 w-full rounded-xl border border-vien bg-white px-3 py-2.5 text-[14px] text-chu outline-none transition-colors placeholder:text-chu-mo focus:border-nhan"
             />
 
             {/* Câu hỏi thứ hai, hỏi SAU khi họ đã trả lời xong câu một. Hỏi cùng
                 lúc thì chính câu "bạn sẽ ký hay huỷ" đã gợi ý rằng có gì đó đáng huỷ. */}
-            <p className="mt-5 text-[15px] font-medium text-slate-200">
+            <p className="mt-6 text-[18px] font-semibold leading-relaxed text-chu">
               Bạn sẽ ký, huỷ, hay cần kiểm tra thêm? Vì sao?
             </p>
 
             {!choCham ? (
               <button
+                type="button"
                 onClick={() => setChoCham(true)}
                 disabled={nguyenVan.trim().length === 0}
-                className="mt-3 rounded-md bg-indigo-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-indigo-500 disabled:opacity-40"
+                className="nut nut-chinh mt-4"
               >
                 Đã chép xong → chấm
               </button>
             ) : (
-              <div className="mt-3 space-y-4">
-                <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                    Mức hiểu hậu quả
-                  </div>
-                  <div className="mt-1.5 grid gap-2">
+              <div className="mt-4 space-y-5 rounded-xl border border-dashed border-vien bg-white p-4">
+                <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-chu-mo">
+                  Người phỏng vấn chấm
+                </p>
+
+                <fieldset>
+                  <legend className="text-[14px] font-medium text-chu">Mức hiểu hậu quả</legend>
+                  <div className="mt-2 grid gap-2">
                     {(Object.keys(NHAN_CHAM) as Cham[]).map((c) => (
                       <button
                         key={c}
+                        type="button"
+                        aria-pressed={cham === c}
                         onClick={() => setCham(c)}
-                        className={`rounded-md border px-3 py-2 text-left text-[13px] ${
+                        className={`min-h-[44px] rounded-xl border px-3.5 py-2.5 text-left text-[14px] leading-snug transition-colors ${
                           cham === c
-                            ? "border-indigo-500 bg-indigo-950/50 text-slate-100"
-                            : "border-white/15 text-slate-200 hover:bg-white/5"
+                            ? "border-nhan bg-[#eef1fb] font-medium text-chu"
+                            : "border-vien bg-white text-chu-nhat hover:border-[#9aa3b2]"
                         }`}
                       >
                         {NHAN_CHAM[c]}
                       </button>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
-                <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                    Họ nói sẽ làm gì
-                  </div>
-                  <div className="mt-1.5 flex flex-wrap gap-2">
+                <fieldset>
+                  <legend className="text-[14px] font-medium text-chu">Họ nói sẽ làm gì</legend>
+                  <div className="mt-2 flex flex-wrap gap-2">
                     {(Object.keys(NHAN_QD) as QuyetDinh[]).map((q) => (
                       <button
                         key={q}
+                        type="button"
+                        aria-pressed={quyetDinh === q}
                         onClick={() => setQuyetDinh(q)}
-                        className={`rounded-md border px-3 py-2 text-[13px] ${
+                        className={`min-h-[44px] rounded-xl border px-3.5 py-2.5 text-[14px] transition-colors ${
                           quyetDinh === q
-                            ? "border-indigo-500 bg-indigo-950/50 text-slate-100"
-                            : "border-white/15 text-slate-200 hover:bg-white/5"
+                            ? "border-nhan bg-[#eef1fb] font-medium text-chu"
+                            : "border-vien bg-white text-chu-nhat hover:border-[#9aa3b2]"
                         }`}
                       >
                         {NHAN_QD[q]}
                       </button>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
                 <button
+                  type="button"
                   onClick={luu}
                   disabled={!cham || !quyetDinh}
-                  className="rounded-md bg-indigo-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-indigo-500 disabled:opacity-40"
+                  className="nut nut-chinh w-full sm:w-auto"
                 >
                   Lưu người này
                 </button>
               </div>
             )}
 
-            <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
+            <section className="mt-7 rounded-xl border border-vien bg-white p-4">
+              <h2 className="text-[15px] font-semibold text-chu">
                 Đã ghi {ban.length} người
-              </div>
-              <div className="mt-1 text-[15px] tabular-nums">
-                <span className="text-emerald-300">{dem("dung")} đúng</span>
-                {" · "}
-                <span className="text-amber-300">{dem("motPhan")} một phần</span>
-                {" · "}
-                <span className="text-rose-300">{dem("sai")} sai</span>
-              </div>
-              <div className="mt-2 text-[15px] tabular-nums">
-                <span className="text-slate-400">Họ nói sẽ: </span>
-                <span className="text-emerald-300">{demQD("huy")} huỷ</span>
-                {" · "}
-                <span className="text-amber-300">{demQD("kiemTraThem")} kiểm tra thêm</span>
-                {" · "}
-                <span className="text-rose-300">{demQD("ky")} vẫn ký</span>
-              </div>
+              </h2>
+
+              {/* Ba mức phân biệt bằng TÊN, màu chỉ là lớp phụ — mù màu đỏ/lục là
+                  khoảng 8 % nam giới, và số liệu này còn được chiếu lên tường. */}
+              <dl className="mt-3 space-y-2 text-[15px]">
+                <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                  <dt className="text-[14px] text-chu-mo">Mức hiểu</dt>
+                  <dd className="flex flex-wrap gap-x-4 tabular-nums text-chu">
+                    <span>
+                      <strong className="font-semibold">{dem("dung")}</strong> đúng
+                    </span>
+                    <span>
+                      <strong className="font-semibold">{dem("motPhan")}</strong> một phần
+                    </span>
+                    <span>
+                      <strong className="font-semibold">{dem("sai")}</strong> sai
+                    </span>
+                  </dd>
+                </div>
+                <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                  <dt className="text-[14px] text-chu-mo">Họ nói sẽ</dt>
+                  <dd className="flex flex-wrap gap-x-4 tabular-nums text-chu">
+                    <span>
+                      <strong className="font-semibold">{demQD("huy")}</strong> huỷ
+                    </span>
+                    <span>
+                      <strong className="font-semibold">{demQD("kiemTraThem")}</strong> kiểm tra thêm
+                    </span>
+                    <span>
+                      <strong className="font-semibold">{demQD("ky")}</strong> vẫn ký
+                    </span>
+                  </dd>
+                </div>
+              </dl>
+
               {/* Con số công bố phải là ĐÚNG / TỔNG. Gộp "một phần" vào "đúng" là
                   tự nâng điểm, và là thứ dễ bị hỏi lộ nhất. */}
-              <div className="mt-2 text-[12px] leading-relaxed text-slate-400">
-                Con số nói trên sân khấu: <span className="text-slate-400">{dem("dung")}/{ban.length} nêu
-                được hậu quả</span> và <span className="text-slate-400">{demQD("ky")}/{ban.length} vẫn ký</span>.
-                &quot;Một phần&quot; KHÔNG được gộp vào &quot;đúng&quot;. Nếu có người hiểu đúng mà vẫn
-                ký, đó là phát hiện quan trọng nhất của cả đợt — đừng giấu nó đi.
-              </div>
+              <p className="mt-4 border-t border-vien pt-3.5 text-[14px] leading-relaxed text-chu-nhat">
+                Con số nói trên sân khấu:{" "}
+                <span className="font-medium text-chu">
+                  {dem("dung")}/{ban.length} nêu được hậu quả
+                </span>{" "}
+                và{" "}
+                <span className="font-medium text-chu">
+                  {demQD("ky")}/{ban.length} vẫn ký
+                </span>
+                . &quot;Một phần&quot; KHÔNG được gộp vào &quot;đúng&quot;. Nếu có người hiểu đúng mà
+                vẫn ký, đó là phát hiện quan trọng nhất của cả đợt — đừng giấu nó đi.
+              </p>
 
               <button
+                type="button"
                 onClick={() => {
                   // Xuất theo CẤU TRÚC CÓ PHIÊN BẢN, không phải mảng trần. Mảng trần
                   // không mang thông tin nào về chính nó, nên một file nằm trong
@@ -283,15 +344,18 @@ export function PhongVan() {
                   });
                 }}
                 disabled={ban.length === 0}
-                className="mt-3 rounded-md border border-white/20 px-3 py-1.5 text-[12px] text-slate-300 hover:bg-white/5 disabled:opacity-40"
+                className="nut nut-phu mt-4"
               >
-                {daChep ? "đã sao chép" : "Sao chép toàn bộ (JSON)"}
+                {daChep ? "Đã sao chép" : "Sao chép toàn bộ (JSON)"}
               </button>
-              <div className="mt-2 text-[11px] leading-relaxed text-slate-400">
-                Dữ liệu nằm trong trình duyệt máy này. Dán vào `data/seed/phong-van.json` rồi commit.
-                Không có nút xoá từng mục — bỏ người trả lời sai là gian lận, và là thứ dễ bị hỏi lộ nhất.
-              </div>
-            </div>
+
+              <p className="mt-3 text-[13.5px] leading-relaxed text-chu-mo">
+                Dữ liệu nằm trong trình duyệt máy này. Dán vào{" "}
+                <code className="font-mono text-[13px] text-chu-nhat">data/seed/phong-van.json</code>{" "}
+                rồi commit. Không có nút xoá từng mục — bỏ người trả lời sai là gian lận, và là thứ
+                dễ bị hỏi lộ nhất.
+              </p>
+            </section>
           </>
         )}
       </div>
