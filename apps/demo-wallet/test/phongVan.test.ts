@@ -1,9 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { docHoSo, soiDuLieuCaNhan, tongHop, type Ban } from "../src/phongVan.ts";
 
 const ban = (p: Partial<Ban>): Ban => ({
-  luc: "2026-09-04T00:00:00.000Z",
+  nhapLuc: "2026-09-04T00:00:00.000Z",
   nguyenVan: "",
   cham: "dung",
   quyetDinh: "huy",
@@ -81,4 +84,59 @@ test("mã người tham gia có dấu cách bị nghi là tên thật", () => {
 
 test("dữ liệu ẩn danh sạch thì không cảnh báo gì", () => {
   assert.deepEqual(soiDuLieuCaNhan([ban({ ma: "P1", nguyenVan: "ví bị mất 500 token" })]), []);
+});
+
+/*
+ * NGÀY NHẬP LIỆU KHÔNG PHẢI NGÀY PHỎNG VẤN.
+ *
+ * Bản JSON đầu tiên có 20 mốc thời gian nằm trong khoảng 1 mili-giây ngày 04/09 —
+ * đó là dấu vết một lần chạy script, nhưng field tên `luc` khiến nó đọc ra thành
+ * "20 cuộc phỏng vấn lúc 8 giờ 10 sáng 04/09". Người thật được hỏi ngày 29 và
+ * 30/08. Đây là loại sai không ai phát hiện được từ trong dữ liệu, chỉ phát hiện
+ * được khi có người hỏi "phỏng vấn hôm nào?" — thường là giám khảo.
+ */
+// `.pathname` percent-encode dấu cách: đường dẫn máy này có "Viet Tien" nên ra "Viet%20Tien".
+const GOC = fileURLToPath(new URL("../../../", import.meta.url));
+const docFile = (p: string) => readFileSync(join(GOC, p), "utf8");
+
+test("dữ liệu phỏng vấn mang nguồn gốc cấp mẻ, không mang ngày giả cấp bản ghi", () => {
+  const ho = JSON.parse(docFile("data/seed/phong-van.json")) as {
+    nguonGoc?: { khoangPhongVan?: string };
+    ban: Array<Record<string, unknown>>;
+  };
+
+  const conFieldCu = ho.ban.filter((b) => "luc" in b).map((b) => b["ma"]);
+  assert.deepEqual(
+    conFieldCu,
+    [],
+    "`luc` là tên gây hiểu nhầm — dùng `nhapLuc` (lúc số hoá) và để ngày phỏng vấn ở `nguonGoc`",
+  );
+
+  assert.ok(
+    ho.nguonGoc?.khoangPhongVan,
+    "thiếu `nguonGoc.khoangPhongVan`: con số này sẽ được đọc trên sân khấu, phải nói được đo ngày nào",
+  );
+
+  for (const b of ho.ban) {
+    assert.equal(typeof b["nhapLuc"], "string", `${b["ma"]}: thiếu nhapLuc`);
+  }
+});
+
+test("ngày phỏng vấn không bị gõ cứng trong trang số liệu hay deck", () => {
+  // Ba bản sao của cùng một ngày thì sớm muộn cũng lệch, và lệch ở đây nghĩa là
+  // đọc sai mốc đo trước giám khảo. Chỉ biên bản được giữ ngày; hai nơi kia đọc lại.
+  const gõCứng: string[] = [];
+  for (const f of ["apps/demo-wallet/src/SoLieu.tsx", "scripts/tao-deck.cjs"]) {
+    for (const [i, d] of docFile(f).split("\n").entries()) {
+      if (d.trimStart().startsWith("//") || d.trimStart().startsWith("*")) continue;
+      if (/\d{1,2}\s*[–-]\s*\d{1,2}\/0?\d\/20\d\d|\d{1,2}\/0?\d\/20\d\d/.test(d)) {
+        gõCứng.push(`${f}:${i + 1} — ${d.trim().slice(0, 90)}`);
+      }
+    }
+  }
+  assert.deepEqual(
+    gõCứng,
+    [],
+    "Ngày phỏng vấn phải chảy từ `nguonGoc.khoangPhongVan`, không gõ tay:\n" + gõCứng.join("\n"),
+  );
 });

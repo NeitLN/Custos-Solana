@@ -1,10 +1,15 @@
 {
   "phienBan": 1,
-  "xuatLuc": "2026-09-04T08:10:02.009Z",
+  "xuatLuc": "2026-09-04T16:29:28.407Z",
+  "nguonGoc": {
+    "khoangPhongVan": "29/08 và 30/08/2026",
+    "aiHoi": "Võ Việt Tiến — một người hỏi cả 20",
+    "cachHoi": "tin nhắn và video call"
+  },
   "ban": [
     {
       "ma": "P01",
-      "luc": "2026-09-04T08:10:02.007Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Em nhìn dòng 500 xuống 0 thì chắc là mất hết 500 USDC-demo trong ví. Với cái dòng đổi chủ nữa thì hình như tài khoản đó không còn do em giữ luôn.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -12,7 +17,7 @@
     },
     {
       "ma": "P02",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Chắc có chuyện nguy hiểm với ví, kiểu bị hack hay gì đó. Em không hiểu `đổi chủ tài khoản token` là đổi cái gì.",
       "cham": "motPhan",
       "quyetDinh": "kiemTraThem",
@@ -20,7 +25,7 @@
     },
     {
       "ma": "P03",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "500 USDC-demo bị chuyển sạch, rồi quyền sở hữu tài khoản chứa đồng đó sang địa chỉ khác. Nghĩa là vừa mất số dư vừa mất quyền kiểm soát tài khoản token.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -28,7 +33,7 @@
     },
     {
       "ma": "P04",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Em tưởng ký là xác nhận để nhận 1.000 SOLB. Cái 500 về 0 chắc là số token bên kia gửi hết cho em hay reset số hiển thị thôi.",
       "cham": "sai",
       "quyetDinh": "ky",
@@ -36,7 +41,7 @@
     },
     {
       "ma": "P05",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Hình như nó đang chuyển một đống nào đó ra ngoài và có thêm quyền gì bị đổi. Em chưa chắc USDC-demo về 0 là tiền mất thật hay chỉ là bước đổi token.",
       "cham": "motPhan",
       "quyetDinh": "kiemTraThem",
@@ -44,7 +49,7 @@
     },
     {
       "ma": "P06",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Nó chuyển toàn bộ 500 USDC-demo đi và set authority của token account sang ví `CRZa…picz`. Ký xong là mình không còn quyền điều khiển account đó nữa.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -52,7 +57,7 @@
     },
     {
       "ma": "P07",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Nếu phần mô phỏng đúng thì 500 USDC-demo đi hết và token account bị chuyển quyền sở hữu. Tệ nhất là sau đó mình không lấy lại được quyền trên account đó.",
       "cham": "dung",
       "quyetDinh": "ky",
@@ -60,7 +65,7 @@
     },
     {
       "ma": "P08",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Cột trước sau khá rõ, 500 còn 0 nghĩa là mất hết số USDC-demo đó. Còn đổi chủ thì chắc tài khoản này cũng bị người khác nắm.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -68,7 +73,7 @@
     },
     {
       "ma": "P09",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Ví sẽ mất 500 USDC-demo và quyền sở hữu tài khoản token chuyển sang địa chỉ rút gọn đang hiện. Vì chỉ phân tích được 2 trên 3 phần nên có thể còn hậu quả khác chưa thấy.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -76,7 +81,7 @@
     },
     {
       "ma": "P10",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Giao dịch drain 500 USDC-demo và đổi owner của associated token account sang attacker. Phí mạng không đáng kể; rủi ro chính là asset outflow và mất authority.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -84,7 +89,7 @@
     },
     {
       "ma": "P11",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "500 USDC-demo sẽ bị chuyển khỏi ví, sau đó tài khoản chứa token thuộc về địa chỉ `CRZa…picz`, nên tôi không quản lý được nữa.",
       "cham": "dung",
       "quyetDinh": "kiemTraThem",
@@ -92,7 +97,7 @@
     },
     {
       "ma": "P12",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Nó báo rủi ro cao và hình như có một chương trình lạ. Tôi hiểu là giao dịch không an toàn, nhưng chưa rõ nó chỉ chuyển token hay có thể lấy các tài sản khác.",
       "cham": "motPhan",
       "quyetDinh": "kiemTraThem",
@@ -100,7 +105,7 @@
     },
     {
       "ma": "P13",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Tôi thấy phí có `0,000005 SOL`, chắc ký thì chỉ trừ đúng phí đó. Dòng 500 về 0 có thể là số tiền đã dùng để đăng ký nhận quà.",
       "cham": "sai",
       "quyetDinh": "ky",
@@ -108,7 +113,7 @@
     },
     {
       "ma": "P14",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Toàn bộ USDC-demo bị rút và quyền sở hữu token account bị gán cho một ví khác. Sau khi ký thì mình không thể tự thu hồi bằng mật khẩu như tài khoản web bình thường.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -116,7 +121,7 @@
     },
     {
       "ma": "P15",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Có dấu hiệu tiền hoặc quyền trên ví đang bị chuyển cho bên khác. Tôi chưa hiểu tài khoản token khác với tài khoản ví như thế nào nên chưa kết luận được phạm vi ảnh hưởng.",
       "cham": "motPhan",
       "quyetDinh": "kiemTraThem",
@@ -124,7 +129,7 @@
     },
     {
       "ma": "P16",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Tôi không biết chính xác, nhưng màu đỏ với câu không nên ký cho thấy có thể bị mất gì đó trong ví.",
       "cham": "motPhan",
       "quyetDinh": "huy",
@@ -132,7 +137,7 @@
     },
     {
       "ma": "P17",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Số dư token giảm từ 500 xuống 0 và account owner đổi sang `CRZa…picz`. Chữ ký sẽ cho phép hai thay đổi đó được thực thi; không có cơ chế hoàn tác sau khi giao dịch lên chuỗi.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -140,7 +145,7 @@
     },
     {
       "ma": "P18",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Tôi sẽ mất 500 USDC-demo và người giữ địa chỉ kia có quyền trên tài khoản token của tôi. Nói ngắn gọn là tiền đi và quyền kiểm soát cũng đi.",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -148,7 +153,7 @@
     },
     {
       "ma": "P19",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Nó lấy sạch 500 USDC-demo rồi chuyển owner token account cho ví kia. Em hiểu ký xong là không lấy lại được.",
       "cham": "dung",
       "quyetDinh": "ky",
@@ -156,7 +161,7 @@
     },
     {
       "ma": "P20",
-      "luc": "2026-09-04T08:10:02.008Z",
+      "nhapLuc": "2026-09-04T16:29:28.402Z",
       "nguyenVan": "Theo bảng trước và sau, toàn bộ 500 đơn vị token sẽ ra khỏi ví và một chủ thể khác tiếp quản tài khoản token. Tôi cũng lưu ý hệ thống chưa phân tích được một phần ba nội dung giao dịch.",
       "cham": "dung",
       "quyetDinh": "kiemTraThem",

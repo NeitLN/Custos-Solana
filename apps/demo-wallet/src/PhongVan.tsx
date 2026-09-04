@@ -94,7 +94,7 @@ export function PhongVan() {
 
   function luu() {
     if (!cham || !quyetDinh) return;
-    const moi: Ban[] = [...ban, { luc: new Date().toISOString(), nguyenVan, cham, quyetDinh, ghiChu }];
+    const moi: Ban[] = [...ban, { nhapLuc: new Date().toISOString(), nguyenVan, cham, quyetDinh, ghiChu }];
     setBan(moi);
     localStorage.setItem(KHOA, JSON.stringify(moi));
     setNguyenVan("");

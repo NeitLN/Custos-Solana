@@ -6,7 +6,7 @@
   "ban": [
     {
       "ma": "P1",
-      "luc": "1970-01-01T00:00:00.000Z",
+      "nhapLuc": "1970-01-01T00:00:00.000Z",
       "nguyenVan": "(chép NGUYÊN VĂN câu người được hỏi nói — kể cả khi họ nói sai)",
       "cham": "dung",
       "quyetDinh": "huy",
@@ -14,7 +14,7 @@
     },
     {
       "ma": "P2",
-      "luc": "1970-01-01T00:00:00.000Z",
+      "nhapLuc": "1970-01-01T00:00:00.000Z",
       "nguyenVan": "(ô này không được để trống — câu nguyên văn là bằng chứng duy nhất cho nhãn đã chấm)",
       "cham": "motPhan",
       "quyetDinh": "kiemTraThem",
@@ -22,7 +22,7 @@
     },
     {
       "ma": "P3",
-      "luc": "1970-01-01T00:00:00.000Z",
+      "nhapLuc": "1970-01-01T00:00:00.000Z",
       "nguyenVan": "(người hiểu ĐÚNG hậu quả mà vẫn ký thì giữ nguyên — đó là phát hiện quan trọng nhất, đừng bỏ)",
       "cham": "dung",
       "quyetDinh": "ky",

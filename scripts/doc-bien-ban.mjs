@@ -53,9 +53,26 @@ function chonNhan(o, bang) {
   return bang[con[0]];
 }
 
-const ngayDo = (dong.find((d) => d.startsWith("| Ngày phỏng vấn |")) ?? "")
-  .split("|")[2]
-  ?.trim();
+/** Đọc một ô trong bảng nguồn gốc, bỏ dấu nhấn Markdown. */
+const oNguonGoc = (nhan) =>
+  (dong.find((d) => d.startsWith(`| ${nhan} |`)) ?? "").split("|")[2]?.replace(/\*+/g, "").trim() ?? "";
+
+const nguonGoc = {
+  khoangPhongVan: oNguonGoc("Ngày phỏng vấn"),
+  aiHoi: oNguonGoc("Ai phỏng vấn"),
+  cachHoi: oNguonGoc("Cách hỏi"),
+};
+
+/*
+ * Ngày phỏng vấn là thuộc tính của CẢ MẺ, không phải của từng bản ghi.
+ *
+ * Bản trước gán ngày đó vào từng người qua field `luc`; khi ô nguồn gốc còn trống
+ * thì nó rơi về `new Date()`, và JSON ra đời với 20 mốc thời gian cách nhau 1
+ * mili-giây — trông y như 20 cuộc phỏng vấn diễn ra trong chớp mắt ngày 04/09.
+ * Biên bản chỉ ghi tới mức khoảng "29/08 và 30/08", nên dữ liệu cũng chỉ được
+ * nói tới mức đó. Suy ra ngày cho từng người là bịa.
+ */
+const nhapLuc = new Date().toISOString();
 
 const ban = [];
 const boQua = [];
@@ -121,7 +138,7 @@ for (let i = 0; i < dong.length; i++) {
 
   ban.push({
     ma,
-    luc: ngayDo ? `${ngayDo}` : new Date().toISOString(),
+    nhapLuc,
     nguyenVan: cau1,
     cham,
     quyetDinh,
@@ -142,7 +159,15 @@ if (ban.length === 0) {
   process.exit(1);
 }
 
-const hoSo = { phienBan: 1, xuatLuc: new Date().toISOString(), ban };
+// Không có ngày phỏng vấn thì KHÔNG xuất. Con số 13/20 sẽ được đọc trên sân khấu;
+// một con số không nói được là đo ngày nào thì giám khảo không có cách nào kiểm.
+if (!nguonGoc.khoangPhongVan) {
+  console.error(`\n✖ bảng "Nguồn gốc" trong ${NGUON} chưa có ô "Ngày phỏng vấn". KHÔNG ghi ${DICH}.`);
+  console.error("  Điền ngày thật vào biên bản rồi chạy lại — đừng để script tự điền hôm nay.");
+  process.exit(1);
+}
+
+const hoSo = { phienBan: 1, xuatLuc: new Date().toISOString(), nguonGoc, ban };
 console.log(`\n${ban.length} người đủ dữ liệu:`);
 for (const b of ban) console.log(`  ${b.ma}  ${b.cham.padEnd(8)} ${b.quyetDinh.padEnd(12)} "${b.nguyenVan.slice(0, 56)}"`);
 

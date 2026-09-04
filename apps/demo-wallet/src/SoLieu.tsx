@@ -43,6 +43,8 @@ type SoLieu = {
     hieu: { dung: number; motPhan: number; sai: number };
     quyetDinh: { huy: number; kiemTraThem: number; ky: number };
     hieuDungVanKy: number;
+    /** Khoảng ngày phỏng vấn, chép từ biên bản. `null` khi biên bản chưa ghi. */
+    khoangPhongVan: string | null;
   } | null;
   soLuat: number;
   soMau: number;
@@ -222,7 +224,8 @@ export function SoLieu() {
               Người thật có hiểu cảnh báo không
             </h2>
             <p className="mt-1 text-[14px] text-chu-mo">
-              {d.phongVan.n} người · hỏi ngày 29–30/08/2026
+              {d.phongVan.n} người
+              {d.phongVan.khoangPhongVan ? ` · hỏi ngày ${d.phongVan.khoangPhongVan}` : ""}
             </p>
 
             <GioiHan tieuDe="Đo trên bản giao diện LÚC ĐÓ.">
