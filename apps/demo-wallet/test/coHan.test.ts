@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { coHan, LoiQuaHan } from "../src/coHan.ts";
+import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 
 const cho = (ms: number, giaTri = "xong") => new Promise((g) => setTimeout(() => g(giaTri), ms));
 

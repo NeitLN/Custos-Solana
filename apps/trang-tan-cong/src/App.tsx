@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
-import { conDungDuoc } from "./blockhash.ts";
+import { conDungDuoc, layBlockhash } from "./blockhash.ts";
+import { LoiQuaHan } from "../../../scripts/coHan.ts";
 
 /**
  * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
@@ -85,6 +86,23 @@ export default function App() {
   const blockhashRef = useRef<{ ma: string; luc: number } | null>(null);
   /** URL bàn giao của lần bấm gần nhất — dùng cho đường lui khi ví không tự mở. */
   const [urlLui, setUrlLui] = useState<string | null>(null);
+  /*
+   * Chặn setState sau khi component đã rời khỏi cây: lượt lấy blockhash có thể còn
+   * đang chạy khi người dùng rời trang.
+   *
+   * PHẢI đặt lại `false` lúc mount. StrictMode ở chế độ dev chạy effect hai lượt —
+   * mount, cleanup, rồi mount lại. Bản đầu của tôi chỉ có cleanup, nên sau lượt
+   * đầu `huyRef` mắc kẹt ở `true` và MỌI callback thoát sớm: bấm nút thì không có
+   * gì xảy ra, không lỗi, không cảnh báo. Đúng loại hỏng im lặng khó tìm nhất, và
+   * chỉ có bài kiểm trên trình duyệt mới thấy.
+   */
+  const huyRef = useRef(false);
+  useEffect(() => {
+    huyRef.current = false;
+    return () => {
+      huyRef.current = true;
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -177,26 +195,41 @@ export default function App() {
       return;
     }
 
-    // Chưa kịp lấy blockhash (mới mở trang, RPC đang lỗi), HOẶC cache đã quá hạn.
-    // Lúc này buộc phải chờ mạng, nên popup sẽ bị chặn — điều hướng CÙNG TAB thay
-    // vì mở tab mới.
-    // Cùng tab thì không trình duyệt nào chặn, và demo vẫn chạy tiếp.
+    /*
+     * ĐƯỜNG NGUỘI: chưa kịp lấy blockhash (mới mở trang, RPC đang lỗi), hoặc cache
+     * đã quá hạn. Lúc này buộc phải chờ mạng, nên popup sẽ bị chặn — điều hướng
+     * CÙNG TAB thay vì mở tab mới. Cùng tab thì không trình duyệt nào chặn.
+     *
+     * Bản trước gọi `getLatestBlockhash()` ở đây mà KHÔNG có hạn nào. Devnet nhận
+     * kết nối rồi im lặng thì lời hứa treo tới lúc tầng mạng tự bỏ cuộc — khoảng
+     * 30 giây — và suốt lúc đó `urlLui` chưa được đặt nên ngay cả đường lui thủ
+     * công cũng chưa hiện. Người trình bày đứng chết, không có gì để bấm.
+     *
+     * Nay `layBlockhash` mang hạn 9 giây và KHÔNG bao giờ rơi về hash cũ khi lỗi:
+     * dùng hash chết thì Devnet từ chối giao dịch, và demo hỏng ở một chỗ khó hiểu
+     * hơn nhiều so với một thẻ lỗi nói thẳng.
+     */
     setDangGui(true);
-    new Connection(ht.rpc, "confirmed")
-      .getLatestBlockhash()
-      .then(({ blockhash }) => {
-        blockhashRef.current = { ma: blockhash, luc: Date.now() };
-        const url = dungUrl(blockhash);
+    const conn = new Connection(ht.rpc, "confirmed");
+    layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
+      .then(({ ma }) => {
+        if (huyRef.current) return;
+        blockhashRef.current = { ma, luc: Date.now() };
+        const url = dungUrl(ma);
         setUrlLui(url);
         window.location.href = url;
       })
       .catch((e: unknown) => {
+        if (huyRef.current) return;
         setLoi(
-          (e instanceof Error ? e.message : String(e)) +
-            " — chưa lấy được blockhash từ Devnet. Thử lại sau vài giây.",
+          e instanceof LoiQuaHan
+            ? "Devnet không trả lời trong 9 giây."
+            : "Không lấy được blockhash từ Devnet.",
         );
       })
-      .finally(() => setDangGui(false));
+      .finally(() => {
+        if (!huyRef.current) setDangGui(false);
+      });
   }
 
   return (
@@ -299,10 +332,49 @@ export default function App() {
               </p>
             )}
 
+            {/*
+              THẺ LỖI — thay cho một dòng chữ đỏ.
+
+              `role="alert"` để trình đọc màn hình đọc ngay: người dùng vừa bấm và
+              đang chờ, im lặng ở đây là tệ nhất.
+
+              Ba thứ bắt buộc có mặt cùng lúc: nói CHUYỆN GÌ ĐÃ XẢY RA, một nút THỬ
+              LẠI thật sự gọi lại RPC, và một đường lui XEM DỮ LIỆU MẪU có nhãn rõ.
+              Đường lui đi tới `?mock=danger` — ví sẽ hiện một dải cảnh báo đỏ không
+              tắt được, nên không ai nhầm nó với kết quả Devnet thật.
+            */}
             {loi && (
-              <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-center text-[12.5px] text-rose-700" role="alert">
-                {loi}
-              </p>
+              <div
+                role="alert"
+                className="mt-4 rounded-xl border border-[#e0b4b4] bg-[#fdf4f4] p-4 text-left"
+              >
+                <p className="text-[14px] font-semibold text-[#8a1c28]">{loi}</p>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-[#7a4a4a]">
+                  Custos chưa dựng được giao dịch để gửi sang ví. Đây là lỗi kết nối
+                  Devnet, không phải kết luận gì về giao dịch.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <button
+                    type="button"
+                    onClick={nhanQua}
+                    disabled={dangGui}
+                    className="nut-nhan min-h-[44px] px-4 text-[14px] font-semibold"
+                  >
+                    {dangGui ? "Đang thử lại…" : "Thử lại"}
+                  </button>
+                  <a
+                    href={`${VI}/?mock=danger`}
+                    className="min-h-[44px] text-[13px] font-medium underline underline-offset-4"
+                    style={{ color: "var(--color-hieu)" }}
+                  >
+                    Xem dữ liệu mẫu dự phòng
+                  </a>
+                </div>
+                <p className="mt-2 text-[12px] text-muc-nhat">
+                  Dữ liệu mẫu được ví dán nhãn rõ — <strong>không phải</strong> kết quả
+                  mô phỏng Devnet trực tiếp.
+                </p>
+              </div>
             )}
 
             {ht === null && (

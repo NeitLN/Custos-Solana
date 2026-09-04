@@ -1,3 +1,5 @@
+import { coHan } from "../../../scripts/coHan.ts";
+
 /**
  * TUỔI CỦA BLOCKHASH LẤY SẴN.
  *
@@ -26,4 +28,37 @@ export function conDungDuoc(luc: number, bayGio: number = Date.now()): boolean {
   // Tuổi âm nghĩa là đồng hồ máy vừa bị chỉnh lùi. Không tin cache trong trường hợp
   // đó: lấy lại một lần tốn vài trăm mili giây, còn dùng nhầm thì hỏng cả demo.
   return tuoi >= 0 && tuoi < TUOI_TOI_DA_MS;
+}
+
+/**
+ * HẠN CHO MỘT LƯỢT LẤY BLOCKHASH — 9 giây.
+ *
+ * Vì sao phải có: bản trước gọi `getLatestBlockhash()` ở nhánh nguội mà KHÔNG có
+ * hạn nào. Devnet nhận kết nối rồi im lặng thì lời hứa treo tới lúc tầng mạng tự
+ * bỏ cuộc — khoảng 30 giây. Suốt 30 giây đó vòng quay quay, và `urlLui` chưa được
+ * đặt nên ngay cả đường lui "Mở ví thủ công" cũng chưa hiện. Người trình bày đứng
+ * chết trước giám khảo, không có gì để bấm.
+ *
+ * 9 giây: đủ cho Devnet chậm ở hội trường, đủ ngắn để còn kịp nói "để tôi thử lại".
+ */
+export const HAN_LAY_BLOCKHASH_MS = 9_000;
+
+export type CacheBlockhash = { ma: string; luc: number } | null;
+
+/**
+ * Trả blockhash dùng được, ưu tiên cache còn hạn.
+ *
+ * Tách khỏi component để test được tất định: nhánh nguội, nhánh treo và nhánh lỗi
+ * đều là những đường KHÔNG bao giờ chạy trong lúc mọi thứ đang tốt, nên nếu chỉ
+ * kiểm bằng tay thì chúng chỉ được chạy lần đầu vào đúng hôm hỏng.
+ */
+export async function layBlockhash(
+  layMoi: () => Promise<{ blockhash: string }>,
+  cache: CacheBlockhash,
+  bayGio: number = Date.now(),
+  hanMs: number = HAN_LAY_BLOCKHASH_MS,
+): Promise<{ ma: string; tuCache: boolean }> {
+  if (cache && conDungDuoc(cache.luc, bayGio)) return { ma: cache.ma, tuCache: true };
+  const { blockhash } = await coHan(layMoi(), hanMs);
+  return { ma: blockhash, tuCache: false };
 }

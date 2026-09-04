@@ -11,7 +11,7 @@ import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
-import { coHan, LoiQuaHan } from "./coHan.ts";
+import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import {
   ArrowIcon,
   CheckIcon,
