@@ -44,6 +44,11 @@ thayDong("README.md", [
 
 thayDong("PITCH-VA-PHAN-BIEN.md", [
   [/Unit\/integration \(\d+\)/, (d) => d.replace(/Unit\/integration \(\d+\)/, `Unit/integration (${S.test.pass})`)],
+  // Số test còn nằm trong TIÊU ĐỀ một câu Q&A và trong câu mở của nó. Thiếu hai
+  // dòng này thì guard bắt được lệch nhưng không ai sửa được bằng một lệnh —
+  // đúng chuyện vừa xảy ra: thêm guard mà quên thêm đường đồng bộ.
+  [/^### \d+\. ".* test chứng minh/, (d) => d.replace(/"\d+ test/, `"${S.test.pass} test`)],
+  [/^Cái bẫy tự khen\./, (d) => d.replace(/khen\. \d+ test/, `khen. ${S.test.pass} test`)],
 ]);
 
 thayDong("packages/core/README.md", [
