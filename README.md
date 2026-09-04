@@ -43,7 +43,7 @@ Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nv
 ```bash
 nvm use                  # đọc .nvmrc → 24.12.0
 npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 292 test
+npx npm@11.6.2 run check # typecheck + 294 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -99,7 +99,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **292**, chạy trong `npm run check` |
+| Test | **294**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **33** — cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |

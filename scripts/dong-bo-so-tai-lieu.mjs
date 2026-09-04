@@ -14,6 +14,18 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
 const S = JSON.parse(readFileSync("apps/demo-wallet/public/so-lieu.json", "utf8"));
+
+// CHẠY MỘT MÌNH LÀ SAI THỨ TỰ, và tôi đã mắc đúng lỗi này hai lần: script chép số
+// TỪ `so-lieu.json` sang tài liệu, nên nếu file đó chưa đo lại thì nó chỉ đồng bộ
+// tài liệu về một con số đã cũ. Máy vẫn xanh (hai bên cùng cũ), CI mới đỏ — vì CI
+// đo lại trước rồi mới so.
+//
+// Dùng `npm run so-lieu`: nó chạy đo rồi mới chạy đồng bộ.
+if (!process.argv.includes("--da-do")) {
+  console.warn("⚠ Chạy `npm run so-lieu` thay vì gọi thẳng script này.");
+  console.warn("  Chưa đo lại thì đây chỉ đồng bộ tài liệu về một con số CŨ.");
+  console.warn("");
+}
 const { mauDoDuoc: DO, mauTrongCohort: TONG, coveragePhanTram: COV, chamTaiSan: CT } = S.cohort;
 const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
 
