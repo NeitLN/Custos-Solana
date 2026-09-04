@@ -242,7 +242,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("lượt gọi RPC mỗi lượt kiểm tra (trung vị)", {
     x: M + 0.4, y: 3.22, w: cw - 0.8, h: 0.4, fontFace: F.body, fontSize: 15, color: C.text, margin: 0,
   });
-  s.addText(`thấp ${S.chiPhi.luotGoiRpc.thap} · cao ${S.chiPhi.luotGoiRpc.cao} · đo trên ${S.chiPhi.soMau} giao dịch mainnet thật`, {
+  s.addText(`thấp ${S.chiPhi.luotGoiRpc.thap} · cao ${S.chiPhi.luotGoiRpc.cao} · đo trên ${S.chiPhi.soMau} giao dịch công khai đã lưu offline`, {
     x: M + 0.4, y: 3.62, w: cw - 0.8, h: 0.4, fontFace: F.mono, fontSize: 11, color: C.muted, margin: 0,
   });
 
@@ -264,7 +264,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("Chúng em chưa chốt giá của mình, và chưa có cam kết nào từ ví/dApp. Đây là số tham chiếu, không phải validation.", {
     x: M, y: 5.85, w: W, h: 0.45, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
   });
-  s.addNotes("2:50–3:10 — Con số 6,5 là TRUNG VỊ đo trên 20 giao dịch mainnet thật.\n\n[!] KHÔNG nói một tỉ lệ biên lợi nhuận cụ thể. Chưa tra bảng trọng số credit, chưa đo token, chưa có giá bán — ba ô trống thì không ra được tỉ lệ. Nói “biên gộp 90%” là bịa.\n[!] $49 là giá của NGƯỜI KHÁC, không phải giá của Custos.");
+  s.addNotes("2:50–3:10 — Con số 6,5 là TRUNG VỊ đo trên 20 giao dịch công khai ĐÃ LƯU OFFLINE — không phải runtime. [!] KHÔNG nói “mainnet” trên sân khấu: demo chạy hoàn toàn trên Devnet, và nhãn devnet-only nằm ngay trong README.\n\n[!] KHÔNG nói một tỉ lệ biên lợi nhuận cụ thể. Chưa tra bảng trọng số credit, chưa đo token, chưa có giá bán — ba ô trống thì không ra được tỉ lệ. Nói “biên gộp 90%” là bịa.\n[!] $49 là giá của NGƯỜI KHÁC, không phải giá của Custos.");
 }
 
 // ─────────────────────────────────────────── 8 · AI và giới hạn
@@ -311,7 +311,17 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 
   const bw = (W - 1.65) / 4;
   const so = [
-    [String(S.cohort.caoBuoc), "giao dịch bị gắn cờ", `trên ${S.cohort.mauDoDuoc} giao dịch SPL mainnet ngẫu nhiên · chưa kiểm chứng từng giao dịch là lành`, C.emerald],
+    // "CÁO BUỘC", KHÔNG phải "gắn cờ". Hai chữ này không thay nhau được: caoBuoc là
+    // số giao dịch có mã lý do BUỘC TỘI, còn số bị gắn cờ ở mức Vàng là
+    // S.cohort.verdict.warning — khác 0. Slide cũ ghi "0 giao dịch bị gắn cờ" trong
+    // khi 7 giao dịch thật sự đã bị gắn cờ; đó là nói quá về chính mình, trên đúng
+    // cái slide con số. README đã phân biệt cẩn thận hai chữ này rồi.
+    [
+      String(S.cohort.caoBuoc),
+      "giao dịch bị CÁO BUỘC",
+      `trên ${S.cohort.mauDoDuoc} giao dịch SPL công khai đã lưu offline · ${S.cohort.verdict.warning} ở mức Cần xem kỹ · cohort chưa gán nhãn ground truth`,
+      C.emerald,
+    ],
     [String(S.test.pass), "test tự động", "chạy lại mỗi lần deploy", C.text],
     [String(S.soLuat), "luật xác định", `${S.soMau} mẫu kiểm thử`, C.text],
     [`${S.cohort.coveragePhanTram}%`, "lệnh đọc hiểu được", "phần còn lại KHÔNG đoán", C.amber],

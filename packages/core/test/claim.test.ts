@@ -110,6 +110,37 @@ test("README gói core công bố coverage của cohort hiện tại, kèm mẫu
   }
 });
 
+test("tiêu đề Q&A về số test cũng theo lần đo hiện tại", boQuaKhiDo, () => {
+  // Con số này nằm trong TIÊU ĐỀ một câu hỏi, không trong bảng — nên hai bài kiểm
+  // trên không phủ tới, và nó đã trôi thật (đề "256 test" khi thật là 283). Mỗi lần
+  // một con số rò ra một chỗ mới, guard phải đi theo tới đó.
+  assert.ok(
+    soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /^### \d+\. ".* test chứng minh/).includes(SO_TEST),
+    `PITCH câu "N test chứng minh Custos chính xác chứ?" nói số khác so-lieu.json (${SO_TEST}).`,
+  );
+});
+
+test("README công bố đúng số lỗ hổng của lần đo gần nhất", () => {
+  // Đây là số về BẢO MẬT trong một sản phẩm bảo mật, và nó TĂNG theo thời gian khi
+  // có CVE mới. Để nó trôi thì câu "chúng em nói ra cả cây phụ thuộc của mình"
+  // thành câu nói suông — đúng thứ đội đang tự hào là không làm.
+  const lh = JSON.parse(doc("data/seed/lo-hong.json")) as {
+    tong: number;
+    theoMucDo: Record<string, number>;
+  };
+  const so = soTrenDong(doc("README.md"), /^`npm audit` ngày/);
+  assert.ok(
+    so.includes(lh.tong),
+    `README nói ${so.join("/")} còn data/seed/lo-hong.json đo được ${lh.tong} lỗ hổng. ` +
+      `Chạy \`node scripts/do-lo-hong.mjs\` rồi cập nhật README.`,
+  );
+  for (const [muc, n] of Object.entries(lh.theoMucDo)) {
+    if (n > 0) {
+      assert.ok(so.includes(n), `README thiếu số ${muc}=${n} trong dòng npm audit.`);
+    }
+  }
+});
+
 /*
  * Những cụm dưới đây bị cấm vì đội KHÔNG có bằng chứng so sánh tái lập được, và
  * giám khảo chỉ cần một phản ví dụ là bác bỏ cả bài. Danh sách cố ý hẹp và cụ thể:

@@ -1,0 +1,48 @@
+{
+  "ngayDo": "2026-09-04T04:20:00.081Z",
+  "tong": 9,
+  "theoMucDo": {
+    "low": 0,
+    "moderate": 6,
+    "high": 3,
+    "critical": 0
+  },
+  "goi": [
+    {
+      "ten": "@solana/buffer-layout-utils",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana/spl-token",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana/spl-token-group",
+      "mucDo": "moderate"
+    },
+    {
+      "ten": "@solana/spl-token-metadata",
+      "mucDo": "moderate"
+    },
+    {
+      "ten": "@solana/web3.js",
+      "mucDo": "moderate"
+    },
+    {
+      "ten": "bigint-buffer",
+      "mucDo": "high"
+    },
+    {
+      "ten": "jayson",
+      "mucDo": "moderate"
+    },
+    {
+      "ten": "stream-json",
+      "mucDo": "moderate"
+    },
+    {
+      "ten": "uuid",
+      "mucDo": "moderate"
+    }
+  ]
+}
