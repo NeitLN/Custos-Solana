@@ -1,7 +1,8 @@
 {
-  "sinhLuc": "2026-09-04T09:14:13.977Z",
+  "sinhLuc": "2026-09-04T16:51:23.987Z",
   "phongVan": {
     "n": 20,
+    "khoangPhongVan": "29/08 và 30/08/2026",
     "hieu": {
       "dung": 13,
       "motPhan": 5,
@@ -42,7 +43,7 @@
     }
   },
   "test": {
-    "pass": 294,
+    "pass": 309,
     "fail": 0
   },
   "soLuat": 14,
