@@ -1,5 +1,9 @@
 # Roadmap hoàn thiện — Devnet-only
 
+> ⚠️ **TÀI LIỆU LỊCH SỬ — viết cho hạn 05/09, không còn là lịch hiện hành.**
+> Giữ nguyên nội dung để làm dấu vết quá trình. Lịch đang dùng:
+> `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`.
+
 **Cập nhật 31/08/2026.** Hạn nộp tự đặt **04/09**, thi **05/09 08:00**.
 
 Quyết định phạm vi: **sản phẩm dự thi vận hành hoàn toàn trên Devnet.** Đã gỡ toàn bộ
