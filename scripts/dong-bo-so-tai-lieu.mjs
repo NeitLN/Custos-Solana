@@ -37,9 +37,16 @@ function thayDong(duong, viec) {
 console.log(`nguồn: ${S.test.pass} test · ${S.soMau} mẫu · coverage ${COV}% trên ${DO}/${TONG} · chạm tài sản ${CT.hieu}/${CT.tong}`);
 
 thayDong("README.md", [
-  [/^npm run check /, (d) => d.replace(/# typecheck \+ \d+ test/, `# typecheck + ${S.test.pass} test`)],
+  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# typecheck \+ \d+ test/, `# typecheck + ${S.test.pass} test`)],
   [/^\| Test \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
   [/^\| Mẫu trong bộ dữ liệu \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+]);
+
+// CLAUDE.md đứng ngoài mọi vòng dọn dẹp trước vì không ai nghĩ nó là "tài liệu công
+// khai" — nhưng nó là thứ mọi phiên làm việc đọc đầu tiên, nên số cũ ở đây lan ra
+// khắp nơi khác.
+thayDong("CLAUDE.md", [
+  [/^hiện trường devnet thật ·/, (d) => d.replace(/· \d+ test/, `· ${S.test.pass} test`)],
 ]);
 
 thayDong("PITCH-VA-PHAN-BIEN.md", [
@@ -49,6 +56,8 @@ thayDong("PITCH-VA-PHAN-BIEN.md", [
   // đúng chuyện vừa xảy ra: thêm guard mà quên thêm đường đồng bộ.
   [/^### \d+\. ".* test chứng minh/, (d) => d.replace(/"\d+ test/, `"${S.test.pass} test`)],
   [/^Cái bẫy tự khen\./, (d) => d.replace(/khen\. \d+ test/, `khen. ${S.test.pass} test`)],
+  // Chỗ thứ BA trong cùng một file — guard tìm ra, script thì chưa với tới.
+  [/^> Câu nói được: \*"Chúng em có bốn loại/, (d) => d.replace(/\d+ test/, `${S.test.pass} test`)],
 ]);
 
 thayDong("packages/core/README.md", [
@@ -60,7 +69,7 @@ thayDong("packages/core/README.md", [
         .replace(/trên \d+\/\d+ giao dịch/, `trên ${DO}/${TONG} giao dịch`)
         .replace(/\*\*\d+ ?% \(\d+\/\d+\)\*\*/, `**${CT_PT} % (${CT.hieu}/${CT.tong})**`),
   ],
-  [/^npm run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
+  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
 ]);
 
 console.log("xong. Chạy `npm run check` để guard xác nhận.");

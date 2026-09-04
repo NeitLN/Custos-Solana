@@ -27,7 +27,7 @@ Cần bản chưa publish, hoặc muốn kiểm bằng mã nguồn trước mắ
 
 ```bash
 git clone https://github.com/NeitLN/Custos-Solana && cd Custos-Solana
-npm ci
+npx npm@11.6.2 ci
 node scripts/dong-goi-sdk.mjs goi-sdk
 npm install /duong-dan/Custos-Solana/goi-sdk/*.tgz
 ```
@@ -311,7 +311,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npm run check                # 285 test, chạy offline
+npx npm@11.6.2 run check     # 292 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet

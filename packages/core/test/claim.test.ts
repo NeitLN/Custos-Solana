@@ -80,7 +80,7 @@ test("README hướng dẫn chạy cũng nói đúng số test", boQuaKhiDo, () 
   // bảng ở trên không phủ nó, và nó đã trôi thật (README nói 256 khi thật là 282).
   // Số liệu rò rỉ ra ngoài bảng thì guard phải đi theo tới đó.
   assert.ok(
-    soTrenDong(doc("README.md"), /^npm run check /).includes(SO_TEST),
+    soTrenDong(doc("README.md"), /^npx npm@[\d.]+ run check /).includes(SO_TEST),
     `README mục "Chạy thử tại máy" nói số test khác so-lieu.json (${SO_TEST}).`,
   );
 });
@@ -154,6 +154,8 @@ const CUM_CAM = [
   "mọi drainer",
   "% chính xác",
   "cái duy nhất chịu nói",
+  "blockaid đóng",
+  "custos là duy nhất",
 ];
 
 /**
@@ -164,8 +166,115 @@ const CUM_CAM = [
  *     là việc nên làm; cấm nó là dạy đội né câu hỏi thay vì trả lời.
  */
 const laCauCam = (d: string) =>
-  /KHÔNG nói|không được nói|đừng nói|không nói|bị cấm|không được dùng|KHÔNG viết/i.test(d) ||
+  // Liệt kê TỪNG động từ cấm, không dùng ký tự đại diện: một mẫu rộng kiểu
+  // /không.*(nói|gọi)/ sẽ nuốt luôn những câu khẳng định có chữ "không" ở đâu đó.
+  /KHÔNG (nói|viết|gọi|dùng)|không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi)|không nói|bị cấm/i.test(
+    d,
+  ) ||
   /["“][^"”]*\?["”]/.test(d);
+
+/*
+ * QUÉT MỌI LẦN XUẤT HIỆN, KHÔNG PHẢI LẦN ĐẦU TIÊN.
+ *
+ * Bản trước dùng `.find()` — lấy đúng dòng khớp đầu tiên rồi thôi. Hậu quả đo được:
+ * `PITCH-VA-PHAN-BIEN.md` có "285 test" ở tiêu đề (dòng 293) nên bài kiểm xanh,
+ * trong khi dòng 306 — một CÂU KỊCH BẢN SÂN KHẤU — vẫn ghi "256 test". Và
+ * `CLAUDE.md` thì chưa từng nằm trong danh sách canh, nên "256 test" ở đó sống
+ * qua ba vòng dọn dẹp.
+ *
+ * Guard chỉ đáng tin bằng chỗ hẹp nhất của nó. Nay quét TẤT CẢ.
+ */
+const TAI_LIEU_HIEN_HANH = [
+  "README.md",
+  "CLAUDE.md",
+  "CUSTOS.md",
+  "PITCH-VA-PHAN-BIEN.md",
+  "SEED-DATASET.md",
+  "packages/core/README.md",
+  "packages/ai/README.md",
+];
+
+/**
+ * Một dòng được miễn khỏi bài kiểm SỐ chỉ khi mang đúng dấu này.
+ *
+ * Cố ý bắt đánh dấu TỪNG DÒNG chứ không cho loại trừ cả file hay cả thư mục: một
+ * exclusion rộng là cách êm nhất để guard chết dần mà không ai nhận ra. Dấu này
+ * cũng là tài liệu — người đọc biết ngay con số đó là lịch sử, không phải hiện tại.
+ */
+const DAU_LICH_SU = "<!-- so-lich-su -->";
+
+function quetSo(moc: RegExp, dung: number, ten: string): string[] {
+  const sai: string[] = [];
+  for (const f of TAI_LIEU_HIEN_HANH) {
+    doc(f)
+      .split("\n")
+      .forEach((d, i) => {
+        if (d.includes(DAU_LICH_SU)) return;
+        for (const m of d.matchAll(moc)) {
+          const n = Number(m[1]);
+          if (n !== dung) {
+            sai.push(`${f}:${i + 1} — "${m[0]}" nhưng ${ten} hiện tại là ${dung}\n      ${d.trim().slice(0, 110)}`);
+          }
+        }
+      });
+  }
+  return sai;
+}
+
+test("MỌI claim 'N test' trong tài liệu hiện hành đều là số của lần đo này", boQuaKhiDo, () => {
+  assert.deepEqual(
+    quetSo(/(\d+)\s+test\b/g, SO_TEST, "số test"),
+    [],
+    `Còn số test cũ. Chạy \`node scripts/dong-bo-so-tai-lieu.mjs\`, hoặc nếu đó là con số LỊCH SỬ có chủ đích thì đánh dấu dòng đó bằng ${DAU_LICH_SU}.`,
+  );
+});
+
+/*
+ * KHÔNG quét chung "N mẫu".
+ *
+ * Đã thử và đo: bài quét đó cho gần như toàn dương tính giả — "9 mẫu" là tập con
+ * còn mô phỏng được, "10 mẫu" là tập âm, "6 mẫu" là một nhóm trong đặc tả. Chữ
+ * "mẫu" mang nhiều nghĩa khác nhau trong repo này, khác hẳn "N test" vốn chỉ có
+ * một nghĩa. Muốn dùng nó thì phải đánh dấu hàng chục dòng — mà một guard kêu sai
+ * hàng chục lần là guard sẽ bị tắt.
+ *
+ * Tổng dataset đã có bài kiểm riêng, chính xác theo vị trí dòng, ở phần trên.
+ */
+/*
+ * MỌI MỐC CỦA SCRIPT ĐỒNG BỘ PHẢI CÒN TÌM THẤY DÒNG.
+ *
+ * `dong-bo-so-tai-lieu.mjs` thay theo VỊ TRÍ DÒNG (mốc regex). Đổi một tiêu đề mục
+ * hay viết lại một câu là mốc mất, và script im lặng mất tác dụng ở đúng chỗ đó —
+ * guard vẫn xanh cho tới lần số liệu đổi tiếp theo, rồi mới đỏ ở một nơi không ai
+ * ngờ. Bài này bắt ngay lúc mốc gãy.
+ *
+ * Danh sách phải khớp thủ công với script. Đó là chủ ý: hai bên lệch thì bài kiểm
+ * này đỏ, và người sửa buộc phải nhìn cả hai.
+ */
+const NEO_DONG_BO: Array<[string, RegExp]> = [
+  ["README.md", /^npx npm@[\d.]+ run check /],
+  ["README.md", /^\| Test \|/],
+  ["README.md", /^\| Mẫu trong bộ dữ liệu \|/],
+  ["README.md", /^`npm audit` ngày/],
+  ["CLAUDE.md", /^hiện trường devnet thật ·/],
+  ["PITCH-VA-PHAN-BIEN.md", /Unit\/integration \(\d+\)/],
+  ["PITCH-VA-PHAN-BIEN.md", /^### \d+\. ".* test chứng minh/],
+  ["PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
+  ["PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
+  ["packages/core/README.md", /Coverage chưa đủ trên DeFi/],
+  ["packages/core/README.md", /^npx npm@[\d.]+ run check /],
+];
+
+test("mọi mốc mà script đồng bộ dựa vào đều còn tìm thấy dòng", () => {
+  const gay = NEO_DONG_BO.filter(([f, moc]) => !doc(f).split("\n").some((d) => moc.test(d))).map(
+    ([f, moc]) => `${f} — không còn dòng nào khớp ${moc}`,
+  );
+  assert.deepEqual(
+    gay,
+    [],
+    "Mốc của `scripts/dong-bo-so-tai-lieu.mjs` đã gãy. Sửa mốc trong script VÀ trong danh sách này, đừng xoá dòng khỏi tài liệu rồi bỏ qua.",
+  );
+});
 
 const BE_MAT_PUBLIC = [
   "README.md",
@@ -173,6 +282,8 @@ const BE_MAT_PUBLIC = [
   "packages/ai/README.md",
   "PITCH-VA-PHAN-BIEN.md",
   "CUSTOS.md",
+  "CLAUDE.md",
+  "SEED-DATASET.md",
   "apps/demo-wallet/src/App.tsx",
   "apps/demo-wallet/src/CanhBao.tsx",
   "apps/demo-wallet/src/SoLieu.tsx",

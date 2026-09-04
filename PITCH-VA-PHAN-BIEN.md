@@ -164,7 +164,9 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 
 ### 6. "Mẫu an toàn của các bạn lấy từ đâu?"
 
-> "Ít nhất 6 trong 10 mẫu an toàn là giao dịch **mainnet thật** lấy từ Explorer — swap Jupiter, stake, mua NFT. Mẫu nguy hiểm thì có cả loại chúng tôi tự dựng trên devnet, và chúng tôi **không** tính loại đó vào tỉ lệ báo nhầm. Con số báo nhầm chỉ đo trên giao dịch thật."
+> "Tập âm là giao dịch **công khai có thật**, lấy từ Explorer rồi **lưu offline** để kiểm engine — swap Jupiter, stake, mua NFT. Mẫu nguy hiểm thì đội tự dựng trên devnet, và chúng em **không** gộp hai loại đó vào một con số.
+>
+> Nhưng nói thẳng: cohort ấy **chưa gán nhãn ground truth**, nên con số 0 cáo buộc là một QUAN SÁT, không phải tỉ lệ báo nhầm. Muốn nói tỉ lệ báo nhầm thì phải có nhãn đúng/sai cho từng giao dịch — chúng em chưa gán, nên chưa nói."
 
 ### 7. "Nếu Phantom làm tiếng Việt thì các bạn còn gì?"
 
@@ -212,7 +214,7 @@ ca đẹp, không đo trên lưu lượng thật, và không bao giờ biết s�
 > *Bọn em kể chuyện này vì đó là thứ phân biệt một sản phẩm bảo mật **đo được** với
 > một sản phẩm bảo mật **nghe có vẻ đúng**."*
 
-Câu này mạnh hơn *"0 giao dịch bị gắn cờ"* rất nhiều:
+Câu này mạnh hơn *"0 giao dịch bị gắn mã cáo buộc"* rất nhiều:
 
 | | |
 |---|---|
@@ -233,8 +235,8 @@ tư cách một công ty**. Trả lời được thì mở khoá cả ô mô hì
 
 > "Mô phỏng thì họ tự làm được trong hai tuần. Ba thứ còn lại thì không:
 >
-> **Một — tập luật đã hiệu chỉnh.** Chúng em đo trên giao dịch mainnet thật để đưa số
-> cáo buộc sai về 0. Bản đầu của **chính chúng em** kêu oan những lệnh mua bình
+> **Một — tập luật đã hiệu chỉnh.** Chúng em đo trên giao dịch công khai có thật (lưu
+> offline) để đưa số cáo buộc về 0. Bản đầu của **chính chúng em** kêu oan những lệnh mua bình
 > thường — ví nhỏ tiêu 63% số SOL để mua token thì bị gắn cờ. Ai tự làm cũng sẽ đi
 > lại đúng đoạn đường đó.
 >
@@ -290,21 +292,21 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > trị; đo trên giao dịch tự dựng thì con số không nói lên gì. Nhãn devnet-only là về
 > **khuyến nghị triển khai**, không phải giới hạn kỹ thuật."
 
-### 14. "285 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "292 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 285 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 292 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (285)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (292)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort mainnet (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 256 test
-> cho code, tấn công tổng hợp cho luật đã biết, cohort mainnet là thăm dò **chưa gán
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 292 test
+> cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*
 

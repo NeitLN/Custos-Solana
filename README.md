@@ -22,17 +22,28 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ## Chạy thử tại máy
 
-**Cần Node 24.12.x và npm 11+.** Không phải "Node mới là được": mọi script chạy
-`--experimental-strip-types`, cờ này không tồn tại trước Node 22.6, và bộ công cụ
-đội thật sự chạy và CI ghim là **24.12.0** (`.nvmrc`). `engine-strict=true` trong
-`.npmrc` sẽ dừng ngay với thông báo nói rõ bản cần, thay vì để bạn hỏng sâu trong
-cây phụ thuộc — runner từng lấy 24.19 và `npm ci` vỡ vì hai bản npm dựng cây khác
-nhau cho một peerOptional native.
+**Cần Node 24.12.x và npm 11.6.2 — đúng bản này.** Không phải "npm 11 nào cũng được":
+đo được, `npm@11.9.0` chạy `npm ci` là **hỏng**, vì nó dựng cây phụ thuộc khác cho
+peerOptional native của `ws`:
+
+```text
+npm error code EUSAGE
+npm error Missing: bufferutil@4.1.0 from lock file
+npm error Missing: utf-8-validate@6.0.6 from lock file
+```
+
+Đội **không** regenerate lockfile trước hạn thi để chiều bản npm mới — đó là thay đổi
+cả cây phụ thuộc vào phút chót. Thay vào đó khai đúng bản đã kiểm chứng, và
+`engine-strict=true` trong `.npmrc` sẽ dừng ngay với thông báo nói rõ bản cần, thay vì
+để bạn lạc vào một lỗi `EUSAGE` không nói gì về nguyên nhân.
+
+Node cũng vậy: mọi script chạy `--experimental-strip-types`, cờ không tồn tại trước
+Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nvmrc`).
 
 ```bash
-nvm use            # đọc .nvmrc → 24.12.0
-npm ci             # dùng ci, không dùng install: khoá đúng lockfile
-npm run check      # typecheck + 285 test
+nvm use                  # đọc .nvmrc → 24.12.0
+npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
+npx npm@11.6.2 run check # typecheck + 292 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -46,7 +57,7 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 
 - **[CUSTOS.md](CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
-- **[SEED-DATASET.md](SEED-DATASET.md)** — bộ kiểm thử: 25 mẫu phải thu thập, định dạng, quy tắc đo false positive
+- **[SEED-DATASET.md](SEED-DATASET.md)** — quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và **vì sao chưa được gọi kết quả trên tập âm là tỉ lệ false positive**
 - **[docs/PHIEU-PHONG-VAN.md](docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
 - **[docs/bao-mat/](docs/bao-mat/)** — audit bảo mật, roadmap khắc phục, báo cáo, đánh giá mô hình
 - **[PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
@@ -88,7 +99,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **285**, chạy trong `npm run check` |
+| Test | **292**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **33** — cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |

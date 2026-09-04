@@ -432,11 +432,14 @@ tiền mua), và **có một khoảng trống cụ thể** (một nhà cung cấ
 minh "không còn đối thủ". Khác biệt của Custos phải đến từ chỗ khác, không từ chỗ
 "không ai làm":
 
-- **Giải thích tiếng Việt** — không đối thủ nào có.
-- **Công khai coverage và phần chưa hiểu** — Blockaid/Blowfish là hộp đen.
+- **Giải thích tiếng Việt** — đội chưa thấy đối thủ nào làm; nếu bị hỏi thì nói đúng
+  như vậy, đừng khẳng định tuyệt đối.
+- **Công khai coverage và phần chưa hiểu** — Blockaid là dịch vụ **mã đóng**, nên bên
+  tích hợp không tự kiểm được nó hiểu tới đâu.
 - **Rule engine đặc thù Solana**, verdict tất định truy được về luật.
 - **AI không được đổi verdict** — ràng buộc an toàn, không phải giới hạn.
-- **Cắm nhẹ vào ví/dApp nhỏ** — khách hàng Blockaid là ví Mỹ lớn, tiếng Anh.
+- **Cắm nhẹ vào ví/dApp nhỏ** — Blockaid bán theo hợp đồng doanh nghiệp cho ví lớn;
+  đội nhỏ chưa có security engineer là phân khúc Custos nhắm tới.
 
 ⚠️ Nói ở **thì quá khứ** về Blowfish: *"công ty Phantom đã mua"*, không nói *"đang
 cung cấp"*.
@@ -444,7 +447,8 @@ cung cấp"*.
 ### Chi phí biên — đo được, không ước lượng
 
 Trung vị **6,5 lượt gọi RPC** mỗi lượt kiểm tra (thấp 4, cao 9), đo trên 20 giao dịch
-mainnet thật. Phần mô hình ngôn ngữ có **trần cứng 400 token đầu ra**.
+công khai có thật, **lưu offline** để kiểm engine — runtime của demo chạy hoàn toàn
+trên Devnet. Phần mô hình ngôn ngữ có **trần cứng 400 token đầu ra**.
 
 Chi phí biên nằm ở hàng phần nghìn đến phần trăm nghìn đô la — **nhỏ hơn chi phí RPC
 mà chính ví đó đang trả để gửi giao dịch đi**. Chi tiết và phần còn thiếu:
@@ -530,7 +534,7 @@ Mỗi mẫu có: link Explorer hoặc transaction fixture · loại tấn công 
 | Đã tồn tại | Họ làm gì | Khoảng trống |
 |---|---|---|
 | Ví lớn (Phantom, Backpack) | Transaction preview: mô phỏng, cảnh báo thời gian thực, diễn giải dạng người đọc được. **Đã cảnh báo khi giao dịch gọi `setAuthority` bất thường** | Tiếng Anh. Và quan trọng hơn: **không cho biết đã hiểu được bao nhiêu phần giao dịch** — khi mô phỏng bỏ lọt một instruction, người dùng không được báo gì cả |
-| Blockaid | API bảo mật giao dịch, đã gọi vốn lớn | Đóng, tiếng Anh, khách hàng là ví Mỹ |
+| Blockaid | API bảo mật giao dịch, **vẫn đang hoạt động** và cung cấp cho nhiều ví | **Mã đóng** (không phải đã đóng cửa), tiếng Anh, bán theo hợp đồng doanh nghiệp |
 | Unruggable | Ví cứng cho Solana | Phần cứng, phải mua thiết bị mới |
 
 ### Blowfish đã bị Phantom mua và ĐÓNG dịch vụ độc lập
