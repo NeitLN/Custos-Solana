@@ -278,7 +278,7 @@ Một giao dịch Solana thật là **một tổ hợp mở**: 8–15 instructio
 
 **Nguyên tắc chung của bốn luật đã được nới (4, 5, 10, 11):** ba cơ chế Token-2022 Permanent Delegate, Transfer Hook và Address Lookup Table đều là **năng lực hợp lệ của giao thức**, có trường hợp dùng chính đáng. Chúng chỉ trở thành dấu hiệu tấn công khi kết hợp với hành vi cụ thể trong chính giao dịch đang xét. Gắn cờ Đỏ cho sự tồn tại của một tính năng là cách nhanh nhất để tạo false positive.
 
-Mỗi luật đi kèm **một ca nguy hiểm và một ca an toàn tương tự** trong bộ kiểm thử — mục 09.
+Cả 14 luật đều có **mẫu kích hoạt** trong bộ kiểm thử; luật 13–14 có thêm **ca đối chứng gần giống** để kiểm ranh giới kích hoạt — mục 09.
 
 ---
 

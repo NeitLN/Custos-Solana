@@ -262,9 +262,12 @@ export function CanhBao({
         {/*
           CÂU CHỮ KÝ CỦA SẢN PHẨM.
           Sinh từ `coverage` bằng code, KHÔNG BAO GIỜ do mô hình viết —
-          để nó cố định và chính xác. Đây là trục khác biệt của Custos: không ví nào
-          khác nói ra phần nó CHƯA đọc hiểu. Câu chữ đã được cân để không nghe như
-          trấn an — làm nó rõ hơn không được phép làm nó êm hơn.
+          để nó cố định và chính xác. Đây là trục khác biệt của Custos: phần CHƯA đọc
+          hiểu được đưa lên thành tín hiệu hiển thị ngay lúc ký, thay vì im lặng.
+          KHÔNG viết ở đây — và tuyệt đối không đưa ra UI — bất kỳ khẳng định nào về
+          việc ví khác có hay không có tính năng này: đội không có so sánh tái lập
+          được. Câu chữ đã được cân để không nghe như trấn an — làm nó rõ hơn không
+          được phép làm nó êm hơn.
         */}
         <div className="px-4 py-3.5 sm:px-5">
           <div className="flex items-baseline justify-between gap-4">

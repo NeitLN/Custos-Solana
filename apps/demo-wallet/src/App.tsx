@@ -442,7 +442,11 @@ export default function App() {
                         },
                         {
                           tieuDe: "Phần Custos CHƯA đọc hiểu",
-                          mo: "Không ví nào khác nói ra con số này.",
+                          // KHÔNG khẳng định điều gì về ví khác: đội không có bằng chứng
+                          // so sánh tái lập được, và một giám khảo chỉ cần MỘT phản ví dụ
+                          // là bác bỏ cả câu. Nói việc Custos làm, đừng nói việc người khác
+                          // không làm.
+                          mo: "Custos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.",
                           viDu: "2 trên 3 lệnh",
                           nhanManh: true,
                         },

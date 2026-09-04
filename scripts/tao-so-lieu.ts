@@ -46,13 +46,43 @@ function demTest(): { pass: number; fail: number } | null {
     const ra = execFileSync(
       process.execPath,
       ["--test", "--experimental-strip-types", "packages/**/test/*.test.ts"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 64 * 1024 * 1024 },
+      {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 64 * 1024 * 1024,
+        // Bộ test chứa guard đối chiếu TÀI LIỆU với chính file này. Không tắt nó ở
+        // đây thì thành vòng khoá: tài liệu lệch -> guard đỏ -> script từ chối đo ->
+        // không bao giờ biết số mới để sửa tài liệu. Lúc ĐANG ĐO thì con số đúng
+        // chưa tồn tại, nên so sánh ấy chưa có nghĩa; nó thuộc về `npm run check`.
+        env: { ...process.env, CUSTOS_DANG_DO: "1" },
+      },
     );
-    const pass = /^# pass (\d+)$/m.exec(ra)?.[1] ?? /pass (\d+)/.exec(ra)?.[1];
-    const fail = /^# fail (\d+)$/m.exec(ra)?.[1] ?? /fail (\d+)/.exec(ra)?.[1];
-    if (!pass) return null;
-    return { pass: Number(pass), fail: Number(fail ?? 0) };
-  } catch {
+    // Đọc `# tests` (TỔNG số ca), KHÔNG đọc `# pass`.
+    //
+    // Vì lượt chạy này đặt CUSTOS_DANG_DO nên ba bài đối chiếu tài liệu bị bỏ qua,
+    // và ca bỏ qua không tính vào `# pass`. Lấy `# pass` thì trang công khai đăng
+    // con số THIẾU đúng bằng số bài bị bỏ qua — 259 thay vì 262. Con số ấy đúng
+    // cho lượt đo và sai với mọi người khác chạy `npm run check`.
+    // Node 24 in bảng tổng kết dạng `ℹ tests 262`; bản TAP cũ dùng `# tests 262`.
+    // Viết thẳng hai regex thay vì dựng bằng template literal: trong template
+    // literal, `\d` là escape không hợp lệ và JS lặng lẽ bỏ dấu gạch, biến `(\d+)`
+    // thành `(d+)` — regex chạy được, không bao giờ khớp, và script chỉ nói
+    // "không đọc được số test". Đúng loại lỗi im lặng nhất.
+    const tong = /^(?:#|ℹ) tests (\d+)\s*$/m.exec(ra)?.[1];
+    const fail = /^(?:#|ℹ) fail (\d+)\s*$/m.exec(ra)?.[1];
+    if (!tong) return null;
+    return { pass: Number(tong) - Number(fail ?? 0), fail: Number(fail ?? 0) };
+  } catch (e) {
+    // Test đỏ thì execFileSync ném, NHƯNG stdout vẫn có "# pass N / # fail M".
+    // Đọc nó để báo được "bộ test đỏ N ca" thay vì "không đọc được số test" —
+    // hai câu dẫn người sửa đi hai hướng khác nhau.
+    const ra = String((e as { stdout?: string }).stdout ?? "");
+    const fail = /^(?:#|ℹ) fail (\d+)\s*$/m.exec(ra)?.[1];
+    if (fail && Number(fail) > 0) {
+      console.error(`✖ bộ test đang đỏ ${fail} ca — không ghi số liệu từ một lần chạy hỏng.`);
+      console.error("  Chạy `npm run check` để xem ca nào.");
+      process.exit(1);
+    }
     return null;
   }
 }
@@ -66,7 +96,15 @@ const soMau = existsSync("data/seed/facts") ? readdirSync("data/seed/facts").fil
 
 if (!cohort) console.warn("⚠ chưa có data/seed/cohort-ket-qua.json — chạy scripts/do-cohort.ts");
 if (!chiPhi) console.warn("⚠ chưa có data/seed/chi-phi.json — chạy scripts/do-chi-phi.ts");
-if (!test) console.warn("⚠ không đọc được số test");
+if (!test) {
+  // TRƯỚC ĐÂY chỉ cảnh báo rồi vẫn ghi `test: null` vào so-lieu.json — nghĩa là
+  // trang số liệu CÔNG KHAI mất con số mà không ai nhận ra, và thể lệ gọi đó là
+  // trình bày sai về dữ liệu. Thà dừng hẳn còn hơn công bố số khuyết.
+  console.error("✖ không đọc được số test — nhiều khả năng bộ test đang đỏ.");
+  console.error("  Chạy `npm run check` để xem ca nào hỏng, sửa xong rồi chạy lại script này.");
+  console.error("  KHÔNG ghi đè so-lieu.json bằng số khuyết.");
+  process.exit(1);
+}
 
 const soLieu = {
   sinhLuc: new Date().toISOString(),

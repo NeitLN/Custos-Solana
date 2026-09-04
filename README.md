@@ -79,8 +79,8 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **250**, chạy trong `npm run check` |
-| Mẫu trong bộ dữ liệu | **29** — mỗi luật có một ca nguy hiểm và một ca lành tính trông giống nó |
+| Test | **263**, chạy trong `npm run check` |
+| Mẫu trong bộ dữ liệu | **33** — cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
 
@@ -113,7 +113,7 @@ góp **+2 điểm** (67 % → 69 %) đo đúng như vậy; so chéo hai cohort t
 như" +5, và con số đó sai.
 
 Phần còn thiếu nằm đúng chỗ khó chịu nhất: lệnh **chạm được tài sản của bạn**
-mới đọc hiểu được **39 %**, thấp hơn mức chung. Phần Custos chưa đọc hiểu chính
+mới đọc hiểu được **65 % (13/20)**, thấp hơn mức chung. Phần Custos chưa đọc hiểu chính
 là phần đang di chuyển tiền. Bảng chênh lệch vẫn đo được hậu quả của chúng —
 nhưng đội không giả vờ là đã hiểu chúng.
 
