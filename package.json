@@ -22,7 +22,8 @@
     "publish-sdk": "node scripts/dong-goi-sdk.mjs --publish",
     "thu-goi": "node scripts/thu-goi-nguoi-ngoai.mjs",
     "thu-tich-hop": "node scripts/thu-tich-hop.mjs",
-    "eval-ai": "node --experimental-strip-types scripts/eval-ai.ts"
+    "eval-ai": "node --experimental-strip-types scripts/eval-ai.ts",
+    "nguoi-mua": "node --experimental-strip-types scripts/kiem-nguoi-mua.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
