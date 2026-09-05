@@ -33,12 +33,29 @@ export type LuotTichHop = {
   dongMaTichHop?: number;
 };
 
+export type LuotPassGon = {
+  finishedAt?: string;
+  sourceCommit?: string | null;
+  msDenKetQuaDauTien?: number;
+  msMotLuotKiem?: number;
+};
+
 export type BangChungTichHop = {
   schemaVersion: number;
   doiTac: unknown;
   lanGanNhat: LuotTichHop | null;
   lanPassGanNhat: LuotTichHop | null;
+  /** Tối đa 10 lượt PASS gần nhất, cũ trước. Số công bố là TRUNG VỊ của chúng. */
+  lichSuPass: LuotPassGon[];
 };
+
+/** Trung vị. Mảng rỗng trả `null` — không có số thì nói là không có. */
+export function trungVi(xs: number[]): number | null {
+  const v = xs.filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
+  if (v.length === 0) return null;
+  const g = Math.floor(v.length / 2);
+  return v.length % 2 ? v[g]! : Math.round((v[g - 1]! + v[g]!) / 2);
+}
 
 export const DUONG_TICH_HOP = "data/tich-hop/ket-qua.json";
 
@@ -65,6 +82,7 @@ export function docBangChungTichHop(goc = "."): BangChungTichHop | null {
       doiTac: raw["doiTac"] ?? null,
       lanGanNhat: luot,
       lanPassGanNhat: luot.dat === true ? luot : null,
+      lichSuPass: [],
     };
   }
 
@@ -73,6 +91,7 @@ export function docBangChungTichHop(goc = "."): BangChungTichHop | null {
     doiTac: raw["doiTac"] ?? null,
     lanGanNhat: (raw["lastAttempt"] as LuotTichHop | undefined) ?? null,
     lanPassGanNhat: (raw["lastSuccessful"] as LuotTichHop | undefined) ?? null,
+    lichSuPass: Array.isArray(raw["lichSuPass"]) ? (raw["lichSuPass"] as LuotPassGon[]) : [],
   };
 }
 

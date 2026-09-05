@@ -111,9 +111,42 @@ function demDongMa(duong) {
     }).length;
 }
 
+/** Chỉ mã mới làm phép đo mất hiệu lực; tài liệu và chính file bằng chứng thì không. */
+function coMaChuaCommit() {
+  const ra = chayGit(["status", "--porcelain"]);
+  if (ra === null) return false;
+  return ra
+    .split("
+")
+    .map((d) => d.slice(3).trim())
+    .filter(Boolean)
+    .some((f) => /^(packages|apps|scripts|vi-du-tich-hop)\//.test(f) && !f.endsWith(".md"));
+}
+
 function chayGit(args) {
   const r = chay("git", args, GOC);
   return r.status === 0 ? r.stdout.trim() : null;
+}
+
+/*
+ * MỘT LƯỢT ĐO KHÔNG PHẢI MỘT HẰNG SỐ.
+ *
+ * Cùng bài chạy trên Devnet công cộng cho 7,2 · 9,9 · 9,9 · 10,8 giây. Công bố một
+ * con số lẻ tới 0,1 giây từ MỘT lượt là ngụ ý một độ chính xác không có thật — và
+ * con số ấy đổi mỗi lần ai đó chạy lại, kéo theo cả README, pitch và deck.
+ *
+ * Nên giữ lịch sử các lượt PASS và công bố TRUNG VỊ. Chỉ giữ lượt pass, và chỉ giữ
+ * mười lượt gần nhất: đây là dữ liệu để mô tả độ trễ hôm nay, không phải nhật ký.
+ */
+function lichSuCu() {
+  const d = join(GOC, KQ);
+  if (!existsSync(d)) return [];
+  try {
+    const cu = JSON.parse(readFileSync(d, "utf8"));
+    return Array.isArray(cu.lichSuPass) ? cu.lichSuPass : [];
+  } catch {
+    return [];
+  }
 }
 
 /*
@@ -140,7 +173,11 @@ const batDau = new Date();
 const luot = {
   dat: false,
   sourceCommit: chayGit(["rev-parse", "HEAD"]),
-  dirtyWorktree: (chayGit(["status", "--porcelain"]) ?? "") !== "",
+  // "Bẩn" ở đây nghĩa là CÓ MÃ CHƯA COMMIT, không phải "có file nào đó đổi".
+  // Chính lượt đo ghi đè file bằng chứng, nên đo hai lượt liên tiếp thì lượt sau
+  // luôn thấy cây bẩn — và cổng sẽ đỏ vì hệ quả của chính nó. Đo lại lần thứ ba
+  // để lấy trung vị là việc bình thường, không phải dấu hiệu sai.
+  dirtyWorktree: coMaChuaCommit(),
   node: process.version,
   npm: (() => {
     const r = chay(npm, ["--version"], GOC);
@@ -247,6 +284,19 @@ const bao = {
   // ai hiển thị nó đều phải kèm `finishedAt` — nó có thể không phải lượt vừa chạy.
   lastAttempt: luot,
   lastSuccessful: luot.dat ? luot : nenCu(),
+  // Chỉ lượt PASS mới vào lịch sử: trung vị của cả lượt hỏng là số vô nghĩa.
+  lichSuPass: (luot.dat
+    ? [
+        ...lichSuCu(),
+        {
+          finishedAt: luot.finishedAt,
+          sourceCommit: luot.sourceCommit,
+          msDenKetQuaDauTien: luot.msDenKetQuaDauTien,
+          msMotLuotKiem: luot.msMotLuotKiem,
+        },
+      ]
+    : lichSuCu()
+  ).slice(-10),
 };
 
 mkdirSync(join(GOC, "data/tich-hop"), { recursive: true });

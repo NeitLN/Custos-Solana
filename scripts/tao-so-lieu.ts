@@ -17,7 +17,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
+import { docBangChungTichHop, thoiDiem, trungVi } from "./bangChungTichHop.ts";
 
 const RA = "apps/demo-wallet/public/so-lieu.json";
 
@@ -209,10 +209,27 @@ function docTichHop() {
    */
   const pass = bc.lanPassGanNhat;
   if (!pass || typeof pass.msDenKetQuaDauTien !== "number") return null;
+
+  /*
+   * TRUNG VỊ CỦA CÁC LƯỢT PASS, KHÔNG PHẢI LƯỢT CUỐI.
+   *
+   * Đây là số mạng công cộng, dao động rộng. Lấy lượt cuối thì con số công bố đổi
+   * mỗi lần ai đó chạy lại, và cả README/pitch/deck đổi theo — không phải vì sản
+   * phẩm đổi. `soLuotDo` đi kèm để không ai đọc trung vị của 1 lượt như của 10.
+   */
+  const ms = bc.lichSuPass
+    .map((x) => x.msDenKetQuaDauTien)
+    .filter((x): x is number => typeof x === "number");
+  const msTv = trungVi(ms) ?? pass.msDenKetQuaDauTien;
+  const luotTv =
+    trungVi(bc.lichSuPass.map((x) => x.msMotLuotKiem).filter((x): x is number => typeof x === "number")) ??
+    pass.msMotLuotKiem;
+
   return {
-    giayDenKetQuaDau: Math.round(pass.msDenKetQuaDauTien / 100) / 10,
+    giayDenKetQuaDau: Math.round(msTv / 100) / 10,
     dongMa: pass.dongMaTichHop,
-    msMotLuot: pass.msMotLuotKiem,
+    msMotLuot: luotTv,
+    soLuotDo: Math.max(ms.length, 1),
     ngayPass: thoiDiem(pass),
     // `null` nghĩa là CHƯA CÓ đối tác. Trang đọc trường này để không nói quá.
     doiTac: bc.doiTac ?? null,

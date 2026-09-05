@@ -10,8 +10,25 @@ import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
 const KET_QUA = "data/tich-hop/ket-qua.json";
-// Số công bố đến từ lượt PASS gần nhất — xem `scripts/bangChungTichHop.ts`.
-const docLuotPass = () => docBangChungTichHop(GOC)?.lanPassGanNhat ?? null;
+/*
+ * MỘT NGUỒN CHUẨN CHO SỐ CÔNG BỐ — VÀ ĐÓ LÀ `so-lieu.json`.
+ *
+ * Bài này từng tự tính lại số từ lượt PASS gần nhất. Nhưng tài liệu được đồng bộ từ
+ * `so-lieu.json`, nơi công bố TRUNG VỊ các lượt pass. Hai cách tính khác nhau thì
+ * guard đỏ ngay khi lịch sử có hơn một lượt — guard chống lại chính quy trình đúng.
+ *
+ * Nên đọc thẳng con số ĐÃ CÔNG BỐ: tài liệu phải khớp thứ trang số liệu đang nói,
+ * không phải khớp một phép tính riêng của bài test.
+ */
+const docSoCongBo = (): { giay: string; msMotLuot: number } | null => {
+  const s = JSON.parse(doc("apps/demo-wallet/public/so-lieu.json")) as {
+    tichHop?: { giayDenKetQuaDau?: number; msMotLuot?: number };
+  };
+  const g = s.tichHop?.giayDenKetQuaDau;
+  const m = s.tichHop?.msMotLuot;
+  if (typeof g !== "number" || typeof m !== "number") return null;
+  return { giay: String(g).replace(".", ","), msMotLuot: m };
+};
 const NL = String.fromCharCode(10);
 import { docBangChungTichHop } from "../../../scripts/bangChungTichHop.ts";
 
@@ -122,11 +139,13 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
   if (!existsSync(join(GOC, KET_QUA))) return;
   // README công bố số của lượt PASS gần nhất; lượt gần nhất có thể đang đỏ và đó
   // là chuyện của cổng nộp bài, không phải của bài đối chiếu số này.
-  const k = docLuotPass();
-  if (!k || typeof k.msDenKetQuaDauTien !== "number") return;
+  const cb = docSoCongBo();
+  const bcK = docBangChungTichHop(GOC)?.lanPassGanNhat;
+  if (!cb || !bcK) return;
+  const k = { ...bcK, msMotLuotKiem: cb.msMotLuot };
   const rd = doc("README.md");
 
-  const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
+  const giay = cb.giay;
   const lech: string[] = [];
   if (!rd.includes(`${giay} giây`)) lech.push(`README thiếu "${giay} giây" (từ msDenKetQuaDauTien)`);
   /*
@@ -176,9 +195,9 @@ test("pitch không nói bài đo cài SDK từ registry npm", boQuaKhiDo, () => 
  * Guard cho README đã có; pitch thì chưa, nên nó giữ "6,9 giây" qua hai lần đo lại.
  */
 test("số tích hợp trong pitch khớp file đo", boQuaKhiDo, () => {
-  const k = docLuotPass();
-  if (!k || typeof k.msDenKetQuaDauTien !== "number") return;
-  const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
+  const cb = docSoCongBo();
+  if (!cb) return;
+  const giay = cb.giay;
   const s = doc("PITCH-VA-PHAN-BIEN.md");
   const thay = [...s.matchAll(/([\d,]+) giây từ `npm install`/g)].map((m) => m[1]!);
   assert.deepEqual(
