@@ -122,8 +122,18 @@ số kèm cách đo, ngày đo, **và mục "điều đội chưa đo được"*
 
 ### Phụ thuộc có lỗ hổng đã biết
 
-`npm audit` ngày 04/09/2026: **9 lỗ hổng — 3 high · 6 moderate**, nằm trong nhánh
-`@solana/web3.js` v1 (`bigint-buffer`, `jayson`, `stream-json`, `uuid`).
+`npm audit` ngày 05/09/2026: **11 lỗ hổng — 5 high · 6 moderate**. Chia hai nhóm,
+vì hai nhóm này có hậu quả khác hẳn nhau:
+
+| Nhóm | Lỗ hổng | Có vào sản phẩm không |
+|---|---|---|
+| Nhánh `@solana/web3.js` v1 | `bigint-buffer`, `jayson`, `stream-json`, `uuid` | **CÓ** — nằm trong đường chạy của SDK |
+| Công cụ dựng deck | `pptxgenjs` → `image-size` (2 high) | **KHÔNG** — devDependency, chỉ chạy khi sinh file .pptx |
+
+Con số tăng từ 9 lên 11 là do **đội tự thêm** `pptxgenjs` ngày 05/09, sau khi phát
+hiện deck không dựng lại được từ bản clone sạch. Đổi hai lỗ hổng dev lấy một
+artifact tái tạo được là đánh đổi có chủ ý — và nói ra ở đây thay vì để con số tự
+tăng không ai giải thích.
 
 > Con số này đo bằng `node scripts/do-lo-hong.mjs` và lưu ở `data/seed/lo-hong.json`
 > kèm ngày đo. Có test canh: README lệch với file đo là bộ test đỏ. Nó TĂNG theo
