@@ -104,7 +104,22 @@ export function docHoSo(thoJson: unknown): HoSoPhongVan {
   }
   const h = thoJson as Partial<HoSoPhongVan>;
   if (!h || !Array.isArray(h.ban)) throw new Error("không phải hồ sơ phỏng vấn: thiếu mảng `ban`");
-  return { phienBan: h.phienBan ?? 0, xuatLuc: h.xuatLuc ?? "", ban: h.ban, ...(h.laViDu ? { laViDu: true } : {}) };
+  /*
+   * GIỮ NGUYÊN METADATA. Kiểu trả về có `vong`, `phienBanUi`, `nguonGoc` — nhưng bản
+   * trước không đọc chúng, nên mọi hồ sơ đi qua hàm này đều mất phiên bản giao diện
+   * đã chiếu và nguồn gốc mẻ mẫu. Đúng thứ vòng 1 đã phải truy ngược bằng `git log`.
+   *
+   * Vắng thì để vắng — không tự điền, vì một `phienBanUi` bịa còn tệ hơn không có.
+   */
+  return {
+    phienBan: h.phienBan ?? 0,
+    xuatLuc: h.xuatLuc ?? "",
+    ban: h.ban,
+    ...(h.laViDu ? { laViDu: true } : {}),
+    ...(typeof h.vong === "number" ? { vong: h.vong } : {}),
+    ...(h.phienBanUi ? { phienBanUi: h.phienBanUi } : {}),
+    ...(h.nguonGoc ? { nguonGoc: h.nguonGoc } : {}),
+  };
 }
 
 /**

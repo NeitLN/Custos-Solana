@@ -140,3 +140,33 @@ test("ngày phỏng vấn không bị gõ cứng trong trang số liệu hay dec
     "Ngày phỏng vấn phải chảy từ `nguonGoc.khoangPhongVan`, không gõ tay:\n" + gõCứng.join("\n"),
   );
 });
+
+test("docHoSo GIỮ metadata vòng và phiên bản giao diện", () => {
+  /*
+   * Kiểu trả về khai `vong`, `phienBanUi`, `nguonGoc` từ lúc thêm giao thức vòng 2,
+   * nhưng bộ đọc không hề lấy chúng — mọi hồ sơ đi qua đây đều mất phiên bản giao
+   * diện đã chiếu. Đúng thứ vòng 1 đã phải truy ngược bằng `git log`, và là lý do
+   * `phienBanUi` được thêm vào ngay từ đầu.
+   *
+   * Kiểu khai một trường không có nghĩa là dữ liệu mang được nó qua.
+   */
+  const ho = docHoSo({
+    phienBan: 1,
+    vong: 2,
+    phienBanUi: "cf42a18",
+    xuatLuc: "2026-09-05T00:00:00.000Z",
+    nguonGoc: { khoangPhongVan: "05/09/2026", aiHoi: "X", cachHoi: "video" },
+    ban: [ban({})],
+  });
+  assert.equal(ho.vong, 2, "mất `vong`");
+  assert.equal(ho.phienBanUi, "cf42a18", "mất `phienBanUi`");
+  assert.equal(ho.nguonGoc?.khoangPhongVan, "05/09/2026", "mất `nguonGoc`");
+});
+
+test("docHoSo KHÔNG tự điền metadata cho hồ sơ cũ", () => {
+  // Một `phienBanUi` bịa còn tệ hơn không có: nó trông như đã ghi lại.
+  const ho = docHoSo({ phienBan: 1, xuatLuc: "", ban: [ban({})] });
+  assert.equal(ho.vong, undefined);
+  assert.equal(ho.phienBanUi, undefined);
+  assert.equal(ho.nguonGoc, undefined);
+});

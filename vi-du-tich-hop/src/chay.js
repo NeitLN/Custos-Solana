@@ -51,7 +51,24 @@ async function main() {
     dAppKhai: { type: "transfer", from: "SOL" },
   });
   console.log(`\n[1] chuyển 0,01 SOL — mức ${qThuong.ketQua?.level ?? "?"} · quyết định "${qThuong.cho}"`);
-  ck("giao dịch bình thường không bị CHẶN", qThuong.cho !== "chan", `bị chặn: ${qThuong.loi ?? qThuong.ketQua?.level}`);
+  /*
+   * Kiểm ĐÚNG hợp đồng, không kiểm "không bị chặn".
+   *
+   * Bản trước chỉ hỏi `cho !== "chan"`, nên một giao dịch lành tính bị trả về "hoi"
+   * vẫn PASS — trong khi tài liệu nói luồng lành tính dẫn thẳng tới ký. Bài kiểm
+   * lỏng hơn lời hứa thì nó không bảo vệ lời hứa.
+   */
+  ck("giao dịch bình thường cho KÝ", qThuong.cho === "ky", `quyết định "${qThuong.cho}"`);
+  ck(
+    "giao dịch bình thường ở mức safe",
+    qThuong.ketQua?.level === "safe",
+    `mức ${qThuong.ketQua?.level ?? "?"}`,
+  );
+  ck(
+    "giao dịch bình thường đọc hiểu hết lệnh",
+    qThuong.ketQua?.coverage?.analyzed === qThuong.ketQua?.coverage?.total,
+    `đọc hiểu ${qThuong.ketQua?.coverage?.analyzed}/${qThuong.ketQua?.coverage?.total}`,
+  );
 
   // Mốc "tới kết quả đầu tiên": dừng đồng hồ NGAY SAU kịch bản đầu, không tính
   // 5 lượt benchmark bên dưới. Bản trước đo cả script và con số phồng từ 10,8
@@ -100,6 +117,7 @@ async function main() {
   console.log(`    đọc hiểu: ${qGia.ketQua?.coverage?.analyzed}/${qGia.ketQua?.coverage?.total} lệnh`);
   ck("giao dịch giả danh airdrop bị CHẶN", qGia.cho === "chan", `quyết định "${qGia.cho}"`);
   ck("có mã lý do kèm theo, không chặn suông", (qGia.ketQua?.reasonCodes ?? []).length > 0, "không có mã lý do");
+  ck("giao dịch nguy hiểm KHÔNG bao giờ là safe", qGia.ketQua?.level !== "safe", `mức ${qGia.ketQua?.level}`);
 
   // ── 3 · FAIL CLOSED: RPC chết thì KHÔNG được thành "ký được" ──────────────
   const connHong = new Connection("http://127.0.0.1:1", "confirmed");
