@@ -23,7 +23,8 @@
     "thu-goi": "node scripts/thu-goi-nguoi-ngoai.mjs",
     "thu-tich-hop": "node scripts/thu-tich-hop.mjs",
     "eval-ai": "node --experimental-strip-types scripts/eval-ai.ts",
-    "nguoi-mua": "node --experimental-strip-types scripts/kiem-nguoi-mua.ts"
+    "nguoi-mua": "node --experimental-strip-types scripts/kiem-nguoi-mua.ts",
+    "soi-rieng-tu": "node --experimental-strip-types scripts/soi-tai-dinh-danh.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
