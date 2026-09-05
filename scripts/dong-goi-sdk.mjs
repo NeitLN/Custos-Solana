@@ -30,8 +30,52 @@
  * phải gõ cờ, và npm sẽ hỏi mã 2FA của chính chủ tài khoản.
  */
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+
+/*
+ * ARTIFACT PHẢI MANG ĐÚNG BẢN VÁ MÀ SOURCE ĐANG CÓ.
+ *
+ * Chuyện đã xảy ra thật: `@custos-solana/ai@0.1.2` lên registry TRƯỚC khi bản vá
+ * grounding được thêm vào. Source trong repo có `dungNeo`, tarball local có, mọi
+ * test xanh — nhưng người cài từ npm nhận đúng bản mà mô hình chèn được địa chỉ ví
+ * BỊA vào câu người dùng đọc trước khi ký. Version npm là bất biến nên không sửa
+ * đè được; chỉ còn cách phát hành bản mới.
+ *
+ * Không ai phát hiện được bằng cách đọc code: cả hai phía đều "đúng", chỉ lệch thời
+ * điểm. Nên kiểm ngay tại chỗ TẠO artifact, trên chính file sẽ được gửi đi.
+ */
+const DAU_AN_BAO_MAT = {
+  "@custos-solana/ai": [
+    // Neo grounding: mô hình không được bịa địa chỉ ví hay số tiền.
+    "dungNeo",
+    "DIA_CHI_DAY_DU",
+  ],
+};
+
+function soiDauAnBaoMat(tenGoi, thuMucDan) {
+  const can = DAU_AN_BAO_MAT[tenGoi];
+  if (!can) return;
+  const gom = [];
+  const quet = (d) => {
+    for (const f of readdirSync(d, { withFileTypes: true })) {
+      const duong = join(d, f.name);
+      if (f.isDirectory()) quet(duong);
+      else if (/\.(js|cjs|mjs|d\.ts)$/.test(f.name)) gom.push(readFileSync(duong, "utf8"));
+    }
+  };
+  quet(join(thuMucDan, "dist"));
+  const chu = gom.join(NL_KY_TU);
+  const thieu = can.filter((x) => !chu.includes(x));
+  if (thieu.length > 0) {
+    console.error(`
+✖ ${tenGoi}: artifact THIẾU dấu ấn bản vá bảo mật: ${thieu.join(", ")}`);
+    console.error("  Source và thứ sắp gửi đi không khớp nhau. KHÔNG đóng gói, KHÔNG publish.");
+    console.error("  Kiểm `npm run build` của gói đó trước, rồi chạy lại.");
+    process.exit(1);
+  }
+}
+const NL_KY_TU = String.fromCharCode(10);
 
 const GOI = ["types", "core", "ai"];
 const DAY_LEN = process.argv.includes("--publish");
@@ -84,6 +128,8 @@ for (const g of GOI) {
   writeFileSync(join(dan, "package.json"), JSON.stringify(p, null, 2) + "\n");
 
   // 3. Pack — hoặc publish — từ thư mục dàn.
+  soiDauAnBaoMat(p.name, dan);
+
   if (DAY_LEN) {
     // BỎ QUA version đã có trên registry: npm không cho publish đè, và khi chỉ một
     // gói đổi (ví dụ ai@0.1.2) thì hai gói kia vẫn ở version cũ — publish lại chúng

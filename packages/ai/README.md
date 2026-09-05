@@ -61,4 +61,29 @@ build vẫn xanh và test vẫn xanh — chỉ có bản công khai nặng thêm
 một SDK gọi API có khoá. Nên có một bài kiểm canh đúng chỗ đó:
 `packages/core/test/khongKeoSdk.test.ts`.
 
+## Phiên bản — đọc trước khi cài
+
+| Bản | Có neo grounding? | Ghi chú |
+|---|---|---|
+| `0.1.2` | **KHÔNG** | Đã lên registry TRƯỚC khi bản vá được thêm. Mô hình chèn được địa chỉ ví bịa vào lời giải thích. **Đừng dùng.** |
+| `0.1.3` | Có | **CHƯA phát hành lên npm** tại thời điểm viết. Có trong source và
+tarball dựng từ `scripts/dong-goi-sdk.mjs`. |
+
+Version npm là bất biến, nên `0.1.2` không sửa đè được — chỉ phát hành bản mới.
+
+> ⚠️ **Nghĩa là hôm nay `npm install @custos-solana/ai` vẫn lấy về `0.1.2`, bản
+> thiếu neo grounding.** Muốn bản có vá thì cài từ tarball tự dựng, hoặc đợi
+> `0.1.3` được phát hành. Dòng này phải được sửa NGAY khi publish xong.
+
+**Hai mức xác minh khác nhau, đừng lẫn:**
+
+- *Đã kiểm tarball local* — gói `npm pack` từ source hiện tại đã được cài vào một
+  project ngoài monorepo và chạy thật. `npm run thu-goi` làm việc này.
+- *Đã kiểm registry* — bản trên npm đã được tải về và soi. Chỉ nói được câu này
+  **sau khi** bản mới thực sự lên registry.
+
+Chính khoảng cách giữa hai mức đó sinh ra sự cố `0.1.2`: source đúng, tarball local
+đúng, mọi test xanh — và bản trên registry thì không. `scripts/dong-goi-sdk.mjs` nay
+từ chối đóng gói hoặc publish nếu artifact thiếu dấu ấn bản vá.
+
 MIT
