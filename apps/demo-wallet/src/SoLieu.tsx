@@ -46,6 +46,16 @@ type SoLieu = {
     /** Khoảng ngày phỏng vấn, chép từ biên bản. `null` khi biên bản chưa ghi. */
     khoangPhongVan: string | null;
   } | null;
+  tichHop: {
+    giayDenKetQuaDau: number;
+    dongMa: number;
+    msMotLuot: number;
+    /** `null` nghĩa là CHƯA có bên thứ ba nào tích hợp. Trang phải nói đúng thế. */
+    doiTac: string | null;
+    dat: boolean;
+  } | null;
+  evalAi: { soMau: number; soBay: number; soBayChanDuoc: number; moHinhThat: string | null } | null;
+  nguoiMua: number;
   soLuat: number;
   soMau: number;
 };
@@ -263,6 +273,90 @@ export function SoLieu() {
             </GioiHan>
           </section>
         )}
+
+        {d.tichHop && (
+          <section className="mt-10">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
+              Một bên ngoài cài SDK này mất bao lâu
+            </h2>
+            <p className="mt-1 text-[14px] text-chu-mo">
+              dApp mẫu, cài từ tarball ở thư mục ngoài monorepo
+            </p>
+
+            {/* Ô này dễ bị đọc quá lên nhất trên cả trang, nên lời cảnh báo đứng
+                TRƯỚC con số chứ không nằm dưới dạng chú thích nhỏ. */}
+            <GioiHan tieuDe="Tích hợp này do chính đội dựng.">
+              Nó chứng minh SDK <strong className="font-semibold text-chu">cài được và dùng được</strong>{" "}
+              từ vị trí người ngoài. Nó <strong className="font-semibold text-chu">không</strong> chứng
+              minh có bên thứ ba nào đã chọn dùng Custos — hiện chưa có bên nào.
+            </GioiHan>
+
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.tichHop.giayDenKetQuaDau} giây`}
+                nhan="từ npm install tới kết quả đầu tiên"
+                cachDo="Đo cả lượt: cài phụ thuộc, rồi chạy ba kịch bản thật trên Devnet. Không cần khoá riêng — inspect() mô phỏng, mà mô phỏng không đòi chữ ký."
+              />
+              <PhepDo
+                so={String(d.tichHop.dongMa)}
+                nhan="dòng mã tích hợp"
+                cachDo="Đếm dòng thật, bỏ dòng trống và chú thích, trong đúng file chứa toàn bộ phần gọi Custos. Ba ràng buộc bên tích hợp phải giữ: địa chỉ lấy từ VÍ chứ không từ dApp, ngữ cảnh dApp khai chỉ được làm sản phẩm thận trọng hơn, và lỗi thì CHẶN chứ không bao giờ thành ký được."
+              />
+              <PhepDo
+                so={`${d.tichHop.msMotLuot} ms`}
+                nhan="một lượt kiểm tra trên Devnet"
+                cachDo="Đo trên kịch bản tấn công thật: dApp khai 'nhận airdrop' nhưng rút token và đổi chủ tài khoản. Custos trả mức Nguy hiểm, đọc hiểu 2/2 lệnh."
+              />
+            </div>
+          </section>
+        )}
+
+        {d.evalAi && (
+          <section className="mt-10">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
+              AI có thể làm hỏng gì
+            </h2>
+            <p className="mt-1 text-[14px] text-chu-mo">
+              chạy mô hình giả cố tình nói bậy, trên {d.evalAi.soMau} mẫu đã gắn nhãn
+            </p>
+
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.evalAi.soBayChanDuoc}/${d.evalAi.soBay}`}
+                nhan="bẫy bị chặn"
+                cachDo="Bịa địa chỉ ví, bịa số tiền, trấn an người dùng, tự chen mức nguy hiểm vào, trả rác, trả rỗng. Hai bẫy đầu TỪNG LỌT: bộ chắn cũ kiểm định dạng và câu trấn an nhưng không kiểm lời văn có căn cứ hay không. Đã vá — mô hình không bao giờ nhận được địa chỉ đầy đủ, nên mọi địa chỉ trong đầu ra là do nó nghĩ ra."
+              />
+            </div>
+
+            <GioiHan tieuDe="Chưa đo với mô hình thật ở vòng này.">
+              Cần khoá API, mà bản demo công khai cố ý không nhúng khoá. Phần đó đánh dấu{" "}
+              <code className="font-mono text-[13px]">{d.evalAi.moHinhThat ?? "chưa đo"}</code> trong dữ
+              liệu — không để trống cho ai đó tưởng là 0. Cách đo đầy đủ ở{" "}
+              <code className="font-mono text-[13px]">docs/AI-EVALUATION.md</code>.
+            </GioiHan>
+          </section>
+        )}
+
+        <section className="mt-10">
+          <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
+            Điều đội CHƯA đo được
+          </h2>
+          <p className="mt-1 text-[14px] text-chu-mo">
+            ô trống là thứ giám khảo tìm — nói ra trước thì rẻ hơn để bị moi ra
+          </p>
+          <div className="mt-6">
+            <PhepDo
+              so={String(d.nguoiMua)}
+              nhan="phỏng vấn NGƯỜI MUA (ví, dApp)"
+              cachDo="Đội đã hỏi người dùng cuối, chưa hỏi người quyết định tích hợp. Hai nhóm trả lời hai câu khác nhau, và số của nhóm này không thay cho nhóm kia được. Bộ câu hỏi đã soạn ở docs/PHONG-VAN-NGUOI-MUA.md."
+            />
+            <PhepDo
+              so={d.tichHop?.doiTac ? "1" : "0"}
+              nhan="ví hoặc dApp bên thứ ba đã tích hợp"
+              cachDo="Chưa có bên nào. Ví dụ tích hợp phía trên do chính đội dựng — nó đo được ma sát tích hợp, không đo được nhu cầu thị trường."
+            />
+          </div>
+        </section>
 
         <section className="mt-10">
           <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">Sản phẩm</h2>
