@@ -26,7 +26,9 @@ const json = <T>(p: string): T | null => {
 const soLieu = json<{ test: { pass: number; fail: number }; soLuat: number; soMau: number; nguoiMua: number }>(
   "apps/demo-wallet/public/so-lieu.json",
 );
-const tichHop = json<{ dat: boolean; doiTac: unknown }>("data/tich-hop/ket-qua.json");
+const tichHop = json<{ dat: boolean; doiTac: unknown; kiem?: Array<{ dat: boolean }> }>(
+  "data/tich-hop/ket-qua.json",
+);
 const anh = existsSync("docs/nop-bai/anh")
   ? readdirSync("docs/nop-bai/anh").filter((f) => f.endsWith(".png"))
   : [];
@@ -53,7 +55,11 @@ const muc: Muc[] = [
   {
     ten: "Ví dụ tích hợp chạy được",
     xong: tichHop?.dat === true,
-    chiTiet: tichHop?.dat ? "5/5 kịch bản pass" : "chưa chạy `npm run thu-tich-hop`",
+    // Đếm từ mảng thật. Bản trước ghi cứng "5/5" và nó tụt lại khi số check lên 8 —
+    // một checklist nói sai về chính nó thì không ai kiểm được gì bằng nó.
+    chiTiet: tichHop?.kiem
+      ? `${tichHop.kiem.filter((k) => k.dat).length}/${tichHop.kiem.length} kịch bản pass`
+      : "chưa chạy `npm run thu-tich-hop`",
     ai: "máy",
   },
   {

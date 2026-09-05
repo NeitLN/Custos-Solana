@@ -123,7 +123,13 @@ thayDong("CLAUDE.md", [
   [/^hiện trường devnet thật ·/, (d) => d.replace(/· \d+ test/, `· ${S.test.pass} test`)],
 ]);
 
+// PITCH tự nói "có test canh" về số lỗ hổng — nhưng nó KHÔNG nằm trong danh sách
+// canh, nên nó tụt lại 9/3-high trong khi audit đã cho 11/5. Một câu khẳng định có
+// guard mà thật ra không có guard là dạng sai tệ nhất: nó tắt luôn sự nghi ngờ.
+const LH = JSON.parse(readFileSync("data/seed/lo-hong.json", "utf8"));
 thayDong("PITCH-VA-PHAN-BIEN.md", [
+  [/^`npm audit` cho \d+ lỗ hổng/, (d) =>
+    d.replace(/\d+ lỗ hổng \(\d+ high, \d+ moderate\)/, `${LH.tong} lỗ hổng (${LH.theoMucDo.high} high, ${LH.theoMucDo.moderate} moderate)`)],
   [/Unit\/integration \(\d+\)/, (d) => d.replace(/Unit\/integration \(\d+\)/, `Unit/integration (${S.test.pass})`)],
   // Số test còn nằm trong TIÊU ĐỀ một câu Q&A và trong câu mở của nó. Thiếu hai
   // dòng này thì guard bắt được lệch nhưng không ai sửa được bằng một lệnh —
