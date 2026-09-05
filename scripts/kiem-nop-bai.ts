@@ -184,7 +184,7 @@ if (STRICT) {
    * Câu hỏi đúng: từ lúc sinh bằng chứng tới HEAD, có commit nào đụng vào thứ mà
    * bằng chứng đang nói về không? Không thì bằng chứng vẫn mô tả đúng bản này.
    */
-  const lechNgoai = (sha: string, boQua: string[]): string[] => {
+  const lechNgoaiTheo = (sha: string, dangKe: (f: string) => boolean): string[] => {
     const dong = (raw: string) =>
       raw
         .split(NL)
@@ -204,7 +204,7 @@ if (STRICT) {
             encoding: "utf8",
           }),
         );
-        return file.some((f) => !boQua.includes(f));
+        return file.some(dangKe);
       })
       .map((c) => c.slice(0, 7));
   };
@@ -226,7 +226,7 @@ if (STRICT) {
     try {
       execFileSync("git", ["merge-base", "--is-ancestor", m[1]!, "HEAD"], { stdio: "ignore" });
       laToTien = true;
-      bunNgoai = lechNgoai(m[1]!, [RN]);
+      bunNgoai = lechNgoaiTheo(m[1]!, (f) => f !== RN);
     } catch {
       laToTien = false;
     }
@@ -262,18 +262,25 @@ if (STRICT) {
    * Được phép lệch HEAD, miễn là từ lúc đo tới giờ chỉ chính file bằng chứng và các
    * tài liệu sinh ra từ nó thay đổi — không có commit nào chạm code.
    */
-  const DUOC_DOI = [
-    "data/tich-hop/ket-qua.json",
-    "docs/nop-bai/RELEASE-NOTES.md",
-    "apps/demo-wallet/public/so-lieu.json",
-  ];
+  /*
+   * LIỆT KÊ THỨ LÀM MẤT HIỆU LỰC, ĐỪNG LIỆT KÊ THỨ VÔ HẠI.
+   *
+   * Bản đầu liệt kê ba file "được phép đổi sau lượt đo". Danh sách kiểu đó luôn
+   * thiếu: chính commit ghi bằng chứng cũng cập nhật README, pitch, deck và báo
+   * cáo — không file nào trong ba file kia — nên cổng đỏ ngay ở quy trình đúng.
+   *
+   * Câu hỏi thật: từ lúc đo tới giờ, có MÃ nào đổi không? Tài liệu đổi thì phép đo
+   * vẫn còn giá trị; mã đổi thì không.
+   */
+  const laMa = (f: string) =>
+    /^(packages|apps|scripts|vi-du-tich-hop)\//.test(f) && !f.endsWith(".md");
   let bunTH: string[] = [];
   let toTienTH = false;
   if (shaTH && !nongCan) {
     try {
       execFileSync("git", ["merge-base", "--is-ancestor", shaTH, "HEAD"], { stdio: "ignore" });
       toTienTH = true;
-      bunTH = lechNgoai(shaTH, DUOC_DOI);
+      bunTH = lechNgoaiTheo(shaTH, laMa);
     } catch {
       toTienTH = false;
     }
@@ -299,8 +306,8 @@ if (STRICT) {
               : !toTienTH
                 ? `đo tại ${(shaTH ?? "?").slice(0, 7)} — không phải tổ tiên của HEAD, đo lại`
                 : bunTH.length === 0
-                  ? `đo tại ${(shaTH ?? "").slice(0, 7)}; từ đó tới HEAD chỉ tài liệu sinh ra đổi`
-                  : `${bunTH.length} commit chạm code sau lượt đo: ${bunTH.join(", ")}`,
+                  ? `đo tại ${(shaTH ?? "").slice(0, 7)}; từ đó tới HEAD chỉ tài liệu đổi`
+                  : `${bunTH.length} commit chạm mã sau lượt đo: ${bunTH.join(", ")}`,
     ai: "máy",
   });
 
