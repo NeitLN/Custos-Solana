@@ -20,9 +20,19 @@ import { kiemTruocKhiKy } from "./tich-hop.js";
 const HT = JSON.parse(readFileSync(process.argv[2] ?? "./hien-truong.json", "utf8"));
 const ket = [];
 
-function ck(ten, dat, chiTiet) {
-  ket.push({ ten, dat, chiTiet });
-  console.log(`  ${dat ? "PASS" : "FAIL"}  ${ten}${dat ? "" : `   <<< ${chiTiet}`}`);
+/*
+ * ĐẠT thì KHÔNG được mang theo câu mô tả thất bại.
+ *
+ * Bản trước lưu `chiTiet` bất kể `dat`, nên `ket-qua.json` công khai có những dòng
+ * tự mâu thuẫn: `{"ten":"có mã lý do kèm theo","dat":true,"chiTiet":"không có mã lý
+ * do"}`. Ai đọc file đó — kể cả giám khảo — thấy một check PASS kèm câu nói nó
+ * FAIL, và không biết tin vế nào.
+ *
+ * `chiTiet` là LÝ DO THẤT BẠI. Đạt rồi thì lý do đó không tồn tại.
+ */
+function ck(ten, dat, lyDoThatBai) {
+  ket.push({ ten, dat, chiTiet: dat ? "đạt" : lyDoThatBai });
+  console.log(`  ${dat ? "PASS" : "FAIL"}  ${ten}${dat ? "" : `   <<< ${lyDoThatBai}`}`);
 }
 
 async function main() {
