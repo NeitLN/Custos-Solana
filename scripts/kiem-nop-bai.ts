@@ -39,14 +39,17 @@ const json = <T>(p: string): T | null => {
 const soLieu = json<{ test: { pass: number; fail: number }; soLuat: number; soMau: number; nguoiMua: number }>(
   "apps/demo-wallet/public/so-lieu.json",
 );
-const tichHop = json<{ dat: boolean; doiTac: unknown; kiem?: Array<{ dat: boolean }> }>(
-  "data/tich-hop/ket-qua.json",
-);
+const bcTichHop = docBangChungTichHop();
+// Cổng hỏi "lượt vừa chạy ra sao", KHÔNG hỏi "đã từng pass chưa". Hai câu đó từng
+// là một, và đó là lý do một lượt fail vẫn được in ra như tám kịch bản đều pass.
+const tichHop = bcTichHop?.lanGanNhat ?? null;
 const anh = existsSync("docs/nop-bai/anh")
   ? readdirSync("docs/nop-bai/anh").filter((f) => f.endsWith(".png"))
   : [];
 const lich = doc("docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md");
 const oTrong = (lich.match(/^- \[ \]/gm) ?? []).length;
+
+import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
 
 const NL = String.fromCharCode(10);
 const sha = execFileSync("git", ["rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim();
@@ -71,9 +74,11 @@ const muc: Muc[] = [
     xong: tichHop?.dat === true,
     // Đếm từ mảng thật. Bản trước ghi cứng "5/5" và nó tụt lại khi số check lên 8 —
     // một checklist nói sai về chính nó thì không ai kiểm được gì bằng nó.
-    chiTiet: tichHop?.kiem
-      ? `${tichHop.kiem.filter((k) => k.dat).length}/${tichHop.kiem.length} kịch bản pass`
-      : "chưa chạy `npm run thu-tich-hop`",
+    chiTiet: !tichHop
+      ? "chưa chạy `npm run thu-tich-hop`"
+      : tichHop.dat
+        ? `${(tichHop.kiem ?? []).filter((k) => k.dat).length}/${(tichHop.kiem ?? []).length} kịch bản pass · ${thoiDiem(tichHop) ?? "?"}`
+        : `LƯỢT GẦN NHẤT HỎNG [${tichHop.failureCategory ?? "?"}] — ${tichHop.loi ?? "không rõ"}`,
     ai: "máy",
   },
   {
@@ -140,7 +145,7 @@ const muc: Muc[] = [
  */
 const oTrongBangChung = [
   ["Phỏng vấn người mua", `${soLieu?.nguoiMua ?? 0} — đội quyết định không làm kỳ này`],
-  ["Bên thứ ba tích hợp", tichHop?.doiTac ? "có" : "0 — ví dụ tích hợp do chính đội dựng"],
+  ["Bên thứ ba tích hợp", bcTichHop?.doiTac ? "có" : "0 — ví dụ tích hợp do chính đội dựng"],
   ["Usability vòng 2", existsSync("data/seed/phong-van-vong-2.json") ? "có" : "chưa chạy"],
   ["Eval với mô hình thật", "BLOCKED_BY_SECRET — cần ANTHROPIC_API_KEY"],
 ];
@@ -169,8 +174,17 @@ if (STRICT) {
   const m = /\*\*Commit:\*\* `([0-9a-f]{7,40})`/.exec(rn);
   const RN = "docs/nop-bai/RELEASE-NOTES.md";
 
-  /** Commit nào giữa `sha` và HEAD đụng vào thứ khác ngoài chính release notes. */
-  const lechNgoaiNotes = (sha: string): string[] => {
+  /*
+   * MỘT QUY TẮC CHO MỌI BẰNG CHỨNG SINH-RỒI-MỚI-COMMIT.
+   *
+   * Release notes và bằng chứng tích hợp đều ghi SHA lúc sinh, rồi commit làm HEAD
+   * đổi. Đòi `SHA == HEAD` là dựng một cổng không bao giờ mở được — đã mắc đúng lỗi
+   * đó với release notes một lần, và suýt mắc lại với bằng chứng tích hợp.
+   *
+   * Câu hỏi đúng: từ lúc sinh bằng chứng tới HEAD, có commit nào đụng vào thứ mà
+   * bằng chứng đang nói về không? Không thì bằng chứng vẫn mô tả đúng bản này.
+   */
+  const lechNgoai = (sha: string, boQua: string[]): string[] => {
     const dong = (raw: string) =>
       raw
         .split(NL)
@@ -190,7 +204,7 @@ if (STRICT) {
             encoding: "utf8",
           }),
         );
-        return file.some((f) => f !== RN);
+        return file.some((f) => !boQua.includes(f));
       })
       .map((c) => c.slice(0, 7));
   };
@@ -212,7 +226,7 @@ if (STRICT) {
     try {
       execFileSync("git", ["merge-base", "--is-ancestor", m[1]!, "HEAD"], { stdio: "ignore" });
       laToTien = true;
-      bunNgoai = lechNgoaiNotes(m[1]!);
+      bunNgoai = lechNgoai(m[1]!, [RN]);
     } catch {
       laToTien = false;
     }
@@ -230,6 +244,63 @@ if (STRICT) {
         : bunNgoai.length === 0
           ? `${m[1]!.slice(0, 7)} → HEAD ${shaDay.slice(0, 7)}: chỉ chính notes thay đổi`
           : `${bunNgoai.length} commit đụng thứ khác sau khi sinh notes: ${bunNgoai.join(", ")}`,
+    ai: "máy",
+  });
+
+  /*
+   * BẰNG CHỨNG TÍCH HỢP PHẢI THUỘC VỀ BẢN SẮP NỘP.
+   *
+   * Một lượt pass từ commit khác, hoặc sinh ra từ cây làm việc bẩn, không nói gì
+   * về thứ sắp gắn tag. Ở chế độ thường thì lệch là bình thường; ở cổng tạo tag
+   * thì không.
+   */
+  const shaTH = bcTichHop?.lanGanNhat?.sourceCommit ?? null;
+  const cuTH = bcTichHop?.schemaVersion !== undefined && bcTichHop.schemaVersion < 2;
+
+  /*
+   * Bằng chứng tích hợp cũng sinh TRƯỚC commit chứa nó, nên áp cùng quy tắc tổ tiên.
+   * Được phép lệch HEAD, miễn là từ lúc đo tới giờ chỉ chính file bằng chứng và các
+   * tài liệu sinh ra từ nó thay đổi — không có commit nào chạm code.
+   */
+  const DUOC_DOI = [
+    "data/tich-hop/ket-qua.json",
+    "docs/nop-bai/RELEASE-NOTES.md",
+    "apps/demo-wallet/public/so-lieu.json",
+  ];
+  let bunTH: string[] = [];
+  let toTienTH = false;
+  if (shaTH && !nongCan) {
+    try {
+      execFileSync("git", ["merge-base", "--is-ancestor", shaTH, "HEAD"], { stdio: "ignore" });
+      toTienTH = true;
+      bunTH = lechNgoai(shaTH, DUOC_DOI);
+    } catch {
+      toTienTH = false;
+    }
+  }
+
+  muc.push({
+    ten: "Bằng chứng tích hợp thuộc đúng bản này",
+    xong:
+      !cuTH &&
+      bcTichHop?.lanGanNhat?.dat === true &&
+      bcTichHop.lanGanNhat.dirtyWorktree !== true &&
+      (shaTH === shaDay || (toTienTH && bunTH.length === 0)),
+    chiTiet: !bcTichHop
+      ? "chưa chạy `npm run thu-tich-hop`"
+      : cuTH
+        ? "schema v1 — không ghi được lượt hỏng. Chạy lại `npm run thu-tich-hop`"
+        : bcTichHop.lanGanNhat?.dat !== true
+          ? `lượt gần nhất HỎNG [${bcTichHop.lanGanNhat?.failureCategory ?? "?"}]`
+          : bcTichHop.lanGanNhat.dirtyWorktree
+            ? "đo trên cây làm việc bẩn — chạy lại trên cây sạch"
+            : shaTH === shaDay
+              ? `đo tại ${(shaTH ?? "").slice(0, 7)} = HEAD`
+              : !toTienTH
+                ? `đo tại ${(shaTH ?? "?").slice(0, 7)} — không phải tổ tiên của HEAD, đo lại`
+                : bunTH.length === 0
+                  ? `đo tại ${(shaTH ?? "").slice(0, 7)}; từ đó tới HEAD chỉ tài liệu sinh ra đổi`
+                  : `${bunTH.length} commit chạm code sau lượt đo: ${bunTH.join(", ")}`,
     ai: "máy",
   });
 

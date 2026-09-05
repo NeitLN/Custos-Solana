@@ -1,62 +1,143 @@
 {
-  "doLuc": "2026-09-05T17:17:06.143Z",
-  "msCaiDat": 6398,
-  "msChay": 6772,
-  "rpc": "https://api.devnet.solana.com",
-  "msKetQuaDau": 769,
-  "msMotLuotKiem": 663,
-  "msLuot": [
-    657,
-    657,
-    663,
-    686,
-    789
-  ],
-  "kiem": [
-    {
-      "ten": "giao dịch bình thường cho KÝ",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "giao dịch bình thường ở mức safe",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "giao dịch bình thường đọc hiểu hết lệnh",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "giao dịch giả danh airdrop bị CHẶN",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "có mã lý do kèm theo, không chặn suông",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "giao dịch nguy hiểm KHÔNG bao giờ là safe",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "RPC hỏng KHÔNG trở thành ký được",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "có lý do kỹ thuật để hiển thị",
-      "dat": true,
-      "chiTiet": "đạt"
-    }
-  ],
-  "dat": true,
-  "dongMaTichHop": 29,
-  "msDenKetQuaDauTien": 7167,
+  "schemaVersion": 2,
   "doiTac": null,
-  "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos."
+  "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos.",
+  "lastAttempt": {
+    "dat": true,
+    "sourceCommit": "83aaed21aa724cdfe03269b67978616f10d903dd",
+    "dirtyWorktree": true,
+    "node": "v24.12.0",
+    "npm": "11.6.2",
+    "startedAt": "2026-09-05T18:44:21.769Z",
+    "finishedAt": "2026-09-05T18:44:42.659Z",
+    "exitCode": 0,
+    "failureCategory": null,
+    "loi": null,
+    "kiem": [
+      {
+        "ten": "giao dịch bình thường cho KÝ",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường ở mức safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường đọc hiểu hết lệnh",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch giả danh airdrop bị CHẶN",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có mã lý do kèm theo, không chặn suông",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch nguy hiểm KHÔNG bao giờ là safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "RPC hỏng KHÔNG trở thành ký được",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có lý do kỹ thuật để hiển thị",
+        "dat": true,
+        "chiTiet": "đạt"
+      }
+    ],
+    "msCaiDat": 9381,
+    "msChay": 6177,
+    "doLuc": "2026-09-05T18:44:42.276Z",
+    "rpc": "https://api.devnet.solana.com",
+    "msKetQuaDau": 539,
+    "msMotLuotKiem": 595,
+    "msLuot": [
+      582,
+      583,
+      595,
+      620,
+      739
+    ],
+    "dongMaTichHop": 29,
+    "msDenKetQuaDauTien": 9920
+  },
+  "lastSuccessful": {
+    "dat": true,
+    "sourceCommit": "83aaed21aa724cdfe03269b67978616f10d903dd",
+    "dirtyWorktree": true,
+    "node": "v24.12.0",
+    "npm": "11.6.2",
+    "startedAt": "2026-09-05T18:44:21.769Z",
+    "finishedAt": "2026-09-05T18:44:42.659Z",
+    "exitCode": 0,
+    "failureCategory": null,
+    "loi": null,
+    "kiem": [
+      {
+        "ten": "giao dịch bình thường cho KÝ",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường ở mức safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường đọc hiểu hết lệnh",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch giả danh airdrop bị CHẶN",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có mã lý do kèm theo, không chặn suông",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch nguy hiểm KHÔNG bao giờ là safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "RPC hỏng KHÔNG trở thành ký được",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có lý do kỹ thuật để hiển thị",
+        "dat": true,
+        "chiTiet": "đạt"
+      }
+    ],
+    "msCaiDat": 9381,
+    "msChay": 6177,
+    "doLuc": "2026-09-05T18:44:42.276Z",
+    "rpc": "https://api.devnet.solana.com",
+    "msKetQuaDau": 539,
+    "msMotLuotKiem": 595,
+    "msLuot": [
+      582,
+      583,
+      595,
+      620,
+      739
+    ],
+    "dongMaTichHop": 29,
+    "msDenKetQuaDauTien": 9920
+  }
 }

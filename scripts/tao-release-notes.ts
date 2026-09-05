@@ -14,6 +14,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
+import { docBangChungTichHop } from "./bangChungTichHop.ts";
+
 const NL = String.fromCharCode(10);
 const json = <T>(p: string): T | null => {
   try {
@@ -37,23 +39,24 @@ if (!S) {
   process.exit(1);
 }
 
-const TH = json<{ giayDenKetQuaDau?: number; msDenKetQuaDauTien: number; dongMaTichHop: number; msMotLuotKiem: number; doiTac: unknown }>(
-  "data/tich-hop/ket-qua.json",
-);
+// Số benchmark đến từ lượt PASS gần nhất — xem `bangChungTichHop.ts`.
+const bcTH = docBangChungTichHop();
+const TH = bcTH?.lanPassGanNhat ?? null;
 const EV = json<{ boChan: { soBay: number; soBayChanDuoc: number; soBayCanNguoiCham?: number }; moHinhThat: { trangThai?: string } }>(
   "data/eval/ai-ket-qua.json",
 );
 const aiVer = (json<{ version: string }>("packages/ai/package.json") ?? { version: "?" }).version;
 const sha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 
-const giay = TH ? (TH.giayDenKetQuaDau ?? Math.round(TH.msDenKetQuaDauTien / 100) / 10) : null;
+const giay =
+  typeof TH?.msDenKetQuaDauTien === "number" ? Math.round(TH.msDenKetQuaDauTien / 100) / 10 : null;
 
 /** Giới hạn SINH RA từ dữ liệu — ô nào trống thì tự vào danh sách. */
 const gioiHan: string[] = [];
 if ((S.nguoiMua ?? 0) === 0) {
   gioiHan.push("**Chưa phỏng vấn người mua nào.** Custos bán cho ví và dApp; đội mới hỏi người dùng cuối. Câu *\"ai trả tiền\"* chưa có dữ liệu.");
 }
-if (!TH?.doiTac) {
+if (!bcTH?.doiTac) {
   gioiHan.push("**Chưa bên thứ ba nào tích hợp.** Ví dụ ở `vi-du-tich-hop/` do chính đội dựng — nó đo ma sát tích hợp, không đo nhu cầu thị trường.");
 }
 if (!existsSync("data/seed/phong-van-vong-2.json")) {

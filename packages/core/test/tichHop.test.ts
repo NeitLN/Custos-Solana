@@ -10,7 +10,10 @@ import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
 const KET_QUA = "data/tich-hop/ket-qua.json";
+// Số công bố đến từ lượt PASS gần nhất — xem `scripts/bangChungTichHop.ts`.
+const docLuotPass = () => docBangChungTichHop(GOC)?.lanPassGanNhat ?? null;
 const NL = String.fromCharCode(10);
+import { docBangChungTichHop } from "../../../scripts/bangChungTichHop.ts";
 
 /*
  * Bài đối chiếu README ↔ dữ liệu phải NGHỈ trong lượt đo lại.
@@ -117,11 +120,10 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
    * Không đồng bộ tự động vì ba số này đổi rất thưa; nhưng phải ĐỎ khi lệch.
    */
   if (!existsSync(join(GOC, KET_QUA))) return;
-  const k = JSON.parse(doc(KET_QUA)) as {
-    msDenKetQuaDauTien: number;
-    dongMaTichHop: number;
-    msMotLuotKiem: number;
-  };
+  // README công bố số của lượt PASS gần nhất; lượt gần nhất có thể đang đỏ và đó
+  // là chuyện của cổng nộp bài, không phải của bài đối chiếu số này.
+  const k = docLuotPass();
+  if (!k || typeof k.msDenKetQuaDauTien !== "number") return;
   const rd = doc("README.md");
 
   const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
@@ -146,4 +148,42 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
     lech.push(`README thiếu độ trễ ${ms} ms`);
   }
   assert.deepEqual(lech, [], `README lệch với data/tich-hop/ket-qua.json:${NL}${lech.join(NL)}`);
+});
+
+/*
+ * PITCH KHÔNG ĐƯỢC NÓI "CÀI TỪ NPM" KHI REGISTRY CHƯA CÓ BẢN ĐÓ.
+ *
+ * Câu pitch từng nói *"cài SDK từ npm"* trong khi bài đo cài từ tarball local qua
+ * `file:` + `overrides`. Hai chuyện khác nhau: một cái là "gói ĐÃ PHÁT HÀNH dùng
+ * được", cái kia là "gói VỪA ĐÓNG GÓI dùng được". Chỉ cái thứ hai đã được đo.
+ *
+ * Registry hiện phục vụ 0.1.2 — bản THIẾU neo grounding. Nói "cài từ npm" trước hội
+ * đồng vừa sai về bài đo, vừa chỉ người ta tới bản có lỗ hổng.
+ */
+test("pitch không nói bài đo cài SDK từ registry npm", boQuaKhiDo, () => {
+  const s = doc("PITCH-VA-PHAN-BIEN.md");
+  const xau = [...s.matchAll(/^.*cài SDK từ npm.*$/gm)].map((m) => m[0].slice(0, 90));
+  assert.deepEqual(
+    xau,
+    [],
+    "bài đo cài từ tarball local (`file:` + `overrides`), không từ registry:" + NL + xau.join(NL),
+  );
+});
+
+/*
+ * VÀ SỐ GIÂY TRONG PITCH PHẢI LÀ SỐ VỪA ĐO.
+ *
+ * Guard cho README đã có; pitch thì chưa, nên nó giữ "6,9 giây" qua hai lần đo lại.
+ */
+test("số tích hợp trong pitch khớp file đo", boQuaKhiDo, () => {
+  const k = docLuotPass();
+  if (!k || typeof k.msDenKetQuaDauTien !== "number") return;
+  const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
+  const s = doc("PITCH-VA-PHAN-BIEN.md");
+  const thay = [...s.matchAll(/([\d,]+) giây từ `npm install`/g)].map((m) => m[1]!);
+  assert.deepEqual(
+    thay.filter((x) => x !== giay),
+    [],
+    `pitch còn số cũ; số đo hiện tại là ${giay} giây`,
+  );
 });

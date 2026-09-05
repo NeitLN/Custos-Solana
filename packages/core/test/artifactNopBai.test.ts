@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { commitCoThat } from "./gitKho.ts";
+import { docBangChungTichHop } from "../../../scripts/bangChungTichHop.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -120,13 +121,30 @@ test("checklist nộp bài không hardcode số kịch bản tích hợp", () =>
   // Nó từng ghi cứng "5/5" trong khi dữ liệu có 8 check.
   const s = doc("scripts/kiem-nop-bai.ts");
   assert.doesNotMatch(s, /"\d+\/\d+ kịch bản pass"/, "số kịch bản phải đếm từ dữ liệu, không gõ tay");
-  assert.match(s, /tichHop\.kiem\.filter/, "phải đếm từ mảng `kiem` thật");
+  assert.match(s, /\.filter\(\(k\) => k\.dat\)/, "phải đếm từ mảng `kiem` thật");
+});
+
+/*
+ * CỔNG PHẢI ĐỌC LƯỢT GẦN NHẤT, KHÔNG ĐỌC LƯỢT PASS GẦN NHẤT.
+ *
+ * Đây là bài kiểm cho chính lỗi vừa sửa: harness đánh rơi lượt fail, file giữ
+ * nguyên lượt pass cũ, và checklist in "8/8 kịch bản pass" ngay sau một lượt đỏ.
+ */
+test("checklist đọc `lanGanNhat`, không đọc `lanPassGanNhat`", () => {
+  const s = doc("scripts/kiem-nop-bai.ts");
+  assert.match(s, /lanGanNhat/, "trạng thái tích hợp phải lấy từ lượt chạy gần nhất");
+  assert.doesNotMatch(
+    s,
+    /xong:\s*bcTichHop\?\.lanPassGanNhat/,
+    "ô trạng thái không được tick bằng lượt pass cũ",
+  );
 });
 
 test("dữ liệu tích hợp không có check ĐẠT kèm câu thất bại", () => {
   const KQ = "data/tich-hop/ket-qua.json";
   if (!existsSync(join(GOC, KQ))) return;
-  const k = JSON.parse(doc(KQ)) as { kiem: Array<{ ten: string; dat: boolean; chiTiet: string }> };
+  const bc = docBangChungTichHop(GOC);
+  const k = { kiem: bc?.lanGanNhat?.kiem ?? [] };
   const xau = k.kiem
     .filter((x) => x.dat && /^(không|khong)/i.test(x.chiTiet.trim()))
     .map((x) => `${x.ten} → "${x.chiTiet}"`);
