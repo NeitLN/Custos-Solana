@@ -28,6 +28,15 @@ if (!process.argv.includes("--da-do")) {
 }
 const { mauDoDuoc: DO, mauTrongCohort: TONG, coveragePhanTram: COV, chamTaiSan: CT } = S.cohort;
 const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
+
+// Số tích hợp và NGÀY đo nó — cả hai từ `so-lieu.json`, không gõ tay.
+const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
+const NGAY_PASS = (() => {
+  const t = S.tichHop?.ngayPass;
+  if (!t) return null;
+  const [nam, thang, ngay] = t.slice(0, 10).split("-");
+  return `${ngay}/${thang}/${nam}`;
+})();
 /*
  * KHÔNG RẢI SỐ VÔ NGHĨA VÀO TÀI LIỆU CÔNG KHAI.
  *
@@ -139,6 +148,38 @@ thayDong("PITCH-VA-PHAN-BIEN.md", [
   // Chỗ thứ BA trong cùng một file — guard tìm ra, script thì chưa với tới.
   [/^> Câu nói được: \*"Chúng em có bốn loại/, (d) => d.replace(/\d+ test/, `${S.test.pass} test`)],
 ]);
+
+/*
+ * DÒNG PITCH LÀ THỨ ĐƯỢC ĐỌC TO TRƯỚC HỘI ĐỒNG.
+ *
+ * Nó mang "6,9 giây" trong khi mọi nguồn khác đã sang 7,2 rồi 9,9 — không neo nào
+ * với tới, vì câu văn nằm giữa một ô bảng dài. Số sai trên pitch đắt hơn cùng số
+ * đó trong README: không ai kịp tra lại khi đang nghe.
+ */
+if (GIAY) {
+  thayDong("PITCH-VA-PHAN-BIEN.md", [
+    [
+      /^\| \*\*2:00–2:30\*\*/,
+      (d) => d.replace(/[\d,]+ giây từ `npm install`/, `${GIAY} giây từ \`npm install\``),
+    ],
+  ]);
+}
+
+/*
+ * NGÀY ĐO ĐI KÈM SỐ ĐO.
+ *
+ * Đây là số mạng công cộng: cùng một bài chạy ba lượt ra 7,2 · 9,9 · 9,9 giây. Một
+ * con số trần không kèm ngày đọc như hằng số của sản phẩm, trong khi nó là một lần
+ * rút thăm. `ngayPass` đến từ lượt PASS gần nhất trong bằng chứng tích hợp.
+ */
+if (NGAY_PASS) {
+  thayDong("README.md", [
+    [
+      /^\| Đo trên Devnet, /,
+      (d) => d.replace(/Đo trên Devnet, \d{2}\/\d{2}\/\d{4}/, `Đo trên Devnet, ${NGAY_PASS}`),
+    ],
+  ]);
+}
 
 thayDong("packages/core/README.md", [
   [
