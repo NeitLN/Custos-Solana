@@ -24,7 +24,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 | Phỏng vấn **người mua** | **0** |
 | Bên thứ ba tích hợp | **0** |
 | Lỗ hổng phụ thuộc | **11** — 5 high · 6 moderate (9 runtime, 2 dev) |
-| Checklist nộp bài (strict) | **6/12** — `CHƯA SẴN SÀNG NỘP` |
+| Checklist nộp bài (strict) | **5/12 chưa đạt** — và **0 ô nào là việc của máy** |
 
 ---
 
@@ -163,9 +163,10 @@ cao SAM cũng chỉ 143 đội) mà là **năng lực tiếp cận**. Ba biến 
 
 **`DO NOT FREEZE`** — chưa tạo release tag.
 
-Ba cổng còn thiếu: video demo (bắt buộc theo thể lệ), `0.2.0` chưa lên registry, và
-lịch thi chưa xác nhận. `npm run nop-bai -- --strict` sẽ chuyển sang xanh khi cả ba
-đóng lại.
+`npm run nop-bai -- --strict` còn 5 ô đỏ, và **không ô nào là việc của máy** — mọi
+thứ repo tự kiểm được đã xanh. Năm ô còn lại: video demo, publish `0.2.0`, registry
+khớp version, release tag, và 4 câu chưa hỏi BTC. Bốn cái đầu chỉ chủ dự án làm được;
+cái cuối chờ BTC trả lời.
 
 Về mặt kỹ thuật, repo **nộp được ngay hôm nay**: clone sạch từ GitHub chạy được toàn
 bộ, CI xanh, không có khoá trong bundle, runtime chỉ Devnet.
