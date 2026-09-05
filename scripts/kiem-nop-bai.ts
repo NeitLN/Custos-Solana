@@ -151,15 +151,72 @@ const oTrongBangChung = [
  * Release notes ghi SHA lúc sinh; commit tiếp là nó lệch. Lệch giữa hai lần sinh là
  * BÌNH THƯỜNG, nên `check` thường không chặn. Nhưng tạo tag với release notes trỏ
  * commit khác là phát hành một tài liệu nói về bản khác — lúc đó phải chặn.
+ *
+ * ĐÒI SHA == HEAD LÀ MỘT CỔNG KHÔNG BAO GIỜ MỞ ĐƯỢC, và tôi đã viết đúng cái đó ở
+ * bản đầu. Release notes không thể chứa SHA của chính commit tạo ra nó: sinh xong thì
+ * cây bẩn (ô "cây làm việc sạch" đỏ), commit vào thì SHA lệch một bước (ô này đỏ).
+ * Hai ô máy-kiểm loại trừ nhau ⇒ `--strict` vĩnh viễn đỏ vì lý do không ai sửa được.
+ * Một cổng như vậy dạy người đọc bỏ qua nó, tức tệ hơn không có cổng.
+ *
+ * Điều CẦN chặn thật ra hẹp hơn: release notes phải mô tả đúng thứ sắp gắn tag. Nên
+ * kiểm đúng điều đó — SHA phải là tổ tiên của HEAD, và mọi commit từ đó tới HEAD chỉ
+ * được đụng vào CHÍNH FILE release notes. Có một commit chạm code hay tài liệu khác
+ * là notes đang nói về bản cũ, và lúc đó mới chặn.
  */
 if (STRICT) {
   const shaDay = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const rn = doc("docs/nop-bai/RELEASE-NOTES.md");
   const m = /\*\*Commit:\*\* `([0-9a-f]{7,40})`/.exec(rn);
+  const RN = "docs/nop-bai/RELEASE-NOTES.md";
+
+  /** Commit nào giữa `sha` và HEAD đụng vào thứ khác ngoài chính release notes. */
+  const lechNgoaiNotes = (sha: string): string[] => {
+    const dong = (raw: string) =>
+      raw
+        .split(NL)
+        .map((x) => x.replace(String.fromCharCode(13), ""))
+        .filter(Boolean);
+
+    const commit = dong(
+      execFileSync("git", ["log", "--format=%H", `${sha}..HEAD`], { encoding: "utf8" }),
+    );
+
+    // Hỏi từng commit một. Đọc `git log --name-only` gộp thì phải tách khối bằng
+    // dòng trống, và một thông điệp commit có dòng trống là parser sai ngay.
+    return commit
+      .filter((c) => {
+        const file = dong(
+          execFileSync("git", ["diff-tree", "--no-commit-id", "--name-only", "-r", c], {
+            encoding: "utf8",
+          }),
+        );
+        return file.some((f) => f !== RN);
+      })
+      .map((c) => c.slice(0, 7));
+  };
+
+  let laToTien = false;
+  let bunNgoai: string[] = [];
+  if (m) {
+    try {
+      execFileSync("git", ["merge-base", "--is-ancestor", m[1]!, "HEAD"], { stdio: "ignore" });
+      laToTien = true;
+      bunNgoai = lechNgoaiNotes(m[1]!);
+    } catch {
+      laToTien = false;
+    }
+  }
+
   muc.push({
-    ten: "Release notes trỏ đúng HEAD",
-    xong: Boolean(m && shaDay.startsWith(m[1]!)),
-    chiTiet: m ? `notes: ${m[1]!.slice(0, 7)} · HEAD: ${shaDay.slice(0, 7)}` : "không đọc được SHA",
+    ten: "Release notes mô tả đúng bản sắp gắn tag",
+    xong: laToTien && bunNgoai.length === 0,
+    chiTiet: !m
+      ? "không đọc được SHA"
+      : !laToTien
+        ? `${m[1]!.slice(0, 7)} không phải tổ tiên của HEAD — sinh lại: npm run release-notes`
+        : bunNgoai.length === 0
+          ? `${m[1]!.slice(0, 7)} → HEAD ${shaDay.slice(0, 7)}: chỉ chính notes thay đổi`
+          : `${bunNgoai.length} commit đụng thứ khác sau khi sinh notes: ${bunNgoai.join(", ")}`,
     ai: "máy",
   });
 
