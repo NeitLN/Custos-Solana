@@ -2,7 +2,17 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Facts, TokenAccountFact } from "@custos-solana/core";
 import { REASON } from "@custos-solana/core";
-import { dienGiaiBangMoHinh, soiDauRa, dungNeo, neoHanhDong, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
+import {
+  dienGiaiBangMoHinh,
+  soiDauRa,
+  dungNeo,
+  neoHanhDong,
+  huongTaiSanNguoiKy,
+  nguocChieu,
+  boiThoiHan,
+  SYSTEM_PROMPT,
+  type GoiMoHinh,
+} from "../src/index.ts";
 
 /**
  * Bộ test này giả định mô hình LÀ BÊN KHÔNG ĐÁNG TIN.
@@ -348,4 +358,44 @@ test("NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình", async ()
     });
   const r = await dienGiaiBangMoHinh(goi)(facts(), ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"], "vi", {});
   assert.notEqual(r.detectedPrimaryAction?.from, "BỊA", "giá trị bịa của mô hình không được lọt ra");
+});
+
+/*
+ * NEO CHIỀU TÀI SẢN.
+ *
+ * "Ví lạ sẽ chuyển token vào ví của bạn" không bịa số nào, không bịa địa chỉ nào —
+ * nó chỉ ĐẢO CHIỀU. Người dùng đọc câu đó trước nút Ký sẽ tưởng mình đang nhận tiền
+ * trong khi thật ra đang mất. Neo số và neo địa chỉ đều mù trước loại sai này.
+ */
+test("CHIỀU · nói người ký NHẬN trong khi tài sản đang RA thì bị vứt", () => {
+  assert.equal(nguocChieu("Ví lạ sẽ chuyển token vào ví của bạn.", "ra"), true);
+  assert.equal(nguocChieu("Bạn sẽ nhận thêm 500 token.", "ra"), true);
+});
+
+test("CHIỀU · lời văn ĐÚNG chiều phải đi lọt", () => {
+  // Chặn quá tay ở đây là chặn chính câu mô tả đúng của sản phẩm.
+  assert.equal(nguocChieu("500 token sẽ rời khỏi ví của bạn.", "ra"), false);
+  assert.equal(nguocChieu("Tài khoản token của bạn sẽ đổi chủ sang một ví lạ.", "ra"), false);
+  assert.equal(nguocChieu("Bạn sẽ nhận thêm 500 token.", "vao"), false);
+});
+
+test("CHIỀU · không xác định được chiều thì KHÔNG chặn", () => {
+  // Fail-open ở đây là đúng: chặn khi không biết sẽ vứt cả lời văn hợp lệ, và
+  // người dùng mất phần giải thích mà chẳng an toàn hơn.
+  assert.equal(nguocChieu("Ví lạ sẽ chuyển token vào ví của bạn.", "khong"), false);
+});
+
+test("CHIỀU · câu nói CẢ HAI vế thì không bị coi là ngược", () => {
+  // "500 rời khỏi ví bạn và 10 vào ví bạn" là mô tả một lượt swap — đúng, không ngược.
+  assert.equal(
+    nguocChieu("500 USDC rời khỏi ví của bạn, và 2 SOL sẽ vào ví của bạn.", "ra"),
+    false,
+  );
+});
+
+test("CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví", () => {
+  // Mọi giao dịch đều trừ phí. Coi đó là "tài sản ra" thì mọi giao dịch đều thành
+  // chiều RA, và neo mất hết ý nghĩa.
+  const f = facts({ solDelta: { [TOI]: -5000n }, tokenAccounts: [] });
+  assert.equal(huongTaiSanNguoiKy(f), "khong");
 });

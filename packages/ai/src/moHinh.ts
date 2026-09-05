@@ -266,6 +266,67 @@ export function neoHanhDong(
   return hd;
 }
 
+/*
+ * CHIỀU TÀI SẢN — neo cuối cùng, và là neo khó nhất.
+ *
+ * Neo số và neo địa chỉ hỏi "giá trị này có căn cứ không". Chúng KHÔNG hỏi "quan hệ
+ * này có đúng không". Một mô hình viết
+ *
+ *     "Ví lạ sẽ chuyển token vào ví của bạn."
+ *
+ * không bịa số nào, không bịa địa chỉ nào — nó chỉ ĐẢO CHIỀU. Người dùng đọc câu đó
+ * trước nút Ký sẽ hiểu mình đang NHẬN tiền trong khi thật ra đang mất.
+ *
+ * Không thể phân tích cú pháp tiếng Việt ở đây, và cũng không cần. Facts biết CHIỀU:
+ * số dư của người ký tăng hay giảm. Chỉ cần bắt những cụm nói thẳng rằng NGƯỜI KÝ là
+ * bên nhận, rồi đối chiếu với chiều thật. Hẹp, nhưng đúng chỗ nguy hiểm nhất.
+ *
+ * Không chắc thì rơi về câu mẫu tất định — fail-closed, giống mọi neo khác.
+ */
+type Huong = "ra" | "vao" | "khong";
+
+export function huongTaiSanNguoiKy(facts: Facts): Huong {
+  let ra = false;
+  let vao = false;
+
+  for (const t of facts.tokenAccounts) {
+    if (t.ownerBefore !== facts.signer) continue;
+    if (t.amountAfter < t.amountBefore) ra = true;
+    if (t.amountAfter > t.amountBefore) vao = true;
+  }
+  // Đổi chủ tài khoản cũng là tài sản RỜI khỏi người ký, dù số dư không đổi.
+  for (const t of facts.tokenAccounts) {
+    if (t.ownerBefore === facts.signer && t.ownerAfter !== facts.signer) ra = true;
+  }
+
+  const sol = facts.solDelta[facts.signer];
+  if (sol !== undefined) {
+    // Phí mạng luôn làm SOL giảm một chút; đừng coi đó là tài sản rời ví.
+    if (sol < -10_000_000n) ra = true;
+    if (sol > 0n) vao = true;
+  }
+
+  if (ra && !vao) return "ra";
+  if (vao && !ra) return "vao";
+  return "khong";
+}
+
+/** Cụm nói thẳng NGƯỜI KÝ là bên NHẬN. */
+const NGUOI_KY_NHAN =
+  /vào ví (của )?bạn|bạn sẽ nhận|bạn nhận được|chuyển (cho|sang) (ví của )?bạn|gửi (cho|tới) (ví của )?bạn|cộng vào ví bạn/i;
+
+/** Cụm nói thẳng NGƯỜI KÝ là bên MẤT. */
+const NGUOI_KY_MAT =
+  /rời khỏi ví (của )?bạn|bạn sẽ mất|ví bạn sẽ giảm|trừ khỏi ví bạn|chuyển khỏi ví (của )?bạn/i;
+
+/** `true` khi lời văn nói ngược chiều so với facts. */
+export function nguocChieu(loiVan: string, huong: Huong): boolean {
+  if (huong === "khong") return false;
+  if (huong === "ra" && NGUOI_KY_NHAN.test(loiVan) && !NGUOI_KY_MAT.test(loiVan)) return true;
+  if (huong === "vao" && NGUOI_KY_MAT.test(loiVan) && !NGUOI_KY_NHAN.test(loiVan)) return true;
+  return false;
+}
+
 /**
  * Dựng một `Interpreter` chạy bằng mô hình ngôn ngữ.
  *
@@ -289,6 +350,9 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
     // danh sách gõ tay ở nơi khác, thứ sẽ lệch sau hai lần sửa.
     const ra = soiDauRa(tho, dungNeo(duLieuGui, nen.explanation));
     if (ra === null) return nen;
+
+    // Neo cuối: lời văn không được nói ngược chiều tài sản so với facts.
+    if (nguocChieu(ra.explanation, huongTaiSanNguoiKy(facts))) return nen;
 
     // Hành động chính: lõi xác định đọc thẳng từ chênh lệch số dư, nên nó ĐÚNG
     // hơn mô hình. Chỉ dùng của mô hình khi lõi không nhận ra được gì.
