@@ -1,9 +1,17 @@
 {
-  "doLuc": "2026-09-04T17:43:36.908Z",
-  "msCaiDat": 6563,
-  "msChay": 4287,
+  "doLuc": "2026-09-05T05:01:14.086Z",
+  "msCaiDat": 6400,
+  "msChay": 8124,
   "rpc": "https://api.devnet.solana.com",
-  "msMotLuotKiem": 1247,
+  "msKetQuaDau": 474,
+  "msMotLuotKiem": 966,
+  "msLuot": [
+    961,
+    964,
+    966,
+    970,
+    976
+  ],
   "kiem": [
     {
       "ten": "giao dịch bình thường không bị CHẶN",
@@ -33,7 +41,7 @@
   ],
   "dat": true,
   "dongMaTichHop": 29,
-  "msDenKetQuaDauTien": 10850,
+  "msDenKetQuaDauTien": 6874,
   "doiTac": null,
   "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos."
 }

@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+// Một định nghĩa duy nhất cho "phủ định có neo" và "lời dặn" — ba guard từng giữ
+// ba bản sao, và cả ba đều có lỗ theo cách riêng. Xem `ngonNgu.ts`.
+import { laLoiDan as laDoanMienTru, viPhamCum } from "./ngonNgu.ts";
 import { readFileSync } from "node:fs";
 
 /**
@@ -431,44 +434,11 @@ const CUM_CAM_DOAN: Array<[string, RegExp]> = [
   ["tuyên bố đối thủ không hiển thị", /họ không hiển thị|họ đều không|không ai hiển thị/],
 ];
 
-/**
- * `mọi ví` cần ngữ cảnh: câu trung tính ("mọi ví đều có lúc không hiểu") không phải
- * claim độc quyền. Chỉ cấm khi nó đi kèm một mệnh đề PHỦ ĐỊNH về ví khác.
- */
-/**
- * Cụm cấm CÓ PHỦ ĐỊNH đứng trước thì không phải claim — nó là lời đính chính.
- *
- * Đo được: bản đầu chặn chính câu sửa lỗi ở STEP 1 — "Chúng em KHÔNG tuyên bố là
- * giải pháp duy nhất." Guard mà chặn câu đính chính thì người ta sẽ tắt guard, và
- * lúc đó nó không bảo vệ được gì nữa.
- */
-// Phủ định phải NGAY TRƯỚC cụm cấm và không nhảy qua dấu câu. Bản trước cho phép
-// 40 ký tự bất kỳ, nên "khi KHÔNG hiểu, ví hiện tại không nói gì" được tha: chữ
-// "không" thuộc mệnh đề khác đã đủ làm guard tưởng đây là lời đính chính.
-const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.,:;]{0,25}$/;
-
-function viPhamCum(t: string, moc: RegExp): boolean {
-  const m = moc.exec(t);
-  if (!m) return false;
-  return !PHU_DINH_TRUOC.test(t.slice(0, m.index));
-}
-
 /** Tách câu sau khi đã gộp dòng — cùng đoạn nhưng khác câu thì không phải một claim. */
 const cauTrongDoan = (chu: string) =>
   chu.split(/(?<=[.!?][)"”’]?)\s+|(?<=\|)\s*/).filter((c) => c.trim() !== "");
 
 const MOI_VI_DOC_QUYEN = /mọi ví[^.]{0,80}(thì không có|đều không|không có|im lặng|không nói)/;
-
-/** Một đoạn được miễn khi nó KHÔNG khẳng định — dặn đừng nói, hoặc trích câu hỏi. */
-const laDoanMienTru = (chu: string) =>
-  /không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi|thêm)|bị cấm|không thêm/i.test(chu) ||
-  // `KHÔNG` viết hoa là quy ước dặn dò của repo. Bản trước nhận cả `không nói`
-  // thường, nên chính nó miễn trừ câu "ví hiện tại KHÔNG NÓI gì" — một claim, không
-  // phải lời dặn. Guard tự tha cho thứ nó sinh ra để bắt.
-  /KHÔNG (nói|viết|gọi|dùng|được)/.test(chu) ||
-  // `không nói "an toàn"` — dặn dò thật thì thường trích nguyên văn câu bị cấm.
-  /không (nói|gọi)\s*(là\s*)?["“']/.test(chu) ||
-  /["“][^"”]*\?["”]/.test(chu);
 
 test("không có claim độc quyền tuyệt đối — kiểm theo ĐOẠN, chịu được ngắt dòng", () => {
   const pham: string[] = [];

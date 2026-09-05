@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+// Phủ định phải NEO vào cụm bị cấm. Bản trước tự viết mệnh đề miễn trừ ở mỗi file
+// và cả hai đều tha mọi dòng chứa chữ "không" — xem `ngonNgu.ts`.
+import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -37,9 +40,6 @@ const CUM_TRACTION: Array<[string, RegExp]> = [
   ["nói đã phỏng vấn người mua", /phỏng vấn[^.]{0,20}(người mua|ví|dApp)/i],
 ];
 
-/** Miễn trừ: đang DẶN đừng nói, hoặc đang thừa nhận CHƯA có. */
-const laLoiDan = (d: string) =>
-  /KHÔNG|không được|đừng|chưa có|chưa ví|chưa bên|chưa ai|không tuyên bố|không phải|nếu chưa/i.test(d);
 
 test("không công bố người mua / pilot khi chưa hỏi ai", () => {
   if (soNguoiMua() > 0) return; // có dữ liệu thật rồi thì đây không còn là claim sai
@@ -49,7 +49,7 @@ test("không công bố người mua / pilot khi chưa hỏi ai", () => {
     for (const [i, d] of doc(f).split("\n").entries()) {
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_TRACTION) {
-        if (moc.test(d)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+        if (viPhamCum(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
       }
     }
   }

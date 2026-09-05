@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+// Phủ định phải NEO vào cụm bị cấm. Bản trước tự viết mệnh đề miễn trừ ở mỗi file
+// và cả hai đều tha mọi dòng chứa chữ "không" — xem `ngonNgu.ts`.
+import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -45,9 +48,6 @@ const CUM_GIA_TRACTION: Array<[string, RegExp]> = [
   ["gọi ví dụ tự dựng là bằng chứng bên ngoài", /bên thứ ba (đã )?(chọn|dùng|xác nhận)/i],
 ];
 
-/** Câu miễn trừ: đang DẶN đừng nói, hoặc đang thừa nhận CHƯA có. */
-const laLoiDan = (d: string) =>
-  /KHÔNG|không được|đừng|chưa có|chưa ví|chưa bên|không tuyên bố|không phải/i.test(d);
 
 test("không mô tả tích hợp tự dựng như là bên thứ ba đã dùng", () => {
   const coDoiTac =
@@ -60,7 +60,7 @@ test("không mô tả tích hợp tự dựng như là bên thứ ba đã dùng"
     for (const [i, d] of doc(f).split("\n").entries()) {
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_GIA_TRACTION) {
-        if (moc.test(d)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+        if (viPhamCum(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
       }
     }
   }
@@ -113,6 +113,17 @@ test("số tích hợp trong README khớp file đo, không gõ tay", () => {
   const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
   const lech: string[] = [];
   if (!rd.includes(`${giay} giây`)) lech.push(`README thiếu "${giay} giây" (từ msDenKetQuaDauTien)`);
+  /*
+   * Kiểm cả SỐ CŨ CÒN SÓT, không chỉ số đúng có mặt.
+   *
+   * Bản trước chỉ hỏi "số đúng có trong README không". Nó xanh trong khi README
+   * vẫn mang "10,9 giây" ở một dòng khác — số đúng có mặt, số cũ cũng có mặt, và
+   * người đọc gặp cái nào trước thì tin cái đó.
+   */
+  for (const m of rd.matchAll(/([\d,]+) giây từ `npm install`|Cài đặt → kết quả đầu tiên \| \*\*([\d,]+) giây/g)) {
+    const thay = m[1] ?? m[2];
+    if (thay !== giay) lech.push(`README còn số cũ "${thay} giây" — số đo hiện tại là ${giay}`);
+  }
   if (!rd.includes(`**${k.dongMaTichHop}**`)) {
     lech.push(`README thiếu số dòng mã **${k.dongMaTichHop}**`);
   }

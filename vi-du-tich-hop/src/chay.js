@@ -53,6 +53,11 @@ async function main() {
   console.log(`\n[1] chuyển 0,01 SOL — mức ${qThuong.ketQua?.level ?? "?"} · quyết định "${qThuong.cho}"`);
   ck("giao dịch bình thường không bị CHẶN", qThuong.cho !== "chan", `bị chặn: ${qThuong.loi ?? qThuong.ketQua?.level}`);
 
+  // Mốc "tới kết quả đầu tiên": dừng đồng hồ NGAY SAU kịch bản đầu, không tính
+  // 5 lượt benchmark bên dưới. Bản trước đo cả script và con số phồng từ 10,8
+  // lên 14,6 giây — phép đo tự làm hỏng chính thứ nó đo.
+  const msKetQuaDau = Date.now() - t0;
+
   // ── 2 · dApp khai "airdrop" nhưng rút sạch token và đổi chủ tài khoản ──────
   const txGia = dungGiaoDichGiaDanhAirdrop({
     nguoiKy,
@@ -64,17 +69,33 @@ async function main() {
     taiKhoanNguon: new PublicKey(HT.taiKhoanNanNhan),
     taiKhoanDich: new PublicKey(HT.taiKhoanKeTanCong),
   });
-  const t1 = Date.now();
-  const qGia = await kiemTruocKhiKy({
-    inspect,
-    connection: conn,
-    interpret: dienGiaiKhongAI,
-    tx: txGia,
-    viNguoiDung: nguoiKy,
-    dAppKhai: { type: "airdrop" },
-  });
-  const msGia = Date.now() - t1;
-  console.log(`\n[2] "nhận airdrop" — mức ${qGia.ketQua?.level ?? "?"} · quyết định "${qGia.cho}" · ${msGia} ms`);
+  /*
+   * ĐO NHIỀU LƯỢT, LẤY TRUNG VỊ — không lấy một mẫu.
+   *
+   * Bản trước đo đúng MỘT lần rồi đưa con số đó lên README. Độ trễ mạng dao động,
+   * nên hai lượt chạy liên tiếp cho 1247 ms và 1079 ms: con số công bố sai ở gần
+   * như mọi lần chạy lại, và bài kiểm đối chiếu README thì đỏ oan.
+   *
+   * Một mẫu không phải một phép đo. `do-chi-phi.ts` đã làm đúng cách này từ trước.
+   */
+  const LUOT = 5;
+  const tre = [];
+  let qGia;
+  for (let i = 0; i < LUOT; i++) {
+    const t1 = Date.now();
+    qGia = await kiemTruocKhiKy({
+      inspect,
+      connection: conn,
+      interpret: dienGiaiKhongAI,
+      tx: txGia,
+      viNguoiDung: nguoiKy,
+      dAppKhai: { type: "airdrop" },
+    });
+    tre.push(Date.now() - t1);
+  }
+  tre.sort((a, b) => a - b);
+  const msGia = tre[Math.floor(tre.length / 2)];
+  console.log(`\n[2] "nhận airdrop" — mức ${qGia.ketQua?.level ?? "?"} · quyết định "${qGia.cho}" · trung vị ${msGia} ms trên ${LUOT} lượt (${tre[0]}–${tre[tre.length - 1]})`);
   console.log(`    mã lý do: ${(qGia.ketQua?.reasonCodes ?? []).join(", ") || "(không có)"}`);
   console.log(`    đọc hiểu: ${qGia.ketQua?.coverage?.analyzed}/${qGia.ketQua?.coverage?.total} lệnh`);
   ck("giao dịch giả danh airdrop bị CHẶN", qGia.cho === "chan", `quyết định "${qGia.cho}"`);
@@ -102,7 +123,9 @@ async function main() {
     JSON.stringify({
       doLuc: new Date().toISOString(),
       rpc: HT.rpc,
+      msKetQuaDau,
       msMotLuotKiem: msGia,
+      msLuot: tre,
       kiem: ket,
     }),
   );

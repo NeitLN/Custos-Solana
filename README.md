@@ -35,7 +35,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 10,9 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 6,9 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -58,9 +58,9 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 04/09/2026 | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **10,9 giây** |
+| Cài đặt → kết quả đầu tiên | **6,9 giây** |
 | Dòng mã tích hợp | **29** |
-| Một lượt kiểm tra | **1 247 ms** |
+| Một lượt kiểm tra | **966 ms** — trung vị 5 lượt (961–976) |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop`.
