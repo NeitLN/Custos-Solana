@@ -116,8 +116,7 @@ function coMaChuaCommit() {
   const ra = chayGit(["status", "--porcelain"]);
   if (ra === null) return false;
   return ra
-    .split("
-")
+    .split(String.fromCharCode(10))
     .map((d) => d.slice(3).trim())
     .filter(Boolean)
     .some((f) => /^(packages|apps|scripts|vi-du-tich-hop)\//.test(f) && !f.endsWith(".md"));
