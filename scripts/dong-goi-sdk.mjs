@@ -50,6 +50,10 @@ const DAU_AN_BAO_MAT = {
     // Neo grounding: mô hình không được bịa địa chỉ ví hay số tiền.
     "dungNeo",
     "DIA_CHI_DAY_DU",
+    // Neo cho địa chỉ viết tắt và cho `detectedPrimaryAction` — thêm sau lần bump
+    // 0.1.3, nên artifact của bản đó phải mang cả hai.
+    "DIA_CHI_VIET_TAT",
+    "neoHanhDong",
   ],
 };
 
