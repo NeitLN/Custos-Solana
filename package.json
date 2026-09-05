@@ -24,7 +24,8 @@
     "thu-tich-hop": "node scripts/thu-tich-hop.mjs",
     "eval-ai": "node --experimental-strip-types scripts/eval-ai.ts",
     "nguoi-mua": "node --experimental-strip-types scripts/kiem-nguoi-mua.ts",
-    "soi-rieng-tu": "node --experimental-strip-types scripts/soi-tai-dinh-danh.ts"
+    "soi-rieng-tu": "node --experimental-strip-types scripts/soi-tai-dinh-danh.ts",
+    "thi-truong": "node --experimental-strip-types scripts/do-thi-truong.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
