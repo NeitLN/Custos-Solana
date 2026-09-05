@@ -99,7 +99,17 @@ function demTest(): { pass: number; fail: number } | null {
     const fail = /^(?:#|ℹ) fail (\d+)\s*$/m.exec(ra)?.[1];
     if (fail && Number(fail) > 0) {
       console.error(`✖ bộ test đang đỏ ${fail} ca — không ghi số liệu từ một lần chạy hỏng.`);
-      console.error("  Chạy `npm run check` để xem ca nào.");
+      /*
+       * IN TÊN CA ĐỎ, ĐỪNG BẢO NGƯỜI TA CHẠY LẠI.
+       *
+       * Câu "chạy `npm run check` để xem ca nào" vô dụng trên CI: người đọc log
+       * không có shell ở đó. Một lượt CI đỏ đã mất vì đúng chuyện này — stdout có
+       * sẵn tên ca, script chỉ việc không giấu nó đi.
+       */
+      const ten = [...ra.matchAll(/^not ok \d+ - (.+)$/gm)].map((x) => x[1]!.trim());
+      for (const t of ten.slice(0, 10)) console.error(`  ✖ ${t}`);
+      if (ten.length > 10) console.error(`  … và ${ten.length - 10} ca nữa`);
+      if (ten.length === 0) console.error("  Chạy `npm run check` để xem ca nào.");
       process.exit(1);
     }
     return null;
