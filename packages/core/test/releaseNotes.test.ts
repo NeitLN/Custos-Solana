@@ -15,7 +15,18 @@ const RN = "docs/nop-bai/RELEASE-NOTES.md";
  * số trong đó đã lạc hậu hai tuần. Vì vậy nó phải SINH ra, và phần giới hạn cũng
  * phải sinh ra: chờ ai đó nhớ liệt kê ô còn trống là cách chắc chắn để sót.
  */
-test("release notes khớp số liệu hiện tại", () => {
+/*
+ * Bài đối chiếu artifact phải NGHỈ trong lượt đo lại.
+ *
+ * `tao-so-lieu.ts` từ chối ghi khi bộ test đỏ. Nhưng deck và release notes đỏ CHÍNH
+ * VÌ chưa được dựng lại theo số mới, mà dựng lại thì cần số mới — tức cần lượt ghi
+ * vừa bị chặn. Đây là lần thứ TƯ cùng một bế tắc trong repo này; ba lần trước đã
+ * giải bằng `CUSTOS_DANG_DO`, guard mới lại quên.
+ */
+const DANG_DO = process.env["CUSTOS_DANG_DO"] === "1";
+const boQuaKhiDo = { skip: DANG_DO ? "đang đo lại — đối chiếu thuộc về `npm run check`" : false };
+
+test("release notes khớp số liệu hiện tại", boQuaKhiDo, () => {
   if (!existsSync(join(GOC, RN))) return; // chưa sinh thì không có gì để lệch
   const s = doc(RN);
   const S = JSON.parse(doc("apps/demo-wallet/public/so-lieu.json")) as {
