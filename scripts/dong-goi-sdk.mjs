@@ -54,6 +54,8 @@ const DAU_AN_BAO_MAT = {
     // 0.1.3, nên artifact của bản đó phải mang cả hai.
     "DIA_CHI_VIET_TAT",
     "neoHanhDong",
+    // Neo chiều tài sản — thêm sau 0.2.0, artifact phải mang theo.
+    "nguocChieu",
   ],
 };
 

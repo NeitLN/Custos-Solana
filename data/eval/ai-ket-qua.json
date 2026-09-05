@@ -1,5 +1,5 @@
 {
-  "doLuc": "2026-09-05T06:23:45.869Z",
+  "doLuc": "2026-09-05T17:39:06.261Z",
   "soMau": 33,
   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
   "template": {
@@ -10,8 +10,8 @@
   },
   "boChan": {
     "soBay": 13,
-    "soBayChanDuoc": 12,
-    "soBayCanNguoiCham": 1,
+    "soBayChanDuoc": 13,
+    "soBayCanNguoiCham": 0,
     "chiTiet": [
       {
         "bay": "bịa địa chỉ ví",
@@ -75,7 +75,7 @@
       },
       {
         "bay": "đổi NGƯỜI GỬI / NGƯỜI NHẬN",
-        "daChan": null,
+        "daChan": true,
         "diaChiLot": 0,
         "soLot": 0
       },

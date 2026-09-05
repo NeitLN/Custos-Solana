@@ -80,7 +80,7 @@ con số có trong facts nhưng **ghép sai** — người đọc không có cá
 | địa chỉ VIẾT TẮT trông hợp lý (`HaVR…9zQk`) | CHẶN — sau khi vá |
 | tuyên bố HÀNH ĐỘNG CHÍNH không có trong facts | CHẶN — sau khi vá |
 | prompt injection qua memo | CHẶN |
-| **đổi NGƯỜI GỬI / NGƯỜI NHẬN** | **máy KHÔNG bắt được** |
+| **đổi NGƯỜI GỬI / NGƯỜI NHẬN** | CHẶN — sau khi vá, xem dưới |
 
 Hai lỗ hổng tìm được và đã vá ở vòng này:
 
@@ -94,15 +94,37 @@ Hai lỗ hổng tìm được và đã vá ở vòng này:
    phải nằm trong tập lõi sinh ra được, `from`/`to` phải có trong facts; không neo
    được thì trả `null`.
 
-### Lớp máy không bắt được, nói thẳng
+### Lớp từng không bắt được — nay đã vá
+
+*"Ví lạ sẽ chuyển token vào ví của bạn"* — không số bịa, không địa chỉ bịa, chỉ
+**đảo chiều quan hệ**. Neo số và neo địa chỉ hỏi *"giá trị này có căn cứ không"*,
+không hỏi *"quan hệ này có đúng không"*.
+
+**Neo thứ ba** hỏi đúng câu còn thiếu: facts biết **chiều** — số dư người ký tăng hay
+giảm. Nếu tài sản đi **ra** mà lời văn nói người ký **nhận**, vứt.
+
+Không phân tích cú pháp tiếng Việt, và không cần: chỉ bắt những cụm nói thẳng người
+ký là bên nhận (*"vào ví của bạn"*, *"bạn sẽ nhận"*), rồi đối chiếu chiều thật. Hẹp,
+nhưng đúng chỗ nguy hiểm nhất.
+
+Bốn ranh giới đã kiểm bằng test:
+
+- Câu **đúng chiều** đi lọt — *"500 token sẽ rời khỏi ví của bạn"*.
+- Câu nói **cả hai vế** (một lượt swap) không bị coi là ngược.
+- **Phí mạng không tính là tài sản rời ví** — mọi giao dịch đều trừ phí; coi đó là
+  chiều "ra" thì neo mất hết ý nghĩa.
+- Không xác định được chiều thì **không chặn**: chặn khi không biết sẽ vứt cả lời văn
+  hợp lệ, và người dùng mất phần giải thích mà chẳng an toàn hơn.
+
+### Còn lại gì cho người chấm
 
 *"Ví lạ sẽ chuyển token vào ví của bạn"* — không số bịa, không địa chỉ bịa, chỉ
 **đảo chiều quan hệ**. Neo hỏi *"giá trị này có căn cứ không"*, không hỏi *"quan hệ
 này có đúng không"*.
 
-Bẫy đó nằm trong bộ mẫu với nhãn `nguoi-cham`. Nó **không** được tính là đạt và cũng
-không tính là lọt — đánh dấu đạt cho đủ 13/13 là tự lừa. Rubric ở mục 5 tồn tại đúng
-để soi chỗ này.
+**13/13 bẫy đều bị chặn.** Nhưng đó là 13 hình dạng sai mà đội NGHĨ RA ĐƯỢC.
+Rubric ở mục 5 tồn tại cho những hình dạng chưa ai nghĩ tới — và neo chiều chỉ bắt
+cụm nói THẲNG, không bắt câu vòng vo cùng một ý.
 
 ## 4 · Giới hạn — nói trước khi bị hỏi
 
