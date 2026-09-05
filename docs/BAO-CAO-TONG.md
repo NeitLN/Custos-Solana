@@ -1,6 +1,6 @@
 # Báo cáo tổng — đã làm gì, và còn thiếu gì
 
-**Viết ngày 06/09/2026** · 40 commit kể từ `e09569e` · dành cho người cần nắm nhanh
+**Viết ngày 06/09/2026** · 49 commit kể từ `e09569e` · dành cho người cần nắm nhanh
 trạng thái thật của repo.
 
 > Số trong trang này **sinh từ dữ liệu**, không gõ tay. Chạy `npm run so-lieu` rồi
@@ -15,11 +15,11 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 
 | | |
 |---|---|
-| Test tự động | **369** pass · 0 fail |
+| Test tự động | **377** pass · 0 fail |
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **33** |
 | Bẫy đối kháng AI bị chặn | **13/13** |
-| Tích hợp từ ngoài monorepo | **7,2 giây** tới kết quả đầu · **29 dòng** · **663 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **9,9 giây** tới kết quả đầu · **29 dòng** · **595 ms** một lượt |
 | Phỏng vấn người dùng thật | **20** — 13 đúng · 5 một phần · 2 sai |
 | Phỏng vấn **người mua** | **0** |
 | Bên thứ ba tích hợp | **0** |
@@ -176,7 +176,7 @@ bộ, CI xanh, không có khoá trong bundle, runtime chỉ Devnet.
 ## 7 · Lệnh cần nhớ
 
 ```bash
-npm run check                  # 369 test + typecheck
+npm run check                  # 377 test + typecheck
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag
 npm run thu-goi                # cài gói như người ngoài
