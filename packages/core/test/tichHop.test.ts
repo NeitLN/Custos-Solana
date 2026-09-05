@@ -13,6 +13,20 @@ const KET_QUA = "data/tich-hop/ket-qua.json";
 const NL = String.fromCharCode(10);
 
 /*
+ * Bài đối chiếu README ↔ dữ liệu phải NGHỈ trong lượt đo lại.
+ *
+ * `tao-so-lieu.ts` từ chối ghi khi bộ test đỏ — đúng, vì số sinh từ một lượt chạy
+ * hỏng là số hỏng. Nhưng bài này đỏ CHÍNH VÌ tài liệu chưa được đồng bộ, và thứ
+ * đồng bộ nó lại là lượt ghi vừa bị chặn. Bế tắc: đo không được vì tài liệu cũ,
+ * tài liệu không mới được vì chưa đo.
+ *
+ * Repo đã gặp đúng bế tắc này một lần và giải bằng `CUSTOS_DANG_DO`. Việc đối
+ * chiếu thuộc về `npm run check`, không thuộc về lượt đo.
+ */
+const DANG_DO = process.env["CUSTOS_DANG_DO"] === "1";
+const boQuaKhiDo = { skip: DANG_DO ? "đang đo lại — đối chiếu thuộc về `npm run check`" : false };
+
+/*
  * "CÀI ĐƯỢC TỪ NGOÀI" ≠ "CÓ NGƯỜI NGOÀI DÙNG".
  *
  * `vi-du-tich-hop/` là dApp do CHÍNH ĐỘI viết. Nó chứng minh một điều thật và đo
@@ -94,7 +108,7 @@ test("ví dụ tích hợp không mang khoá riêng", () => {
   }
 });
 
-test("số tích hợp trong README khớp file đo, không gõ tay", () => {
+test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo, () => {
   /*
    * README nhắc lại ba con số của lượt đo tích hợp. Gõ tay thì chúng trôi ngay lần
    * chạy `thu-tich-hop` kế tiếp, và một README nói 10,9 giây trong khi dữ liệu nói

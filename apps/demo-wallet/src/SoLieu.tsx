@@ -56,6 +56,7 @@ type SoLieu = {
   } | null;
   evalAi: { soMau: number; soBay: number; soBayChanDuoc: number; moHinhThat: string | null } | null;
   nguoiMua: number;
+  soLuatCoCapDoiChung: number;
   soLuat: number;
   soMau: number;
 };
@@ -370,7 +371,7 @@ export function SoLieu() {
               <PhepDo
                 so={String(d.test.pass)}
                 nhan="test tự động"
-                cachDo={`Chạy thật lúc sinh trang này, không đếm file. ${d.test.fail} test hỏng. Cả 14 luật đều có mẫu kích hoạt; luật 13–14 có thêm ca đối chứng gần giống để kiểm ranh giới kích hoạt.`}
+                cachDo={`Chạy thật lúc sinh trang này, không đếm file. ${d.test.fail} test hỏng. Cả ${d.soLuat} luật đều có mẫu kích hoạt; ${d.soLuatCoCapDoiChung} luật có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định.`}
               />
             )}
             <PhepDo

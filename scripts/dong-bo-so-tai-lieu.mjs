@@ -60,12 +60,21 @@ function thayDong(duong, viec) {
   const dong = readFileSync(duong, "utf8").split("\n");
   let doi = 0;
   for (const [moc, dung] of viec) {
-    const i = dong.findIndex((d) => moc.test(d));
-    if (i === -1) throw new Error(`${duong}: không còn dòng khớp ${moc} — sửa script, đừng bỏ qua`);
-    const moi = dung(dong[i]);
-    if (moi !== dong[i]) {
-      dong[i] = moi;
-      doi++;
+    /*
+     * SỬA MỌI DÒNG KHỚP, KHÔNG CHỈ DÒNG ĐẦU.
+     *
+     * Bản trước dùng `findIndex`: một mốc khớp hai dòng thì dòng thứ hai giữ số cũ,
+     * và không có gì báo. Tài liệu khi đó mang HAI con số cho cùng một phép đo —
+     * người đọc gặp cái nào trước thì tin cái đó.
+     */
+    const chiSo = dong.map((d, k) => (moc.test(d) ? k : -1)).filter((k) => k !== -1);
+    if (chiSo.length === 0) throw new Error(`${duong}: không còn dòng khớp ${moc} — sửa script, đừng bỏ qua`);
+    for (const i of chiSo) {
+      const moi = dung(dong[i]);
+      if (moi !== dong[i]) {
+        dong[i] = moi;
+        doi++;
+      }
     }
   }
   writeFileSync(duong, dong.join("\n"));
@@ -73,6 +82,28 @@ function thayDong(duong, viec) {
 }
 
 console.log(`nguồn: ${S.test.pass} test · ${S.soMau} mẫu · coverage ${COV}% trên ${DO}/${TONG} · chạm tài sản ${CT.hieu}/${CT.tong}`);
+
+// `vi-du-tich-hop/README.md` là surface thứ hai công bố số đo tích hợp. Bản trước
+// gõ tay và nó tụt lại 10,8 giây / 1 247 ms trong khi phép đo đã cho 6,9 / 966.
+const TH = S.tichHop;
+if (TH) {
+  thayDong("vi-du-tich-hop/README.md", [
+    [/^\| Cài đặt → kết quả đầu tiên \|/, (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${String(TH.giayDenKetQuaDau).replace(".", ",")} giây**`)],
+    [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
+    [/^\| Một lượt `inspect\(\)` \|/, (d) => d.replace(/\*\*[\d\s]+ ms\*\*/, `**${TH.msMotLuot} ms**`)],
+  ]);
+
+  // README gốc công bố CÙNG ba con số ở hai chỗ. Bản trước sửa tay và lệch lại sau
+  // mỗi lượt đo — hai lần liên tiếp. Số đo thì đổi mỗi lần chạy; chỗ duy nhất được
+  // phép gõ tay là không chỗ nào.
+  const giay = String(TH.giayDenKetQuaDau).replace(".", ",");
+  thayDong("README.md", [
+    [/^\| Cài đặt → kết quả đầu tiên \|/, (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${giay} giây**`)],
+    [/giây từ `npm install`/, (d) => d.replace(/[\d,]+ giây từ/, `${giay} giây từ`)],
+    [/^\| Một lượt kiểm tra \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — trung vị 5 lượt `)],
+    [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
+  ]);
+}
 
 thayDong("README.md", [
   [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# typecheck \+ \d+ test/, `# typecheck + ${S.test.pass} test`)],

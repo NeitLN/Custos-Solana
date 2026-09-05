@@ -264,7 +264,7 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("Chúng em chưa chốt giá của mình, và chưa có cam kết nào từ ví/dApp. Đây là số tham chiếu, không phải validation.", {
     x: M, y: 5.85, w: W, h: 0.45, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
   });
-  s.addNotes("2:50–3:10 — Con số 6,5 là TRUNG VỊ đo trên 20 giao dịch công khai ĐÃ LƯU OFFLINE — không phải runtime. [!] KHÔNG nói “mainnet” trên sân khấu: demo chạy hoàn toàn trên Devnet, và nhãn devnet-only nằm ngay trong README.\n\n[!] KHÔNG nói một tỉ lệ biên lợi nhuận cụ thể. Chưa tra bảng trọng số credit, chưa đo token, chưa có giá bán — ba ô trống thì không ra được tỉ lệ. Nói “biên gộp 90%” là bịa.\n[!] $49 là giá của NGƯỜI KHÁC, không phải giá của Custos.");
+  s.addNotes("2:50–3:10 — Con số 6,5 là TRUNG VỊ đo trên 20 giao dịch công khai ĐÃ LƯU OFFLINE — không phải runtime. [!] KHÔNG nói “mainnet” trên sân khấu: demo chạy hoàn toàn trên Devnet, và nhãn devnet-only nằm ngay trong README.\n\n[!] KHÔNG nói một tỉ lệ biên lợi nhuận cụ thể. Bảng credit ĐÃ tra (docs/DON-VI-KINH-TE.md — Helius, mọi phương thức Custos dùng đều 1 credit). Nhưng vẫn chưa đo token thật và chưa có giá bán của Custos — hai ô trống thì không ra được tỉ lệ. Nói “biên gộp 90%” là bịa.\n[!] $49 là giá của NGƯỜI KHÁC, không phải giá của Custos.");
 }
 
 // ─────────────────────────────────────────── 8 · AI và giới hạn
