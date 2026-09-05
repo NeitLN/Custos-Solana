@@ -17,6 +17,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
 
 const RA = "apps/demo-wallet/public/so-lieu.json";
 
@@ -106,7 +107,19 @@ function demTest(): { pass: number; fail: number } | null {
        * không có shell ở đó. Một lượt CI đỏ đã mất vì đúng chuyện này — stdout có
        * sẵn tên ca, script chỉ việc không giấu nó đi.
        */
-      const ten = [...ra.matchAll(/^not ok \d+ - (.+)$/gm)].map((x) => x[1]!.trim());
+      /*
+       * HAI ĐỊNH DẠNG, KHÔNG PHẢI MỘT.
+       *
+       * Bản trước chỉ khớp `not ok N - ten` của TAP. Reporter mặc định của Node 24
+       * in `✖ ten (1.23ms)`, nên nhánh in tên KHÔNG BAO GIỜ chạy và người đọc vẫn
+       * nhận đúng câu vô dụng cũ. Chính lượt sửa này phát hiện ra.
+       */
+      const ten = [
+        ...ra.matchAll(/^not ok \d+ - (.+)$/gm),
+        ...ra.matchAll(/^✖ (.+?)(?: \([\d.]+ms\))?$/gm),
+      ]
+        .map((x) => x[1]!.trim())
+        .filter((t) => t !== "failing tests:");
       for (const t of ten.slice(0, 10)) console.error(`  ✖ ${t}`);
       if (ten.length > 10) console.error(`  … và ${ten.length - 10} ca nữa`);
       if (ten.length === 0) console.error("  Chạy `npm run check` để xem ca nào.");
@@ -183,17 +196,27 @@ function docPhongVan() {
  * `nguoiMua` trả 0 khi chưa hỏi ai, và trang phải hiện số 0 đó chứ không giấu mục.
  */
 function docTichHop() {
-  const t = docJson<{ msDenKetQuaDauTien: number; dongMaTichHop: number; msMotLuotKiem: number; doiTac: unknown; dat: boolean }>(
-    "data/tich-hop/ket-qua.json",
-  );
-  if (!t) return null;
+  const bc = docBangChungTichHop();
+  if (!bc) return null;
+
+  /*
+   * SỐ ĐO LẤY TỪ LƯỢT PASS; TRẠNG THÁI LẤY TỪ LƯỢT GẦN NHẤT.
+   *
+   * Benchmark của một lượt hỏng là số vô nghĩa, nên `giayDenKetQuaDau` phải đến từ
+   * `lanPassGanNhat`. Nhưng nói "đạt" vì từng pass thì là nói dối, nên `dat` phải
+   * đến từ `lanGanNhat`. `ngayPass` đi kèm để mọi nơi hiển thị số đều nói được nó
+   * đo lúc nào — số mạng công cộng thay đổi theo từng lượt.
+   */
+  const pass = bc.lanPassGanNhat;
+  if (!pass || typeof pass.msDenKetQuaDauTien !== "number") return null;
   return {
-    giayDenKetQuaDau: Math.round(t.msDenKetQuaDauTien / 100) / 10,
-    dongMa: t.dongMaTichHop,
-    msMotLuot: t.msMotLuotKiem,
+    giayDenKetQuaDau: Math.round(pass.msDenKetQuaDauTien / 100) / 10,
+    dongMa: pass.dongMaTichHop,
+    msMotLuot: pass.msMotLuotKiem,
+    ngayPass: thoiDiem(pass),
     // `null` nghĩa là CHƯA CÓ đối tác. Trang đọc trường này để không nói quá.
-    doiTac: t.doiTac ?? null,
-    dat: t.dat,
+    doiTac: bc.doiTac ?? null,
+    dat: bc.lanGanNhat?.dat === true,
   };
 }
 
@@ -266,8 +289,31 @@ const soLieu = {
   soMau,
 };
 
-writeFileSync(RA, JSON.stringify(soLieu, null, 2));
-console.log(`đã ghi -> ${RA}`);
+/*
+ * CHẠY LẠI MÀ DỮ LIỆU KHÔNG ĐỔI THÌ KHÔNG ĐƯỢC LÀM BẨN CÂY.
+ *
+ * `sinhLuc` là dấu thời gian TRÌNH BÀY, không phải dữ liệu. Ghi nó mỗi lượt khiến
+ * `npm run so-lieu` trên cây sạch luôn tạo diff, và cổng "cây làm việc sạch" đỏ vì
+ * chính lượt đo vừa chạy — người ta commit một thay đổi không mang thông tin gì,
+ * chỉ để cổng xanh trở lại. Làm vài lần là quen tay commit diff mình không đọc.
+ *
+ * Nên so sánh phần CÓ NGHĨA: giống hệt thì giữ nguyên file, kể cả `sinhLuc` cũ.
+ * `sinhLuc` lúc đó trả lời đúng câu nó nên trả lời — "số này đo lần cuối lúc nào",
+ * chứ không phải "script chạy lần cuối lúc nào".
+ */
+const boSinhLuc = (o: unknown) => {
+  const { sinhLuc: _bo, ...con } = o as Record<string, unknown>;
+  return JSON.stringify(con);
+};
+
+const cu = existsSync(RA) ? (JSON.parse(readFileSync(RA, "utf8")) as Record<string, unknown>) : null;
+const giongHet = cu !== null && boSinhLuc(cu) === boSinhLuc(soLieu);
+if (giongHet) {
+  console.log(`không đổi -> ${RA} (giữ sinhLuc ${String(cu["sinhLuc"])})`);
+} else {
+  writeFileSync(RA, JSON.stringify(soLieu, null, 2));
+  console.log(`đã ghi -> ${RA}`);
+}
 console.log(
   `  ${soLuat} luật · ${soMau} mẫu · ${test ? `${test.pass} test` : "test: chưa đọc được"}` +
     (cohort ? ` · coverage ${Math.round(cohort.coverageTrungBinh * 100)}% trên ${cohort.coMauDo} mẫu` : ""),
