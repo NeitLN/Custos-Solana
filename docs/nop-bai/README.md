@@ -95,6 +95,35 @@ thái nghỉ — cờ mock chỉ bật dải nhãn, tấm cảnh báo cần bấ
 dối về nội dung. Nay script bấm nút, chờ tấm cảnh báo, **và kiểm chữ "Nguy hiểm" có
 thật trên màn hình** trước khi chụp; không thấy thì dừng chứ không chụp bừa.
 
+## Release candidate — lệnh đã sẵn, CHƯA chạy
+
+Release notes **sinh từ dữ liệu**, kể cả phần giới hạn:
+
+```bash
+npm run so-lieu && npm run release-notes
+```
+
+Tám giới hạn hiện tại đều tự vào danh sách vì ô đó còn trống trong dữ liệu — không
+ai phải nhớ liệt kê. Ô nào được lấp thì nó tự biến mất khỏi release notes.
+
+Khi anh/chị duyệt, ba lệnh này tạo tag và release:
+
+```bash
+npm run so-lieu && npm run check && npm run thu-goi   # phải xanh hết trước
+git tag -a unihackfest-2026-rc1 -m "Custos — release candidate cho vòng 19/09/2026"
+git push origin unihackfest-2026-rc1
+gh release create unihackfest-2026-rc1   --title "Custos — UniHackfest 2026 RC1"   --notes-file docs/nop-bai/RELEASE-NOTES.md
+```
+
+**Tôi không tự chạy chúng.** Tag là mốc đối ngoại: một khi có người dẫn link tới nó
+thì sửa lại là phá liên kết của họ. Ba điều nên xong trước khi tạo tag:
+
+| Trước khi tag | Vì sao |
+|---|---|
+| Video demo dự phòng | Thể lệ ghi BẮT BUỘC. Tag mà thiếu nó thì phải tag lại |
+| `@custos-solana/ai@0.1.3` lên npm | Release notes trỏ người đọc tới bản đó; nếu chưa publish thì lời khuyên đó không thực hiện được |
+| Bốn câu hỏi BTC | Tên vòng và ngày chung kết nằm trong hồ sơ nộp |
+
 ## Việc còn lại
 
 > Mục này từng ghi *"chỉ còn video"*. Không còn đúng: bên dưới là các cổng thật
