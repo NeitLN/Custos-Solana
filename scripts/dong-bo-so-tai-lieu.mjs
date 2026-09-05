@@ -152,4 +152,29 @@ thayDong("packages/core/README.md", [
   [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
 ]);
 
+/*
+ * BÁO CÁO TỔNG CŨNG PHẢI CHẢY TỪ CÙNG MỘT NGUỒN.
+ *
+ * Nó là trang đầu tiên người mới đọc. Một tài liệu tóm tắt mang số cũ còn sai hơn
+ * tài liệu chi tiết mang số cũ, vì nó là thứ được tin mà không kiểm.
+ */
+thayDong("docs/BAO-CAO-TONG.md", [
+  [/^\| Test tự động \|/, (d) => d.replace(/\*\*\d+\*\* pass/, `**${S.test.pass}** pass`)],
+  [/^\| Luật tất định \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soLuat}**`)],
+  [/^\| Mẫu kiểm thử gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+  [
+    /^\| Bẫy đối kháng AI bị chặn \|/,
+    (d) => d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**`),
+  ],
+  [
+    /^\| Tích hợp từ ngoài monorepo \|/,
+    (d) =>
+      d
+        .replace(/\*\*[\d,.]+ giây\*\*/, `**${String(S.tichHop.giayDenKetQuaDau).replace(".", ",")} giây**`)
+        .replace(/\*\*\d+ dòng\*\*/, `**${S.tichHop.dongMa} dòng**`)
+        .replace(/\*\*\d+ ms\*\*/, `**${S.tichHop.msMotLuot} ms**`),
+  ],
+  [/^npm run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
+]);
+
 console.log("xong. Chạy `npm run check` để guard xác nhận.");
