@@ -225,8 +225,13 @@ function docTichHop() {
     trungVi(bc.lichSuPass.map((x) => x.msMotLuotKiem).filter((x): x is number => typeof x === "number")) ??
     pass.msMotLuotKiem;
 
+  // Dải đo đi kèm trung vị. Một con số trần giấu mất chuyện lượt xấu nhất gần gấp
+  // rưỡi lượt tốt nhất — và người nghe pitch có quyền biết điều đó.
+  const g = (x: number) => Math.round(x / 100) / 10;
   return {
-    giayDenKetQuaDau: Math.round(msTv / 100) / 10,
+    giayDenKetQuaDau: g(msTv),
+    giayThapNhat: ms.length > 1 ? g(Math.min(...ms)) : null,
+    giayCaoNhat: ms.length > 1 ? g(Math.max(...ms)) : null,
     dongMa: pass.dongMaTichHop,
     msMotLuot: luotTv,
     soLuotDo: Math.max(ms.length, 1),

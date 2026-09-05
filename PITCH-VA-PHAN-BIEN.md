@@ -111,7 +111,7 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 | **0:00–0:30** | **Mở bằng thất bại đo được, không bằng định nghĩa vấn đề.** *"Trong 20 người chúng em thử, hai người nhìn thấy cảnh báo đỏ rồi vẫn ký — vì phí chỉ 0,000005 SOL và có chữ 'demo'. Vấn đề không phải thiếu cảnh báo. Vấn đề là người dùng không hiểu hậu quả trước khi ký."* | Câu này mạnh hơn mọi định nghĩa. Nó là dữ liệu, và nó là thất bại của chính đội — giám khảo nghe được ngay là đội đo thật |
 | **0:30–0:45** | **Nhượng bộ, rút gọn.** *"Ví lớn đã có mô phỏng. Phantom cảnh báo `setAuthority`. Chúng em không cạnh tranh ở đó. Chỗ khác là khi mô phỏng KHÔNG hiểu hết — Coinspect từng công bố một ca bỏ lọt instruction đổi quyền sở hữu."* | **Rút từ 30 giây xuống 15.** Nói sớm, nói thẳng, rồi đi tiếp. Đừng ở lại trong thế phòng thủ |
 | **0:45–2:00** | **Demo.** Cùng một giao dịch, hai kết cục | Chỉ tay vào dòng coverage: *"nó nói luôn phần nó chưa hiểu"* |
-| **2:00–2:30** | **Tích hợp — số đo, không phải lời hứa.** Một SDK call trên màn hình. *"Đội em dựng một dApp mẫu ngoài repo, cài SDK từ tarball vừa đóng gói: 9,9 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã. Lỗi RPC thì CHẶN, không bao giờ thành ký được."* **Không nói "cài từ npm"** — registry đang phục vụ `0.1.2`, bản chưa có neo grounding. | **Ô mới.** Đây là bằng chứng kỹ thuật gần "ai dùng được" nhất mà đội có. Nói rõ **đội tự dựng** — xem ô 2:30 |
+| **2:00–2:30** | **Tích hợp — số đo, không phải lời hứa.** Một SDK call trên màn hình. *"Đội em dựng một dApp mẫu ngoài repo, cài SDK từ tarball vừa đóng gói: 6,8 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã. Lỗi RPC thì CHẶN, không bao giờ thành ký được."* **Không nói "cài từ npm"** — registry đang phục vụ `0.1.2`, bản chưa có neo grounding. | **Ô mới.** Đây là bằng chứng kỹ thuật gần "ai dùng được" nhất mà đội có. Nói rõ **đội tự dựng** — xem ô 2:30 |
 | **2:30–2:55** | **Ai mua, và điều đội CHƯA chứng minh.** *"Người mua là ví và dApp, không phải người dùng cuối. Chúng em chưa phỏng vấn người mua nào, và chưa bên thứ ba nào tích hợp. Bộ câu hỏi đã soạn, chưa chạy. Chúng em không gọi dApp mẫu của mình là khách hàng."* | **Ô khó nhất, và là ô ăn điểm nếu nói đúng.** Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn. **Không** vòng vo, **không** đổi chủ đề sang số người dùng cuối |
 | **2:55–3:15** | **Giới hạn của AI.** Verdict do engine luật quyết. AI không được xác nhận an toàn | Giữ **nguyên văn** câu đó — nó là câu ghi điểm |
 | **3:15–3:45** | **Vì sao tin được con số của đội.** *"Bộ kiểm của chúng em bắt được lỗi của chính chúng em: một bản SDK đã lên npm thiếu bản vá bảo mật, một bộ đếm tố oan chính đường không thể sai, và tuổi người tham gia vượt quá phạm vi họ đồng ý. Cả ba đều ghi trong repo, kèm cách phát hiện."* | **Ô mới, và là khác biệt thật.** Đội nào cũng nói "chúng em cẩn thận". Rất ít đội chỉ ra được lỗi mình tự bắt |
@@ -308,20 +308,20 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
-### 14. "377 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "378 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 377 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 378 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (377)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (378)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 377 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 378 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*
