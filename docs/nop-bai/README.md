@@ -65,9 +65,22 @@ Nếu BTC mở trên máy khác mà chữ vỡ dấu thì xuất PDF nộp kèm.
 
 ---
 
-## Việc còn lại: chỉ còn video
+## Việc còn lại
 
-Form đã nộp 24/08. Sản phẩm và repo đã xong. Slide đã xong.
+> Mục này từng ghi *"chỉ còn video"*. Không còn đúng: bên dưới là các cổng thật
+> còn mở, cập nhật 05/09.
+
+| Việc | Ai làm được | Trạng thái |
+|---|---|---|
+| Video demo dự phòng | người | **chưa có** — thể lệ BTC ghi là BẮT BUỘC |
+| Phỏng vấn người mua (ví, dApp) | người | **0** — bộ câu hỏi ở `docs/PHONG-VAN-NGUOI-MUA.md` |
+| Usability vòng 2 trên giao diện hiện tại | người | **chưa chạy** — giao thức đã khoá |
+| Bên thứ ba tích hợp SDK | người | **chưa có** |
+| Phát hành `@custos-solana/ai@0.1.3` | người (cần đăng nhập npm) | **chưa** — `0.1.2` trên registry thiếu vá bảo mật |
+| Xác nhận lịch thi với BTC | người | **4 câu còn trống** — `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md` |
+| Release candidate có tag | người duyệt | **chưa tạo** |
+
+Form đã nộp 24/08. Slide đã có.
 
 **Video hoãn tới khi chốt sản phẩm** — hợp lý, vì quay xong mà màn hình còn đổi thì
 phải quay lại. Nhưng cần chốt trước **một quyết định duy nhất còn mở**, vì nó đổi đúng

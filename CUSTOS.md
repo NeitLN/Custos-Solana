@@ -604,6 +604,18 @@ nó chưa hiểu.**
 
 ## 13 — Tự chấm theo rubric Track Best Product & Business
 
+> ⚠️ **ẢNH CHỤP NGÀY 23/08 — ba lý do trong bảng nay đã SAI ở hiện tại.**
+>
+> Bảng dưới đây ghi *"0 người dùng thật đã được hỏi"*, *"chưa có slide"* và
+> *"chưa ai ngoài đội tích hợp SDK"*. Tính tới hôm nay: đội đã hỏi **20 người**
+> (29–30/08), deck có ở `docs/nop-bai/CUSTOS-PITCH.pptx`, và có một ví dụ tích hợp
+> chạy được ở `vi-du-tich-hop/` — **do chính đội dựng**, nên câu về bên thứ ba
+> vẫn đúng.
+>
+> **Điểm 6,95 KHÔNG được chấm lại ở đây.** Chấm lại cần cùng rubric và cùng người
+> chấm; tự nâng điểm cho khớp tin mới là đúng thứ mục này sinh ra để chống. Số
+> liệu hiện hành nằm ở `/so-lieu.html` và `README.md`.
+
 > **Sửa lại 23/08.** Bảng cũ tự chấm **8,8/10** ở giai đoạn còn là ý tưởng. Chấm lại
 > theo trạng thái đo được thì ra **6,95** (bản chấm chi tiết nằm trong lịch sử git,
 > `docs/CHAM-DIEM-GIA-DINH.md`, và bản mới hơn ở `docs/MENTOR-REVIEW-25-08.md`). Giữ con số

@@ -202,6 +202,25 @@ function docEvalAi() {
   };
 }
 
+/**
+ * Số luật có CẶP kích-hoạt + đối-chứng.
+ *
+ * Trang số liệu từng nói cứng "luật 13–14 có thêm ca đối chứng" — ít hơn thực tế
+ * và sẽ lệch tiếp mỗi lần thêm mẫu. Đếm từ `kyVong`, cùng cách `capLuat.test.ts`
+ * đếm, để hai nơi không thể nói khác nhau.
+ */
+function demCapDoiChung(): number {
+  const t = docJson<{ mau: Array<{ luat: number | null; kyVong: { coMa?: string[]; khongCoMa?: string[] } }> }>(
+    "data/seed/index.json",
+  );
+  if (!t) return 0;
+  const co = (l: number, k: "coMa" | "khongCoMa") =>
+    t.mau.some((m) => m.luat === l && (m.kyVong[k]?.length ?? 0) > 0);
+  let n = 0;
+  for (let l = 1; l <= 14; l++) if (co(l, "coMa") && co(l, "khongCoMa")) n++;
+  return n;
+}
+
 /** Số cuộc phỏng vấn NGƯỜI MUA. Vắng file hoặc file ví dụ đều là 0 — và 0 phải hiện ra. */
 function docNguoiMua(): number {
   const t = docJson<{ laViDu?: boolean; ban?: unknown[] }>("data/seed/nguoi-mua.json");
@@ -215,6 +234,7 @@ const soLieu = {
   tichHop: docTichHop(),
   evalAi: docEvalAi(),
   nguoiMua: docNguoiMua(),
+  soLuatCoCapDoiChung: demCapDoiChung(),
   cohort: cohort && {
     ngayDo: cohort.doLuc,
     mauDoDuoc: cohort.coMauDo,
