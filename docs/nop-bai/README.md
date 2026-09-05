@@ -65,6 +65,36 @@ Nếu BTC mở trên máy khác mà chữ vỡ dấu thì xuất PDF nộp kèm.
 
 ---
 
+## Checklist — chạy nó, đừng đọc bảng gõ tay
+
+```bash
+npm run nop-bai
+```
+
+Bài đó soi repo rồi tự trả lời: bộ test, cây làm việc, ví dụ tích hợp, deck, ảnh dự
+phòng, tag, metadata repo. Nó **không tự tick** ô nào cần con người, và nó liệt kê
+riêng các ô còn trống về **bằng chứng** — phỏng vấn người mua, bên thứ ba tích hợp,
+usability vòng 2, eval mô hình thật.
+
+Một checklist gõ tay là danh sách của ngày viết nó. Sau ba lần sửa, ô người ta tin
+nhất lại là ô sai nhất.
+
+## Ảnh dự phòng
+
+```bash
+npm run vi & npm run tan-cong &   # hai server
+npm run chup-anh
+```
+
+Tám ảnh (máy tính + điện thoại) trong `docs/nop-bai/anh/`, tên kèm commit SHA đã
+chụp. **Ảnh không thay được video** — nó là lớp dự phòng thứ hai, cho tình huống máy
+chiếu không phát được video.
+
+Bản đầu của script chụp nhầm: nó mở `?mock=danger` rồi chụp ngay, và ra ví ở trạng
+thái nghỉ — cờ mock chỉ bật dải nhãn, tấm cảnh báo cần bấm nút. Tên file khi đó nói
+dối về nội dung. Nay script bấm nút, chờ tấm cảnh báo, **và kiểm chữ "Nguy hiểm" có
+thật trên màn hình** trước khi chụp; không thấy thì dừng chứ không chụp bừa.
+
 ## Việc còn lại
 
 > Mục này từng ghi *"chỉ còn video"*. Không còn đúng: bên dưới là các cổng thật
