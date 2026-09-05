@@ -56,6 +56,16 @@ export type HoSoPhongVan = {
   /** true nghĩa là DỮ LIỆU MINH HOẠ, không phải người thật. Xem `laViDu()`. */
   laViDu?: boolean;
   xuatLuc: string;
+  /** Vòng phỏng vấn. Vắng nghĩa là vòng 1 — mẻ đầu chưa có trường này. */
+  vong?: number;
+  /**
+   * Commit của giao diện ĐÃ CHIẾU cho người tham gia.
+   *
+   * Vòng 1 không ghi, nên phải truy ngược bằng `git log` mới biết lúc đó tấm cảnh
+   * báo là bản nền tối — và con số 13/20 vì thế đo trên một giao diện không còn
+   * tồn tại. Ghi ở đây để không phải truy ngược lần nữa.
+   */
+  phienBanUi?: string;
   /** Vắng khi bản ghi được nhập trực tiếp trong trang, chưa qua biên bản markdown. */
   nguonGoc?: NguonGoc;
   ban: Ban[];

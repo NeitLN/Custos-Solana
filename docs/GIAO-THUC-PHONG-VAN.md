@@ -1,5 +1,9 @@
 # Giao thức phỏng vấn người dùng — bản đi hỏi người thật
 
+> **Vòng 2 có giao thức riêng:** `docs/GIAO-THUC-PHONG-VAN-VONG-2.md`.
+> Khung chấm ở mục 4 dưới đây dùng chung cho cả hai vòng — đừng sửa nó,
+> vì đổi thước đo giữa hai vòng thì so trước/sau là so hai thứ khác nhau.
+
 **Công cụ:** https://neitln.github.io/Custos-Solana/phong-van.html
 **Mẫu cần:** 12 người · **6 chưa từng dùng crypto** · **6 đã dùng dưới 12 tháng**
 **Hạn:** 31/08/2026 · **Ai làm:** cả 4 người, mỗi người 3 cuộc
