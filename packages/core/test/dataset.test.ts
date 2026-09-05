@@ -127,7 +127,9 @@ test("seed dataset phủ đúng những luật README tuyên bố (1-14)", () =>
   console.log(`
     luật đã phủ  : ${[...phu].filter((x) => x !== null).sort((a, b) => a! - b!).join(", ")}`);
   console.log(`    còn thiếu    : ${thieu.length ? thieu.join(", ") : "(không)"}`);
-    console.log(`    cặp dương/âm: R13-pos·R13-neg · R14-pos·R14-neg`);
+  // Bản trước in cứng "R13/R14" — nói ÍT hơn thực tế: chín luật có ca đối chứng.
+  // Đếm thật ở `capLuat.test.ts`; ở đây chỉ trỏ sang, đừng nuôi hai bản đếm.
+  console.log(`    cặp kích-hoạt/đối-chứng: đếm trong capLuat.test.ts`);
 
   assert.deepEqual(
     thieu,

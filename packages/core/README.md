@@ -312,7 +312,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 331 test, chạy offline
+npx npm@11.6.2 run check     # 335 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
@@ -323,7 +323,7 @@ npm run tan-cong             # trang lừa đảo → localhost:5189
 Bấm **Nhận 1.000 SOLB** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
 
 Bộ kiểm thử gồm **33 mẫu gắn nhãn**: 23 ca tự dựng phủ **cả 14 luật** (mỗi luật có ca
-kích hoạt, và luật 13–14 có thêm ca ĐỐI CHỨNG khác đúng một điều), cùng 10 giao dịch
+kích hoạt, và 9 luật có thêm ca ĐỐI CHỨNG khác đúng một điều), cùng 10 giao dịch
 công khai lưu offline làm tập âm (kỳ vọng *không phải* Đỏ) — `data/seed/`.
 
 > Câu "phủ cả 14 luật" ở trên **có test canh giữ**: `dataset.test.ts` sẽ đỏ ngay khi
