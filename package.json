@@ -27,6 +27,7 @@
     "soi-rieng-tu": "node --experimental-strip-types scripts/soi-tai-dinh-danh.ts",
     "thi-truong": "node --experimental-strip-types scripts/do-thi-truong.ts",
     "nop-bai": "node --experimental-strip-types scripts/kiem-nop-bai.ts",
+    "release-notes": "node --experimental-strip-types scripts/tao-release-notes.ts",
     "chup-anh": "python scripts/chup-anh-nop-bai.py"
   },
   "devDependencies": {
