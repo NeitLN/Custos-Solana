@@ -5,6 +5,7 @@ import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { commitCoThat } from "./gitKho.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -107,12 +108,11 @@ test("release notes ghi một SHA có thật trong repo", () => {
   if (!existsSync(join(GOC, RN))) return;
   const m = /\*\*Commit:\*\* `([0-9a-f]{7,40})`/.exec(doc(RN));
   assert.ok(m, "release notes phải ghi commit");
-  let coThat = true;
-  try {
-    execFileSync("git", ["cat-file", "-e", `${m[1]}^{commit}`], { cwd: GOC, stdio: "ignore" });
-  } catch {
-    coThat = false;
-  }
+
+  // `null` = kho nông cạn (CI `fetch-depth: 1`) — không kiểm được, và đỏ ở đây là
+  // đỏ oan: commit cha đơn giản là chưa được tải về.
+  const coThat = commitCoThat(m[1]!, GOC);
+  if (coThat === null) return;
   assert.ok(coThat, `SHA ${m[1]} không phải commit có thật — release notes đang trỏ vào hư không`);
 });
 

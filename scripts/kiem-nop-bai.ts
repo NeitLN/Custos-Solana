@@ -195,9 +195,20 @@ if (STRICT) {
       .map((c) => c.slice(0, 7));
   };
 
+  // Kho nông cạn (`git clone --depth 1`) không trả lời được câu "có phải tổ tiên
+  // không". Cổng tạo tag thì fail-closed: nói thẳng KHÔNG KIỂM ĐƯỢC, không đoán.
+  let nongCan = false;
+  try {
+    nongCan =
+      execFileSync("git", ["rev-parse", "--is-shallow-repository"], { encoding: "utf8" }).trim() ===
+      "true";
+  } catch {
+    nongCan = true;
+  }
+
   let laToTien = false;
   let bunNgoai: string[] = [];
-  if (m) {
+  if (m && !nongCan) {
     try {
       execFileSync("git", ["merge-base", "--is-ancestor", m[1]!, "HEAD"], { stdio: "ignore" });
       laToTien = true;
@@ -212,6 +223,8 @@ if (STRICT) {
     xong: laToTien && bunNgoai.length === 0,
     chiTiet: !m
       ? "không đọc được SHA"
+      : nongCan
+        ? "kho nông cạn — KHÔNG KIỂM ĐƯỢC. Tạo tag từ bản clone đầy đủ"
       : !laToTien
         ? `${m[1]!.slice(0, 7)} không phải tổ tiên của HEAD — sinh lại: npm run release-notes`
         : bunNgoai.length === 0

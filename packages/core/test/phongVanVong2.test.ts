@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { commitCoThat } from "./gitKho.ts";
 import { readFileSync, existsSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -40,12 +40,9 @@ test("vòng 2 ghi lại PHIÊN BẢN GIAO DIỆN đã đo", () => {
   assert.ok(v2.phienBanUi, "thiếu `phienBanUi` — đúng thứ vòng 1 đã quên và phải truy ngược bằng git log");
 
   // Phải là một commit CÓ THẬT. Một chuỗi bịa cũng thoả điều kiện "có ghi".
-  let coThat = true;
-  try {
-    execFileSync("git", ["cat-file", "-e", `${v2.phienBanUi}^{commit}`], { cwd: GOC, stdio: "ignore" });
-  } catch {
-    coThat = false;
-  }
+  // Kho nông cạn thì bỏ qua — xem `gitKho.ts`.
+  const coThat = commitCoThat(v2.phienBanUi, GOC);
+  if (coThat === null) return;
   assert.ok(coThat, `\`phienBanUi\` = ${v2.phienBanUi} không phải commit có thật trong repo`);
 });
 
