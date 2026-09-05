@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-05T17:14:30.037Z",
+  "sinhLuc": "2026-09-05T17:46:13.686Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -16,16 +16,16 @@
     "hieuDungVanKy": 2
   },
   "tichHop": {
-    "giayDenKetQuaDau": 14.3,
+    "giayDenKetQuaDau": 7.2,
     "dongMa": 29,
-    "msMotLuot": 671,
+    "msMotLuot": 663,
     "doiTac": null,
     "dat": true
   },
   "evalAi": {
     "soMau": 33,
     "soBay": 13,
-    "soBayChanDuoc": 12,
+    "soBayChanDuoc": 13,
     "moHinhThat": "BLOCKED_BY_SECRET"
   },
   "nguoiMua": 0,
@@ -58,7 +58,7 @@
     }
   },
   "test": {
-    "pass": 362,
+    "pass": 367,
     "fail": 0
   },
   "soLuat": 14,
