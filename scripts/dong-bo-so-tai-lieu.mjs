@@ -31,6 +31,13 @@ const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
 
 // Số tích hợp và NGÀY đo nó — cả hai từ `so-lieu.json`, không gõ tay.
 const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
+// Dải đo và số lượt — để câu chữ nói đúng con số là trung vị của bao nhiêu lượt.
+const SO_LUOT = S.tichHop?.soLuotDo ?? 1;
+const DAI =
+  S.tichHop?.giayThapNhat != null && S.tichHop?.giayCaoNhat != null
+    ? `${String(S.tichHop.giayThapNhat).replace(".", ",")}–${String(S.tichHop.giayCaoNhat).replace(".", ",")}`
+    : null;
+
 const NGAY_PASS = (() => {
   const t = S.tichHop?.ngayPass;
   if (!t) return null;
@@ -177,6 +184,36 @@ if (NGAY_PASS) {
     [
       /^\| Đo trên Devnet, /,
       (d) => d.replace(/Đo trên Devnet, \d{2}\/\d{2}\/\d{4}/, `Đo trên Devnet, ${NGAY_PASS}`),
+    ],
+  ]);
+}
+
+/*
+ * SỐ HEADLINE PHẢI TỰ NÓI NÓ LÀ TRUNG VỊ CỦA BAO NHIÊU LƯỢT.
+ *
+ * "6,8 giây" đọc như một hằng số của sản phẩm. Ba lượt trên cùng một commit cho
+ * 6,8 · 9,4 · 6,8 — lượt xấu nhất gần gấp rưỡi lượt tốt nhất. Giấu dải đo đi là
+ * để người nghe tự suy ra một độ ổn định không có.
+ */
+if (GIAY && DAI) {
+  thayDong("README.md", [
+    [
+      /^\| Cài đặt → kết quả đầu tiên \|/,
+      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${SO_LUOT} lượt, dải ${DAI} |`,
+    ],
+    [
+      /^\| Một lượt kiểm tra \|/,
+      () => `| Một lượt kiểm tra | **${S.tichHop.msMotLuot} ms** — trung vị ${SO_LUOT} lượt đo |`,
+    ],
+  ]);
+  thayDong("vi-du-tich-hop/README.md", [
+    [
+      /^\| Cài đặt → kết quả đầu tiên \|/,
+      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${SO_LUOT} lượt, dải ${DAI} |`,
+    ],
+    [
+      /^\| Một lượt `inspect\(\)` \|/,
+      () => `| Một lượt \`inspect()\` | **${S.tichHop.msMotLuot} ms** — trung vị ${SO_LUOT} lượt đo |`,
     ],
   ]);
 }
