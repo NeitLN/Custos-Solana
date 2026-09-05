@@ -81,3 +81,25 @@ test("lược đồ người mua đếm ba mức tách nhau", () => {
   }
   assert.match(s, /KHÔNG ĐƯỢC GỘP/, "phải nói rõ vì sao ba mức tách nhau");
 });
+
+test("trang số liệu KHÔNG giấu mục chưa đo được khi số bằng 0", () => {
+  /*
+   * Bẫy tự nhiên của mọi dashboard: bọc mục trong `{x && (…)}`, rồi khi x = 0 thì
+   * mục biến mất. Kết quả là trang chỉ hiện thứ đội đã làm được — trông đẹp hơn
+   * thực tế, và không ai cố ý làm điều đó.
+   *
+   * Ô trống chính là thứ giám khảo đi tìm. Nó phải hiện ra, kể cả bằng số 0.
+   */
+  const s = doc("apps/demo-wallet/src/SoLieu.tsx");
+  const i = s.indexOf("Điều đội CHƯA đo được");
+  assert.ok(i > 0, "trang số liệu phải có mục nói ra điều chưa đo được");
+
+  // Mục này phải nằm trong một <section> KHÔNG bị bọc điều kiện.
+  const truoc = s.slice(Math.max(0, i - 400), i);
+  assert.doesNotMatch(
+    truoc,
+    /\{d\.(nguoiMua|tichHop)[^}]*&&\s*\($/m,
+    "mục chưa-đo-được không được bọc trong điều kiện — 0 phải hiện ra, không được biến mất",
+  );
+  assert.match(s.slice(i, i + 1600), /d\.nguoiMua/, "phải hiện đúng số phỏng vấn người mua");
+});

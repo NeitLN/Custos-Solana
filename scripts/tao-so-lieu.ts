@@ -163,9 +163,58 @@ function docPhongVan() {
   };
 }
 
+/*
+ * BA LOẠI BẰNG CHỨNG MỚI — và một loại cố ý để trống.
+ *
+ * Trang số liệu trước đây chỉ trưng thứ đội ĐÃ đo. Nhưng với một sản phẩm B2B, ô
+ * trống mới là thứ giám khảo tìm: "có ai ngoài đội dùng chưa?". Nói ra trước thì
+ * mất một chút; để họ moi ra thì mất nhiều hơn.
+ *
+ * `nguoiMua` trả 0 khi chưa hỏi ai, và trang phải hiện số 0 đó chứ không giấu mục.
+ */
+function docTichHop() {
+  const t = docJson<{ msDenKetQuaDauTien: number; dongMaTichHop: number; msMotLuotKiem: number; doiTac: unknown; dat: boolean }>(
+    "data/tich-hop/ket-qua.json",
+  );
+  if (!t) return null;
+  return {
+    giayDenKetQuaDau: Math.round(t.msDenKetQuaDauTien / 100) / 10,
+    dongMa: t.dongMaTichHop,
+    msMotLuot: t.msMotLuotKiem,
+    // `null` nghĩa là CHƯA CÓ đối tác. Trang đọc trường này để không nói quá.
+    doiTac: t.doiTac ?? null,
+    dat: t.dat,
+  };
+}
+
+function docEvalAi() {
+  const t = docJson<{
+    soMau: number;
+    boChan: { soBay: number; soBayChanDuoc: number };
+    moHinhThat: { trangThai?: string };
+  }>("data/eval/ai-ket-qua.json");
+  if (!t) return null;
+  return {
+    soMau: t.soMau,
+    soBay: t.boChan.soBay,
+    soBayChanDuoc: t.boChan.soBayChanDuoc,
+    moHinhThat: t.moHinhThat?.trangThai ?? null,
+  };
+}
+
+/** Số cuộc phỏng vấn NGƯỜI MUA. Vắng file hoặc file ví dụ đều là 0 — và 0 phải hiện ra. */
+function docNguoiMua(): number {
+  const t = docJson<{ laViDu?: boolean; ban?: unknown[] }>("data/seed/nguoi-mua.json");
+  if (!t || t.laViDu) return 0;
+  return t.ban?.length ?? 0;
+}
+
 const soLieu = {
   sinhLuc: new Date().toISOString(),
   phongVan: docPhongVan(),
+  tichHop: docTichHop(),
+  evalAi: docEvalAi(),
+  nguoiMua: docNguoiMua(),
   cohort: cohort && {
     ngayDo: cohort.doLuc,
     mauDoDuoc: cohort.coMauDo,
