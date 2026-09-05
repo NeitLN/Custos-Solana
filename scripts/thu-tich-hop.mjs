@@ -99,7 +99,9 @@ try {
 }
 
 bao.dongMaTichHop = demDongMa(join(GOC, "vi-du-tich-hop/src/tich-hop.js"));
-bao.msDenKetQuaDauTien = bao.msCaiDat + bao.msChay;
+// Cài đặt + tới kết quả kịch bản ĐẦU TIÊN. `msChay` là cả script, gồm cả 5 lượt
+// benchmark và kịch bản RPC-chết — cộng chúng vào đây là đo sai thứ đang gọi tên.
+bao.msDenKetQuaDauTien = bao.msCaiDat + bao.msKetQuaDau;
 // Nói rõ ngay trong dữ liệu, để không ai đọc file này rồi kết luận sai.
 bao.doiTac = null;
 bao.ghiChu =
