@@ -78,6 +78,11 @@ thayDong("README.md", [
   [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# typecheck \+ \d+ test/, `# typecheck + ${S.test.pass} test`)],
   [/^\| Test \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
   [/^\| Mẫu trong bộ dữ liệu \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+  // Bảng "bốn loại bằng chứng" nhắc lại hai con số. Không neo thì chúng trôi, và
+  // một README nói 330 test ở chỗ này, 412 ở chỗ kia là README không đáng đọc.
+  [/^\| \*\*\d+ test\*\* tự động \|/, (d) => d.replace(/\*\*\d+ test\*\*/, `**${S.test.pass} test**`)],
+  [/^\| \*\*\d+ mẫu\*\* đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+ mẫu\*\*/, `**${S.soMau} mẫu**`)],
+  [/^\*\*330 tests\*\*|^Measured, not estimated/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`).replace(/\*\*\d+ labelled samples\*\*/, `**${S.soMau} labelled samples**`)],
 ]);
 
 // CLAUDE.md đứng ngoài mọi vòng dọn dẹp trước vì không ai nghĩ nó là "tài liệu công
