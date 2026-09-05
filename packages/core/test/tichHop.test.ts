@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
 const KET_QUA = "data/tich-hop/ket-qua.json";
+const NL = String.fromCharCode(10);
 
 /*
  * "CÀI ĐƯỢC TỪ NGOÀI" ≠ "CÓ NGƯỜI NGOÀI DÙNG".
@@ -91,4 +92,33 @@ test("ví dụ tích hợp không mang khoá riêng", () => {
     const s = doc(f);
     assert.doesNotMatch(s, /secretKey|fromSecretKey|PRIVATE_KEY|\.devnet\//, `${f} chạm tới khoá riêng`);
   }
+});
+
+test("số tích hợp trong README khớp file đo, không gõ tay", () => {
+  /*
+   * README nhắc lại ba con số của lượt đo tích hợp. Gõ tay thì chúng trôi ngay lần
+   * chạy `thu-tich-hop` kế tiếp, và một README nói 10,9 giây trong khi dữ liệu nói
+   * 14 giây là README đang nói sai — theo hướng đẹp hơn thực tế.
+   *
+   * Không đồng bộ tự động vì ba số này đổi rất thưa; nhưng phải ĐỎ khi lệch.
+   */
+  if (!existsSync(join(GOC, KET_QUA))) return;
+  const k = JSON.parse(doc(KET_QUA)) as {
+    msDenKetQuaDauTien: number;
+    dongMaTichHop: number;
+    msMotLuotKiem: number;
+  };
+  const rd = doc("README.md");
+
+  const giay = (Math.round(k.msDenKetQuaDauTien / 100) / 10).toString().replace(".", ",");
+  const lech: string[] = [];
+  if (!rd.includes(`${giay} giây`)) lech.push(`README thiếu "${giay} giây" (từ msDenKetQuaDauTien)`);
+  if (!rd.includes(`**${k.dongMaTichHop}**`)) {
+    lech.push(`README thiếu số dòng mã **${k.dongMaTichHop}**`);
+  }
+  const ms = String(k.msMotLuotKiem).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  if (!rd.includes(ms) && !rd.includes(String(k.msMotLuotKiem))) {
+    lech.push(`README thiếu độ trễ ${ms} ms`);
+  }
+  assert.deepEqual(lech, [], `README lệch với data/tich-hop/ket-qua.json:${NL}${lech.join(NL)}`);
 });
