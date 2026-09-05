@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `b97838a223458477c3489ac280d52ae9154b5e01`
+**Commit:** `3897d486fd4dc47e197208b896bd2d67adb2b2b8`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -11,15 +11,15 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **362** pass · 0 fail |
+| Test tự động | **367** pass · 0 fail |
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử đã gắn nhãn | **33** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
 | Coverage trung bình | **82 %** trên 9/20 mẫu |
 | Lệnh chạm tài sản người ký đọc hiểu được | **13/20** |
 | Người dùng thật nêu được hậu quả | **13/20** |
-| Tích hợp từ ngoài monorepo | **14.3 giây** tới kết quả đầu · **29** dòng mã · **671 ms** một lượt |
-| Bẫy đối kháng AI bị chặn | **12/12** máy bắt được |
+| Tích hợp từ ngoài monorepo | **7.2 giây** tới kết quả đầu · **29** dòng mã · **663 ms** một lượt |
+| Bẫy đối kháng AI bị chặn | **13/13** máy bắt được |
 
 > **`0` là số CÁO BUỘC, không phải "0 false positive".** Cohort chưa
 > gán nhãn ground truth, nên đây không phải precision, recall hay tỉ lệ báo nhầm.
@@ -30,7 +30,6 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - **Chưa bên thứ ba nào tích hợp.** Ví dụ ở `vi-du-tich-hop/` do chính đội dựng — nó đo ma sát tích hợp, không đo nhu cầu thị trường.
 - **Số hiểu 13/20 đo trên giao diện lúc 29/08 và 30/08/2026**, đã thiết kế lại sau đó. Vòng 2 chưa chạy.
 - **Chưa đánh giá với mô hình ngôn ngữ thật** — cần khoá API, bản demo công khai cố ý không nhúng khoá.
-- **1 lớp bẫy AI máy không bắt được** (sai ngữ nghĩa, không sai giá trị) — cần người chấm, rubric ở `docs/AI-EVALUATION.md`.
 - **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được. Chưa có decoder cho chương trình DEX.
 - **9/14 luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong `packages/core/test/capLuat.test.ts`.
 - **Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet.
