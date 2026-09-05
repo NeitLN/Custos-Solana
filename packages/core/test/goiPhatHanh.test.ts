@@ -33,6 +33,7 @@ test("script đóng gói soi artifact trước khi pack hoặc publish", () => {
   assert.match(s, /soiDauAnBaoMat/, "thiếu bước soi dấu ấn bản vá trong artifact");
   assert.match(s, /dungNeo/, "phải nêu đúng dấu ấn cần tìm");
   assert.match(s, /DIA_CHI_DAY_DU/, "phải nêu đúng dấu ấn cần tìm");
+  assert.match(s, /neoHanhDong/, "neo cho hành động chính cũng phải nằm trong artifact");
   // Soi phải chạy TRƯỚC nhánh publish, không phải sau.
   assert.ok(
     s.indexOf("soiDauAnBaoMat(p.name, dan)") < s.indexOf('execFileSync(npm, ["publish"'),
