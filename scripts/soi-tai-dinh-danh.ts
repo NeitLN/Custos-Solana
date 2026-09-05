@@ -19,10 +19,11 @@
  * Script KHÔNG tự sửa dữ liệu. Cờ `--tong-quat-hoa` in ra bản đã tổng quát hoá để
  * người xem trước; ghi đè là quyết định của chủ dự án.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 const DUONG = "data/seed/phong-van.json";
 const TONG_QUAT = process.argv.includes("--tong-quat-hoa");
+const GHI = process.argv.includes("--ghi");
 
 type Ban = { ma?: string; ghiChu?: string; nguyenVan?: string };
 
@@ -34,7 +35,9 @@ if (!existsSync(DUONG)) {
 const ho = JSON.parse(readFileSync(DUONG, "utf8")) as { ban: Ban[] };
 
 /** Tuổi chính xác. Nhóm tuổi phục vụ phân tích y hệt mà lộ ít hơn nhiều. */
-const TUOI = /\b(\d{2}) tuổi\b/;
+// Không tính NHÓM tuổi là tuổi chính xác: mẫu cũ khớp cả "19 tuổi" bên trong
+// "18–19 tuổi", nên bộ soi tố cáo chính đầu ra đã tổng quát hoá của nó.
+const TUOI = /(?<![\d–-])(\d{2}) tuổi/;
 
 /**
  * Nghề quá cụ thể. Một "sinh viên năm nhất Kinh tế" trong vòng bạn bè của người
@@ -108,6 +111,45 @@ function tongQuatHoa(ghiChu: string): string {
   if (khop) truong[1] = khop[1];
 
   return truong.join(" · ");
+}
+
+/*
+ * GHI ĐÈ CẢ HAI SURFACE.
+ *
+ * `data/seed/phong-van.json` được SINH từ `docs/BIEN-BAN-PHONG-VAN.md`, và cả hai
+ * đều nằm trong repo công khai. Sửa mỗi JSON thì lần chạy `doc-bien-ban.mjs` kế
+ * tiếp sẽ khôi phục tuổi chính xác từ markdown — bản vá tự tháo.
+ */
+const BIEN_BAN = "docs/BIEN-BAN-PHONG-VAN.md";
+
+if (GHI) {
+  const truoc = JSON.parse(readFileSync(DUONG, "utf8")) as { ban: Ban[] };
+  const dem = (f: (b: Ban) => boolean) => truoc.ban.filter(f).length;
+  const truocDem = [dem(() => true), dem((b) => (b.nguyenVan ?? "") !== "")];
+
+  const moi = { ...truoc, ban: truoc.ban.map((b) => ({ ...b, ghiChu: tongQuatHoa(b.ghiChu ?? "") })) };
+  writeFileSync(DUONG, JSON.stringify(moi, null, 2) + "\n");
+
+  // Markdown: dòng tiêu đề `### P01 — 18 tuổi · nghề · kinh nghiệm`
+  const md = readFileSync(BIEN_BAN, "utf8")
+    .split("\n")
+    .map((d) => {
+      const m = /^(### P\d+ — )(.+)$/.exec(d);
+      return m ? `${m[1]}${tongQuatHoa(m[2] ?? "")}` : d;
+    })
+    .join("\n");
+  writeFileSync(BIEN_BAN, md);
+
+  const sau = JSON.parse(readFileSync(DUONG, "utf8")) as { ban: Ban[] };
+  const sauDem = [sau.ban.length, sau.ban.filter((b) => (b.nguyenVan ?? "") !== "").length];
+  // Tổng quát hoá nhân khẩu học KHÔNG được đụng vào mẫu số hay câu trả lời.
+  if (truocDem[0] !== sauDem[0] || truocDem[1] !== sauDem[1]) {
+    console.error("✖ số bản ghi hoặc số câu trả lời đã đổi — HOÀN NGUYÊN ngay.");
+    process.exit(1);
+  }
+  console.log(`✓ đã tổng quát hoá ${sauDem[0]} bản ghi ở cả JSON lẫn biên bản markdown.`);
+  console.log("  Mẫu số và câu trả lời nguyên văn giữ nguyên; chỉ tuổi và nghề rộng ra.");
+  process.exit(0);
 }
 
 if (TONG_QUAT) {

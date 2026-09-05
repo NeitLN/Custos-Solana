@@ -13,8 +13,25 @@ Không ghi tên, email, số điện thoại. Chỉ mã P01–P20.
 | Ai phỏng vấn | **Võ Việt Tiến** — một người hỏi cả 20 |
 | Cách hỏi | **tin nhắn** và **video call** |
 | Ghi bằng gì | ghi lại bằng note trong lúc hỏi |
-| Có xin phép trước | **Có** |
+| Có xin phép trước | **Có** — nói rõ là *tham gia nghiên cứu để lấy số liệu* |
+| Phạm vi consent | **số liệu tổng hợp**, KHÔNG bao gồm công bố tuổi chính xác và nghề cụ thể |
 | Màn hình đã chiếu | `/phong-van.html` ở trạng thái repo ngày 29–30/08 (trước `b90aad8`) |
+
+### Vì sao tuổi ở đây là NHÓM, không phải số chính xác
+
+Người tham gia được nói là **tham gia nghiên cứu để lấy số liệu**. Đó là consent cho
+việc câu trả lời của họ thành con số — không phải cho việc tuổi chính xác và nghề cụ
+thể của họ nằm trên một repo công khai mà git không quên.
+
+Đo được trước khi sửa: **8/20** bản ghi mang đồng thời tuổi chính xác, nghề rất cụ
+thể (*"sinh viên năm nhất Kinh tế"*, *"QA Engineer"*) và câu nói nguyên văn. Trong
+vòng quen biết của chính người phỏng vấn, tổ hợp đó đủ để bạn cùng lớp nhận ra người.
+
+Nay tuổi là nhóm (18–19, 20–22, 23–25) và nghề là nhóm rộng. **Câu trả lời nguyên văn
+giữ nguyên** — chúng là phản ứng với màn hình, không chứa thông tin cá nhân nào; đã
+soi và xác nhận. Giữ chúng là giữ đường kiểm chứng cho con số 13/20.
+
+**Không tỉ lệ nào đổi.** Kiểm bằng `npm run soi-rieng-tu`.
 
 ### Bốn giới hạn của phép đo này — nói ra trước khi bị hỏi
 
@@ -46,7 +63,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P01 — 18 tuổi · sinh viên năm nhất Kinh tế · chưa từng dùng crypto
+### P01 — 18–19 tuổi · sinh viên · chưa từng dùng crypto
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -62,7 +79,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P02 — 19 tuổi · sinh viên Ngôn ngữ Anh · biết Bitcoin qua mạng xã hội, chưa có ví
+### P02 — 18–19 tuổi · sinh viên · biết Bitcoin qua mạng xã hội, chưa có ví
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -78,7 +95,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P03 — 20 tuổi · sinh viên Marketing · từng mua crypto trên sàn tập trung, chưa dùng ví tự quản thường xuyên
+### P03 — 20–22 tuổi · sinh viên · từng mua crypto trên sàn tập trung, chưa dùng ví tự quản thường xuyên
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -94,7 +111,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P04 — 20 tuổi · người chơi game online · thường bấm nhận quà trong game, chưa từng dùng ví Solana
+### P04 — 20–22 tuổi · người chơi game · thường bấm nhận quà trong game, chưa từng dùng ví Solana
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -110,7 +127,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P05 — 21 tuổi · sinh viên Thiết kế · từng cài Phantom để nhận NFT nhưng chỉ dùng một lần
+### P05 — 20–22 tuổi · sinh viên · từng cài Phantom để nhận NFT nhưng chỉ dùng một lần
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -126,7 +143,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P06 — 22 tuổi · sinh viên Công nghệ thông tin · dùng Phantom khoảng một năm, từng swap token
+### P06 — 20–22 tuổi · sinh viên · dùng Phantom khoảng một năm, từng swap token
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -142,7 +159,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P07 — 23 tuổi · freelancer · dùng DeFi/NFT khoảng hai năm, quen ký nhiều loại giao dịch
+### P07 — 23–25 tuổi · freelancer · dùng DeFi/NFT khoảng hai năm, quen ký nhiều loại giao dịch
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -158,7 +175,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P08 — 24 tuổi · nhân viên kế toán · chỉ mua crypto trên sàn, chưa từng kết nối dApp
+### P08 — 23–25 tuổi · nhân viên văn phòng · chỉ mua crypto trên sàn, chưa từng kết nối dApp
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -174,7 +191,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P09 — 25 tuổi · QA Engineer · hiểu kiểm thử phần mềm nhưng mới tìm hiểu blockchain
+### P09 — 23–25 tuổi · kỹ sư phần mềm · hiểu kiểm thử phần mềm nhưng mới tìm hiểu blockchain
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -190,7 +207,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P10 — 26 tuổi · lập trình viên Web3 · dùng Solana khoảng ba năm
+### P10 — 26+ tuổi · kỹ sư phần mềm · dùng Solana khoảng ba năm
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -206,7 +223,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P11 — 27 tuổi · nhân viên văn phòng · thỉnh thoảng dùng ví để chuyển USDT/USDC
+### P11 — 26+ tuổi · nhân viên văn phòng · thỉnh thoảng dùng ví để chuyển USDT/USDC
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -222,7 +239,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P12 — 29 tuổi · giao dịch crypto trên sàn khoảng bốn năm · ít dùng ví tự quản
+### P12 — 26+ tuổi · giao dịch crypto trên sàn khoảng bốn năm · ít dùng ví tự quản
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -238,7 +255,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P13 — 31 tuổi · chủ cửa hàng nhỏ · chưa từng sử dụng crypto, quen xác nhận giao dịch ngân hàng
+### P13 — 26+ tuổi · chủ hộ kinh doanh · chưa từng sử dụng crypto, quen xác nhận giao dịch ngân hàng
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -254,7 +271,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P14 — 32 tuổi · kỹ sư hệ thống · hiểu bảo mật cơ bản, mới tạo ví Solana
+### P14 — 26+ tuổi · kỹ sư phần mềm · hiểu bảo mật cơ bản, mới tạo ví Solana
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -270,7 +287,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P15 — 34 tuổi · nhân viên ngân hàng · hiểu nghiệp vụ tài chính nhưng chưa dùng ví tự quản
+### P15 — 26+ tuổi · nhân viên văn phòng · hiểu nghiệp vụ tài chính nhưng chưa dùng ví tự quản
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -286,7 +303,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P16 — 36 tuổi · nhân viên kinh doanh · lần đầu nhìn thấy cửa sổ ký giao dịch blockchain
+### P16 — 26+ tuổi · nhân viên văn phòng · lần đầu nhìn thấy cửa sổ ký giao dịch blockchain
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -302,7 +319,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P17 — 38 tuổi · lập trình viên backend · có kiến thức blockchain, từng audit giao dịch đơn giản
+### P17 — 26+ tuổi · kỹ sư phần mềm · có kiến thức blockchain, từng audit giao dịch đơn giản
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -318,7 +335,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P18 — 41 tuổi · chủ doanh nghiệp · dùng ví crypto khoảng sáu tháng để nhận thanh toán
+### P18 — 26+ tuổi · chủ hộ kinh doanh · dùng ví crypto khoảng sáu tháng để nhận thanh toán
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -334,7 +351,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P19 — 21 tuổi · thường săn airdrop · dùng nhiều ví phụ và chấp nhận rủi ro cao
+### P19 — 20–22 tuổi · thường săn airdrop · dùng nhiều ví phụ và chấp nhận rủi ro cao
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
@@ -350,7 +367,7 @@ hỏi — đó là điểm yếu, và nó chưa được khử.
 
 ---
 
-### P20 — 52 tuổi · giảng viên không chuyên blockchain · có kinh nghiệm đánh giá hệ thống thông tin
+### P20 — 26+ tuổi · giảng viên · có kinh nghiệm đánh giá hệ thống thông tin
 
 **Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?**
 
