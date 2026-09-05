@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-05T06:08:37.382Z",
+  "sinhLuc": "2026-09-05T06:25:56.661Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -24,8 +24,8 @@
   },
   "evalAi": {
     "soMau": 33,
-    "soBay": 6,
-    "soBayChanDuoc": 6,
+    "soBay": 13,
+    "soBayChanDuoc": 12,
     "moHinhThat": "BLOCKED_BY_SECRET"
   },
   "nguoiMua": 0,
@@ -58,7 +58,7 @@
     }
   },
   "test": {
-    "pass": 341,
+    "pass": 345,
     "fail": 0
   },
   "soLuat": 14,
