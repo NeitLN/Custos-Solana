@@ -101,28 +101,30 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 
 ## 2 · Cấu trúc 4 phút
 
-| Thời lượng | Nội dung | Ghi chú diễn đạt |
+> **Viết lại 05/09.** Đội quyết định KHÔNG phỏng vấn người mua. Ô đó đóng hẳn, nên
+> pitch không được giả vờ có nó. Bản này dồn thời gian sang ba thứ đội **thật sự
+> chứng minh được**: người dùng thật đã hiểu gì, tích hợp tốn bao lâu, và vì sao
+> một ví nên tin con số của đội.
+
+| Thời gian | Nói gì | Ghi chú khi tập |
 |---|---|---|
-| **0:00–0:25** | **Bài toán.** Người mới ký giao dịch mà không hiểu mình vừa ký gì. Ví hiển thị base58 và tên instruction tiếng Anh | Không thuật ngữ. Không nói "Web3". Một câu mẹ bạn hiểu được |
-| **0:25–0:40** | **Nhượng bộ trước.** "Ví lớn đã có mô phỏng giao dịch. Phantom cảnh báo `setAuthority`. Chúng tôi không cạnh tranh ở đó." | Nói sớm, nói thẳng. Giám khảo đang nghĩ câu này — lấy nó ra khỏi đầu họ trước |
-| **0:40–0:55** | **Đường nối.** "Vấn đề là lúc mô phỏng **không hiểu hết**. Coinspect công bố một ca mô phỏng bỏ lọt instruction đổi quyền sở hữu — ví chỉ hiện vế hợp lệ và im lặng về phần còn lại." | Đây là bản lề. Nói chậm |
-| **0:55–2:15** | **Demo.** Nhịp 1 mất tiền → nhịp 2 được cứu, **cùng một giao dịch** | Chỉ tay vào dòng coverage: *"nó nói luôn phần nó chưa hiểu"* |
-| **2:15–2:25** | **Một SDK call** trên màn hình | 5–7 giây. Nói: *"Một SDK call để thêm lớp này vào ví hoặc dApp"* |
-| **2:25–3:10** | **Sản phẩm, khách hàng, và tiền.** SDK cho ví và dApp; người dùng cuối miễn phí. **Mở bằng câu Phantom mua Blowfish rồi đóng dịch vụ bán rời.** Rồi chi phí biên đo được và ba tầng giá | ⚠️ **Đã nới từ 35 giây lên 45.** Ô này chiếm 25% điểm mà bản cũ chỉ cho nó 35 giây, lại chia với phần AI. Cắt 15 giây ở đoạn nhượng bộ và 15 giây ở đoạn AI để bù |
-| **3:10–3:30** | **Giới hạn của AI.** Verdict do engine luật quyết, AI không được xác nhận an toàn | Rút còn 20 giây. Giữ **nguyên văn** câu "AI không được xác nhận an toàn" — đó là câu ghi điểm; phần giải thích AI gộp instruction thì bỏ, để dành cho Q&A câu 2 |
-| **3:30–4:00** | **Con số thật.** Bao nhiêu luật, bao nhiêu mẫu test, và **0 giao dịch bị gắn mã cáo buộc** trên cohort công khai lưu offline — kèm mẫu số. Bước tiếp theo | Đọc đúng số, không làm tròn lên. ⚠️ **Không gọi con số đó là "false positive"**: cohort chưa gán nhãn ground truth. Và **không nói "mainnet"** — cohort là dữ liệu lưu offline để kiểm engine, còn demo chạy trên Devnet |
+| **0:00–0:30** | **Mở bằng thất bại đo được, không bằng định nghĩa vấn đề.** *"Trong 20 người chúng em thử, hai người nhìn thấy cảnh báo đỏ rồi vẫn ký — vì phí chỉ 0,000005 SOL và có chữ 'demo'. Vấn đề không phải thiếu cảnh báo. Vấn đề là người dùng không hiểu hậu quả trước khi ký."* | Câu này mạnh hơn mọi định nghĩa. Nó là dữ liệu, và nó là thất bại của chính đội — giám khảo nghe được ngay là đội đo thật |
+| **0:30–0:45** | **Nhượng bộ, rút gọn.** *"Ví lớn đã có mô phỏng. Phantom cảnh báo `setAuthority`. Chúng em không cạnh tranh ở đó. Chỗ khác là khi mô phỏng KHÔNG hiểu hết — Coinspect từng công bố một ca bỏ lọt instruction đổi quyền sở hữu."* | **Rút từ 30 giây xuống 15.** Nói sớm, nói thẳng, rồi đi tiếp. Đừng ở lại trong thế phòng thủ |
+| **0:45–2:00** | **Demo.** Cùng một giao dịch, hai kết cục | Chỉ tay vào dòng coverage: *"nó nói luôn phần nó chưa hiểu"* |
+| **2:00–2:30** | **Tích hợp — số đo, không phải lời hứa.** Một SDK call trên màn hình. *"Đội em dựng một dApp mẫu ngoài repo, cài SDK từ npm: 6,9 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã. Lỗi RPC thì CHẶN, không bao giờ thành ký được."* | **Ô mới.** Đây là bằng chứng kỹ thuật gần "ai dùng được" nhất mà đội có. Nói rõ **đội tự dựng** — xem ô 2:30 |
+| **2:30–2:55** | **Ai mua, và điều đội CHƯA chứng minh.** *"Người mua là ví và dApp, không phải người dùng cuối. Chúng em chưa phỏng vấn người mua nào, và chưa bên thứ ba nào tích hợp. Bộ câu hỏi đã soạn, chưa chạy. Chúng em không gọi dApp mẫu của mình là khách hàng."* | **Ô khó nhất, và là ô ăn điểm nếu nói đúng.** Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn. **Không** vòng vo, **không** đổi chủ đề sang số người dùng cuối |
+| **2:55–3:15** | **Giới hạn của AI.** Verdict do engine luật quyết. AI không được xác nhận an toàn | Giữ **nguyên văn** câu đó — nó là câu ghi điểm |
+| **3:15–3:45** | **Vì sao tin được con số của đội.** *"Bộ kiểm của chúng em bắt được lỗi của chính chúng em: một bản SDK đã lên npm thiếu bản vá bảo mật, một bộ đếm tố oan chính đường không thể sai, và tuổi người tham gia vượt quá phạm vi họ đồng ý. Cả ba đều ghi trong repo, kèm cách phát hiện."* | **Ô mới, và là khác biệt thật.** Đội nào cũng nói "chúng em cẩn thận". Rất ít đội chỉ ra được lỗi mình tự bắt |
+| **3:45–4:00** | **Con số thật + bước tiếp theo.** Bao nhiêu luật, bao nhiêu test, **0 giao dịch bị gắn mã cáo buộc** trên cohort công khai lưu offline — kèm mẫu số | Đọc đúng số, không làm tròn. ⚠️ **Không** gọi con số đó là "false positive"; **không** nói "mainnet" |
 
-**Bốn câu phải thuộc lòng nguyên văn:**
+### Ba câu phải thuộc nguyên văn
 
-1. *"Ví lớn đã có mô phỏng giao dịch. Chúng tôi không cạnh tranh ở đó."*
-2. *"Ví nào cũng có lúc không hiểu giao dịch bạn sắp ký. Custos biến phần chưa hiểu đó
-   thành một con số trả về cho ví và hiện lên cho người dùng."* (Nói việc Custos LÀM.
-   Đừng chuyển thành câu hỏi tu từ về việc ví khác có làm hay không — đội không đo được.)
-3. *"Custos không bao giờ nói an toàn khi nó chưa chắc."*
-4. *"Phantom mua đứt Blowfish rồi đóng dịch vụ bán rời của nó — thị trường này ví lớn nhất Solana đã trả tiền chứng minh."* (KHÔNG thêm "không ai mua được nữa" — Blockaid vẫn còn.)
+1. *"Hai trong hai mươi người nhìn thấy cảnh báo đỏ rồi vẫn ký."*
+2. *"Chúng em chưa phỏng vấn người mua nào, và chưa bên thứ ba nào tích hợp."*
+3. *"AI không được xác nhận giao dịch an toàn."*
 
----
-
+Câu 2 là câu khó nói nhất và đáng nói nhất. Tập tới khi nói được nó bình thản, không
+xin lỗi và không vội chữa.
 ## 3 · Năm câu hỏi khó — trả lời trong 20 giây
 
 ### 1. "Phantom đã có rồi mà?"

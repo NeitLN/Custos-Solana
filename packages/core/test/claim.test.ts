@@ -169,20 +169,6 @@ const CUM_CAM = [
   "custos là duy nhất",
 ];
 
-/**
- * Một dòng được miễn khi nó KHÔNG khẳng định cụm đó:
- *   - câu dặn ĐỪNG NÓI cụm ấy, hoặc
- *   - cụm nằm trong một câu HỎI được trích dẫn — ví dụ câu giám khảo sẽ hỏi
- *     *"làm sao biết các em không kêu oan?"*. Chuẩn bị cho một câu hỏi khó
- *     là việc nên làm; cấm nó là dạy đội né câu hỏi thay vì trả lời.
- */
-const laCauCam = (d: string) =>
-  // Liệt kê TỪNG động từ cấm, không dùng ký tự đại diện: một mẫu rộng kiểu
-  // /không.*(nói|gọi)/ sẽ nuốt luôn những câu khẳng định có chữ "không" ở đâu đó.
-  /KHÔNG (nói|viết|gọi|dùng)|không được (nói|viết|gọi|dùng|phát biểu|tính)|đừng (nói|gọi)|không nói|bị cấm/i.test(
-    d,
-  ) ||
-  /["“][^"”]*\?["”]/.test(d);
 
 /*
  * QUÉT MỌI LẦN XUẤT HIỆN, KHÔNG PHẢI LẦN ĐẦU TIÊN.
@@ -545,7 +531,7 @@ test("không có claim độc quyền tuyệt đối trên bề mặt public", (
     doc(f)
       .split("\n")
       .forEach((d, i) => {
-        if (laCauCam(d)) return;
+        if (laDoanMienTru(d)) return;
         for (const c of CUM_CAM) {
           if (d.toLowerCase().includes(c.toLowerCase())) pham.push(`${f}:${i + 1} — "${c}" trong: ${d.trim().slice(0, 90)}`);
         }
@@ -567,7 +553,7 @@ test("không công bố tỉ lệ false positive đo trên mainnet", () => {
     doc(f)
       .split("\n")
       .forEach((d, i) => {
-        if (laCauCam(d)) return;
+        if (laDoanMienTru(d)) return;
         const t = d.toLowerCase();
         assert.ok(
           !(t.includes("false positive") && t.includes("mainnet")),
@@ -583,7 +569,7 @@ test("không gọi '0 cáo buộc' thành tỉ lệ báo nhầm", () => {
   for (const f of BE_MAT_PUBLIC) {
     const v = doc(f);
     for (const d of v.split("\n")) {
-      if (laCauCam(d)) continue;
+      if (laDoanMienTru(d)) continue;
       assert.ok(
         !/\b0\s*(false positive|báo nhầm|kêu oan)/i.test(d),
         `${f}: "${d.trim().slice(0, 90)}" — cohort chưa gán nhãn ground truth nên không được phát biểu như tỉ lệ báo nhầm.`,

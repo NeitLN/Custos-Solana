@@ -22,11 +22,25 @@
  */
 
 /** Phủ định hợp lệ: sát cụm bị cấm, không nhảy qua dấu câu. */
-const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.,:;]{0,25}$/;
+// Cờ `i` là BẮT BUỘC: bản trước không có nó, nên "Đội quyết định KHÔNG phỏng vấn"
+// viết hoa không khớp `không` viết thường — và guard tố cáo đúng câu phủ định.
+const PHU_DINH_TRUOC = /(không|chưa|đừng|tránh|thay vì|nói rằng mình là|bị cấm)[^.,:;]{0,25}$/i;
+
+/*
+ * BỎ DẤU NHẤN MARKDOWN TRƯỚC MỌI PHÉP SO KHỚP.
+ *
+ * `**Không** gọi con số đó là "false positive"` là một lời dặn — nhưng dấu `**` chen
+ * giữa "Không" và "gọi" làm mọi mẫu hụt. Guard khi đó tố cáo đúng câu cấm nói.
+ *
+ * Cùng lý do đã bỏ dấu nhấn ở đường kiểm theo đoạn: viết đậm là hình thức, không
+ * phải nội dung, và nó không được đổi kết luận theo chiều nào.
+ */
+const boDauNhan = (chu: string) => chu.replace(/\*+/g, "");
 
 /** `true` khi `moc` khớp trong `chu` mà KHÔNG có phủ định neo ngay trước. */
 export function viPhamCum(chu: string, moc: RegExp): boolean {
   // `exec` cần cờ toàn cục bị tắt để index ổn định qua nhiều lần gọi.
+  chu = boDauNhan(chu);
   const m = new RegExp(moc.source, moc.flags.replace("g", "")).exec(chu);
   if (!m) return false;
 
@@ -52,7 +66,8 @@ export function viPhamCum(chu: string, moc: RegExp): boolean {
  * `KHÔNG` trần thì trùng với mọi chữ "không" thường khi bật cờ không phân biệt hoa
  * thường. Trích nguyên văn câu bị cấm cũng là dấu hiệu của lời dặn.
  */
-export function laLoiDan(chu: string): boolean {
+export function laLoiDan(chuTho: string): boolean {
+  const chu = boDauNhan(chuTho);
   return (
     /KHÔNG (nói|viết|gọi|dùng|được|tuyên bố|công bố|đếm|gộp)/.test(chu) ||
     /không được (nói|viết|gọi|dùng|phát biểu|tính|đếm|công bố)/i.test(chu) ||
@@ -60,7 +75,9 @@ export function laLoiDan(chu: string): boolean {
     /bị cấm|không tuyên bố/i.test(chu) ||
     /(chưa có|chưa ai|chưa ví|chưa bên|chưa đo|nếu chưa)/i.test(chu) ||
     // `không nói "an toàn"` — lời dặn thật thường trích nguyên văn câu bị cấm.
-    /không (nói|gọi)\s*(là\s*)?["“']/.test(chu) ||
+    // Lời dặn thật thường trích nguyên văn câu bị cấm, và giữa động từ với dấu
+    // ngoặc có thể xen vài chữ: `không gọi con số đó là "false positive"`.
+    /không (nói|gọi)[^."”]{0,24}["“']/i.test(chu) ||
     // Trích một câu hỏi: đang nêu câu người khác hỏi, không phải đang khẳng định.
     /["“][^"”]*\?["”]/.test(chu)
   );
