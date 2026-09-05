@@ -7,7 +7,9 @@
  */
 import { danhGia } from "../packages/core/src/l2/evaluate.ts";
 import { giaiDongBangFacts } from "../packages/core/src/facts-io.ts";
-import { dienGiaiBangMoHinh, dungGoiAnthropic, boiThoiHan } from "../packages/ai/src/index.ts";
+import { dienGiaiBangMoHinh, boiThoiHan } from "../packages/ai/src/index.ts";
+// Adapter nạp riêng: entry mặc định không còn kéo SDK Anthropic vào đồ thị.
+import { dungGoiAnthropic } from "../packages/ai/src/anthropic.ts";
 import { readFileSync } from "node:fs";
 
 async function main() {

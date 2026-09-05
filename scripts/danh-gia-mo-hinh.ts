@@ -27,10 +27,11 @@ import { giaiDongBangFacts } from "../packages/core/src/facts-io.ts";
 import {
   dienGiaiKhongAI,
   dienGiaiBangMoHinh,
-  dungGoiAnthropic,
   boiThoiHan,
   type GoiMoHinh,
 } from "../packages/ai/src/index.ts";
+// Adapter nạp riêng: entry mặc định không còn kéo SDK Anthropic vào đồ thị.
+import { dungGoiAnthropic } from "../packages/ai/src/anthropic.ts";
 
 const MAU = [
   "R01-pos", "R02-pos", "R03-pos", "R12-pos", // Đỏ

@@ -42,12 +42,20 @@ một hàm, nên bên tích hợp tự chọn nhà cung cấp.
 ## Adapter Anthropic — và vì sao nó không làm gói này nặng thêm
 
 ```ts
-// Đường tường minh, khuyến nghị cho bên tích hợp mới:
+// ĐƯỜNG DUY NHẤT kể từ 0.2.0 — subpath, chạy ở môi trường Node:
 import { dungGoiAnthropic } from "@custos-solana/ai/anthropic";
-
-// Vẫn dùng được từ gốc — bản 0.1.2 đã phát hành nên đường này không bị bỏ:
-import { dungGoiAnthropic } from "@custos-solana/ai";
 ```
+
+> **Breaking change ở 0.2.0.** Bản 0.1.2 cho phép `import { dungGoiAnthropic } from
+> "@custos-solana/ai"`. Đường đó đã bỏ.
+>
+> **Vì sao đáng phá:** entry mặc định re-export adapter, nên mọi bundler trình duyệt
+> phải đi vào đồ thị của `@anthropic-ai/sdk` để biết nó không cần — Vite in ra hàng
+> loạt cảnh báo `Module "node:fs" has been externalized`. Bundle cuối không chứa SDK
+> (đã kiểm bằng grep), nhưng một gói bảo mật không nên bắt người dùng tự chứng minh
+> điều đó. Sau khi tách: **0 cảnh báo**.
+>
+> **Cách chuyển:** đổi một dòng import sang subpath. Không có API nào khác đổi.
 
 `@anthropic-ai/sdk` là **optional peer dependency**, và adapter nạp nó bằng `await
 import()` chứ không phải `import` ở đầu file. Hai điều đó cộng lại nghĩa là:
@@ -66,7 +74,7 @@ một SDK gọi API có khoá. Nên có một bài kiểm canh đúng chỗ đó
 | Bản | Có neo grounding? | Ghi chú |
 |---|---|---|
 | `0.1.2` | **KHÔNG** | Đã lên registry TRƯỚC khi bản vá được thêm. Mô hình chèn được địa chỉ ví bịa vào lời giải thích. **Đừng dùng.** |
-| `0.1.3` | Có | **CHƯA phát hành lên npm** tại thời điểm viết. Có trong source và
+| `0.2.0` | Có | **CHƯA phát hành lên npm** tại thời điểm viết. Có trong source và
 tarball dựng từ `scripts/dong-goi-sdk.mjs`. |
 
 Version npm là bất biến, nên `0.1.2` không sửa đè được — chỉ phát hành bản mới.
