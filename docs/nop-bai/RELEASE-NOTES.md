@@ -1,7 +1,7 @@
 # Custos — release candidate
 
-**Commit:** `8bd85ce305634d96aed6add5ae064518dc897c77`
-**Gói:** `@custos-solana/core` · `@custos-solana/ai@0.1.3` · `@custos-solana/types`
+**Commit:** `b97838a223458477c3489ac280d52ae9154b5e01`
+**Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
 giải thích bằng tiếng Việt. Engine luật tất định quyết định mức cảnh báo; mô hình
@@ -11,7 +11,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **359** pass · 0 fail |
+| Test tự động | **362** pass · 0 fail |
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử đã gắn nhãn | **33** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
@@ -43,7 +43,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - Mô hình không nhận giao dịch thô, không nhận địa chỉ đầy đủ, và mọi số trong lời
   giải thích phải có căn cứ trong dữ liệu đã gửi.
 - **`@custos-solana/ai@0.1.2` trên npm THIẾU neo grounding** — mô hình chèn được địa
-  chỉ ví bịa. Dùng `0.1.3` trở lên.
+  chỉ ví bịa. Dùng `0.2.0` trở lên.
 
 ## Chạy thử
 
