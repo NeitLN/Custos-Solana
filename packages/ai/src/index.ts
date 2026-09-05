@@ -5,7 +5,7 @@ import { nhanDien, moTaHanhDong, moTaLech } from "./nhanDien.ts";
 
 export { dienGiaiMau } from "./templates.ts";
 export { nhanDien, moTaHanhDong, moTaLech, type KetQuaNhanDien, type HauQuaLech } from "./nhanDien.ts";
-export { dienGiaiBangMoHinh, soiDauRa, dungNeo, SYSTEM_PROMPT, type GoiMoHinh } from "./moHinh.ts";
+export { dienGiaiBangMoHinh, soiDauRa, dungNeo, neoHanhDong, SYSTEM_PROMPT, type GoiMoHinh } from "./moHinh.ts";
 export { tomTat } from "./mucNgan.ts";
 export { chiTietKyThuat, type DongKyThuat } from "./mucKyThuat.ts";
 export { dungHauQua, type HangHauQua } from "./hauQua.ts";

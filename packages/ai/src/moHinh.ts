@@ -170,12 +170,30 @@ function bocJson(tho: string): unknown {
  */
 const DIA_CHI_DAY_DU = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/;
 
+/*
+ * Địa chỉ VIẾT TẮT kiểu sản phẩm: `HaVR…EXTT`.
+ *
+ * Bản trước cho mọi dạng viết tắt đi qua, vì câu mẫu tất định dùng đúng dạng này và
+ * chặn nó là chặn lời văn đúng của mình. Nhưng đo được bằng eval: mô hình bịa ra
+ * `HaVR…9zQk` — đúng hình dạng, sai nội dung — và đi lọt. Người dùng đối chiếu một
+ * địa chỉ viết tắt y như đối chiếu địa chỉ đầy đủ.
+ *
+ * Nên vẫn cho dạng viết tắt, nhưng chỉ những cái CÓ trong dữ liệu đã gửi hoặc câu
+ * mẫu — cùng nguyên tắc với số.
+ */
+const DIA_CHI_VIET_TAT = /[1-9A-HJ-NP-Za-km-z]{3,6}…[1-9A-HJ-NP-Za-km-z]{3,6}/g;
+
 /** Chữ số đứng riêng như một lượng — không tính chữ số trong `43JG…4tjd`. */
 const soTrong = (chu: string): string[] =>
   [...chu.matchAll(/(?<![\w\u2026])\d[\d.,]*(?![\w\u2026])/g)].map((m) => m[0].replace(/[.,]$/, ""));
 
 export function dungNeo(duLieuGui: string, cauMau: string): Set<string> {
-  return new Set([...soTrong(duLieuGui), ...soTrong(cauMau)]);
+  return new Set([
+    ...soTrong(duLieuGui),
+    ...soTrong(cauMau),
+    ...(duLieuGui.match(DIA_CHI_VIET_TAT) ?? []),
+    ...(cauMau.match(DIA_CHI_VIET_TAT) ?? []),
+  ]);
 }
 
 export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
@@ -191,6 +209,8 @@ export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
   // Mô hình không bao giờ nhận được địa chỉ đầy đủ, nên thấy là bịa.
   if (DIA_CHI_DAY_DU.test(explanation)) return null;
   if (neo && soTrong(explanation).some((x) => !neo.has(x))) return null;
+  // Địa chỉ viết tắt cũng phải có căn cứ — đúng hình dạng không có nghĩa đúng nội dung.
+  if (neo && (explanation.match(DIA_CHI_VIET_TAT) ?? []).some((x) => !neo.has(x))) return null;
 
   const adv = r["aiAdvisory"];
   if (adv !== null && adv !== "review_required" && adv !== undefined) return null;
@@ -213,6 +233,37 @@ export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
     explanation,
     aiAdvisory: adv === "review_required" ? "review_required" : null,
   };
+}
+
+/*
+ * NEO CHO `detectedPrimaryAction`.
+ *
+ * Khi lõi tất định KHÔNG nhận ra hành động chính, giá trị của mô hình được dùng
+ * thẳng — và giao diện hiển thị nó dưới nhãn "hành động chính được nhận diện",
+ * tức là trình bày như một FACT đã đo được.
+ *
+ * Mô hình có thể bịa cả `type` lẫn `from`/`to`. Một dòng "chuyển token · tới ví
+ * ABC" bịa ra, đặt ngay trên nút Ký, nguy hiểm hơn một câu văn sai: người dùng đối
+ * chiếu nó với ví họ định gửi tới.
+ *
+ * Nên neo hai chiều:
+ *   · `type` phải nằm trong tập lõi tất định sinh ra được.
+ *   · `from`/`to` phải là tên token CÓ trong dữ liệu đã gửi cho mô hình.
+ *
+ * Không neo được thì trả `null` — thà không nói gì còn hơn nói một thứ chưa kiểm.
+ */
+const LOAI_HANH_DONG = new Set(["swap", "chuyển token", "nhận token", "chuyển SOL"]);
+
+export function neoHanhDong(
+  hd: PrimaryAction | null,
+  duLieuGui: string,
+): PrimaryAction | null {
+  if (!hd) return null;
+  if (!LOAI_HANH_DONG.has(hd.type)) return null;
+  for (const v of [hd.from, hd.to]) {
+    if (v !== undefined && !duLieuGui.includes(v)) return null;
+  }
+  return hd;
 }
 
 /**
@@ -244,7 +295,9 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
     const { hanhDong } = nhanDien(facts, options?.kyHieuToken);
 
     return {
-      detectedPrimaryAction: hanhDong ?? ra.detectedPrimaryAction,
+      // Lõi tất định đúng hơn mô hình vì nó đọc thẳng từ chênh lệch số dư. Chỉ
+      // dùng của mô hình khi lõi im, và chỉ sau khi NEO — xem `neoHanhDong`.
+      detectedPrimaryAction: hanhDong ?? neoHanhDong(ra.detectedPrimaryAction, duLieuGui),
       explanation: ra.explanation,
       // BẤT ĐỐI XỨNG. Mô hình chỉ được NÂNG nghi ngờ, không được hạ. Nếu lõi xác
       // định đã thấy hậu quả lệch khỏi hành động chính thì không lời văn nào của

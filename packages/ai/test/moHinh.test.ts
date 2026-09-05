@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Facts, TokenAccountFact } from "@custos-solana/core";
 import { REASON } from "@custos-solana/core";
-import { dienGiaiBangMoHinh, soiDauRa, dungNeo, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
+import { dienGiaiBangMoHinh, soiDauRa, dungNeo, neoHanhDong, boiThoiHan, SYSTEM_PROMPT, type GoiMoHinh } from "../src/index.ts";
 
 /**
  * Bộ test này giả định mô hình LÀ BÊN KHÔNG ĐÁNG TIN.
@@ -305,4 +305,47 @@ test("NEO · không truyền neo thì giữ nguyên hành vi cũ", () => {
     soiDauRa(JSON.stringify({ explanation: "Bạn sẽ mất 12345 token.", aiAdvisory: null })),
     "không có neo thì không kiểm số — tương thích ngược",
   );
+});
+
+/*
+ * NEO CHO HÀNH ĐỘNG CHÍNH.
+ *
+ * Khi lõi tất định không nhận ra được, giá trị của mô hình đi thẳng vào kết quả và
+ * giao diện hiển thị nó dưới nhãn "hành động chính được nhận diện" — trình bày như
+ * một fact đã đo. Một dòng "chuyển token · tới ví ABC" bịa ra, đặt ngay trên nút Ký,
+ * nguy hiểm hơn một câu văn sai: người dùng sẽ đối chiếu nó với ví họ định gửi tới.
+ */
+test("NEO HÀNH ĐỘNG · loại lạ bị vứt", () => {
+  assert.equal(neoHanhDong({ type: "rút toàn bộ ví" }, "{}"), null, "loại ngoài tập lõi sinh ra phải bị vứt");
+  assert.equal(neoHanhDong({ type: "drain" }, "{}"), null);
+});
+
+test("NEO HÀNH ĐỘNG · token không có trong dữ liệu đã gửi thì bị vứt", () => {
+  const gui = JSON.stringify({ thayDoiSoDu: [{ token: "USDC-demo" }] });
+  assert.equal(
+    neoHanhDong({ type: "chuyển token", from: "SOL-giả" }, gui),
+    null,
+    "token mô hình tự nghĩ ra phải bị vứt",
+  );
+  assert.deepEqual(
+    neoHanhDong({ type: "chuyển token", from: "USDC-demo" }, gui),
+    { type: "chuyển token", from: "USDC-demo" },
+    "token CÓ trong dữ liệu đã gửi phải đi qua",
+  );
+});
+
+test("NEO HÀNH ĐỘNG · null vẫn là null, không tự dựng hành động", () => {
+  assert.equal(neoHanhDong(null, "{}"), null);
+});
+
+test("NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình", async () => {
+  // Lõi đọc thẳng từ chênh lệch số dư nên nó đúng hơn. Mô hình chỉ được nói khi lõi im.
+  const goi: GoiMoHinh = async () =>
+    JSON.stringify({
+      detectedPrimaryAction: { type: "swap", from: "BỊA", to: "BỊA" },
+      explanation: "Giao dịch chuyển token đi.",
+      aiAdvisory: null,
+    });
+  const r = await dienGiaiBangMoHinh(goi)(facts(), ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"], "vi", {});
+  assert.notEqual(r.detectedPrimaryAction?.from, "BỊA", "giá trị bịa của mô hình không được lọt ra");
 });
