@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const NGUON_AI = join(GOC, "packages", "ai", "src");
+const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
 
 /*
  * SDK ANTHROPIC KHÔNG ĐƯỢC ĐI VÀO BUNDLE TRÌNH DUYỆT.
@@ -53,4 +54,33 @@ test("SDK là peer dependency TUỲ CHỌN, không phải dependency thật", ()
   // Subpath riêng để bên tích hợp nạp adapter một cách tường minh; gốc `.` giữ
   // nguyên re-export nên bản 0.1.2 đã phát hành không bị phá.
   assert.equal(p.exports?.["./anthropic"], "./src/anthropic.ts");
+});
+
+test("entry mặc định KHÔNG re-export adapter Anthropic", () => {
+  /*
+   * Entry mặc định re-export adapter thì mọi bundler trình duyệt phải đi vào đồ thị
+   * của `@anthropic-ai/sdk` để biết nó không cần. Vite in ra hàng loạt cảnh báo
+   * `Module "node:fs" has been externalized` — đo được trên bản build thật.
+   *
+   * Bundle cuối vẫn không chứa SDK, nhưng mỗi bên tích hợp dùng bundler khác sẽ tự
+   * phát hiện lại chuyện này. Một gói bảo mật không nên bắt người dùng chứng minh
+   * giúp mình rằng thứ họ không cần thì không bị kéo vào.
+   */
+  const s = doc("packages/ai/src/index.ts");
+  assert.doesNotMatch(
+    s,
+    /^export \{[^}]*dungGoiAnthropic/m,
+    "adapter chỉ được nạp qua subpath `@custos-solana/ai/anthropic`",
+  );
+  const p = JSON.parse(doc("packages/ai/package.json")) as { exports?: Record<string, string> };
+  assert.equal(p.exports?.["./anthropic"], "./src/anthropic.ts", "subpath phải còn");
+});
+
+test("bỏ đường import cũ thì version phải báo breaking", () => {
+  // 0.1.2 trên registry CÓ đường import từ gốc. Bỏ nó mà giữ patch version là lén
+  // đổi public API — người cài `^0.1.2` sẽ vỡ mà không có cảnh báo nào.
+  const v = (JSON.parse(doc("packages/ai/package.json")) as { version: string }).version;
+  const [chinh, phu] = v.split(".").map(Number) as [number, number];
+  assert.ok(chinh > 0 || phu >= 2, `version ${v} chưa phản ánh breaking change (cần ≥ 0.2.0)`);
+  assert.match(doc("packages/ai/README.md"), /Breaking change ở 0\.2\.0/, "phải có ghi chú chuyển đổi");
 });

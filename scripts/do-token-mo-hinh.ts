@@ -23,7 +23,9 @@
 import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { inspect } from "../packages/core/src/index.ts";
-import { dienGiaiBangMoHinh, dungGoiAnthropic, type GoiMoHinh } from "../packages/ai/src/index.ts";
+import { dienGiaiBangMoHinh, type GoiMoHinh } from "../packages/ai/src/index.ts";
+// Adapter nạp riêng: entry mặc định không còn kéo SDK Anthropic vào đồ thị.
+import { dungGoiAnthropic } from "../packages/ai/src/anthropic.ts";
 import { chanNeuChuaChoPhep } from "./congMainnet.ts";
 
 const RPC = process.env["CUSTOS_MAINNET_RPC"] ?? "https://api.mainnet-beta.solana.com";

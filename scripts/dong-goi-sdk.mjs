@@ -127,7 +127,25 @@ for (const g of GOI) {
   delete p.scripts; // `prepack` sẽ chạy lại tsc trong thư mục dàn — không có tsconfig ở đó
   p.main = "./dist/index.js";
   p.types = "./dist/index.d.ts";
-  p.exports = { ".": { types: "./dist/index.d.ts", default: "./dist/index.js" } };
+  /*
+   * GIỮ LẠI MỌI SUBPATH, chỉ đổi đích từ `src/*.ts` sang `dist/*.js`.
+   *
+   * Bản trước ghi đè `exports` bằng đúng một lối vào `.`, nên subpath
+   * `@custos-solana/ai/anthropic` BIẾN MẤT khỏi gói đóng ra — trong khi README của
+   * chính gói đó nói đấy là đường DUY NHẤT để nạp adapter. Người cài từ npm gặp
+   * ERR_PACKAGE_PATH_NOT_EXPORTED.
+   *
+   * Đo được bằng `npm run thu-goi`: bài kiểm đóng vai người ngoài, và nó đỏ ngay
+   * lượt đầu sau khi tách entry. Đọc `package.json` bằng mắt thì không thấy — hai
+   * file đều "đúng", chỉ là bước dàn làm rơi một nửa.
+   */
+  const loiVao = Object.keys(p.exports ?? { ".": null });
+  p.exports = Object.fromEntries(
+    loiVao.map((k) => {
+      const ten = k === "." ? "index" : k.replace(/^\.\//, "");
+      return [k, { types: `./dist/${ten}.d.ts`, default: `./dist/${ten}.js` }];
+    }),
+  );
   p.files = ["dist", "README.md", "LICENSE"];
   writeFileSync(join(dan, "package.json"), JSON.stringify(p, null, 2) + "\n");
 

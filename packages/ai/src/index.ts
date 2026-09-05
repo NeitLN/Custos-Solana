@@ -9,7 +9,23 @@ export { dienGiaiBangMoHinh, soiDauRa, dungNeo, neoHanhDong, SYSTEM_PROMPT, type
 export { tomTat } from "./mucNgan.ts";
 export { chiTietKyThuat, type DongKyThuat } from "./mucKyThuat.ts";
 export { dungHauQua, type HangHauQua } from "./hauQua.ts";
-export { dungGoiAnthropic, type TuyChonAnthropic } from "./anthropic.ts";
+/*
+ * ADAPTER ANTHROPIC KHÔNG CÒN Ở ENTRY MẶC ĐỊNH.
+ *
+ * Đo được: build trình duyệt in ra hàng loạt cảnh báo
+ *   Module "node:fs" has been externalized ... imported by @anthropic-ai/sdk
+ *
+ * Bundle cuối KHÔNG chứa SDK — đã kiểm bằng grep. Nhưng Vite vẫn phải đi vào đồ
+ * thị của nó để biết điều đó, và mỗi bên tích hợp dùng bundler khác sẽ tự phát
+ * hiện lại chuyện này. Một gói bảo mật không nên bắt người dùng chứng minh giúp
+ * mình rằng thứ họ không cần thì không bị kéo vào.
+ *
+ * Nạp adapter qua subpath, ở môi trường Node:
+ *
+ *   import { dungGoiAnthropic } from "@custos-solana/ai/anthropic";
+ *
+ * Đây là BREAKING CHANGE so với 0.1.2 — xem README gói và ghi chú chuyển đổi.
+ */
 
 /**
  * L3 — diễn giải.

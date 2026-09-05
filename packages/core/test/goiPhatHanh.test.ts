@@ -66,3 +66,22 @@ test("README không gọi bản chưa phát hành là bản khuyến nghị", ()
     "phải nói thẳng người cài hôm nay nhận bản nào",
   );
 });
+
+test("bước dàn gói KHÔNG được làm rơi subpath export", () => {
+  /*
+   * `dong-goi-sdk.mjs` ghi đè `exports` cho thư mục dàn. Bản trước ghi đúng MỘT lối
+   * vào `.`, nên subpath `@custos-solana/ai/anthropic` biến mất khỏi tarball — trong
+   * khi README của chính gói đó nói đấy là đường DUY NHẤT để nạp adapter. Người cài
+   * từ npm gặp ERR_PACKAGE_PATH_NOT_EXPORTED.
+   *
+   * Đọc hai file bằng mắt thì không thấy: source đúng, script đúng, chỉ bước dàn ở
+   * giữa làm rơi một nửa. `npm run thu-goi` bắt được vì nó đóng vai người ngoài.
+   */
+  const s = doc("scripts/dong-goi-sdk.mjs");
+  assert.doesNotMatch(
+    s,
+    /p\.exports = \{ "\.":/,
+    "không được ghi đè exports bằng một lối vào cứng — phải giữ mọi subpath của gói",
+  );
+  assert.match(s, /Object\.keys\(p\.exports/, "phải suy lối vào từ chính `exports` của gói");
+});

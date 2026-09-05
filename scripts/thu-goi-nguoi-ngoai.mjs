@@ -54,7 +54,10 @@ const chay = (cmd, args, cwd, keThua = false) =>
 const TIEU_THU = `import assert from "node:assert/strict";
 import { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { inspect, danhGia, LUAT, REASON, dungBangChenhLech, computeCoverage } from "@custos-solana/core";
-import { dienGiaiKhongAI, boiThoiHan, dienGiaiMau, dungGoiAnthropic } from "@custos-solana/ai";
+import { dienGiaiKhongAI, boiThoiHan, dienGiaiMau } from "@custos-solana/ai";
+// Kể từ 0.2.0 adapter chỉ nạp qua subpath. Bài kiểm này đóng vai NGƯỜI NGOÀI, nên
+// nó phải dùng đúng con đường công khai — nếu subpath hỏng, chỗ này đỏ.
+import { dungGoiAnthropic } from "@custos-solana/ai/anthropic";
 import { existsSync } from "node:fs";
 
 const VI = "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF";
