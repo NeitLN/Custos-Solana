@@ -12,6 +12,7 @@ export {
   neoHanhDong,
   huongTaiSanNguoiKy,
   nguocChieu,
+  noiQuaMaLyDo,
   SYSTEM_PROMPT,
   type GoiMoHinh,
 } from "./moHinh.ts";
