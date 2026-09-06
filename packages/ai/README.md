@@ -73,15 +73,26 @@ một SDK gọi API có khoá. Nên có một bài kiểm canh đúng chỗ đó
 
 | Bản | Có neo grounding? | Ghi chú |
 |---|---|---|
-| `0.1.2` | **KHÔNG** | Đã lên registry TRƯỚC khi bản vá được thêm. Mô hình chèn được địa chỉ ví bịa vào lời giải thích. **Đừng dùng.** |
-| `0.2.0` | Có | **CHƯA phát hành lên npm** tại thời điểm viết. Có trong source và
-tarball dựng từ `scripts/dong-goi-sdk.mjs`. |
+| `0.1.2` | **KHÔNG** | Đã lên registry TRƯỚC khi bản vá được thêm. Đo được: **9/10** lời bịa tới được người dùng. **Đừng dùng.** |
+| `0.2.0` | Có | **Đã phát hành lên npm** và đã nghiệm thu trên chính gói registry: **10/10** bẫy bị chặn, 0 lọt |
 
 Version npm là bất biến, nên `0.1.2` không sửa đè được — chỉ phát hành bản mới.
 
-> ⚠️ **Nghĩa là hôm nay `npm install @custos-solana/ai` vẫn lấy về `0.1.2`, bản
-> thiếu neo grounding.** Muốn bản có vá thì cài từ tarball tự dựng, hoặc đợi
-> `0.1.3` được phát hành. Dòng này phải được sửa NGAY khi publish xong.
+> `npm install @custos-solana/ai` nay lấy về `0.2.0`. Nếu bạn đang dùng `0.1.2`,
+> nâng lên: đó là bản để lời bịa của mô hình đi thẳng tới câu người dùng đọc trước
+> khi ký.
+
+Cả hai con số trên đều đo bằng cùng một bộ mười bẫy, chạy từ một project trống ngoài
+monorepo, cài **từ registry** — không `file:`, không `overrides`:
+
+```bash
+npm run thu-goi-registry            # bản latest
+node scripts/thu-goi-registry.mjs 0.1.2   # bản cũ, để đối chiếu
+```
+
+Ở cả hai bản, **0/10 bẫy làm đổi `level`**: engine luật tất định không bị chạm kể cả
+khi lớp neo còn thiếu. Lớp neo bảo vệ *lời văn*, không bảo vệ verdict — nói quá thành
+"AI hạ được cảnh báo" là bịa theo hướng bất lợi cho chính mình.
 
 **Hai mức xác minh khác nhau, đừng lẫn:**
 
@@ -90,8 +101,9 @@ Version npm là bất biến, nên `0.1.2` không sửa đè được — chỉ 
 - *Đã kiểm registry* — bản trên npm đã được tải về và soi. Chỉ nói được câu này
   **sau khi** bản mới thực sự lên registry.
 
-Chính khoảng cách giữa hai mức đó sinh ra sự cố `0.1.2`: source đúng, tarball local
-đúng, mọi test xanh — và bản trên registry thì không. `scripts/dong-goi-sdk.mjs` nay
+Chính khoảng cách giữa hai mức đó đã sinh ra sự cố `0.1.2`: source đúng, tarball
+local đúng, mọi test xanh — và bản trên registry thì không. Nay cả hai mức đều
+được đo, và kết quả mức thứ hai nằm ở `data/registry/ket-qua.json`. `scripts/dong-goi-sdk.mjs` nay
 từ chối đóng gói hoặc publish nếu artifact thiếu dấu ấn bản vá.
 
 MIT

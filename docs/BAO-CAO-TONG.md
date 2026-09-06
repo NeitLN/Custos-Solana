@@ -32,7 +32,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 
 ### 2.1 · Lỗ hổng bảo mật đã phát hành ra ngoài
 
-`@custos-solana/ai@0.1.2` **đang nằm trên npm** và **thiếu neo grounding** — tôi tải
+`@custos-solana/ai@0.1.2` **đã nằm trên npm** và **thiếu neo grounding** — tôi tải
 tarball về soi: nó có `soiDauRa(tho)` một tham số, không có `dungNeo`, không có
 `DIA_CHI_DAY_DU`. Nghĩa là ai `npm install` hôm nay đều nhận bản mà **mô hình chèn
 được địa chỉ ví bịa** vào câu người dùng đọc trước khi ký.
@@ -126,7 +126,7 @@ xem**, hoặc **chạy thật thứ mình vừa viết**, không từ việc đ�
 | Việc | Vì sao gấp |
 |---|---|
 | **Video demo dự phòng** | Thể lệ BTC ghi là **BẮT BUỘC**. Sự cố kỹ thuật mà không có video là **mất lượt** |
-| **Publish `@custos-solana/ai@0.2.0`** | Hôm nay `npm install` vẫn lấy `0.1.2` — bản có lỗ hổng |
+| ~~Publish `@custos-solana/ai@0.2.0`~~ | **XONG** — registry phục vụ `0.2.0`, nghiệm thu 10/10 bẫy bị chặn |
 | **4 câu hỏi BTC** | Giờ thi, hình thức, thời lượng pitch, chung kết 23/09 hay 26/09 |
 | **Release tag** | Chờ ba việc trên |
 

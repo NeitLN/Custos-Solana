@@ -113,8 +113,40 @@ try {
       `${NL}  làm đổi \`level\`    : ${doiLevel}`,
   );
 
+  /*
+   * GHI LẠI PHÉP ĐO, ĐỪNG BẮT NGƯỜI ĐỌC TIN LỜI KỂ.
+   *
+   * Tài liệu của repo từng nói "npm install hôm nay vẫn lấy 0.1.2" ở bốn chỗ, gõ
+   * tay. Khi `0.2.0` lên registry, cả bốn câu thành sai cùng lúc và không guard nào
+   * biết. Nên kết quả nghiệm thu đi vào một artifact, và guard đối chiếu với nó.
+   */
+  mkdirSync(join(GOC, "data", "registry"), { recursive: true });
+  writeFileSync(
+    join(GOC, "data/registry/ket-qua.json"),
+    JSON.stringify(
+      {
+        doLuc: new Date().toISOString(),
+        sourceCommit:
+          chay("git", ["rev-parse", "HEAD"], GOC).status === 0
+            ? chay("git", ["rev-parse", "HEAD"], GOC).stdout.trim()
+            : null,
+        phienBanHoi: PHIEN_BAN,
+        ai: ver("@custos-solana/ai"),
+        core: ver("@custos-solana/core"),
+        tong,
+        chan,
+        lotChu: lot,
+        doiLevel,
+        dat: r.status === 0,
+      },
+      null,
+      2,
+    ) + NL,
+  );
+  console.log(`${NL}→ data/registry/ket-qua.json`);
+
   if (r.status === 0) {
-    console.log(`${NL}✓ Gói trên registry chặn đủ mười bẫy.`);
+    console.log(`✓ Gói trên registry chặn đủ mười bẫy.`);
     ma = 0;
   } else {
     console.error(

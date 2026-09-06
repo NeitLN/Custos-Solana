@@ -1,13 +1,25 @@
 # Phát hành `@custos-solana/ai@0.2.0`
 
-**Trạng thái: `BLOCKED — OWNER ACTION`.** Mọi việc chuẩn bị đã xong và đã kiểm; bước
-`npm publish` cần quyền npm của chủ dự án. Claude không tự chạy nó.
+**Trạng thái: `ĐÃ PHÁT HÀNH` — 06/09/2026.**
+
+Chủ dự án đã chạy `npm run publish-sdk`. Nghiệm thu độc lập chạy ngay sau đó:
+
+```
+npm view @custos-solana/ai version   -> 0.2.0
+npm run thu-goi-registry             -> chặn 10/10 · lọt 0 · đổi level 0
+```
+
+Bằng chứng ghi ở `data/registry/ket-qua.json`, và có guard đối chiếu README
+của gói với nó. `types` và `core` giữ nguyên `0.1.1` — script tự bỏ qua vì mã
+không đổi, đúng như mục 2 dự kiến.
+
+Còn lại đúng một quyết định của chủ dự án: **có deprecate `0.1.2` hay không** (mục 4).
 
 ---
 
-## 1 · Vì sao việc này gấp
+## 1 · Vì sao việc này gấp — đo trước khi phát hành
 
-`npm run thu-goi-registry` đo trên chính gói đang phục vụ (`ai@0.1.2` + `core@0.1.1`):
+Lượt đo 06/09/2026, **trước** khi publish, trên bản registry lúc đó (`ai@0.1.2`):
 
 | | |
 |---|---|
@@ -15,8 +27,10 @@
 | Lời bịa **tới được người dùng** | **9/10** |
 | Bẫy làm đổi `level` | **0/10** |
 
-Người cài hôm nay nhận bản để địa chỉ ví bịa, số token bịa, câu đảo chiều dòng tiền
-và câu *"…hãy ký ngay"* đi thẳng tới màn hình trước nút Ký.
+Người cài **cho tới sáng 06/09** nhận bản để địa chỉ ví bịa, số token bịa, câu đảo
+chiều dòng tiền và câu *"…hãy ký ngay"* đi thẳng tới màn hình trước nút Ký.
+
+Sau khi publish, cùng bộ bẫy trên `0.2.0` lấy từ registry: **10/10 chặn, 0 lọt**.
 
 Con số thứ ba phải đọc kèm: **engine luật tất định không hề bị chạm.** Lớp neo bảo vệ
 lời văn, không bảo vệ verdict. Đừng nói quá thành *"AI hạ được cảnh báo"*.
@@ -49,7 +63,7 @@ node scripts/dong-goi-sdk.mjs /tmp/pack && tar -tzf /tmp/pack/custos-solana-ai-0
 
 ---
 
-## 3 · Việc chủ dự án cần làm
+## 3 · Việc chủ dự án đã làm
 
 ```bash
 # 1. Đăng nhập (Claude không dùng token/OTP của bạn)
@@ -65,12 +79,13 @@ npm view @custos-solana/ai version        # phải in 0.2.0
 npm run thu-goi-registry                  # phải in: chặn được 10/10
 ```
 
-Bước 4 là bước quyết định. Nó cài từ registry vào một project trống, không dùng
-`file:` và không dùng `overrides`, nên nó đo đúng thứ người ngoài nhận được.
+Bước 4 là bước quyết định, và nó đã xanh. Nó cài từ registry vào một project trống,
+không dùng `file:` và không dùng `overrides`, nên nó đo đúng thứ người ngoài
+nhận được.
 
-**Chỉ sau khi bước 4 xanh** mới được đổi tài liệu sang hướng dẫn `npm install`. Cho
-tới lúc đó mọi nơi phải nói *"cài từ tarball vừa đóng gói"* — có guard chặn câu
-*"cài SDK từ npm"* trong pitch.
+Pitch vẫn **không** nói *"cài SDK từ npm"*, và guard vẫn giữ nguyên — nhưng lý do
+nay là **phương pháp**, không phải bảo mật: bài đo ma sát tích hợp cài từ tarball
+vừa đóng gói để đo đúng mã hôm nay, không phải mã đã phát hành.
 
 ---
 
@@ -90,8 +105,8 @@ gói. Nó cần quyết định riêng của chủ dự án, không gộp vào b
 
 ## 5 · Điều KHÔNG được làm
 
-- Không đổi README sang `npm install @custos-solana/ai@0.2.0` trước khi bước 4 xanh.
-- Không nói *"đã publish"* trong bất kỳ tài liệu nào cho tới khi `npm view` trả `0.2.0`;
-  ô `Registry khớp source` trong `npm run kiem-san-pham` là nơi đọc trạng thái thật.
+- Không nói *"đã publish"* dựa trên trí nhớ. Ô `Registry khớp source` trong
+  `npm run kiem-san-pham` và ô `Gói AI có bản vá trên registry` trong
+  `npm run nop-bai -- --strict` đều đọc phép đo, không đọc câu chữ.
 - Không phát hành lại `core`/`types` nếu mã của chúng không đổi — hai bản `0.1.1`
   trên registry đã được xác minh trùng khớp với nguồn.

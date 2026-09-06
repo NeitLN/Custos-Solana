@@ -106,13 +106,41 @@ const muc: Muc[] = [
     chiTiet: oTrong === 0 ? "không còn ô trống" : `${oTrong} câu chưa hỏi BTC`,
     ai: "ngoài",
   },
-  {
-    ten: "Gói AI có bản vá trên registry",
-    xong: false,
-    // Đọc version từ package.json — gõ tay ở đây thì nó tụt lại sau mỗi lần bump.
-    chiTiet: `${(JSON.parse(doc("packages/ai/package.json")) as { version: string }).version} chưa publish; \`npm install\` hôm nay vẫn lấy 0.1.2 THIẾU neo grounding`,
-    ai: "người",
-  },
+  /*
+   * Ô NÀY TỪNG GÕ CỨNG `xong: false` VÀ CÂU "vẫn lấy 0.1.2".
+   *
+   * Nó đúng vào ngày viết. Khi `0.2.0` thật sự lên registry, ô này vẫn đỏ và vẫn in
+   * câu cũ — một cổng khẳng định điều đã sai, bằng chữ, không bằng phép đo. Đúng
+   * loại lỗi mà cả repo này tồn tại để bắt.
+   *
+   * Nay nó đọc `data/registry/ket-qua.json`, tức kết quả `npm run thu-goi-registry`
+   * chạy thật trên gói ĐÃ PHÁT HÀNH.
+   */
+  (() => {
+    const vNguon = (JSON.parse(doc("packages/ai/package.json")) as { version: string }).version;
+    const reg = json<{ ai: string; chan: number; tong: number; dat: boolean; doLuc: string }>(
+      "data/registry/ket-qua.json",
+    );
+    if (!reg) {
+      return {
+        ten: "Gói AI có bản vá trên registry",
+        xong: false,
+        chiTiet: `chưa nghiệm thu — chạy \`npm run thu-goi-registry\``,
+        ai: "người" as const,
+      };
+    }
+    const khop = reg.dat && reg.ai === vNguon;
+    return {
+      ten: "Gói AI có bản vá trên registry",
+      xong: khop,
+      chiTiet: khop
+        ? `${reg.ai} trên registry · ${reg.chan}/${reg.tong} bẫy bị chặn`
+        : reg.ai !== vNguon
+          ? `registry ${reg.ai} ≠ source ${vNguon} — publish rồi nghiệm thu lại`
+          : `${reg.ai} trên registry chỉ chặn ${reg.chan}/${reg.tong}`,
+      ai: "người" as const,
+    };
+  })(),
   {
     ten: "Release tag cố định",
     xong: theTag.length > 0,
