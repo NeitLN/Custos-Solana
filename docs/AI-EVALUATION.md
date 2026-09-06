@@ -122,7 +122,7 @@ Mười ba bẫy ở trên chạy trên **mã nguồn**. Bước đóng gói th�
 `dungNeo`, `neoHanhDong`, `nguocChieu` **có mặt** trong `dist` — kiểm sự tồn tại của
 tên, không phải kiểm hành vi.
 
-Khoảng cách đó không phải giả thuyết: `@custos-solana/ai@0.1.2` trên registry có tên
+Khoảng cách đó không phải giả thuyết: `@custos-solana/ai@0.1.2` trên registry đã có tên
 `soiDauRa`, nhưng nó nhận một tham số và không neo gì cả.
 
 `scripts/tieu-thu-doi-khang.mjs` cắm một mô hình **bịa** vào `inspect()` — đúng API

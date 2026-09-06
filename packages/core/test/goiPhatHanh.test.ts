@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -49,22 +49,38 @@ test("README gói ai nói rõ bản nào thiếu vá", () => {
   assert.match(s, /Đã kiểm registry/, "phải phân biệt hai mức xác minh");
 });
 
-test("README không gọi bản chưa phát hành là bản khuyến nghị", () => {
-  /*
-   * Bản đầu của README này viết "0.1.3 — bản khuyến nghị" trong khi 0.1.3 CHƯA lên
-   * registry. Người đọc sẽ chạy `npm install` và nhận 0.1.2, bản thiếu vá, mà tưởng
-   * mình đang dùng bản đã sửa. Đúng loại lệch giữa lời và thực tế mà cả repo này
-   * canh — lần này tôi tự mắc trong chính tài liệu cảnh báo về nó.
-   *
-   * Khi 0.1.3 lên registry thật thì sửa README và bài kiểm này cùng lúc.
-   */
+/*
+ * README PHẢI KHỚP TRẠNG THÁI REGISTRY ĐÃ ĐO, KHÔNG KHỚP MỘT CÂU GÕ TAY.
+ *
+ * Bản đầu của bài này đòi README chứa đúng chuỗi "CHƯA phát hành lên npm" và câu
+ * "npm install ... vẫn lấy về 0.1.2". Nó đúng vào ngày viết. Khi `0.2.0` thật sự
+ * lên registry, cả hai câu thành SAI cùng lúc — và guard vẫn xanh, vì nó canh chữ
+ * chứ không canh sự thật.
+ *
+ * Nay nó đối chiếu với `data/registry/ket-qua.json`, tức kết quả `npm run
+ * thu-goi-registry` đã chạy thật trên gói đã phát hành.
+ */
+test("README nói đúng trạng thái registry đã đo được", () => {
+  const D = "data/registry/ket-qua.json";
+  if (!existsSync(join(GOC, D))) return; // chưa đo thì không kết luận
+
+  const r = JSON.parse(doc(D)) as { ai: string; chan: number; tong: number; dat: boolean };
   const s = doc("packages/ai/README.md");
-  assert.match(s, /CHƯA phát hành lên npm/, "phải nói rõ bản vá chưa có trên registry");
-  assert.match(
-    s,
-    /npm install @custos-solana\/ai` vẫn lấy về `0\.1\.2`/,
-    "phải nói thẳng người cài hôm nay nhận bản nào",
-  );
+
+  if (r.dat) {
+    // Bản trên registry đã qua nghiệm thu: README không được nói nó chưa phát hành.
+    assert.doesNotMatch(
+      s,
+      /CHƯA phát hành lên npm/,
+      `registry đang phục vụ ${r.ai} và đã nghiệm thu ${r.chan}/${r.tong} — README còn nói chưa phát hành`,
+    );
+    assert.doesNotMatch(
+      s,
+      /vẫn lấy về `0\.1\.2`/,
+      "registry đã có bản vá — câu này chỉ đúng trước khi publish",
+    );
+    assert.ok(s.includes(r.ai), `README phải nêu bản đang phục vụ (${r.ai})`);
+  }
 });
 
 test("bước dàn gói KHÔNG được làm rơi subpath export", () => {

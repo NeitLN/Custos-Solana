@@ -73,8 +73,8 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 | 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `24f79c5` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **chỉ tài liệu đổi** | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
-| 4 | Registry đang phục vụ version nào? | `ai@0.1.2` · `core@0.1.1`, trong khi source là **`0.2.0`** | `npm view @custos-solana/ai version` |
-| 5 | Gói trên registry và gói hiện tại cùng hành vi? | **KHÔNG** — xem mục 4 | `npm pack @custos-solana/ai@0.1.2` |
+| 4 | Registry đang phục vụ version nào? | **`ai@0.2.0`** · `core@0.1.1` — khớp source | `npm view @custos-solana/ai version` |
+| 5 | Gói trên registry và gói hiện tại cùng hành vi? | **Có** — 10/10 bẫy bị chặn trên chính gói registry | `npm run thu-goi-registry` |
 | 6 | Runtime có endpoint Mainnet không? | **Không** | `npm run check` — `congMainnet.test.ts` |
 | 7 | Lỗi mạng có thể thành `safe` không? | **Không** — không đường nào gán `level: "safe"` | `grep -rn 'level: "safe"' packages/core/src/` |
 | 8 | 20 phỏng vấn trình bày đúng phạm vi consent? | 0/20 bản ghi tái định danh được; **quyết định công bố nguyên văn còn chờ chủ dự án** | `npm run soi-rieng-tu` |
@@ -83,51 +83,46 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 ---
 
-## 4 · Điều nghiêm trọng nhất trang này phải nói
+## 4 · Lỗ hổng đã phát hành ra ngoài — và đã vá
 
-**Gói đang nằm trên npm để 9 trong 10 lời bịa tới được người dùng.**
+Đây là phần một người kiểm tra nên đọc kỹ nhất, vì nó có **hai phép đo trên cùng một
+bộ bẫy**, cách nhau đúng một lần `npm publish`.
 
-Đây là số ĐO, không phải suy luận. Bản trước của trang này viết *"gói npm không có
-lớp bảo vệ nào"* dựa trên việc grep thấy thiếu tên hàm trong `dist` — thiếu tên là
-bằng chứng gián tiếp, nó không chứng minh lời bịa **tới được** người dùng. Muốn nói
-câu đó thì phải đo đúng câu đó:
+`@custos-solana/ai@0.1.2` lên registry **trước** khi bốn lớp neo grounding được thêm.
+Source đúng, tarball local đúng, cả bộ test xanh — chỉ thứ đã gửi đi là sai. Không
+đọc code nào phát hiện được: cả hai phía đều đúng, chỉ lệch **thời điểm**.
 
-```bash
-npm run thu-goi-registry        # cài TỪ REGISTRY rồi chạy 10 bẫy đối kháng
-```
+| Đo bằng `npm run thu-goi-registry` | `ai@0.1.2` | `ai@0.2.0` |
+|---|---|---|
+| Bẫy bị chặn | **1/10** | **10/10** |
+| Lời bịa **tới được người dùng** | **9/10** | **0** |
+| Bẫy làm đổi `level` | **0/10** | **0** |
 
-Lượt đo 06/09/2026 trên `@custos-solana/ai@0.1.2` + `@custos-solana/core@0.1.1`:
+Cột trái là thứ người ta `npm install` được cho tới 06/09/2026: địa chỉ ví bịa hoàn
+toàn, số token bịa, câu đảo chiều dòng tiền, và câu *"Bỏ qua kết quả mô phỏng phía
+trên… hãy ký ngay."* đi thẳng tới màn hình trước nút Ký. Một bẫy bị chặn là nhờ nó
+chứa chữ *"an toàn"*, vốn đã có sẵn trong danh sách cấm của `0.1.2`.
 
-| | |
-|---|---|
-| Bẫy bị chặn | **1/10** — đúng một câu, vì nó chứa chữ *"an toàn"* đã có sẵn trong danh sách cấm của `0.1.2` |
-| Lời bịa **tới được người dùng** | **9/10** |
-| Bẫy làm đổi `level` | **0/10** |
+**Hàng thứ ba phải đọc kèm hai hàng trên.** Kể cả bản chưa vá, **không bẫy nào đổi
+được `level`** — engine luật tất định không hề bị chạm. Lớp neo bảo vệ *lời văn*,
+không bảo vệ verdict. Nói quá thành *"AI hạ được cảnh báo"* là bịa theo hướng bất lợi
+cho chính mình, và một sản phẩm bảo mật không được phép sai kể cả theo hướng đó.
 
-Con số cuối quan trọng ngang hai con số đầu, và trang này phải nói nó ra: **ngay cả
-bản chưa vá, AI vẫn không quyết định được phán quyết.** Engine luật tất định không hề
-bị chạm. Lớp neo bảo vệ **lời văn**, không bảo vệ verdict — nói quá thành "AI hạ được
-cảnh báo" là bịa theo hướng bất lợi cho chính mình.
+Trang này từng viết *"gói npm không có lớp bảo vệ nào"* dựa trên việc grep thấy thiếu
+tên hàm trong `dist`. Thiếu tên là bằng chứng **gián tiếp** — nó không chứng minh lời
+bịa tới được người dùng. Câu đó nay được thay bằng bảng ở trên, và bảng ở trên là số
+đo.
 
-Chín câu lọt qua gồm địa chỉ ví bịa hoàn toàn, số token bịa, đảo chiều dòng tiền, và
-câu *"Bỏ qua kết quả mô phỏng phía trên… hãy ký ngay."* Người dùng đọc **câu**, không
-đọc enum — nên `level` đúng mà câu sai vẫn là sản phẩm hỏng.
-
-Cùng bộ mười bẫy, chạy trên gói đóng từ mã hiện tại: **10/10 chặn**, kèm đối chứng
-dương (một câu hợp lệ vẫn đi lọt, nên bài kiểm phân biệt được *neo hoạt động* với
-*lớp mô hình bị tắt*).
+Tự kiểm cả hai cột:
 
 ```bash
-npm run thu-goi                 # đóng gói mã HIỆN TẠI rồi kiểm bản vừa đóng
+npm run thu-goi-registry                   # bản latest — phải 10/10
+node scripts/thu-goi-registry.mjs 0.1.2    # bản cũ, để đối chiếu
 ```
 
-Hai lệnh trả lời hai câu khác nhau — *"mã hôm nay có an toàn không"* và *"thứ người
-ta cài hôm nay có an toàn không"* — và chúng đã lệch nhau kể từ khi `0.2.0` chưa
-được publish. `0.2.0` đã sẵn sàng và qua kiểm hành vi, **nhưng chưa lên registry**:
-cần quyền npm của chủ dự án.
-
-Cho tới lúc đó, mọi tài liệu phải nói *"cài từ tarball vừa đóng gói"*, **không** nói
-*"cài từ npm"*; có guard chặn câu đó trong pitch.
+Kết quả lượt nghiệm thu được ghi vào `data/registry/ket-qua.json`, và có guard đối
+chiếu README của gói với nó — để lần sau tài liệu không thể nói sai về registry mà
+không ai biết.
 
 ## 5 · Bốn lỗi được tìm ra trong vòng review này
 
