@@ -30,7 +30,8 @@
     "release-notes": "node --experimental-strip-types scripts/tao-release-notes.ts",
     "chup-anh": "python scripts/chup-anh-nop-bai.py",
     "thu-tich-hop:deterministic": "node --experimental-strip-types scripts/thu-tich-hop-tat-dinh.ts",
-    "thu-tich-hop:devnet": "node scripts/thu-tich-hop.mjs"
+    "thu-tich-hop:devnet": "node scripts/thu-tich-hop.mjs",
+    "kiem-san-pham": "node --experimental-strip-types scripts/kiem-san-pham.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
