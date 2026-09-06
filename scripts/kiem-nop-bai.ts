@@ -272,8 +272,34 @@ if (STRICT) {
    * Câu hỏi thật: từ lúc đo tới giờ, có MÃ nào đổi không? Tài liệu đổi thì phép đo
    * vẫn còn giá trị; mã đổi thì không.
    */
+  /*
+   * "MÃ" Ở ĐÂY NGHĨA LÀ THỨ PHÉP ĐO THẬT SỰ CHẠY QUA.
+   *
+   * Bản trước hỏi rộng: mọi file dưới `packages/ apps/ scripts/ vi-du-tich-hop/` mà
+   * không phải `.md`. Nó đỏ ngay ở commit ghi chính kết quả đo, vì
+   * `apps/demo-wallet/public/so-lieu.json` khớp `apps/` — một file SINH RA TỪ phép
+   * đo lại được tính là thứ làm phép đo mất hiệu lực. Vòng tròn.
+   *
+   * Đây là lần thứ tư cùng một hình dạng lỗi trong vòng làm việc này: một cổng chỉ
+   * mở được nếu người ta làm sai quy trình. Nên liệt kê đúng thứ harness đóng gói
+   * và chạy, không liệt kê theo thư mục:
+   *
+   *   packages/          nguồn của ba gói được đóng thành tarball
+   *   vi-du-tich-hop/    chính dApp mẫu được dàn ra ngoài rồi chạy
+   *   dong-goi-sdk.mjs   bước đóng gói
+   *   thu-tich-hop.mjs   chính harness
+   *   hien-truong.json   hiện trường Devnet mà kịch bản phát lại
+   *
+   * `kiem-nop-bai.ts` và `tao-so-lieu.ts` KHÔNG nằm trong danh sách: sửa cổng hay
+   * sửa bước đồng bộ tài liệu không làm một phép đo mạng đã chạy sai đi.
+   */
   const laMa = (f: string) =>
-    /^(packages|apps|scripts|vi-du-tich-hop)\//.test(f) && !f.endsWith(".md");
+    !f.endsWith(".md") &&
+    (/^packages\//.test(f) ||
+      /^vi-du-tich-hop\//.test(f) ||
+      f === "scripts/dong-goi-sdk.mjs" ||
+      f === "scripts/thu-tich-hop.mjs" ||
+      f === "apps/demo-wallet/public/hien-truong.json");
   let bunTH: string[] = [];
   let toTienTH = false;
   if (shaTH && !nongCan) {
