@@ -23,13 +23,14 @@
  * rồi CHẠY. Đọc manifest là thứ đã tưởng là đủ hồi 0.1.0.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const win = process.platform === "win32";
 const npm = win ? "npm.cmd" : "npm";
 const GOC = resolve(import.meta.dirname, "..");
+const XUONG_DONG = String.fromCharCode(10);
 
 // Trên Windows phải shell:true để chạy được `.cmd`, mà shell thì tách theo dấu cách.
 // Phải bọc ngoặc kép CẢ LỆNH lẫn tham số: `process.execPath` là
@@ -199,14 +200,14 @@ const san = mkdtempSync(join(tmpdir(), "custos-nguoi-ngoai-"));
 let hong = false;
 
 try {
-  console.log("1/4 · đóng gói ba tarball từ thư mục dàn");
+  console.log("1/5 · đóng gói ba tarball từ thư mục dàn");
   const thungTarball = join(san, "tarball");
   chay(process.execPath, [join(GOC, "scripts", "dong-goi-sdk.mjs"), thungTarball], GOC);
   const tgz = readdirSync(thungTarball).filter((f) => f.endsWith(".tgz"));
   if (tgz.length !== 3) throw new Error(`chờ 3 tarball, nhận ${tgz.length}: ${tgz.join(", ")}`);
   for (const f of tgz) console.log("      " + f);
 
-  console.log("2/4 · dựng project tiêu thụ ngoài monorepo");
+  console.log("2/5 · dựng project tiêu thụ ngoài monorepo");
   const duAn = join(san, "du-an");
   mkdirSync(duAn, { recursive: true });
   const duong = (ten) => "file:" + join(thungTarball, tgz.find((f) => f.startsWith(ten))).replaceAll("\\", "/");
@@ -232,10 +233,10 @@ try {
     { flag: "w" },
   );
 
-  console.log("3/4 · npm install (mạng thật — cần cho @solana/web3.js)");
+  console.log("3/5 · npm install (mạng thật — cần cho @solana/web3.js)");
   chay(npm, ["install", "--no-audit", "--no-fund", "--loglevel", "error"], duAn);
 
-  console.log("4/4 · import và CHẠY bằng node trần, từ JavaScript thuần");
+  console.log("4/5 · import và CHẠY bằng node trần, từ JavaScript thuần");
   writeFileSync(join(duAn, "tieu-thu.mjs"), TIEU_THU);
   const ra = chay(process.execPath, ["tieu-thu.mjs"], duAn);
   process.stdout.write(
@@ -246,6 +247,31 @@ try {
       .join("\n") + "\n",
   );
   if (!ra.includes("TIEU-THU-OK")) throw new Error("người tiêu thụ chạy xong nhưng không báo OK");
+
+  /*
+   * KIỂM HÀNH VI, KHÔNG KIỂM TÊN SYMBOL.
+   *
+   * `soiDauAnBaoMat` trong bước đóng gói chỉ xác nhận `dungNeo`, `neoHanhDong`,
+   * `nguocChieu`... CÓ MẶT trong dist. `@custos-solana/ai@0.1.2` trên registry cho
+   * thấy khoảng cách: tên `soiDauRa` có mặt, nhưng nhận một tham số và không neo gì.
+   *
+   * Bài dưới cắm mô hình BỊA vào `inspect()` — đúng API README dạy — rồi hỏi hai
+   * câu mà tên symbol không trả lời được: lời bịa có tới người dùng không, và
+   * `level` có bị đổi không.
+   */
+  console.log("5/5 · mười bẫy đối kháng trên chính gói vừa cài");
+  cpSync(join(GOC, "scripts", "tieu-thu-doi-khang.mjs"), join(duAn, "doi-khang.mjs"));
+  const raDK = chay(process.execPath, ["doi-khang.mjs"], duAn);
+  process.stdout.write(
+    raDK
+      .trim()
+      .split(XUONG_DONG)
+      .map((d) => "      " + d)
+      .join(XUONG_DONG) + XUONG_DONG,
+  );
+  if (!raDK.includes("DOI-KHANG-OK")) {
+    throw new Error("bài đối kháng trên gói đã đóng không báo OK");
+  }
 
   console.log("\n✓ Gói dùng được từ ngoài: import bằng JS thuần, không cần cờ bóc kiểu.");
 } catch (e) {

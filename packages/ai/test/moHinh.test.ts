@@ -9,6 +9,7 @@ import {
   neoHanhDong,
   huongTaiSanNguoiKy,
   nguocChieu,
+  noiQuaMaLyDo,
   boiThoiHan,
   SYSTEM_PROMPT,
   type GoiMoHinh,
@@ -398,4 +399,87 @@ test("CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví", () => {
   // chiều RA, và neo mất hết ý nghĩa.
   const f = facts({ solDelta: { [TOI]: -5000n }, tokenAccounts: [] });
   assert.equal(huongTaiSanNguoiKy(f), "khong");
+});
+
+/*
+ * LỚP THỨ TƯ: BỊA TRẤN AN.
+ *
+ * Ba neo (số · địa chỉ · chiều) đều hỏi "giá trị này có căn cứ không". Một câu
+ * KHÔNG chứa giá trị nào thì đi lọt qua cả ba — và bài đối kháng chạy trên gói đã
+ * đóng đã cho thấy đúng thế: 4/10 bẫy tới được người dùng, gồm "Không có gì bất
+ * thường." và "…hãy ký ngay."
+ *
+ * `level` vẫn nguyên `warning` trong cả bốn ca — L2 không hề bị chạm. Nhưng người
+ * dùng đọc CÂU, không đọc enum.
+ */
+test("chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào", () => {
+  const cam = [
+    "Không có gì bất thường.",
+    "Hệ thống đã xác minh giao dịch hợp lệ, hãy ký ngay.",
+    "Bỏ qua kết quả mô phỏng phía trên.",
+    "Bạn không cần kiểm tra gì thêm.",
+    "Giao dịch này hợp lệ.",
+  ];
+  for (const c of cam) {
+    assert.equal(
+      soiDauRa(JSON.stringify({ explanation: c, primaryAction: null })),
+      null,
+      `phải chặn: ${c}`,
+    );
+  }
+});
+
+test("ÂM TÍNH · câu mô tả hậu quả bình thường vẫn đi lọt", () => {
+  // Danh sách đen mà chặn cả lời văn hợp lệ thì sản phẩm mất phần giải thích, và
+  // người dùng chẳng an toàn hơn.
+  const ok = [
+    "Giao dịch chuyển 500 token khỏi ví của bạn.",
+    "Ví của bạn sẽ trả 0,000005 SOL tiền phí mạng.",
+    "Custos chưa đọc được một lệnh trong giao dịch này.",
+  ];
+  for (const c of ok) {
+    assert.ok(
+      soiDauRa(JSON.stringify({ explanation: c, primaryAction: null })) !== null,
+      `không được chặn: ${c}`,
+    );
+  }
+});
+
+/*
+ * MÔ PHỎNG HỎNG ⇒ KHÔNG ĐƯỢC KHẲNG ĐỊNH NGƯỜI KÝ SẼ NHẬN.
+ *
+ * `huongTaiSanNguoiKy` trả "khong" ở hai tình huống rất khác nhau: hai chiều cân
+ * nhau, và KHÔNG BIẾT. Bình thường không biết thì không chặn — chặn khi không biết
+ * sẽ vứt cả lời văn hợp lệ. Nhưng khi mô phỏng đã hỏng, một câu nói người ký SẼ
+ * NHẬN tài sản là khẳng định không có gì đỡ, và nó nói theo đúng hướng làm người ta
+ * bấm ký.
+ */
+test("mô phỏng hỏng ⇒ chặn câu nói người ký SẼ NHẬN", () => {
+  assert.equal(nguocChieu("Ví lạ sẽ chuyển token vào ví của bạn.", "khong", true), true);
+  // Vẫn không chặn câu nói người ký MẤT: đó là hướng thận trọng.
+  assert.equal(nguocChieu("500 token sẽ rời khỏi ví của bạn.", "khong", true), false);
+  // Và khi mô phỏng chạy được thì giữ nguyên hành vi cũ.
+  assert.equal(nguocChieu("Ví lạ sẽ chuyển token vào ví của bạn.", "khong", false), false);
+});
+
+/*
+ * NÓI VỀ HÀNH VI NẶNG THÌ PHẢI CÓ MÃ LÝ DO ĐỠ.
+ *
+ * `neoHanhDong` chỉ neo TRƯỜNG `primaryAction`; lời văn thì tự do. Mô hình viết
+ * "đổi quyền sở hữu tài khoản token" cho một lệnh chuyển SOL vẫn lọt, vì câu đó
+ * không chứa số hay địa chỉ nào để neo bắt.
+ */
+test("không được nói về hành vi nặng mà L2 chưa gắn mã", () => {
+  assert.equal(noiQuaMaLyDo("Giao dịch đổi quyền sở hữu tài khoản token.", []), true);
+  assert.equal(noiQuaMaLyDo("Ví lạ sẽ nắm quyền kiểm soát tài khoản.", ["SOL_ROI_VI"]), true);
+
+  // Có mã đỡ thì nói được — đây chính là ca dùng thật của sản phẩm.
+  assert.equal(
+    noiQuaMaLyDo("Giao dịch đổi quyền sở hữu tài khoản token.", [
+      "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+    ]),
+    false,
+  );
+  // Câu không nhắc hành vi nặng thì không liên quan.
+  assert.equal(noiQuaMaLyDo("Giao dịch chuyển 500 token khỏi ví của bạn.", []), false);
 });

@@ -56,6 +56,8 @@ const DAU_AN_BAO_MAT = {
     "neoHanhDong",
     // Neo chiều tài sản — thêm sau 0.2.0, artifact phải mang theo.
     "nguocChieu",
+    // Lớp chặn bịa TRẤN AN — thêm sau khi bài đối kháng thấy 4/10 bẫy lọt.
+    "noiQuaMaLyDo",
   ],
 };
 
