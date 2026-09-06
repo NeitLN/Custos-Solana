@@ -1,6 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
+import { bangChungConHieuLuc } from "./toTien.ts";
 
 /**
  * CỔNG CHỈ-SẢN-PHẨM.
@@ -53,9 +54,12 @@ const them = (ten: string, tt: TrangThai, chiTiet: string) => {
 const NHANH = process.argv.includes("--nhanh");
 
 function chay(cmd: string, args: string[]) {
+  // Chỉ `npm` mới cần shell trên Windows (nó là `.cmd`). `git` và `node` thì không —
+  // và `shell: true` nối chuỗi tham số thay vì escape, nên Node cảnh báo DEP0190.
+  // Ở đây mọi tham số đều là hằng do repo viết, nhưng không cần shell thì đừng bật.
   return spawnSync(cmd, args, {
     encoding: "utf8",
-    shell: process.platform === "win32",
+    shell: process.platform === "win32" && cmd === "npm",
     maxBuffer: 64 * 1024 * 1024,
   });
 }
@@ -130,12 +134,23 @@ if (NHANH) {
       haTang ? "KHONG_KIEM_DUOC" : "HONG",
       `${l.failureCategory} — ${haTang ? "hạ tầng, không phải lỗi phát hiện" : "lỗi sản phẩm"}`,
     );
-  } else if (l.sourceCommit !== HEAD) {
-    them("Lượt live gần nhất", "CU", `đo tại ${(l.sourceCommit ?? "?").slice(0, 7)}, HEAD ${HEAD.slice(0, 7)}`);
   } else if (l.dirtyWorktree) {
     them("Lượt live gần nhất", "CU", "đo trên cây có mã chưa commit");
   } else {
-    them("Lượt live gần nhất", "DAT", `PASS tại ${HEAD.slice(0, 7)} · ${thoiDiem(l)}`);
+    /*
+     * ĐÒI `sourceCommit === HEAD` LÀ MỘT CỔNG KHÔNG BAO GIỜ MỞ ĐƯỢC.
+     *
+     * Đo xong phải commit kết quả, và commit đó làm HEAD đổi. Tôi đã viết đúng cái
+     * đó ở bản đầu của chính file này — lần thứ sáu cùng một lỗi trong repo. Quy tắc
+     * thật nằm ở `toTien.ts`: SHA phải là tổ tiên, và từ đó tới HEAD chỉ tài liệu
+     * được đổi.
+     */
+    const kl = bangChungConHieuLuc(l.sourceCommit);
+    them(
+      "Lượt live gần nhất",
+      kl.con ? "DAT" : kl.nongCan ? "KHONG_KIEM_DUOC" : "CU",
+      kl.con ? `PASS · ${kl.vi} · ${thoiDiem(l)}` : kl.vi,
+    );
   }
 }
 
