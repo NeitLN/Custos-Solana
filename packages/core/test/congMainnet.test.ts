@@ -25,7 +25,15 @@ const GOC = fileURLToPath(new URL("../../../", import.meta.url));
  */
 const SCRIPT_CHAM_MAINNET = readdirSync(join(GOC, "scripts"))
   .filter((f) => f.endsWith(".ts") && f !== "congMainnet.ts")
-  .filter((f) => /mainnet-beta|CUSTOS_MAINNET_RPC/.test(readFileSync(join(GOC, "scripts", f), "utf8")));
+  .filter((f) => {
+    const src = readFileSync(join(GOC, "scripts", f), "utf8");
+    // "Chạm mainnet" nghĩa là MỞ KẾT NỐI, không phải nhắc tới tên.
+    //
+    // `kiem-san-pham.ts` chứa chuỗi "mainnet-beta" vì nó ĐI TÌM chuỗi đó trong
+    // runtime — tức là làm đúng việc guard này muốn. Bắt nó phải có cổng chặn là
+    // bắt một công cụ soi phải xin phép trước khi soi.
+    return /mainnet-beta|CUSTOS_MAINNET_RPC/.test(src) && /new Connection\(/.test(src);
+  });
 
 test("chỉ mở cổng khi khai báo đúng, không mở vì biến tồn tại", () => {
   assert.equal(daChoPhepMainnet({ [BIEN_CHO_PHEP]: "1" }), true);
