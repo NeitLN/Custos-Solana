@@ -49,18 +49,11 @@ function coHan(viec, ms) {
  *   loi: string|null,
  * }>}
  */
-export async function kiemTruocKhiKy({
-  inspect,
-  connection,
-  interpret,
-  tx,
-  viNguoiDung,
-  dAppKhai,
-  // Hạn để MỞ được cho bài kiểm. Không có tham số này thì tính chất quan trọng
-  // nhất của file — quá hạn KHÔNG thành an toàn — chỉ kiểm được bằng cách chờ
-  // 12 giây thật, tức là không ai kiểm.
-  hanMs = HAN_MS,
-}) {
+// `hanMs` mở ra cho bài kiểm: không có nó thì tính chất quan trọng nhất của file —
+// quá hạn KHÔNG thành an toàn — chỉ kiểm được bằng cách chờ 12 giây thật, tức là
+// không ai kiểm. Giữ cả danh sách trên một dòng vì "số dòng tích hợp" là con số
+// CÔNG BỐ; xuống dòng cho đẹp sẽ thổi nó lên mà công sức tích hợp không hề tăng.
+export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNguoiDung, dAppKhai, hanMs = HAN_MS }) {
   let r;
   try {
     r = await coHan(
