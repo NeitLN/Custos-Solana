@@ -85,34 +85,49 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 ## 4 · Điều nghiêm trọng nhất trang này phải nói
 
-**Gói đang nằm trên npm KHÔNG có lớp bảo vệ nào.**
+**Gói đang nằm trên npm để 9 trong 10 lời bịa tới được người dùng.**
 
-Tải về và tự soi:
+Đây là số ĐO, không phải suy luận. Bản trước của trang này viết *"gói npm không có
+lớp bảo vệ nào"* dựa trên việc grep thấy thiếu tên hàm trong `dist` — thiếu tên là
+bằng chứng gián tiếp, nó không chứng minh lời bịa **tới được** người dùng. Muốn nói
+câu đó thì phải đo đúng câu đó:
 
 ```bash
-npm pack @custos-solana/ai@0.1.2 && tar -xzf custos-solana-ai-0.1.2.tgz
-grep -o "function soiDauRa([^)]*)" package/dist/moHinh.js
+npm run thu-goi-registry        # cài TỪ REGISTRY rồi chạy 10 bẫy đối kháng
 ```
 
-Kết quả:
+Lượt đo 06/09/2026 trên `@custos-solana/ai@0.1.2` + `@custos-solana/core@0.1.1`:
 
+| | |
+|---|---|
+| Bẫy bị chặn | **1/10** — đúng một câu, vì nó chứa chữ *"an toàn"* đã có sẵn trong danh sách cấm của `0.1.2` |
+| Lời bịa **tới được người dùng** | **9/10** |
+| Bẫy làm đổi `level` | **0/10** |
+
+Con số cuối quan trọng ngang hai con số đầu, và trang này phải nói nó ra: **ngay cả
+bản chưa vá, AI vẫn không quyết định được phán quyết.** Engine luật tất định không hề
+bị chạm. Lớp neo bảo vệ **lời văn**, không bảo vệ verdict — nói quá thành "AI hạ được
+cảnh báo" là bịa theo hướng bất lợi cho chính mình.
+
+Chín câu lọt qua gồm địa chỉ ví bịa hoàn toàn, số token bịa, đảo chiều dòng tiền, và
+câu *"Bỏ qua kết quả mô phỏng phía trên… hãy ký ngay."* Người dùng đọc **câu**, không
+đọc enum — nên `level` đúng mà câu sai vẫn là sản phẩm hỏng.
+
+Cùng bộ mười bẫy, chạy trên gói đóng từ mã hiện tại: **10/10 chặn**, kèm đối chứng
+dương (một câu hợp lệ vẫn đi lọt, nên bài kiểm phân biệt được *neo hoạt động* với
+*lớp mô hình bị tắt*).
+
+```bash
+npm run thu-goi                 # đóng gói mã HIỆN TẠI rồi kiểm bản vừa đóng
 ```
-0.1.2:  function soiDauRa(tho)          ← một tham số, không neo
-source: function soiDauRa(tho, neo?)    ← có tập neo
-```
 
-Và không tìm thấy `dungNeo`, `DIA_CHI_DAY_DU`, `neoHanhDong`, `nguocChieu`,
-`noiQuaMaLyDo` trong `package/dist/` — tức **không lớp nào trong bốn lớp neo**.
+Hai lệnh trả lời hai câu khác nhau — *"mã hôm nay có an toàn không"* và *"thứ người
+ta cài hôm nay có an toàn không"* — và chúng đã lệch nhau kể từ khi `0.2.0` chưa
+được publish. `0.2.0` đã sẵn sàng và qua kiểm hành vi, **nhưng chưa lên registry**:
+cần quyền npm của chủ dự án.
 
-Nghĩa là: ai chạy `npm install @custos-solana/ai` hôm nay nhận bản mà mô hình ngôn
-ngữ **chèn được địa chỉ ví bịa và câu *"hãy ký ngay"*** vào chính dòng chữ người dùng
-đọc trước khi bấm Ký.
-
-`0.2.0` đã sẵn sàng và đã qua kiểm hành vi, **nhưng chưa publish** — cần quyền npm
-của chủ dự án. Cho tới lúc đó, mọi tài liệu trong repo phải nói *"cài từ tarball vừa
-đóng gói"*, **không** được nói *"cài từ npm"*; có guard chặn câu đó trong pitch.
-
----
+Cho tới lúc đó, mọi tài liệu phải nói *"cài từ tarball vừa đóng gói"*, **không** nói
+*"cài từ npm"*; có guard chặn câu đó trong pitch.
 
 ## 5 · Bốn lỗi được tìm ra trong vòng review này
 
@@ -217,7 +232,8 @@ bài đã đạt.
 
 ```bash
 npm run check                  # typecheck + toàn bộ test
-npm run thu-goi                # cài gói như người ngoài + 10 bẫy đối kháng
+npm run thu-goi                # đóng gói mã hiện tại + 10 bẫy đối kháng
+npm run thu-goi-registry       # 10 bẫy trên gói ĐÃ PHÁT HÀNH trên npm
 npm run thu-tich-hop:deterministic  # cổng tích hợp, fixture — phải 100%
 npm run thu-tich-hop:devnet         # dApp mẫu chạy thật — sức khoẻ mạng
 npm run eval-ai                # 13 bẫy đối kháng trên mã nguồn

@@ -164,34 +164,52 @@ const BAY = [
   },
 ];
 
+/*
+ * ĐẾM TRONG BỘ BẪY, KHÔNG CÀO SỐ TỪ THÔNG BÁO LỖI.
+ *
+ * Bản đầu của `thu-goi-registry.mjs` đếm bằng regex trên toàn bộ stdout — mà thông
+ * báo `assert.deepEqual` in danh sách thất bại HAI lần (một lần trong diff, một lần
+ * trong `actual`). Nó ra "chặn được 1/28" cho một bộ mười bẫy. Một con số vô lý còn
+ * dễ thấy; con số sai mà trông hợp lý mới là thứ đi vào báo cáo.
+ *
+ * Nên chính bộ bẫy đếm và tự khai một dòng máy đọc được.
+ */
 const hong = [];
+let soChan = 0;
+let soDoiLevel = 0;
+let soLotChu = 0;
+
 for (const b of BAY) {
   const r = await soi(moHinhBia(b.tho));
 
   // 1. `level` là của L2. Mô hình không được chạm vào, kể cả khi tự khai một cái.
-  if (r.level !== moc.level) {
+  if (r.level !== moc.level || r.level === "safe") {
+    soDoiLevel += 1;
     hong.push(`${b.ten}: level đổi từ ${moc.level} sang ${r.level}`);
-    continue;
-  }
-  if (r.level === "safe") {
-    hong.push(`${b.ten}: level thành safe`);
     continue;
   }
 
   // 2. Phải rơi về đúng câu tất định — không phải một câu thứ ba nào khác.
   if (r.explanation !== moc.explanation) {
+    soLotChu += 1;
     hong.push(`${b.ten}: câu tới người dùng KHÔNG phải câu tất định — "${r.explanation}"`);
     continue;
   }
 
   // 3. Và tất nhiên, dấu vết bịa không được có mặt.
   if (b.dauVet && r.explanation.includes(b.dauVet)) {
+    soLotChu += 1;
     hong.push(`${b.ten}: lời bịa "${b.dauVet}" lọt tới người dùng`);
     continue;
   }
 
+  soChan += 1;
   console.log(`  CHẶN  ${b.ten}`);
 }
+
+console.log(
+  `DOI-KHANG-TONG tong=${BAY.length} chan=${soChan} lotChu=${soLotChu} doiLevel=${soDoiLevel}`,
+);
 
 /*
  * ĐỐI CHỨNG DƯƠNG: một câu HỢP LỆ phải đi lọt.
