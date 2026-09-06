@@ -168,18 +168,47 @@ if (NHANH) {
   }
 }
 
-// ── 7 · số liệu khớp artifact, và chạy lại không tạo diff ───────────────────
+/*
+ * ── 7 · số liệu khớp artifact ──────────────────────────────────────────────
+ *
+ * MỘT CỔNG KHÔNG ĐƯỢC LÀM BẨN CÂY RỒI TỰ ĐỎ VÌ CHÍNH VIỆC ĐÓ.
+ *
+ * Bản đầu chạy `dong-bo-so-tai-lieu.mjs` — vốn GHI FILE — rồi vài dòng sau ô "cây
+ * làm việc sạch" thấy file chưa commit và báo hỏng. Cổng tự tạo ra lỗi mà nó tố cáo.
+ * Đây là lần thứ năm cùng hình dạng lỗi đó trong repo này.
+ *
+ * Nên: ghi nhớ file nào ĐANG sạch, chạy đồng bộ, xem file nào vừa bẩn lên, rồi TRẢ
+ * LẠI đúng những file đó. File người dùng đang sửa dở thì không đụng tới.
+ */
 if (NHANH) {
   them("Số liệu khớp artifact", "CHUA_DO", "bỏ qua ở chế độ --nhanh");
 } else {
-  const truoc = readFileSync("apps/demo-wallet/public/so-lieu.json", "utf8");
+  const banDau = new Set(
+    (git(["status", "--porcelain"]) ?? "")
+      .split(NL)
+      .map((d) => d.slice(3).trim())
+      .filter(Boolean),
+  );
+
   const r = chay("node", ["scripts/dong-bo-so-tai-lieu.mjs", "--da-do"]);
-  const sau = readFileSync("apps/demo-wallet/public/so-lieu.json", "utf8");
-  const lech = git(["status", "--porcelain", "--", "README.md", "PITCH-VA-PHAN-BIEN.md", "docs", "packages/core/README.md"]);
+
+  const sau = (git(["status", "--porcelain"]) ?? "")
+    .split(NL)
+    .map((d) => d.slice(3).trim())
+    .filter(Boolean);
+  const doCong = sau.filter((f) => !banDau.has(f));
+
+  // Trả lại đúng thứ cổng vừa làm bẩn, không đụng thứ người dùng đang sửa.
+  for (const f of doCong) git(["checkout", "--", f]);
+
   them(
     "Số liệu khớp artifact",
-    r.status === 0 && truoc === sau && !lech ? "DAT" : "HONG",
-    r.status !== 0 ? "bước đồng bộ hỏng" : lech ? "tài liệu lệch số đo — chạy `npm run so-lieu`" : "mọi tài liệu khớp một nguồn",
+    r.status !== 0 ? "HONG" : doCong.length === 0 ? "DAT" : "HONG",
+    r.status !== 0
+      ? "bước đồng bộ hỏng"
+      : doCong.length === 0
+        ? "mọi tài liệu khớp một nguồn"
+        : `${doCong.length} tài liệu lệch số đo (${doCong.join(", ")}) — chạy \`npm run so-lieu\``,
   );
 }
 
