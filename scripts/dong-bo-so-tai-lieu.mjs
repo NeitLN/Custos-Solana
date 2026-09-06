@@ -32,6 +32,12 @@ const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
 // Số tích hợp và NGÀY đo nó — cả hai từ `so-lieu.json`, không gõ tay.
 const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
 // Dải đo và số lượt — để câu chữ nói đúng con số là trung vị của bao nhiêu lượt.
+const KQ_TH = JSON.parse(readFileSync("data/tich-hop/ket-qua.json", "utf8"));
+// SHA và trạng thái của lượt đo GẦN NHẤT. Báo cáo kiểm chứng từng ghi tay `01f5112`
+// trong khi bằng chứng đã sang `55734e8` — đúng loại lệch mà chính trang đó tồn tại
+// để bắt, và nó tự mắc.
+const TH_SHA = (KQ_TH.lastAttempt?.sourceCommit ?? "").slice(0, 7);
+const TH_DAT = KQ_TH.lastAttempt?.dat === true;
 const SO_LUOT = S.tichHop?.soLuotDo ?? 1;
 // Chuỗi đo trải qua nhiều bản dựng thì phải nói ra — gộp im lặng là ngụ ý cùng một bản.
 const SO_COMMIT = S.tichHop?.soCommitDo ?? 1;
@@ -265,6 +271,20 @@ thayDong("docs/BAO-CAO-TONG.md", [
  * người đọc chạy lệnh, thấy lệch, và kết luận đúng rằng repo nói sai về chính mình.
  */
 thayDong("docs/BAO-CAO-KIEM-CHUNG.md", [
+  [
+    /^- Bằng chứng tích hợp đo tại: /,
+    () =>
+      `- Bằng chứng tích hợp đo tại: \`${TH_SHA}\`, cây làm việc sạch — lượt gần nhất ${
+        TH_DAT ? "PASS" : "**HỎNG**"
+      }`,
+  ],
+  [
+    /^\| 1 \| Lượt tích hợp gần nhất pass hay fail\?/,
+    () =>
+      `| 1 | Lượt tích hợp gần nhất pass hay fail? | **${
+        TH_DAT ? "PASS" : "HỎNG"
+      }** tại \`${TH_SHA}\` | \`ket-qua.json\` → \`lastAttempt\` |`,
+  ],
   [/^\| Test tự động \|/, (d) => d.replace(/\*\*\d+\*\* pass/, `**${S.test.pass}** pass`)],
   [/^\| Luật tất định \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soLuat}**`)],
   [/^\| Mẫu kiểm thử gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
