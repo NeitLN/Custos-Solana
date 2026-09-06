@@ -59,9 +59,9 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 06/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7 giây** — trung vị 10 lượt, dải 6,9–11,8 |
+| Cài đặt → kết quả đầu tiên | **7 giây** — trung vị 10 lượt trên 2 bản dựng, dải 6,9–7,9 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **606 ms** — trung vị 10 lượt |
+| Một lượt kiểm tra | **606 ms** — trung vị 10 lượt trên 2 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
