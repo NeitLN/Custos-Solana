@@ -19,7 +19,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **33** |
 | Bẫy đối kháng AI bị chặn | **13/13** |
-| Tích hợp từ ngoài monorepo | **8,1 giây** tới kết quả đầu · **30 dòng** · **614 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **7 giây** tới kết quả đầu · **30 dòng** · **606 ms** một lượt |
 | Phỏng vấn người dùng thật | **20** — 13 đúng · 5 một phần · 2 sai |
 | Phỏng vấn **người mua** | **0** |
 | Bên thứ ba tích hợp | **0** |
@@ -183,7 +183,8 @@ npm run check                  # 391 test + typecheck
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag
 npm run thu-goi                # cài gói như người ngoài
-npm run thu-tich-hop           # dApp mẫu chạy thật trên Devnet
+npm run thu-tich-hop:deterministic  # cổng tích hợp, fixture — phải 100%
+npm run thu-tich-hop:devnet         # dApp mẫu chạy thật — sức khoẻ mạng
 npm run eval-ai                # 13 bẫy đối kháng
 npm run soi-rieng-tu           # soi nguy cơ tái định danh
 npm run thi-truong             # mô hình TAM/SAM/SOM

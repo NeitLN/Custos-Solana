@@ -73,6 +73,14 @@ jobs:
       - name: Kiểm thử trước khi deploy
         run: npm run check
 
+      # CỔNG TÍCH HỢP TẤT ĐỊNH — fixture, không mạng.
+      #
+      # Tách khỏi bài live Devnet có chủ ý: RPC công cộng dao động, và một CI đỏ vì
+      # mạng chậm dạy người ta bỏ qua CI. Bài này hỏi câu khác — Custos xử ĐÚNG
+      # chưa — nên nó phải 100% và phải nằm trên đường chặn.
+      - name: Cổng tích hợp tất định
+        run: npm run thu-tich-hop:deterministic
+
       # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
       # xem chú thích trong file đó để biết vì sao.
       - name: Build ví mẫu

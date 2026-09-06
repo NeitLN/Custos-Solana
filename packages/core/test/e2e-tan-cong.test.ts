@@ -1,15 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Keypair, PublicKey, type AccountInfo } from "@solana/web3.js";
-import {
-  AccountLayout, MintLayout, TOKEN_PROGRAM_ID, ACCOUNT_SIZE, MINT_SIZE,
-  getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
 import { inspect } from "../src/inspect.ts";
-import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
 import { dienGiaiKhongAI } from "../../ai/src/index.ts";
 import { validateInspectResult } from "../../types/src/validate.ts";
 import { REASON } from "../src/constants.ts";
+import { dungHienTruongGia } from "../../../scripts/hienTruongGia.ts";
 
 /**
  * KIỂM CHỨNG ĐẦU-CUỐI trên fixture.
@@ -21,102 +16,14 @@ import { REASON } from "../src/constants.ts";
  * luật, và KHÔNG được tính vào tỉ lệ báo nhầm công bố trên sân khấu.
  */
 
-const nanNhan = Keypair.generate();
-const keTanCong = Keypair.generate().publicKey;
-const mint = Keypair.generate().publicKey;
-const BLOCKHASH = "11111111111111111111111111111111";
-const SO_LUONG = 500_000_000n; // 500 token, 6 chữ số thập phân
-
-const ataNanNhan = getAssociatedTokenAddressSync(mint, nanNhan.publicKey);
-const ataKeTanCong = getAssociatedTokenAddressSync(mint, keTanCong);
-
-function taiKhoanToken(owner: PublicKey, amount: bigint): AccountInfo<Buffer> {
-  const data = Buffer.alloc(ACCOUNT_SIZE);
-  AccountLayout.encode(
-    {
-      mint, owner, amount,
-      delegateOption: 0, delegate: PublicKey.default, state: 1,
-      isNativeOption: 0, isNative: 0n, delegatedAmount: 0n,
-      closeAuthorityOption: 0, closeAuthority: PublicKey.default,
-    },
-    data,
-  );
-  return { data, executable: false, lamports: 2039280, owner: TOKEN_PROGRAM_ID, rentEpoch: 0 };
-}
-
-function taiKhoanMint(): AccountInfo<Buffer> {
-  const data = Buffer.alloc(MINT_SIZE);
-  MintLayout.encode(
-    {
-      mintAuthorityOption: 0, mintAuthority: PublicKey.default,
-      supply: 1_000_000_000n, decimals: 6, isInitialized: true,
-      freezeAuthorityOption: 0, freezeAuthority: PublicKey.default,
-    },
-    data,
-  );
-  return { data, executable: false, lamports: 1461600, owner: TOKEN_PROGRAM_ID, rentEpoch: 0 };
-}
-
-const viThuong = (lamports: number): AccountInfo<Buffer> => ({
-  data: Buffer.alloc(0),
-  executable: false,
-  lamports,
-  owner: new PublicKey("11111111111111111111111111111111"),
-  rentEpoch: 0,
-});
-
-/** RPC giả: trả trạng thái TRƯỚC và SAU đúng như giao dịch tấn công gây ra. */
-function rpcGia(opts: { doiChu: boolean; chuyenTien: boolean }) {
-  const truoc = new Map<string, AccountInfo<Buffer>>([
-    [ataNanNhan.toBase58(), taiKhoanToken(nanNhan.publicKey, SO_LUONG)],
-    [ataKeTanCong.toBase58(), taiKhoanToken(keTanCong, 0n)],
-    [mint.toBase58(), taiKhoanMint()],
-    [nanNhan.publicKey.toBase58(), viThuong(1_000_000_000)],
-  ]);
-
-  const sau = new Map<string, AccountInfo<Buffer>>([
-    [
-      ataNanNhan.toBase58(),
-      taiKhoanToken(
-        opts.doiChu ? keTanCong : nanNhan.publicKey,
-        opts.chuyenTien ? 0n : SO_LUONG,
-      ),
-    ],
-    [ataKeTanCong.toBase58(), taiKhoanToken(keTanCong, opts.chuyenTien ? SO_LUONG : 0n)],
-    [mint.toBase58(), taiKhoanMint()],
-    [nanNhan.publicKey.toBase58(), viThuong(1_000_000_000 - 5000)],
-  ]);
-
-  return {
-    getAddressLookupTable: async () => ({ value: null }),
-    getMultipleAccountsInfo: async (keys: PublicKey[]) =>
-      keys.map((k) => truoc.get(k.toBase58()) ?? null),
-    simulateTransaction: async (_tx: unknown, cfg: { accounts?: { addresses: string[] } }) => ({
-      context: { slot: 1 },
-      value: {
-        err: null,
-        logs: [],
-        innerInstructions: [],
-        accounts: (cfg.accounts?.addresses ?? []).map((a) => {
-          const info = sau.get(a);
-          if (!info) return null;
-          return {
-            data: [info.data.toString("base64"), "base64"] as [string, string],
-            executable: info.executable,
-            lamports: info.lamports,
-            owner: info.owner.toBase58(),
-            rentEpoch: info.rentEpoch,
-          };
-        }),
-      },
-    }),
-  } as never;
-}
-
-const txTanCong = () =>
-  dungGiaoDichTanCong({
-    nanNhan: nanNhan.publicKey, keTanCong, mint, soLuong: SO_LUONG, blockhash: BLOCKHASH,
-  });
+/*
+ * Hiện trường dựng ở `scripts/hienTruongGia.ts` để cổng tích hợp tất định
+ * (`npm run thu-tich-hop:deterministic`) dùng CHUNG đúng một hiện trường. Hai bản
+ * sao của sáu chục dòng buffer SPL thì sớm muộn lệch nhau, và lúc đó một cổng xanh
+ * trong khi cổng kia đỏ mà không ai biết vì sao.
+ */
+const HT = dungHienTruongGia();
+const { keTanCong, rpcGia, txTanCong, txLanhTinh } = HT;
 
 test("ĐẦU-CUỐI — giao dịch tấn công ra verdict ĐỎ", async () => {
   const r = await inspect(
@@ -184,9 +91,7 @@ test("TRUNG THỰC — chỉ đổi chủ mà KHÔNG chuyển tiền thì số d
 test("ÂM TÍNH — chuyển tiền bình thường cho bạn KHÔNG bị gắn cờ Đỏ", async () => {
   const r = await inspect(
     { connection: rpcGia({ doiChu: false, chuyenTien: true }), interpret: dienGiaiKhongAI },
-    dungGiaoDichLanhTinh({
-      nanNhan: nanNhan.publicKey, banBe: keTanCong, mint, soLuong: SO_LUONG, blockhash: BLOCKHASH,
-    }),
+    txLanhTinh(),
     { locale: "vi" },
   );
   assert.notEqual(r.level, "danger", `chuyển tiền hợp lệ bị gắn Đỏ là báo nhầm: ${r.reasonCodes}`);

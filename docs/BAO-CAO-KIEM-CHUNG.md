@@ -9,9 +9,9 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
 - Commit của bản này: chạy `git rev-parse --short HEAD`
 - Hai ô máy-kiểm — *release notes* và *bằng chứng tích hợp* — **đỏ ngay sau mỗi
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
-  sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop`
+  sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `367384e`, cây làm việc sạch — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `c188948`, cây làm việc sạch — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -42,10 +42,10 @@ API, hay ví có tiền.
 | Luật có ca đối chứng gần giống | **9/14** | `npm run check` — 5 luật thiếu được **kê tên kèm lý do** |
 | Bẫy đối kháng AI bị chặn | **13/13** | `npm run eval-ai` |
 | Bẫy chặn được **trên gói đã đóng** | **10/10** | `npm run thu-goi` |
-| Tích hợp từ ngoài monorepo | **8,1 giây** tới kết quả đầu | `npm run thu-tich-hop` |
-| — dải đo | **6,8–12 giây**, trung vị 9 lượt trên 7 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
+| Tích hợp từ ngoài monorepo | **7 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
+| — dải đo | **6,9–11,8 giây**, trung vị 10 lượt | `data/tich-hop/ket-qua.json` → `lichSuPass` |
 | — dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` |
-| — một lượt `inspect()` | **614 ms** | cùng file |
+| — một lượt `inspect()` | **606 ms** | cùng file |
 | Phỏng vấn người dùng **thật** | **20** — 13 đúng · 5 một phần · 2 sai | `data/seed/` + `docs/BIEN-BAN-PHONG-VAN.md` |
 | Phỏng vấn **người mua** | **0** | — |
 | Bên thứ ba tích hợp | **0** | `data/tich-hop/ket-qua.json` → `doiTac: null` |
@@ -70,7 +70,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
-| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `367384e` | `ket-qua.json` → `lastAttempt` |
+| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `c188948` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **chỉ tài liệu đổi** | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | `ai@0.1.2` · `core@0.1.1`, trong khi source là **`0.2.0`** | `npm view @custos-solana/ai version` |
@@ -218,7 +218,8 @@ bài đã đạt.
 ```bash
 npm run check                  # typecheck + toàn bộ test
 npm run thu-goi                # cài gói như người ngoài + 10 bẫy đối kháng
-npm run thu-tich-hop           # dApp mẫu chạy thật trên Devnet
+npm run thu-tich-hop:deterministic  # cổng tích hợp, fixture — phải 100%
+npm run thu-tich-hop:devnet         # dApp mẫu chạy thật — sức khoẻ mạng
 npm run eval-ai                # 13 bẫy đối kháng trên mã nguồn
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag

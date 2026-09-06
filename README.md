@@ -35,7 +35,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 8,1 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 7 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -59,12 +59,24 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 06/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **8,1 giây** — trung vị 9 lượt trên 7 bản dựng, dải 6,8–12 |
+| Cài đặt → kết quả đầu tiên | **7 giây** — trung vị 10 lượt, dải 6,9–11,8 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **614 ms** — trung vị 9 lượt trên 7 bản dựng |
+| Một lượt kiểm tra | **606 ms** — trung vị 10 lượt |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
-dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop`.
+dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
+
+**Hai lệnh, hai câu hỏi khác nhau — đừng đọc lẫn:**
+
+| Lệnh | Hỏi gì | Chạy trên | Ngưỡng |
+|---|---|---|---|
+| `thu-tich-hop:deterministic` | Custos xử **đúng** chưa? | fixture, không mạng | **100 %**, nằm trong CI |
+| `thu-tich-hop:devnet` | Kết nối thật còn **sống** không? | RPC Devnet công cộng | 10/10 lượt gần nhất hoàn tất |
+
+Tách vì một lượt live đỏ **không** có nghĩa là phát hiện sai — RPC công cộng chậm là
+cả ba check của kịch bản lành tính cùng đỏ trong khi sản phẩm fail-closed hoàn toàn
+đúng. Gộp hai câu hỏi vào một lệnh là cách nhanh nhất để tự ghi một lỗi mạng thành
+lỗi bảo mật của chính mình.
 
 ## Sản phẩm làm gì
 
