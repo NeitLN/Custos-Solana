@@ -50,6 +50,7 @@ const lich = doc("docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md");
 const oTrong = (lich.match(/^- \[ \]/gm) ?? []).length;
 
 import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
+import { bangChungConHieuLuc } from "./toTien.ts";
 
 const NL = String.fromCharCode(10);
 const sha = execFileSync("git", ["rev-parse", "--short", "HEAD"], { encoding: "utf8" }).trim();
@@ -300,17 +301,8 @@ if (STRICT) {
       f === "scripts/dong-goi-sdk.mjs" ||
       f === "scripts/thu-tich-hop.mjs" ||
       f === "apps/demo-wallet/public/hien-truong.json");
-  let bunTH: string[] = [];
-  let toTienTH = false;
-  if (shaTH && !nongCan) {
-    try {
-      execFileSync("git", ["merge-base", "--is-ancestor", shaTH, "HEAD"], { stdio: "ignore" });
-      toTienTH = true;
-      bunTH = lechNgoaiTheo(shaTH, laMa);
-    } catch {
-      toTienTH = false;
-    }
-  }
+  // Quy tắc tổ tiên nằm ở `toTien.ts` — một bản duy nhất cho cả hai cổng.
+  const klTH = bangChungConHieuLuc(shaTH);
 
   muc.push({
     ten: "Bằng chứng tích hợp thuộc đúng bản này",
@@ -318,7 +310,7 @@ if (STRICT) {
       !cuTH &&
       bcTichHop?.lanGanNhat?.dat === true &&
       bcTichHop.lanGanNhat.dirtyWorktree !== true &&
-      (shaTH === shaDay || (toTienTH && bunTH.length === 0)),
+      klTH.con,
     chiTiet: !bcTichHop
       ? "chưa chạy `npm run thu-tich-hop:devnet`"
       : cuTH
@@ -327,13 +319,7 @@ if (STRICT) {
           ? `lượt gần nhất HỎNG [${bcTichHop.lanGanNhat?.failureCategory ?? "?"}]`
           : bcTichHop.lanGanNhat.dirtyWorktree
             ? "đo trên cây làm việc bẩn — chạy lại trên cây sạch"
-            : shaTH === shaDay
-              ? `đo tại ${(shaTH ?? "").slice(0, 7)} = HEAD`
-              : !toTienTH
-                ? `đo tại ${(shaTH ?? "?").slice(0, 7)} — không phải tổ tiên của HEAD, đo lại`
-                : bunTH.length === 0
-                  ? `đo tại ${(shaTH ?? "").slice(0, 7)}; từ đó tới HEAD chỉ tài liệu đổi`
-                  : `${bunTH.length} commit chạm mã sau lượt đo: ${bunTH.join(", ")}`,
+            : klTH.vi,
     ai: "máy",
   });
 
