@@ -33,6 +33,9 @@ const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
 const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
 // Dải đo và số lượt — để câu chữ nói đúng con số là trung vị của bao nhiêu lượt.
 const SO_LUOT = S.tichHop?.soLuotDo ?? 1;
+// Chuỗi đo trải qua nhiều bản dựng thì phải nói ra — gộp im lặng là ngụ ý cùng một bản.
+const SO_COMMIT = S.tichHop?.soCommitDo ?? 1;
+const CUM_LUOT = SO_COMMIT > 1 ? `${SO_LUOT} lượt trên ${SO_COMMIT} bản dựng` : `${SO_LUOT} lượt`;
 const DAI =
   S.tichHop?.giayThapNhat != null && S.tichHop?.giayCaoNhat != null
     ? `${String(S.tichHop.giayThapNhat).replace(".", ",")}–${String(S.tichHop.giayCaoNhat).replace(".", ",")}`
@@ -199,21 +202,21 @@ if (GIAY && DAI) {
   thayDong("README.md", [
     [
       /^\| Cài đặt → kết quả đầu tiên \|/,
-      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${SO_LUOT} lượt, dải ${DAI} |`,
+      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${CUM_LUOT}, dải ${DAI} |`,
     ],
     [
       /^\| Một lượt kiểm tra \|/,
-      () => `| Một lượt kiểm tra | **${S.tichHop.msMotLuot} ms** — trung vị ${SO_LUOT} lượt đo |`,
+      () => `| Một lượt kiểm tra | **${S.tichHop.msMotLuot} ms** — trung vị ${CUM_LUOT} |`,
     ],
   ]);
   thayDong("vi-du-tich-hop/README.md", [
     [
       /^\| Cài đặt → kết quả đầu tiên \|/,
-      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${SO_LUOT} lượt, dải ${DAI} |`,
+      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${CUM_LUOT}, dải ${DAI} |`,
     ],
     [
       /^\| Một lượt `inspect\(\)` \|/,
-      () => `| Một lượt \`inspect()\` | **${S.tichHop.msMotLuot} ms** — trung vị ${SO_LUOT} lượt đo |`,
+      () => `| Một lượt \`inspect()\` | **${S.tichHop.msMotLuot} ms** — trung vị ${CUM_LUOT} |`,
     ],
   ]);
 }
