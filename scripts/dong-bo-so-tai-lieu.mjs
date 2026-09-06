@@ -258,4 +258,40 @@ thayDong("docs/BAO-CAO-TONG.md", [
   [/^npm run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
 ]);
 
+/*
+ * BÁO CÁO KIỂM CHỨNG LÀ TRANG NGƯỜI CHẤM MỞ RA ĐỂ ĐỐI CHIẾU.
+ *
+ * Nó liệt kê số kèm LỆNH tự kiểm. Một con số cũ ở đây tệ hơn ở bất kỳ đâu khác:
+ * người đọc chạy lệnh, thấy lệch, và kết luận đúng rằng repo nói sai về chính mình.
+ */
+thayDong("docs/BAO-CAO-KIEM-CHUNG.md", [
+  [/^\| Test tự động \|/, (d) => d.replace(/\*\*\d+\*\* pass/, `**${S.test.pass}** pass`)],
+  [/^\| Luật tất định \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soLuat}**`)],
+  [/^\| Mẫu kiểm thử gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+  [
+    /^\| Bẫy đối kháng AI bị chặn \|/,
+    (d) => d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**`),
+  ],
+  [
+    /^\| Tích hợp từ ngoài monorepo \|/,
+    (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${GIAY} giây**`),
+  ],
+  [/^\| — một lượt `inspect\(\)` \|/, (d) => d.replace(/\*\*\d+ ms\*\*/, `**${S.tichHop.msMotLuot} ms**`)],
+  [/^\| — dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.tichHop.dongMa}**`)],
+  [
+    /^\| — dải đo \|/,
+    () =>
+      `| — dải đo | **${DAI} giây**, trung vị ${CUM_LUOT} | \`data/tich-hop/ket-qua.json\` → \`lichSuPass\` |`,
+  ],
+  [
+    /^\| Phỏng vấn người dùng \*\*thật\*\* \|/,
+    (d) =>
+      d.replace(
+        /\*\*\d+\*\* — \d+ đúng · \d+ một phần · \d+ sai/,
+        `**${S.phongVan.n}** — ${S.phongVan.hieu.dung} đúng · ${S.phongVan.hieu.motPhan} một phần · ${S.phongVan.hieu.sai} sai`,
+      ),
+  ],
+  [/^  \*\*382 test chứng minh|^- \*\*\d+ test chứng minh/, (d) => d.replace(/\d+ test/, `${S.test.pass} test`)],
+]);
+
 console.log("xong. Chạy `npm run check` để guard xác nhận.");
