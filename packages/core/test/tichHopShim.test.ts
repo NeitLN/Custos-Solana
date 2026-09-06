@@ -8,7 +8,7 @@ import { kiemTruocKhiKy } from "../../../vi-du-tich-hop/src/tich-hop.js";
 /*
  * BÀI KIỂM TẤT ĐỊNH CHO RANH GIỚI TÍCH HỢP.
  *
- * `npm run thu-tich-hop` chạy thật trên Devnet công cộng, nên nó chứng minh được
+ * `npm run thu-tich-hop:devnet` chạy thật trên Devnet công cộng, nên nó chứng minh được
  * "kết nối thật hoạt động" nhưng KHÔNG chứng minh được hợp đồng bảo mật một cách
  * lặp lại: mạng chậm là cả ba check của kịch bản bình thường cùng đỏ, và CI thì
  * không được phụ thuộc vào tốc độ của một RPC công cộng.

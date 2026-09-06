@@ -75,7 +75,7 @@ const muc: Muc[] = [
     // Đếm từ mảng thật. Bản trước ghi cứng "5/5" và nó tụt lại khi số check lên 8 —
     // một checklist nói sai về chính nó thì không ai kiểm được gì bằng nó.
     chiTiet: !tichHop
-      ? "chưa chạy `npm run thu-tich-hop`"
+      ? "chưa chạy `npm run thu-tich-hop:devnet`"
       : tichHop.dat
         ? `${(tichHop.kiem ?? []).filter((k) => k.dat).length}/${(tichHop.kiem ?? []).length} kịch bản pass · ${thoiDiem(tichHop) ?? "?"}`
         : `LƯỢT GẦN NHẤT HỎNG [${tichHop.failureCategory ?? "?"}] — ${tichHop.loi ?? "không rõ"}`,
@@ -320,9 +320,9 @@ if (STRICT) {
       bcTichHop.lanGanNhat.dirtyWorktree !== true &&
       (shaTH === shaDay || (toTienTH && bunTH.length === 0)),
     chiTiet: !bcTichHop
-      ? "chưa chạy `npm run thu-tich-hop`"
+      ? "chưa chạy `npm run thu-tich-hop:devnet`"
       : cuTH
-        ? "schema v1 — không ghi được lượt hỏng. Chạy lại `npm run thu-tich-hop`"
+        ? "schema v1 — không ghi được lượt hỏng. Chạy lại `npm run thu-tich-hop:devnet`"
         : bcTichHop.lanGanNhat?.dat !== true
           ? `lượt gần nhất HỎNG [${bcTichHop.lanGanNhat?.failureCategory ?? "?"}]`
           : bcTichHop.lanGanNhat.dirtyWorktree

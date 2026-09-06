@@ -21,7 +21,6 @@
     "soi-khoa": "node scripts/soi-ro-ri-khoa.mjs site",
     "publish-sdk": "node scripts/dong-goi-sdk.mjs --publish",
     "thu-goi": "node scripts/thu-goi-nguoi-ngoai.mjs",
-    "thu-tich-hop": "node scripts/thu-tich-hop.mjs",
     "eval-ai": "node --experimental-strip-types scripts/eval-ai.ts",
     "nguoi-mua": "node --experimental-strip-types scripts/kiem-nguoi-mua.ts",
     "soi-rieng-tu": "node --experimental-strip-types scripts/soi-tai-dinh-danh.ts",
@@ -29,7 +28,9 @@
     "nop-bai": "node --experimental-strip-types scripts/kiem-nop-bai.ts",
     "nop-bai-strict": "node --experimental-strip-types scripts/kiem-nop-bai.ts --strict",
     "release-notes": "node --experimental-strip-types scripts/tao-release-notes.ts",
-    "chup-anh": "python scripts/chup-anh-nop-bai.py"
+    "chup-anh": "python scripts/chup-anh-nop-bai.py",
+    "thu-tich-hop:deterministic": "node --experimental-strip-types scripts/thu-tich-hop-tat-dinh.ts",
+    "thu-tich-hop:devnet": "node scripts/thu-tich-hop.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
