@@ -28,9 +28,9 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 | | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **6,8 giây** — trung vị 3 lượt, dải 6,8–9,4 |
+| Cài đặt → kết quả đầu tiên | **8,1 giây** — trung vị 4 lượt trên 2 bản dựng, dải 6,8–11,7 |
 | Dòng mã tích hợp | **29** (`src/tich-hop.js`) |
-| Một lượt `inspect()` | **614 ms** — trung vị 3 lượt đo |
+| Một lượt `inspect()` | **617 ms** — trung vị 4 lượt trên 2 bản dựng |
 | Cần khoá riêng | **không** — `inspect()` mô phỏng, mô phỏng không đòi chữ ký |
 | Cần khoá API mô hình | **không** — đường tất định `dienGiaiKhongAI` |
 
