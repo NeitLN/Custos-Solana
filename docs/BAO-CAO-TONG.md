@@ -15,7 +15,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 
 | | |
 |---|---|
-| Test tự động | **378** pass · 0 fail |
+| Test tự động | **382** pass · 0 fail |
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **33** |
 | Bẫy đối kháng AI bị chặn | **13/13** |
@@ -99,6 +99,9 @@ Phần này quan trọng hơn phần trên: nó cho biết **cái gì đã suýt
 | Tôi tự thêm `pptxgenjs` → **+2 lỗ hổng high** | Chạy lại `npm audit` trong vòng review |
 | Ghi đè `cohort-ket-qua.json` bằng dữ liệu 0 mẫu, rồi số 0 chảy vào 4 tài liệu | Đọc lại git diff |
 | Cổng `--strict` tôi vừa viết chứa **hai ô loại trừ nhau** — không bao giờ mở được | Chạy nó thật, đọc từng dòng đỏ |
+| Lượt tích hợp **hỏng** vẫn để artifact cũ báo `8/8 pass` | Chèn một check đỏ cố ý rồi xem file bằng chứng |
+| Gói đã đóng để **4/10 bẫy trấn an** lọt tới người dùng | Cắm mô hình bịa vào `inspect()` **từ project ngoài** |
+| Commit một script hỏng cú pháp, 377 test vẫn xanh | `node --check` — `tsc` không đụng `.mjs` |
 
 Dòng cuối đáng nói riêng. `--strict` bản đầu đòi release notes ghi đúng SHA của
 `HEAD`, đồng thời đòi cây làm việc sạch. Release notes **không thể** chứa SHA của
@@ -176,7 +179,7 @@ bộ, CI xanh, không có khoá trong bundle, runtime chỉ Devnet.
 ## 7 · Lệnh cần nhớ
 
 ```bash
-npm run check                  # 378 test + typecheck
+npm run check                  # 382 test + typecheck
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag
 npm run thu-goi                # cài gói như người ngoài
