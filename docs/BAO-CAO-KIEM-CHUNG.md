@@ -7,6 +7,10 @@ những gì trang này ghi, trang này sai — không phải lệnh sai. Chỗ n
 trang này ghi là **chưa đo được** thay vì ước lượng.
 
 - Commit của bản này: chạy `git rev-parse --short HEAD`
+- Hai ô máy-kiểm — *release notes* và *bằng chứng tích hợp* — **đỏ ngay sau mỗi
+  commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
+  sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop`
+  rồi `npm run release-notes`.
 - Bằng chứng tích hợp đo tại: `01f5112`, cây làm việc sạch
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
@@ -38,15 +42,15 @@ API, hay ví có tiền.
 | Luật có ca đối chứng gần giống | **9/14** | `npm run check` — 5 luật thiếu được **kê tên kèm lý do** |
 | Bẫy đối kháng AI bị chặn | **13/13** | `npm run eval-ai` |
 | Bẫy chặn được **trên gói đã đóng** | **10/10** | `npm run thu-goi` |
-| Tích hợp từ ngoài monorepo | **7,3 giây** tới kết quả đầu | `npm run thu-tich-hop` |
-| — dải đo | **6,8–11,7 giây**, trung vị 5 lượt trên 3 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
+| Tích hợp từ ngoài monorepo | **8,4 giây** tới kết quả đầu | `npm run thu-tich-hop` |
+| — dải đo | **6,8–11,7 giây**, trung vị 6 lượt trên 4 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
 | — dòng mã tích hợp | **29** | `vi-du-tich-hop/src/tich-hop.js` |
-| — một lượt `inspect()` | **620 ms** | cùng file |
+| — một lượt `inspect()` | **621 ms** | cùng file |
 | Phỏng vấn người dùng **thật** | **20** — 13 đúng · 5 một phần · 2 sai | `data/seed/` + `docs/BIEN-BAN-PHONG-VAN.md` |
 | Phỏng vấn **người mua** | **0** | — |
 | Bên thứ ba tích hợp | **0** | `data/tich-hop/ket-qua.json` → `doiTac: null` |
 | Lỗ hổng phụ thuộc | **11** — 5 high · 6 moderate | `npm audit` |
-| Checklist nộp bài (strict) | **5/13 chưa đạt**, không ô nào là việc của máy | `npm run nop-bai -- --strict` |
+| Checklist nộp bài (strict) | **Mọi ô máy-kiểm đã đạt.** Các ô còn lại cần người hoặc bên ngoài — xem mục 7 | `npm run nop-bai -- --strict` |
 
 ### Ba chữ không được dùng lẫn
 
