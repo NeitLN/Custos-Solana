@@ -235,6 +235,9 @@ function docTichHop() {
     dongMa: pass.dongMaTichHop,
     msMotLuot: luotTv,
     soLuotDo: Math.max(ms.length, 1),
+    // Số commit mà chuỗi đo trải qua. "Trung vị 4 lượt" đúng nhưng giấu mất việc
+    // bốn lượt ấy không cùng một bản dựng; câu chữ phải tự khai điều đó.
+    soCommitDo: new Set(bc.lichSuPass.map((x) => x.sourceCommit).filter(Boolean)).size,
     ngayPass: thoiDiem(pass),
     // `null` nghĩa là CHƯA CÓ đối tác. Trang đọc trường này để không nói quá.
     doiTac: bc.doiTac ?? null,
