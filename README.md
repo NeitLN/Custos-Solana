@@ -223,6 +223,7 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 
 ## Tài liệu
 
+- **[docs/BAO-CAO-KIEM-CHUNG.md](docs/BAO-CAO-KIEM-CHUNG.md)** — **dành cho người chấm**: mỗi con số kèm lệnh tự kiểm, và danh sách những gì bản này KHÔNG chứng minh
 - **[docs/BAO-CAO-TONG.md](docs/BAO-CAO-TONG.md)** — **đọc trước nếu cần nắm nhanh**: đã làm gì, còn thiếu gì, và những lỗi đã suýt lọt
 - **[CUSTOS.md](CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
 - **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
