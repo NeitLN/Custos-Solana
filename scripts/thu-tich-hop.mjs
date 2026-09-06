@@ -251,9 +251,25 @@ try {
   Object.assign(luot, payload);
   luot.dat = Array.isArray(luot.kiem) && luot.kiem.length > 0 && luot.kiem.every((k) => k.dat);
   if (!luot.dat) {
-    luot.failureCategory = "assertion_failure";
+    /*
+     * "HỎNG VÌ PHÁT HIỆN" VÀ "HỎNG VÌ MẠNG" PHẢI MANG HAI NHÃN KHÁC NHAU.
+     *
+     * Bản trước gán cứng `assertion_failure` cho mọi lượt đỏ. Nhưng khi Devnet chậm,
+     * shim fail-closed đúng hợp đồng và ba check của kịch bản bình thường cùng đỏ —
+     * không assertion nào sai cả. Nhãn đó nói xấu chính engine luật bằng dữ liệu sai,
+     * và người đọc bằng chứng không có cách nào biết được.
+     *
+     * `chay.js` nay tự khai qua trường `hoTang`. Có nó thì lấy đúng loại; không có
+     * thì mới là assertion thật.
+     */
     const hong = luot.kiem.filter((k) => !k.dat);
-    luot.loi = `${hong.length} kiểm tra không đạt: ${hong.map((k) => k.ten).join(" · ")}`;
+    if (luot.hoTang) {
+      luot.failureCategory = luot.hoTang.loai;
+      luot.loi = `hạ tầng: ${luot.hoTang.chiTiet}`;
+    } else {
+      luot.failureCategory = "assertion_failure";
+      luot.loi = `${hong.length} kiểm tra không đạt: ${hong.map((k) => k.ten).join(" · ")}`;
+    }
   }
 } catch (e) {
   luot.dat = false;
@@ -309,6 +325,12 @@ if (luot.dat) {
   console.log(`  dòng mã tích hợp   : ${luot.dongMaTichHop}`);
 } else {
   console.error(`  phân loại lỗi      : ${luot.failureCategory}`);
+  if (luot.chang && Object.keys(luot.chang).length > 0) {
+    const d = Object.entries(luot.chang)
+      .map(([k, v]) => `${k}=${v}ms`)
+      .join(" · ");
+    console.error(`  đồng hồ từng chặng : ${d}`);
+  }
   if (bao.lastSuccessful?.finishedAt || bao.lastSuccessful?.doLuc) {
     console.error(
       `  lượt pass gần nhất : ${bao.lastSuccessful.finishedAt ?? bao.lastSuccessful.doLuc}` +

@@ -12,6 +12,20 @@
  *      không bao giờ dễ dãi hơn — khớp thì KHÔNG hạ mức, lệch thì nâng nghi ngờ.
  *   3. FAIL CLOSED. `inspect()` ném lỗi, quá hạn, hay mất mạng đều KHÔNG được
  *      thành "an toàn". Không kiểm được thì phải hỏi người dùng, không được ký.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * "CHẶN VÌ PHÁT HIỆN" VÀ "CHẶN VÌ KHÔNG KIỂM ĐƯỢC" LÀ HAI CHUYỆN.
+ *
+ * Cả hai đều trả `cho: "chan"` — đúng, vì cả hai đều không được ký. Nhưng gộp
+ * chúng làm một thì:
+ *
+ *   · ví hiện cho người dùng một cảnh báo nguy hiểm trong khi thật ra Devnet chậm,
+ *     và người dùng học được rằng cảnh báo của Custos hay báo bừa;
+ *   · bộ đo ghi một lượt mạng hỏng thành "phát hiện sai", tức nói xấu chính engine
+ *     luật của mình bằng dữ liệu sai.
+ *
+ * Nên `lyDo` đi kèm quyết định. `cho` trả lời *ví phải làm gì*; `lyDo` trả lời
+ * *vì sao* — và hai câu đó không được suy ra từ nhau.
  */
 
 /** Quá hạn thì coi như chưa kiểm được — không phải coi như an toàn. */
@@ -28,9 +42,25 @@ function coHan(viec, ms) {
 /**
  * Chạy Custos trước khi ký. Trả về quyết định cho dApp.
  *
- * @returns {Promise<{cho: "ky"|"hoi"|"chan", ketQua: object|null, loi: string|null}>}
+ * @returns {Promise<{
+ *   cho: "ky"|"hoi"|"chan",
+ *   lyDo: "khong_van_de"|"coverage_khuyet"|"phat_hien"|"khong_kiem_duoc",
+ *   ketQua: object|null,
+ *   loi: string|null,
+ * }>}
  */
-export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNguoiDung, dAppKhai }) {
+export async function kiemTruocKhiKy({
+  inspect,
+  connection,
+  interpret,
+  tx,
+  viNguoiDung,
+  dAppKhai,
+  // Hạn để MỞ được cho bài kiểm. Không có tham số này thì tính chất quan trọng
+  // nhất của file — quá hạn KHÔNG thành an toàn — chỉ kiểm được bằng cách chờ
+  // 12 giây thật, tức là không ai kiểm.
+  hanMs = HAN_MS,
+}) {
   let r;
   try {
     r = await coHan(
@@ -41,20 +71,21 @@ export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNgu
         // (2) ngữ cảnh do dApp khai — chỉ để phát hiện lệch
         ...(dAppKhai ? { expectedAction: dAppKhai } : {}),
       }),
-      HAN_MS,
+      hanMs,
     );
   } catch (e) {
     // (3) FAIL CLOSED. Đây là dòng quan trọng nhất của cả file.
-    return { cho: "chan", ketQua: null, loi: e instanceof Error ? e.message : String(e) };
+    const loi = e instanceof Error ? e.message : String(e);
+    return { cho: "chan", lyDo: "khong_kiem_duoc", ketQua: null, loi };
   }
 
-  if (r.level === "danger") return { cho: "chan", ketQua: r, loi: null };
-  if (r.level === "warning") return { cho: "hoi", ketQua: r, loi: null };
+  if (r.level === "danger") return { cho: "chan", lyDo: "phat_hien", ketQua: r, loi: null };
+  if (r.level === "warning") return { cho: "hoi", lyDo: "phat_hien", ketQua: r, loi: null };
 
   // Coverage khuyết mà engine vẫn cho `safe` thì bên tích hợp vẫn nên hỏi lại:
   // "đọc hiểu 1/3 lệnh" không phải một lời bảo đảm.
   if (r.coverage && r.coverage.analyzed < r.coverage.total) {
-    return { cho: "hoi", ketQua: r, loi: null };
+    return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
-  return { cho: "ky", ketQua: r, loi: null };
+  return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
 }

@@ -35,6 +35,85 @@ function ck(ten, dat, lyDoThatBai) {
   console.log(`  ${dat ? "PASS" : "FAIL"}  ${ten}${dat ? "" : `   <<< ${lyDoThatBai}`}`);
 }
 
+/*
+ * MỘT LƯỢT HỎNG VÌ MẠNG KHÔNG ĐƯỢC GHI THÀNH LỖI PHÁT HIỆN.
+ *
+ * Khi Devnet chậm, `inspect()` quá hạn → shim fail-closed đúng hợp đồng và trả
+ * `cho: "chan", ketQua: null, loi: "Custos quá hạn sau 12000 ms"`. Ba check của kịch
+ * bản bình thường cùng đỏ, và bản trước ghi vào bằng chứng:
+ *
+ *     chiTiet: 'quyết định "chan"'       ← đúng, nhưng vô dụng
+ *     failureCategory: assertion_failure ← SAI: không assertion nào sai cả
+ *
+ * `qThuong.loi` giữ nguyên nhân thật nhưng chưa bao giờ được in ra hay ghi lại. Với
+ * một sản phẩm bảo mật, nhãn sai đó nói xấu chính engine luật của mình: người đọc
+ * bằng chứng thấy "phát hiện sai" ở đúng chỗ thật ra là "mạng hỏng".
+ */
+const HO_TANG = [
+  [/quá hạn sau \d+ ms/i, "timeout"],
+  [/blockhash/i, "blockhash_error"],
+  [/429|rate.?limit|too many requests/i, "rpc_rate_limit"],
+  [/fetch failed|ECONNRESET|ETIMEDOUT|ENOTFOUND|socket hang up|network/i, "rpc_error"],
+  [/failed to (get|simulate)|simulation/i, "simulation_error"],
+];
+
+/** Phân loại một thông điệp lỗi hạ tầng. */
+function phanLoaiLoi(loi) {
+  if (!loi) return null;
+  for (const [mau, ten] of HO_TANG) if (mau.test(loi)) return ten;
+  return "loi_khong_ro";
+}
+
+/** Đồng hồ theo CHẶNG — để biết lượt hỏng dừng ở đâu, không chỉ biết nó hỏng. */
+const chang = {};
+async function doChang(ten, viec) {
+  const t = Date.now();
+  try {
+    return await viec;
+  } finally {
+    chang[ten] = Date.now() - t;
+  }
+}
+
+/*
+ * BLOCKHASH PHẢI CÓ HẠN RIÊNG, VÀ PHẢI MỚI CHO TỪNG KỊCH BẢN.
+ *
+ * Bản trước gọi `getLatestBlockhash()` một lần, không hạn, rồi dùng lại cho cả kịch
+ * bản 2 — vốn chạy sau kịch bản 1 cộng năm lượt benchmark. Hai hệ quả:
+ *
+ *   · Devnet treo ngay ở lệnh đó thì `main()` ném TRƯỚC khi in JSON, nên bằng chứng
+ *     không có gì để đọc và harness chỉ ghi được `harness_parse_error`.
+ *   · Trên mạng chậm, blockhash dùng lại có thể đã quá hạn khi tới kịch bản 2 — và
+ *     một mô phỏng hỏng vì blockhash cũ trông y hệt một phát hiện sai.
+ */
+const HAN_BLOCKHASH_MS = 8_000;
+
+function layBlockhash(conn, nhan) {
+  return doChang(
+    `blockhash_${nhan}`,
+    (async () => {
+      let dongHo;
+      const chuong = new Promise((_, tuChoi) => {
+        dongHo = setTimeout(
+          () => tuChoi(new Error(`lấy blockhash quá hạn sau ${HAN_BLOCKHASH_MS} ms`)),
+          HAN_BLOCKHASH_MS,
+        );
+      });
+      try {
+        const { blockhash } = await Promise.race([conn.getLatestBlockhash(), chuong]);
+        return blockhash;
+      } finally {
+        clearTimeout(dongHo);
+      }
+    })(),
+  );
+}
+
+/** Lý do thất bại: khi hỏng vì hạ tầng thì nói ra hạ tầng, đừng nói "quyết định chan". */
+function vietLyDo(q, macDinh) {
+  return q.lyDo === "khong_kiem_duoc" ? `${phanLoaiLoi(q.loi)} — ${q.loi}` : macDinh;
+}
+
 async function main() {
   const conn = new Connection(HT.rpc, "confirmed");
   const nguoiKy = new PublicKey(HT.nanNhan);
@@ -43,7 +122,7 @@ async function main() {
   const banBe = new PublicKey(HT.banBe);
 
   const t0 = Date.now();
-  const { blockhash } = await conn.getLatestBlockhash();
+  const blockhash = await layBlockhash(conn, "1");
 
   // ── 1 · giao dịch bình thường: Custos KHÔNG được cản vô lý ────────────────
   const txThuong = dungGiaoDichBinhThuong({
@@ -52,14 +131,14 @@ async function main() {
     lamports: 10_000_000,
     blockhash,
   });
-  const qThuong = await kiemTruocKhiKy({
+  const qThuong = await doChang("inspect_1", kiemTruocKhiKy({
     inspect,
     connection: conn,
     interpret: dienGiaiKhongAI,
     tx: txThuong,
     viNguoiDung: nguoiKy,
     dAppKhai: { type: "transfer", from: "SOL" },
-  });
+  }));
   console.log(`\n[1] chuyển 0,01 SOL — mức ${qThuong.ketQua?.level ?? "?"} · quyết định "${qThuong.cho}"`);
   /*
    * Kiểm ĐÚNG hợp đồng, không kiểm "không bị chặn".
@@ -68,16 +147,37 @@ async function main() {
    * vẫn PASS — trong khi tài liệu nói luồng lành tính dẫn thẳng tới ký. Bài kiểm
    * lỏng hơn lời hứa thì nó không bảo vệ lời hứa.
    */
-  ck("giao dịch bình thường cho KÝ", qThuong.cho === "ky", `quyết định "${qThuong.cho}"`);
+  if (qThuong.lyDo === "khong_kiem_duoc") {
+    console.log(`      ✖ KHÔNG KIỂM ĐƯỢC [${phanLoaiLoi(qThuong.loi)}] ${qThuong.loi}`);
+  }
+  ck(
+    "giao dịch bình thường cho KÝ",
+    qThuong.cho === "ky",
+    vietLyDo(qThuong, `quyết định "${qThuong.cho}"`),
+  );
   ck(
     "giao dịch bình thường ở mức safe",
     qThuong.ketQua?.level === "safe",
-    `mức ${qThuong.ketQua?.level ?? "?"}`,
+    vietLyDo(qThuong, `mức ${qThuong.ketQua?.level ?? "?"}`),
   );
+  /*
+   * SO undefined VỚI undefined THÌ LUÔN BẰNG NHAU.
+   *
+   * Bản trước chỉ hỏi `analyzed === total`. Khi `ketQua` là null — đúng lúc RPC
+   * hỏng — cả hai vế là `undefined`, nên check này XANH giữa một lượt không đọc
+   * được gì cả. Lượt ép RPC chết cho đúng 2 FAIL thay vì 3, và con số "FAIL 2/8"
+   * trong báo cáo review là cùng một hiện tượng.
+   *
+   * Một check xanh khi KHÔNG CÓ dữ liệu còn tệ hơn không có check.
+   */
   ck(
     "giao dịch bình thường đọc hiểu hết lệnh",
-    qThuong.ketQua?.coverage?.analyzed === qThuong.ketQua?.coverage?.total,
-    `đọc hiểu ${qThuong.ketQua?.coverage?.analyzed}/${qThuong.ketQua?.coverage?.total}`,
+    typeof qThuong.ketQua?.coverage?.total === "number" &&
+      qThuong.ketQua.coverage.analyzed === qThuong.ketQua.coverage.total,
+    vietLyDo(
+      qThuong,
+      `đọc hiểu ${qThuong.ketQua?.coverage?.analyzed}/${qThuong.ketQua?.coverage?.total}`,
+    ),
   );
 
   // Mốc "tới kết quả đầu tiên": dừng đồng hồ NGAY SAU kịch bản đầu, không tính
@@ -86,12 +186,15 @@ async function main() {
   const msKetQuaDau = Date.now() - t0;
 
   // ── 2 · dApp khai "airdrop" nhưng rút sạch token và đổi chủ tài khoản ──────
+  // Blockhash MỚI: kịch bản này chạy sau kịch bản 1 cộng năm lượt benchmark. Dùng
+  // lại blockhash cũ trên mạng chậm là tự tạo một lỗi mô phỏng trông như phát hiện sai.
+  const blockhash2 = await layBlockhash(conn, "2");
   const txGia = dungGiaoDichGiaDanhAirdrop({
     nguoiKy,
     keTanCong,
     mint,
     soLuong: BigInt(HT.soLuong),
-    blockhash,
+    blockhash: blockhash2,
     // Tài khoản token lấy từ cấu hình của dApp, KHÔNG suy ra từ ATA — xem dapp.js.
     taiKhoanNguon: new PublicKey(HT.taiKhoanNanNhan),
     taiKhoanDich: new PublicKey(HT.taiKhoanKeTanCong),
@@ -147,20 +250,39 @@ async function main() {
   console.log(
     `\n=== ${hong.length === 0 ? "TẤT CẢ PASS" : `${hong.length} FAIL`} · tổng ${Date.now() - t0} ms ===`,
   );
-  console.log(
-    JSON.stringify({
-      doLuc: new Date().toISOString(),
-      rpc: HT.rpc,
-      msKetQuaDau,
-      msMotLuotKiem: msGia,
-      msLuot: tre,
-      kiem: ket,
-    }),
-  );
+  console.log(JSON.stringify(payload({ msKetQuaDau, msMotLuotKiem: msGia, msLuot: tre })));
   process.exit(hong.length === 0 ? 0 : 1);
 }
 
+/*
+ * Một chỗ duy nhất dựng payload, để đường HỎNG và đường XONG không thể lệch nhau.
+ *
+ * `hoTang` là câu trả lời cho "lượt này hỏng vì phát hiện hay vì mạng". Harness đọc
+ * trường này thay vì đoán từ việc có check nào đỏ.
+ */
+function payload(them = {}) {
+  const hongHaTang = ket.find((k) => !k.dat && /^(timeout|rpc_|blockhash_|simulation_|loi_khong_ro)/.test(k.chiTiet));
+  return {
+    doLuc: new Date().toISOString(),
+    rpc: HT.rpc,
+    chang,
+    hoTang: hongHaTang ? { loai: hongHaTang.chiTiet.split(" — ")[0], chiTiet: hongHaTang.chiTiet } : null,
+    kiem: ket,
+    ...them,
+  };
+}
+
+/*
+ * HỎNG SỚM CŨNG PHẢI ĐỂ LẠI PAYLOAD.
+ *
+ * Bản trước: `getLatestBlockhash()` treo → `main()` ném → chỉ in "LỖI: ..." và thoát.
+ * Không dòng JSON nào, nên harness chỉ ghi được `harness_parse_error` — đúng chữ,
+ * nhưng giấu mất việc lượt đó chết ở chặng lấy blockhash.
+ */
 main().catch((e) => {
-  console.error("LỖI:", e instanceof Error ? e.message : e);
+  const loi = e instanceof Error ? e.message : String(e);
+  console.error(`LỖI: ${loi}`);
+  ck("lượt chạy hoàn tất", false, `${phanLoaiLoi(loi)} — ${loi}`);
+  console.log(JSON.stringify(payload()));
   process.exit(1);
 });
