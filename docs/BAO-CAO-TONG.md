@@ -19,7 +19,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 | Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **33** |
 | Bẫy đối kháng AI bị chặn | **13/13** |
-| Tích hợp từ ngoài monorepo | **7 giây** tới kết quả đầu · **30 dòng** · **606 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **7 giây** tới kết quả đầu · **30 dòng** · **607 ms** một lượt |
 | Phỏng vấn người dùng thật | **20** — 13 đúng · 5 một phần · 2 sai |
 | Phỏng vấn **người mua** | **0** |
 | Bên thứ ba tích hợp | **0** |
