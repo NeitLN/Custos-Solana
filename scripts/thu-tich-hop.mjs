@@ -119,7 +119,19 @@ function coMaChuaCommit() {
     .split(String.fromCharCode(10))
     .map((d) => d.slice(3).trim())
     .filter(Boolean)
-    .some((f) => /^(packages|apps|scripts|vi-du-tich-hop)\//.test(f) && !f.endsWith(".md"));
+    // CÙNG một định nghĩa "mã" với cổng nộp bài (`kiem-nop-bai.ts`). Bản trước ở đây
+    // rộng hơn: mọi file dưới `apps/` tính là mã, nên `so-lieu.json` chưa commit —
+    // thứ SINH RA TỪ chính lượt đo — làm lượt đo tự khai là "đo trên cây bẩn".
+    // Hai định nghĩa khác nhau cho cùng một chữ, trong cùng một repo, là chỗ nứt.
+    .some(
+      (f) =>
+        !f.endsWith(".md") &&
+        (/^packages\//.test(f) ||
+          /^vi-du-tich-hop\//.test(f) ||
+          f === "scripts/dong-goi-sdk.mjs" ||
+          f === "scripts/thu-tich-hop.mjs" ||
+          f === "apps/demo-wallet/public/hien-truong.json"),
+    );
 }
 
 function chayGit(args) {
