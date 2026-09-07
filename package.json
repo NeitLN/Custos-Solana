@@ -32,7 +32,8 @@
     "thu-tich-hop:deterministic": "node --experimental-strip-types scripts/thu-tich-hop-tat-dinh.ts",
     "thu-tich-hop:devnet": "node scripts/thu-tich-hop.mjs",
     "kiem-san-pham": "node --experimental-strip-types scripts/kiem-san-pham.ts",
-    "thu-goi-registry": "node scripts/thu-goi-registry.mjs"
+    "thu-goi-registry": "node scripts/thu-goi-registry.mjs",
+    "thong-ke-chuong-trinh": "node --experimental-strip-types scripts/thong-ke-chuong-trinh.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

@@ -1,0 +1,92 @@
+{
+  "doLuc": "2026-09-07T17:48:30.452Z",
+  "nguon": "data/seed/tx/*.base64 — cohort mainnet lưu offline",
+  "soTx": 29,
+  "tongLenh": 75,
+  "lenhDaDoc": 63,
+  "lenhChuaDoc": 12,
+  "khongPhanGiaiDuoc": 0,
+  "txCoDiaChiTuLookupTable": [],
+  "chuaCoDecoder": [
+    {
+      "programId": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
+      "ten": null,
+      "soLenh": 5,
+      "soTx": 1
+    },
+    {
+      "programId": "2VSNUquk7FqkbS27WJpm6J1175EhoLcGtxuExu3wrzVz",
+      "ten": null,
+      "soLenh": 2,
+      "soTx": 2
+    },
+    {
+      "programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+      "ten": null,
+      "soLenh": 2,
+      "soTx": 2
+    },
+    {
+      "programId": "BYdq7NJXWHnTzzCogT6VByrPXvUQwkD5PuZQLS8JvZtw",
+      "ten": null,
+      "soLenh": 1,
+      "soTx": 1
+    },
+    {
+      "programId": "3QUnrcMqCQoiGB73s1A6uDzxziywaNFpTLiZiiZbEUoN",
+      "ten": null,
+      "soLenh": 1,
+      "soTx": 1
+    },
+    {
+      "programId": "Duc1NDjQzUPv8HZkB27TSwddPwAd4EiEBj1Nxe2QonYN",
+      "ten": null,
+      "soLenh": 1,
+      "soTx": 1
+    }
+  ],
+  "daCoDecoder": [
+    {
+      "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "ten": "SPL Token",
+      "soLenh": 19,
+      "soTx": 15
+    },
+    {
+      "programId": "ComputeBudget111111111111111111111111111111",
+      "ten": "Compute Budget",
+      "soLenh": 19,
+      "soTx": 10
+    },
+    {
+      "programId": "11111111111111111111111111111111",
+      "ten": "System",
+      "soLenh": 11,
+      "soTx": 11
+    },
+    {
+      "programId": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+      "ten": "Associated Token Account",
+      "soLenh": 6,
+      "soTx": 4
+    },
+    {
+      "programId": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "ten": "Anchor pAMMBa… (IDL trên chuỗi)",
+      "soLenh": 4,
+      "soTx": 4
+    },
+    {
+      "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "ten": "Token-2022",
+      "soLenh": 3,
+      "soTx": 3
+    },
+    {
+      "programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+      "ten": "Anchor JUP6Lk… (IDL trên chuỗi)",
+      "soLenh": 1,
+      "soTx": 1
+    }
+  ]
+}
