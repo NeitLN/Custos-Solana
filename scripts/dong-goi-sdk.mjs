@@ -104,6 +104,14 @@ const chay = (cmd, args, cwd) =>
     cwd,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
+    // SHELL LÀ BẮT BUỘC Ở ĐÂY, dù Node cảnh báo DEP0190.
+    //
+    // Dòng trên tự bọc ngoặc kép quanh tham số có dấu cách — và cách bọc đó CHỈ
+    // đúng khi có shell phân giải lại. Tắt shell thì dấu ngoặc thành một phần của
+    // đường dẫn, và tsc báo không tìm thấy tsconfig. Đã thử tắt: đóng gói hỏng ngay.
+    //
+    // Cảnh báo DEP0190 nói về tham số KHÔNG đáng tin. Ở đây mọi tham số là hằng do
+    // repo viết, không có gì đến từ bên ngoài.
     shell: win,
   });
 
