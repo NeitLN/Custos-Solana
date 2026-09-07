@@ -29,6 +29,16 @@ if (!process.argv.includes("--da-do")) {
 const { mauDoDuoc: DO, mauTrongCohort: TONG, coveragePhanTram: COV, chamTaiSan: CT } = S.cohort;
 const CT_PT = Math.round((CT.hieu * 100) / CT.tong);
 
+/*
+ * SỐ LUẬT CÓ CẶP ĐỐI CHỨNG — đếm được, nên không được gõ tay.
+ *
+ * Ba tài liệu từng ghi cứng "9 luật", kèm cả danh sách "(1, 2, 4, 8, 12)" năm luật
+ * còn thiếu. Khi năm ca đối chứng đó được dựng, cả ba câu sai cùng lúc — và không
+ * guard nào biết, vì không ai đọc `soLuatCoCapDoiChung` cùng với chúng.
+ */
+const CAP = S.soLuatCoCapDoiChung ?? 0;
+const THIEU_CAP = S.soLuat - CAP;
+
 // Số tích hợp và NGÀY đo nó — cả hai từ `so-lieu.json`, không gõ tay.
 const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
 // Dải đo và số lượt — để câu chữ nói đúng con số là trung vị của bao nhiêu lượt.
@@ -226,6 +236,37 @@ if (GIAY && DAI) {
     ],
   ]);
 }
+
+thayDong("README.md", [
+  [
+    /^\| Mẫu trong bộ dữ liệu \|/,
+    () =>
+      `| Mẫu trong bộ dữ liệu | **${S.soMau}** — cả ${S.soLuat} luật đều có mẫu kích hoạt; ` +
+      (THIEU_CAP === 0
+        ? `**cả ${CAP} luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |`
+        : `**${CAP} luật** có thêm ca đối chứng gần giống. ${THIEU_CAP} luật còn thiếu được kê tên kèm lý do trong \`packages/core/test/capLuat.test.ts\` |`),
+  ],
+]);
+
+thayDong("docs/BAO-CAO-KIEM-CHUNG.md", [
+  [
+    /^\| Luật có ca đối chứng gần giống \|/,
+    () =>
+      `| Luật có ca đối chứng gần giống | **${CAP}/${S.soLuat}** | \`npm run check\` — ` +
+      (THIEU_CAP === 0
+        ? "mỗi cặp lệch đúng MỘT điều kiện quyết định |"
+        : `${THIEU_CAP} luật thiếu được **kê tên kèm lý do** |`),
+  ],
+]);
+
+thayDong("docs/BAO-CAO-TONG.md", [
+  [
+    /^\| Luật tất định \|/,
+    () =>
+      `| Luật tất định | **${S.soLuat}** — ` +
+      (THIEU_CAP === 0 ? `cả ${CAP} luật đều có ca đối chứng gần giống |` : `${CAP} luật có ca đối chứng gần giống |`),
+  ],
+]);
 
 thayDong("packages/core/README.md", [
   [

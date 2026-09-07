@@ -52,11 +52,19 @@ const thieuDoiChung = LUAT.filter((l) => doiChung(l).length === 0);
  * một khoảng trống không ai đếm thì nằm đó tới ngày bị hỏi.
  */
 const CHUA_CO_DOI_CHUNG = new Map<number, string>([
-  [1, "SetAuthority AccountOwner — cần ca đổi chủ HỢP LỆ (ví tự chuyển sang ví mình quản lý)"],
-  [2, "SetAuthority CloseAccount — cần ca đóng tài khoản rỗng đúng quy trình"],
-  [4, "cần ca gần giống chỉ khác điều kiện quyết định"],
-  [8, "ví nhận mới tinh — luật chỉ kích hoạt khi TRA ĐƯỢC tuổi ví, nên ca kích hoạt cũng chưa khẳng định được mã"],
-  [12, "cần ca gần giống chỉ khác điều kiện quyết định"],
+  // Trống — cả 14 luật đều đã có cặp kích-hoạt + đối-chứng.
+  //
+  // Năm ca cuối (luật 1, 2, 4, 8, 12) dựng bằng cách suy TỪ CHÍNH mẫu dương của
+  // luật đó và lệch đúng MỘT điều kiện quyết định:
+  //
+  //   R01-neg  tài khoản token đổi chủ, nhưng vốn thuộc ví KHÁC, không phải người ký
+  //   R02-neg  đặt close authority, nhưng đặt cho CHÍNH người ký
+  //   R04-neg  mint có permanent delegate, nhưng giao dịch KHÔNG chạm token mint ấy
+  //   R08-neg  cùng lượng token tới cùng ví nhận, nhưng ví đã tồn tại hơn một năm
+  //   R12-neg  account đổi program sở hữu, nhưng theo chiều ĐÓNG tài khoản
+  //
+  // Lệch nhiều hơn một điều kiện thì khi ca đối chứng im, không ai biết nó im vì
+  // điều kiện nào — và bài kiểm ranh giới mất hết ý nghĩa.
 ]);
 
 test("benchmark tuân thủ luật — mỗi ca đối chứng phải IM đúng mã của nó", () => {
@@ -84,8 +92,8 @@ test("số luật có cặp kích-hoạt + đối-chứng không được tụt"
 
   // Ngưỡng là mức HIỆN TẠI, không phải mức mong muốn. Nó chỉ được đi lên.
   assert.ok(
-    coCap.length >= 9,
-    `chỉ còn ${coCap.length}/14 luật có cặp — trước đây là 9. Đừng xoá ca đối chứng.`,
+    coCap.length >= 14,
+    `chỉ còn ${coCap.length}/14 luật có cặp — trước đây là 14. Đừng xoá ca đối chứng.`,
   );
 });
 
