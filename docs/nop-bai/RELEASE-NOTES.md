@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `ed020142ce269357b31307b17001e88868b73e9e`
+**Commit:** `ee1cba4f3166d418ff4663d627732cc96daa6a1d`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -11,9 +11,9 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **395** pass · 0 fail |
-| Luật tất định | **14** — 9 luật có ca đối chứng gần giống |
-| Mẫu kiểm thử đã gắn nhãn | **33** |
+| Test tự động | **400** pass · 0 fail |
+| Luật tất định | **14** — 14 luật có ca đối chứng gần giống |
+| Mẫu kiểm thử đã gắn nhãn | **38** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
 | Coverage trung bình | **82 %** trên 9/20 mẫu |
 | Lệnh chạm tài sản người ký đọc hiểu được | **13/20** |
@@ -31,7 +31,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - **Số hiểu 13/20 đo trên giao diện lúc 29/08 và 30/08/2026**, đã thiết kế lại sau đó. Vòng 2 chưa chạy.
 - **Chưa đánh giá với mô hình ngôn ngữ thật** — cần khoá API, bản demo công khai cố ý không nhúng khoá.
 - **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được. Chưa có decoder cho chương trình DEX.
-- **9/14 luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong `packages/core/test/capLuat.test.ts`.
+- **14/14 luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong `packages/core/test/capLuat.test.ts`.
 - **Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet.
 
 ## Bảo mật
