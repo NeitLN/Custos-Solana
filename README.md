@@ -59,9 +59,9 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 07/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7,1 giây** — trung vị 10 lượt trên 6 bản dựng, dải 6,9–11,8 |
+| Cài đặt → kết quả đầu tiên | **7,1 giây** — trung vị 10 lượt trên 7 bản dựng, dải 6,9–11,8 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **609 ms** — trung vị 10 lượt trên 6 bản dựng |
+| Một lượt kiểm tra | **615 ms** — trung vị 10 lượt trên 7 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
@@ -110,7 +110,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **400**, chạy trong `npm run check` |
+| Test | **403**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
@@ -122,7 +122,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 | Bằng chứng | Trả lời được | Không trả lời được |
 |---|---|---|
-| **400 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
+| **403 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
 | **38 mẫu** đã gắn nhãn | luật bật đúng ca, im đúng ca đối chứng | tỉ lệ đúng/sai trên traffic thật |
 | **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
 | **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
@@ -223,7 +223,7 @@ Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nv
 ```bash
 nvm use                  # đọc .nvmrc → 24.12.0
 npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 400 test
+npx npm@11.6.2 run check # typecheck + 403 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -262,7 +262,7 @@ belong to the transaction's stated main action**, and explains them in Vietnames
   transaction it actually understood, and the UI shows it.
 - **Fail closed.** Timeout, RPC failure, or missing data becomes a warning — never "safe".
 
-Measured, not estimated: **400 tests**, **38 labelled samples**, **14 rules**, average
+Measured, not estimated: **403 tests**, **38 labelled samples**, **14 rules**, average
 **82 % coverage** on 9 replayable public transactions stored offline. Runtime and demo
 are **Devnet-only**.
 
