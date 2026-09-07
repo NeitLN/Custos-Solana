@@ -48,6 +48,21 @@ export function laMa(f: string): boolean {
  */
 export function laGiaoDien(f: string): boolean {
   if (f.endsWith(".md")) return false;
+
+  /*
+   * DỮ LIỆU SINH RA KHÔNG PHẢI GIAO DIỆN.
+   *
+   * `apps/demo-wallet/public/so-lieu.json` nằm dưới `public/`, nhưng nó là số đo do
+   * `npm run so-lieu` sinh — đổi sau mỗi lượt đo. Tính nó là giao diện thì ô
+   * accessibility đỏ sau MỌI lần đồng bộ số liệu, tức lại là một cổng không mở được.
+   *
+   * Cảnh báo trung thực: nội dung có ảnh hưởng tới bố cục, nên một thay đổi nội dung
+   * ĐỦ LỚN vẫn có thể làm tràn ngang. Bài kiểm trình duyệt có sẵn phép đo tràn ngang
+   * ở cả hai khung, nên nó bắt được — ở LƯỢT CHẠY SAU. Một con số đổi thêm một chữ
+   * số thì không.
+   */
+  if (/^apps\/[^/]+\/public\/.+\.json$/.test(f)) return false;
+
   return /^apps\/[^/]+\/(src|public|index\.html)/.test(f) || /^apps\/[^/]+\/(vite|tailwind)/.test(f);
 }
 
