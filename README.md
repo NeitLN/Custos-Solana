@@ -35,7 +35,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 7 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,1 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -57,11 +57,11 @@ if (ketQua.level !== "safe" || ketQua.aiAdvisory) hienCanhBao(ketQua);
 
 Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ thành "ký được".
 
-| Đo trên Devnet, 06/09/2026 — lượt pass gần nhất | |
+| Đo trên Devnet, 07/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7 giây** — trung vị 10 lượt trên 5 bản dựng, dải 6,9–11,8 |
+| Cài đặt → kết quả đầu tiên | **7,1 giây** — trung vị 10 lượt trên 6 bản dựng, dải 6,9–11,8 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **607 ms** — trung vị 10 lượt trên 5 bản dựng |
+| Một lượt kiểm tra | **609 ms** — trung vị 10 lượt trên 6 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
