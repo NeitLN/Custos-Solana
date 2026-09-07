@@ -1,7 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
-import { bangChungConHieuLuc } from "./toTien.ts";
+import { bangChungConHieuLuc, laGiaoDien } from "./toTien.ts";
 
 /**
  * CỔNG CHỈ-SẢN-PHẨM.
@@ -253,8 +253,18 @@ if (NHANH) {
       viPham?: Array<{ impact?: string }>;
     };
     const nang = (a.viPham ?? []).filter((v) => v.impact === "serious" || v.impact === "critical");
-    if (a.sourceCommit !== HEAD) {
-      them("Accessibility bản hiện tại", "CU", `đo tại ${(a.sourceCommit ?? "?").slice(0, 7)}`);
+
+    /*
+     * KHÔNG đòi `sourceCommit === HEAD` — đó là cái bẫy đã gỡ sáu lần trong repo này.
+     * Đo xong phải commit kết quả, và commit đó làm HEAD đổi.
+     *
+     * Nhưng phép đo axe hỏng vì thứ KHÁC với phép đo tích hợp: nó chỉ mất hiệu lực
+     * khi GIAO DIỆN đổi. Sửa README hay script không làm màu sắc và tiêu điểm khác
+     * đi — nên vị từ riêng, không dùng lại `laMa`.
+     */
+    const kl = bangChungConHieuLuc(a.sourceCommit, laGiaoDien);
+    if (!kl.con) {
+      them("Accessibility bản hiện tại", kl.nongCan ? "KHONG_KIEM_DUOC" : "CU", kl.vi);
     } else {
       them(
         "Accessibility bản hiện tại",
