@@ -49,9 +49,16 @@ KHUNG = [("điện thoại", 375, 812), ("máy tính", 1440, 900)]
 
 loi: list[str] = []
 
+# Mọi kiểm tra, kèm kết quả — để ghi lại thành bằng chứng chứ không chỉ in ra rồi mất.
+kiem: list[dict] = []
+# Vi phạm axe có cấu trúc: id luật, mức tác động, số chỗ. Cổng sản phẩm đọc `impact`
+# để phân biệt "serious/critical" với những vi phạm nhẹ hơn.
+vi_pham: list[dict] = []
+
 
 def ck(ten: str, ok: bool, chi_tiet: str = "") -> None:
     print(("  PASS  " if ok else "  FAIL  ") + ten + ("" if ok else "   <<< " + chi_tiet), flush=True)
+    kiem.append({"ten": ten, "dat": ok, "chiTiet": "đạt" if ok else chi_tiet})
     if not ok:
         loi.append(ten)
 
@@ -70,6 +77,16 @@ async def soi_axe(pg, ten: str) -> None:
         })"""
     )
     v = kq["violations"]
+    for x in v:
+        vi_pham.append(
+            {
+                "trang": ten,
+                "luat": x["id"],
+                "impact": x.get("impact"),
+                "soCho": len(x["nodes"]),
+                "moTa": x.get("help"),
+            }
+        )
     ck(f"axe · {ten}", not v, "; ".join(f"{x['id']} ({len(x['nodes'])} chỗ)" for x in v))
 
 
@@ -81,6 +98,9 @@ async def cho_ket_qua(pg, giay: int = 60) -> bool:
     except Exception:
         return False
 
+
+# Phiên bản Chromium THẬT của lượt chạy — điền ở `in_phien_ban`, ghi vào bằng chứng.
+CHROMIUM_DO = ""
 
 AXE_GHIM = "4.13.0"
 PLAYWRIGHT_GHIM = "1.61.0"
@@ -113,6 +133,9 @@ def in_phien_ban(chromium: str) -> None:
         pw = _v("playwright")
     except Exception:
         pw = "?"
+    # Giữ lại phiên bản Chromium THẬT của lượt này để ghi vào bằng chứng.
+    global CHROMIUM_DO
+    CHROMIUM_DO = chromium
     print(f"\nChromium {chromium} · Playwright {pw} · axe-core {axe}")
     print(datetime.now(timezone.utc).isoformat(timespec="seconds") + "\n")
 
@@ -126,6 +149,52 @@ def in_phien_ban(chromium: str) -> None:
         print(f"  CẢNH BÁO  Playwright {pw} ≠ bản ghim {PLAYWRIGHT_GHIM}")
         print(f"            kết quả bên dưới KHÔNG so trực tiếp được với lần đo trước")
         print(f"            pip install -r scripts/kiem-trinh-duyet/requirements.txt")
+
+
+def ghi_bang_chung() -> None:
+    """Ghi kết quả ra `data/a11y/ket-qua.json`.
+
+    Kết quả khả năng tiếp cận không ghi lại thì lần sau lại phải tin lời kể — và
+    `docs/BAO-CAO-KIEM-CHUNG.md` đã có một lần nói sai về chính mình vì đúng chuyện
+    đó. `sourceCommit` đi kèm để cổng sản phẩm biết kết quả này thuộc bản nào; đo
+    trên giao diện cũ rồi khoe cho bản mới là so hai thứ khác nhau.
+    """
+    import json
+    import subprocess
+
+    try:
+        sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=GOC, capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except Exception:
+        sha = None
+
+    d = GOC / "data" / "a11y"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "ket-qua.json").write_text(
+        json.dumps(
+            {
+                "doLuc": datetime.now(timezone.utc).isoformat(),
+                "sourceCommit": sha,
+                "boCongCu": {
+                    "chromium": CHROMIUM_DO or None,
+                    "playwright": PLAYWRIGHT_GHIM,
+                    "axeCore": AXE_GHIM,
+                },
+                "khung": [{"ten": t, "rong": w, "cao": h} for t, w, h in KHUNG],
+                "soKiem": len(kiem),
+                "soDat": sum(1 for k in kiem if k["dat"]),
+                "viPham": vi_pham,
+                "kiem": kiem,
+                "dat": not loi,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print("→ data/a11y/ket-qua.json")
 
 
 async def main() -> None:
@@ -291,6 +360,7 @@ async def main() -> None:
         await b.close()
 
     print("\n" + ("=== TẤT CẢ PASS ===" if not loi else f"=== {len(loi)} FAIL: " + " · ".join(loi)))
+    ghi_bang_chung()
     sys.exit(1 if loi else 0)
 
 

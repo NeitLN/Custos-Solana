@@ -39,6 +39,18 @@ export function laMa(f: string): boolean {
   );
 }
 
+/**
+ * "Giao diện" = thứ làm một phép đo khả năng tiếp cận mất hiệu lực.
+ *
+ * Kết quả axe đo trên bản dựng nào thì chỉ nói về bản dựng đó. Sửa `App.tsx` là kết
+ * quả cũ hết giá trị; sửa README thì không. Tách riêng khỏi {@link laMa} vì hai phép
+ * đo hỏng vì hai loại thay đổi khác nhau.
+ */
+export function laGiaoDien(f: string): boolean {
+  if (f.endsWith(".md")) return false;
+  return /^apps\/[^/]+\/(src|public|index\.html)/.test(f) || /^apps\/[^/]+\/(vite|tailwind)/.test(f);
+}
+
 export type KetLuanToTien =
   | { con: true; vi: string }
   | { con: false; vi: string; nongCan?: boolean };

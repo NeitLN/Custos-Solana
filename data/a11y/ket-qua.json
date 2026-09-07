@@ -1,0 +1,227 @@
+{
+  "doLuc": "2026-09-07T17:25:47.242694+00:00",
+  "sourceCommit": "0c0f322f42eb86c20717eeab40edf174715b6f45",
+  "boCongCu": {
+    "chromium": "149.0.7827.55",
+    "playwright": "1.61.0",
+    "axeCore": "4.13.0"
+  },
+  "khung": [
+    {
+      "ten": "điện thoại",
+      "rong": 375,
+      "cao": 812
+    },
+    {
+      "ten": "máy tính",
+      "rong": 1440,
+      "cao": 900
+    }
+  ],
+  "soKiem": 40,
+  "soDat": 40,
+  "viPham": [],
+  "kiem": [
+    {
+      "ten": "axe-core đúng bản ghim (4.13.0)",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · ví nghỉ · điện thoại",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · ra mức Nguy hiểm",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · bảng hậu quả 500 → 0",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · coverage 2 trên 3",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · 0 lỗi console",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · ví đang cảnh báo · điện thoại",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "điện thoại · mọi CTA chính ≥44px",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · ví nghỉ · máy tính",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · ra mức Nguy hiểm",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · bảng hậu quả 500 → 0",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · coverage 2 trên 3",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · 0 lỗi console",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · ví đang cảnh báo · máy tính",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "máy tính · mọi CTA chính ≥44px",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "lành tính → Bình thường",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "KHÔNG hiện chữ 'an toàn'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · trang tấn công",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "window.open gọi ĐỒNG BỘ trong cử chỉ bấm",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "URL mang giao dịch + lời khai airdrop",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "ví nhận và ra Nguy hiểm",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bắt được lời khai gian",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "thẻ lỗi hiện ra (9.1s)",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "dừng theo hạn ~9s, không chờ ~30s",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có đường lui dữ liệu mẫu CÓ NHÃN",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · trang tấn công · trạng thái lỗi",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "thử lại gọi lại RPC và đi tiếp được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "cảnh báo vẫn hiện khi tắt chuyển động",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "0 animation còn chạy",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · số liệu · điện thoại",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "số liệu · điện thoại · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · số liệu · máy tính",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "số liệu · máy tính · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · phỏng vấn · điện thoại",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "phỏng vấn · điện thoại · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · phỏng vấn · máy tính",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "phỏng vấn · máy tính · không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    }
+  ],
+  "dat": true
+}
