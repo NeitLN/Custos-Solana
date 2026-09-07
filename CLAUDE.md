@@ -36,7 +36,11 @@ hiện trường devnet thật · 33 mẫu dữ liệu · 400 test · lớp mô 
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
-**Chưa có:** video demo · phỏng vấn người dùng · decoder cho chương trình DEX.
+**Chưa có:** video demo · phỏng vấn người mua · pilot bên thứ ba.
+
+> *Decoder cho chương trình DEX* từng nằm ở mục này. Số đo trên cohort nói khác:
+> hai DEX xuất hiện — Jupiter và Pump AMM — đều đã đọc hiểu được qua IDL công bố
+> trên chuỗi. Xem `docs/DECODER-TIEP-THEO.md` và `npm run thong-ke-chuong-trinh`.
 Deck đã có ở `docs/nop-bai/CUSTOS-PITCH.pptx`.
 
 Lớp mô hình ngôn ngữ đã dựng xong, có test đối kháng, và **đã chạy với mô hình thật**
