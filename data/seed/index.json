@@ -1,7 +1,7 @@
 {
   "thuLuc": "2026-08-21T00:24:40.946Z",
   "themLuc": "2026-08-21T15:25:30.431Z",
-  "soMau": 33,
+  "soMau": 38,
   "mau": [
     {
       "id": "R01-pos",
@@ -80,7 +80,10 @@
       "facts": "facts/R08-pos.json",
       "giaoDich": "tx/R08-pos.base64",
       "kyVong": {
-        "level": "warning"
+        "level": "warning",
+        "coMa": [
+          "VI_NHAN_MOI_TAO"
+        ]
       },
       "bangChung": "Chuyển 80% số dư sang ví vừa được tạo. Luật 8 chỉ kích hoạt khi tra được tuổi ví.",
       "ganNhanLuc": "2026-08-21T00:23:55.368Z"
@@ -579,6 +582,86 @@
       },
       "bangChung": "CÙNG hai người ký như R14-pos, khác đúng một điều: ví đã chỉ định người dùng. Custos biết đang bảo vệ ai nên luật 14 phải im.",
       "ganNhanLuc": "2026-09-03T17:18:08.145507Z"
+    },
+    {
+      "id": "R01-neg",
+      "luat": 1,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "facts": "facts/R01-neg.json",
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ]
+      },
+      "bangChung": "CÙNG một lệnh đổi chủ tài khoản token như R01-pos, khác đúng một điều: tài khoản vốn thuộc về ví KHÁC, không phải người sắp ký. Không phải mất mát của người ký thì luật 1 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00"
+    },
+    {
+      "id": "R02-neg",
+      "luat": 2,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "facts": "facts/R02-neg.json",
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ]
+      },
+      "bangChung": "CÙNG một lệnh đặt close authority như R02-pos, khác đúng một điều: quyền đó đặt cho CHÍNH người ký. Tự giữ quyền của mình thì không mất gì — luật 2 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00"
+    },
+    {
+      "id": "R04-neg",
+      "luat": 4,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "facts": "facts/R04-neg.json",
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "TOKEN2022_PERMANENT_DELEGATE"
+        ]
+      },
+      "bangChung": "Mint có permanent delegate vẫn nằm trong giao dịch như R04-pos, khác đúng một điều: giao dịch KHÔNG chạm token nào của mint ấy. Gắn cờ cho sự tồn tại của một tính năng là cách nhanh nhất tạo báo nhầm — luật 4 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00"
+    },
+    {
+      "id": "R08-neg",
+      "luat": 8,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "facts": "facts/R08-neg.json",
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "VI_NHAN_MOI_TAO"
+        ]
+      },
+      "bangChung": "CÙNG lượng token đi tới CÙNG ví nhận như R08-pos, khác đúng một điều: ví nhận đã tồn tại hơn một năm thay vì vài giây. Ví cũ thì luật 8 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00"
+    },
+    {
+      "id": "R12-neg",
+      "luat": 12,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "facts": "facts/R12-neg.json",
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "bangChung": "Account cũng đổi program sở hữu như R12-pos, khác đúng một điều: nó về System Program VÀ lamport về 0 — tức là đóng tài khoản, nửa sau của mọi lệnh unwrap wSOL. Luật 12 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00"
     }
   ]
 }
