@@ -113,3 +113,90 @@ test("README nêu ranh giới của lớp mô hình ngôn ngữ", () => {
   assert.match(README, /Không chạm được `level`/);
   assert.match(README, /chỉ NÂNG lên `review_required`/);
 });
+
+/*
+ * ĐOẠN FAIL-CLOSED TRONG README PHẢI CHẠY, VÀ PHẢI CHẶN THẬT.
+ *
+ * Bản trước của README chỉ in một lời gọi `inspect()` trần, không `try/catch`, không
+ * hạn. Người tích hợp chép đúng đoạn đó thì khi RPC hỏng, `inspect()` ném và luồng ký
+ * rơi vào nhánh xử lý lỗi chung của ví — nhánh mà ở phần lớn ví KHÔNG chặn nút Ký.
+ *
+ * Nghĩa là tài liệu chính thức của một lớp bảo mật đang dạy một tích hợp im lặng khi
+ * hỏng. Bài này dựng lại đúng hàm in trong README rồi bắt nó ở ba tình huống.
+ */
+const HAN_MS_README = 12_000;
+
+function coHanReadme<T>(viec: Promise<T>, ms: number): Promise<T> {
+  let dongHo: ReturnType<typeof setTimeout>;
+  const chuong = new Promise<never>((_, tuChoi) => {
+    dongHo = setTimeout(() => tuChoi(new Error(`Custos quá hạn sau ${ms} ms`)), ms);
+  });
+  return Promise.race([viec, chuong]).finally(() => clearTimeout(dongHo!));
+}
+
+async function kiemTruocKhiKyReadme(conn: unknown, hanMs = HAN_MS_README) {
+  let r;
+  try {
+    r = await coHanReadme(
+      inspect({ connection: conn as never, interpret: boiThoiHan(dienGiaiKhongAI) }, tx(), {
+        locale: "vi",
+        nguoiDung: Keypair.generate().publicKey.toBase58(),
+      }),
+      hanMs,
+    );
+  } catch (e) {
+    return { cho: "chan", lyDo: "khong_kiem_duoc", ketQua: null, loi: String(e) };
+  }
+  if (r.level === "danger") return { cho: "chan", lyDo: "phat_hien", ketQua: r, loi: null };
+  if (r.level === "warning") return { cho: "hoi", lyDo: "phat_hien", ketQua: r, loi: null };
+  if (r.coverage.analyzed < r.coverage.total) {
+    return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
+  }
+  return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
+}
+
+test("đoạn fail-closed trong README: RPC hỏng ⇒ CHẶN, không phải ném ra ngoài", async () => {
+  const rpcHong = {
+    getAddressLookupTable: async () => {
+      throw new Error("fetch failed");
+    },
+    getMultipleAccountsInfo: async () => {
+      throw new Error("fetch failed");
+    },
+    simulateTransaction: async () => {
+      throw new Error("fetch failed");
+    },
+  };
+  const q = await kiemTruocKhiKyReadme(rpcHong);
+  assert.equal(q.cho, "chan", "RPC hỏng phải CHẶN");
+  assert.equal(q.lyDo, "khong_kiem_duoc", "và phải nói rõ là chưa kiểm được");
+  assert.equal(q.ketQua, null);
+});
+
+test("đoạn fail-closed trong README: RPC treo ⇒ quá hạn rồi CHẶN", async () => {
+  const rpcTreo = {
+    getAddressLookupTable: () => new Promise(() => {}),
+    getMultipleAccountsInfo: () => new Promise(() => {}),
+    simulateTransaction: () => new Promise(() => {}),
+  };
+  const q = await kiemTruocKhiKyReadme(rpcTreo, 30);
+  assert.equal(q.cho, "chan");
+  assert.equal(q.lyDo, "khong_kiem_duoc");
+  assert.match(q.loi ?? "", /quá hạn/);
+});
+
+test("đoạn fail-closed trong README: mô phỏng khuyết ⇒ HỎI, không nói an toàn", async () => {
+  // `rpc` ở đầu file trả `err: AccountNotFound` — mô phỏng chạy nhưng không đọc hiểu
+  // được, nên fail-safe cho `warning`. Đây là đường đi thường gặp nhất trên Devnet.
+  const q = await kiemTruocKhiKyReadme(rpc);
+  assert.notEqual(q.cho, "ky", "không đọc hiểu được mà cho ký thẳng là vi phạm fail-safe");
+  assert.ok(["phat_hien", "coverage_khuyet"].includes(q.lyDo), `lý do lạ: ${q.lyDo}`);
+});
+
+test("README dạy fail-closed, không chỉ dạy lời gọi trần", () => {
+  // Guard cho chính tài liệu: nếu ai đó rút gọn README về một lời gọi `inspect()`
+  // không bắt lỗi, bài này đỏ trước khi người tích hợp chép phải nó.
+  assert.match(README, /FAIL CLOSED/, "README phải nêu quy tắc fail-closed");
+  assert.match(README, /khong_kiem_duoc/, "README phải phân biệt chặn-vì-hỏng với chặn-vì-phát-hiện");
+  assert.match(README, /quá hạn sau/, "README phải chỉ cách đặt hạn cho `inspect()`");
+});

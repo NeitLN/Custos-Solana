@@ -52,6 +52,42 @@ const chay = (cmd, args, cwd, keThua = false) =>
  * luật 14 BẬT trên ca dương và IM trên ca đối chứng. Một gói import được nhưng
  * engine hỏng vẫn là gói hỏng.
  */
+/*
+ * Người tiêu thụ TypeScript. Nó không chạy — chỉ cần `tsc` chấp nhận.
+ *
+ * Cố ý dùng `strict: true` và `skipLibCheck: false`: đó là cấu hình của một đội cẩn
+ * thận, và cũng là cấu hình phơi ra `.d.ts` hỏng nhanh nhất.
+ */
+const TIEU_THU_TS = `import { inspect, danhGia, type Facts } from "@custos-solana/core";
+import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
+import type { InspectResult } from "@custos-solana/types";
+import { Connection, VersionedTransaction } from "@solana/web3.js";
+
+// Kiểu trả về phải khớp hợp đồng công khai, không phải \`any\`.
+export async function kiem(
+  conn: Connection,
+  tx: VersionedTransaction,
+  vi: string,
+): Promise<"ky" | "hoi" | "chan"> {
+  const r: InspectResult = await inspect(
+    { connection: conn, interpret: boiThoiHan(dienGiaiKhongAI) },
+    tx,
+    { locale: "vi", nguoiDung: vi },
+  );
+
+  // \`level\` là union ba giá trị: nhánh dưới phải hết được kiểu, không cần \`default\`.
+  if (r.level === "danger") return "chan";
+  if (r.level === "warning") return "hoi";
+  if (r.coverage.analyzed < r.coverage.total) return "hoi";
+  return "ky";
+}
+
+// Đường bậc thấp cũng phải gõ kiểu được.
+export function danhGiaThang(f: Facts): string[] {
+  return danhGia(f).reasonCodes;
+}
+`;
+
 const TIEU_THU = `import assert from "node:assert/strict";
 import { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import { inspect, danhGia, LUAT, REASON, dungBangChenhLech, computeCoverage } from "@custos-solana/core";
@@ -200,14 +236,14 @@ const san = mkdtempSync(join(tmpdir(), "custos-nguoi-ngoai-"));
 let hong = false;
 
 try {
-  console.log("1/5 · đóng gói ba tarball từ thư mục dàn");
+  console.log("1/6 · đóng gói ba tarball từ thư mục dàn");
   const thungTarball = join(san, "tarball");
   chay(process.execPath, [join(GOC, "scripts", "dong-goi-sdk.mjs"), thungTarball], GOC);
   const tgz = readdirSync(thungTarball).filter((f) => f.endsWith(".tgz"));
   if (tgz.length !== 3) throw new Error(`chờ 3 tarball, nhận ${tgz.length}: ${tgz.join(", ")}`);
   for (const f of tgz) console.log("      " + f);
 
-  console.log("2/5 · dựng project tiêu thụ ngoài monorepo");
+  console.log("2/6 · dựng project tiêu thụ ngoài monorepo");
   const duAn = join(san, "du-an");
   mkdirSync(duAn, { recursive: true });
   const duong = (ten) => "file:" + join(thungTarball, tgz.find((f) => f.startsWith(ten))).replaceAll("\\", "/");
@@ -233,10 +269,10 @@ try {
     { flag: "w" },
   );
 
-  console.log("3/5 · npm install (mạng thật — cần cho @solana/web3.js)");
+  console.log("3/6 · npm install (mạng thật — cần cho @solana/web3.js)");
   chay(npm, ["install", "--no-audit", "--no-fund", "--loglevel", "error"], duAn);
 
-  console.log("4/5 · import và CHẠY bằng node trần, từ JavaScript thuần");
+  console.log("4/6 · import và CHẠY bằng node trần, từ JavaScript thuần");
   writeFileSync(join(duAn, "tieu-thu.mjs"), TIEU_THU);
   const ra = chay(process.execPath, ["tieu-thu.mjs"], duAn);
   process.stdout.write(
@@ -259,7 +295,41 @@ try {
    * câu mà tên symbol không trả lời được: lời bịa có tới người dùng không, và
    * `level` có bị đổi không.
    */
-  console.log("5/5 · mười bẫy đối kháng trên chính gói vừa cài");
+  /*
+   * NGƯỜI TIÊU THỤ TYPESCRIPT PHẢI TYPECHECK ĐƯỢC.
+   *
+   * Bài JS thuần ở trên chứng minh gói CHẠY được. Nó không chứng minh `.d.ts` dùng
+   * được: một file khai báo hỏng, hoặc `exports.types` trỏ sai, vẫn để JS chạy ngon
+   * trong khi mọi project TypeScript đỏ ngay dòng import.
+   *
+   * Phần lớn ví Solana viết bằng TypeScript, nên đây không phải chi tiết phụ.
+   */
+  console.log("5/6 · người tiêu thụ TypeScript có typecheck được không");
+  writeFileSync(join(duAn, "tieu-thu.ts"), TIEU_THU_TS);
+  writeFileSync(
+    join(duAn, "tsconfig.json"),
+    JSON.stringify(
+      {
+        compilerOptions: {
+          strict: true,
+          target: "ES2022",
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+          noEmit: true,
+          skipLibCheck: false,
+        },
+        files: ["tieu-thu.ts"],
+      },
+      null,
+      2,
+    ),
+  );
+  chay(npm, ["install", "--no-audit", "--no-fund", "--loglevel", "error", "typescript@^5"], duAn);
+  const raTs = chay(npm, ["exec", "--", "tsc", "--noEmit", "-p", "tsconfig.json"], duAn);
+  process.stdout.write(`      tsc --noEmit: OK${XUONG_DONG}`);
+  if (raTs.includes("error TS")) throw new Error(`người tiêu thụ TypeScript không typecheck: ${raTs}`);
+
+  console.log("6/6 · mười bẫy đối kháng trên chính gói vừa cài");
   cpSync(join(GOC, "scripts", "tieu-thu-doi-khang.mjs"), join(duAn, "doi-khang.mjs"));
   const raDK = chay(process.execPath, ["doi-khang.mjs"], duAn);
   process.stdout.write(
