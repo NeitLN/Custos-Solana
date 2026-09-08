@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `e25e072`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `9decaae`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** B01/B02 (nay đủ vì S03 xong) rồi B04 → P01 → P03; V02. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** B04 (nay đủ vì B01+B02 xong) → P01 → P03; V02. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -36,7 +36,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | A01 | Eval offline, guardrail và tooling | C/A/D | R02, D02 | DONE | Thêm **đối chứng dương 3/3** — 13/13 một mình không phân biệt được bộ chắn hoạt động với bộ chắn vứt sạch. Lượt offline không còn xoá lượt live (`liveGanNhat`); lỗi cũ ĐÃ xảy ra thật. Bản ghi live thêm prompt hash, dataset version, maxTokens/maxRetries, lỗi API, và **số lần lui về câu tất định**. Model đọc từ hằng số, không gõ tay. |
 | A02 | Eval mô hình thật trong ngân sách | C/D | A01 | TODO | Chỉ chạy khi đủ quyền, key và giới hạn chi phí. |
 | B01 | Bộ làm việc với người mua | D | R00 | DONE | Bộ đồ nghề đã có ICP, 6 câu, mẫu tin nhắn, schema và validator. Thêm phần **lấy 30–50 cái tên ở đâu** — năm nguồn công khai + ba câu lọc + bảng theo dõi; cố ý KHÔNG điền sẵn tên tổ chức. Thêm `nguoi-mua.example.json` (cờ `laViDu`). Sửa cửa quyết định gõ cứng một ngày cụ thể → phát biểu theo sự kiện, và mở rộng guard lịch: quét MỌI `.md` thay vì bốn file. |
-| B02 | Bộ tự tích hợp cho đối tác | A/D | S03 | TODO | Kit hoàn tất không phải pilot. |
+| B02 | Bộ tự tích hợp cho đối tác | A/D | S03 | DONE | `docs/PILOT-TU-LAM.md`, viết SAU khi chạy thật từ thư mục trống với gói registry (core 0.1.1 · ai 0.2.0 · web3 1.99.0). Ghi hai bẫy đo được: `npm init -y` không đặt `type: module`, và lượt đầu ra `warning` vì ví mới chưa có SOL — fail-safe, không phải lỗi. Có ranh giới cưỡng chế (ví tin cậy, không phải dApp), bốn đường lỗi, cách gửi lỗi đã lọc secret, mẫu biên bản. 3 bài guard chặn tài liệu dạy import không tồn tại. |
 | B03 | Bộ usability cho UI hiện tại | B/C/D | I03, U06 | TODO | Không tự tạo câu trả lời người thật. |
 | B04 | Mô hình doanh thu và giả thuyết giá | D | B01, B02 | TODO | Bổ sung dữ liệu H02/H03 khi có. |
 | P01 | Pitch, deck và phản biện | D/C | D01, B04, U06 | TODO | Không cần bịa H/A02 để viết bản trung thực. |

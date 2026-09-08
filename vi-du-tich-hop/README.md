@@ -8,6 +8,10 @@ bằng JavaScript thuần, không cờ biên dịch.
 > thứ ba nào đã chọn dùng Custos. Xem `data/tich-hop/ket-qua.json` — trường `doiTac`
 > còn là `null`.
 
+> **Bạn là đội ngoài muốn tự thử?** Đọc [`docs/PILOT-TU-LAM.md`](../docs/PILOT-TU-LAM.md)
+> thay vì file này — nó đi từ thư mục trống, cài từ npm registry, và liệt kê bốn
+> đường lỗi phải thử trước khi kết luận. File này là ví dụ TRONG monorepo.
+
 ## Chạy
 
 ```bash
