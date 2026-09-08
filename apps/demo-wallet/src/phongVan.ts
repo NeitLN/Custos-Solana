@@ -161,3 +161,66 @@ export function soiDuLieuCaNhan(ban: Ban[]): string[] {
   });
   return canh;
 }
+
+
+/*
+ * ĐỌC KHO LƯU CỤC BỘ — XÁC THỰC, VÀ KHÔNG BAO GIỜ TỰ XOÁ DỮ LIỆU.
+ *
+ * Trang phỏng vấn từng làm `JSON.parse(localStorage.getItem(KHOA) ?? "[]") as Ban[]`.
+ * `catch` chỉ bắt lỗi cú pháp JSON; một giá trị hợp lệ về cú pháp nhưng sai kiểu —
+ * `{}` chẳng hạn — đi lọt, rồi `ban.filter is not a function` làm TRẮNG TRANG. Tái
+ * hiện được.
+ *
+ * Ở đây dữ liệu là biên bản phỏng vấn NGƯỜI THẬT, gõ tay, không có bản sao ở đâu
+ * khác và không có backend. Nên quy tắc khác với `hien-truong.json`:
+ *
+ *   · KHÔNG tự xoá, KHÔNG tự sửa. Dữ liệu không đọc được vẫn phải giữ nguyên văn
+ *     để người phỏng vấn xuất ra và cứu bằng tay.
+ *   · Báo rõ hỏng ở đâu, thay vì im lặng quay về danh sách rỗng — quay về rỗng là
+ *     cách chắc chắn nhất để ai đó gõ đè lên hai mươi biên bản.
+ */
+
+export type KetQuaDocKho =
+  | { loai: "trong" }
+  | { loai: "ok"; ban: Ban[] }
+  /** `tho` là nguyên văn trong kho, giữ để xuất ra file cứu dữ liệu. */
+  | { loai: "hong"; lyDo: string; tho: string };
+
+/** `null` nghĩa là bản ghi hợp lệ; chuỗi là lý do, viết cho người đọc. */
+export function xacThucBan(x: unknown, i: number): string | null {
+  if (x === null || typeof x !== "object" || Array.isArray(x)) {
+    return `bản ghi #${i + 1} không phải đối tượng`;
+  }
+  const o = x as Record<string, unknown>;
+  if (typeof o["nguyenVan"] !== "string") return `bản ghi #${i + 1} thiếu \`nguyenVan\``;
+  if (!["dung", "motPhan", "sai"].includes(String(o["cham"]))) {
+    return `bản ghi #${i + 1} có \`cham\` lạ: ${String(o["cham"])}`;
+  }
+  const qd = o["quyetDinh"];
+  if (qd !== undefined && !["huy", "kiemTraThem", "ky"].includes(String(qd))) {
+    return `bản ghi #${i + 1} có \`quyetDinh\` lạ: ${String(qd)}`;
+  }
+  return null;
+}
+
+export function docKho(tho: string | null): KetQuaDocKho {
+  if (tho === null || tho.trim() === "") return { loai: "trong" };
+
+  let x: unknown;
+  try {
+    x = JSON.parse(tho);
+  } catch {
+    return { loai: "hong", lyDo: "không phải JSON hợp lệ", tho };
+  }
+
+  if (!Array.isArray(x)) {
+    // Đây chính là ca đã tái hiện: `{}` parse được nhưng không phải mảng.
+    return { loai: "hong", lyDo: `dữ liệu là ${x === null ? "null" : typeof x}, không phải mảng`, tho };
+  }
+
+  for (let i = 0; i < x.length; i++) {
+    const lyDo = xacThucBan(x[i], i);
+    if (lyDo !== null) return { loai: "hong", lyDo, tho };
+  }
+  return { loai: "ok", ban: x as Ban[] };
+}
