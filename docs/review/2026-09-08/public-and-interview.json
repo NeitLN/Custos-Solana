@@ -1,0 +1,21 @@
+[
+  {
+    "name": "public-live",
+    "status": 200,
+    "seconds": 1.18,
+    "text": "Nguy hiểm\n\nKhông nên ký giao dịch này\n\nRủi ro cao\n\nToàn bộ USDC-demo trong ví bạn sẽ bị chuyển đi, và tài khoản USDC-demo của bạn sẽ đổi chủ sang CRZa…picz. Sau khi ký, bạn không lấy lại được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n500,0 → 0,0\nChủ sở hữu tài khoản USDC-demo\nBạn → CRZa…picz\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 2 trên 3 lệnh\n\n67%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nCustos đề nghị kiểm tra thủ công\n\nMức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.\n\nChi tiết kỹ thuật\nChặn & huỷ giao dịch\nDemo chỉ mô phỏng · không nhúng khoá ký",
+    "errors": []
+  },
+  {
+    "name": "invalid-interview-storage",
+    "body": "",
+    "errors": [
+      "ban.filter is not a function"
+    ]
+  },
+  {
+    "name": "interview-rpc-hang",
+    "body": "←\nVí mẫu\nCHỈ NGƯỜI PHỎNG VẤN ĐỌC PHẦN NÀY\n\nChiếu màn hình dưới, không giải thích gì cả, chỉ hỏi đúng câu in đậm. Đừng hỏi \"bạn thấy dễ hiểu không\" — ai cũng trả lời có. Chép nguyên văn lời họ nói, kể cả khi sai. Chấm sau khi đã chép.\n\nĐang dựng màn hình thật…",
+    "alertCount": 0
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "name": "settled-safe",
+    "axe": []
+  },
+  {
+    "name": "settled-warning",
+    "axe": []
+  },
+  {
+    "name": "live-danger-mobile",
+    "seconds": 0.92,
+    "text": "Nguy hiểm\n\nKhông nên ký giao dịch này\n\nRủi ro cao\n\nToàn bộ USDC-demo trong ví bạn sẽ bị chuyển đi, và tài khoản USDC-demo của bạn sẽ đổi chủ sang CRZa…picz. Sau khi ký, bạn không lấy lại được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n500,0 → 0,0\nChủ sở hữu tài khoản USDC-demo\nBạn → CRZa…picz\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 2 trên 3 lệnh\n\n67%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nCustos đề nghị kiểm tra thủ công\n\nMức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.\n\nChi tiết kỹ thuật\nChặn & huỷ giao dịch\nVẫn ký — tôi hiểu rủi ro",
+    "bounds": {
+      "x": 33,
+      "y": 1240.875,
+      "width": 309,
+      "height": 1043.5
+    },
+    "scrollY": 0,
+    "focusedText": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\nCustos Wallet\nDEVNET\nCustos Demo 01\nVí thử nghiệm của bạn\n2EjYM…bCpAF\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\nChọn một giao dịch để thử\nNhận quà tặng\nGiao dịch giả mạo\nGửi 10 token\nGiao dịch bình thường\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n3qGygfzzUH…JJ4eCt\n6 ngày trước\nGiao dịch thành công\n5F8d6Pn7vh…xN23JH\n6 ngày trước\nGiao dịch thành công\n3y73mnA2N1…WTnZFD\n6 ngày trước\nGiao dịch thành công\n4pfWPz8xrc…vjJ9Kg\n6 ngày trước\nKiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nNguy hiểm\n\nKhông nên ký giao dịch này\n\nRủi ro cao\n\nToàn bộ USDC-demo trong ví bạn sẽ bị chuyển đi, và tài khoản USDC-demo của bạn sẽ đổi chủ sang CRZa…picz. Sau khi ký, bạn không lấy lại được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n500,0 → 0,0\nChủ sở hữu tài khoản USDC-demo\nBạn → CRZa…picz\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 2 trên 3 lệnh\n\n67%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nCustos đề nghị kiểm tra thủ công\n\nMức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.\n\nChi tiết kỹ thuật\nChặn & huỷ giao dịch\nVẫn ký — tôi hiểu rủi ro\nNhật ký kỹ thuật · 2 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "axe": []
+  },
+  {
+    "name": "cancel",
+    "resultCount": 0,
+    "body": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\nCustos Wallet\nDEVNET\nCustos Demo 01\nVí thử nghiệm của bạn\n2EjYM…bCpAF\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\nChọn một giao dịch để thử\nNhận quà tặng\nGiao dịch giả mạo\nGửi 10 token\nGiao dịch bình thường\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n3qGygfzzUH…JJ4eCt\n6 ngày trước\nGiao dịch thành công\n5F8d6Pn7vh…xN23JH\n6 ngày trước\nGiao dịch thành công\n3y73mnA2N1…WTnZFD\n6 ngày trước\nGiao dịch thành công\n4pfWPz8xrc…vjJ9Kg\n6 ngày trước\nKiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nChọn một giao dịch ở ví bên cạnh\n\nCustos chạy thử nó trên Devnet trước, rồi cho bạn thấy ba điều:\n\nTài sản của bạn thay đổi ra sao\n\nSố dư và quyền sở hữu, trước và sau khi ký.\n\n500,0 → 0,0\n\nVì sao nguy hiểm, bằng tiếng Việt\n\nMột câu nói rõ hậu quả, không phải mã lỗi.\n\n“tài khoản sẽ đổi chủ”\n\nPhần Custos CHƯA đọc hiểu\n\nCustos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.\n\n2 trên 3 lệnh\nNhật ký kỹ thuật · 3 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức"
+  },
+  {
+    "name": "live-safe",
+    "text": "Bình thường\n\nKhông phát hiện dấu hiệu nguy hiểm trong phần đã đọc\n\nKhông có cờ đỏ\n\nKhông thấy dấu hiệu nào trong danh sách chúng tôi kiểm tra được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n500,0 → 490,0\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 1 trên 1 lệnh\n\n100%\n\nChi tiết kỹ thuật\nKý giao dịch\nHuỷ",
+    "axe": []
+  },
+  {
+    "name": "blocked-sign-error",
+    "rpcMethods": [
+      "sendTransaction"
+    ],
+    "alerts": 0,
+    "buttonEnabled": true,
+    "body": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\nCustos Wallet\n\nVí Devnet · kiểm tra giao dịch trước khi ký\n\nDEVNET\nSố liệu\nCustos Demo 01\nVí thử nghiệm của bạn\n2EjYM…bCpAF\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\nChọn một giao dịch để thử\nNhận quà tặng\nGiao dịch giả mạo\nGửi 10 token\nGiao dịch bình thường\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n3qGygfzzUH…JJ4eCt\n6 ngày trước\nGiao dịch thành công\n5F8d6Pn7vh…xN23JH\n6 ngày trước\nGiao dịch thành công\n3y73mnA2N1…WTnZFD\n6 ngày trước\nGiao dịch thành công\n4pfWPz8xrc…vjJ9Kg\n6 ngày trước\nKiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nBình thường\n\nKhông phát hiện dấu hiệu nguy hiểm trong phần đã đọc\n\nKhông có cờ đỏ\n\nKhông thấy dấu hiệu nào trong danh sách chúng tôi kiểm tra được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n500,0 → 490,0\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 1 trên 1 lệnh\n\n100%\n\nChi tiết kỹ thuật\nKý giao dịch\nHuỷ\nNhật ký kỹ thuật · 4 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức"
+  },
+  {
+    "name": "handoff-captured",
+    "captured": true
+  },
+  {
+    "name": "malformed-symbol-map",
+    "errors": [],
+    "resultCount": 1,
+    "alerts": 0
+  }
+]

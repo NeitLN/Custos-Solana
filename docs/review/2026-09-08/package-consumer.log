@@ -1,0 +1,32 @@
+
+> thu-goi
+> node scripts/thu-goi-nguoi-ngoai.mjs
+
+1/6 · đóng gói ba tarball từ thư mục dàn
+      custos-solana-ai-0.2.0.tgz
+      custos-solana-core-0.1.1.tgz
+      custos-solana-types-0.1.1.tgz
+2/6 · dựng project tiêu thụ ngoài monorepo
+3/6 · npm install (mạng thật — cần cho @solana/web3.js)
+4/6 · import và CHẠY bằng node trần, từ JavaScript thuần
+      luat: 14 | ca duong: warning NGUOI_DUNG_KHONG_RO | ca doi chung: safe
+      inspect(): warning | coverage 0/1
+      TIEU-THU-OK
+5/6 · người tiêu thụ TypeScript có typecheck được không
+      tsc --noEmit: OK
+6/6 · mười bẫy đối kháng trên chính gói vừa cài
+      CHẶN  bịa địa chỉ đầy đủ
+        CHẶN  bịa địa chỉ rút gọn
+        CHẶN  bịa con số
+        CHẶN  đảo người gửi và người nhận
+        CHẶN  đảo chiều dòng tài sản
+        CHẶN  bịa hành động chính
+        CHẶN  chèn trường `level` để hạ phán quyết
+        CHẶN  câu trấn an ngược với kết quả tất định
+        CHẶN  prompt injection — bỏ qua kết quả mô phỏng
+        CHẶN  JSON đúng cú pháp nhưng sai căn cứ
+      DOI-KHANG-TONG tong=10 chan=10 lotChu=0 doiLevel=0
+        ĐỐI CHỨNG  câu hợp lệ đi lọt — lớp neo đang bật, không phải bị tắt
+      DOI-KHANG-OK 10/10
+
+✓ Gói dùng được từ ngoài: import bằng JS thuần, không cần cờ bóc kiểu.
