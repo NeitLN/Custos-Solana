@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `1a94356`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `8f9b68f`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** U06 (F08 — vùng bấm mobile), D01 (F10 — rà claim), S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), R02 (cổng đã có `kiem-san-pham`, cần đối chiếu với tiêu chí của R02).
+**Việc khả dụng tiếp theo:** D01 (F10 — rà claim), S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), R02 (cổng đã có `kiem-san-pham`, cần đối chiếu với tiêu chí của R02), I03/U07 (nay đã đủ phụ thuộc vì U06 xong).
 
 ## Bảng công việc
 
@@ -22,7 +22,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | U03 | Validate hiện trường, phục hồi render | B/A | R00 | DONE | `4ffe088`. Xác thực từng trường thay cho `as HienTruong`; ba trạng thái co/chuaDung/hong. 7 bài đơn vị + 5 ca trình duyệt (`soi-cau-hinh-hong.py`): không ca nào trắng trang, không ca nào tạo nút Ký. |
 | U04 | Phản hồi payload dApp không hợp lệ | B/A | R00, U03 | DONE | `0b8daba`. Union `khong`/`co`/`hong` + giới hạn 4096 ký tự. 7 bài đơn vị; trình duyệt: payload hỏng không sinh khối kết quả, không hiện nhãn phán quyết nào. |
 | U05 | Xác nhận huỷ đúng trạng thái | B/C | U01, U02 | DONE | `0b8daba`. `role=status`: "chưa được gửi và sẽ không được gửi", chỉ nói về yêu cầu hiện tại. |
-| U06 | Vùng bấm, câu chữ và phân cấp | B/C | U01, U05 | TODO | F08. |
+| U06 | Vùng bấm, câu chữ và phân cấp | B/C | U01, U05 | DONE | F08. Vùng bấm chuyển vào lớp `.lien-ket` thay vì vá bốn nơi gọi; 26/26 đạt 44px. Chi tiết implementation AI/khoá xuống mục kỹ thuật, giữ lại câu bảo vệ quyết định số 1. Header nói rõ là ví mẫu tích hợp SDK. Bàn phím · zoom · chữ dài: 16/16. axe 40/40 chạy lại. |
 | U07 | Điều tra/sửa cấu hình RPC và handoff | B/A | U03, U04 | TODO | Chỉ sửa khi xác minh cần thiết. |
 | I01 | Deadline/retry trang phỏng vấn | B | R00, U03 | DONE | `1a94356`. Hạn 15 s bọc cả chuỗi, dùng lại `scripts/coHan.ts`. Treo RPC thật: dừng sau 15,3 s, có nút Thử lại. |
 | I02 | Lưu, validate và khôi phục phỏng vấn | B/D | R00 | DONE | `3cc77be`. Kho hỏng được GIỮ nguyên văn + nút tải bản sao; bắt lỗi ghi storage. 8 bài đơn vị, 4 ca trình duyệt. |

@@ -1,0 +1,92 @@
+{
+  "doLuc": "2026-09-08T08:55:41.764906+00:00",
+  "sourceCommit": "8f9b68f603e61d950b41b643734fdbf3e93f7fa5",
+  "soKiem": 16,
+  "soDat": 16,
+  "ghiNhan": [
+    "chữ dùng px cố định: font-size gốc 16px→32px nhưng chữ giữ nguyên 12.5px. Phóng to trình duyệt vẫn hoạt động (xem hai ca reflow ở trên), nên đây KHÔNG phải vi phạm 1.4.4; cái mất là thiết lập cỡ chữ mặc định của trình duyệt không có tác dụng. Chuyển px→rem là việc riêng."
+  ],
+  "kiem": [
+    {
+      "ten": "Tab đi được, không bị bẫy focus",
+      "dat": true,
+      "chiTiet": "5 chặng"
+    },
+    {
+      "ten": "Tab tới được: Xem chi tiết",
+      "dat": true,
+      "chiTiet": "Xem chi tiết → Chi tiết kỹ thuật → Chặn & huỷ giao dịch → Vẫn ký — tôi hiểu rủi ro → Nhật "
+    },
+    {
+      "ten": "Tab tới được: Chi tiết kỹ thuật",
+      "dat": true,
+      "chiTiet": "Xem chi tiết → Chi tiết kỹ thuật → Chặn & huỷ giao dịch → Vẫn ký — tôi hiểu rủi ro → Nhật "
+    },
+    {
+      "ten": "Tab tới được: Chặn & huỷ giao dịch",
+      "dat": true,
+      "chiTiet": "Xem chi tiết → Chi tiết kỹ thuật → Chặn & huỷ giao dịch → Vẫn ký — tôi hiểu rủi ro → Nhật "
+    },
+    {
+      "ten": "Tab tới được: Vẫn ký",
+      "dat": true,
+      "chiTiet": "Xem chi tiết → Chi tiết kỹ thuật → Chặn & huỷ giao dịch → Vẫn ký — tôi hiểu rủi ro → Nhật "
+    },
+    {
+      "ten": "mọi chặng có vòng focus thấy được",
+      "dat": true,
+      "chiTiet": "[]"
+    },
+    {
+      "ten": "lựa chọn AN TOÀN đứng trước trong thứ tự Tab",
+      "dat": true,
+      "chiTiet": "huỷ #3 · ký #4"
+    },
+    {
+      "ten": "phím Enter mở/đóng được mục chi tiết",
+      "dat": true,
+      "chiTiet": "false → true"
+    },
+    {
+      "ten": "phím Space mở/đóng được mục chi tiết",
+      "dat": true,
+      "chiTiet": "true → false"
+    },
+    {
+      "ten": "320px · reflow AA · không tràn ngang",
+      "dat": true,
+      "chiTiet": "tràn 0px"
+    },
+    {
+      "ten": "320px · reflow AA · CTA chặn vẫn hiện",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "640px · tương đương zoom 200% · không tràn ngang",
+      "dat": true,
+      "chiTiet": "tràn 0px"
+    },
+    {
+      "ten": "640px · tương đương zoom 200% · CTA chặn vẫn hiện",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "nhét được chữ dài vào thẻ kết quả",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "chữ dài gấp mười không làm tràn ngang",
+      "dat": true,
+      "chiTiet": "tràn 0px"
+    },
+    {
+      "ten": "CTA giữ nguyên kích thước sau khi chữ dài ra",
+      "dat": true,
+      "chiTiet": "[{'w': 275, 'h': 44}, {'w': 275, 'h': 44}]"
+    }
+  ],
+  "dat": true
+}
