@@ -127,6 +127,37 @@ Vòng 2 ghi vào **file riêng** — `data/seed/phong-van-vong-2.json`:
 > hai mẫu người khác nhau. Gộp lại là tạo ra một con số không đo được gì cả — và là
 > lỗi mà `packages/core/test/phongVanVong2.test.ts` chặn sẵn.
 
+### Trường trong mỗi bản ghi
+
+Trang `/phong-van.html` ghi đủ các trường giao thức đòi. Bốn trường của vòng 2 nằm
+trong khối gập **«Vòng 2»** và **không bắt buộc** — bỏ trống thì chúng VẮNG hẳn khỏi
+bản ghi, không có giá trị mặc định:
+
+| Trường | Từ câu | Nhãn |
+|---|---|---|
+| `hieuCoverage` | 3 | `dung` · `sai` · `khongBiet` |
+| `docNhamPhi` | 4 | `co` · `khong` |
+| `kenh` | mục 2 | `video` · `goiThoai` · `trucTiep` · `tinNhan` |
+| `lyDoQuyetDinh` | 2, vế «vì sao» | nguyên văn |
+
+> **Vắng ≠ sai.** Bộ đếm lấy mẫu số là số người ĐƯỢC HỎI (`daHoi`), không phải tổng
+> số bản ghi. Chia cho tổng thì hai mươi bản ghi vòng 1 cho "0/20 hiểu sai coverage"
+> — nghe như kết quả tốt, trong khi sự thật là chưa hỏi ai cả.
+
+### Mở rộng nghiên cứu — `bamThat`, KHÔNG đưa vào bảng so sánh hai vòng
+
+Nút trên thẻ cảnh báo trước đây là no-op: người tham gia bấm «Chặn & huỷ giao dịch»
+và không có gì xảy ra. Họ hoặc tưởng giao dịch đã bị chặn thật, hoặc tưởng màn hình
+hỏng — và câu trả lời cho câu 2 nhiễm theo.
+
+Nay cú bấm được ghi lại vào `bamThat`, và màn hình nói rõ **không có giao dịch nào
+được gửi**.
+
+`bamThat` **tách khỏi** `quyetDinh`: một cái là hành vi, một cái là lời nói do người
+phỏng vấn chấm. Chúng lệch nhau được — nói «chắc em huỷ» rồi tay bấm ký là một quan
+sát đáng giá, và gộp lại là xoá đúng chỗ đó. Vòng 1 không có trường này, nên nó
+**không** vào bảng so sánh hai vòng.
+
 Đếm bằng đúng bộ đếm của vòng 1, không viết bộ thứ hai:
 
 ```bash

@@ -48,6 +48,81 @@ export type Ban = {
   cham: Cham;
   quyetDinh: QuyetDinh;
   ghiChu: string;
+
+  /*
+   * ─── TỪ ĐÂY XUỐNG LÀ TRƯỜNG CỦA VÒNG 2 ──────────────────────────────────
+   *
+   * TẤT CẢ đều `?`, và đó không phải sự lười.
+   *
+   * Hai mươi bản ghi vòng 1 là phỏng vấn NGƯỜI THẬT, đã commit, không sửa lại được
+   * — không ai đi hỏi lại hai mươi người xem hồi đó họ hiểu dòng coverage thế nào.
+   * Bắt buộc các trường này là làm hai mươi bản ghi thật thành "không hợp lệ", và
+   * bước tiếp theo bao giờ cũng là ai đó điền bừa cho qua.
+   *
+   * `xacThucBan` vì vậy chỉ kiểm khi trường CÓ MẶT: nhãn lạ là hỏng, vắng mặt là
+   * hợp lệ. Vắng nghĩa là "vòng đó không hỏi", khác hẳn "hỏi mà không trả lời".
+   */
+
+  /**
+   * Câu 3 vòng 2 — chỉ vào dòng "đã đọc hiểu 2 trên 3 lệnh": *dòng này nói gì?*
+   *
+   * `sai` nghĩa là hiểu thành điểm an toàn ("2/3 ổn rồi"). Đây là hiểu NGƯỢC, và là
+   * thứ vòng 1 chưa từng đo. `khongBiet` khác `sai`: không đoán được thì không phải
+   * hiểu ngược, và gộp hai cái làm ngưỡng ≤10 % thành vô nghĩa.
+   */
+  hieuCoverage?: HieuCoverage;
+
+  /**
+   * Câu 4 vòng 2 — phí ở đây là bao nhiêu, có liên quan số tiền có thể mất không?
+   *
+   * `co` nghĩa là dùng phí để kết luận thiệt hại nhỏ. Vòng 1 có 2 người mắc lỗi này
+   * và ngưỡng vòng 2 cho nó là **0 người**.
+   */
+  docNhamPhi?: DocNhamPhi;
+
+  /**
+   * Kênh phỏng vấn. Ảnh hưởng tới việc số đo có dùng được không:
+   * qua tin nhắn thì người ta có thời gian tra cứu, nên "thời gian đọc" đo được là
+   * thời gian gõ phím. Giao thức chỉ cho đo thời gian ở nhóm video/trực tiếp.
+   */
+  kenh?: Kenh;
+
+  /** Lý do của quyết định — câu 2 hỏi "làm gì, VÌ SAO". Vế sau trước đây bị dồn vào `ghiChu`. */
+  lyDoQuyetDinh?: string;
+
+  /**
+   * Nút người tham gia THẬT SỰ bấm trên thẻ cảnh báo.
+   *
+   * Tách khỏi `quyetDinh` — thứ do người phỏng vấn chấm từ lời nói. Hai cái có thể
+   * lệch nhau: nói "chắc em huỷ" rồi tay vẫn bấm ký là một quan sát đáng giá, và
+   * gộp chúng làm một là xoá mất đúng chỗ đó.
+   *
+   * Đây là phần MỞ RỘNG của vòng 2, không có ở vòng 1 — không đưa vào bảng so sánh
+   * hai vòng.
+   */
+  bamThat?: "huy" | "ky";
+};
+
+export type HieuCoverage = "dung" | "sai" | "khongBiet";
+export type DocNhamPhi = "co" | "khong";
+export type Kenh = "video" | "goiThoai" | "trucTiep" | "tinNhan";
+
+export const NHAN_HIEU_COVERAGE: Record<HieuCoverage, string> = {
+  dung: "ĐÚNG — nói được đây là phần đã đọc hiểu, còn phần chưa hiểu",
+  sai: "SAI — hiểu thành điểm an toàn, tỉ lệ an toàn, hoặc «2/3 ổn rồi»",
+  khongBiet: "KHÔNG BIẾT — không đoán được dòng đó nói gì",
+};
+
+export const NHAN_DOC_NHAM_PHI: Record<DocNhamPhi, string> = {
+  co: "CÓ — nói phí là khoản mất, hoặc dùng phí để kết luận thiệt hại nhỏ",
+  khong: "KHÔNG — tách được phí khỏi tài sản có thể mất",
+};
+
+export const NHAN_KENH: Record<Kenh, string> = {
+  video: "Gọi video",
+  goiThoai: "Gọi thoại",
+  trucTiep: "Trực tiếp",
+  tinNhan: "Tin nhắn — KHÔNG đo thời gian đọc",
 };
 
 /** Bản xuất có cấu trúc ổn định — thứ được commit vào `data/seed/`. */
@@ -129,10 +204,56 @@ export function docHoSo(thoJson: unknown): HoSoPhongVan {
 export function tongHop(ban: Ban[]) {
   const dem = (c: string) => ban.filter((b) => chuanCham(b.cham) === c).length;
   const demQD = (q: string) => ban.filter((b) => chuanQD(b.quyetDinh) === q).length;
+
+  /*
+   * HAI TRỤC VÒNG 2 CÓ MẪU SỐ RIÊNG, KHÔNG DÙNG `n`.
+   *
+   * Vòng 1 không hỏi hai câu này, nên 20 bản ghi vòng 1 để trống. Chia cho `n` là
+   * lấy 0/20 rồi báo "0 % hiểu sai coverage" — nghe như một kết quả tốt, trong khi
+   * sự thật là CHƯA HỎI AI CẢ.
+   *
+   * Ngưỡng của giao thức là "≤ 10 % hiểu coverage thành điểm an toàn". Mẫu số của
+   * tỉ lệ đó phải là số người ĐƯỢC HỎI, nên `daHoi` đi kèm mọi lần đếm — cùng lý do
+   * `x/n` được giữ ở trên thay vì chỉ in phần trăm.
+   */
+  const coCoverage = ban.filter((b) => b.hieuCoverage !== undefined);
+  const coPhi = ban.filter((b) => b.docNhamPhi !== undefined);
+  const demKenh = (k: string) => ban.filter((b) => b.kenh === k).length;
+
   return {
     n: ban.length,
     hieu: { dung: dem("dung"), motPhan: dem("motPhan"), sai: dem("sai") },
     quyetDinh: { huy: demQD("huy"), kiemTraThem: demQD("kiemTraThem"), ky: demQD("ky") },
+
+    hieuCoverage: {
+      daHoi: coCoverage.length,
+      dung: coCoverage.filter((b) => b.hieuCoverage === "dung").length,
+      sai: coCoverage.filter((b) => b.hieuCoverage === "sai").length,
+      khongBiet: coCoverage.filter((b) => b.hieuCoverage === "khongBiet").length,
+    },
+    docNhamPhi: {
+      daHoi: coPhi.length,
+      co: coPhi.filter((b) => b.docNhamPhi === "co").length,
+      khong: coPhi.filter((b) => b.docNhamPhi === "khong").length,
+    },
+    bamThat: {
+      daBam: ban.filter((b) => b.bamThat !== undefined).length,
+      huy: ban.filter((b) => b.bamThat === "huy").length,
+      ky: ban.filter((b) => b.bamThat === "ky").length,
+      // Nói một đằng bấm một nẻo. Con số này chỉ có nghĩa khi CẢ HAI đều có mặt.
+      lechVoiLoiNoi: ban.filter(
+        (b) => b.bamThat !== undefined && chuanQD(b.quyetDinh) !== b.bamThat,
+      ).length,
+    },
+    kenh: {
+      video: demKenh("video"),
+      goiThoai: demKenh("goiThoai"),
+      trucTiep: demKenh("trucTiep"),
+      tinNhan: demKenh("tinNhan"),
+      // Giao thức: chỉ đo thời gian đọc ở nhóm video/trực tiếp. Qua tin nhắn thì con
+      // số đo được là thời gian gõ phím, không phải thời gian đọc.
+      doDuocThoiGian: demKenh("video") + demKenh("trucTiep"),
+    },
   };
 }
 
@@ -199,6 +320,32 @@ export function xacThucBan(x: unknown, i: number): string | null {
   const qd = o["quyetDinh"];
   if (qd !== undefined && !["huy", "kiemTraThem", "ky"].includes(String(qd))) {
     return `bản ghi #${i + 1} có \`quyetDinh\` lạ: ${String(qd)}`;
+  }
+
+  /*
+   * TRƯỜNG VÒNG 2: VẮNG LÀ HỢP LỆ, NHÃN LẠ LÀ HỎNG.
+   *
+   * Hai mươi bản ghi vòng 1 không có trường nào trong số này, và chúng là phỏng vấn
+   * người thật đã commit. Bắt buộc là biến chúng thành "không hợp lệ" — rồi ai đó
+   * sẽ điền bừa cho qua, và hai mươi cuộc phỏng vấn thật thành hai mươi con số bịa.
+   *
+   * Nhưng một nhãn SAI thì phải chặn: `hieuCoverage: "tam-duoc"` không đếm được vào
+   * ngưỡng nào cả, và im lặng bỏ qua nó là để một bản ghi hỏng trông như bản ghi đủ.
+   */
+  const nhan: Array<[string, string[]]> = [
+    ["hieuCoverage", ["dung", "sai", "khongBiet"]],
+    ["docNhamPhi", ["co", "khong"]],
+    ["kenh", ["video", "goiThoai", "trucTiep", "tinNhan"]],
+    ["bamThat", ["huy", "ky"]],
+  ];
+  for (const [ten, hopLe] of nhan) {
+    const v = o[ten];
+    if (v !== undefined && !hopLe.includes(String(v))) {
+      return `bản ghi #${i + 1} có \`${ten}\` lạ: ${String(v)}`;
+    }
+  }
+  if (o["lyDoQuyetDinh"] !== undefined && typeof o["lyDoQuyetDinh"] !== "string") {
+    return `bản ghi #${i + 1} có \`lyDoQuyetDinh\` không phải chuỗi`;
   }
   return null;
 }
