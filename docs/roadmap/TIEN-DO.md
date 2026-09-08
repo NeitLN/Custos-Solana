@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `6de1acd`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `c048064`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), U07 và I03 (đủ phụ thuộc vì U06 xong), D02/D03/A01 (đủ phụ thuộc vì R02 xong).
+**Việc khả dụng tiếp theo:** U07 và I03 (đủ phụ thuộc vì U06 xong), D02/D03/A01 (đủ phụ thuộc vì R02 xong), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -27,7 +27,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | I01 | Deadline/retry trang phỏng vấn | B | R00, U03 | DONE | `1a94356`. Hạn 15 s bọc cả chuỗi, dùng lại `scripts/coHan.ts`. Treo RPC thật: dừng sau 15,3 s, có nút Thử lại. |
 | I02 | Lưu, validate và khôi phục phỏng vấn | B/D | R00 | DONE | `3cc77be`. Kho hỏng được GIỮ nguyên văn + nút tải bản sao; bắt lỗi ghi storage. 8 bài đơn vị, 4 ca trình duyệt. |
 | I03 | Công cụ khớp giao thức nghiên cứu | B/C/D | I01, I02, U06 | TODO | Giữ thước đo đã khóa. |
-| S01 | Phân loại advisory theo phơi nhiễm | A | R00 | TODO | F11; cập nhật nguồn khi thực hiện. |
+| S01 | Phân loại advisory theo phơi nhiễm | A | R00 | DONE | F11. Tra registry 08/09: cả ba gói trực tiếp đã ở bản mới nhất, và **không advisory high nào có bản đã vá** — `image-size` mới nhất `2.0.2` vẫn nằm trong dải `<=2.0.2`. Chờ vá không phải kế hoạch. Bốn điều kiện chấp nhận rủi ro thành test (`phoiNhiemPhuThuoc.test.ts`), có kiểm phủ định. Người chịu trách nhiệm và ba mốc xem lại ghi ở `PHU-THUOC.md` mục 3.5. |
 | S02 | Vá tương thích và xử lý rủi ro còn lại | A/B | S01, R01 | TODO | Có thể WAIT_INPUT riêng cho quyết định chưa được giao. |
 | S03 | Kiểm SDK từ consumer ngoài repo | A/C | R01 | TODO | Kiểm lại nếu S02 hoặc core/AI thay đổi. |
 | D01 | Đồng bộ claim và tài liệu hiện hành | D/C/A | R02 | DONE | F10. Bảng claim ở `docs/BANG-CLAIM.md`. Ba lệch số (29→30 dòng, 6/6→13/13 bẫy, 33→38 mẫu) đưa vào generator + danh sách mốc. Ba câu thu hẹp: trần cứng 400 token, thị trường chứng minh hộ, "ví hiện tại cho họ xem". |
