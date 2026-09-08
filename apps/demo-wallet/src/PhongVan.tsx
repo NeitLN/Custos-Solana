@@ -5,6 +5,7 @@ import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
+import { coHan } from "../../../scripts/coHan.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import {
   NHAN_CHAM,
@@ -96,12 +97,38 @@ export function PhongVan() {
     });
   }, []);
 
-  useEffect(() => {
-    void docHienTruong()
-      .then((ht) => (ht ? dung(ht) : Promise.reject(new Error("chưa dựng hiện trường devnet"))))
+  /*
+   * HẠN CHO CẢ LƯỢT DỰNG MÀN HÌNH.
+   *
+   * Bản trước gọi `getLatestBlockhash()` rồi `inspect()` không có deadline nào bao
+   * quanh. RPC không phản hồi thì trang đứng ở "Đang dựng màn hình thật…" vô hạn —
+   * tái hiện tới 13,5 giây và vẫn còn chờ.
+   *
+   * Ở đây hậu quả nặng hơn một trang hỏng bình thường: người tham gia phỏng vấn
+   * đang ngồi đợi trước màn hình, và người phỏng vấn không biết nên chờ hay bỏ.
+   * Một phép đo bắt đầu bằng vài phút lúng túng là một phép đo đã hỏng.
+   *
+   * Hạn bọc CẢ chuỗi (đọc hiện trường + lấy blockhash + mô phỏng), cùng lý do như
+   * trong ví: đặt hạn quanh một chặng thì chặng còn lại vẫn treo được.
+   */
+  const HAN_MS = 15_000;
+
+  const dungLai = useCallback(() => {
+    setLoi(null);
+    setKetQua(null);
+    void coHan(
+      docHienTruong().then((ht) =>
+        ht ? dung(ht) : Promise.reject(new Error("chưa dựng hiện trường devnet")),
+      ),
+      HAN_MS,
+    )
       .then(setKetQua)
       .catch((e: unknown) => setLoi(e instanceof Error ? e.message : String(e)));
   }, [dung]);
+
+  useEffect(() => {
+    dungLai();
+  }, [dungLai]);
 
   function luu() {
     if (!cham || !quyetDinh) return;
@@ -219,8 +246,28 @@ export function PhongVan() {
         )}
 
         {!ketQua && !loi && (
-          <div role="status" className="mt-6 text-[15px] text-chu-nhat">
-            Đang dựng màn hình thật…
+          <div role="status" aria-live="polite" className="mt-6 text-[15px] text-chu-nhat">
+            Đang dựng màn hình thật… <span className="text-chu-mo">(tối đa 15 giây)</span>
+          </div>
+        )}
+
+        {loi !== null && (
+          <div role="alert" className="mt-6 rounded-2xl border border-nguy/40 p-4 text-[13px]">
+            <div className="font-semibold text-chu">Chưa dựng được màn hình</div>
+            <p className="mt-1 text-chu-mo">
+              Không kết nối được Devnet để dựng giao dịch thật: <strong>{loi}</strong>.
+            </p>
+            <p className="mt-1 text-chu-mo">
+              <strong>Đừng phỏng vấn khi chưa có màn hình này.</strong> Đo trên một màn hình
+              giả thì con số thu được cũng giả.
+            </p>
+            <button
+              type="button"
+              onClick={dungLai}
+              className="mt-3 min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu"
+            >
+              Thử lại
+            </button>
           </div>
         )}
 

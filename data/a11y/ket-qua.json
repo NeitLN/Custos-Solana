@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-08T08:23:34.659640+00:00",
-  "sourceCommit": "0b8dabad088378297af6723d1afd24cca43546d5",
+  "doLuc": "2026-09-08T08:27:34.182585+00:00",
+  "sourceCommit": "3cc77be585d58127d7022d944cb8c3a4a713da1a",
   "boCongCu": {
     "chromium": "149.0.7827.55",
     "playwright": "1.61.0",
@@ -143,7 +143,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "thẻ lỗi hiện ra (9.6s)",
+      "ten": "thẻ lỗi hiện ra (9.1s)",
       "dat": true,
       "chiTiet": "đạt"
     },
