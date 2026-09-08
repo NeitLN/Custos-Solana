@@ -13,8 +13,11 @@ import tailwindcss from "@tailwindcss/vite";
  * `CUSTOS_BASE=/Custos-Solana/` biến thành `/Program Files/Git/Custos-Solana/`
  * và trang deploy trắng hoàn toàn. Đã dính lỗi này một lần.
  */
-export default defineConfig(({ command }) => ({
-  base: command === "build" ? "/Custos-Solana/tan-cong/" : "/",
+export default defineConfig(({ command, isPreview }) => ({
+  // `isPreview` cùng lý do với ví — xem `apps/demo-wallet/vite.config.ts`. `vite
+  // preview` chạy với `command === "serve"`, nên thiếu nó thì mọi asset rơi xuống
+  // SPA fallback và trang trắng, trong khi máy chủ vẫn trả 200.
+  base: command === "build" || isPreview ? "/Custos-Solana/tan-cong/" : "/",
   plugins: [react(), tailwindcss()],
 
   // ⚠️ BẮT BUỘC — không được xoá.

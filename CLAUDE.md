@@ -20,6 +20,7 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 | `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
 | `packages/core/README.md` | **Tài liệu tích hợp SDK** — thứ bên ngoài đọc để quyết định có dùng không. Ví dụ trong đó có test chạy thật (`readme.test.ts`) |
 | `docs/BENCHMARK.md` | **Vì sao chưa có confusion matrix**, ba corpus và ba phạm vi, tập giữ lại, và số đo suy giảm cohort |
+| `docs/HIEU-NANG.md` | Độ trễ đo phía trình duyệt trên bản production; vì sao điểm ngoại lai là retry chứ không phải khởi động nguội |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
 | `ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
 | `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |

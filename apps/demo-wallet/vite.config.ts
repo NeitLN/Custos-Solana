@@ -14,8 +14,24 @@ import { fileURLToPath } from "node:url";
  * `CUSTOS_BASE=/Custos-Solana/` biến thành `/Program Files/Git/Custos-Solana/`
  * và trang deploy trắng hoàn toàn. Đã dính lỗi này một lần.
  */
-export default defineConfig(({ command }) => ({
-  base: command === "build" ? "/Custos-Solana/" : "/",
+export default defineConfig(({ command, isPreview }) => ({
+  /*
+   * `isPreview` PHẢI có ở đây, và thiếu nó là một lỗi câm.
+   *
+   * `vite preview` chạy với `command === "serve"`, nên điều kiện cũ cho nó base `/`
+   * trong khi HTML đã build trỏ `/Custos-Solana/assets/…`. Máy chủ preview không
+   * khớp đường dẫn nào, rơi hết xuống SPA fallback, và trả `index.html` (859 byte,
+   * `content-type: text/html`) cho MỌI file JS và CSS.
+   *
+   * Trình duyệt từ chối chúng vì sai MIME, `#root` rỗng, trang TRẮNG HOÀN TOÀN. Máy
+   * chủ trả 200 nên mọi phép kiểm chỉ đọc mã trạng thái đều xanh — tôi đã tự dính:
+   * `Invoke-WebRequest` báo 200, phải đọc tới `Content-Length` mới thấy cả ba file
+   * cùng ra 859 byte.
+   *
+   * Hệ quả thật: `npm run preview` — cách DUY NHẤT xem bản production trước khi
+   * deploy — không dùng được, và không ai biết vì nó không báo lỗi.
+   */
+  base: command === "build" || isPreview ? "/Custos-Solana/" : "/",
   plugins: [react(), tailwindcss()],
 
   // ⚠️ BẮT BUỘC — không được xoá.
