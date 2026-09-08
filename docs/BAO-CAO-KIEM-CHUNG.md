@@ -11,7 +11,7 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
   sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `107d53a`, cây làm việc sạch — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `465b491`, cây làm việc sạch — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -42,7 +42,7 @@ API, hay ví có tiền.
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
 | Bẫy đối kháng AI bị chặn | **13/13** · 3/3 đối chứng qua | `npm run eval-ai` |
 | Bẫy chặn được **trên gói đã đóng** | **10/10** | `npm run thu-goi` |
-| Tích hợp từ ngoài monorepo | **11,1 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
+| Tích hợp từ ngoài monorepo | **11,7 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
 | — dải đo | **7–15,9 giây**, trung vị 10 lượt trên 10 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
 | — dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` |
 | — một lượt `inspect()` | **680 ms** | cùng file |
@@ -70,7 +70,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
-| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `107d53a` | `ket-qua.json` → `lastAttempt` |
+| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `465b491` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **chỉ tài liệu đổi** | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | **`ai@0.2.0`** · `core@0.1.1` — khớp source | `npm view @custos-solana/ai version` |

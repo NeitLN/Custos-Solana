@@ -51,7 +51,7 @@ bằng chứng, chỉ là một con số.
 | Vi phạm axe | **0/40** | `data/a11y/ket-qua.json` | 4 trang × 2 khung, mức `wcag2a/aa · wcag21a/aa` | ✅ |
 | Vùng bấm ≥44px | **26/26** | `data/a11y/vung-bam.json` | 375px, ngữ cảnh cảm ứng | ✅ |
 | Bàn phím · zoom · chữ dài | **16/16** | `data/a11y/ban-phim-phong-to.json` | 320/375/640px | ✅ |
-| Cài từ ngoài repo tới kết quả đầu | **11,1 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
+| Cài từ ngoài repo tới kết quả đầu | **11,7 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
 | Một lượt `inspect()` | **680 ms** | như trên | trung vị 10 lượt | ✅ |
 | Dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` | đếm tự động, không gõ tay | ✅ |
 | Lượt gọi RPC mỗi lượt kiểm | **6,5** trung vị (4–9) | `so-lieu.json` · 22/08 | 20 giao dịch công khai lưu offline | ✅ |
