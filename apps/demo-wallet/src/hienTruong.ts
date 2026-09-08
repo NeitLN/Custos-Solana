@@ -1,3 +1,5 @@
+import { chonRpc as chonRpcChung } from "../../../scripts/diaChiDemo.ts";
+
 export type HienTruong = {
   rpc: string;
   mint: string;
@@ -31,9 +33,19 @@ export type HienTruong = {
  * khoá sẽ bị nhúng thẳng vào JS công khai. Lớp 3 của `scripts/soi-ro-ri-khoa.mjs`
  * là lưới cuối bắt đúng ca đó.
  */
+/**
+ * Endpoint RPC cho ví.
+ *
+ * Chính sách — thứ tự ưu tiên và endpoint dự phòng — nằm ở `scripts/diaChiDemo.ts`,
+ * dùng chung với trang tấn công. Trước đó mỗi app tự quyết, nên đặt `VITE_RPC` cho
+ * buổi demo thì chỉ nửa hệ thống nghe.
+ *
+ * Chỉ còn đúng MỘT quyết định ở lại đây, và nó phải ở lại: `VITE_RPC` chỉ được đọc
+ * khi `DEV`. Bản dựng công khai không bao giờ mang endpoint riêng của máy đội — đó
+ * là câu hỏi "bản dựng này là bản nào", mà module dùng chung không biết.
+ */
 export function chonRpc(ht: HienTruong | null | undefined): string {
-  const rieng = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
-  return rieng || ht?.rpc || "https://api.devnet.solana.com";
+  return chonRpcChung(ht?.rpc, import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined);
 }
 
 /**

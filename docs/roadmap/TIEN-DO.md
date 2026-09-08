@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `c048064`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `e11812b`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** U07 và I03 (đủ phụ thuộc vì U06 xong), D02/D03/A01 (đủ phụ thuộc vì R02 xong), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** I03 (đủ phụ thuộc vì U06 xong), D02/A01 (đủ phụ thuộc vì R02 xong), D03 (nay đủ vì U07 xong), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -23,7 +23,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | U04 | Phản hồi payload dApp không hợp lệ | B/A | R00, U03 | DONE | `0b8daba`. Union `khong`/`co`/`hong` + giới hạn 4096 ký tự. 7 bài đơn vị; trình duyệt: payload hỏng không sinh khối kết quả, không hiện nhãn phán quyết nào. |
 | U05 | Xác nhận huỷ đúng trạng thái | B/C | U01, U02 | DONE | `0b8daba`. `role=status`: "chưa được gửi và sẽ không được gửi", chỉ nói về yêu cầu hiện tại. |
 | U06 | Vùng bấm, câu chữ và phân cấp | B/C | U01, U05 | DONE | F08. Vùng bấm chuyển vào lớp `.lien-ket` thay vì vá bốn nơi gọi; 26/26 đạt 44px. Chi tiết implementation AI/khoá xuống mục kỹ thuật, giữ lại câu bảo vệ quyết định số 1. Header nói rõ là ví mẫu tích hợp SDK. Bàn phím · zoom · chữ dài: 16/16. axe 40/40 chạy lại. |
-| U07 | Điều tra/sửa cấu hình RPC và handoff | B/A | U03, U04 | TODO | Chỉ sửa khi xác minh cần thiết. |
+| U07 | Cấu hình RPC và handoff nhất quán | B/A | U03, U04 | DONE | KHÔNG phải `NOT_NEEDED`: trang tấn công gọi thẳng `ht.rpc` ở 2 chỗ (bỏ qua `VITE_RPC`, không fallback), và địa chỉ ví hỏi TÊN MÁY nên vào bằng `127.0.0.1`/`[::1]`/IP LAN thì giải ra **chính trang tấn công**. Chính sách gom về `scripts/diaChiDemo.ts`; 8 bài đơn vị + `soi-handoff.py` 5/5. |
 | I01 | Deadline/retry trang phỏng vấn | B | R00, U03 | DONE | `1a94356`. Hạn 15 s bọc cả chuỗi, dùng lại `scripts/coHan.ts`. Treo RPC thật: dừng sau 15,3 s, có nút Thử lại. |
 | I02 | Lưu, validate và khôi phục phỏng vấn | B/D | R00 | DONE | `3cc77be`. Kho hỏng được GIỮ nguyên văn + nút tải bản sao; bắt lỗi ghi storage. 8 bài đơn vị, 4 ca trình duyệt. |
 | I03 | Công cụ khớp giao thức nghiên cứu | B/C/D | I01, I02, U06 | TODO | Giữ thước đo đã khóa. |

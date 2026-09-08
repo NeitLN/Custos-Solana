@@ -12,6 +12,7 @@ npm run tan-cong    # 5189
 python scripts/kiem-trinh-duyet/soi-trinh-duyet.py   # axe + luồng, 40 mục
 python scripts/kiem-trinh-duyet/soi-vung-bam.py      # kích thước vùng bấm, 26 mục
 python scripts/kiem-trinh-duyet/soi-ban-phim-va-phong-to.py   # bàn phím · zoom · chữ dài
+python scripts/kiem-trinh-duyet/soi-handoff.py                 # tấn công → ví, cả chuỗi
 ```
 
 ## Vì sao ghim phiên bản
@@ -125,6 +126,31 @@ cỡ chữ mặc định lớn trong trình duyệt không được hưởng. Ch
 riêng, có rủi ro hồi quy thị giác riêng, không lẫn vào U06.
 
 Bằng chứng: `data/a11y/ban-phim-phong-to.json`.
+
+## `soi-handoff.py` — cả chuỗi tấn công → ví
+
+Bốn bài trên đều soi MỘT trang. Bài này soi chỗ nối giữa hai app, và chỗ nối là
+nơi hỏng mà không app nào tự thấy.
+
+Đo: `window.open` chạy trong cử chỉ bấm (không bị chặn) · tab mới **không phải chính
+trang tấn công** · đúng cổng ví · URL mang giao dịch · và ví bên kia thật sự dựng
+được khối kết quả. **5 PASS.**
+
+### Điều bài này CỐ Ý không đo
+
+Lỗi U07 là địa chỉ ví giải sai khi vào bằng `127.0.0.1` thay vì `localhost`. Nhưng
+trên máy này Vite gắn vào `localhost` → `::1`, nên `127.0.0.1` **từ chối kết nối ở
+cả hai cổng**. Mở nó ở đây chỉ cho một bài kiểm đỏ vì môi trường.
+
+Quy tắc giải địa chỉ nằm ở `packages/core/test/diaChiDemo.test.ts` — 8 ca, `location`
+là **tham số** chứ không phải môi trường, nên `127.0.0.1`, `[::1]` và IP LAN đều đo
+được và chạy mọi lúc, không cần server nào.
+
+Chia việc như vậy là cố ý: bài đơn vị giữ **quy tắc**, bài trình duyệt giữ **chuỗi
+còn sống**. Ép bài trình duyệt gánh cả hai là cách nhanh nhất có một guard đỏ vì
+lý do không ai sửa được.
+
+Bằng chứng: `data/a11y/handoff.json`.
 
 > Checker tương phản **tự viết** đã sai hai lần trước đây: Chrome trả màu dạng
 > `oklch()` và mã đọc ba số đó như RGB, cho ra tỉ lệ vô nghĩa — có lần báo
