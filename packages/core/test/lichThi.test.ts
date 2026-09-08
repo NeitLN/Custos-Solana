@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,6 +20,32 @@ const NGUON = "docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md";
  * Đây đúng hình dạng lỗi mà repo đã gặp hai lần rồi: số test gõ tay ở nhiều tài
  * liệu, và ngày phỏng vấn gõ tay ở ba nơi. Cả hai đều đã chuyển sang một nguồn.
  */
+
+/**
+ * Mọi tài liệu `.md` đang dùng — QUÉT, không liệt kê tay.
+ *
+ * Bài "cửa gõ cứng ngày" bên dưới trượt lần đầu vì bản trước liệt kê bốn file, và
+ * file có lỗi không nằm trong bốn file đó. Một danh sách gõ tay luôn thiếu đúng cái
+ * vừa được thêm vào — đây là lần thứ chín trong repo này.
+ *
+ * Bỏ `node_modules` và `site/` (bản dựng), giữ tất cả phần còn lại.
+ */
+function taiLieuDangDung(): string[] {
+  const ra: string[] = [];
+  const di = (thuMuc: string) => {
+    for (const m of readdirSync(join(GOC, thuMuc), { withFileTypes: true })) {
+      const p = thuMuc ? `${thuMuc}/${m.name}` : m.name;
+      if (m.isDirectory()) {
+        if (["node_modules", ".git", "site", "dist", ".thu-pages"].includes(m.name)) continue;
+        di(p);
+      } else if (m.name.endsWith(".md")) {
+        ra.push(p);
+      }
+    }
+  };
+  di("");
+  return ra;
+}
 
 /** Ngày trong `NGUON` là ngày đúng. Mọi nơi khác phải khớp hoặc đừng nhắc tới. */
 function hanHienTai(): string {
@@ -60,6 +86,58 @@ test("tài liệu đang dùng không nói một hạn khác với nguồn", () =
     lech,
     [],
     `Lịch phải khớp ${NGUON}, hoặc trỏ về đó thay vì gõ lại:\n` + lech.join("\n"),
+  );
+});
+
+/*
+ * CỬA QUYẾT ĐỊNH GÕ CỨNG NGÀY — bài trên KHÔNG bắt được, và đã để lọt một cái.
+ *
+ * `docs/PHONG-VAN-NGUOI-MUA.md` có mục «Cửa quyết định ngày 10/09». Ngày đó trôi
+ * qua trong khi hạn nộp đổi sang mốc khác, nên cả cái cửa im lặng hết hiệu lực —
+ * không lỗi, không cảnh báo, chỉ là một mục tài liệu không còn nghĩa.
+ *
+ * Bài trên trượt vì HAI lớp danh sách hẹp:
+ *
+ *   · nó chỉ quét bốn file, và file đó không nằm trong bốn file;
+ *   · nó chỉ khớp `hạn tiếp theo|hạn nộp|vòng loại|…`, mà «cửa quyết định» không
+ *     có chữ nào trong số đó.
+ *
+ * Bài này hỏi câu rộng hơn và khác hẳn: trong MỌI tài liệu đang dùng, có dòng nào
+ * đặt một cái mốc TƯƠNG LAI bằng một ngày gõ tay không?
+ *
+ * Ngày ĐO ĐƯỢC thì không sao — «cohort neo 25/08», «phỏng vấn 29–30/08» là ghi lại
+ * việc đã xảy ra, và chúng phải giữ nguyên. Chỉ ngày dùng làm CỬA mới nguy hiểm,
+ * vì nó là lời hứa về tương lai mà không ai đi kiểm lại.
+ */
+test("không tài liệu nào đặt cửa/hạn bằng một ngày gõ cứng", () => {
+  const CUA = /cửa quyết định|hạn chót|deadline|trước ngày|phải xong trước|chốt trước/i;
+  const NGAY = /\b(\d{1,2}\/\d{1,2}(?:\/20\d{2})?)\b/g;
+
+  const boQua = (f: string) =>
+    f === NGUON ||
+    f.includes("cuoc-thi/") ||
+    // Tài liệu đã đóng nhãn lịch sử nói về quá khứ; ngày trong đó là dữ kiện.
+    /TÀI LIỆU LỊCH SỬ/.test(doc(f));
+
+  const lech: string[] = [];
+  for (const f of taiLieuDangDung()) {
+    if (boQua(f)) continue;
+    for (const [i, d] of doc(f).split("\n").entries()) {
+      // Dòng TRỎ về nguồn lịch là dòng đúng — nó không gõ cứng cái gì cả.
+      if (d.includes("THONG-TIN-VONG-HIEN-TAI")) continue;
+      if (!CUA.test(d)) continue;
+      for (const m of d.matchAll(NGAY)) {
+        lech.push(`${f}:${i + 1} — cửa gõ cứng ngày ${m[1]}`);
+      }
+    }
+  }
+
+  assert.deepEqual(
+    lech,
+    [],
+    "Một cái cửa gắn với ngày gõ tay sẽ hết hiệu lực trong im lặng khi lịch đổi.\n" +
+      `Trỏ về ${NGUON}, hoặc phát biểu cửa theo SỰ KIỆN ("khi chốt hồ sơ nộp"):\n` +
+      lech.join("\n"),
   );
 });
 

@@ -34,7 +34,7 @@ Thứ tự ưu tiên tiếp cận — dễ tiếp cận trước, không phải 
 3. App game / NFT / cộng đồng có luồng ký giao dịch
 4. Đội hackathon khác đang làm dApp Solana — **dễ trả lời nhất**, và vẫn là bên
    tích hợp thật
-5. Ví lớn: chỉ để **học yêu cầu enterprise**. Đừng đặt mục tiêu pilot trong 14 ngày.
+5. Ví lớn: chỉ để **học yêu cầu enterprise**. Đừng đặt mục tiêu pilot trong thời gian còn lại của kỳ thi.
 
 ## 2 · Sáu câu hỏi — hỏi đúng thứ tự này
 
@@ -88,6 +88,41 @@ Nó **không** phải price validation cho Custos. Đừng dùng nó làm bằng
 **Chưa đạt thì nói chưa đạt.** Không có con số nào ở bảng này được lên slide trước
 khi nó xảy ra thật.
 
+### Lấy 30–50 cái tên đó ở đâu
+
+Bảng trên bắt đầu bằng «target account có tên», và đó là bước duy nhất trong cả bộ
+này chưa có đường đi. Không có danh sách thì mọi bước sau đứng yên.
+
+**Nguồn công khai, tra được, không cần quen ai:**
+
+| Nguồn | Lọc ra cái gì |
+|---|---|
+| Trang hệ sinh thái Solana (`solana.com/ecosystem`) | lọc theo Wallets · Consumer · Gaming |
+| DefiLlama — danh sách chain Solana | dApp còn hoạt động, có TVL ⇒ có người dùng thật |
+| Superteam Vietnam (Discord / trang dự án) | đội Việt Nam — **ưu tiên số 1**, cùng múi giờ, cùng tiếng |
+| Gallery dự án các hackathon Solana gần đây | đội đang build, dễ trả lời nhất |
+| GitHub: repo Solana có `@solana/wallet-adapter` và commit trong 90 ngày | đang sống, có luồng ký |
+
+**Cách lọc — ba câu hỏi, bỏ ngay nếu trượt câu nào:**
+
+1. Sản phẩm có **luồng người dùng ký giao dịch** không? (không có ⇒ bỏ)
+2. Có dấu hiệu **đội transaction-security riêng** không? (có ⇒ bỏ, xem mục 1)
+3. Có **kênh liên hệ công khai** không — Discord, X, email trên repo? (không ⇒ bỏ)
+
+**Ghi vào một bảng, không ghi trong đầu:**
+
+| Tên | Loại | Kênh liên hệ | Nguồn | Đã kiểm còn sống? | Đã nhắn? | Trả lời? |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+> ⚠️ **Tôi cố ý KHÔNG điền sẵn tên tổ chức vào đây.** Một cái tên nhớ nhầm, hoặc một
+> dự án đã chết, nằm trong repo công khai là một lỗi nhỏ nhưng cùng loại với mọi lỗi
+> mà tài liệu này chống: khẳng định một điều chưa kiểm. Danh sách phải do người mở
+> đúng năm nguồn trên và tự kiểm từng dòng.
+>
+> Cột **«đã kiểm còn sống?»** không phải thủ tục: nhắn cho một dự án đã bỏ hoang thì
+> mất một suất trong 20 tin nhắn và không nhận lại gì.
+
 ## 5 · Mẫu tin nhắn tiếp cận
 
 Ngắn, nêu rõ mình là ai, xin **15 phút**, và **không** xin tích hợp ngay.
@@ -129,6 +164,10 @@ Mỗi cuộc một bản ghi trong `data/seed/nguoi-mua.json`:
 
 `ma` là mã ẩn danh do người phỏng vấn đặt. **Không bao giờ là tên thật.**
 
+Bản đầy đủ có chú thích từng trường: [`data/seed/nguoi-mua.example.json`](../data/seed/nguoi-mua.example.json).
+File đó mang cờ `laViDu` và **không** được đọc bởi bộ đếm — chép nó thành
+`nguoi-mua.json` rồi thay bằng câu trả lời thật, đừng để lẫn.
+
 Kiểm và đếm:
 
 ```bash
@@ -138,7 +177,14 @@ node --experimental-strip-types scripts/kiem-nguoi-mua.ts
 Script từ chối chạy nếu có gì trông như tên thật, email, hay số điện thoại — repo
 này công khai.
 
-## 7 · Cửa quyết định ngày 10/09
+## 7 · Cửa quyết định — đọc TRƯỚC khi chốt hồ sơ
+
+> Bản trước ghi cứng **«ngày 10/09»**. Ngày đó đã trôi qua trong khi hạn nộp đổi
+> sang mốc khác, nên cái cửa này im lặng hết hiệu lực — đúng kiểu hỏng mà quy tắc
+> «lịch chỉ nằm ở một chỗ» sinh ra để chặn.
+>
+> Mốc hiện hành: [`docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+> Cửa này mở khi **chốt hồ sơ nộp**, không theo một ngày gõ tay ở đây.
 
 | Tín hiệu | Làm gì |
 |---|---|
