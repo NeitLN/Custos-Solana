@@ -308,11 +308,23 @@ export function CanhBao({
         {ketQua.aiAdvisory === "review_required" && (
           <div className="px-4 py-3.5 sm:px-5">
             <p className="text-[13px] font-medium text-amber-900">Custos đề nghị kiểm tra thủ công</p>
+            {/* HAI CÂU NÀY TỪNG DÍNH LIỀN NHAU, VÀ CHÚNG PHỤC VỤ HAI NGƯỜI KHÁC NHAU.
+                Câu đầu là của người sắp ký: ai quyết định mức cảnh báo, và đề nghị
+                này KHÔNG phải một phán quyết. Nó bảo vệ quyết định đã khoá số 1 nên
+                phải nằm ngay đây, không được bấm mới thấy.
+
+                Phần đuôi — lớp AI tuỳ chọn, bên tích hợp tự cắm, không cần khoá — là
+                của người đang cân nhắc dùng SDK. Với người sắp ký thì đó là ba dòng
+                chen vào giữa "giới hạn" và "hành động", đúng chỗ họ cần ít chữ nhất.
+                Nó xuống mục kỹ thuật.
+
+                Còn lại một mệnh đề ngắn: bản demo này chạy lớp tất định. Câu đó phải
+                ở lại vì nó là câu chống hiểu nhầm "chữ bạn đang đọc do mô hình sinh
+                ra" — giấu sau một cú bấm thì thành kém trung thực. */}
             <p className="mt-1 text-[12px] leading-relaxed text-slate-600">
               Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
-              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo công khai
-              chạy lớp giải thích tất định (không gọi mô hình, không cần khoá); lớp AI là
-              tuỳ chọn để bên tích hợp tự cắm, và cũng chỉ được phép đề nghị y như vậy.
+              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo này chạy
+              lớp giải thích tất định.
             </p>
           </div>
         )}
@@ -332,14 +344,26 @@ export function CanhBao({
             {moKyThuat ? "Ẩn chi tiết kỹ thuật" : "Chi tiết kỹ thuật"}
           </button>
           {moKyThuat && (
-            <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
-              {chiTietKyThuat(ketQua).map((d, i) => (
-                <div key={i} className="flex flex-wrap gap-x-2">
-                  <dt className="text-slate-500">{d.nhan}:</dt>
-                  <dd className="break-all text-slate-800">{d.giaTri}</dd>
-                </div>
-              ))}
-            </dl>
+            <>
+              <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
+                {chiTietKyThuat(ketQua).map((d, i) => (
+                  <div key={i} className="flex flex-wrap gap-x-2">
+                    <dt className="text-slate-500">{d.nhan}:</dt>
+                    <dd className="break-all text-slate-800">{d.giaTri}</dd>
+                  </div>
+                ))}
+              </dl>
+              {/* Không dùng `font-mono`: đây là câu văn cho người đọc, không phải giá
+                  trị để đối chiếu. Cùng khung xám nhưng khác kiểu chữ để mắt biết
+                  ngay dòng nào là dữ liệu, dòng nào là lời giải thích. */}
+              <p className="mo-ra mt-2 rounded-xl bg-slate-50 p-3 text-[11.5px] leading-relaxed text-slate-600">
+                Đây là ví mẫu tích hợp Custos SDK, không phải sản phẩm ví. Bản demo công
+                khai chạy lớp giải thích tất định: không gọi mô hình, không cần khoá API.
+                Lớp AI là tuỳ chọn để bên tích hợp tự cắm mô hình của họ, và kể cả khi
+                cắm, nó cũng chỉ được phép đề nghị kiểm tra thủ công — không tạo và không
+                sửa mức cảnh báo.
+              </p>
+            </>
           )}
         </div>
       </div>

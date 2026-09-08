@@ -11,6 +11,7 @@ npm run vi          # 5188
 npm run tan-cong    # 5189
 python scripts/kiem-trinh-duyet/soi-trinh-duyet.py   # axe + luồng, 40 mục
 python scripts/kiem-trinh-duyet/soi-vung-bam.py      # kích thước vùng bấm, 26 mục
+python scripts/kiem-trinh-duyet/soi-ban-phim-va-phong-to.py   # bàn phím · zoom · chữ dài
 ```
 
 ## Vì sao ghim phiên bản
@@ -84,6 +85,46 @@ Chỉ đo trong ngữ cảnh `has_touch`. Chuột không cần 44px, và bắt n
 khung máy tính chỉ làm giao diện phình ra vì một con số không áp dụng ở đó.
 
 Bằng chứng: `data/a11y/vung-bam.json`, có `sourceCommit` như bài axe.
+
+## `soi-ban-phim-va-phong-to.py` — ba thứ axe không kiểm
+
+axe đọc cây DOM tĩnh. Nó không bấm Tab, không thu nhỏ khung, không nhét thêm chữ
+vào. Nên *"0 vi phạm axe"* và *"dùng được bằng bàn phím"* là hai câu khác nhau, và
+chỉ câu đầu có bằng chứng cho tới bài này.
+
+| Nhóm | Đo gì |
+|---|---|
+| **A · bàn phím** | đi hết bằng Tab, không bẫy focus, vòng focus thấy được, Enter và Space đều mở được mục gập, và **lựa chọn an toàn đứng trước** trong thứ tự Tab |
+| **B · phóng to** | reflow 320px (WCAG 1.4.10 AA) và 640px (≈ khung 1280px phóng 200%) — 0px tràn, CTA còn nguyên |
+| **C · chữ dài** | giải thích dài gấp mười không làm vỡ khung, CTA giữ 44px |
+
+**16 PASS.** Thứ tự Tab đo được: Xem chi tiết → Chi tiết kỹ thuật → **Chặn & huỷ** →
+Vẫn ký. Với sản phẩm chặn giao dịch thì thứ tự đó không trung tính: người bấm
+Tab-Enter theo phản xạ trúng nút huỷ, không trúng nút ký. Nên nó có một bài kiểm
+riêng thay vì để may rủi theo thứ tự DOM.
+
+### Kiểm phủ định của bài này đã cứu chính nó
+
+Bản đầu kiểm vòng focus bằng `outlineWidth >= 1`. Thêm `outline: none !important`
+vào CSS thì bài kiểm **vẫn xanh** — Chromium trả `outline-style: none` nhưng giữ
+`outline-width: 3px`, tức bề rộng đã khai báo vẫn còn dù không vẽ gì. Phép kiểm ấy
+không bao giờ đỏ được.
+
+Phải đọc **cả `outline-style`**. Sau khi sửa, cùng mutation đó cho FAIL trên 3 nút —
+và đúng 3, vì "Chặn & huỷ" có `box-shadow` riêng nên vẫn thấy được.
+
+> Một bài kiểm khả năng tiếp cận không bao giờ đỏ được thì tệ hơn là không có bài
+> nào: nó phát ra sự yên tâm mà nó không có cơ sở để phát.
+
+### Một điều bài này GHI NHẬN mà không gọi là hỏng
+
+Chữ dùng px cố định: đặt `font-size` gốc 16px → 32px thì chữ giữ nguyên 12,5px.
+Đó **không** phải vi phạm WCAG 1.4.4 — tiêu chí đó được thoả bằng phóng to của
+trình duyệt, và nhóm B chứng minh reflow còn nguyên ở 640px. Cái mất là người đặt
+cỡ chữ mặc định lớn trong trình duyệt không được hưởng. Chuyển px → rem là việc
+riêng, có rủi ro hồi quy thị giác riêng, không lẫn vào U06.
+
+Bằng chứng: `data/a11y/ban-phim-phong-to.json`.
 
 > Checker tương phản **tự viết** đã sai hai lần trước đây: Chrome trả màu dạng
 > `oklch()` và mã đọc ba số đó như RGB, cho ra tỉ lệ vô nghĩa — có lần báo

@@ -425,8 +425,22 @@ export default function App() {
               <h1 className="text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
                 Custos Wallet
               </h1>
-              <p className="mt-1 hidden text-[12.5px] text-chu-mo sm:block">
-                Ví Devnet · kiểm tra giao dịch trước khi ký
+              {/* CUSTOS KHÔNG BÁN VÍ. Custos bán SDK cho ví.
+                  "Custos Wallet" + "Ví Devnet · kiểm tra giao dịch trước khi ký" đọc
+                  trôi chảy thành "Custos là một cái ví" — và đó là hiểu nhầm đắt nhất
+                  có thể xảy ra ở track Best Product & Business, vì nó đổi luôn thị
+                  trường: một cái ví phải giành người dùng với Phantom, còn một SDK thì
+                  bán CHO Phantom.
+
+                  Dòng cũ còn `hidden sm:block`, nên dưới 640px không có dòng nào cả —
+                  người xem trên điện thoại chỉ thấy đúng hai chữ "Custos Wallet". Bỏ
+                  `hidden`: chỗ dễ đọc nhầm nhất là chỗ ít chữ nhất.
+
+                  Bỏ luôn "· Devnet" ở đuôi: ở 375px nó rớt xuống một dòng riêng chỉ
+                  để nói lại điều mà banner trên đầu và chip bên cạnh đã nói. Ba lần
+                  cùng một chữ không làm ai tin hơn, chỉ làm dòng bị gãy. */}
+              <p className="mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
+                Ví mẫu tích hợp Custos SDK
               </p>
             </div>
           </div>
