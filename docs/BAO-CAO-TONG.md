@@ -18,7 +18,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 | Test tự động | **451** pass · 0 fail |
 | Luật tất định | **14** — cả 14 luật đều có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **38** |
-| Bẫy đối kháng AI bị chặn | **13/13** |
+| Bẫy đối kháng AI bị chặn | **13/13** · 3/3 đối chứng qua |
 | Tích hợp từ ngoài monorepo | **11,1 giây** tới kết quả đầu · **30 dòng** · **680 ms** một lượt |
 | Phỏng vấn người dùng thật | **20** — 13 đúng · 5 một phần · 2 sai |
 | Phỏng vấn **người mua** | **0** |

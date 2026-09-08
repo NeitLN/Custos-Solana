@@ -29,7 +29,23 @@ export type TuyChonAnthropic = {
   ghiNhanDung?: (u: { vao: number; ra: number }) => void;
 };
 
-const MODEL_MAC_DINH = "claude-haiku-4-5-20251001";
+/**
+ * Xuất ra để bộ eval GHI ĐÚNG model đã gọi, thay vì gõ lại tên ở chỗ khác.
+ *
+ * `scripts/eval-ai.ts` trước đây ghi `moHinh: "claude-haiku-4-5-20251001"` bằng chuỗi
+ * gõ tay. Đổi mặc định ở đây mà quên sửa bên đó thì báo cáo khai một model, mã gọi
+ * một model khác — và không có gì báo, vì cả hai đều là chuỗi hợp lệ.
+ */
+export const MODEL_MAC_DINH = "claude-haiku-4-5-20251001";
+
+/**
+ * Trần token đầu ra mặc định.
+ *
+ * Đây là **mặc định**, không phải trần cứng: `tuyChon.maxTokens` đè được. Và nó chỉ
+ * tính đầu RA — token đầu vào không nằm trong con số này, mà nhà cung cấp tính tiền
+ * cả hai. Xem `docs/DON-VI-KINH-TE.md`.
+ */
+export const TOKEN_RA_MAC_DINH = 400;
 
 export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
   const apiKey = tuyChon.apiKey ?? process.env["ANTHROPIC_API_KEY"];
@@ -61,7 +77,7 @@ export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
 
     const r = await client.messages.create({
       model: tuyChon.model ?? MODEL_MAC_DINH,
-      max_tokens: tuyChon.maxTokens ?? 400,
+      max_tokens: tuyChon.maxTokens ?? TOKEN_RA_MAC_DINH,
       system,
       messages: [{ role: "user", content: user }],
     });

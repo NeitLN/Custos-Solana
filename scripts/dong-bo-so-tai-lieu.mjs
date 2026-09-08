@@ -156,8 +156,18 @@ thayDong("README.md", [
   // README còn công bố "6/6 bẫy" trong khi artifact, trang số liệu, release notes và
   // hai báo cáo đều ghi 13/13. 6/6 là bộ bẫy của một lượt đo CŨ; để nguyên thì người
   // đọc README tưởng bộ đối kháng nhỏ hơn thực tế hơn gấp đôi.
-  [/^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn \|/, (d) =>
-    d.replace(/\d+\/\d+ bẫy bị chặn/, `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} bẫy bị chặn`)],
+  /*
+   * HAI CON SỐ, KHÔNG PHẢI MỘT.
+   *
+   * "13/13 bẫy bị chặn" một mình không phân biệt được bộ chắn hoạt động với bộ chắn
+   * vứt sạch mọi đầu ra mô hình — cả hai cùng cho 13/13, và con số ấy xanh NHẤT đúng
+   * lúc lớp AI hỏng nhất. Đối chứng dương phải đi kèm ở mọi chỗ công bố.
+   */
+  [/^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn/, (d) =>
+    d
+      .replace(/\d+\/\d+ bẫy bị chặn(, \d+\/\d+ câu đúng đi qua)?/,
+        `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} bẫy bị chặn` +
+        (S.evalAi.soDoiChung ? `, ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} câu đúng đi qua` : ""))],
   [/^\*\*330 tests\*\*|^Measured, not estimated/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`).replace(/\*\*\d+ labelled samples\*\*/, `**${S.soMau} labelled samples**`)],
 ]);
 
@@ -233,6 +243,32 @@ if (TH?.dongMa) {
     [/^Tất cả nằm trong `src\/tich-hop\.js`/, (d) => d.replace(/— \d+ dòng,/, `— ${TH.dongMa} dòng,`)],
   ]);
 }
+
+/*
+ * BANG-CLAIM.md phải tự tuân quy tắc nó viết ra.
+ *
+ * Trang đó nói "chỗ duy nhất được phép gõ tay là không chỗ nào" — rồi tự gõ tay bốn
+ * con số, và trôi mất hai trong số đó chỉ sau một phiên (436 test khi thực tế 451;
+ * 7,2 giây khi thực tế 7,7). Một trang canh tính nhất quán mà tự lệch thì nó là ví
+ * dụ ngược cho chính luận điểm của nó.
+ */
+thayDong("docs/BANG-CLAIM.md", [
+  [/^\| Test tự động \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
+  [/^\| Mẫu đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+  [/^\| Luật L2 \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soLuat}**`)],
+  [/^\| Bẫy đối kháng AI \|/, (d) =>
+    d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**`)],
+  [/^\| \*\*Đối chứng dương\*\*/, (d) =>
+    d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung}**`)],
+  ...(TH
+    ? [
+        [/^\| Cài từ ngoài repo tới kết quả đầu \|/, (d) =>
+          d.replace(/\*\*[\d,]+ giây\*\*/, `**${String(TH.giayDenKetQuaDau).replace(".", ",")} giây**`)],
+        [/^\| Một lượt `inspect\(\)` \|/, (d) => d.replace(/\*\*\d+ ms\*\*/, `**${TH.msMotLuot} ms**`)],
+        [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
+      ]
+    : []),
+]);
 
 /*
  * NGÀY ĐO ĐI KÈM SỐ ĐO.
@@ -335,7 +371,12 @@ thayDong("docs/BAO-CAO-TONG.md", [
   [/^\| Mẫu kiểm thử gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
   [
     /^\| Bẫy đối kháng AI bị chặn \|/,
-    (d) => d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**`),
+    (d) =>
+      d.replace(
+        /\*\*\d+\/\d+\*\*( · \d+\/\d+ đối chứng qua)?/,
+        `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**` +
+          (S.evalAi.soDoiChung ? ` · ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} đối chứng qua` : ""),
+      ),
   ],
   [
     /^\| Tích hợp từ ngoài monorepo \|/,
@@ -374,7 +415,12 @@ thayDong("docs/BAO-CAO-KIEM-CHUNG.md", [
   [/^\| Mẫu kiểm thử gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
   [
     /^\| Bẫy đối kháng AI bị chặn \|/,
-    (d) => d.replace(/\*\*\d+\/\d+\*\*/, `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**`),
+    (d) =>
+      d.replace(
+        /\*\*\d+\/\d+\*\*( · \d+\/\d+ đối chứng qua)?/,
+        `**${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay}**` +
+          (S.evalAi.soDoiChung ? ` · ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} đối chứng qua` : ""),
+      ),
   ],
   [
     /^\| Tích hợp từ ngoài monorepo \|/,

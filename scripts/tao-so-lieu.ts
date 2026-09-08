@@ -248,15 +248,27 @@ function docTichHop() {
 function docEvalAi() {
   const t = docJson<{
     soMau: number;
-    boChan: { soBay: number; soBayChanDuoc: number };
+    boChan: { soBay: number; soBayChanDuoc: number; soDoiChung?: number; soDoiChungQua?: number };
     moHinhThat: { trangThai?: string };
+    liveGanNhat?: { trangThai?: string; doLuc?: string } | null;
   }>("data/eval/ai-ket-qua.json");
   if (!t) return null;
   return {
     soMau: t.soMau,
     soBay: t.boChan.soBay,
     soBayChanDuoc: t.boChan.soBayChanDuoc,
+    /*
+     * ĐỐI CHỨNG DƯƠNG ĐI KÈM, KHÔNG BAO GIỜ TÁCH.
+     *
+     * "13/13 bẫy bị chặn" một mình không phân biệt được bộ chắn hoạt động với bộ
+     * chắn vứt sạch mọi đầu ra của mô hình — cả hai đều cho 13/13. Trang số liệu
+     * nào chỉ chép con số đầu là trang nói đúng một nửa.
+     */
+    soDoiChung: t.boChan.soDoiChung ?? null,
+    soDoiChungQua: t.boChan.soDoiChungQua ?? null,
     moHinhThat: t.moHinhThat?.trangThai ?? null,
+    // Lượt live gần nhất SỐNG SÓT qua các lượt offline — xem `eval-ai.ts`.
+    liveGanNhat: t.liveGanNhat?.trangThai ?? null,
   };
 }
 

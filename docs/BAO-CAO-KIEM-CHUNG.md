@@ -40,7 +40,7 @@ API, hay ví có tiền.
 | Luật tất định | **14** | `npm run check` — `capLuat.test.ts` |
 | Mẫu kiểm thử gắn nhãn | **38** | `ls data/seed/facts \| wc -l` |
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
-| Bẫy đối kháng AI bị chặn | **13/13** | `npm run eval-ai` |
+| Bẫy đối kháng AI bị chặn | **13/13** · 3/3 đối chứng qua | `npm run eval-ai` |
 | Bẫy chặn được **trên gói đã đóng** | **10/10** | `npm run thu-goi` |
 | Tích hợp từ ngoài monorepo | **11,1 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
 | — dải đo | **7–15,9 giây**, trung vị 10 lượt trên 10 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
