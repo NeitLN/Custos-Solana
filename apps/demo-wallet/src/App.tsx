@@ -9,7 +9,7 @@ import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, docHienTruongChiTiet, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
-import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
+import { docYeuCauNgoaiChiTiet } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
 import { guiGiaoDich, type TrangThaiGui } from "./gui.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
@@ -99,6 +99,19 @@ export default function App() {
   const [daSaoChep, setDaSaoChep] = useState(false);
 
   /*
+   * Hai trạng thái nhỏ, hai lỗi im lặng khác nhau.
+   *
+   * `loiYeuCau` — dApp gửi thứ không đọc được. Trước đây ví về màn hình nghỉ như
+   * chưa có chuyện gì, nên người dùng không biết có yêu cầu nào vừa tới.
+   *
+   * `daHuy` — người dùng bấm "Chặn & huỷ". Trước đây card chỉ biến mất; xác nhận
+   * duy nhất nằm trong nhật ký kỹ thuật đang đóng. Một hành động bảo mật mà không
+   * có phản hồi thấy được thì người dùng không biết nó đã xảy ra chưa.
+   */
+  const [loiYeuCau, setLoiYeuCau] = useState<string | null>(null);
+  const [daHuy, setDaHuy] = useState(false);
+
+  /*
    * TRẠNG THÁI LỖI RIÊNG cho việc kiểm tra giao dịch.
    *
    * Trước đây lỗi `inspect()` chỉ được `ghi()` vào nhật ký kỹ thuật — một khối gập
@@ -157,15 +170,25 @@ export default function App() {
     // chạy hai vòng RPC cho cùng một giao dịch — chậm gấp đôi và nhật ký in
     // lặp. Đây là việc CHỈ ĐƯỢC làm một lần, nên chốt bằng ref.
     if (daXuLyYeuCau.current) return;
-    const yc = docYeuCauNgoai();
-    if (!yc) return;
+    const kq = docYeuCauNgoaiChiTiet();
+    if (kq.loai === "khong") return;
     daXuLyYeuCau.current = true;
+
+    if (kq.loai === "hong") {
+      // Không đọc được thì NÓI RA. Im lặng ở đây làm người dùng tưởng chưa có gì
+      // tới, trong khi có một yêu cầu vừa bị bỏ qua.
+      ghi(`yêu cầu từ dApp không đọc được: ${kq.lyDo}`);
+      setLoiYeuCau(kq.lyDo);
+      return;
+    }
+    const yc = kq.yc;
     setTuDApp(yc.khai ? `dApp khai đây là: ${yc.khai.type}` : "dApp không khai gì");
     // Tách thành hàm có tên để nút "Thử lại" chạy lại ĐÚNG giao dịch dApp đã đẩy
     // sang, chứ không dựng một giao dịch mới — giao dịch mới là một phép thử khác.
     const chay = () => {
       setDangChay(true);
       setLoi(null);
+      setDaHuy(false);
       // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
       // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
       // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
@@ -724,6 +747,30 @@ export default function App() {
                   </div>
                 )}
 
+                {loiYeuCau !== null && (
+                  <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
+                    <div className="font-semibold text-chu">Không đọc được yêu cầu từ ứng dụng</div>
+                    <p className="mt-1 text-chu-mo">
+                      Một ứng dụng vừa gửi yêu cầu ký sang ví, nhưng nội dung không đọc được:{" "}
+                      <strong>{loiYeuCau}</strong>. Custos <strong>chưa kiểm tra gì cả</strong> — đây
+                      không phải kết luận giao dịch an toàn.
+                    </p>
+                    <p className="mt-1 text-chu-mo">
+                      Hãy quay lại ứng dụng và tạo yêu cầu mới, hoặc thử một kịch bản bên dưới.
+                    </p>
+                  </div>
+                )}
+
+                {daHuy && !ketQua && (
+                  <div role="status" aria-live="polite" className="mt-4 rounded-2xl border border-vien p-4 text-[13px]">
+                    <div className="font-semibold text-chu">Đã huỷ yêu cầu</div>
+                    <p className="mt-1 text-chu-mo">
+                      Giao dịch này <strong>chưa được gửi</strong> và sẽ không được gửi. Bạn có thể
+                      chạy lại một kịch bản bên dưới để thử tiếp.
+                    </p>
+                  </div>
+                )}
+
                 {ketQua && (
                   <div
                     ref={oKetQua}
@@ -738,6 +785,7 @@ export default function App() {
                         setKetQua(null);
                         setTxCho(null);
                         setGui({ pha: "nghi" });
+                        setDaHuy(true);
                       }}
                       choPhepKy={kyDuoc() && !dangGui}
                       onKy={() => {
