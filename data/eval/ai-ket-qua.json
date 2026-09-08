@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-06T16:17:41.607Z",
-  "soMau": 33,
+  "doLuc": "2026-09-08T14:31:03.479Z",
+  "soMau": 38,
   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
   "template": {
     "treTrungViMs": 0,
@@ -91,12 +91,32 @@
         "diaChiLot": 0,
         "soLot": 0
       }
+    ],
+    "soDoiChung": 3,
+    "soDoiChungQua": 3,
+    "doiChung": [
+      {
+        "ten": "câu đúng · giữ hai địa chỉ rút gọn",
+        "viSao": "viết mới hoàn toàn, mọi neo đều có trong facts",
+        "quaDuoc": true
+      },
+      {
+        "ten": "câu đúng · NGUYÊN VĂN mô hình thật 22/08",
+        "viSao": "đầu ra thật của claude-haiku-4-5, không do đội nghĩ ra",
+        "quaDuoc": true
+      },
+      {
+        "ten": "câu đúng · không nhắc địa chỉ nào",
+        "viSao": "không có neo địa chỉ — bộ chắn không được đòi phải có",
+        "quaDuoc": true
+      }
     ]
   },
   "moHinhThat": {
     "trangThai": "BLOCKED_BY_SECRET",
     "vaSao": "chưa có ANTHROPIC_API_KEY trong môi trường; không đo được độ trễ và token thật"
   },
+  "liveGanNhat": null,
   "cases": [
     {
       "id": "R01-pos",
@@ -558,6 +578,76 @@
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R01-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 1,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 71,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R02-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 2,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 71,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R04-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 4,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R08-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 8,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R12-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 12,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 63,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
       }
     }
   ]

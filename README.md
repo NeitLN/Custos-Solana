@@ -127,7 +127,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
 | **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
 | **Ví dụ tích hợp** | SDK dùng được từ ngoài, mất bao lâu | có bên thứ ba nào chọn dùng |
-| **Đánh giá AI** — 13/13 bẫy bị chặn | mô hình không bịa được địa chỉ hay số tiền | chất lượng câu chữ; chưa đo với mô hình thật |
+| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | mô hình không bịa được địa chỉ hay số tiền | chất lượng câu chữ; chưa đo với mô hình thật |
 
 Trang [/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html) hiện từng con
 số kèm cách đo, ngày đo, **và mục "điều đội chưa đo được"**.

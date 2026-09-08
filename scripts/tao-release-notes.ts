@@ -42,7 +42,10 @@ if (!S) {
 // Số benchmark đến từ lượt PASS gần nhất — xem `bangChungTichHop.ts`.
 const bcTH = docBangChungTichHop();
 const TH = bcTH?.lanPassGanNhat ?? null;
-const EV = json<{ boChan: { soBay: number; soBayChanDuoc: number; soBayCanNguoiCham?: number }; moHinhThat: { trangThai?: string } }>(
+const EV = json<{
+  boChan: { soBay: number; soBayChanDuoc: number; soBayCanNguoiCham?: number; soDoiChung?: number; soDoiChungQua?: number };
+  moHinhThat: { trangThai?: string };
+}>(
   "data/eval/ai-ket-qua.json",
 );
 const aiVer = (json<{ version: string }>("packages/ai/package.json") ?? { version: "?" }).version;
@@ -96,7 +99,13 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
     ? NL + `| Tích hợp từ ngoài monorepo | **${giay} giây** tới kết quả đầu · **${TH.dongMaTichHop}** dòng mã · **${TH.msMotLuotKiem} ms** một lượt |`
     : ""
 }${
-  EV ? NL + `| Bẫy đối kháng AI bị chặn | **${EV.boChan.soBayChanDuoc}/${EV.boChan.soBay - (EV.boChan.soBayCanNguoiCham ?? 0)}** máy bắt được |` : ""
+  EV
+    ? NL +
+      `| Bẫy đối kháng AI bị chặn | **${EV.boChan.soBayChanDuoc}/${EV.boChan.soBay - (EV.boChan.soBayCanNguoiCham ?? 0)}** máy bắt được` +
+      // Đối chứng dương đi kèm: không có nó thì con số trên không phân biệt được
+      // "bộ chắn hoạt động" với "bộ chắn vứt sạch mọi đầu ra mô hình".
+      (EV.boChan.soDoiChung ? `, ${EV.boChan.soDoiChungQua}/${EV.boChan.soDoiChung} câu đúng vẫn đi qua |` : " |")
+    : ""
 }
 
 > **\`${S.cohort.caoBuoc}\` là số CÁO BUỘC, không phải "0 false positive".** Cohort chưa

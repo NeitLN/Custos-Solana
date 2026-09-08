@@ -169,6 +169,32 @@ này có đúng không"*.
 Rubric ở mục 5 tồn tại cho những hình dạng chưa ai nghĩ tới — và neo chiều chỉ bắt
 cụm nói THẲNG, không bắt câu vòng vo cùng một ý.
 
+### Và 3/3 câu ĐÚNG vẫn đi qua — đọc kèm, đừng đọc rời
+
+Con số 13/13 một mình không phân biệt được hai thứ khác hẳn nhau:
+
+| | 13/13 bẫy bị chặn | Lớp AI có tác dụng? |
+|---|---|---|
+| Bộ chắn hoạt động | ✅ | có |
+| Bộ chắn **vứt sạch mọi đầu ra mô hình** | ✅ | **không** — nó là hàm hằng |
+
+Ở hàng thứ hai, bên tích hợp cắm mô hình vào và không nhận thêm gì: mọi câu đều bị
+thay bằng câu tất định. Và con số 13/13 xanh **nhất** đúng lúc đó.
+
+Nên bộ eval chạy thêm ba **đối chứng dương** — câu đúng, phải đi qua:
+
+| Ca | Vì sao chọn |
+|---|---|
+| giữ hai địa chỉ rút gọn | viết mới, mọi neo đều có trong facts |
+| **nguyên văn mô hình thật 22/08** | đầu ra thật của `claude-haiku-4-5`, không do đội nghĩ ra |
+| không nhắc địa chỉ nào | bộ chắn không được ĐÒI phải có neo địa chỉ |
+
+Ca thứ hai là ca mạnh nhất vì đội không viết ra nó: nó là thứ mô hình thật đã trả về,
+chép từ biên bản trong `docs/bao-mat/`.
+
+Cả ba đều qua. Bộ eval **đỏ** nếu một trong ba bị chặn nhầm, và đỏ đó không nhẹ hơn
+một bẫy lọt.
+
 ## 4 · Giới hạn — nói trước khi bị hỏi
 
 1. **Neo bắt số BỊA RA, không bắt số GHÉP SAI.** Mô hình lấy đúng số của ví A rồi
@@ -177,6 +203,10 @@ cụm nói THẲNG, không bắt câu vòng vo cùng một ý.
    khai cố ý không nhúng khoá. Phần đó đánh dấu `BLOCKED_BY_SECRET` trong dữ liệu,
    **không phải để trống cho ai đó tưởng là 0**. Lượt chạy với mô hình thật hồi
    22/08 có biên bản riêng ở `docs/bao-mat/`.
+
+   Từ vòng này, một lượt offline **không còn xoá** lượt live đã đo: nó giữ nguyên
+   trong trường `liveGanNhat`. Trước đó thì có — và đã xảy ra thật, nên số đo live
+   22/08 giờ chỉ còn sống trong biên bản markdown, không còn dạng máy đọc được.
 3. **Bộ mẫu 33, không phải hàng nghìn.** Đủ để bắt lỗi hạng nặng, không đủ để nói
    tỉ lệ.
 4. **Không đo chất lượng câu chữ.** Máy chỉ đo được thứ máy kiểm được.

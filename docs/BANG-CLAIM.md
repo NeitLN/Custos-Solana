@@ -26,6 +26,7 @@ Không phải vì chúng sai, mà vì tiếng Việt cho phép đọc chúng r�
 | **7 gắn cờ** | verdict khác Xanh, gồm cả cờ vì thiếu thông tin | ~~"7 giao dịch nguy hiểm"~~ |
 | **coverage 82 %** | tỉ lệ lệnh đọc hiểu được | ~~"an toàn 82 %"~~ — đây là mức ĐỌC HIỂU |
 | **13/13 bẫy** | 13 hình dạng sai **đội tự nghĩ ra**, chặn hết | ~~"AI không bịa được"~~ — chỉ nói về 13 hình dạng đã nghĩ tới |
+| **13/13 + 3/3** | chặn hết đầu ra xấu **và** cho đầu ra tốt đi qua | ~~"13/13"~~ một mình — bộ chắn vứt sạch cũng cho 13/13 |
 
 Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`SEED-DATASET.md`](../SEED-DATASET.md)
 mục 0b3 và 0b4.
@@ -41,16 +42,17 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Số | Nguồn | Phạm vi | Trạng thái |
 |---|---|---|---|---|
-| Test tự động | **436** | `npm run check` | offline, không mạng | ✅ hiện hành |
+| Test tự động | **451** | `npm run check` | offline, không mạng | ✅ hiện hành |
 | Luật L2 | **14** | `data/seed/index.json` | mỗi luật có ca dương và ca đối chứng | ✅ |
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
 | Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định**, chưa gọi mô hình thật | ✅ |
+| **Đối chứng dương** — câu ĐÚNG đi qua | **3/3** | `npm run eval-ai` | đọc KÈM dòng trên, không bao giờ tách | ✅ |
 | Bẫy trên gói đã publish | **10/10** | `data/registry/ket-qua.json` · 06/09 | cài `@custos-solana/ai@0.2.0` **từ registry**, không từ repo | ✅ |
 | Vi phạm axe | **0/40** | `data/a11y/ket-qua.json` | 4 trang × 2 khung, mức `wcag2a/aa · wcag21a/aa` | ✅ |
 | Vùng bấm ≥44px | **26/26** | `data/a11y/vung-bam.json` | 375px, ngữ cảnh cảm ứng | ✅ |
 | Bàn phím · zoom · chữ dài | **16/16** | `data/a11y/ban-phim-phong-to.json` | 320/375/640px | ✅ |
-| Cài từ ngoài repo tới kết quả đầu | **7,2 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt trên 9 bản dựng, dải 7–15,8 | ✅ |
-| Một lượt `inspect()` | **645 ms** | như trên | trung vị 10 lượt | ✅ |
+| Cài từ ngoài repo tới kết quả đầu | **11,1 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
+| Một lượt `inspect()` | **680 ms** | như trên | trung vị 10 lượt | ✅ |
 | Dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` | đếm tự động, không gõ tay | ✅ |
 | Lượt gọi RPC mỗi lượt kiểm | **6,5** trung vị (4–9) | `so-lieu.json` · 22/08 | 20 giao dịch công khai lưu offline | ✅ |
 
