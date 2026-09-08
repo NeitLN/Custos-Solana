@@ -7,7 +7,7 @@ import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-
 import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
-import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, docHienTruongChiTiet, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
@@ -29,6 +29,9 @@ type Kich = "tanCong" | "lanhTinh";
 export default function App() {
   const [cheDo, setCheDo] = useState<CheDo | null>(null);
   const [ht, setHt] = useState<HienTruong | null | undefined>(undefined);
+  // Lý do cấu hình hỏng, tách khỏi "chưa dựng": một file có mặt nhưng sai cấu
+  // trúc thì bảo người ta chạy lại script dựng là chỉ sai hướng.
+  const [loiCauHinh, setLoiCauHinh] = useState<string | null>(null);
   const [vi] = useState(napVi);
   const [batCustos, setBatCustos] = useState(true);
   const [soDuToken, setSoDuToken] = useState<string | null>(null);
@@ -82,7 +85,15 @@ export default function App() {
 
   useEffect(() => {
     void docCheDo().then(setCheDo);
-    void docHienTruong().then(setHt);
+    void docHienTruongChiTiet().then((r) => {
+      if (r.trangThai === "co") {
+        setHt(r.ht);
+        setLoiCauHinh(null);
+      } else {
+        setHt(null);
+        setLoiCauHinh(r.trangThai === "hong" ? r.lyDo : null);
+      }
+    });
   }, []);
 
   // Giao dịch do một dApp BÊN NGOÀI đẩy sang (trang tấn công giả, cổng 5189).
@@ -291,7 +302,7 @@ export default function App() {
     }
   }
 
-  const chuaDung = ht === null;
+  const chuaDung = ht === null && loiCauHinh === null;
   const diaChiRutGon = ht
     ? `${ht.nanNhan.slice(0, 5)}…${ht.nanNhan.slice(-5)}`
     : "Chưa có tài khoản";
@@ -356,6 +367,30 @@ export default function App() {
             </a>
           </div>
         </header>
+
+        {loiCauHinh !== null && (
+          <div
+            role="alert"
+            className="glass-card mt-7 rounded-2xl border border-nguy/40 p-5"
+          >
+            <div className="text-[15px] font-semibold text-chu">Cấu hình demo lỗi</div>
+            <p className="mt-1 text-[13px] text-chu-mo">
+              Đọc được <code>hien-truong.json</code> nhưng nội dung không dùng được:{" "}
+              <strong>{loiCauHinh}</strong>. Không có thao tác ký nào được tạo từ dữ liệu này.
+            </p>
+            <p className="mt-2 text-[13px] text-chu-mo">Dựng lại hiện trường rồi tải lại trang:</p>
+            <pre className="mt-3 overflow-x-auto rounded-xl border border-vien bg-slate-50 p-3 font-mono text-[11.5px] text-chu-nhat">
+              node --experimental-strip-types scripts/dung-hien-truong.ts
+            </pre>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-3 rounded-full border border-vien px-4 py-2 text-[13px] text-chu"
+            >
+              Tải lại trang
+            </button>
+          </div>
+        )}
 
         {chuaDung && (
             <div className="glass-card mt-7 rounded-2xl border border-canh/30 p-5">
