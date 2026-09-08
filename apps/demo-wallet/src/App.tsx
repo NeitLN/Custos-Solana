@@ -11,6 +11,7 @@ import { docHienTruong, docHienTruongChiTiet, chonRpc, type HienTruong } from ".
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoai } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
+import { guiGiaoDich, type TrangThaiGui } from "./gui.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import {
   ArrowIcon,
@@ -28,6 +29,23 @@ type Kich = "tanCong" | "lanhTinh";
 
 export default function App() {
   const [cheDo, setCheDo] = useState<CheDo | null>(null);
+  /*
+   * TRẠNG THÁI GỬI — sáu pha, không phải một biến boolean.
+   *
+   * Bản trước: `kyVaGui()` bắt lỗi rồi chỉ gọi `ghi()`. Giả lập `sendTransaction`
+   * trả lỗi thì màn hình vẫn hiện "Bình thường", không cảnh báo gì, và nút ký vẫn
+   * bấm được — lỗi chỉ nằm trong nhật ký kỹ thuật đang đóng. Tái hiện được.
+   *
+   * Với một sản phẩm bảo mật, im lặng sau khi người dùng đã bấm KÝ là kiểu hỏng tệ
+   * nhất: họ tin giao dịch đã đi, trong khi nó chưa đi.
+   *
+   * `chuaRo` là pha quan trọng nhất và dễ bị bỏ nhất. Khi ĐÃ CÓ chữ ký mà xác nhận
+   * thất bại, ta KHÔNG biết giao dịch có lên chuỗi hay không. Gọi đó là "thất bại"
+   * rồi mời người dùng gửi lại là cách tạo ra giao dịch lặp.
+   */
+  const [gui, setGui] = useState<TrangThaiGui>({ pha: "nghi" });
+  const dangGui = gui.pha === "dangKy" || gui.pha === "dangGui" || gui.pha === "dangXacNhan";
+
   const [ht, setHt] = useState<HienTruong | null | undefined>(undefined);
   // Lý do cấu hình hỏng, tách khỏi "chưa dựng": một file có mặt nhưng sai cấu
   // trúc thì bảo người ta chạy lại script dựng là chỉ sai hướng.
@@ -288,17 +306,24 @@ export default function App() {
   }
 
   async function kyVaGui(tx: VersionedTransaction) {
-    try {
-      const c = conn();
-      tx.sign([vi]);
-      const sig = await c.sendTransaction(tx);
-      await c.confirmTransaction(sig, "confirmed");
-      ghi(`đã ký và gửi: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+    // Khoá gửi lặp. Bấm nhanh hai lần từng tạo hai lượt gửi song song.
+    if (dangGui) return;
+
+    // Luồng nằm ở `gui.ts` để kiểm được bằng stub — ký thật đòi khoá, và bản công
+    // khai cố ý không có khoá, nên logic nằm trong component là logic gần như không
+    // ai kiểm. Xem `apps/demo-wallet/test/gui.test.ts`.
+    const cuoi = await guiGiaoDich({
+      conn: conn() as never,
+      ky: (t: VersionedTransaction) => t.sign([vi]),
+      tx,
+      bao: setGui,
+      ghi,
+    });
+
+    if (cuoi.pha === "thanhCong") {
       setKetQua(null);
       setTxCho(null);
       await doSoDu();
-    } catch (e) {
-      ghi(`gửi lỗi: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -671,13 +696,82 @@ export default function App() {
                         ghi("người dùng huỷ giao dịch");
                         setKetQua(null);
                         setTxCho(null);
+                        setGui({ pha: "nghi" });
                       }}
-                      choPhepKy={kyDuoc()}
+                      choPhepKy={kyDuoc() && !dangGui}
                       onKy={() => {
                         ghi("người dùng chọn vẫn ký dù đã được cảnh báo");
                         if (txCho) void kyVaGui(txCho);
                       }}
                     />
+                  </div>
+                )}
+
+                {/*
+                  Trạng thái gửi hiện CẠNH thao tác, không nằm trong nhật ký kỹ thuật
+                  đang đóng. Người dùng vừa bấm Ký thì thứ họ cần biết là giao dịch đi
+                  tới đâu — không phải một dòng log họ chưa mở bao giờ.
+                */}
+                {gui.pha !== "nghi" && (
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className={`mt-4 rounded-2xl border p-4 text-[13px] ${
+                      gui.pha === "thanhCong"
+                        ? "border-an/40 text-chu"
+                        : gui.pha === "thatBai" || gui.pha === "chuaRo"
+                          ? "border-nguy/40 text-chu"
+                          : "border-vien text-chu-mo"
+                    }`}
+                  >
+                    {gui.pha === "dangKy" && "Đang ký giao dịch…"}
+                    {gui.pha === "dangGui" && "Đang gửi lên Devnet…"}
+                    {gui.pha === "dangXacNhan" && "Đã gửi, đang chờ xác nhận…"}
+
+                    {gui.pha === "thanhCong" && (
+                      <>
+                        <div className="font-semibold">Đã xác nhận trên Devnet</div>
+                        <a
+                          className="mt-1 inline-block break-all underline"
+                          href={`https://explorer.solana.com/tx/${gui.sig}?cluster=devnet`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {gui.sig}
+                        </a>
+                      </>
+                    )}
+
+                    {gui.pha === "thatBai" && (
+                      <>
+                        <div className="font-semibold">Gửi KHÔNG thành công</div>
+                        <p className="mt-1">
+                          Giao dịch chưa được gửi đi, nên chưa có gì thay đổi trên chuỗi. Bạn
+                          có thể thử lại.
+                        </p>
+                        <p className="mt-1 break-all text-chu-mo">{gui.loi}</p>
+                      </>
+                    )}
+
+                    {gui.pha === "chuaRo" && (
+                      <>
+                        <div className="font-semibold">Chưa biết kết quả</div>
+                        <p className="mt-1">
+                          Giao dịch <strong>đã được gửi</strong> nhưng không xác nhận được. Nó
+                          có thể đã lên chuỗi. <strong>Đừng gửi lại</strong> — hãy mở Explorer
+                          kiểm tra chữ ký trước.
+                        </p>
+                        <a
+                          className="mt-1 inline-block break-all underline"
+                          href={`https://explorer.solana.com/tx/${gui.sig}?cluster=devnet`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {gui.sig}
+                        </a>
+                        <p className="mt-1 break-all text-chu-mo">{gui.loi}</p>
+                      </>
+                    )}
                   </div>
                 )}
 
