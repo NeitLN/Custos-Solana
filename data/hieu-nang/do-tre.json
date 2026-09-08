@@ -1,23 +1,23 @@
 {
-  "doLuc": "2026-09-08T17:31:53.969513+00:00",
-  "sourceCommit": "233034d817fd9a12e44d88d30ec3b2fbc01985b6",
+  "doLuc": "2026-09-08T17:38:29.437108+00:00",
+  "sourceCommit": "d46252deb32a7dec95eb85237555d9aa3ef269ab",
   "dauVet": {
     "bam": "8e55349757a0ae24",
     "soFile": 29
   },
   "taiTrangNguoi": {
-    "domContentLoaded": 52,
-    "load": 53,
-    "fcp": 108,
+    "domContentLoaded": 49,
+    "load": 50,
+    "fcp": 100,
     "soTepJs": 3,
     "byteJsQuaDay": 177197,
     "byteJsGiaiNen": 570826,
     "nhan": "nguội — context mới, chưa có cache"
   },
   "taiTrangAm": {
-    "domContentLoaded": 38,
-    "load": 39,
-    "fcp": 92,
+    "domContentLoaded": 36,
+    "load": 37,
+    "fcp": 84,
     "soTepJs": 3,
     "byteJsQuaDay": 900,
     "byteJsGiaiNen": 570826,
@@ -33,62 +33,62 @@
     "rpc": "https://api.devnet.solana.com (mặc định của hiện trường)",
     "banDung": "production (`vite build` + `vite preview`), KHÔNG phải dev server"
   },
-  "bamLanDau": 868,
+  "bamLanDau": 1348,
   "bamCacLuotSau": {
     "soMau": 4,
-    "trungVi": 848,
-    "caoNhat": 6386,
+    "trungVi": 846,
+    "caoNhat": 3352,
     "tatCa": [
-      852,
-      844,
-      845,
-      6386
+      837,
+      841,
+      850,
+      3352
     ]
   },
   "bamTatCa": {
     "soMau": 5,
-    "trungVi": 852,
-    "caoNhat": 6386,
+    "trungVi": 850,
+    "caoNhat": 3352,
     "tatCa": [
-      868,
-      852,
-      844,
-      845,
-      6386
+      1348,
+      837,
+      841,
+      850,
+      3352
     ]
   },
   "soLuotRpcMoiLuot": {
     "soMau": 5,
     "trungVi": 7,
-    "caoNhat": 17,
+    "caoNhat": 10,
     "tatCa": [
       7,
       7,
       7,
       7,
-      17
+      10
     ]
   },
   "tungLuot": [
     {
-      "ms": 868,
+      "ms": 1348,
       "soLuotRpc": 7
     },
     {
-      "ms": 852,
+      "ms": 837,
       "soLuotRpc": 7
     },
     {
-      "ms": 844,
+      "ms": 841,
       "soLuotRpc": 7
     },
     {
-      "ms": 845,
+      "ms": 850,
       "soLuotRpc": 7
     },
     {
-      "ms": 6386,
-      "soLuotRpc": 17
+      "ms": 3352,
+      "soLuotRpc": 10
     }
   ],
   "canhBao": [],
