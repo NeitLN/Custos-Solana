@@ -25,7 +25,7 @@
  */
 import assert from "node:assert/strict";
 import { inspect } from "@custos-solana/core";
-import { dienGiaiKhongAI, dienGiaiBangMoHinh } from "@custos-solana/ai";
+import { dienGiaiKhongAI, dienGiaiBangMoHinh, boiThoiHan } from "@custos-solana/ai";
 import {
   Keypair,
   PublicKey,
@@ -216,13 +216,79 @@ console.log(
  *
  * Không có ca này thì `return câu tất định` vô điều kiện cũng làm mười bẫy trên
  * xanh — tức bài kiểm không phân biệt được "neo hoạt động" với "lớp mô hình bị tắt".
+ *
+ * ## Bản trước của chính ca này KHÔNG phân biệt được gì cả
+ *
+ * Nó gửi vào đúng `moc.explanation` rồi kiểm nhận lại đúng chuỗi đó:
+ *
+ *     gửi moc.explanation  →  nhận moc.explanation   ✓ (neo cho đi qua)
+ *     gửi moc.explanation  →  nhận moc.explanation   ✓ (neo VỨT, trả câu nền)
+ *
+ * Hai trường hợp cho CÙNG một kết quả, nên phép kiểm luôn xanh dù lớp mô hình có
+ * bị tắt hoàn toàn. Một đối chứng dương không phân biệt được hai nhánh thì nó chỉ
+ * là một dòng chữ "ĐỐI CHỨNG" in ra màn hình.
+ *
+ * Bản này gửi một câu KHÁC câu nền. Nó thêm đúng ba chữ dẫn nhập — không con số
+ * mới, không địa chỉ mới, nên mọi neo vẫn thoả — nhưng CHUỖI thì khác. Giờ:
+ *
+ *     neo cho đi qua  →  nhận "Nói ngắn gọn: …"   ✓
+ *     neo VỨT         →  nhận moc.explanation     ✗ khác câu đã gửi ⇒ ĐỎ
  */
-const hopLe = await soi(
-  moHinhBia(JSON.stringify({ explanation: moc.explanation, primaryAction: null })),
+const CAU_HOP_LE = `Nói ngắn gọn: ${moc.explanation}`;
+const hopLe = await soi(moHinhBia(JSON.stringify({ explanation: CAU_HOP_LE, primaryAction: null })));
+assert.equal(
+  hopLe.explanation,
+  CAU_HOP_LE,
+  "câu hợp lệ bị lớp neo VỨT — lúc đó mười bẫy ở trên cũng xanh vì lý do sai:\n" +
+    `  đã gửi : ${CAU_HOP_LE}\n  nhận về: ${hopLe.explanation}`,
 );
-assert.equal(hopLe.explanation, moc.explanation, "câu hợp lệ phải đi qua được lớp neo");
 
 assert.deepEqual(hong, [], `bẫy LỌT qua gói đã đóng:${NL}${hong.join(NL)}`);
 
 console.log(`  ĐỐI CHỨNG  câu hợp lệ đi lọt — lớp neo đang bật, không phải bị tắt`);
+
+/*
+ * ─── L3 HỎNG VÀ L3 TREO ────────────────────────────────────────────────────
+ *
+ * Mười bẫy ở trên đều là mô hình TRẢ VỀ thứ sai. Còn hai cách hỏng nữa mà bên tích
+ * hợp gặp thường xuyên hơn nhiều, và cả hai đều chưa được kiểm từ ngoài gói:
+ *
+ *   · nhà cung cấp trả 500, hết hạn mức, mất mạng  → lời gọi NÉM
+ *   · mô hình treo, không bao giờ trả lời           → lời gọi KHÔNG BAO GIỜ xong
+ *
+ * Điều phải giữ trong cả hai: người dùng vẫn nhận được câu tất định, và `level` của
+ * L2 KHÔNG đổi. Một lỗi hạ tầng ở lớp diễn giải không được biến một giao dịch đáng
+ * ngờ thành một giao dịch trông ổn — đó là quyết định đã khoá số 1 và số 4.
+ */
+{
+  const nem = await soi(
+    dienGiaiBangMoHinh(async () => {
+      throw new Error("503 từ nhà cung cấp mô hình");
+    }),
+  );
+  assert.equal(nem.explanation, moc.explanation, "L3 NÉM mà câu tới người dùng không phải câu tất định");
+  assert.equal(nem.level, moc.level, "L3 NÉM mà `level` của L2 bị đổi");
+  assert.notEqual(nem.level, "safe", "L3 NÉM không bao giờ được thành `safe`");
+  console.log("  ĐỐI CHỨNG  L3 ném lỗi → câu tất định, level giữ nguyên");
+}
+
+{
+  /*
+   * `boiThoiHan` bọc một Interpreter bằng thời hạn rồi lui về đường tất định. Đặt
+   * hạn 300 ms và cho mô hình treo vĩnh viễn: nếu gói đã đóng thiếu lớp bọc này thì
+   * bài kiểm treo luôn — và một bài kiểm treo cũng là một bài kiểm đỏ, chỉ chậm hơn.
+   */
+  const batDau = Date.now();
+  const treo = await soi(
+    boiThoiHan(
+      dienGiaiBangMoHinh(() => new Promise(() => {})),
+      300,
+    ),
+  );
+  const ms = Date.now() - batDau;
+  assert.equal(treo.explanation, moc.explanation, "L3 TREO mà câu tới người dùng không phải câu tất định");
+  assert.equal(treo.level, moc.level, "L3 TREO mà `level` của L2 bị đổi");
+  assert.ok(ms < 15000, `L3 treo mà lượt kiểm mất ${ms} ms — thời hạn không có tác dụng`);
+  console.log(`  ĐỐI CHỨNG  L3 treo → lui về câu tất định sau ${ms} ms, level giữ nguyên`);
+}
 console.log(`DOI-KHANG-OK ${BAY.length}/${BAY.length}`);

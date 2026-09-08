@@ -4,7 +4,7 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, A01, D01, D02, D03**.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, D01, D02, D03**.
 - **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
 - Bộ test: **451 pass, 0 fail**. Eval AI: 13/13 bẫy chặn · 3/3 đối chứng qua. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
 - Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
@@ -32,6 +32,7 @@
 - **Build xanh không phải typecheck xanh.** esbuild không kiểm kiểu; trong phiên này một lỗi `TS2448` lọt qua build và chỉ `npm run typecheck` bắt được.
 - **`data/a11y/ket-qua.json` gắn với bản dựng.** Sửa `apps/*/src` là nó cũ; cổng sản phẩm sẽ báo `CU`. Chạy lại `scripts/kiem-trinh-duyet/soi-trinh-duyet.py` với **cả hai** server (5188 và 5189) đang bật.
 - **Hai bài trình duyệt mới ghi đè file thật.** `soi-cau-hinh-hong.py` ghi đè `hien-truong.json` nên nó đòi đường dẫn bản sao và khôi phục trong `finally`. Đừng chạy khi chưa sao lưu.
+- **Đối chứng dương phải khác câu nền, nếu không nó không phân biệt được gì.** Bản cũ gửi vào chính `moc.explanation`: bộ chắn cho đi qua và bộ chắn vứt sạch đều trả về đúng chuỗi đó. Mutation (`explanation: nen.explanation`) cho thấy 10/10 bẫy vẫn xanh trong khi lớp AI đã chết hẳn.
 - **Playwright `has-text` KHÔNG phân biệt hoa thường.** `has-text("HUỶ")` bắt trúng cả nút "Chặn & huỷ giao dịch", nên bài kiểm bấm nhầm nút của người tham gia rồi tưởng người phỏng vấn chưa chấm. Dùng `text-is` cho nhãn ngắn, và thu hẹp theo `details` cho khối vòng 2.
 - **`npm run preview` TỪNG phục vụ trang trắng với mã 200.** `vite preview` chạy với `command === "serve"` nên nhận base `/` trong khi HTML build trỏ `/Custos-Solana/`; mọi asset rơi xuống SPA fallback. Đã sửa bằng `isPreview` ở cả hai app. Kiểm bằng `Content-Length`, đừng kiểm bằng mã trạng thái.
 - **Chạy `eval-ai` offline KHÔNG còn xoá lượt live.** Trước đây có, và đã xảy ra: biên bản live 22/08 còn trong `docs/bao-mat/` nhưng `data/eval/ai-ket-qua.json` thì đã bị ghi đè thành `BLOCKED_BY_SECRET`. Lượt live nay sống trong `liveGanNhat`.

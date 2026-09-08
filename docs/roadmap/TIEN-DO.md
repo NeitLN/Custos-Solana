@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `edf80a0`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `50dba84`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** A02 (cần khoá API — CHỜ CHỦ DỰ ÁN), B03 (cần người thật — CHỜ CHỦ DỰ ÁN), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** B01/B02 (nay đủ vì S03 xong) rồi B04 → P01 → P03; V02. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -29,7 +29,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | I03 | Công cụ khớp giao thức nghiên cứu | B/C/D | I01, I02, U06 | DONE | Thêm `hieuCoverage`, `docNhamPhi`, `kenh`, `lyDoQuyetDinh` — tất cả TUỲ CHỌN nên 20 bản ghi vòng 1 vẫn đọc được. Bộ đếm lấy mẫu số là số người ĐƯỢC HỎI, không phải tổng bản ghi. Nút thẻ cảnh báo hết no-op: ghi `bamThat` (tách khỏi `quyetDinh`) và nói rõ không có giao dịch nào được gửi. 7 bài đơn vị + `soi-phong-van-vong-2.py` 15/15. |
 | S01 | Phân loại advisory theo phơi nhiễm | A | R00 | DONE | F11. Tra registry 08/09: cả ba gói trực tiếp đã ở bản mới nhất, và **không advisory high nào có bản đã vá** — `image-size` mới nhất `2.0.2` vẫn nằm trong dải `<=2.0.2`. Chờ vá không phải kế hoạch. Bốn điều kiện chấp nhận rủi ro thành test (`phoiNhiemPhuThuoc.test.ts`), có kiểm phủ định. Người chịu trách nhiệm và ba mốc xem lại ghi ở `PHU-THUOC.md` mục 3.5. |
 | S02 | Vá tương thích và xử lý rủi ro còn lại | A/B | S01, R01 | TODO | Có thể WAIT_INPUT riêng cho quyết định chưa được giao. |
-| S03 | Kiểm SDK từ consumer ngoài repo | A/C | R01 | TODO | Kiểm lại nếu S02 hoặc core/AI thay đổi. |
+| S03 | Kiểm SDK từ consumer ngoài repo | A/C | R01 | DONE | Tarball + JS + `tsc` + optional peer dep đã có sẵn. Sửa **đối chứng dương vô dụng**: nó gửi vào chính `moc.explanation` nên bộ chắn vứt sạch cũng cho cùng kết quả. Mutation chứng minh: tắt hẳn lớp mô hình thì 10/10 bẫy VẪN xanh, chỉ đối chứng mới bắt được. Thêm ca L3 ném lỗi và L3 treo (hạn 300 ms, lui sau 301 ms). Local và registry `0.2.0` khớp nhau. |
 | D01 | Đồng bộ claim và tài liệu hiện hành | D/C/A | R02 | DONE | F10. Bảng claim ở `docs/BANG-CLAIM.md`. Ba lệch số (29→30 dòng, 6/6→13/13 bẫy, 33→38 mẫu) đưa vào generator + danh sách mốc. Ba câu thu hẹp: trần cứng 400 token, thị trường chứng minh hộ, "ví hiện tại cho họ xem". |
 | D02 | Benchmark có nhãn, tập giữ lại | A/D | R02 | DONE | `docs/BENCHMARK.md`. **Không** báo confusion matrix: nhãn `kyVong` do chính đội gắn cùng lúc viết luật nên vòng tròn — ghi rõ cần gì để có nhãn độc lập. Tập giữ lại: thư mục trống + quy tắc 4 bước + guard (`giuLai.test.ts`); cắt mẫu cũ ra gọi là holdout là đặt tên mới cho dữ liệu đã dùng. Lý do bỏ mẫu tách hạ tầng/sản phẩm, ghi từng chữ ký. Đo lại 08/09: 4/20 (25/08: 9/20), **16 hạ tầng · 0 sản phẩm**. |
 | D03 | Số đo độ trễ và tối ưu có căn cứ | B/A | R02, U01, U02, U07 | DONE | `docs/HIEU-NANG.md` + `soi-do-tre.py`, đo trên bản **production** chứ không dev server. Tải trang FCP 116 ms · 173 KB qua dây; bấm→kết quả trung vị ~850 ms, cao nhất 6386 ms; 7 lượt RPC (cao nhất 17). Điểm ngoại lai là **retry**, không phải khởi động nguội — ghép cặp ms/RPC mới thấy. Tìm ra `npm run preview` phục vụ trang TRẮNG với mã 200. CHƯA tối ưu: nút thắt vừa xác định. |

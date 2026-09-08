@@ -47,7 +47,8 @@ bằng chứng, chỉ là một con số.
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
 | Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định**, chưa gọi mô hình thật | ✅ |
 | **Đối chứng dương** — câu ĐÚNG đi qua | **3/3** | `npm run eval-ai` | đọc KÈM dòng trên, không bao giờ tách | ✅ |
-| Bẫy trên gói đã publish | **10/10** | `data/registry/ket-qua.json` · 06/09 | cài `@custos-solana/ai@0.2.0` **từ registry**, không từ repo | ✅ |
+| Bẫy trên gói đã publish | **10/10** | `data/registry/ket-qua.json` | cài `@custos-solana/ai@0.2.0` **từ registry**, không từ repo | ✅ |
+| — kèm 3 đối chứng: câu đúng đi lọt · L3 ném lỗi · L3 treo | **3/3** | `npm run thu-goi-registry` | đối chứng phải KHÁC câu nền, nếu không nó không phân biệt được gì | ✅ |
 | Vi phạm axe | **0/40** | `data/a11y/ket-qua.json` | 4 trang × 2 khung, mức `wcag2a/aa · wcag21a/aa` | ✅ |
 | Vùng bấm ≥44px | **26/26** | `data/a11y/vung-bam.json` | 375px, ngữ cảnh cảm ứng | ✅ |
 | Bàn phím · zoom · chữ dài | **16/16** | `data/a11y/ban-phim-phong-to.json` | 320/375/640px | ✅ |
