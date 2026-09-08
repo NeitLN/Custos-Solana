@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `8f9b68f`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `6de1acd`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** D01 (F10 — rà claim), S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), R02 (cổng đã có `kiem-san-pham`, cần đối chiếu với tiêu chí của R02), I03/U07 (nay đã đủ phụ thuộc vì U06 xong).
+**Việc khả dụng tiếp theo:** S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), U07 và I03 (đủ phụ thuộc vì U06 xong), D02/D03/A01 (đủ phụ thuộc vì R02 xong).
 
 ## Bảng công việc
 
@@ -16,7 +16,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 |---|---|---|---|---|---|
 | R00 | Baseline, quyền và đối chiếu lỗi | A/B/D | — | DONE | HEAD `55388d6` lúc bắt đầu · Node 24.12.0 · npm 11.6.2 · Chromium 149.0.7827.55 · Playwright 1.61.0 · axe-core 4.13.0. Tái hiện F09 trên PowerShell (402/403). Đối chiếu F01–F11 ở BAN-GIAO.md. |
 | R01 | Kiểm deck không phụ thuộc ngầm vào unzip | A/D | R00 | DONE | `e457eef`. `scripts/docZip.ts` đọc ZIP bằng `node:zlib`, không tiến trình con. PowerShell không có `unzip` → 403/403. Deck cũ vẫn làm test đỏ. **Chưa kiểm Linux** trong phiên này. |
-| R02 | Cổng kiểm chứng và nguồn gốc artifact | A/D | R00, R01 | TODO | Không lấy HEAD thay cho hash mã đang sửa. |
+| R02 | Cổng kiểm chứng và nguồn gốc artifact | A/D | R00, R01 | DONE | `dauVetNoiDung()` băm nội dung mã/giao diện từ cây làm việc; cổng so dấu vết TRƯỚC phả hệ commit. Tái hiện lỗ hổng: sửa `style.css` không commit thì ô a11y vẫn báo `✓`; nay báo `~ nội dung mã đã đổi sau lượt đo`. 7 bài trên kho git tạm. |
 | U01 | Kết quả mobile và điều hướng focus | B | R00 | DONE | `a715ee1`. Đo lại 320/375/768 px: top=9/9/154, focus vào khối kết quả ở cả ba. `scripts/kiem-trinh-duyet/soi-ket-qua-trong-tam-nhin.py`. axe 40/40 sau thay đổi. |
 | U02 | Ký/gửi/xác nhận và chống gửi lặp | B/A | R00 | DONE | `5dbc6ae`. Sáu pha; `chuaRo` tách khỏi `thatBai` khi đã có chữ ký. Luồng ở `src/gui.ts`, 5 bài kiểm bằng stub trong `npm run check` — ký thật đòi khoá nên logic trong component gần như không ai kiểm. Bản công khai vẫn không ký. |
 | U03 | Validate hiện trường, phục hồi render | B/A | R00 | DONE | `4ffe088`. Xác thực từng trường thay cho `as HienTruong`; ba trạng thái co/chuaDung/hong. 7 bài đơn vị + 5 ca trình duyệt (`soi-cau-hinh-hong.py`): không ca nào trắng trang, không ca nào tạo nút Ký. |
@@ -30,7 +30,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | S01 | Phân loại advisory theo phơi nhiễm | A | R00 | TODO | F11; cập nhật nguồn khi thực hiện. |
 | S02 | Vá tương thích và xử lý rủi ro còn lại | A/B | S01, R01 | TODO | Có thể WAIT_INPUT riêng cho quyết định chưa được giao. |
 | S03 | Kiểm SDK từ consumer ngoài repo | A/C | R01 | TODO | Kiểm lại nếu S02 hoặc core/AI thay đổi. |
-| D01 | Đồng bộ claim và tài liệu hiện hành | D/C/A | R02 | TODO | F10. |
+| D01 | Đồng bộ claim và tài liệu hiện hành | D/C/A | R02 | DONE | F10. Bảng claim ở `docs/BANG-CLAIM.md`. Ba lệch số (29→30 dòng, 6/6→13/13 bẫy, 33→38 mẫu) đưa vào generator + danh sách mốc. Ba câu thu hẹp: trần cứng 400 token, thị trường chứng minh hộ, "ví hiện tại cho họ xem". |
 | D02 | Benchmark có nhãn, tập giữ lại | A/D | R02 | TODO | Giữ mẫu không kiểm được trong báo cáo. |
 | D03 | Số đo độ trễ và tối ưu có căn cứ | B/A | R02, U01, U02, U07 | TODO | Live cần mạng; không lấy số cũ làm số mới. |
 | A01 | Eval offline, guardrail và tooling | C/A/D | R02, D02 | TODO | Không cần secret để kiểm bộ chắn. |

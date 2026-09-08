@@ -4,9 +4,9 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, U01–U06, I01, I02**.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U06, I01, I02, D01**.
 - **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
-- Bộ test: **429 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
+- Bộ test: **436 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
 - Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
 - Quyền đã được cấp: đọc/sửa file trong phạm vi, chạy kiểm thử, build, tạo artifact cục bộ, commit cục bộ. **Chưa được** push, publish, deprecate gói, hoặc liên hệ bên ngoài.
 
@@ -23,7 +23,7 @@
 | F07 | **đã sửa** | `role=status` nói rõ giao dịch chưa được gửi và sẽ không được gửi. |
 | F08 | **đã sửa** | Đo 375px cảm ứng: 4 nút cao 19px (dưới cả ngưỡng AA 24px), link Số liệu 42×34px. Sửa ở lớp `.lien-ket`, không vá từng nơi gọi. 26/26 đạt 44px. |
 | F09 | **đã sửa** | `scripts/docZip.ts`; PowerShell không có `unzip` → 403/403. **Chưa kiểm Linux trong phiên này.** |
-| F10 | **cần rà lại** | Nhiều claim đã được đồng bộ tự động ở các phiên trước (`npm run so-lieu`). Phải đối chiếu lại danh sách cụ thể của báo cáo trước khi đóng. Việc D01. |
+| F10 | **đã sửa** | Bảng claim ở `docs/BANG-CLAIM.md`. Sáu dòng báo cáo nêu đích danh đều đã xử: ba lệch số vào generator, ba câu thu hẹp, checklist registry cập nhật. |
 | F11 | **đã phân loại, chưa vá** | `docs/PHU-THUOC.md` có phân tích phơi nhiễm từng advisory và quyết định chấp nhận có điều kiện. Việc S01 nên rà theo khung roadmap thay vì làm lại từ đầu. |
 
 ## Điều dễ đọc nhầm ở phiên sau
@@ -32,11 +32,13 @@
 - **Build xanh không phải typecheck xanh.** esbuild không kiểm kiểu; trong phiên này một lỗi `TS2448` lọt qua build và chỉ `npm run typecheck` bắt được.
 - **`data/a11y/ket-qua.json` gắn với bản dựng.** Sửa `apps/*/src` là nó cũ; cổng sản phẩm sẽ báo `CU`. Chạy lại `scripts/kiem-trinh-duyet/soi-trinh-duyet.py` với **cả hai** server (5188 và 5189) đang bật.
 - **Hai bài trình duyệt mới ghi đè file thật.** `soi-cau-hinh-hong.py` ghi đè `hien-truong.json` nên nó đòi đường dẫn bản sao và khôi phục trong `finally`. Đừng chạy khi chưa sao lưu.
+- **`sourceCommit` KHÔNG nói gì về thay đổi chưa commit.** Bằng chứng nào cũng phải ghi `dauVet` (xem `scripts/dau-vet.ts`); thiếu nó mà cây đang bẩn thì cổng trả KHÔNG KIỂM ĐƯỢC, không trả ĐẠT.
+- **Sửa file trong `packages/` làm bằng chứng live hết hiệu lực**, kể cả khi chỉ thêm một file test. `laMa` cố ý rộng. Chạy lại `npm run thu-tich-hop:devnet` rồi `npm run so-lieu`.
 - **`outline-width` KHÔNG cho biết vòng focus có thấy được không.** Chromium giữ bề rộng đã khai báo kể cả khi `outline-style: none`, nên một phép kiểm chỉ đọc bề rộng sẽ xanh vĩnh viễn. Phải đọc cả `outline-style`. Bài `soi-ban-phim-va-phong-to.py` đã dính đúng lỗi này ở bản đầu và chỉ kiểm phủ định mới lộ ra.
 - **Ký thật đòi `VITE_DEMO_SECRET`.** Không tạo khoá để kiểm; luồng gửi đã tách ra `src/gui.ts` chính vì lý do đó.
 
 ## Bước tiếp theo
 
-Còn lại trong báo cáo: **F10** (D01 — rà claim) và **F11** (S01 — đã phân loại ở `docs/PHU-THUOC.md`, cần rà theo khung roadmap). U06 xong nên **I03**, **U07**, **B03** đã đủ phụ thuộc.
+Còn lại trong báo cáo: **F11** (S01 — đã phân loại ở `docs/PHU-THUOC.md`, cần rà theo khung roadmap). U06 xong nên **U07**, **I03**, **B03** đủ phụ thuộc; R02 xong nên **D02**, **D03**, **A01** đủ phụ thuộc.
 
 Năm lỗi vừa sửa cùng MỘT lớp: **dữ liệu từ ngoài vào không được xác thực, và hỏng thì im lặng**. `hien-truong.json`, payload dApp, kho localStorage, phản hồi RPC — cả bốn đều từng ép kiểu hoặc nuốt lỗi. Cách sửa giống nhau: union phân biệt trạng thái, nói ra lý do, và không bao giờ diễn giải "không đọc được" thành "không có vấn đề".
