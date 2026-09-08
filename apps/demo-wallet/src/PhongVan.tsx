@@ -14,6 +14,7 @@ import {
   type Cham,
   type HoSoPhongVan,
   type QuyetDinh,
+  docKho,
 } from "./phongVan.ts";
 
 /**
@@ -44,18 +45,28 @@ import {
 
 const KHOA = "custos.phong-van";
 
-const doc = (): Ban[] => {
-  try {
-    return JSON.parse(localStorage.getItem(KHOA) ?? "[]") as Ban[];
-  } catch {
-    return [];
-  }
-};
+/*
+ * Đọc kho một lần lúc khởi động, và GIỮ nguyên văn nếu hỏng.
+ *
+ * Bản trước ép kiểu `as Ban[]`: `{}` parse được, cast nói dối, rồi `ban.filter is
+ * not a function` làm trắng trang. Và nhánh `catch` trả `[]` — tức là im lặng quay
+ * về danh sách rỗng, đúng cách chắc chắn nhất để ai đó gõ đè lên hai mươi biên bản.
+ *
+ * Đây là biên bản phỏng vấn người thật, gõ tay, không có bản sao ở đâu khác.
+ */
+const docBanDau = () => docKho(localStorage.getItem(KHOA));
 
 export function PhongVan() {
   const [ketQua, setKetQua] = useState<InspectResult | null>(null);
   const [loi, setLoi] = useState<string | null>(null);
-  const [ban, setBan] = useState<Ban[]>(doc);
+  const khoBanDau = docBanDau();
+  const [ban, setBan] = useState<Ban[]>(khoBanDau.loai === "ok" ? khoBanDau.ban : []);
+  /** Kho hỏng: giữ nguyên văn để xuất ra cứu, KHÔNG ghi đè, KHÔNG cho nhập tiếp. */
+  const [khoHong] = useState<{ lyDo: string; tho: string } | null>(
+    khoBanDau.loai === "hong" ? { lyDo: khoBanDau.lyDo, tho: khoBanDau.tho } : null,
+  );
+  /** Lỗi khi GHI vào kho — hết dung lượng, hoặc trình duyệt chặn. */
+  const [loiGhi, setLoiGhi] = useState<string | null>(null);
   const [nguyenVan, setNguyenVan] = useState("");
   const [ghiChu, setGhiChu] = useState("");
   // Nút chấm chỉ mở sau khi đã ghi nguyên văn. Chấm trước rồi mới chép lại là
@@ -95,8 +106,16 @@ export function PhongVan() {
   function luu() {
     if (!cham || !quyetDinh) return;
     const moi: Ban[] = [...ban, { nhapLuc: new Date().toISOString(), nguyenVan, cham, quyetDinh, ghiChu }];
+    try {
+      // Ghi TRƯỚC, cập nhật màn hình SAU. Ghi hỏng mà màn hình đã xoá ô nhập thì
+      // người phỏng vấn mất nguyên văn vừa gõ và không biết mình đã mất.
+      localStorage.setItem(KHOA, JSON.stringify(moi));
+      setLoiGhi(null);
+    } catch (e) {
+      setLoiGhi(e instanceof Error ? e.message : String(e));
+      return;
+    }
     setBan(moi);
-    localStorage.setItem(KHOA, JSON.stringify(moi));
     setNguyenVan("");
     setGhiChu("");
     setCham(null);
@@ -116,6 +135,52 @@ export function PhongVan() {
         >
           <span aria-hidden="true">←</span> Ví mẫu
         </a>
+
+        {/*
+          KHO HỎNG — báo, giữ, và cho xuất. Không tự sửa, không tự xoá.
+
+          Dữ liệu ở đây là biên bản phỏng vấn người thật, gõ tay, không có bản sao ở
+          đâu khác và không có backend. Tự xoá là mất bằng chứng vĩnh viễn; im lặng
+          quay về danh sách rỗng còn tệ hơn, vì người phỏng vấn sẽ gõ đè lên nó.
+        */}
+        {khoHong !== null && (
+          <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
+            <div className="font-semibold text-chu">Dữ liệu đã lưu không đọc được</div>
+            <p className="mt-1 text-chu-mo">
+              Kho cục bộ có nội dung nhưng sai cấu trúc: <strong>{khoHong.lyDo}</strong>.
+            </p>
+            <p className="mt-1 text-chu-mo">
+              <strong>Không có gì bị xoá.</strong> Hãy tải bản sao xuống trước, rồi mới nhập
+              tiếp — nhập tiếp bây giờ sẽ ghi đè lên dữ liệu cũ.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                const b = new Blob([khoHong.tho], { type: "application/json" });
+                const u = URL.createObjectURL(b);
+                const a = document.createElement("a");
+                a.href = u;
+                a.download = `phong-van-cuu-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(u);
+              }}
+              className="mt-3 min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu"
+            >
+              Tải bản sao dữ liệu cũ
+            </button>
+          </div>
+        )}
+
+        {loiGhi !== null && (
+          <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
+            <div className="font-semibold text-chu">Không lưu được bản ghi vừa nhập</div>
+            <p className="mt-1 text-chu-mo">
+              Trình duyệt từ chối ghi vào kho cục bộ: <strong>{loiGhi}</strong>. Nội dung bạn
+              vừa gõ <strong>vẫn còn trên màn hình</strong> — hãy sao chép ra nơi khác trước
+              khi rời trang.
+            </p>
+          </div>
+        )}
 
         {/*
           KHU CỦA NGƯỜI PHỎNG VẤN.
