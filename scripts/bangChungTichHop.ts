@@ -21,6 +21,8 @@ export type LuotTichHop = {
   dat: boolean;
   sourceCommit?: string | null;
   dirtyWorktree?: boolean;
+  /** Dấu vết nội dung mã lúc đo — xem `toTien.ts`. Vắng ở bằng chứng cũ. */
+  dauVet?: { bam: string; soFile: number } | null;
   startedAt?: string;
   finishedAt?: string;
   doLuc?: string;

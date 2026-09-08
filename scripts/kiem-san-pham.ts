@@ -1,7 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
-import { bangChungConHieuLuc, laGiaoDien } from "./toTien.ts";
+import { bangChungConHieuLuc, laGiaoDien, type DauVet } from "./toTien.ts";
 
 /**
  * CỔNG CHỈ-SẢN-PHẨM.
@@ -145,7 +145,7 @@ if (NHANH) {
      * thật nằm ở `toTien.ts`: SHA phải là tổ tiên, và từ đó tới HEAD chỉ tài liệu
      * được đổi.
      */
-    const kl = bangChungConHieuLuc(l.sourceCommit);
+    const kl = bangChungConHieuLuc(l.sourceCommit, undefined, l.dauVet);
     them(
       "Lượt live gần nhất",
       kl.con ? "DAT" : kl.nongCan ? "KHONG_KIEM_DUOC" : "CU",
@@ -250,6 +250,7 @@ if (NHANH) {
   } else {
     const a = JSON.parse(readFileSync(D, "utf8")) as {
       sourceCommit?: string;
+      dauVet?: DauVet | null;
       viPham?: Array<{ impact?: string }>;
     };
     const nang = (a.viPham ?? []).filter((v) => v.impact === "serious" || v.impact === "critical");
@@ -262,7 +263,15 @@ if (NHANH) {
      * khi GIAO DIỆN đổi. Sửa README hay script không làm màu sắc và tiêu điểm khác
      * đi — nên vị từ riêng, không dùng lại `laMa`.
      */
-    const kl = bangChungConHieuLuc(a.sourceCommit, laGiaoDien);
+    /*
+     * `dauVet` bịt khoảng mà SHA không thấy: thay đổi CHƯA commit.
+     *
+     * Đã tái hiện — thêm `outline: none` và `min-height: 0` vào `style.css` rồi
+     * chạy cổng mà không commit, ô này báo `✓ không vi phạm serious/critical`
+     * trong khi vòng focus đã mất và vùng bấm đã sập về 0. Mọi điều SHA nói đều
+     * đúng, và kết luận vẫn sai.
+     */
+    const kl = bangChungConHieuLuc(a.sourceCommit, laGiaoDien, a.dauVet);
     if (!kl.con) {
       them("Accessibility bản hiện tại", kl.nongCan ? "KHONG_KIEM_DUOC" : "CU", kl.vi);
     } else {

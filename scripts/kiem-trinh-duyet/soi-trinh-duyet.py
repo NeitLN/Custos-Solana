@@ -35,6 +35,8 @@ for _luong in (sys.stdout, sys.stderr):
         pass
 import time
 from datetime import datetime, timezone
+
+import dauvet
 from pathlib import Path
 
 try:
@@ -176,6 +178,9 @@ def ghi_bang_chung() -> None:
             {
                 "doLuc": datetime.now(timezone.utc).isoformat(),
                 "sourceCommit": sha,
+                # SHA một mình không nói được gì về thay đổi CHƯA commit — xem
+                # `dauvet.py`. Ghi cả dấu vết nội dung giao diện lúc đo.
+                "dauVet": dauvet.doc("giao-dien"),
                 "boCongCu": {
                     "chromium": CHROMIUM_DO or None,
                     "playwright": PLAYWRIGHT_GHIM,

@@ -1,4 +1,7 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 /*
  * BẰNG CHỨNG SINH TRƯỚC COMMIT CHỨA NÓ — MỘT QUY TẮC, MỘT CHỖ.
@@ -70,6 +73,85 @@ export type KetLuanToTien =
   | { con: true; vi: string }
   | { con: false; vi: string; nongCan?: boolean };
 
+export type DauVet = { bam: string; soFile: number };
+
+/**
+ * Dấu vết NỘI DUNG của phần mã đáng kể, đọc từ CÂY LÀM VIỆC.
+ *
+ * ## Vì sao SHA thôi thì chưa đủ
+ *
+ * `bangChungConHieuLuc` trả lời "từ lúc đo tới HEAD có commit nào chạm mã không".
+ * Câu đó bỏ sót đúng một khoảng: thay đổi CHƯA commit.
+ *
+ * Tái hiện được, và đã tái hiện: thêm `outline: none` cùng `min-height: 0` vào
+ * `style.css` mà không commit, rồi chạy cổng sản phẩm. Ô "Accessibility bản hiện
+ * tại" báo `✓ không vi phạm serious/critical` — trong khi vòng focus đã biến mất
+ * và vùng bấm đã sập về 0. `sourceCommit` vẫn bằng HEAD, không commit nào xen
+ * vào, nên mọi thứ SHA nói đều đúng và kết luận vẫn sai.
+ *
+ * Ô "cây làm việc sạch" có bắt được là có file bẩn, nhưng đó là một ô khác, và
+ * `data/a11y/ket-qua.json` thì được tài liệu đọc trực tiếp — ở đó không có ô nào
+ * canh cả.
+ *
+ * ## Vì sao băm nội dung chứ không băm diff
+ *
+ * Băm diff thì đo lúc cây bẩn rồi commit chính thay đổi đó sẽ ra dấu vết khác,
+ * dù mã hoàn toàn không đổi — cổng bắt đo lại một cách vô ích. Băm nội dung thì
+ * "bẩn rồi commit" giữ nguyên dấu vết, còn "bẩn rồi vứt đi" thì đổi. Đó đúng là
+ * ranh giới ta cần.
+ *
+ * ## Vì sao `git hash-object` chứ không `readFileSync`
+ *
+ * Windows để CRLF trong cây làm việc, Linux để LF. Băm byte thô thì CI và máy
+ * người viết không bao giờ khớp — lại một cổng không mở được. `git hash-object`
+ * chạy đúng bộ lọc mà git dùng cho `.gitattributes`/`autocrlf`, nên hai nơi ra
+ * cùng một số.
+ */
+export function dauVetNoiDung(
+  dangKe: (f: string) => boolean = laMa,
+  goc: string = process.cwd(),
+): DauVet | null {
+  const gitO = (args: string[]): string | null => {
+    try {
+      return execFileSync("git", args, { cwd: goc, encoding: "utf8" }).trim();
+    } catch {
+      return null;
+    }
+  };
+  const dongPT = (raw: string | null) =>
+    (raw ?? "")
+      .split(String.fromCharCode(10))
+      .map((x) => x.replace(String.fromCharCode(13), "").trim())
+      .filter(Boolean);
+
+  // `--others --exclude-standard`: file mới thêm mà chưa `git add` vẫn là mã đang
+  // chạy. Bỏ qua chúng là chừa lại đúng khoảng trống bài này sinh ra để bịt.
+  const ds = dongPT(gitO(["ls-files", "--cached", "--others", "--exclude-standard"]))
+    .filter(dangKe)
+    .filter((f) => existsSync(join(goc, f)))
+    .sort();
+  if (!ds.length) return null;
+
+  let bam: string;
+  try {
+    bam = execFileSync("git", ["hash-object", "--stdin-paths"], {
+      cwd: goc,
+      input: ds.join(String.fromCharCode(10)) + String.fromCharCode(10),
+      encoding: "utf8",
+    });
+  } catch {
+    return null;
+  }
+
+  return {
+    bam: createHash("sha256")
+      .update(ds.join(String.fromCharCode(0)) + String.fromCharCode(0) + bam)
+      .digest("hex")
+      .slice(0, 16),
+    soFile: ds.length,
+  };
+}
+
 /**
  * Bằng chứng đo tại `sha` còn mô tả đúng `HEAD` không?
  *
@@ -79,8 +161,41 @@ export type KetLuanToTien =
 export function bangChungConHieuLuc(
   sha: string | null | undefined,
   dangKe: (f: string) => boolean = laMa,
+  dauVetCu?: DauVet | null,
 ): KetLuanToTien {
   if (!sha) return { con: false, vi: "không có SHA trong bằng chứng" };
+
+  /*
+   * DẤU VẾT NỘI DUNG ĐI TRƯỚC PHẢ HỆ COMMIT.
+   *
+   * Nếu nội dung mã hôm nay khác nội dung lúc đo thì phả hệ commit nói gì cũng
+   * không cứu được — kể cả khi `sha === HEAD` và cây trông như chưa ai đụng vào.
+   * Xem chú thích của `dauVetNoiDung` về ca đã tái hiện.
+   *
+   * Bằng chứng CŨ không có trường này. Không thể vì thế mà coi chúng là hỏng —
+   * làm vậy là bắt đo lại mọi thứ chỉ vì đổi định dạng. Nhưng cũng không được im
+   * lặng cho qua khi cây đang bẩn: lúc đó đúng là KHÔNG BIẾT, và "không biết"
+   * phải nói ra thành "không biết".
+   */
+  const nay = dauVetNoiDung(dangKe);
+  if (dauVetCu) {
+    if (!nay) return { con: false, vi: "không đọc được dấu vết nội dung hiện tại" };
+    if (nay.bam !== dauVetCu.bam) {
+      return { con: false, vi: `nội dung mã đã đổi sau lượt đo (${dauVetCu.bam} → ${nay.bam})` };
+    }
+  } else if (git(["status", "--porcelain", "--untracked-files=all"])) {
+    const ban = (git(["status", "--porcelain", "--untracked-files=all"]) ?? "")
+      .split(String.fromCharCode(10))
+      .map((l) => l.slice(3).replace(String.fromCharCode(13), "").trim())
+      .filter((f) => f && dangKe(f));
+    if (ban.length) {
+      return {
+        con: false,
+        nongCan: true,
+        vi: `bằng chứng không ghi dấu vết nội dung, mà cây đang bẩn ${ban.length} file mã — KHÔNG KIỂM ĐƯỢC`,
+      };
+    }
+  }
 
   const head = git(["rev-parse", "HEAD"]);
   if (head === null) return { con: false, vi: "không đọc được HEAD" };
