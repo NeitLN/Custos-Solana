@@ -11,7 +11,7 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
   sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `465b491`, cây làm việc sạch — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `1b91f72`, cây làm việc sạch — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -36,7 +36,7 @@ API, hay ví có tiền.
 
 | Số | Giá trị | Kiểm bằng |
 |---|---|---|
-| Test tự động | **458** pass · 0 fail | `npm run check` |
+| Test tự động | **459** pass · 0 fail | `npm run check` |
 | Luật tất định | **14** | `npm run check` — `capLuat.test.ts` |
 | Mẫu kiểm thử gắn nhãn | **38** | `ls data/seed/facts \| wc -l` |
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
@@ -70,7 +70,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
-| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `465b491` | `ket-qua.json` → `lastAttempt` |
+| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `1b91f72` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **chỉ tài liệu đổi** | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | **`ai@0.2.0`** · `core@0.1.1` — khớp source | `npm view @custos-solana/ai version` |
@@ -189,7 +189,7 @@ chạy thật thứ vừa viết, khi đóng vai người ngoài, và khi mở a
 
 Đọc kỹ mục này trước khi tin bất kỳ con số nào ở mục 2.
 
-- **458 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
+- **459 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
   Bốn loại bằng chứng trong repo trả lời bốn câu hỏi khác nhau và không được gộp.
 - **Cohort công khai lưu offline chưa có ground truth** — nên không có precision,
   recall, hay tỉ lệ báo nhầm. Coverage 82 % là trên **9/20** mẫu còn mô phỏng được.
