@@ -1,0 +1,41 @@
+{
+  "doLuc": "2026-09-08T13:38:39.765265+00:00",
+  "sourceCommit": "e11812be51ba1d5b5dc4ea6c4891ff113bb8bab4",
+  "dauVet": {
+    "bam": "e72cf38864261af8",
+    "soFile": 29
+  },
+  "cachGo": [
+    "http://localhost:5189/"
+  ],
+  "soKiem": 5,
+  "soDat": 5,
+  "kiem": [
+    {
+      "ten": "http://localhost:5189/ · mở được tab ví",
+      "dat": true,
+      "chiTiet": "http://localhost:5188/#tx=AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+      "ten": "http://localhost:5189/ · tab mới không phải chính trang tấn công",
+      "dat": true,
+      "chiTiet": "http://localhost:5188/#tx=AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+      "ten": "http://localhost:5189/ · tab mới trỏ đúng cổng ví 5188",
+      "dat": true,
+      "chiTiet": "http://localhost:5188/#tx=AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+      "ten": "http://localhost:5189/ · URL mang giao dịch",
+      "dat": true,
+      "chiTiet": "http://localhost:5188/#tx=AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+      "ten": "http://localhost:5189/ · ví hiện khối kết quả",
+      "dat": true,
+      "chiTiet": ""
+    }
+  ],
+  "dat": true
+}

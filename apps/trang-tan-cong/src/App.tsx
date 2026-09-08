@@ -3,6 +3,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 import { conDungDuoc, layBlockhash } from "./blockhash.ts";
 import { LoiQuaHan } from "../../../scripts/coHan.ts";
+import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
 
 /**
  * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
@@ -40,13 +41,24 @@ type HienTruong = {
   soLuong: string;
 };
 
-// Địa chỉ ví mẫu. Chạy cục bộ thì ví ở cổng 5188; khi deploy thì trang tấn
-// công nằm ở <base>/tan-cong/ nên ví là thư mục cha của nó.
-const VI =
-  import.meta.env["VITE_CUSTOS_VI"] ??
-  (location.hostname === "localhost" && location.port === "5189"
-    ? "http://localhost:5188"
-    : new URL("..", location.href).href.replace(/\/$/, ""));
+/*
+ * Địa chỉ ví mẫu — quy tắc nằm ở `scripts/diaChiDemo.ts`, dùng chung với ví.
+ *
+ * Bản trước kiểm `location.hostname === "localhost"`. Mở cùng máy chủ đó bằng
+ * `127.0.0.1:5189` thì nhánh ấy trượt, rơi xuống nhánh "thư mục cha", và ở gốc miền
+ * thì thư mục cha CHÍNH LÀ NÓ. Bấm "Nhận quà tặng" tải lại trang tấn công: không
+ * lỗi, không cảnh báo, không có gì xảy ra. `[::1]` và IP LAN (soi trên điện thoại
+ * thật) hỏng y hệt.
+ *
+ * Nay hỏi CỔNG chứ không hỏi tên máy, và khi không suy ra được thì nói "không biết"
+ * thay vì trỏ về chính mình.
+ */
+const KL_VI = diaChiVi(location.href, import.meta.env["VITE_CUSTOS_VI"]);
+const VI = KL_VI.loai === "co" ? KL_VI.url : null;
+
+// `VITE_RPC` chỉ đọc khi DEV: bản dựng công khai không mang endpoint riêng của
+// máy đội. Cùng ràng buộc với ví — xem `hienTruong.ts`.
+const RPC_RIENG = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
 
 /** Đếm ngược tới cuối ngày. Đồng hồ THẬT — không phải số đứng yên giả vờ chạy.
  *  Gấp gáp là đòn bẩy kinh điển của airdrop lừa đảo, và nó chỉ có tác dụng nếu
@@ -121,7 +133,7 @@ export default function App() {
   useEffect(() => {
     if (!ht) return;
     let huy = false;
-    const conn = new Connection(ht.rpc, "confirmed");
+    const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
     const lay = () => {
       conn
         .getLatestBlockhash()
@@ -163,6 +175,10 @@ export default function App() {
     const kyHieu = ht!.kyHieu
       ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht!.mint]: ht!.kyHieu }))}`
       : "";
+    // `VI` null nghĩa là không suy ra được ví ở đâu. Ghép chuỗi lúc này sinh ra
+    // "null/#tx=…" — một URL trông như thật, mở ra trang 404. Ném ở đây để lỗi
+    // hiện ngay chỗ gây ra nó, không phải ở tab vừa mở.
+    if (VI === null) throw new Error(KL_VI.loai === "khong" ? KL_VI.lyDo : "chưa biết ví ở đâu");
     return `${VI}/#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`;
   }
 
@@ -210,7 +226,7 @@ export default function App() {
      * hơn nhiều so với một thẻ lỗi nói thẳng.
      */
     setDangGui(true);
-    const conn = new Connection(ht.rpc, "confirmed");
+    const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
     layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
       .then(({ ma }) => {
         if (huyRef.current) return;
