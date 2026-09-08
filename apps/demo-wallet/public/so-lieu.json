@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-08T09:17:07.129Z",
+  "sinhLuc": "2026-09-08T09:31:05.243Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -16,14 +16,14 @@
     "hieuDungVanKy": 2
   },
   "tichHop": {
-    "giayDenKetQuaDau": 7.2,
+    "giayDenKetQuaDau": 7.7,
     "giayThapNhat": 7,
     "giayCaoNhat": 15.8,
     "dongMa": 30,
-    "msMotLuot": 645,
+    "msMotLuot": 670,
     "soLuotDo": 10,
-    "soCommitDo": 9,
-    "ngayPass": "2026-09-08T09:16:00.934Z",
+    "soCommitDo": 10,
+    "ngayPass": "2026-09-08T09:30:58.639Z",
     "doiTac": null,
     "dat": true
   },
