@@ -28,6 +28,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import dauvet
 from playwright.async_api import async_playwright
 
 GOC = Path(__file__).resolve().parents[2]
@@ -57,6 +58,7 @@ def ghi_bang_chung(muc: list[dict], viPham: list[dict], canSua: list[dict]) -> N
             {
                 "doLuc": datetime.now(timezone.utc).isoformat(),
                 "sourceCommit": sha,
+                "dauVet": dauvet.doc("giao-dien"),
                 "khung": {"rong": 375, "cao": 812, "camUng": True},
                 "nguong": {"khuyenNghi": KHUYEN_NGHI, "wcag22aa": WCAG_AA},
                 "soMuc": len(muc),

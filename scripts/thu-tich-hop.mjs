@@ -189,6 +189,25 @@ const luot = {
   // luôn thấy cây bẩn — và cổng sẽ đỏ vì hệ quả của chính nó. Đo lại lần thứ ba
   // để lấy trung vị là việc bình thường, không phải dấu hiệu sai.
   dirtyWorktree: coMaChuaCommit(),
+  /*
+   * DẤU VẾT NỘI DUNG — trả lời câu `dirtyWorktree` không trả lời được.
+   *
+   * `dirtyWorktree` nói "lúc ĐO cây có bẩn không". Câu còn thiếu là "mã HÔM NAY có
+   * còn là mã đã đo không" — đo lúc cây sạch, rồi sửa mà không commit, thì mọi
+   * trường ở đây vẫn đúng nguyên văn và kết luận vẫn sai.
+   *
+   * Gọi sang `scripts/dau-vet.ts` chứ không băm tại chỗ: vị từ "cái gì là mã" đã có
+   * đúng một bản ở `toTien.ts`, và bản sao thứ hai sẽ lệch như sáu bản trước.
+   */
+  dauVet: (() => {
+    const r = chay(process.execPath, ["--experimental-strip-types", "scripts/dau-vet.ts", "ma"], GOC);
+    if (r.status !== 0) return null;
+    try {
+      return JSON.parse(r.stdout.trim() || "null");
+    } catch {
+      return null;
+    }
+  })(),
   node: process.version,
   npm: (() => {
     const r = chay(npm, ["--version"], GOC);

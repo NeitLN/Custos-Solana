@@ -39,6 +39,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import dauvet
 from playwright.async_api import async_playwright
 
 GOC = Path(__file__).resolve().parents[2]
@@ -238,6 +239,7 @@ def ghi_bang_chung() -> None:
             {
                 "doLuc": datetime.now(timezone.utc).isoformat(),
                 "sourceCommit": sha,
+                "dauVet": dauvet.doc("giao-dien"),
                 "soKiem": len(kiem),
                 "soDat": sum(1 for k in kiem if k["dat"]),
                 "ghiNhan": ghi_nhan,
