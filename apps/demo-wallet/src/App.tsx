@@ -44,6 +44,24 @@ export default function App() {
    * rồi mời người dùng gửi lại là cách tạo ra giao dịch lặp.
    */
   const [gui, setGui] = useState<TrangThaiGui>({ pha: "nghi" });
+
+  /*
+   * ĐƯA KẾT QUẢ VÀO TẦM NHÌN — trên điện thoại nó nằm dưới màn hình.
+   *
+   * Tái hiện ở 375×812: bấm "Nhận quà tặng", cảnh báo bắt đầu ở `y≈1241` trong khi
+   * `scrollY=0`. Người dùng thấy nút không phản ứng gì và tưởng nó hỏng — trong khi
+   * Custos đã chạy xong và đang hiện một cảnh báo Đỏ mà họ không nhìn thấy.
+   *
+   * Với sản phẩm này, cảnh báo không được nhìn thấy tương đương không có cảnh báo.
+   *
+   * Ba điều cố ý:
+   *
+   *   · Chỉ cuộn khi kết quả VỪA xuất hiện, không cuộn lại mỗi lần dữ liệu nền đổi
+   *     (số dư tự làm mới) — nhảy cuộn lặp còn khó dùng hơn không cuộn.
+   *   · Chuyển focus tới tiêu đề kết quả để người dùng bàn phím và trình đọc màn
+   *     hình đi tiếp được; `tabIndex={-1}` cho phép focus mà không thêm vào tab order.
+   *   · Tôn trọng `prefers-reduced-motion`: cuộn tức thì thay vì trượt.
+   */
   const dangGui = gui.pha === "dangKy" || gui.pha === "dangGui" || gui.pha === "dangXacNhan";
 
   const [ht, setHt] = useState<HienTruong | null | undefined>(undefined);
@@ -54,6 +72,24 @@ export default function App() {
   const [batCustos, setBatCustos] = useState(true);
   const [soDuToken, setSoDuToken] = useState<string | null>(null);
   const [ketQua, setKetQua] = useState<InspectResult | null>(null);
+
+  const oKetQua = useRef<HTMLDivElement | null>(null);
+  const daCuon = useRef(false);
+
+  useEffect(() => {
+    if (!ketQua) {
+      daCuon.current = false;
+      return;
+    }
+    if (daCuon.current) return;
+    daCuon.current = true;
+
+    const o = oKetQua.current;
+    if (!o) return;
+    const itChuyenDong = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    o.scrollIntoView({ behavior: itChuyenDong ? "auto" : "smooth", block: "start" });
+    o.focus({ preventScroll: true });
+  }, [ketQua]);
   // Nhịp 1 của kịch bản demo, dựng lại KHÔNG cần khoá ký — xem HauQua.tsx.
   const [hauQua, setHauQua] = useState<InspectResult | null>(null);
   const [kichCuoi, setKichCuoi] = useState<Kich>("tanCong");
@@ -689,7 +725,12 @@ export default function App() {
                 )}
 
                 {ketQua && (
-                  <div className="hien">
+                  <div
+                    ref={oKetQua}
+                    tabIndex={-1}
+                    aria-label="Kết quả kiểm tra giao dịch"
+                    className="hien scroll-mt-4 outline-none"
+                  >
                     <CanhBao
                       ketQua={ketQua}
                       onHuy={() => {
