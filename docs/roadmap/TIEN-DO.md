@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `e11812b`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `505b2f9`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** I03 (đủ phụ thuộc vì U06 xong), D02/A01 (đủ phụ thuộc vì R02 xong), D03 (nay đủ vì U07 xong), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** I03 (đủ phụ thuộc vì U06 xong), A01 (nay đủ vì D02 xong), D03 (đủ vì U07 xong), S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -31,7 +31,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | S02 | Vá tương thích và xử lý rủi ro còn lại | A/B | S01, R01 | TODO | Có thể WAIT_INPUT riêng cho quyết định chưa được giao. |
 | S03 | Kiểm SDK từ consumer ngoài repo | A/C | R01 | TODO | Kiểm lại nếu S02 hoặc core/AI thay đổi. |
 | D01 | Đồng bộ claim và tài liệu hiện hành | D/C/A | R02 | DONE | F10. Bảng claim ở `docs/BANG-CLAIM.md`. Ba lệch số (29→30 dòng, 6/6→13/13 bẫy, 33→38 mẫu) đưa vào generator + danh sách mốc. Ba câu thu hẹp: trần cứng 400 token, thị trường chứng minh hộ, "ví hiện tại cho họ xem". |
-| D02 | Benchmark có nhãn, tập giữ lại | A/D | R02 | TODO | Giữ mẫu không kiểm được trong báo cáo. |
+| D02 | Benchmark có nhãn, tập giữ lại | A/D | R02 | DONE | `docs/BENCHMARK.md`. **Không** báo confusion matrix: nhãn `kyVong` do chính đội gắn cùng lúc viết luật nên vòng tròn — ghi rõ cần gì để có nhãn độc lập. Tập giữ lại: thư mục trống + quy tắc 4 bước + guard (`giuLai.test.ts`); cắt mẫu cũ ra gọi là holdout là đặt tên mới cho dữ liệu đã dùng. Lý do bỏ mẫu tách hạ tầng/sản phẩm, ghi từng chữ ký. Đo lại 08/09: 4/20 (25/08: 9/20), **16 hạ tầng · 0 sản phẩm**. |
 | D03 | Số đo độ trễ và tối ưu có căn cứ | B/A | R02, U01, U02, U07 | TODO | Live cần mạng; không lấy số cũ làm số mới. |
 | A01 | Eval offline, guardrail và tooling | C/A/D | R02, D02 | TODO | Không cần secret để kiểm bộ chắn. |
 | A02 | Eval mô hình thật trong ngân sách | C/D | A01 | TODO | Chỉ chạy khi đủ quyền, key và giới hạn chi phí. |

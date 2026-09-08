@@ -4,9 +4,9 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01, I02, S01, D01**.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01, I02, S01, D01, D02**.
 - **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
-- Bộ test: **448 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
+- Bộ test: **451 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
 - Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
 - Quyền đã được cấp: đọc/sửa file trong phạm vi, chạy kiểm thử, build, tạo artifact cục bộ, commit cục bộ. **Chưa được** push, publish, deprecate gói, hoặc liên hệ bên ngoài.
 
@@ -32,6 +32,7 @@
 - **Build xanh không phải typecheck xanh.** esbuild không kiểm kiểu; trong phiên này một lỗi `TS2448` lọt qua build và chỉ `npm run typecheck` bắt được.
 - **`data/a11y/ket-qua.json` gắn với bản dựng.** Sửa `apps/*/src` là nó cũ; cổng sản phẩm sẽ báo `CU`. Chạy lại `scripts/kiem-trinh-duyet/soi-trinh-duyet.py` với **cả hai** server (5188 và 5189) đang bật.
 - **Hai bài trình duyệt mới ghi đè file thật.** `soi-cau-hinh-hong.py` ghi đè `hien-truong.json` nên nó đòi đường dẫn bản sao và khôi phục trong `finally`. Đừng chạy khi chưa sao lưu.
+- **Cohort mainnet tự phân hủy.** 25/08 đo được 9/20; 08/09 chỉ còn 4/20, toàn bộ vì trạng thái chuỗi đã đi qua (ALT đóng, tài khoản đóng). Chạy `do-cohort.ts` kèm `--khong-ghi` để kiểm mà KHÔNG ghi đè số đã công bố — bỏ cờ đó là `so-lieu` rải số mới khắp README, CLAUDE.md và deck.
 - **`localhost` và `127.0.0.1` KHÔNG thay nhau được trên máy này.** Vite gắn vào `localhost`, mà Windows phân giải nó ra `::1` trước — nên `127.0.0.1` từ chối kết nối ở cả 5188 lẫn 5189. Bài kiểm trình duyệt nào mở `127.0.0.1` sẽ đỏ vì môi trường, không vì sản phẩm.
 - **"npm đề xuất hạ cấp" KHÔNG chứng minh "thượng nguồn chưa có fix".** npm đề xuất hạ cấp cả khi có bản vá mà cây phụ thuộc không với tới. Phải tra registry: `npm view <gói> version` so với dải bị ảnh hưởng trong `npm audit --json`.
 - **`sourceCommit` KHÔNG nói gì về thay đổi chưa commit.** Bằng chứng nào cũng phải ghi `dauVet` (xem `scripts/dau-vet.ts`); thiếu nó mà cây đang bẩn thì cổng trả KHÔNG KIỂM ĐƯỢC, không trả ĐẠT.

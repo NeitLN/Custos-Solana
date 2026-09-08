@@ -15,7 +15,7 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 
 | | |
 |---|---|
-| Test tự động | **448** pass · 0 fail |
+| Test tự động | **451** pass · 0 fail |
 | Luật tất định | **14** — cả 14 luật đều có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **38** |
 | Bẫy đối kháng AI bị chặn | **13/13** |
@@ -179,7 +179,7 @@ bộ, CI xanh, không có khoá trong bundle, runtime chỉ Devnet.
 ## 7 · Lệnh cần nhớ
 
 ```bash
-npm run check                  # 448 test + typecheck
+npm run check                  # 451 test + typecheck
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag
 npm run thu-goi                # cài gói như người ngoài

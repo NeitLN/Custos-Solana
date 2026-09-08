@@ -2,6 +2,11 @@
 
 **Chủ sở hữu: vai D** (thu thập, gắn nhãn) · **vai A** dùng làm bộ test cho engine luật · bắt đầu **22/08**, xong **29/08**
 
+> **Bộ này KHÔNG đo được độ chính xác.** Nhãn `kyVong` do chính đội gắn, cùng lúc
+> viết luật — nên precision/recall tính trên nó là vòng tròn. Cái nó thật sự làm
+> được là **hồi quy**. Vì sao, và cần gì để có confusion matrix thật:
+> [`docs/BENCHMARK.md`](docs/BENCHMARK.md).
+
 > **Khung thời gian:** con số **25 mẫu** dưới đây là MỤC TIÊU KẾ HOẠCH ban đầu. Dataset
 > hiện tại có **38 mẫu** — xem `data/seed/index.json`. Giữ phần kế hoạch lại vì nó
 > giải thích *đi tìm cái gì*, thứ vẫn còn đúng.
