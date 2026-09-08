@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `a715ee1`, cây làm việc sạch trừ các file roadmap chưa commit.
+**Cập nhật gần nhất:** HEAD `1a94356`, cây làm việc sạch.
 
-**Đã nghiệm thu:** R00, R01, U01, U02, U03 — ba lỗi P1 (F01, F02, F03) và F09 đã sửa, mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
+**Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** R02 (đủ phụ thuộc), U04 (F06, cần U03 — đã xong), I01/I02 (F04/F05), S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà lại theo khung của roadmap), D01 (F10).
+**Việc khả dụng tiếp theo:** U06 (F08 — vùng bấm mobile), D01 (F10 — rà claim), S01 (F11 — `docs/PHU-THUOC.md` đã có sẵn phân loại phơi nhiễm, cần rà theo khung roadmap), R02 (cổng đã có `kiem-san-pham`, cần đối chiếu với tiêu chí của R02).
 
 ## Bảng công việc
 
@@ -20,12 +20,12 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | U01 | Kết quả mobile và điều hướng focus | B | R00 | DONE | `a715ee1`. Đo lại 320/375/768 px: top=9/9/154, focus vào khối kết quả ở cả ba. `scripts/kiem-trinh-duyet/soi-ket-qua-trong-tam-nhin.py`. axe 40/40 sau thay đổi. |
 | U02 | Ký/gửi/xác nhận và chống gửi lặp | B/A | R00 | DONE | `5dbc6ae`. Sáu pha; `chuaRo` tách khỏi `thatBai` khi đã có chữ ký. Luồng ở `src/gui.ts`, 5 bài kiểm bằng stub trong `npm run check` — ký thật đòi khoá nên logic trong component gần như không ai kiểm. Bản công khai vẫn không ký. |
 | U03 | Validate hiện trường, phục hồi render | B/A | R00 | DONE | `4ffe088`. Xác thực từng trường thay cho `as HienTruong`; ba trạng thái co/chuaDung/hong. 7 bài đơn vị + 5 ca trình duyệt (`soi-cau-hinh-hong.py`): không ca nào trắng trang, không ca nào tạo nút Ký. |
-| U04 | Phản hồi payload dApp không hợp lệ | B/A | R00, U03 | TODO | F06. |
-| U05 | Xác nhận huỷ đúng trạng thái | B/C | U01, U02 | TODO | F07. |
+| U04 | Phản hồi payload dApp không hợp lệ | B/A | R00, U03 | DONE | `0b8daba`. Union `khong`/`co`/`hong` + giới hạn 4096 ký tự. 7 bài đơn vị; trình duyệt: payload hỏng không sinh khối kết quả, không hiện nhãn phán quyết nào. |
+| U05 | Xác nhận huỷ đúng trạng thái | B/C | U01, U02 | DONE | `0b8daba`. `role=status`: "chưa được gửi và sẽ không được gửi", chỉ nói về yêu cầu hiện tại. |
 | U06 | Vùng bấm, câu chữ và phân cấp | B/C | U01, U05 | TODO | F08. |
 | U07 | Điều tra/sửa cấu hình RPC và handoff | B/A | U03, U04 | TODO | Chỉ sửa khi xác minh cần thiết. |
-| I01 | Deadline/retry trang phỏng vấn | B | R00, U03 | TODO | F04. |
-| I02 | Lưu, validate và khôi phục phỏng vấn | B/D | R00 | TODO | F05. |
+| I01 | Deadline/retry trang phỏng vấn | B | R00, U03 | DONE | `1a94356`. Hạn 15 s bọc cả chuỗi, dùng lại `scripts/coHan.ts`. Treo RPC thật: dừng sau 15,3 s, có nút Thử lại. |
+| I02 | Lưu, validate và khôi phục phỏng vấn | B/D | R00 | DONE | `3cc77be`. Kho hỏng được GIỮ nguyên văn + nút tải bản sao; bắt lỗi ghi storage. 8 bài đơn vị, 4 ca trình duyệt. |
 | I03 | Công cụ khớp giao thức nghiên cứu | B/C/D | I01, I02, U06 | TODO | Giữ thước đo đã khóa. |
 | S01 | Phân loại advisory theo phơi nhiễm | A | R00 | TODO | F11; cập nhật nguồn khi thực hiện. |
 | S02 | Vá tương thích và xử lý rủi ro còn lại | A/B | S01, R01 | TODO | Có thể WAIT_INPUT riêng cho quyết định chưa được giao. |
