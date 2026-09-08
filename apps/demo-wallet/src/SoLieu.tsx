@@ -135,7 +135,7 @@ export function SoLieu() {
         {/* Vùng bấm cao 44px — ngón tay và con trỏ đều cần chỗ, kể cả với một liên kết. */}
         <a
           href={import.meta.env.BASE_URL}
-          className="lien-ket -ml-1 inline-flex min-h-[44px] items-center gap-1.5 px-1 text-[14px] text-chu-nhat"
+          className="lien-ket gap-1.5 text-[14px] text-chu-nhat"
         >
           <span aria-hidden="true">←</span> Ví mẫu
         </a>

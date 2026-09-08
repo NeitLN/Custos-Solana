@@ -1,0 +1,175 @@
+{
+  "doLuc": "2026-09-08T08:42:03.847189+00:00",
+  "sourceCommit": "52fa9875bad1527278cefabf7830fbce5e59332b",
+  "khung": {
+    "rong": 375,
+    "cao": 812,
+    "camUng": true
+  },
+  "nguong": {
+    "khuyenNghi": 44,
+    "wcag22aa": 24
+  },
+  "soMuc": 26,
+  "soViPham": 0,
+  "soCanSua": 0,
+  "muc": [
+    {
+      "trang": "ví",
+      "chu": "Số liệu",
+      "rong": 44,
+      "cao": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "2EjYM…bCpAF",
+      "rong": 114,
+      "cao": 47
+    },
+    {
+      "trang": "ví",
+      "chu": "Nhận quà tặngGiao dịch giả mạo",
+      "rong": 301,
+      "cao": 110
+    },
+    {
+      "trang": "ví",
+      "chu": "Gửi 10 tokenGiao dịch bình thường",
+      "rong": 301,
+      "cao": 110
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch thành công3y73mnA2N1…WTn",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Số liệu",
+      "rong": 44,
+      "cao": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "2EjYM…bCpAF",
+      "rong": 114,
+      "cao": 47
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Nhận quà tặngGiao dịch giả mạo",
+      "rong": 301,
+      "cao": 110
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Gửi 10 tokenGiao dịch bình thường",
+      "rong": 301,
+      "cao": 110
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch thành công3y73mnA2N1…WTn",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
+      "rong": 317,
+      "cao": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Thu gọn",
+      "rong": 54,
+      "cao": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Ẩn chi tiết kỹ thuật",
+      "rong": 112,
+      "cao": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Chặn & huỷ giao dịch",
+      "rong": 275,
+      "cao": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Vẫn ký — tôi hiểu rủi ro",
+      "rong": 275,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "← Ví mẫu",
+      "rong": 69,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Xem chi tiết",
+      "rong": 73,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Chi tiết kỹ thuật",
+      "rong": 95,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Chặn & huỷ giao dịch",
+      "rong": 267,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Đã chép xong → chấm",
+      "rong": 166,
+      "cao": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Sao chép toàn bộ (JSON)",
+      "rong": 181,
+      "cao": 44
+    }
+  ],
+  "dat": true
+}

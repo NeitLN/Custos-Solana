@@ -9,7 +9,8 @@ npm ci                        # axe-core 4.13.0, ghim trong devDependencies
 # chạy — cần HAI server đang bật
 npm run vi          # 5188
 npm run tan-cong    # 5189
-python scripts/kiem-trinh-duyet/soi-trinh-duyet.py
+python scripts/kiem-trinh-duyet/soi-trinh-duyet.py   # axe + luồng, 40 mục
+python scripts/kiem-trinh-duyet/soi-vung-bam.py      # kích thước vùng bấm, 26 mục
 ```
 
 ## Vì sao ghim phiên bản
@@ -47,7 +48,7 @@ Chạy tay trước khi quay video, và sau mỗi lần đụng vào CSS hoặc 
 
 | Nhóm | Nội dung |
 |---|---|
-| **A** | Ví · giao dịch nguy hiểm — verdict, bảng 500 → 0, coverage 2/3, axe, vùng bấm ≥44px, tràn ngang |
+| **A** | Ví · giao dịch nguy hiểm — verdict, bảng 500 → 0, coverage 2/3, axe, **CTA chính** ≥44px, tràn ngang |
 | **B** | Ví · giao dịch bình thường — verdict Bình thường, không hiện chữ "an toàn" |
 | **C** | Trang tấn công → ví — `window.open` gọi **đồng bộ** trong cử chỉ bấm, ví bắt được lời khai gian |
 | **D** | Devnet **treo** — thẻ lỗi đúng hạn 9 s, nói rõ là lỗi kết nối, đường lui có nhãn, thử lại gọi lại RPC |
@@ -55,6 +56,34 @@ Chạy tay trước khi quay video, và sau mỗi lần đụng vào CSS hoặc 
 | **F** | Trang số liệu và trang phỏng vấn — axe + tràn ngang, cả 375 px lẫn 1440 px |
 
 axe-core chạy thật, ở mức `wcag2a · wcag2aa · wcag21a · wcag21aa`.
+
+## `soi-vung-bam.py` — vì sao phải tách ra một bài riêng
+
+Nhóm A đã có dòng *"mọi CTA chính ≥44px"* và dòng đó **luôn xanh** trong khi sản
+phẩm có bốn nút cao **19px**. Không phải nó nói dối: nó chọn `button.nut`, và
+`.nut` đúng là đã đạt. Bốn nút kia mang lớp `.lien-ket` nên chưa bao giờ nằm
+trong tập được chọn.
+
+Đây là kiểu hỏng khó thấy nhất trong repo này: **một phép đo xanh vì nó không nhìn
+vào chỗ hỏng.** 40/40 vẫn đúng nguyên văn, chỉ là nó chưa từng trả lời câu hỏi mà
+người đọc tưởng nó trả lời. Nên bài mới quét **mọi** `button`, `a[href]`,
+`[role=button]` đang hiện trên ba trạng thái màn hình, thay vì một lớp CSS.
+
+Hai mức, và ranh giới giữa chúng là chuyện tiêu chuẩn chứ không phải chuyện gu:
+
+| Mức | Ngưỡng | Nghĩa |
+|---|---|---|
+| **VI PHẠM** | < 24px | dưới ngưỡng WCAG 2.5.8 AA |
+| **CẦN SỬA** | < 44px | đạt AA, nhưng dưới khuyến nghị Apple HIG / Material |
+
+Gọi mọi thứ dưới 44px là *"vi phạm WCAG"* là nói sai về tiêu chuẩn — AA dùng 24px
+kèm ngoại lệ cho mục inline và mục có khoảng cách đủ. Trước khi sửa: **4 vi phạm,
+2 cần sửa**. Sau khi sửa: **0 và 0** trên 26 mục.
+
+Chỉ đo trong ngữ cảnh `has_touch`. Chuột không cần 44px, và bắt nó đạt 44px ở
+khung máy tính chỉ làm giao diện phình ra vì một con số không áp dụng ở đó.
+
+Bằng chứng: `data/a11y/vung-bam.json`, có `sourceCommit` như bài axe.
 
 > Checker tương phản **tự viết** đã sai hai lần trước đây: Chrome trả màu dạng
 > `oklch()` và mã đọc ba số đó như RGB, cho ra tỉ lệ vô nghĩa — có lần báo
@@ -83,3 +112,5 @@ axe-core chạy thật, ở mức `wcag2a · wcag2aa · wcag21a · wcag21aa`.
    ngưỡng AA, thấp nhất 2:1.
 4. **`.nut` cao 42 px** — thiếu 2 px so với ngưỡng vùng bấm, trên đúng hai nút quan
    trọng nhất sản phẩm.
+5. **"Xem chi tiết" và "Chi tiết kỹ thuật" cao 19 px** — dưới cả ngưỡng AA.
+   Bài a11y cũ không thấy vì nó chỉ chọn `.nut`; xem `soi-vung-bam.py` ở trên.
