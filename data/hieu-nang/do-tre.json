@@ -1,0 +1,100 @@
+{
+  "doLuc": "2026-09-08T17:31:53.969513+00:00",
+  "sourceCommit": "233034d817fd9a12e44d88d30ec3b2fbc01985b6",
+  "dauVet": {
+    "bam": "8e55349757a0ae24",
+    "soFile": 29
+  },
+  "taiTrangNguoi": {
+    "domContentLoaded": 52,
+    "load": 53,
+    "fcp": 108,
+    "soTepJs": 3,
+    "byteJsQuaDay": 177197,
+    "byteJsGiaiNen": 570826,
+    "nhan": "nguội — context mới, chưa có cache"
+  },
+  "taiTrangAm": {
+    "domContentLoaded": 38,
+    "load": 39,
+    "fcp": 92,
+    "soTepJs": 3,
+    "byteJsQuaDay": 900,
+    "byteJsGiaiNen": 570826,
+    "nhan": "ấm — cùng context, bundle đã cache"
+  },
+  "moiTruong": {
+    "chromium": "149.0.7827.55",
+    "khung": {
+      "rong": 1280,
+      "cao": 900
+    },
+    "bopMang": "không — mạng thật của máy chạy",
+    "rpc": "https://api.devnet.solana.com (mặc định của hiện trường)",
+    "banDung": "production (`vite build` + `vite preview`), KHÔNG phải dev server"
+  },
+  "bamLanDau": 868,
+  "bamCacLuotSau": {
+    "soMau": 4,
+    "trungVi": 848,
+    "caoNhat": 6386,
+    "tatCa": [
+      852,
+      844,
+      845,
+      6386
+    ]
+  },
+  "bamTatCa": {
+    "soMau": 5,
+    "trungVi": 852,
+    "caoNhat": 6386,
+    "tatCa": [
+      868,
+      852,
+      844,
+      845,
+      6386
+    ]
+  },
+  "soLuotRpcMoiLuot": {
+    "soMau": 5,
+    "trungVi": 7,
+    "caoNhat": 17,
+    "tatCa": [
+      7,
+      7,
+      7,
+      7,
+      17
+    ]
+  },
+  "tungLuot": [
+    {
+      "ms": 868,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 852,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 844,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 845,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 6386,
+      "soLuotRpc": 17
+    }
+  ],
+  "canhBao": [],
+  "khongDo": [
+    "p95 — 3 lượt bấm không đỡ nổi một con số p95",
+    "mạng bị bóp (3G/4G) — chưa dựng, cần thêm cấu hình throttle",
+    "thiết bị thật — mọi số ở đây từ Chromium headless trên máy dev"
+  ]
+}
