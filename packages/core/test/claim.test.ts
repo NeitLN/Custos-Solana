@@ -260,6 +260,8 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["PITCH-VA-PHAN-BIEN.md", /^### \d+\. ".* test chứng minh/],
   ["PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
   ["PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
+  ["SEED-DATASET.md", /^> hiện tại có \*\*\d+ mẫu\*\*/],
+  ["SEED-DATASET.md", /^> \*"\d+ luật, \d+ mẫu kiểm thử/],
   ["packages/core/README.md", /Coverage chưa đủ trên DeFi/],
   ["packages/core/README.md", /^npx npm@[\d.]+ run check /],
 ];

@@ -103,7 +103,11 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 
   const cw = (W - 0.55) / 2;
   the(s, M, 1.95, cw, 3.5, C.surface);
-  chip(s, "VÍ HIỆN TẠI CHO HỌ XEM", M + 0.35, 2.2, cw - 0.7, C.dim);
+  // KHÔNG viết "VÍ HIỆN TẠI CHO HỌ XEM". Slide 3 của chính deck này thừa nhận ví
+  // lớn đã có mô phỏng và cảnh báo, nên câu đó tự mâu thuẫn sau đúng một slide —
+  // và một giám khảo theo mảng này bắt được ngay. Cột trái là MỘT VÍ DỤ dữ liệu
+  // giao dịch thô khó đọc, không phải mô tả sản phẩm của người khác.
+  chip(s, "DỮ LIỆU GIAO DỊCH THÔ", M + 0.35, 2.2, cw - 0.7, C.dim);
   s.addText(
     "Program: TokenkegQfeZ…VQ5DA\nInstruction: SetAuthority\nAccount #3: CRZa4k…9Wpicz\nInstruction: Transfer\nAmount: 500000000",
     { x: M + 0.35, y: 2.62, w: cw - 0.7, h: 2.55, fontFace: F.mono, fontSize: 13, color: C.muted, lineSpacing: 26, margin: 0 },
@@ -201,13 +205,13 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
 {
   const s = p.addSlide(); nen(s);
   vach(s);
-  tieuDe(s, "Thị trường này đã được chứng minh hộ");
+  tieuDe(s, "Ví lớn nhất Solana đã trả tiền cho đúng năng lực này");
 
   const bw = (W - 1.1) / 3;
   const bs = [
     ["2024", "Phantom — ví lớn nhất Solana — mua đứt Blowfish", C.muted],
     ["SUNSET", "Dịch vụ bán rời bị đóng. blowfish.xyz nay là tên miền hết hạn", C.rose],
-    ["HÔM NAY", "Dịch vụ bán rời của Blowfish đã dừng — thị trường có thật, có chỗ trống", C.amber],
+    ["HÔM NAY", "Blockaid vẫn bán cho ví khác. Chỗ trống là của Blowfish, không phải cả thị trường", C.amber],
   ];
   bs.forEach(([k, t, mau], i) => {
     const x = M + i * (bw + 0.55);
@@ -216,8 +220,18 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     s.addText(t, { x: x + 0.3, y: 2.82, w: bw - 0.6, h: 1.4, fontFace: F.body, fontSize: 15, color: C.text, lineSpacing: 22, margin: 0 });
   });
 
-  s.addText("Đây là market validation do người khác bỏ tiền chứng minh — không phải lập luận đội tự nghĩ.", {
-    x: M, y: 4.75, w: W, h: 0.45, fontFace: F.body, fontSize: 16, italic: true, color: C.amber, margin: 0,
+  /*
+   * BẢN TRƯỚC VIẾT: "market validation do người khác bỏ tiền chứng minh".
+   *
+   * Thương vụ này chứng minh năng lực đó đáng tiền VỚI PHANTOM. Nó không nói gì về
+   * việc có ai trả tiền cho Custos, ở mức giá nào. Và nó đọc được theo HAI cách:
+   * "thị trường có thật" hoặc "thị trường bị mua về làm nội bộ" — cách thứ hai bất
+   * lợi cho đội, nên bỏ nó ra khỏi slide là chọn dữ liệu.
+   *
+   * Giám khảo hỏi câu này thì thà slide đã tự nói trước.
+   */
+  s.addText("Đọc được hai cách: thị trường có thật, hoặc năng lực này bị mua về làm nội bộ. Cả hai đều chưa nói ai sẽ trả tiền cho Custos.", {
+    x: M, y: 4.75, w: W, h: 0.45, fontFace: F.body, fontSize: 15, italic: true, color: C.amber, margin: 0,
   });
   s.addText("Ai trả tiền:  ví và dApp, không bao giờ là người dùng cuối.", {
     x: M, y: 5.45, w: W, h: 0.45, fontFace: F.body, fontSize: 17, color: C.text, margin: 0,
@@ -250,10 +264,13 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
   s.addText("400", {
     x: M + cw + 0.95, y: 2.25, w: cw - 0.8, h: 1.0, fontFace: F.head, fontSize: 52, bold: true, color: C.emerald, margin: 0,
   });
-  s.addText("token — TRẦN CỨNG đầu ra của mô hình", {
+  // "TRẦN CỨNG" là sai về chính code mình: `anthropic.ts` dùng `tuyChon.maxTokens ?? 400`
+  // — bên tích hợp nâng được. Và 400 chỉ tính đầu RA, trong khi nhà cung cấp tính
+  // tiền cả đầu vào. Một con số sai trên slide chi phí là chỗ dễ bị hỏi nhất.
+  s.addText("token đầu ra — mặc định trong cấu hình đo", {
     x: M + cw + 0.95, y: 3.22, w: cw - 0.8, h: 0.4, fontFace: F.body, fontSize: 15, color: C.text, margin: 0,
   });
-  s.addText("chi phí AI mỗi lượt có trần, không trôi được", {
+  s.addText("bên tích hợp nâng được · chưa tính token đầu vào", {
     x: M + cw + 0.95, y: 3.62, w: cw - 0.8, h: 0.4, fontFace: F.mono, fontSize: 11, color: C.muted, margin: 0,
   });
 

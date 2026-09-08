@@ -28,9 +28,9 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 | | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7,1 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7–15,8 |
+| Cài đặt → kết quả đầu tiên | **7,2 giây** — trung vị 10 lượt trên 9 bản dựng, dải 7–15,8 |
 | Dòng mã tích hợp | **30** (`src/tich-hop.js`) |
-| Một lượt `inspect()` | **625 ms** — trung vị 10 lượt trên 8 bản dựng |
+| Một lượt `inspect()` | **645 ms** — trung vị 10 lượt trên 9 bản dựng |
 | Cần khoá riêng | **không** — `inspect()` mô phỏng, mô phỏng không đòi chữ ký |
 | Cần khoá API mô hình | **không** — đường tất định `dienGiaiKhongAI` |
 
@@ -44,7 +44,7 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 ## Ba ràng buộc bên tích hợp phải giữ
 
-Tất cả nằm trong `src/tich-hop.js` — 29 dòng, đọc hết được.
+Tất cả nằm trong `src/tich-hop.js` — 30 dòng, đọc hết được.
 
 1. **`nguoiDung` lấy từ VÍ, không từ dApp.** Để dApp khai hộ địa chỉ người ký là mở
    đúng cái cửa mà trường này sinh ra để đóng.
