@@ -14,6 +14,7 @@ python scripts/kiem-trinh-duyet/soi-vung-bam.py      # kích thước vùng bấ
 python scripts/kiem-trinh-duyet/soi-ban-phim-va-phong-to.py   # bàn phím · zoom · chữ dài
 python scripts/kiem-trinh-duyet/soi-handoff.py                 # tấn công → ví, cả chuỗi
 python scripts/kiem-trinh-duyet/soi-do-tre.py                   # độ trễ — cần `vite preview`, xem docs/HIEU-NANG.md
+python scripts/kiem-trinh-duyet/soi-phong-van-vong-2.py        # công cụ phỏng vấn khớp giao thức vòng 2
 ```
 
 ## Vì sao ghim phiên bản

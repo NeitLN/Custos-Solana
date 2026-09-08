@@ -9,10 +9,16 @@ import { coHan } from "../../../scripts/coHan.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import {
   NHAN_CHAM,
+  NHAN_HIEU_COVERAGE,
+  NHAN_DOC_NHAM_PHI,
+  NHAN_KENH,
   NHAN_QD,
   PHIEN_BAN_LUOC_DO,
   type Ban,
   type Cham,
+  type DocNhamPhi,
+  type HieuCoverage,
+  type Kenh,
   type HoSoPhongVan,
   type QuyetDinh,
   docKho,
@@ -78,6 +84,32 @@ export function PhongVan() {
   const [quyetDinh, setQuyetDinh] = useState<QuyetDinh | null>(null);
   const [daChep, setDaChep] = useState(false);
 
+  // ── vòng 2 ────────────────────────────────────────────────────────────────
+  const [hieuCoverage, setHieuCoverage] = useState<HieuCoverage | null>(null);
+  const [docNhamPhi, setDocNhamPhi] = useState<DocNhamPhi | null>(null);
+  const [kenh, setKenh] = useState<Kenh | null>(null);
+  const [lyDoQuyetDinh, setLyDoQuyetDinh] = useState("");
+
+  /*
+   * NÚT TRÊN THẺ CẢNH BÁO TỪNG LÀ NO-OP — và no-op là câu trả lời sai.
+   *
+   * `onHuy={() => {}}`: người tham gia bấm "Chặn & huỷ giao dịch" và KHÔNG có gì xảy
+   * ra. Hai cách hiểu, cả hai đều làm hỏng phép đo:
+   *
+   *   · "chắc nó chặn rồi" — tưởng một hành động đã xảy ra thật;
+   *   · "màn hình hỏng" — và câu trả lời cho câu 2 nhiễm luôn sự bực đó.
+   *
+   * Câu 2 của giao thức hỏi *"bạn sẽ làm gì"*. Cái bấm THẬT là bằng chứng mạnh hơn
+   * lời tự thuật, nên ghi lại nó — nhưng ghi vào trường RIÊNG (`bamThat`), không
+   * trộn vào `quyetDinh` do người phỏng vấn chấm. Hai thứ có thể lệch nhau, và chỗ
+   * lệch mới là chỗ đáng đọc.
+   *
+   * Và phải nói rõ không có giao dịch nào được gửi. Người tham gia đã biết họ đang
+   * dự một buổi phỏng vấn; giấu điều đó không làm phép đo thật hơn, chỉ để họ tin
+   * nhầm rằng ví của họ vừa bị đụng tới.
+   */
+  const [bamThat, setBamThat] = useState<"huy" | "ky" | null>(null);
+
   const dung = useCallback(async (ht: HienTruong) => {
     const c = new Connection(chonRpc(ht), "confirmed");
     const { blockhash } = await c.getLatestBlockhash();
@@ -132,7 +164,23 @@ export function PhongVan() {
 
   function luu() {
     if (!cham || !quyetDinh) return;
-    const moi: Ban[] = [...ban, { nhapLuc: new Date().toISOString(), nguyenVan, cham, quyetDinh, ghiChu }];
+    const moi: Ban[] = [
+      ...ban,
+      {
+        nhapLuc: new Date().toISOString(),
+        nguyenVan,
+        cham,
+        quyetDinh,
+        ghiChu,
+        // Chỉ ghi trường nào ĐÃ HỎI. Điền mặc định cho ô bỏ trống là biến "vòng này
+        // không hỏi" thành một câu trả lời, và mẫu số của ngưỡng sai theo.
+        ...(hieuCoverage ? { hieuCoverage } : {}),
+        ...(docNhamPhi ? { docNhamPhi } : {}),
+        ...(kenh ? { kenh } : {}),
+        ...(lyDoQuyetDinh.trim() ? { lyDoQuyetDinh: lyDoQuyetDinh.trim() } : {}),
+        ...(bamThat ? { bamThat } : {}),
+      },
+    ];
     try {
       // Ghi TRƯỚC, cập nhật màn hình SAU. Ghi hỏng mà màn hình đã xoá ô nhập thì
       // người phỏng vấn mất nguyên văn vừa gõ và không biết mình đã mất.
@@ -148,6 +196,12 @@ export function PhongVan() {
     setCham(null);
     setQuyetDinh(null);
     setChoCham(false);
+    setHieuCoverage(null);
+    setDocNhamPhi(null);
+    setLyDoQuyetDinh("");
+    setBamThat(null);
+    // `kenh` KHÔNG reset: cả buổi thường cùng một kênh, và bắt chọn lại mỗi người là
+    // cách chắc chắn để tới người thứ năm thì có người quên chọn.
   }
 
   const dem = (c: Cham) => ban.filter((b) => b.cham === c).length;
@@ -282,8 +336,34 @@ export function PhongVan() {
               chút nghĩa là số liệu thu được đang đo một vật khác với sản phẩm.
             */}
             <div className="review-body mt-5 rounded-2xl border border-vien p-4 sm:p-5">
-              <CanhBao ketQua={ketQua} onHuy={() => {}} onKy={() => {}} choPhepKy={false} />
+              <CanhBao
+                ketQua={ketQua}
+                onHuy={() => setBamThat("huy")}
+                onKy={() => setBamThat("ky")}
+                choPhepKy={false}
+              />
             </div>
+
+            {/*
+              Trước đây bấm nút xong KHÔNG có gì xảy ra. Người tham gia hoặc tưởng
+              giao dịch đã bị chặn thật, hoặc tưởng màn hình hỏng — và câu trả lời
+              cho câu hỏi ngay dưới đây nhiễm theo.
+
+              Nói thẳng hai điều, không nói thêm gì: đã ghi nhận, và KHÔNG có giao
+              dịch nào được gửi. Không khen, không chê lựa chọn của họ — một dòng
+              kiểu "lựa chọn đúng rồi" là dạy bài giữa lúc đang đo.
+            */}
+            {bamThat && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="mt-4 rounded-2xl border border-vien bg-white/70 p-3 text-[13px] text-chu-nhat"
+              >
+                Đã ghi nhận lựa chọn của bạn.{" "}
+                <strong className="text-chu">Không có giao dịch nào được gửi đi</strong> — đây là
+                màn hình dùng cho buổi phỏng vấn.
+              </div>
+            )}
 
             <p className="mt-7 text-[18px] font-semibold leading-relaxed text-chu">
               Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?
@@ -373,6 +453,94 @@ export function PhongVan() {
                     ))}
                   </div>
                 </fieldset>
+
+                {/*
+                  ─── VÒNG 2 ───────────────────────────────────────────────────
+                  Bốn ô này KHÔNG bắt buộc, và nút Lưu không đòi chúng. Vòng 1 đã
+                  chạy xong mà không có chúng; bắt buộc bây giờ chỉ tạo áp lực điền
+                  bừa khi người phỏng vấn quên hỏi một câu — mà một ô điền bừa còn
+                  tệ hơn một ô trống, vì ô trống thì bộ đếm biết mà loại khỏi mẫu số.
+                */}
+                <details className="rounded-2xl border border-vien p-4">
+                  <summary className="lien-ket cursor-pointer text-[13px] text-chu-nhat">
+                    Vòng 2 — hai câu mới, kênh, và lý do (không bắt buộc)
+                  </summary>
+
+                  <fieldset className="mt-4">
+                    <legend className="text-[12.5px] font-semibold text-chu">
+                      Câu 3 — chỉ vào dòng &laquo;đã đọc hiểu 2 trên 3 lệnh&raquo;: dòng này nói gì?
+                    </legend>
+                    <div className="mt-2 grid gap-1.5">
+                      {(Object.keys(NHAN_HIEU_COVERAGE) as HieuCoverage[]).map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          aria-pressed={hieuCoverage === c}
+                          onClick={() => setHieuCoverage(hieuCoverage === c ? null : c)}
+                          className={`min-h-[44px] rounded-xl border px-3 text-left text-[12.5px] ${
+                            hieuCoverage === c ? "border-chu bg-white font-semibold text-chu" : "border-vien text-chu-nhat"
+                          }`}
+                        >
+                          {NHAN_HIEU_COVERAGE[c]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <fieldset className="mt-4">
+                    <legend className="text-[12.5px] font-semibold text-chu">
+                      Câu 4 — phí ở đây bao nhiêu, có liên quan số tiền có thể mất không?
+                    </legend>
+                    <div className="mt-2 grid gap-1.5">
+                      {(Object.keys(NHAN_DOC_NHAM_PHI) as DocNhamPhi[]).map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          aria-pressed={docNhamPhi === c}
+                          onClick={() => setDocNhamPhi(docNhamPhi === c ? null : c)}
+                          className={`min-h-[44px] rounded-xl border px-3 text-left text-[12.5px] ${
+                            docNhamPhi === c ? "border-chu bg-white font-semibold text-chu" : "border-vien text-chu-nhat"
+                          }`}
+                        >
+                          {NHAN_DOC_NHAM_PHI[c]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <fieldset className="mt-4">
+                    <legend className="text-[12.5px] font-semibold text-chu">
+                      Kênh phỏng vấn <span className="font-normal text-chu-mo">— giữ nguyên cho người tiếp theo</span>
+                    </legend>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {(Object.keys(NHAN_KENH) as Kenh[]).map((k) => (
+                        <button
+                          key={k}
+                          type="button"
+                          aria-pressed={kenh === k}
+                          onClick={() => setKenh(kenh === k ? null : k)}
+                          className={`min-h-[44px] rounded-full border px-3 text-[12.5px] ${
+                            kenh === k ? "border-chu bg-white font-semibold text-chu" : "border-vien text-chu-nhat"
+                          }`}
+                        >
+                          {NHAN_KENH[k]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <label className="mt-4 block text-[12.5px] font-semibold text-chu" htmlFor="ly-do-qd">
+                    Lý do của quyết định — vế &laquo;vì sao&raquo; của câu 2
+                  </label>
+                  <textarea
+                    id="ly-do-qd"
+                    value={lyDoQuyetDinh}
+                    onChange={(e) => setLyDoQuyetDinh(e.target.value)}
+                    rows={2}
+                    placeholder="Chép nguyên văn lý do họ nói…"
+                    className="mt-1.5 w-full rounded-xl border border-vien p-3 text-[13px]"
+                  />
+                </details>
 
                 <button
                   type="button"

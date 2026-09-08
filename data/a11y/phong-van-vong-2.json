@@ -1,0 +1,88 @@
+{
+  "doLuc": "2026-09-08T17:58:13.641917+00:00",
+  "sourceCommit": "edf80a09aac05b3da926c13793452064be5f6358",
+  "dauVet": {
+    "bam": "014b257817cbb2dc",
+    "soFile": 29
+  },
+  "soKiem": 15,
+  "soDat": 15,
+  "kiem": [
+    {
+      "ten": "trước khi bấm: KHÔNG hiện lời xác nhận",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "thẻ cảnh báo có nút huỷ cho người tham gia bấm",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "sau khi bấm: nói rõ KHÔNG có giao dịch nào được gửi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "lời xác nhận có `role=status`",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "nút Lưu KHÔNG bị khoá khi bỏ trống trường vòng 2",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "ghi được đúng 1 bản",
+      "dat": true,
+      "chiTiet": "1"
+    },
+    {
+      "ten": "trường không hỏi thì VẮNG hẳn, không điền mặc định",
+      "dat": true,
+      "chiTiet": "[]"
+    },
+    {
+      "ten": "khối vòng 2 có mặt",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "khối vòng 2 GẬP SẴN — không chen vào luồng vòng 1",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "ghi đúng `hieuCoverage` = sai",
+      "dat": true,
+      "chiTiet": "sai"
+    },
+    {
+      "ten": "ghi đúng `docNhamPhi` = co",
+      "dat": true,
+      "chiTiet": "co"
+    },
+    {
+      "ten": "ghi đúng `kenh` = video",
+      "dat": true,
+      "chiTiet": "video"
+    },
+    {
+      "ten": "ghi đúng `bamThat` = huy",
+      "dat": true,
+      "chiTiet": "huy"
+    },
+    {
+      "ten": "ghi `lyDoQuyetDinh` tách khỏi `ghiChu`",
+      "dat": true,
+      "chiTiet": "Thấy phí có mấy đồng nên nghĩ mất ít"
+    },
+    {
+      "ten": "`quyetDinh` và `bamThat` là hai trường tách biệt",
+      "dat": true,
+      "chiTiet": "ky / huy"
+    }
+  ],
+  "dat": true
+}
