@@ -45,3 +45,8 @@ goi-sdk/
 # vẫn báo thành công.
 /ban-trinh-dien/
 /Custos-ban-trinh-dien.zip
+
+# Bytecode Python — sinh ra từ lúc bộ kiểm trình duyệt có module dùng chung
+# (`scripts/kiem-trinh-duyet/dauvet.py`). Không phải nguồn, và commit vào thì
+# mỗi phiên bản Python lại ghi đè một bản khác.
+__pycache__/
