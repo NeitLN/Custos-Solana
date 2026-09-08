@@ -1,0 +1,38 @@
+
+> nop-bai-strict
+> node --experimental-strip-types scripts/kiem-nop-bai.ts --strict
+
+
+CHECKLIST NỘP BÀI · 10/13 · HEAD 55388d6
+
+  ✓ Bộ test xanh                               403 pass · 0 fail
+  ✓ Cây làm việc sạch                          HEAD 55388d6
+  ✓ Ví dụ tích hợp chạy được                   8/8 kịch bản pass · 2026-09-07T17:53:19.272Z
+  ✓ Deck dựng lại được từ dữ liệu              pptxgenjs ghim trong devDependencies
+  ✓ Ảnh dự phòng máy tính + điện thoại         8 ảnh trong docs/nop-bai/anh
+  · Video demo dự phòng                        THỂ LỆ GHI LÀ BẮT BUỘC. Không có file video nào — không tick theo lời, chỉ tick theo file
+  · Lịch thi xác nhận đủ                       4 câu chưa hỏi BTC
+  ✓ Gói AI có bản vá trên registry             0.2.0 trên registry · 10/10 bẫy bị chặn
+  · Release tag cố định                        chưa có tag nào
+  ✓ Metadata repo (description, homepage, topics) 7 topic, có mô tả và homepage
+  ✓ Release notes mô tả đúng bản sắp gắn tag   cba9032 → HEAD 55388d6: chỉ chính notes thay đổi
+  ✓ Bằng chứng tích hợp thuộc đúng bản này     đo tại 753da81; từ đó tới HEAD chỉ tài liệu đổi
+  ✓ Registry khớp version trong source         registry 0.2.0 · source 0.2.0
+
+  Ô còn trống về BẰNG CHỨNG — nói ra, không tick:
+    Phỏng vấn người mua          0 — đội quyết định không làm kỳ này
+    Bên thứ ba tích hợp          0 — ví dụ tích hợp do chính đội dựng
+    Usability vòng 2             chưa chạy
+    Eval với mô hình thật        BLOCKED_BY_SECRET — cần ANTHROPIC_API_KEY
+
+  2 việc CHỈ NGƯỜI LÀM ĐƯỢC:
+    · Video demo dự phòng
+    · Release tag cố định
+
+  1 việc chờ BÊN NGOÀI:
+    · Lịch thi xác nhận đủ
+
+✖ CHƯA SẴN SÀNG NỘP — 3/13 ô chưa đạt:
+    [người] Video demo dự phòng — THỂ LỆ GHI LÀ BẮT BUỘC. Không có file video nào — không tick theo lời, chỉ tick theo file
+    [ngoài] Lịch thi xác nhận đủ — 4 câu chưa hỏi BTC
+    [người] Release tag cố định — chưa có tag nào

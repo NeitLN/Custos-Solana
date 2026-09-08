@@ -20,6 +20,8 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 | `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
 | `packages/core/README.md` | **Tài liệu tích hợp SDK** — thứ bên ngoài đọc để quyết định có dùng không. Ví dụ trong đó có test chạy thật (`readme.test.ts`) |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
+| `ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
+| `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |
 
 > **Tài liệu lập kế hoạch đã hoàn thành nằm trong lịch sử git, không ở HEAD.**
 > `KE-HOACH-15-NGAY.md`, `KHOI-DONG-22-08.md`, `ROADMAP-BUILD.md`, `ROADMAP-DIEM-SO.md`,
@@ -32,7 +34,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 33 mẫu dữ liệu · 403 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 33 mẫu dữ liệu · 415 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
