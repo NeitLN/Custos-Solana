@@ -4,10 +4,10 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, U01, U02, U03**.
-- Ba lỗi P1 của báo cáo đánh giá (**F01, F02, F03**) và **F09** đã sửa. Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
-- Bộ test: **415 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
-- Chưa push. Các file roadmap và báo cáo do chủ dự án đưa vào vẫn untracked ở thời điểm ghi sổ này.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, U01–U05, I01, I02**.
+- **Bảy lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
+- Bộ test: **429 pass, 0 fail**. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
+- Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
 - Quyền đã được cấp: đọc/sửa file trong phạm vi, chạy kiểm thử, build, tạo artifact cục bộ, commit cục bộ. **Chưa được** push, publish, deprecate gói, hoặc liên hệ bên ngoài.
 
 ## Đối chiếu F01–F11 sau phiên này
@@ -17,11 +17,11 @@
 | F01 | **đã sửa** | 320/375/768 px: kết quả ở `top=9/9/154`, focus vào khối kết quả. Trước đó `y≈1241` với `scrollY=0`. |
 | F02 | **đã sửa** | Sáu pha ký/gửi; `chuaRo` tách khỏi `thatBai`. 5 bài kiểm bằng stub. |
 | F03 | **đã sửa** | Xác thực từng trường; 5 ca cấu hình hỏng đều không trắng trang và không tạo nút Ký. |
-| F04 | **còn** | Trang phỏng vấn chưa có deadline bao quanh `getLatestBlockhash()`/`inspect()`. Việc I01. |
-| F05 | **còn** | localStorage khác schema làm hỏng trang phỏng vấn. Việc I02. |
-| F06 | **còn** | Payload dApp hỏng bị bỏ qua im lặng. Việc U04 — nay đủ phụ thuộc vì U03 đã xong. |
-| F07 | **còn** | Huỷ xong chưa có xác nhận kết quả. Việc U05. |
-| F08 | **còn** | Vùng bấm nhỏ trên mobile. Việc U06. |
+| F04 | **đã sửa** | Hạn 15 s bọc cả chuỗi. Treo RPC thật: dừng sau 15,3 s, có nút Thử lại. |
+| F05 | **đã sửa** | Kho hỏng được GIỮ nguyên văn + nút tải bản sao; bắt cả lỗi ghi. Không tự xoá biên bản. |
+| F06 | **đã sửa** | Union ba nhánh + giới hạn độ dài. Payload hỏng không sinh khối kết quả, không hiện nhãn phán quyết. |
+| F07 | **đã sửa** | `role=status` nói rõ giao dịch chưa được gửi và sẽ không được gửi. |
+| F08 | **còn** | Vùng bấm nhỏ trên mobile. Việc U06 — việc khả dụng tiếp theo trong nhóm ví. |
 | F09 | **đã sửa** | `scripts/docZip.ts`; PowerShell không có `unzip` → 403/403. **Chưa kiểm Linux trong phiên này.** |
 | F10 | **cần rà lại** | Nhiều claim đã được đồng bộ tự động ở các phiên trước (`npm run so-lieu`). Phải đối chiếu lại danh sách cụ thể của báo cáo trước khi đóng. Việc D01. |
 | F11 | **đã phân loại, chưa vá** | `docs/PHU-THUOC.md` có phân tích phơi nhiễm từng advisory và quyết định chấp nhận có điều kiện. Việc S01 nên rà theo khung roadmap thay vì làm lại từ đầu. |
@@ -36,6 +36,6 @@
 
 ## Bước tiếp theo
 
-Theo phụ thuộc, các việc đã đủ điều kiện: **U04** (F06), **I01**/**I02** (F04/F05), **R02**, **S01** (rà `docs/PHU-THUOC.md` theo khung roadmap), **D01** (F10).
+Còn lại trong báo cáo: **F08** (U06 — vùng bấm mobile), **F10** (D01 — rà claim), **F11** (S01 — đã phân loại ở `docs/PHU-THUOC.md`, cần rà theo khung roadmap).
 
-U04 nên làm trước trong nhóm ví: nó cùng lớp với F03 vừa sửa — dữ liệu ngoài vào mà không được xác thực — nên phần lớn cách làm đã có sẵn mẫu.
+Năm lỗi vừa sửa cùng MỘT lớp: **dữ liệu từ ngoài vào không được xác thực, và hỏng thì im lặng**. `hien-truong.json`, payload dApp, kho localStorage, phản hồi RPC — cả bốn đều từng ép kiểu hoặc nuốt lỗi. Cách sửa giống nhau: union phân biệt trạng thái, nói ra lý do, và không bao giờ diễn giải "không đọc được" thành "không có vấn đề".
