@@ -472,8 +472,28 @@ button {
 }
 
 /* Nút trông như liên kết: dùng cho "xem chi tiết", "chi tiết kỹ thuật".
-   Gạch chân mảnh, cách chữ 4px để dấu tiếng Việt không chạm vào đường kẻ. */
+   Gạch chân mảnh, cách chữ 4px để dấu tiếng Việt không chạm vào đường kẻ.
+
+   VÙNG BẤM NẰM Ở ĐÂY, KHÔNG Ở NƠI GỌI.
+
+   Bản trước lớp này chỉ lo phần gạch chân và để kích thước vùng bấm cho từng nơi
+   gọi tự thêm. Bốn nơi dùng, hai nơi nhớ thêm `min-h-[44px]`, hai nơi quên — và
+   hai nơi quên đúng là "Xem chi tiết" với "Chi tiết kỹ thuật": cao 19px, dưới cả
+   ngưỡng 24px của WCAG 2.5.8 AA. Một lớp dùng chung mà vẫn để hỏng được như vậy
+   thì lần thêm nơi gọi thứ năm sẽ hỏng lại y hệt.
+
+   Chữ giữ nguyên 12,5px. Chỉ cái hộp to ra: `inline-flex` + `min-height` dựng
+   vùng chạm 44px, còn `padding`/`margin` ngang triệt tiêu nhau nên mép chữ vẫn
+   thẳng hàng với đoạn văn bên trên — không xê dịch bố cục theo phương ngang.
+
+   44px là khuyến nghị của Apple HIG và Material, KHÔNG phải ngưỡng WCAG (AA là
+   24px kèm ngoại lệ). Đây là chọn cho dễ bấm, không phải để tuyên bố tuân thủ. */
 .lien-ket {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 4px;
+  margin-inline: -4px;
   text-decoration: underline;
   text-decoration-color: #c3cad6;
   text-underline-offset: 4px;

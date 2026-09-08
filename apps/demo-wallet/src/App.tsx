@@ -444,7 +444,12 @@ export default function App() {
                  ở một cỡ màn hình. Nhãn để đúng chữ đang hiện, để người dùng điều
                  khiển bằng giọng nói gọi được đúng tên họ nhìn thấy (WCAG 2.5.3). */
               aria-label="Số liệu"
-              className="icon-link flex items-center gap-2 rounded-full px-3 py-2 text-[12px] text-chu-nhat transition-colors hover:text-chu"
+              /* Cũng vì chữ bị ẩn dưới 640px: link co lại còn 42x34px, chỉ vừa
+                 đúng cái icon. Nó là mục nhỏ nhất trên header mà lại nằm sát mép
+                 phải màn hình — chỗ ngón cái hay trượt nhất. `min-h`/`min-w` giữ
+                 44px ở mọi cỡ; từ 640px trở lên chữ hiện lại và link tự rộng ra,
+                 nên hai ràng buộc này chỉ có tác dụng ở khung hẹp. */
+              className="icon-link flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-full px-3 py-2 text-[12px] text-chu-nhat transition-colors hover:text-chu"
             >
               <span className="hidden sm:inline">Số liệu</span>
               <ExternalIcon className="h-4 w-4" />
