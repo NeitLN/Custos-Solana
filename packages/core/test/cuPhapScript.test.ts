@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -37,4 +37,39 @@ test("mọi script .mjs/.cjs đều phân tích cú pháp được", () => {
   }
 
   assert.deepEqual(hong, [], `script không nạp được:${NL}${hong.join(NL)}`);
+});
+
+/*
+ * BỘ TEST KHÔNG ĐƯỢC PHỤ THUỘC CÔNG CỤ NGOÀI CÓ THỂ THIẾU.
+ *
+ * Guard deck từng gọi `unzip` qua tiến trình con. Trên Linux — nơi CI chạy — nó luôn
+ * có, nên lỗi không bao giờ lộ. Trên PowerShell sạch, nó ném `ENOENT` và bài kiểm ĐỎ
+ * dù deck hoàn toàn đúng: 402/403.
+ *
+ * Thiếu công cụ và sản phẩm sai phải cho ra hai kết quả khác nhau. Một bộ test đỏ vì
+ * máy người ta thiếu tiện ích sẽ dạy họ bỏ qua màu đỏ.
+ *
+ * Kiểm CÁCH GỌI, không kiểm từ khoá: chú thích trong `artifactNopBai.test.ts` kể lại
+ * chính lỗi này và có nhắc tên công cụ. Một guard bắt cả lời kể sẽ ép người ta xoá
+ * lời kể.
+ */
+test("không bài test nào gọi công cụ giải nén ngoài", () => {
+  const thuMuc = join(GOC, "packages/core/test");
+  const pham: string[] = [];
+
+  for (const f of readdirSync(thuMuc).filter((x) => x.endsWith(".ts"))) {
+    const s = readFileSync(join(thuMuc, f), "utf8");
+    for (const cong of ["unzip", "tar", "7z"]) {
+      // Chỉ bắt khi nó là ĐỐI SỐ ĐẦU của một lời gọi tiến trình con.
+      const mau = new RegExp(`(execFileSync|spawnSync|execSync)\\(\\s*["'\`]${cong}["'\`]`);
+      if (mau.test(s)) pham.push(`${f}: gọi \`${cong}\``);
+    }
+  }
+
+  assert.deepEqual(
+    pham,
+    [],
+    `bộ test gọi công cụ ngoài — máy thiếu nó sẽ đỏ oan:${NL}${pham.join(NL)}` +
+      `${NL}Đọc ZIP bằng \`scripts/docZip.ts\` (node:zlib), không cần tiến trình con.`,
+  );
 });

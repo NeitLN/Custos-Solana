@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { commitCoThat } from "./gitKho.ts";
 import { docBangChungTichHop } from "../../../scripts/bangChungTichHop.ts";
+import { docZip } from "../../../scripts/docZip.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -29,29 +30,24 @@ const S = JSON.parse(doc("apps/demo-wallet/public/so-lieu.json")) as {
  * con số đó trong README, vì nó được đọc to trước hội đồng.
  */
 function chuTrongDeck(): string {
-  const san = mkdtempSync(join(tmpdir(), "custos-deck-"));
-  try {
-    /*
-     * `.pptx` LÀ FILE ZIP, KHÔNG PHẢI TAR.
-     *
-     * Bản đầu dùng `tar -xf` — nó ném lỗi, `catch` nuốt, và test BÁO XANH GIẢ trong
-     * khi deck vẫn mang số cũ. Một guard im lặng khi hỏng còn tệ hơn không có guard:
-     * nó tạo cảm giác đã được canh.
-     */
-    execFileSync("unzip", ["-q", "-o", join(GOC, DECK), "-d", san], { stdio: "ignore" });
-    const gom: string[] = [];
-    const quet = (d: string) => {
-      for (const f of readdirSync(d, { withFileTypes: true })) {
-        const p = join(d, f.name);
-        if (f.isDirectory()) quet(p);
-        else if (f.name.endsWith(".xml")) gom.push(readFileSync(p, "utf8"));
-      }
-    };
-    quet(san);
-    return gom.join("\n");
-  } finally {
-    rmSync(san, { recursive: true, force: true });
-  }
+  /*
+   * `.pptx` LÀ FILE ZIP, KHÔNG PHẢI TAR — và cũng không cần `unzip` ngoài máy.
+   *
+   * Bản đầu dùng `tar -xf`: nó ném lỗi, `catch` nuốt, test BÁO XANH GIẢ trong khi
+   * deck vẫn mang số cũ. Bản thứ hai dùng `unzip` qua `spawnSync` — đúng định dạng,
+   * nhưng trên PowerShell không có Git-for-Windows `usr/bin` trong PATH thì nó ném
+   * `ENOENT` và bài kiểm ĐỎ dù deck hoàn toàn đúng. Tái hiện được: 402/403.
+   *
+   * Thiếu công cụ và sản phẩm sai là hai chuyện; một guard trộn chúng lại sẽ dạy
+   * người ta bỏ qua màu đỏ. CI chạy Linux nên `unzip` luôn có, và lỗi này không bao
+   * giờ lộ ra ở đó.
+   *
+   * `scripts/docZip.ts` đọc ZIP bằng `node:zlib` — không tiến trình con, không phụ
+   * thuộc mới, chạy giống nhau trên mọi nền.
+   */
+  return docZip(join(GOC, DECK), (ten) => ten.endsWith(".xml"))
+    .map((m) => m.noiDung.toString("utf8"))
+    .join(String.fromCharCode(10));
 }
 
 /*
