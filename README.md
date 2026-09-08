@@ -35,7 +35,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,1 giây từ `npm install` tới kết quả đầu tiên, 29 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,2 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -59,9 +59,9 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 08/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7,1 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7–15,8 |
+| Cài đặt → kết quả đầu tiên | **7,2 giây** — trung vị 10 lượt trên 9 bản dựng, dải 7–15,8 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **625 ms** — trung vị 10 lượt trên 8 bản dựng |
+| Một lượt kiểm tra | **645 ms** — trung vị 10 lượt trên 9 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
@@ -110,7 +110,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **429**, chạy trong `npm run check` |
+| Test | **436**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
@@ -122,12 +122,12 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 | Bằng chứng | Trả lời được | Không trả lời được |
 |---|---|---|
-| **429 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
+| **436 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
 | **38 mẫu** đã gắn nhãn | luật bật đúng ca, im đúng ca đối chứng | tỉ lệ đúng/sai trên traffic thật |
 | **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
 | **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
 | **Ví dụ tích hợp** | SDK dùng được từ ngoài, mất bao lâu | có bên thứ ba nào chọn dùng |
-| **Đánh giá AI** — 6/6 bẫy bị chặn | mô hình không bịa được địa chỉ hay số tiền | chất lượng câu chữ; chưa đo với mô hình thật |
+| **Đánh giá AI** — 13/13 bẫy bị chặn | mô hình không bịa được địa chỉ hay số tiền | chất lượng câu chữ; chưa đo với mô hình thật |
 
 Trang [/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html) hiện từng con
 số kèm cách đo, ngày đo, **và mục "điều đội chưa đo được"**.
@@ -223,7 +223,7 @@ Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nv
 ```bash
 nvm use                  # đọc .nvmrc → 24.12.0
 npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 429 test
+npx npm@11.6.2 run check # typecheck + 436 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -262,7 +262,7 @@ belong to the transaction's stated main action**, and explains them in Vietnames
   transaction it actually understood, and the UI shows it.
 - **Fail closed.** Timeout, RPC failure, or missing data becomes a warning — never "safe".
 
-Measured, not estimated: **429 tests**, **38 labelled samples**, **14 rules**, average
+Measured, not estimated: **436 tests**, **38 labelled samples**, **14 rules**, average
 **82 % coverage** on 9 replayable public transactions stored offline. Runtime and demo
 are **Devnet-only**.
 

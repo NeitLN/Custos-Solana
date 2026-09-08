@@ -412,11 +412,14 @@ mục tiêu đã quen trả khoảng $49/tháng để bắt đầu, và quen v�
 > hàng. Chưa ví/dApp nào nói với đội rằng họ sẽ trả bao nhiêu cho lớp kiểm tra này.
 > Đây là số liệu tham chiếu, **không phải** validation.
 
-### Thị trường này đã được người khác chứng minh hộ
+### Ví lớn nhất Solana đã trả tiền cho đúng năng lực này
 
-> *"Chúng em không cần chứng minh thị trường này có tồn tại. Ví lớn nhất Solana đã
-> bỏ tiền mua đúng năng lực này — Phantom mua Blowfish, rồi **đóng cửa dịch vụ bán
-> rời của Blowfish**. Thị trường có thật, và có người rời khỏi bàn."*
+> *"Ví lớn nhất Solana đã bỏ tiền mua đúng năng lực này — Phantom mua Blowfish, rồi
+> **đóng cửa dịch vụ bán rời của Blowfish**. Chuyện đó chứng minh năng lực này đáng
+> tiền với một người mua cụ thể. Nó chưa chứng minh có ai trả tiền cho chúng em."*
+
+⚠️ **KHÔNG mở đầu bằng "chúng em không cần chứng minh thị trường này có tồn tại".**
+Câu đó là bản cũ của đoạn này, và nó đi xa hơn bằng chứng đúng một bước quyết định.
 
 Phantom mua Blowfish năm 2024, và thông báo mua lại ghi rõ *"the current service has
 been sunset"*; `blowfish.xyz` giờ là tên miền hết hạn (tra 22/08/2026).
@@ -427,9 +430,23 @@ chính file này). Chỉ **dịch vụ bán rời của Blowfish** đã dừng, 
 trường đóng lại. Nói quá là mất điểm với giám khảo biết mảng này, và tự mâu thuẫn với
 slide đối thủ.
 
-Vậy Blowfish chứng minh điều gì cho pitch: **thị trường có thật** (ví lớn nhất trả
-tiền mua), và **có một khoảng trống cụ thể** (một nhà cung cấp rời đi). Nó KHÔNG chứng
-minh "không còn đối thủ". Khác biệt của Custos phải đến từ chỗ khác, không từ chỗ
+**Thương vụ này đọc được HAI cách, và chỉ kể một cách là chọn dữ liệu:**
+
+| Cách đọc | Có lợi cho đội? | Bằng chứng nói gì |
+|---|---|---|
+| Thị trường có thật — ví lớn chịu trả tiền cho lớp này | có | Phantom đã trả tiền thật |
+| Năng lực này bị **mua về làm nội bộ**, không còn là thứ bán rời | không | Phantom mua xong thì đóng dịch vụ bán rời |
+
+Cách đọc thứ hai bất lợi, nên nó càng phải nằm trong tài liệu — giám khảo mảng này
+nghĩ ra nó trong ba giây, và lúc đó đội hoặc đã có câu trả lời, hoặc không.
+
+Câu trả lời hiện có: **Blockaid vẫn bán transaction security cho ví khác**, nên mô
+hình bán rời chưa chết. Đó là một điểm dữ liệu, không phải một chứng minh.
+
+Vậy Blowfish chứng minh điều gì cho pitch: **một người mua cụ thể đã trả tiền cho
+năng lực này**, và **có một khoảng trống cụ thể** (một nhà cung cấp rời đi). Nó KHÔNG
+chứng minh "không còn đối thủ", KHÔNG xác thực nhóm khách hàng mục tiêu của Custos,
+và KHÔNG nói gì về mức giá. Khác biệt của Custos phải đến từ chỗ khác, không từ chỗ
 "không ai làm":
 
 - **Giải thích tiếng Việt** — đội chưa thấy đối thủ nào làm; nếu bị hỏi thì nói đúng
@@ -448,7 +465,9 @@ cung cấp"*.
 
 Trung vị **6,5 lượt gọi RPC** mỗi lượt kiểm tra (thấp 4, cao 9), đo trên 20 giao dịch
 công khai có thật, **lưu offline** để kiểm engine — runtime của demo chạy hoàn toàn
-trên Devnet. Phần mô hình ngôn ngữ có **trần cứng 400 token đầu ra**.
+trên Devnet. Phần mô hình ngôn ngữ đặt **mặc định 400 token đầu ra**; bên tích hợp
+nâng được qua `maxTokens`, nên đây là giá trị mặc định của cấu hình đo, không phải
+trần do SDK ép.
 
 Chi phí biên nằm ở hàng phần nghìn đến phần trăm nghìn đô la — **nhỏ hơn chi phí RPC
 mà chính ví đó đang trả để gửi giao dịch đi**. Chi tiết và phần còn thiếu:

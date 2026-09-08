@@ -134,7 +134,12 @@ if (TH) {
   const giay = String(TH.giayDenKetQuaDau).replace(".", ",");
   thayDong("README.md", [
     [/^\| Cài đặt → kết quả đầu tiên \|/, (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${giay} giây**`)],
-    [/giây từ `npm install`/, (d) => d.replace(/[\d,]+ giây từ/, `${giay} giây từ`)],
+    // MỘT DÒNG, HAI SỐ ĐO, MỘT CÁI ĐƯỢC NEO. Dòng "SDK cài được từ ngoài repo chưa?"
+    // đồng bộ số giây nhưng không đồng bộ số dòng mã, nên nó đứng ở 29 trong khi
+    // phép đo đã cho 30 — và `packages/core/README.md` với `BAO-CAO-TONG.md` thì
+    // ghi 30. Cùng một sự thật, hai con số, tuỳ người đọc mở file nào.
+    [/giây từ `npm install`/, (d) =>
+      d.replace(/[\d,]+ giây từ/, `${giay} giây từ`).replace(/\d+ dòng mã/, `${TH.dongMa} dòng mã`)],
     [/^\| Một lượt kiểm tra \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — trung vị 5 lượt `)],
     [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
   ]);
@@ -148,6 +153,11 @@ thayDong("README.md", [
   // một README nói 330 test ở chỗ này, 412 ở chỗ kia là README không đáng đọc.
   [/^\| \*\*\d+ test\*\* tự động \|/, (d) => d.replace(/\*\*\d+ test\*\*/, `**${S.test.pass} test**`)],
   [/^\| \*\*\d+ mẫu\*\* đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+ mẫu\*\*/, `**${S.soMau} mẫu**`)],
+  // README còn công bố "6/6 bẫy" trong khi artifact, trang số liệu, release notes và
+  // hai báo cáo đều ghi 13/13. 6/6 là bộ bẫy của một lượt đo CŨ; để nguyên thì người
+  // đọc README tưởng bộ đối kháng nhỏ hơn thực tế hơn gấp đôi.
+  [/^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn \|/, (d) =>
+    d.replace(/\d+\/\d+ bẫy bị chặn/, `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} bẫy bị chặn`)],
   [/^\*\*330 tests\*\*|^Measured, not estimated/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`).replace(/\*\*\d+ labelled samples\*\*/, `**${S.soMau} labelled samples**`)],
 ]);
 
@@ -155,7 +165,28 @@ thayDong("README.md", [
 // khai" — nhưng nó là thứ mọi phiên làm việc đọc đầu tiên, nên số cũ ở đây lan ra
 // khắp nơi khác.
 thayDong("CLAUDE.md", [
-  [/^hiện trường devnet thật ·/, (d) => d.replace(/· \d+ test/, `· ${S.test.pass} test`)],
+  // Dòng này mang HAI con số. Bản trước chỉ đồng bộ số test, nên `soMau` ở đây tụt
+  // lại 33 trong khi artifact và README đã 38 — đúng một dòng, hai claim, một cái
+  // được canh và một cái không.
+  [/^hiện trường devnet thật ·/, (d) =>
+    d.replace(/· \d+ test/, `· ${S.test.pass} test`).replace(/· \d+ mẫu dữ liệu/, `· ${S.soMau} mẫu dữ liệu`)],
+]);
+
+/*
+ * SEED-DATASET.md hoàn toàn nằm ngoài vòng đồng bộ cho tới giờ.
+ *
+ * Hai dòng dưới đây đều là claim HIỆN HÀNH, không phải số lịch sử: một dòng tự nói
+ * "dataset hiện tại có N mẫu", dòng kia là câu soạn sẵn ĐỂ NÓI TRÊN SÂN KHẤU. Cái
+ * thứ hai nguy hiểm hơn hẳn — một con số cũ trong tài liệu thì người đọc còn đối
+ * chiếu được, còn một con số cũ đọc trước giám khảo thì không rút lại được.
+ *
+ * Con số "25 mẫu" ở cùng khu vực KHÔNG đụng tới: nó là mục tiêu kế hoạch ban đầu và
+ * chính đoạn đó nói rõ như vậy. Đồng bộ nó lên 38 là viết lại lịch sử.
+ */
+thayDong("SEED-DATASET.md", [
+  [/^> hiện tại có \*\*\d+ mẫu\*\*/, (d) => d.replace(/\*\*\d+ mẫu\*\*/, `**${S.soMau} mẫu**`)],
+  [/^> \*"\d+ luật, \d+ mẫu kiểm thử/, (d) =>
+    d.replace(/\d+ luật, \d+ mẫu kiểm thử/, `${S.soLuat} luật, ${S.soMau} mẫu kiểm thử`)],
 ]);
 
 // PITCH tự nói "có test canh" về số lỗ hổng — nhưng nó KHÔNG nằm trong danh sách
@@ -186,8 +217,20 @@ if (GIAY) {
   thayDong("PITCH-VA-PHAN-BIEN.md", [
     [
       /^\| \*\*2:00–2:30\*\*/,
-      (d) => d.replace(/[\d,]+ giây từ `npm install`/, `${GIAY} giây từ \`npm install\``),
+      (d) =>
+        d
+          .replace(/[\d,]+ giây từ `npm install`/, `${GIAY} giây từ \`npm install\``)
+          .replace(/\d+ dòng mã\./, `${TH.dongMa} dòng mã.`),
     ],
+  ]);
+}
+
+// Câu "29 dòng, đọc hết được" nằm ngay trong README của chính ví dụ tích hợp — chỗ
+// người tích hợp đọc trước khi quyết định thử. Con số này do `dem-dong.mjs` đo từ
+// chính file đó, nên gõ tay là bảo đảm sẽ lệch.
+if (TH?.dongMa) {
+  thayDong("vi-du-tich-hop/README.md", [
+    [/^Tất cả nằm trong `src\/tich-hop\.js`/, (d) => d.replace(/— \d+ dòng,/, `— ${TH.dongMa} dòng,`)],
   ]);
 }
 

@@ -132,10 +132,11 @@ thì sửa lại là phá liên kết của họ. Ba điều nên xong trước 
 | Việc | Ai làm được | Trạng thái |
 |---|---|---|
 | Video demo dự phòng | người | **chưa có** — thể lệ BTC ghi là BẮT BUỘC |
+| Phát hành bản vá lên npm | người (cần đăng nhập npm) | **xong** — `@custos-solana/ai@0.2.0`, đã kiểm ngược từ registry: 10/10 bẫy bị chặn, 0 đổi `level` (`data/registry/ket-qua.json`, 06/09) |
 | Phỏng vấn người mua (ví, dApp) | người | **0** — bộ câu hỏi ở `docs/PHONG-VAN-NGUOI-MUA.md` |
 | Usability vòng 2 trên giao diện hiện tại | người | **chưa chạy** — giao thức đã khoá |
 | Bên thứ ba tích hợp SDK | người | **chưa có** |
-| Phát hành `@custos-solana/ai@0.1.3` | người (cần đăng nhập npm) | **chưa** — `0.1.2` trên registry thiếu vá bảo mật |
+| Gỡ (`deprecate`) `@custos-solana/ai@0.1.2` | người (cần đăng nhập npm) | **chưa** — bản vá đã lên `0.2.0`, nhưng `0.1.2` vẫn cài được và vẫn để 9/10 bịa đặt lọt |
 | Xác nhận lịch thi với BTC | người | **4 câu còn trống** — `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md` |
 | Release candidate có tag | người duyệt | **chưa tạo** |
 

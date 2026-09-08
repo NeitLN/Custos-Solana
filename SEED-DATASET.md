@@ -3,7 +3,7 @@
 **Chủ sở hữu: vai D** (thu thập, gắn nhãn) · **vai A** dùng làm bộ test cho engine luật · bắt đầu **22/08**, xong **29/08**
 
 > **Khung thời gian:** con số **25 mẫu** dưới đây là MỤC TIÊU KẾ HOẠCH ban đầu. Dataset
-> hiện tại có **33 mẫu** — xem `data/seed/index.json`. Giữ phần kế hoạch lại vì nó
+> hiện tại có **38 mẫu** — xem `data/seed/index.json`. Giữ phần kế hoạch lại vì nó
 > giải thích *đi tìm cái gì*, thứ vẫn còn đúng.
 
 `CUSTOS.md` và kế hoạch đã chốt con số **25 mẫu**, nhưng chưa nói **đi tìm cái gì**. Tài liệu này biến "thu thập 25 mẫu" thành một danh sách 25 dòng, mỗi dòng có mô tả cụ thể phải tìm.
@@ -27,7 +27,7 @@ Nên mỗi mẫu **bắt buộc** ghi nguồn gốc, và có ba loại:
 **Ràng buộc cứng:** nhóm mẫu **an toàn** phải có **ít nhất 6 mẫu `real-mainnet`**. Mẫu nguy hiểm được phép `synthetic-devnet` — vì để kích hoạt một luật thì đầu vào do ta dựng vẫn kiểm tra đúng thứ cần kiểm tra.
 
 **Cách công bố trên sân khấu:**
-> *"14 luật, 33 mẫu kiểm thử. Trên 9/20 giao dịch công khai còn mô phỏng
+> *"14 luật, 38 mẫu kiểm thử. Trên 9/20 giao dịch công khai còn mô phỏng
 > được (lưu offline), Custos không gắn mã cáo buộc nào; 7 giao dịch ở mức Cần xem kỹ."*
 
 Không gộp mẫu tự dựng vào con số đó. Và **không gọi nó là tỉ lệ báo nhầm** — cohort chưa

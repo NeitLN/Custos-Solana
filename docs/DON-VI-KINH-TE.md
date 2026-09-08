@@ -81,9 +81,38 @@ CUSTOS_OFFLINE_MAINNET_RESEARCH=1 \
 Script đi qua **đúng đường sản xuất** (`dienGiaiBangMoHinh` tự dựng payload) và lấy
 số token từ trường `usage` do nhà cung cấp trả về, không tự đếm.
 
-**Một điều đã chắc chắn mà không cần khoá:** đầu ra **bị chặn ở 400 token** trong
-code. Chi phí mô hình mỗi lượt kiểm tra có **trần cứng**, không phải đại lượng có
-thể trôi. Đây là câu trả lời tốt cho câu hỏi *"chi phí AI của các em có kiểm soát được không?"*.
+**Một điều đã chắc chắn mà không cần khoá:** cấu hình đo đặt **mặc định 400 token
+đầu ra** ([`anthropic.ts`](../packages/ai/src/anthropic.ts) dùng `tuyChon.maxTokens ?? 400`).
+
+Nói nó là **trần cứng** thì sai hai lần, và bản trước của đoạn này đã sai đúng hai
+lần đó:
+
+1. **400 là mặc định, không phải trần.** Bên tích hợp truyền `maxTokens` lớn hơn là
+   nó lớn hơn. SDK không ép gì cả.
+2. **400 chỉ tính đầu RA.** Token đầu VÀO — prompt hệ thống cộng dữ liệu giao dịch —
+   không nằm trong con số đó, và nhà cung cấp tính tiền cả hai.
+
+Câu nói được: *"chi phí mỗi lượt có chặn trên ở đầu ra, và đầu vào thì bị giới hạn
+bởi kích thước một giao dịch — nhưng chúng em chưa đo được con số thật vì cần khoá
+API"*. Câu KHÔNG nói được: *"chi phí AI có trần cứng"*.
+
+### Số lượt gọi mỗi lần kiểm tra KHÔNG phải luôn bằng 1
+
+`boiThoiHan` không gọi lại: nó đua với thời hạn 4 giây rồi lui về đường tất định.
+Nhưng lớp dưới thì có. `anthropic.ts` dựng client bằng `new Anthropic({ apiKey })`,
+và SDK chính thức mặc định `maxRetries = 2` — một `messages.create` có thể thành **ba**
+lượt gọi HTTP khi gặp 429 hoặc 5xx.
+
+Hai hệ quả cho phần chi phí, cả hai đều chưa đo được:
+
+· Lượt hỏng vì 429/5xx thường không bị tính token đầu ra, nhưng token đầu vào thì
+  tuỳ nhà cung cấp — chưa tra được cho từng ca.
+· Một lượt gọi **thành công nhưng về sau hạn 4 giây** vẫn bị tính tiền, trong khi kết
+  quả bị bỏ. Đó là chi phí có thật mà người dùng không bao giờ nhìn thấy.
+
+Muốn con số này thành một trần thật thì phải truyền `maxRetries` và `maxTokens` tường
+minh khi dựng client. Hiện chưa làm, nên ở đây ghi đúng như vậy thay vì ghi một con số
+đẹp hơn sự thật.
 
 ---
 
