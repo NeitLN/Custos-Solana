@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-08T14:00:01.828Z",
+  "sinhLuc": "2026-09-08T14:01:33.271Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -20,10 +20,10 @@
     "giayThapNhat": 7,
     "giayCaoNhat": 15.9,
     "dongMa": 30,
-    "msMotLuot": 675,
+    "msMotLuot": 680,
     "soLuotDo": 10,
     "soCommitDo": 10,
-    "ngayPass": "2026-09-08T13:41:06.430Z",
+    "ngayPass": "2026-09-08T14:01:26.646Z",
     "doiTac": null,
     "dat": true
   },
