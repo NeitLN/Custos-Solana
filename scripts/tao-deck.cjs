@@ -7,6 +7,15 @@ const fs = require("fs");
 
 const S = JSON.parse(fs.readFileSync(process.argv[3], "utf8"));
 
+/**
+ * Xuống dòng trong chữ của slide.
+ *
+ * Dựng bằng `fromCharCode` chứ không gõ `"\n"` thẳng: file này đã hai lần bị một
+ * tầng shell nuốt mất dấu gạch chéo, biến chuỗi thành một literal xuống dòng thật
+ * và làm cả script không parse được. Hằng số này không thể hỏng theo cách đó.
+ */
+const NL_CHU = String.fromCharCode(10);
+
 const C = {
   // NỀN SÁNG. Giấy hơi ngả ấm chứ không trắng tinh — trắng FFFFFF trên máy chiếu
   // hội trường chói và làm chữ mảnh khó đọc.
@@ -282,6 +291,65 @@ function the(s, x, y, w, h, mau = C.surface, vien = C.line) {
     x: M, y: 5.85, w: W, h: 0.45, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
   });
   s.addNotes("2:50–3:10 — Con số 6,5 là TRUNG VỊ đo trên 20 giao dịch công khai ĐÃ LƯU OFFLINE — không phải runtime. [!] KHÔNG nói “mainnet” trên sân khấu: demo chạy hoàn toàn trên Devnet, và nhãn devnet-only nằm ngay trong README.\n\n[!] KHÔNG nói một tỉ lệ biên lợi nhuận cụ thể. Bảng credit ĐÃ tra (docs/DON-VI-KINH-TE.md — Helius, mọi phương thức Custos dùng đều 1 credit). Nhưng vẫn chưa đo token thật và chưa có giá bán của Custos — hai ô trống thì không ra được tỉ lệ. Nói “biên gộp 90%” là bịa.\n[!] $49 là giá của NGƯỜI KHÁC, không phải giá của Custos.");
+}
+
+// ─────────────────────────────────────────── 7b · Mô hình doanh thu
+/*
+ * SLIDE NÀY THÊM SAU B04, VÀ NÓ LẤP MỘT Ô CỦA RUBRIC.
+ *
+ * Track 1 chấm "mô hình kinh doanh, doanh thu, chiến lược go-to-market" ở 25 %.
+ * Deck trước có slide THỊ TRƯỜNG (6) và slide CHI PHÍ (7) nhưng không slide nào nói
+ * ai trả tiền và trả cho cái gì — tức ô 25 % chỉ được trả lời một nửa.
+ *
+ * Nội dung lấy từ `docs/MO-HINH-DOANH-THU.md`. Điều KHÔNG được làm ở đây: biến giả
+ * thuyết giá thành một con số nghe như đã chốt. Nên cả ba mức đều mang chữ "giả
+ * định" ngay trên slide, không giấu xuống ghi chú.
+ */
+{
+  const s = p.addSlide(); nen(s);
+  vach(s);
+  tieuDe(s, "Bán gì được, khi SDK là mã nguồn mở");
+
+  const cw = (W - 0.55) / 2;
+
+  the(s, M, 2.05, cw, 2.5, C.surface);
+  chip(s, "MIỄN PHÍ — MIT, FORK ĐƯỢC", M + 0.35, 2.3, cw - 0.7, C.dim);
+  s.addText(["SDK · 14 luật · lớp neo AI", "Tự host, tự sửa, tự chịu"].join(NL_CHU), {
+    x: M + 0.35, y: 2.75, w: cw - 0.7, h: 1.5, fontFace: F.body, fontSize: 15, color: C.text, lineSpacing: 26, margin: 0,
+  });
+
+  the(s, M + cw + 0.55, 2.05, cw, 2.5, C.amberSoft, C.amberFill);
+  chip(s, "TRẢ TIỀN — KHÔNG FORK ĐƯỢC", M + cw + 0.9, 2.3, cw - 0.7, C.amber);
+  s.addText(
+    ["Luật mới khi Solana đổi", "Decoder cho chương trình riêng", "Có người trả lời khi tích hợp"].join(NL_CHU),
+    {
+    x: M + cw + 0.9, y: 2.75, w: cw - 0.7, h: 1.5, fontFace: F.body, fontSize: 15, color: C.text, lineSpacing: 26, margin: 0,
+  });
+
+  the(s, M, 4.7, W, 0.95, C.surface);
+  s.addText("Chi phí biên là GIỜ NGƯỜI, không phải lượt gọi: RPC chỉ $0,0000325 một lượt kiểm tra.", {
+    x: M + 0.4, y: 4.7, w: W - 0.8, h: 0.95, fontFace: F.body, fontSize: 15, color: C.text, valign: "middle", margin: 0,
+  });
+
+  s.addText("$0 · $49 · $300–800 mỗi tháng — cả ba đều là GIẢ ĐỊNH. Chưa hỏi người mua nào, nên chưa có giá nào được xác nhận.", {
+    x: M, y: 5.85, w: W, h: 0.45, fontFace: F.body, fontSize: 13, italic: true, color: C.dim, margin: 0,
+  });
+
+  s.addNotes(
+    [
+      "3:10–3:25 — Câu chốt của slide này: giấy phép MIT KHOÁ mô hình, không phải ngược lại. " +
+        "Ai cũng fork được SDK, nên thứ bán được phải là thứ không copy đi cùng repo: luật được " +
+        "cập nhật, người chịu trách nhiệm, cam kết vận hành.",
+      "",
+      "[!] KHÔNG nói $49 là giá của Custos. Đó là giá Helius/QuickNode — nó chứng minh người mua " +
+        "QUEN trả tiền hạ tầng theo tháng, không chứng minh gì về giá của mình.",
+      "[!] Nếu bị hỏi 'ai duyệt chi' — trả lời thẳng: CHƯA BIẾT, đó là câu đầu tiên buyer " +
+        "interview sẽ hỏi.",
+      "[!] Nếu bị hỏi 'lỡ họ tự làm được thì sao' — đó là điều kiện mô hình sai, đã ghi trong " +
+        "docs/MO-HINH-DOANH-THU.md mục 6. Nói được điều kiện mình sai là điểm cộng, không phải " +
+        "điểm trừ.",
+    ].join(NL_CHU),
+  );
 }
 
 // ─────────────────────────────────────────── 8 · AI và giới hạn
