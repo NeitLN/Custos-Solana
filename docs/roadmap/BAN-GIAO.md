@@ -4,7 +4,7 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, B01, B02, B04, D01, D02, D03, P01**.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, B01, B02, B04, D01, D02, D03, P01, P03**.
 - **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
 - Bộ test: **451 pass, 0 fail**. Eval AI: 13/13 bẫy chặn · 3/3 đối chứng qua. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
 - Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
@@ -32,6 +32,7 @@
 - **Build xanh không phải typecheck xanh.** esbuild không kiểm kiểu; trong phiên này một lỗi `TS2448` lọt qua build và chỉ `npm run typecheck` bắt được.
 - **`data/a11y/ket-qua.json` gắn với bản dựng.** Sửa `apps/*/src` là nó cũ; cổng sản phẩm sẽ báo `CU`. Chạy lại `scripts/kiem-trinh-duyet/soi-trinh-duyet.py` với **cả hai** server (5188 và 5189) đang bật.
 - **Hai bài trình duyệt mới ghi đè file thật.** `soi-cau-hinh-hong.py` ghi đè `hien-truong.json` nên nó đòi đường dẫn bản sao và khôi phục trong `finally`. Đừng chạy khi chưa sao lưu.
+- **Đừng gõ `\` vào regex qua heredoc của Bash.** Một tầng shell nuốt mất nó ba lần trong phiên này: hai lần làm script không parse (thấy ngay), một lần biến regex thành thứ không bao giờ khớp (KHÔNG thấy — guard xanh vĩnh viễn). Dựng bằng `String.fromCharCode(92)`, hoặc sửa bằng công cụ Edit.
 - **Thể lệ có BA định dạng pitch khác nhau**, không phải một: Zoom 5+2 · Vòng Loại Toàn Quốc 4+2+1 · Chung kết 5+3 (đèn vàng phút 4). Tôi đã suýt «sửa» bản 4 phút thành sai vì đọc nhầm một dòng — `PITCH-VA-PHAN-BIEN.md` mục 2 nay có bảng cả ba.
 - **Ngày gõ cứng trong tài liệu hết hiệu lực trong im lặng.** Một mục «cửa quyết định» gắn ngày cụ thể đã trôi qua mà không ai biết. Guard lịch cũ chỉ quét 4 file và vài từ khoá nên không thấy; nay quét MỌI `.md` và tìm ngày đứng cạnh từ chỉ cửa/hạn. Ngày ĐO ĐƯỢC vẫn giữ nguyên — chỉ ngày làm CỬA mới bị chặn.
 - **Đối chứng dương phải khác câu nền, nếu không nó không phân biệt được gì.** Bản cũ gửi vào chính `moc.explanation`: bộ chắn cho đi qua và bộ chắn vứt sạch đều trả về đúng chuỗi đó. Mutation (`explanation: nen.explanation`) cho thấy 10/10 bẫy vẫn xanh trong khi lớp AI đã chết hẳn.

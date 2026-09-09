@@ -20,7 +20,7 @@
  * và không có khoá riêng nào nằm trong một thư mục được chuyền tay.
  */
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 
 const DICH = resolve("ban-trinh-dien");
@@ -65,9 +65,69 @@ for (const f of ["phuc-vu.mjs", "CHAY.cmd", "chay.sh", "DOC-TRUOC.md"]) {
   cpSync(nguon, resolve(DICH, f));
 }
 
-console.log("3/3 · soi rò rỉ khoá riêng");
+console.log("3/4 · soi rò rỉ khoá riêng");
 const ra = chay(process.execPath, ["scripts/soi-ro-ri-khoa.mjs", "ban-trinh-dien"]);
 process.stdout.write("      " + ra.trim() + "\n");
+
+/*
+ * 4/4 · ĐƯỜNG DẪN CÁ NHÂN VÀ TRANG BẮT BUỘC.
+ *
+ * Gói này được mang sang máy khác — USB, máy ban tổ chức, máy mượn. Hai thứ làm nó
+ * hỏng ở đó mà máy đội thì không:
+ *
+ *   · một đường dẫn tuyệt đối lọt vào bundle (sourcemap, banner, chuỗi cấu hình).
+ *     Trên máy đội nó vô hại vì đường dẫn đó có thật;
+ *   · thiếu một trang. `cpSync` chép cả thư mục nên khó thiếu, nhưng một lần đổi
+ *     tên file HTML là đủ, và không có gì báo.
+ *
+ * Soi khoá riêng ở bước 3 không bắt được cả hai — nó tìm khoá, không tìm đường dẫn.
+ */
+console.log("4/4 · soi đường dẫn cá nhân và trang bắt buộc");
+{
+  /*
+   * DỰNG TỪ `fromCharCode(92)`, KHÔNG GÕ DẤU GẠCH CHÉO.
+   *
+   * Bản đầu viết `/[A-Z]:\\Users\\|.../`. Một tầng shell trên đường ghi file nuốt
+   * mất một gạch chéo, và regex thành `/[A-Z]:\Users\|.../` — tức khớp chuỗi
+   * `C:Users|`, thứ không tồn tại. Guard xanh vĩnh viễn.
+   *
+   * Phát hiện được chỉ vì kiểm phủ định: nhét một đường dẫn thật vào rồi đóng gói
+   * lại, và nó vẫn báo "✓ 0 đường dẫn cá nhân". Không có bước đó thì cái guard này
+   * đã đi vào repo như một dòng chữ trấn an.
+   *
+   * Cách viết dưới đây không có gạch chéo nào để mất.
+   */
+  const CHEO = String.fromCharCode(92);
+  const coDauCaNhan = (t) =>
+    new RegExp(`[A-Za-z]:${CHEO}${CHEO}Users${CHEO}${CHEO}`).test(t) ||
+    t.includes("/Users/") ||
+    /\/home\/[a-z]/.test(t);
+  const nhiem = [];
+  const di = (thuMuc) => {
+    for (const m of readdirSync(thuMuc, { withFileTypes: true })) {
+      const p2 = resolve(thuMuc, m.name);
+      if (m.isDirectory()) { di(p2); continue; }
+      if (!/\.(js|css|html|json|mjs|map|md|cmd|sh)$/i.test(m.name)) continue;
+      const t = readFileSync(p2, "utf8");
+      if (coDauCaNhan(t)) nhiem.push(p2.slice(DICH.length + 1));
+    }
+  };
+  di(DICH);
+  if (nhiem.length) {
+    console.error(`✖ ${nhiem.length} file mang đường dẫn tuyệt đối của máy này:`);
+    for (const f of nhiem) console.error(`    ${f}`);
+    console.error("  Gói mang sang máy khác sẽ hỏng, và trên máy này thì không ai thấy.");
+    process.exit(1);
+  }
+
+  const TRANG = ["index.html", "phong-van.html", "so-lieu.html", "tan-cong/index.html"];
+  const thieu = TRANG.filter((t) => !existsSync(resolve(DICH, t)));
+  if (thieu.length) {
+    console.error(`✖ thiếu trang: ${thieu.join(", ")}`);
+    process.exit(1);
+  }
+  process.stdout.write(`      ✓ 0 đường dẫn cá nhân · đủ ${TRANG.length} trang${String.fromCharCode(10)}`);
+}
 
 console.log(`
 ✓ ${DICH}
