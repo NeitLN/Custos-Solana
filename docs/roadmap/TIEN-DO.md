@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `c80921a`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `7526445`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** P03 (nay đủ vì D01+S03+P01 xong); V02. P02 cần quay video — CHỜ CHỦ DỰ ÁN. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** V02. P02 cần quay video, A02 cần khoá API, B03/H01–H04 cần người ngoài, S02 chưa có bản vá thượng nguồn — tất cả CHỜ CHỦ DỰ ÁN. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -41,7 +41,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | B04 | Mô hình doanh thu và giả thuyết giá | D | B01, B02 | DONE | `docs/MO-HINH-DOANH-THU.md`. MIT nên core BUỘC miễn phí — bán thứ không fork được: luật cập nhật, người chịu trách nhiệm, SLA. Chi phí biên $0,0000325/lượt nên giá neo vào GIỜ NGƯỜI, không vào lượt gọi. Ba gói, cả ba khai giả định, mỗi cái kèm phép thử. Có mục **điều kiện mô hình KHÔNG khả thi** (5 điều kiện) và dám kết luận «không là một doanh nghiệp». 5 bài guard. |
 | P01 | Pitch, deck và phản biện | D/C | D01, B04, U06 | DONE | Thêm **slide mô hình doanh thu** — deck có slide thị trường và slide chi phí nhưng không slide nào nói ai trả/trả cho gì, tức ô 25 % chỉ trả lời một nửa. Sửa câu Q&A về doanh thu: bản cũ nói «trả theo lượt kiểm tra», MÂU THUẪN với chính phép đo ($0,0000325/lượt). Thêm bản nói cho cả ba định dạng thể lệ (4+2+1 · 5+2 · 5+3). 6 bài guard deck: slide rỗng, mojibake, placeholder, số lệch. |
 | P02 | Video thật và phương án mất mạng | B/D | U01, U02, U03, U04, U05, U06, U07, P01 | TODO | Có thể ghi màn hình bằng công cụ nếu đủ điều kiện. |
-| P03 | Đóng gói bản nộp cục bộ | B/D/A | D01, S03, P01 | TODO | Bộ hồ sơ đủ video còn cần P02. |
+| P03 | Đóng gói bản nộp cục bộ | B/D/A | D01, S03, P01 | DONE | Đóng gói chạy được; chép ra ngoài repo, phục vụ bằng `phuc-vu.mjs`, mở cả 4 trang: 12/12 PASS, 0 lỗi console, 0 tài nguyên 404. Thêm bước 4/4 vào script: soi đường dẫn cá nhân + đủ trang. **Guard đó lúc đầu KHÔNG BAO GIỜ nổ được** — regex mất một dấu `\` nên khớp `C:Users|`; chỉ kiểm phủ định mới lộ. Tag/publish/deploy vẫn là bản nháp — CHỜ CHỦ DỰ ÁN. |
 | V01 | Nghiệm thu sản phẩm trên bản cuối | A/B/C | R00, R01, R02, U01, U02, U03, U04, U05, U06, U07, I01, I02, I03, S01, S02, S03, D01, D02, D03, A01 | TODO | Đây là điều kiện đóng toàn bộ; được chạy phần đủ điều kiện theo mục 2.4. |
 | V02 | Bàn giao, checklist và chấm lại | D/A | R00 | TODO | Đối chiếu V01/P/H/A02 dù chưa DONE; DONE chỉ có nghĩa báo cáo đầy đủ, không phải mọi việc đã đạt. |
 | H01 | Thu và phân tích usability thật | D/người tham gia | B03 | TODO | Chờ người thật, dữ liệu và quyền sử dụng. |

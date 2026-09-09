@@ -1,0 +1,74 @@
+{
+  "doLuc": "2026-09-09T06:45:42.736052+00:00",
+  "sourceCommit": "75264450bc3750759745b8984447b49070875e4d",
+  "dauVet": {
+    "bam": "014b257817cbb2dc",
+    "soFile": 29
+  },
+  "cong": 8099,
+  "soKiem": 12,
+  "soDat": 12,
+  "kiem": [
+    {
+      "ten": "ví mẫu · ứng dụng dựng được",
+      "dat": true,
+      "chiTiet": "#root 15575 ký tự"
+    },
+    {
+      "ten": "ví mẫu · không tài nguyên nào 404",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "ví mẫu · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "phỏng vấn · ứng dụng dựng được",
+      "dat": true,
+      "chiTiet": "#root 8496 ký tự"
+    },
+    {
+      "ten": "phỏng vấn · không tài nguyên nào 404",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "phỏng vấn · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "số liệu · ứng dụng dựng được",
+      "dat": true,
+      "chiTiet": "#root 16270 ký tự"
+    },
+    {
+      "ten": "số liệu · không tài nguyên nào 404",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "số liệu · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "trang tấn công · ứng dụng dựng được",
+      "dat": true,
+      "chiTiet": "#root 3974 ký tự"
+    },
+    {
+      "ten": "trang tấn công · không tài nguyên nào 404",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "trang tấn công · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    }
+  ],
+  "dat": true
+}
