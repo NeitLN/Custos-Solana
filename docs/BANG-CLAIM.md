@@ -42,7 +42,7 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Số | Nguồn | Phạm vi | Trạng thái |
 |---|---|---|---|---|
-| Test tự động | **467** | `npm run check` | offline, không mạng | ✅ hiện hành |
+| Test tự động | **473** | `npm run check` | offline, không mạng | ✅ hiện hành |
 | Luật L2 | **14** | `data/seed/index.json` | mỗi luật có ca dương và ca đối chứng | ✅ |
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
 | Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định**, chưa gọi mô hình thật | ✅ |
@@ -53,7 +53,7 @@ bằng chứng, chỉ là một con số.
 | Vùng bấm ≥44px | **26/26** | `data/a11y/vung-bam.json` | 375px, ngữ cảnh cảm ứng | ✅ |
 | Bàn phím · zoom · chữ dài | **16/16** | `data/a11y/ban-phim-phong-to.json` | 320/375/640px | ✅ |
 | Cài từ ngoài repo tới kết quả đầu | **11,8 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
-| Một lượt `inspect()` | **677 ms** | như trên | trung vị 10 lượt | ✅ |
+| Một lượt `inspect()` | **672 ms** | như trên | trung vị 10 lượt | ✅ |
 | Dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` | đếm tự động, không gõ tay | ✅ |
 | Lượt gọi RPC mỗi lượt kiểm | **6,5** trung vị (4–9) | `so-lieu.json` · 22/08 | 20 giao dịch công khai lưu offline | ✅ |
 
