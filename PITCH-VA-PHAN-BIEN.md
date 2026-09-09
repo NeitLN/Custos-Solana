@@ -127,6 +127,42 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 | **3:15–3:45** | **Vì sao tin được con số của đội.** *"Bộ kiểm của chúng em bắt được lỗi của chính chúng em: một bản SDK đã lên npm thiếu bản vá bảo mật, một bộ đếm tố oan chính đường không thể sai, và tuổi người tham gia vượt quá phạm vi họ đồng ý. Cả ba đều ghi trong repo, kèm cách phát hiện."* | **Ô mới, và là khác biệt thật.** Đội nào cũng nói "chúng em cẩn thận". Rất ít đội chỉ ra được lỗi mình tự bắt |
 | **3:45–4:00** | **Con số thật + bước tiếp theo.** Bao nhiêu luật, bao nhiêu test, **0 giao dịch bị gắn mã cáo buộc** trên cohort công khai lưu offline — kèm mẫu số | Đọc đúng số, không làm tròn. ⚠️ **Không** gọi con số đó là "false positive"; **không** nói "mainnet" |
 
+### Ba định dạng, ba bản nói — đừng tập một bản rồi lên nhầm vòng
+
+Thể lệ BTC có **ba** định dạng khác nhau, và chúng khác nhau ở cả hai vế:
+
+| Vòng | Pitch | Q&A | Nguồn |
+|---|---|---|---|
+| Thi online qua Zoom | **5 phút** | 2 phút | Thể lệ, mục lộ trình |
+| **Vòng Loại Online Toàn Quốc** | **4 phút** | 2 phút + 1 chuyển tiếp | Thể lệ — bản trên viết cho vòng này |
+| Chung kết | **5 phút** | **3 phút** · đèn vàng phút 4, đèn đỏ phút 5 | Thể lệ, mục chung kết |
+
+> ⚠️ Vòng của hạn hiện tại **chưa xác nhận** dùng định dạng nào. Kiểm
+> [`docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md)
+> **trước khi tập theo đồng hồ**. Đừng suy từ vòng khác.
+
+#### Bản 4 phút là bản GỐC. Hai bản kia dựng từ nó.
+
+**Lên 5 phút — thêm 60 giây vào đâu:**
+
+| Thêm | Bao lâu | Vì sao ô này trước |
+|---|---|---|
+| Demo: bấm mở **Chi tiết kỹ thuật**, chỉ vào mã lý do | +25 s | Ô demo nặng 30 % rubric. Cho giám khảo thấy thứ tự kiểm chứng được, không chỉ nghe kể |
+| Mô hình doanh thu: nói **điều kiện mô hình sai** | +20 s | Rất ít đội dám nói. Xem `docs/MO-HINH-DOANH-THU.md` mục 6 |
+| Đóng: nhắc lại đề nghị cụ thể | +15 s | Bản 4 phút phải cắt gọn chỗ này |
+
+**KHÔNG** dùng 60 giây thêm để nói thêm về thị trường hay kể thêm tính năng. Cả hai
+ô đó đã đủ, và nói dài ở ô yếu là mời câu hỏi vào đúng ô yếu.
+
+**Chung kết — Q&A dài hơn một phút, và đó là thay đổi lớn hơn cả phút pitch.**
+2 phút Q&A thường chỉ đủ 2 câu; 3 phút đủ 3–4 câu, và câu thứ ba thường là câu đào
+sâu. Chuẩn bị kỹ nhất cho ba câu: **khác biệt với ví lớn** (mục 3.1 và 4b.10),
+**ai trả tiền** (3.5), và **người hiểu vẫn ký** (4b.12).
+
+**Đèn vàng ở phút 4 nghĩa là bản 4 phút vẫn dùng được ở chung kết** — nói xong đúng
+lúc đèn vàng, rồi dùng phút 5 cho phần thêm ở bảng trên nếu thấy còn thoải mái. An
+toàn hơn tập một bản 5 phút rồi bị đèn đỏ cắt giữa câu.
+
 ### Ba câu phải thuộc nguyên văn
 
 1. *"Hai trong hai mươi người nhìn thấy cảnh báo đỏ rồi vẫn ký."*
@@ -168,14 +204,21 @@ xin lỗi và không vội chữa.
 
 ### 5. "Ai trả tiền, và bao nhiêu?"
 
-> "Ví và dApp, không phải người dùng cuối — người dùng cuối không bao giờ trả tiền cho bảo mật.
-> Ba tầng: developer miễn phí có hạn mức, startup trả theo lượt kiểm tra, enterprise thuê bao kèm SLA. Cùng cơ chế các nhà cung cấp RPC Solana đang dùng nên khách đã quen.
-> **Neo giá thì có thật:** Helius và QuickNode — hạ tầng chính những khách hàng này đang trả tiền — đều đặt tầng trả tiền đầu tiên ở **$49 một tháng**. Đó là mức thị trường đã quen.
-> Nhưng **chúng tôi chưa hỏi được ví nào**, nên chưa có con số của riêng mình, và chưa có cam kết nào."
+> ⚠️ **Viết lại sau B04.** Bản trước trả lời *"startup trả theo lượt kiểm tra"*. Câu đó
+> **mâu thuẫn với chính phép đo của đội**: chi phí RPC một lượt là $0,0000325, nên bán
+> theo lượt là cạnh tranh với gần bằng không — và thua, vì khách tự chạy được. Xem
+> [`docs/MO-HINH-DOANH-THU.md`](docs/MO-HINH-DOANH-THU.md).
 
-> Câu cuối là câu **cố ý** nói ra. Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn.
+> "Ví và dApp, không phải người dùng cuối — người dùng cuối không bao giờ trả tiền cho bảo mật.
+> SDK của chúng em là **MIT, đã lên npm**, nên bản thân nó không bán được — ai cũng fork được. Thứ bán được là thứ **không fork đi cùng repo**: luật được cập nhật khi Solana đổi, decoder cho chương trình riêng, và có người chịu trách nhiệm trả lời khi tích hợp hỏng.
+> Nói cách khác chi phí thật của chúng em là **giờ người**, không phải lượt gọi — RPC chỉ ba phần trăm nghìn đô một lượt.
+> **Neo giá thì có thật:** Helius và QuickNode đều đặt tầng trả tiền đầu tiên ở **$49 một tháng**. Nhưng **chúng em chưa hỏi ví nào**, nên giá của Custos vẫn là giả thuyết, và chưa có cam kết nào."
+
+> Ba điều phải giữ khi bị hỏi vặn:
 >
-> Phân biệt cho rõ khi bị hỏi vặn: **$49 là giá của người khác, không phải giá của Custos.** Nó chỉ chứng minh khách hàng mục tiêu đã quen trả tiền hạ tầng theo tháng, ở tầm đó. Nói nó là "định giá đã validate" là nói sai.
+> 1. **$49 là giá của người khác.** Nó chứng minh khách hàng mục tiêu quen trả tiền hạ tầng theo tháng — không chứng minh gì về giá của Custos. Gọi nó là "định giá đã validate" là nói sai.
+> 2. **Đừng nói bán theo lượt.** Chính đội đã đo ra vì sao mô hình đó không đứng được.
+> 3. Nếu bị hỏi *"lỡ họ tự cập nhật luật được thì sao"* — **đó là điều kiện mô hình sai, và đội đã viết nó ra**: `MO-HINH-DOANH-THU.md` mục 6. Trả lời thẳng rằng nếu ≥8 đội nói vậy thì mô hình trả tiền không đứng được, và Custos vẫn là dự án mã nguồn mở có ích. Nói được điều kiện mình sai là điểm cộng.
 
 ---
 

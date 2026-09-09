@@ -2,11 +2,11 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `8894cb5`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `c80921a`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
-**Việc khả dụng tiếp theo:** P01 (nay đủ vì B04+D01+U06 xong) → P03; V02. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
+**Việc khả dụng tiếp theo:** P03 (nay đủ vì D01+S03+P01 xong); V02. P02 cần quay video — CHỜ CHỦ DỰ ÁN. A02 cần khoá API và B03/H01–H04 cần người — CHỜ CHỦ DỰ ÁN. S02 (đủ phụ thuộc vì S01 xong — nhưng xem `PHU-THUOC.md` mục 0: hiện KHÔNG có bản vá tương thích nào để áp).
 
 ## Bảng công việc
 
@@ -39,7 +39,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | B02 | Bộ tự tích hợp cho đối tác | A/D | S03 | DONE | `docs/PILOT-TU-LAM.md`, viết SAU khi chạy thật từ thư mục trống với gói registry (core 0.1.1 · ai 0.2.0 · web3 1.99.0). Ghi hai bẫy đo được: `npm init -y` không đặt `type: module`, và lượt đầu ra `warning` vì ví mới chưa có SOL — fail-safe, không phải lỗi. Có ranh giới cưỡng chế (ví tin cậy, không phải dApp), bốn đường lỗi, cách gửi lỗi đã lọc secret, mẫu biên bản. 3 bài guard chặn tài liệu dạy import không tồn tại. |
 | B03 | Bộ usability cho UI hiện tại | B/C/D | I03, U06 | TODO | Không tự tạo câu trả lời người thật. |
 | B04 | Mô hình doanh thu và giả thuyết giá | D | B01, B02 | DONE | `docs/MO-HINH-DOANH-THU.md`. MIT nên core BUỘC miễn phí — bán thứ không fork được: luật cập nhật, người chịu trách nhiệm, SLA. Chi phí biên $0,0000325/lượt nên giá neo vào GIỜ NGƯỜI, không vào lượt gọi. Ba gói, cả ba khai giả định, mỗi cái kèm phép thử. Có mục **điều kiện mô hình KHÔNG khả thi** (5 điều kiện) và dám kết luận «không là một doanh nghiệp». 5 bài guard. |
-| P01 | Pitch, deck và phản biện | D/C | D01, B04, U06 | TODO | Không cần bịa H/A02 để viết bản trung thực. |
+| P01 | Pitch, deck và phản biện | D/C | D01, B04, U06 | DONE | Thêm **slide mô hình doanh thu** — deck có slide thị trường và slide chi phí nhưng không slide nào nói ai trả/trả cho gì, tức ô 25 % chỉ trả lời một nửa. Sửa câu Q&A về doanh thu: bản cũ nói «trả theo lượt kiểm tra», MÂU THUẪN với chính phép đo ($0,0000325/lượt). Thêm bản nói cho cả ba định dạng thể lệ (4+2+1 · 5+2 · 5+3). 6 bài guard deck: slide rỗng, mojibake, placeholder, số lệch. |
 | P02 | Video thật và phương án mất mạng | B/D | U01, U02, U03, U04, U05, U06, U07, P01 | TODO | Có thể ghi màn hình bằng công cụ nếu đủ điều kiện. |
 | P03 | Đóng gói bản nộp cục bộ | B/D/A | D01, S03, P01 | TODO | Bộ hồ sơ đủ video còn cần P02. |
 | V01 | Nghiệm thu sản phẩm trên bản cuối | A/B/C | R00, R01, R02, U01, U02, U03, U04, U05, U06, U07, I01, I02, I03, S01, S02, S03, D01, D02, D03, A01 | TODO | Đây là điều kiện đóng toàn bộ; được chạy phần đủ điều kiện theo mục 2.4. |
