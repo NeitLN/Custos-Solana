@@ -162,7 +162,7 @@ khoá) và **giá bán của chính Custos** (cần hỏi khách hàng). Ba ô m
 |---|---|---|
 | ~~Trọng số credit từng phương thức~~ | ✅ **xong 30/08** — mọi lời gọi = 1 credit | — |
 | Token vào/ra thật | Chạy `do-token-mo-hinh.ts` với khoá | 5 phút |
-| Giá bán của Custos | Cần hỏi ví/dApp — `docs/VIEC-CUA-BAN.md` mục 3 | 1 buổi tối |
+| Giá bán của Custos | Cần hỏi ví/dApp. Giả thuyết giá + phép thử: [`MO-HINH-DOANH-THU.md`](MO-HINH-DOANH-THU.md) mục 3 | 1 buổi tối |
 
 Hai ô đầu lấp xong là ra được **chi phí biên đầy đủ**. Ô thứ ba mới ra được **biên
 lợi nhuận**, và nó không lấp được bằng code — phải có người đi hỏi.
