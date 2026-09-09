@@ -15,11 +15,11 @@ thẳng điều đó ở mọi nơi con số xuất hiện, thay vì để giám
 
 | | |
 |---|---|
-| Test tự động | **473** pass · 0 fail |
+| Test tự động | **478** pass · 0 fail |
 | Luật tất định | **14** — cả 14 luật đều có ca đối chứng gần giống |
 | Mẫu kiểm thử gắn nhãn | **38** |
 | Bẫy đối kháng AI bị chặn | **13/13** · 3/3 đối chứng qua |
-| Tích hợp từ ngoài monorepo | **11,8 giây** tới kết quả đầu · **30 dòng** · **672 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **12 giây** tới kết quả đầu · **30 dòng** · **668 ms** một lượt |
 | Phỏng vấn người dùng thật | **20** — 13 đúng · 5 một phần · 2 sai |
 | Phỏng vấn **người mua** | **0** |
 | Bên thứ ba tích hợp | **0** |
@@ -179,7 +179,7 @@ bộ, CI xanh, không có khoá trong bundle, runtime chỉ Devnet.
 ## 7 · Lệnh cần nhớ
 
 ```bash
-npm run check                  # 473 test + typecheck
+npm run check                  # 478 test + typecheck
 npm run so-lieu                # đo lại và đồng bộ mọi tài liệu
 npm run nop-bai -- --strict    # cổng trước khi tạo tag
 npm run thu-goi                # cài gói như người ngoài
