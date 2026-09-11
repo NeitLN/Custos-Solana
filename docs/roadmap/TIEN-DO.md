@@ -2,7 +2,7 @@
 
 Đọc cùng [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md). File này là nguồn trạng thái công việc duy nhất. [BAN-GIAO.md](BAN-GIAO.md) giữ ngữ cảnh tiếp tục; không lập thêm checklist cùng mục đích.
 
-**Cập nhật gần nhất:** HEAD `c1a7c4b`, cây làm việc sạch.
+**Cập nhật gần nhất:** HEAD `2682352`, cây làm việc sạch.
 
 **Đã nghiệm thu:** R00, R01, U01–U05, I01, I02 — **bảy lỗi** đã sửa: F01, F02, F03 (P1) và F04, F05, F06, F07, F09 (P2). Mỗi lỗi có tái hiện trước khi sửa và phép đo sau khi sửa.
 
@@ -42,7 +42,7 @@ Quy ước: TODO, DOING, VERIFY, DONE, WAIT_INPUT, NOT_NEEDED theo định nghĩ
 | P01 | Pitch, deck và phản biện | D/C | D01, B04, U06 | DONE | Thêm **slide mô hình doanh thu** — deck có slide thị trường và slide chi phí nhưng không slide nào nói ai trả/trả cho gì, tức ô 25 % chỉ trả lời một nửa. Sửa câu Q&A về doanh thu: bản cũ nói «trả theo lượt kiểm tra», MÂU THUẪN với chính phép đo ($0,0000325/lượt). Thêm bản nói cho cả ba định dạng thể lệ (4+2+1 · 5+2 · 5+3). 6 bài guard deck: slide rỗng, mojibake, placeholder, số lệch. |
 | P02 | Video thật và phương án mất mạng | B/D | U01, U02, U03, U04, U05, U06, U07, P01 | TODO | Có thể ghi màn hình bằng công cụ nếu đủ điều kiện. |
 | P03 | Đóng gói bản nộp cục bộ | B/D/A | D01, S03, P01 | DONE | Đóng gói chạy được; chép ra ngoài repo, phục vụ bằng `phuc-vu.mjs`, mở cả 4 trang: 12/12 PASS, 0 lỗi console, 0 tài nguyên 404. Thêm bước 4/4 vào script: soi đường dẫn cá nhân + đủ trang. **Guard đó lúc đầu KHÔNG BAO GIỜ nổ được** — regex mất một dấu `\` nên khớp `C:Users|`; chỉ kiểm phủ định mới lộ. Tag/publish/deploy vẫn là bản nháp — CHỜ CHỦ DỰ ÁN. |
-| V01 | Nghiệm thu sản phẩm trên bản cuối | A/B/C | R00, R01, R02, U01, U02, U03, U04, U05, U06, U07, I01, I02, I03, S01, S02, S03, D01, D02, D03, A01 | TODO | Đây là điều kiện đóng toàn bộ; được chạy phần đủ điều kiện theo mục 2.4. |
+| V01 | Nghiệm thu sản phẩm trên bản cuối | A/B/C | (xem roadmap) | DONE (phần khả dụng) | `docs/NGHIEM-THU-V01.md`. Ma trận 10 bề mặt chạy thật trên cùng bản mã: engine 14/14 · a11y 40/40 · bàn phím 16/16 · vùng bấm 26/26 · handoff 5/5 · phỏng vấn 15/15 · SDK 10/10+3/3 · bộ mang đi 12/12. Cổng: check 478/478 · kiem-san-pham 11/0/0. **KHÔNG đóng toàn diện** — S02 không tự thông được. Phạm vi Chromium giả lập, đã ghi rõ. Sửa ô [máy] cuối của `nop-bai-strict`. |
 | V02 | Bàn giao, checklist và chấm lại | D/A | R00 | DONE (phần lập báo cáo) | `docs/NGHIEM-THU-VA-BAN-GIAO.md`. Bốn nhóm kết luận tách riêng; checklist đọc từng mục (7/10). KHÔNG chấm lại 6,95 của `CUSTOS.md` — chỉ ghi lý do trừ điểm nào còn đúng, lý do nào hết hiệu lực. Ô trình bày ghi TẠM CHẤM vì chưa ai thấy đội trình bày. 5 bài guard chống trôi một chiều. |
 | H01 | Thu và phân tích usability thật | D/người tham gia | B03 | TODO | Chờ người thật, dữ liệu và quyền sử dụng. |
 | H02 | Phản hồi người quyết định mua | D/người mua | B01 | TODO | Giới hạn không phỏng vấn kỳ này phải được giữ nếu còn hiệu lực. |
