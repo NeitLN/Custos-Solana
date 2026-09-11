@@ -25,7 +25,7 @@ import type { Facts } from "../packages/core/src/facts.ts";
 // JSON không có BigInt. `giaiDongBangFacts` là bộ hồi sinh dùng chung với bộ test
 // dataset — tự viết bộ thứ hai là mở đường cho hai bản đọc cùng một file khác nhau.
 import { giaiDongBangFacts } from "../packages/core/src/facts-io.ts";
-import { dienGiaiKhongAI } from "../packages/ai/src/index.ts";
+import { dienGiaiKhongAI, boiThoiHan } from "../packages/ai/src/index.ts";
 import { dienGiaiBangMoHinh, type GoiMoHinh } from "../packages/ai/src/moHinh.ts";
 
 const THAT = process.argv.includes("--that");
@@ -38,6 +38,35 @@ const seed = JSON.parse(readFileSync("data/seed/index.json", "utf8")) as {
   thuLuc?: string;
 };
 
+/**
+ * Thời hạn mặc định của `boiThoiHan`, ĐỌC RA chứ không chép lại.
+ *
+ * Giá trị thật nằm trong tham số mặc định `msToiDa = 4000`, không đọc được lúc
+ * chạy. Chép tay một bản thứ hai thì ngày ai đó đổi 4000 thành 6000, báo cáo này
+ * vẫn in 4000 và không ai biết. Nên thay vì chép: đo nó — bọc một Interpreter treo
+ * vĩnh viễn rồi xem sau bao lâu thì rơi về đường lui.
+ */
+async function doHanMacDinh(): Promise<number> {
+  const t0 = Date.now();
+  await boiThoiHan(() => new Promise(() => {}))(
+    giaiDongBangFacts(readFileSync(`data/seed/facts/${seed.mau[0]!.id}.json`, "utf8")),
+    [],
+    "vi",
+    undefined,
+  );
+  // Làm tròn xuống trăm ms: phép đo có nhiễu vài ms của bộ hẹn giờ.
+  return Math.round((Date.now() - t0) / 100) * 100;
+}
+
+/**
+ * Câu này có nêu phần giao dịch CHƯA đọc hiểu được không?
+ *
+ * Dùng chung cho cả mô hình lẫn câu mẫu — hai bên phải bị đo bằng đúng một thước,
+ * nếu không thì phần chênh đo được chỉ là chênh giữa hai cách đếm.
+ */
+const neuCoverage = (chu: string): boolean =>
+  /chưa (được )?(phân tích|đọc|xác minh|hiểu)|không (thể )?(đọc|hiểu)|chưa đọc hiểu/i.test(chu);
+
 /** Địa chỉ Solana. Whitelist gửi mô hình KHÔNG chứa địa chỉ nào — nên thấy là bịa. */
 const DIA_CHI = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
 
@@ -45,7 +74,7 @@ const DIA_CHI = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
  * Số mà mô hình ĐƯỢC PHÉP nhắc: số dư trước/sau đã chia decimals, và coverage.
  * Mọi số khác trong lời giải thích là số mô hình tự nghĩ ra.
  */
-function soChoPhep(facts: Facts, ma: string[], hits: unknown[] = []): Set<string> {
+export function soChoPhep(facts: Facts, ma: string[], hits: unknown[] = []): Set<string> {
   const ra = new Set<string>();
   const dec = (m: string) => facts.mints.find((x) => x.address === m)?.decimals ?? 0;
   for (const t of facts.tokenAccounts) {
@@ -79,6 +108,26 @@ function soChoPhep(facts: Facts, ma: string[], hits: unknown[] = []): Set<string
   ra.add(String(facts.coverage.total));
   ra.add(String(facts.instructions.length));
   ra.add(String(ma.length));
+  /*
+   * LẦN THỨ TƯ BỘ ĐẾM NÀY TỐ OAN — và lần đầu có bằng chứng để phán xử.
+   *
+   * Lượt live 12/09 tố 10 vi phạm. Đối chiếu từng câu với facts: **7 câu nói đúng
+   * facts**, chỉ là whitelist thiếu hai nguồn mà chính prompt gửi cho mô hình:
+   *
+   *   1. `coverage.unverifiedPrograms` — prompt gửi nó, câu mẫu tất định KHÔNG in
+   *      nó ra, nên `soTuCauMau` không nhặt được. Mô hình nói "2 chương trình chưa
+   *      được xác minh" với `unverifiedPrograms: 2` là ĐỌC ĐÚNG, không phải bịa.
+   *   2. `total - analyzed` — số lệnh CHƯA đọc hiểu được. Đây là phép trừ trên hai
+   *      số đã cho phép, không phải thông tin mới. Cấm nó tức là cấm mô hình diễn
+   *      đạt cùng một sự thật theo chiều ngược lại.
+   *
+   * Ba câu còn lại sai thật (MN-07 nói 10 lệnh khi chưa đọc hiểu 12; MN-08 nói 9
+   * khi là 11; MN-10 nói 4 khi là 5) — và chỉ sau khi vá hai nguồn này thì ba cái
+   * đó mới nổi lên được. Một bộ đếm kêu 10 lần để đúng 3 lần thì người đọc tắt nó
+   * trước khi tới cái thứ ba.
+   */
+  ra.add(String(facts.coverage.unverifiedPrograms));
+  ra.add(String(facts.coverage.total - facts.coverage.analyzed));
   // Số 0 và 1 xuất hiện tự nhiên trong câu tiếng Việt ("một lệnh", "0 đồng").
   ra.add("0");
   ra.add("1");
@@ -107,7 +156,7 @@ function soTuCauMau(chu: string): Set<string> {
   );
 }
 
-function soLa(chu: string, chophep: Set<string>): string[] {
+export function soLa(chu: string, chophep: Set<string>): string[] {
   /*
    * Chỉ tính chữ số ĐỨNG RIÊNG như một lượng. Bản đầu quét mọi chuỗi số và báo
    * 27/33 ca "bịa số" trên đường TẤT ĐỊNH — đường không thể bịa. Nguyên nhân:
@@ -490,8 +539,11 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     }
   };
 
+  // Đo thời hạn mặc định MỘT LẦN, và chỉ trên đường live — nó tốn đúng 4 giây chờ,
+  // không đáng bắt đường offline trả.
+  const han = await doHanMacDinh();
   const tre: number[] = [];
-  const viPham: string[] = [];
+  const viPham: Array<Record<string, unknown>> = [];
   /*
    * SỐ LẦN LUI VỀ CÂU TẤT ĐỊNH — con số quan trọng nhất của cả bài đo.
    *
@@ -502,6 +554,33 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
    * Không có nó thì không trả lời được câu A02 sẽ hỏi: *AI thêm được gì?*
    */
   let luiVeTatDinh = 0;
+  /*
+   * GIÁ TRỊ TĂNG THÊM — thứ A02 hỏi mà ba lượt đo trước không trả lời được.
+   *
+   * Khối `template` của artifact so mô hình với câu mẫu ở hai thứ: độ trễ và số ca
+   * bịa. Câu mẫu thắng cả hai BẰNG ĐỊNH NGHĨA — nó chạy 0 ms và dựng chữ từ facts
+   * nên không thể bịa. Một phép so mà một bên không thể thua thì không đo được gì;
+   * nó chỉ có thể kết luận "AI tệ hơn", kể cả khi AI đang hữu ích.
+   *
+   * Câu hỏi đúng là câu ngược lại: **mô hình có nói được gì câu mẫu không nói
+   * không?** Ba số dưới đây đo đúng nó, và cả ba đều đo được mà không cần người chấm:
+   *
+   *   · `soCaKhacCauMau` — mô hình có tự viết, hay chỉ lặp lại đường lui
+   *   · `chuThemTrungVi`  — dài hơn bao nhiêu chữ (dài hơn KHÔNG tự nó là tốt)
+   *   · `soCaNoiVeCoverage` — có nêu phần giao dịch CHƯA đọc hiểu được không
+   *
+   * Số thứ ba là số đáng giá nhất: đó chính là điều sản phẩm này tồn tại để nói.
+   *
+   * GIỚI HẠN, nói trước: cả ba đo HÌNH DẠNG, không đo chất lượng. "Khác câu mẫu"
+   * gồm cả khác theo hướng tệ hơn. Chấm chất lượng là việc của người —
+   * `docs/AI-EVALUATION.md`.
+   */
+  let soCaKhacCauMau = 0;
+  let soCaNoiVeCoverage = 0;
+  let soCaCauMauNoiVeCoverage = 0;
+  let soCaCoCoverageKhuyet = 0;
+  const chuThem: number[] = [];
+  const boQuaCoverage: Array<Record<string, unknown>> = [];
   const batDau = new Date();
 
   for (const m of _mau) {
@@ -512,10 +591,67 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     tre.push(Date.now() - t0);
     const nen = await dienGiaiKhongAI(facts, l2.reasonCodes, "vi", {});
     if (r.explanation === nen.explanation) luiVeTatDinh++;
+    else {
+      soCaKhacCauMau++;
+      chuThem.push(r.explanation.length - nen.explanation.length);
+    }
+    /*
+     * Đếm coverage cho CẢ HAI bên bằng CÙNG một hàm, trên CÙNG tập ca.
+     *
+     * Nếu đếm hai bên bằng hai đoạn mã riêng thì phần chênh đo được có thể chỉ là
+     * chênh giữa hai cách đếm. Mẫu số `soCaCoCoverageKhuyet` cũng phải ghi ra: "7 ca
+     * nêu coverage" vô nghĩa nếu không biết có bao nhiêu ca CÓ coverage khuyết.
+     */
+    if (facts.coverage.analyzed < facts.coverage.total) {
+      soCaCoCoverageKhuyet++;
+      const ai = neuCoverage(r.explanation);
+      const mau = neuCoverage(nen.explanation);
+      if (ai) soCaNoiVeCoverage++;
+      if (mau) soCaCauMauNoiVeCoverage++;
+      /*
+       * Ca mà câu mẫu NÊU coverage khuyết còn mô hình BỎ QUA — ghi đích danh.
+       *
+       * Tổng "13 so với 14" nói có một ca bị bỏ, nhưng không nói ca nào, nên không
+       * ai kiểm lại được. Cùng lý do đã buộc phần vi phạm phải mang theo câu văn:
+       * một con số bất lợi mà không truy được về ca cụ thể thì vừa không sửa được,
+       * vừa không bác được.
+       */
+      if (mau && !ai) {
+        boQuaCoverage.push({
+          id: m.id,
+          coverage: `${facts.coverage.analyzed}/${facts.coverage.total}`,
+          cauAI: r.explanation,
+        });
+      }
+    }
 
+    /*
+     * GHI CẢ CÂU, KHÔNG CHỈ GHI CON SỐ BỊ TỐ.
+     *
+     * Lượt đo thật đầu tiên báo 5 vi phạm dạng `số không có trong facts — 7` và
+     * không ai phán xử được, vì bản ghi không giữ câu mô hình đã nói. Mà đúng bộ
+     * đếm này đã TỐ OAN ba lần trước đó — có lần tố cả đường tất định, thứ dựng chữ
+     * từ facts nên không thể bịa.
+     *
+     * Một cáo buộc không kèm bằng chứng thì không dùng được: không biết nên sửa mô
+     * hình hay sửa bộ đếm. Nên mỗi vi phạm nay mang theo con số, câu văn, và tập số
+     * được phép — đủ để người đọc tự kết luận.
+     *
+     * Đây cũng đúng thứ sản phẩm này bán: nói ra căn cứ, đừng bắt người ta tin.
+     */
     const chophep = new Set([...soChoPhep(facts, l2.reasonCodes, l2.hits), ...soTuCauMau(nen.explanation)]);
-    if ((r.explanation.match(DIA_CHI) ?? []).length > 0) viPham.push(`${m.id}: bịa địa chỉ`);
-    for (const s of soLa(r.explanation, chophep)) viPham.push(`${m.id}: số không có trong facts — ${s}`);
+    const ghiViPham = (loai: string, chiTiet: string) =>
+      viPham.push({
+        id: m.id,
+        loai,
+        chiTiet,
+        cau: r.explanation,
+        soChoPhep: [...chophep].sort(),
+        coverage: `${facts.coverage.analyzed}/${facts.coverage.total}`,
+      });
+
+    if ((r.explanation.match(DIA_CHI) ?? []).length > 0) ghiViPham("bịa địa chỉ", "");
+    for (const s of soLa(r.explanation, chophep)) ghiViPham("số không có trong facts", s);
   }
 
   const xong = new Date();
@@ -550,6 +686,33 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     soMau: _mau.length,
     treTrungViMs: trungVi(tre),
     treCaoNhatMs: Math.max(...tre),
+    /*
+     * SỐ LƯỢT VƯỢT THỜI HẠN MẶC ĐỊNH — số mà bên tích hợp cần, không phải trung vị.
+     *
+     * `boiThoiHan` mặc định 4000 ms. Lượt 12/09 có `treCaoNhatMs` 4189 — tức đã có
+     * lượt vượt. Vượt KHÔNG hỏng gì: nó rơi về câu tất định, `level` của L2 không
+     * bị đụng. Nhưng nó có nghĩa là lớp AI im lặng biến mất ở đúng những ca chậm
+     * nhất, và trung vị 2853 ms không nói được điều đó.
+     *
+     * Đo ở đây là ƯỚC LƯỢNG: bài này gọi `dienGiaiBangMoHinh` trần, không bọc
+     * `boiThoiHan`, nên không có lượt nào thật sự bị cắt. Nó trả lời "nếu bọc mặc
+     * định thì bao nhiêu lượt rụng", chứ không phải "bao nhiêu lượt đã rụng".
+     */
+    hanMacDinhMs: han,
+    soLuotVuotHanMacDinh: tre.filter((x) => x > han).length,
+    /*
+     * GIÁ TRỊ TĂNG THÊM. `soCaNoiVeCoverage` phải đọc KÈM `soCaCauMauNoiVeCoverage`
+     * — con số tuyệt đối một mình không nói gì, vì câu mẫu cũng nêu coverage. Chỉ
+     * phần CHÊNH mới là thứ mô hình thêm vào.
+     */
+    giaTriTangThem: {
+      soCaKhacCauMau,
+      chuThemTrungVi: chuThem.length ? trungVi(chuThem) : 0,
+      soCaNoiVeCoverage,
+      soCaCauMauNoiVeCoverage,
+      soCaCoCoverageKhuyet,
+      boQuaCoverage,
+    },
     tokenVao: dung.vao,
     tokenRa: dung.ra,
     luiVeTatDinh,

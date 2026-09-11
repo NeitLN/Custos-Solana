@@ -55,11 +55,27 @@ test("phạm vi trình duyệt được ghi là Chromium giả lập, không kho
  * điều kiện phải được liệt kê, KHÔNG tự bỏ qua". Cách một báo cáo nghiệm thu nói dối
  * dễ nhất không phải là ghi sai một con số — mà là im lặng về thứ chưa chạy.
  */
-test("bốn nhánh còn mở đều được liệt kê", () => {
+test("mọi nhánh còn mở đều được liệt kê", () => {
+  /*
+   * A02 ĐÃ RỜI DANH SÁCH NÀY 12/09 — và suýt nữa thì không ai biết.
+   *
+   * Bài này từng canh bốn nhánh /S02/ /A02/ /B03/ /H02/. Khi A02 đóng, dòng của nó
+   * trong bảng được gạch ngang chứ không xoá, nên `/A02/` vẫn khớp và bài vẫn XANH —
+   * xanh vì một lý do đã không còn đúng.
+   *
+   * Đó đúng hình dạng lỗi mà repo này gặp năm lần: một phép kiểm không còn khả năng
+   * đỏ. Nên giờ canh chặt hơn: nhánh còn mở phải mang dấu ❌ trên CÙNG DÒNG. Một
+   * dòng đã gạch ngang thành ✅ sẽ không qua được.
+   */
   const s = doc(TRANG);
-  for (const nhanh of [/S02/, /A02/, /B03/, /H02/]) {
-    assert.match(s, nhanh, `thiếu nhánh còn mở: ${nhanh}`);
+  const dongMo = s
+    .split("\n")
+    .filter((d) => d.startsWith("|") && d.includes("❌"))
+    .join("\n");
+  for (const nhanh of [/S02/, /B03/, /H02/]) {
+    assert.match(dongMo, nhanh, `thiếu nhánh còn mở: ${nhanh}`);
   }
+  assert.doesNotMatch(dongMo, /A02/, "A02 đã đóng 12/09 — không được nằm trong nhánh còn mở");
   assert.match(
     s,
     /không.*tự thông|chờ không giải quyết được/i,
