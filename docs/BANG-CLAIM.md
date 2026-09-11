@@ -27,7 +27,7 @@ Không phải vì chúng sai, mà vì tiếng Việt cho phép đọc chúng r�
 | **coverage 82 %** | tỉ lệ lệnh đọc hiểu được | ~~"an toàn 82 %"~~ — đây là mức ĐỌC HIỂU |
 | **13/13 bẫy** | 13 hình dạng sai **đội tự nghĩ ra**, chặn hết | ~~"AI không bịa được"~~ — chỉ nói về 13 hình dạng đã nghĩ tới |
 | **13/13 + 3/3** | chặn hết đầu ra xấu **và** cho đầu ra tốt đi qua | ~~"13/13"~~ một mình — bộ chắn vứt sạch cũng cho 13/13 |
-| **lớp AI** | một lớp diễn giải **tuỳ chọn**, đã đo là chưa thêm được gì đo được | ~~"AI giúp người dùng hiểu hơn"~~ — chưa đo; trên thước nêu-coverage nó **thua** câu mẫu 13/16 so 14/16 |
+| **lớp AI** | một lớp diễn giải **tuỳ chọn**, đã đo là chưa thêm được gì đo được | ~~"AI giúp người dùng hiểu hơn"~~ — chưa đo; trên thước nêu-coverage nó **ngang** câu mẫu (13–14/16 so 14/16), không hơn |
 
 Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`SEED-DATASET.md`](../SEED-DATASET.md)
 mục 0b3 và 0b4.
@@ -87,7 +87,7 @@ bằng chứng, chỉ là một con số.
 |---|---|
 | Token mô hình mỗi lượt | ✅ **760 vào / 184 ra**, đo 12/09 trên 38 mẫu — `data/eval/ai-ket-qua.json`. Demo công khai vẫn cố ý không nhúng khoá |
 | Lớp AI tới được người dùng | ⚠️ **28–32/38 mỗi lượt** (`luiVeTatDinh` 6–10) — phần còn lại rơi về câu tất định, **1–2 lượt vì quá hạn 4 s**. Không được nói "AI chạy cho mọi giao dịch" |
-| **AI nêu phần chưa đọc hiểu được** | ❌ **13/16 — THUA câu mẫu (14/16)**. Đo 3 lượt, ổn định; ca bị bỏ là R10-pos. Nguồn: `data/eval/ai-ket-qua.json` → `giaTriTangThem`. Số bất lợi, giữ nguyên |
+| **AI nêu phần chưa đọc hiểu được** | ⚠️ **13–14/16 — NGANG câu mẫu (14/16), không hơn**. 8 lượt, dao động; ca hay bị bỏ: R10-pos, có lượt R05-pos. Nguồn: `data/eval/ai-ket-qua.json` → `giaTriTangThem`. Số bất lợi, giữ nguyên |
 | ~~"AI giúp người dùng hiểu hơn"~~ | ❌ **KHÔNG được nói** — chưa đo, cần usability vòng 2 (B03/H01) |
 | Mô hình đếm sai số lệnh | ⚠️ **1–4/38 mỗi lượt** (7 lượt), luôn ở MN-04/07/08/10, luôn thấp hơn sự thật 1–2 đơn vị — số bất lợi, giữ nguyên |
 | ~~"Trần cứng 400 token"~~ | ⚠️ **đã sửa** — `anthropic.ts` dùng `tuyChon.maxTokens ?? 400`, tức **mặc định**, bên tích hợp nâng được. Và 400 chỉ tính đầu **ra**. Xem [`DON-VI-KINH-TE.md`](DON-VI-KINH-TE.md) |
