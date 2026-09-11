@@ -61,7 +61,7 @@ phạm vi Chromium/viewport giả lập; không khẳng định kiểm đa trìn
 | Nhánh | Vì sao còn mở | Tự thông được không |
 |---|---|---|
 | **S02** — vá dependency | 5 advisory high, **không cái nào có bản vá ở thượng nguồn**. `image-size` mới nhất **2.0.2** vẫn nằm trong dải bị ảnh hưởng; `bigint-buffer` **1.1.5** cũng vậy | ❌ **không** — chờ không giải quyết được |
-| **A02** — eval mô hình thật | cần `ANTHROPIC_API_KEY` | ❌ cần khoá |
+| ~~**A02** — eval mô hình thật~~ | ✅ **đóng 12/09** — khoá đã có, 7 lượt live. Kết luận: **không đo được lợi ích của lớp AI**, số bất lợi giữ nguyên | — |
 | **B03 · H01** — usability vòng 2 | cần người tham gia mới | ❌ cần người |
 | **H02 · H03** — người mua, đối tác | cần bên ngoài | ❌ cần người |
 

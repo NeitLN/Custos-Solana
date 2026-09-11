@@ -27,6 +27,7 @@ Không phải vì chúng sai, mà vì tiếng Việt cho phép đọc chúng r�
 | **coverage 82 %** | tỉ lệ lệnh đọc hiểu được | ~~"an toàn 82 %"~~ — đây là mức ĐỌC HIỂU |
 | **13/13 bẫy** | 13 hình dạng sai **đội tự nghĩ ra**, chặn hết | ~~"AI không bịa được"~~ — chỉ nói về 13 hình dạng đã nghĩ tới |
 | **13/13 + 3/3** | chặn hết đầu ra xấu **và** cho đầu ra tốt đi qua | ~~"13/13"~~ một mình — bộ chắn vứt sạch cũng cho 13/13 |
+| **lớp AI** | một lớp diễn giải **tuỳ chọn**, đã đo là chưa thêm được gì đo được | ~~"AI giúp người dùng hiểu hơn"~~ — chưa đo; trên thước nêu-coverage nó **thua** câu mẫu 13/16 so 14/16 |
 
 Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`SEED-DATASET.md`](../SEED-DATASET.md)
 mục 0b3 và 0b4.
@@ -42,18 +43,18 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Số | Nguồn | Phạm vi | Trạng thái |
 |---|---|---|---|---|
-| Test tự động | **483** | `npm run check` | offline, không mạng | ✅ hiện hành |
+| Test tự động | **487** | `npm run check` | offline, không mạng | ✅ hiện hành |
 | Luật L2 | **14** | `data/seed/index.json` | mỗi luật có ca dương và ca đối chứng | ✅ |
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
-| Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định**, chưa gọi mô hình thật | ✅ |
+| Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định** — tách hẳn khỏi lượt live, xem ba dòng cuối bảng dưới | ✅ |
 | **Đối chứng dương** — câu ĐÚNG đi qua | **3/3** | `npm run eval-ai` | đọc KÈM dòng trên, không bao giờ tách | ✅ |
 | Bẫy trên gói đã publish | **10/10** | `data/registry/ket-qua.json` | cài `@custos-solana/ai@0.2.0` **từ registry**, không từ repo | ✅ |
 | — kèm 3 đối chứng: câu đúng đi lọt · L3 ném lỗi · L3 treo | **3/3** | `npm run thu-goi-registry` | đối chứng phải KHÁC câu nền, nếu không nó không phân biệt được gì | ✅ |
 | Vi phạm axe | **0/40** | `data/a11y/ket-qua.json` | 4 trang × 2 khung, mức `wcag2a/aa · wcag21a/aa` | ✅ |
 | Vùng bấm ≥44px | **26/26** | `data/a11y/vung-bam.json` | 375px, ngữ cảnh cảm ứng | ✅ |
 | Bàn phím · zoom · chữ dài | **16/16** | `data/a11y/ban-phim-phong-to.json` | 320/375/640px | ✅ |
-| Cài từ ngoài repo tới kết quả đầu | **12 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
-| Một lượt `inspect()` | **668 ms** | như trên | trung vị 10 lượt | ✅ |
+| Cài từ ngoài repo tới kết quả đầu | **11,7 giây** | `data/tich-hop/ket-qua.json` | trung vị 10 lượt, cài từ tarball ngoài repo — số bản dựng và dải nằm ở README, không chép lại ở đây | ✅ |
+| Một lượt `inspect()` | **664 ms** | như trên | trung vị 10 lượt | ✅ |
 | Dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` | đếm tự động, không gõ tay | ✅ |
 | Lượt gọi RPC mỗi lượt kiểm | **6,5** trung vị (4–9) | `so-lieu.json` · 22/08 | 20 giao dịch công khai lưu offline | ✅ |
 
@@ -84,7 +85,11 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Trạng thái |
 |---|---|
-| Token mô hình mỗi lượt | ❌ **BLOCKED_BY_SECRET** — cần khoá API, demo công khai cố ý không nhúng khoá |
+| Token mô hình mỗi lượt | ✅ **760 vào / 184 ra**, đo 12/09 trên 38 mẫu — `data/eval/ai-ket-qua.json`. Demo công khai vẫn cố ý không nhúng khoá |
+| Lớp AI tới được người dùng | ⚠️ **28–32/38 mỗi lượt** (`luiVeTatDinh` 6–10) — phần còn lại rơi về câu tất định, **1–2 lượt vì quá hạn 4 s**. Không được nói "AI chạy cho mọi giao dịch" |
+| **AI nêu phần chưa đọc hiểu được** | ❌ **13/16 — THUA câu mẫu (14/16)**. Đo 3 lượt, ổn định; ca bị bỏ là R10-pos. Nguồn: `data/eval/ai-ket-qua.json` → `giaTriTangThem`. Số bất lợi, giữ nguyên |
+| ~~"AI giúp người dùng hiểu hơn"~~ | ❌ **KHÔNG được nói** — chưa đo, cần usability vòng 2 (B03/H01) |
+| Mô hình đếm sai số lệnh | ⚠️ **1–4/38 mỗi lượt** (7 lượt), luôn ở MN-04/07/08/10, luôn thấp hơn sự thật 1–2 đơn vị — số bất lợi, giữ nguyên |
 | ~~"Trần cứng 400 token"~~ | ⚠️ **đã sửa** — `anthropic.ts` dùng `tuyChon.maxTokens ?? 400`, tức **mặc định**, bên tích hợp nâng được. Và 400 chỉ tính đầu **ra**. Xem [`DON-VI-KINH-TE.md`](DON-VI-KINH-TE.md) |
 | Số lượt gọi mỗi lần kiểm | ⚠️ không phải luôn bằng 1 — SDK Anthropic mặc định `maxRetries = 2` |
 | Neo giá $49/tháng | ✅ có nguồn: bảng giá Helius và QuickNode |
