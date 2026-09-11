@@ -4,7 +4,7 @@
 
 ## Hiện trạng
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, B01, B02, B04, D01, D02, D03, P01, P03, V02**.
+- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, B01, B02, B04, D01, D02, D03, P01, P03, V01 (phần khả dụng), V02**.
 - **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
 - Bộ test: **451 pass, 0 fail**. Eval AI: 13/13 bẫy chặn · 3/3 đối chứng qua. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
 - Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
