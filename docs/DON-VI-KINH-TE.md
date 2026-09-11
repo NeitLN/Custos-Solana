@@ -168,20 +168,31 @@ Câu hỏi đúng là câu ngược lại: **mô hình có nói được gì mà
 |---|---:|---:|---:|
 | Ca tự viết, không lặp lại đường lui | **26–31** | — | 38 |
 | Chữ thêm so với câu mẫu (trung vị) | **+93 … +120** | — | — |
-| **Nêu phần giao dịch chưa đọc hiểu được** | **13** | **14** | 16 |
+| **Nêu phần giao dịch chưa đọc hiểu được** | **13–14** | **14** | 16 |
 
-**Dòng thứ ba là dòng quan trọng nhất, và mô hình thua.** Trên 16 ca có coverage
-khuyết, câu mẫu nêu phần chưa đọc hiểu được ở **14 ca**; mô hình nêu ở **13**. Ổn
-định qua ba lượt đo, không phải nhiễu.
+**Dòng thứ ba là dòng quan trọng nhất, và nó nói "hoà", không nói "AI hơn".**
 
-Ca bị bỏ có tên: **R10-pos**, coverage **0/1**. Mô hình nói *"không thể xác định hành
-động chính"* nhưng không nói rằng chính cái lệnh duy nhất đó chưa đọc hiểu được — hai
-câu nghe giống nhau, và chỉ câu sau nói cho người dùng biết **vì sao** không xác định
-được. Artifact ghi đích danh ca này ở `giaTriTangThem.boQuaCoverage`.
+Tám lượt đo cho mô hình **13 hoặc 14** trên 16 ca có coverage khuyết; câu mẫu luôn
+**14** (nó tất định nên không đổi). Không ổn định — cùng một ca lúc nêu lúc không.
+
+> **Một đính chính về chính đoạn này.** Bản đầu viết *"13/16, ổn định qua ba lượt,
+> mô hình THUA một ca"*. Đo thêm năm lượt thì cả ba vế đều sai: con số dao động
+> 13–14, ca bị bỏ có lượt là `R05-pos` chứ không chỉ `R10-pos`, và ở lượt mô hình
+> đạt 14 thì `boQuaCoverage` **vẫn không rỗng** — tức hai bên bỏ những ca KHÁC nhau,
+> chứ mô hình không phải tập con của câu mẫu. Ba lượt là quá ít để gọi một con số
+> dao động là "ổn định"; đó đúng lỗi mà trang này tồn tại để chống.
+
+Ca hay bị bỏ nhất: **R10-pos**, coverage **0/1**. Mô hình nói *"không thể xác định
+hành động chính"* nhưng không nói rằng chính cái lệnh duy nhất đó chưa đọc hiểu được
+— hai câu nghe giống nhau, và chỉ câu sau nói cho người dùng biết **vì sao** không
+xác định được. Artifact ghi đích danh ca bị bỏ ở `giaTriTangThem.boQuaCoverage` mỗi
+lượt.
 
 **Kết luận trung thực:** trên đúng thước đo quan trọng nhất với sản phẩm này — có nêu
-phần giao dịch không đọc hiểu được hay không — **lớp AI không thêm gì, và thua câu mẫu
-một ca.** Thứ nó thêm là khoảng 100 ký tự văn xuôi mỗi ca.
+phần giao dịch không đọc hiểu được hay không — **lớp AI ngang câu mẫu, không hơn.**
+Thứ nó thêm là khoảng 100 ký tự văn xuôi mỗi ca. Câu KHÔNG nói được theo cả hai
+chiều: *"AI nêu rủi ro tốt hơn"* và *"AI bỏ sót so với câu mẫu"* — phép đo này không
+đỡ được câu nào.
 
 **Điều này KHÔNG có nghĩa nên bỏ lớp AI**, và cũng không có nghĩa nên giữ. Nó có
 nghĩa là **chưa ai đo được cái đáng đo**: văn xuôi dễ đọc hơn có làm người dùng hiểu
