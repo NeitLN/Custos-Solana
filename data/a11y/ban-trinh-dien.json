@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-09T06:45:42.736052+00:00",
-  "sourceCommit": "75264450bc3750759745b8984447b49070875e4d",
+  "doLuc": "2026-09-11T16:31:29.458276+00:00",
+  "sourceCommit": "15488acb3c255701841bbaa9e1c306a21f92a982",
   "dauVet": {
     "bam": "014b257817cbb2dc",
     "soFile": 29
@@ -12,7 +12,7 @@
     {
       "ten": "ví mẫu · ứng dụng dựng được",
       "dat": true,
-      "chiTiet": "#root 15575 ký tự"
+      "chiTiet": "#root 15579 ký tự"
     },
     {
       "ten": "ví mẫu · không tài nguyên nào 404",
@@ -42,7 +42,7 @@
     {
       "ten": "số liệu · ứng dụng dựng được",
       "dat": true,
-      "chiTiet": "#root 16270 ký tự"
+      "chiTiet": "#root 16268 ký tự"
     },
     {
       "ten": "số liệu · không tài nguyên nào 404",
