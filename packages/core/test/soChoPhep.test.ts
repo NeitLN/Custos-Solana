@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { giaiDongBangFacts } from "../src/facts-io.ts";
-import { soChoPhep, soLa } from "../../../scripts/eval-ai.ts";
+import { soChoPhep, soLa } from "../../../scripts/eval-ai-so.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const facts = (id: string) =>

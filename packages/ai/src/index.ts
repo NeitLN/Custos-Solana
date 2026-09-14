@@ -119,13 +119,33 @@ export const dienGiaiKhongAI: Interpreter = async (facts, reasonCodes, _locale, 
  */
 export function boiThoiHan(that: Interpreter, msToiDa = 4000): Interpreter {
   return async (facts, reasonCodes, locale, options) => {
+    /*
+     * DỌN TIMER TRONG `finally` — bản trước không dọn, và nó rò rỉ đo được.
+     *
+     * TB-C05. `Promise.race` thắng ở nhánh mô hình thì nhánh `setTimeout` vẫn còn
+     * sống tới hết `msToiDa`; Promise bị bỏ không huỷ được timer bên trong nó.
+     *
+     * Đo bằng `process.getActiveResourcesInfo()`
+     * (`scripts/ky-thuat/probe-timer-c05.ts`): **10 lượt gọi để lại đúng 10 handle
+     * `Timeout`**. Không làm gì hỏng ngay — nhưng trong một app chạy suốt buổi demo
+     * thì đó là rác tích dần, và với Node nó giữ event loop sống nên một tiến trình
+     * CLI không thoát được cho tới khi timer cuối hết hạn.
+     *
+     * `scripts/coHan.ts` đã dọn đúng từ đầu (`.finally(() => clearTimeout(...))`).
+     * Hai hàm bọc thời hạn trong repo nay hành xử giống nhau ở điểm này.
+     */
+    let dongHo: ReturnType<typeof setTimeout> | undefined;
     try {
       return await Promise.race([
         that(facts, reasonCodes, locale, options),
-        new Promise<never>((_, tuChoi) => setTimeout(() => tuChoi(new Error("L3 quá hạn")), msToiDa)),
+        new Promise<never>((_, tuChoi) => {
+          dongHo = setTimeout(() => tuChoi(new Error("L3 quá hạn")), msToiDa);
+        }),
       ]);
     } catch {
       return dienGiaiKhongAI(facts, reasonCodes, locale, options);
+    } finally {
+      clearTimeout(dongHo);
     }
   };
 }
