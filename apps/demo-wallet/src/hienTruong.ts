@@ -49,6 +49,38 @@ export function chonRpc(ht: HienTruong | null | undefined): string {
 }
 
 /**
+ * Cluster THẬT của một endpoint — suy từ host, không hardcode. Thẻ TB-X02.
+ *
+ * Vì sao không viết thẳng `"devnet"` vào giao diện: `chonRpc` ưu tiên `ht.rpc` rồi mới
+ * tới `VITE_RPC`, nên endpoint đang chạy có thể KHÁC thứ người đọc đoán. Một nhãn cứng
+ * "Devnet" cạnh một endpoint localnet là nhãn nói dối — và nó nói dối đúng chỗ giám
+ * khảo dùng để tin phần còn lại.
+ *
+ * Cùng cách `capture-rpc.ts` suy cluster khi quyết định có được ghi fixture hay không.
+ * Ở đó nó chặn một lỗi đã mắc thật: capture mẫu mainnet bằng endpoint devnet "thành
+ * công" nhưng ghi lại một sự thật khác.
+ */
+export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" | "localnet" | "không rõ" {
+  if (/devnet/i.test(rpc)) return "devnet";
+  if (/testnet/i.test(rpc)) return "testnet";
+  if (/localhost|127\.0\.0\.1/i.test(rpc)) return "localnet";
+  if (/mainnet/i.test(rpc)) return "mainnet-beta";
+  // KHÔNG đoán. Một endpoint riêng (Helius, QuickNode…) không lộ cluster qua tên host,
+  // và đoán bừa "mainnet-beta" là cách tệ nhất để sai — nó gắn nhãn đắt nhất cho một
+  // thứ chưa biết.
+  return "không rõ";
+}
+
+/** Host của endpoint. Bỏ path và query vì credential của RPC thương mại nằm ở đó. */
+export function hostCua(rpc: string): string {
+  try {
+    return new URL(rpc).host;
+  } catch {
+    return "(không đọc được endpoint)";
+  }
+}
+
+/**
  * Đọc hiện trường devnet do `scripts/dung-hien-truong.ts` dựng ra.
  *
  * Trả null nếu chưa dựng — giao diện sẽ hướng dẫn thay vì im lặng hỏng.

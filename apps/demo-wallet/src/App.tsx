@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
-import { inspect } from "@custos-solana/core";
+import { inspect, neoKetQua, khopNeo, quaCu, type NeoKetQua } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
-import { docHienTruong, docHienTruongChiTiet, chonRpc, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, docHienTruongChiTiet, chonRpc, clusterCua, hostCua, type HienTruong } from "./hienTruong.ts";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoaiChiTiet } from "./yeuCauNgoai.ts";
 import { napVi, kyDuoc } from "./vi.ts";
-import { guiGiaoDich, type TrangThaiGui } from "./gui.ts";
+import { guiGiaoDich, maBase58, type TrangThaiGui } from "./gui.ts";
+import { locDongNhatKy } from "./locNhatKy.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import {
   ArrowIcon,
@@ -127,6 +128,51 @@ export default function App() {
   const [loi, setLoi] = useState<string | null>(null);
   const thuLaiRef = useRef<(() => void) | null>(null);
 
+  /*
+   * ID LƯỢT VÀ KHOÁ GỬI — hai thứ riêng, và cả hai phải là `ref`, không phải state.
+   *
+   * TB-C03. Lý do dùng ref, đo được bằng `scripts/ky-thuat/probe-race-c03.ts`:
+   *
+   *   `setState` không cập nhật biến đã đóng của lượt render hiện tại. Cổng
+   *   `if (dangGui) return` ở `kyVaGui` đọc `dangGui` — một giá trị dẫn xuất từ
+   *   state `gui` — nên hai lần bấm trong cùng lượt sự kiện đều thấy `false` và
+   *   **cả hai cùng đi qua**. Probe ca C03-a: 2 lần bắt đầu gửi thay vì 1.
+   *
+   *   Ref thì gán xong là thấy ngay. Probe ca C03-b với đúng tình huống đó: 1 lần.
+   *
+   * `luotRef` giải bài khác: lượt kiểm tra CHẬM về sau lượt nhanh và ghi đè kết quả.
+   * Khi đó thẻ cảnh báo đang hiện thuộc lượt A còn `txCho` thuộc lượt B — nút Ký sẽ
+   * ký một giao dịch KHÁC với thứ người dùng đang đọc. Probe ca C03-c.
+   *
+   * Không hứa exactly-once trên toàn mạng: đây là khoá trong MỘT tab của consumer
+   * demo. Hai tab là hai tiến trình, và SDK không kiểm soát được điều đó.
+   */
+  const luotRef = useRef(0);
+  const dangGuiRef = useRef(false);
+  /*
+   * Khoá vào cho LƯỢT KIỂM TRA — riêng với khoá gửi.
+   *
+   * Hai thao tác khác nhau, hai khoá khác nhau: người dùng đang chờ kiểm tra vẫn
+   * phải bấm Huỷ được, và khoá gửi không được chặn một lượt kiểm tra mới. Gộp làm
+   * một là tạo ra giao diện tự khoá chính nó ở những trạng thái hiếm.
+   */
+  const dangKiemRef = useRef(false);
+
+  /*
+   * NEO KẾT QUẢ VÀO GIAO DỊCH ĐÃ KIỂM — TB-C06, và nó KHÁC bài của C03.
+   *
+   * C03 lo hai lượt kiểm chồng nhau; đã đóng bằng `luotRef`. C06 lo một tình huống
+   * mà ID lượt không chạm tới được: CHỈ MỘT lượt kiểm, ID khớp, nhưng giao dịch bị
+   * đổi sau khi kiểm và trước khi ký.
+   *
+   * Đường đi thật: dApp đẩy giao dịch A → ví kiểm A → dApp đẩy tiếp B → người dùng
+   * bấm Ký trong khi đang đọc cảnh báo của A.
+   *
+   * Dùng ref chứ không state: đây là thứ để ĐỐI CHIẾU ở đầu handler ký, không phải
+   * thứ để render. Và nếu là state thì nó lại vướng đúng bài closure của C03.
+   */
+  const neoRef = useRef<NeoKetQua | null>(null);
+
   /**
    * Hạn cho MỘT LƯỢT kiểm tra — không phải cho mỗi chặng bên trong nó.
    *
@@ -144,7 +190,10 @@ export default function App() {
       ? `Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau ${Math.round(e.ms / 1000)} giây.`
       : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
 
-  const ghi = (s: string) => setNhatKy((n) => [...n, s]);
+  // Lọc TẠI CHỖ GHI, không lọc tại chỗ hiển thị: mọi đường vào nhật ký đều đi qua
+  // đây, nên không cần nhớ lọc ở từng nơi gọi. Xem `locNhatKy.ts` — lỗi RPC đã đo
+  // được là mang nguyên cả trang HTML, và `VITE_RPC` có thể chứa credential.
+  const ghi = (s: string) => setNhatKy((n) => [...n, locDongNhatKy(s)]);
   const conn = useCallback(() => new Connection(chonRpc(ht), "confirmed"), [ht]);
 
   const [tuDApp, setTuDApp] = useState<string | null>(null);
@@ -270,6 +319,37 @@ export default function App() {
   }
 
   async function bam(kich: Kich, epBatCustos = false) {
+    /*
+     * KHOÁ VÀO BẰNG REF — `disabled={dangChay}` một mình KHÔNG đủ.
+     *
+     * Tái hiện được trên trình duyệt thật, không phải giả định: hai lần bấm sát nhau
+     * vào nút kịch bản tạo **2 lượt kiểm tra**, mỗi lượt một chuỗi RPC riêng
+     * (`soi-race-gui.py` ca C03-1, đo 2 dòng "kết quả — mức" trong nhật ký).
+     *
+     * Lý do `disabled` không chặn: nó là thuộc tính DOM được React vẽ ở lượt render
+     * SAU khi `setDangChay(true)` chạy. Hai sự kiện bấm phát ra trước lượt vẽ đó đều
+     * gặp một nút chưa bị disable.
+     *
+     * Giữ `disabled` vì nó là phản hồi thị giác đúng; thêm ref vì nó mới là thứ chặn.
+     *
+     * Đáng ghi: bài đọc mã `c03Race.test.ts` xanh 7/7 trong khi lỗi này còn nguyên —
+     * nó canh `kyVaGui`, không canh `bam`. Probe trình duyệt mới bắt được.
+     */
+    if (dangKiemRef.current) return;
+    dangKiemRef.current = true;
+    try {
+      await chayKiem(kich, epBatCustos);
+    } finally {
+      /*
+       * Nhả khoá ở MỌI đường ra, kể cả hai `return` sớm bên trong `chayKiem`
+       * (chế độ mock, và chưa dựng hiện trường). Một khoá kẹt ở đó nghĩa là nút
+       * kịch bản chết vĩnh viễn tới khi tải lại trang.
+       */
+      dangKiemRef.current = false;
+    }
+  }
+
+  async function chayKiem(kich: Kich, epBatCustos: boolean) {
     // `batCustos` đọc từ closure nên setState ở nút "Xem Custos chặn nó" chưa
     // kịp thấy được. Truyền thẳng cờ thay vì chờ một vòng render.
     const coCustos = epBatCustos || batCustos;
@@ -282,11 +362,27 @@ export default function App() {
     // Nút "Thử lại" phải chạy lại ĐÚNG kịch bản vừa bấm, kèm đúng cờ Custos đang
     // dùng — chạy lại một kịch bản khác thì người dùng không biết mình vừa thử gì.
     thuLaiRef.current = () => void bam(kich, epBatCustos);
+    /*
+     * MỞ MỘT LƯỢT MỚI — mọi lượt đang chạy dở từ đây trở thành lượt cũ.
+     *
+     * TB-C03. Không có ID lượt thì một lượt CHẬM về sau lượt nhanh sẽ ghi đè kết
+     * quả: màn hình hiện thẻ cảnh báo của lượt A trong khi `txCho` là giao dịch của
+     * lượt B. Nút Ký lúc đó ký một giao dịch KHÁC với thứ người dùng đang đọc — đúng
+     * kiểu sai mà sản phẩm này tồn tại để chống, xảy ra trong chính sản phẩm.
+     *
+     * Tái hiện cơ chế ở `scripts/ky-thuat/probe-race-c03.ts` ca C03-c.
+     */
+    const luot = ++luotRef.current;
+    const conDung = () => luot === luotRef.current;
+
     setDangChay(true);
     setLoi(null);
     setKetQua(null);
     setTxCho(null);
     setHauQua(null);
+    // Lượt mới ⇒ neo cũ vô hiệu ngay, không chờ tới lúc có kết quả mới. Giữa hai
+    // thời điểm đó, nút Ký không được có neo nào để dựa vào.
+    neoRef.current = null;
     try {
       /*
        * HẠN BỌC CẢ LƯỢT KIỂM TRA, không chỉ `inspect()`.
@@ -316,6 +412,20 @@ export default function App() {
               locale: "vi",
               // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
               nguoiDung: ht.nanNhan,
+              /*
+               * BẬT DẤU VẾT — thẻ TB-X02.
+               *
+               * Đây là ví DEMO cho giám khảo, không phải ví thật của người dùng cuối.
+               * Thẻ đòi *"thêm progressive disclosure để giám khảo xem trace khi cần"*,
+               * và trace đó chính là thứ TB-X01 vừa dựng.
+               *
+               * Một ví thật KHÔNG nên bật mặc định: `chanDoan` mang địa chỉ đầy đủ của
+               * mọi tài khoản liên quan, và phần lớn người dùng không cần chúng. Mặc
+               * định của SDK vẫn là tắt — xem ADR-0002.
+               *
+               * Không thêm một lượt RPC nào: dữ liệu lấy từ `l2.hits` đã tính xong.
+               */
+              chanDoan: true,
               ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
             }),
           };
@@ -345,28 +455,119 @@ export default function App() {
           }),
           han,
         );
-        setHauQua(rTat);
+        // Lượt đã bị thay thế ⇒ bỏ kết quả, đừng ghi đè thứ người dùng đang xem.
+        if (conDung()) setHauQua(rTat);
         return;
       }
 
       if (!r) throw new Error("không dựng được kết quả kiểm tra");
       ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+      /*
+       * Hai `setState` này phải đi CÙNG NHAU hoặc không cái nào cả.
+       *
+       * `ketQua` là thẻ cảnh báo người dùng đọc; `txCho` là giao dịch nút Ký sẽ ký.
+       * Ghi một cái mà bỏ cái kia — hoặc ghi cả hai từ một lượt đã bị thay thế — là
+       * tạo ra đúng tình huống "ký thứ khác với thứ đang đọc".
+       */
+      if (!conDung()) return;
+      /*
+       * Dựng neo CÙNG LÚC với hai `setState` — ba thứ này mô tả cùng một lượt kiểm,
+       * nên chúng phải sinh ra cùng nhau hoặc không cái nào cả.
+       *
+       * `serializeMessage()` là byte thật sẽ được ký, không phải một bản mô tả: đổi
+       * blockhash cũng đổi byte, và đó là điều cần — mặc định của thẻ C06 là
+       * re-inspect, không phải chuẩn hoá rồi coi như nhau.
+       */
+      neoRef.current = neoKetQua(tx.message.serialize(), ht.nanNhan, "devnet");
       setKetQua(r);
       setTxCho(tx);
     } catch (e) {
       // Ghi nhật ký kỹ thuật cho đội, VÀ dựng thẻ lỗi cho người dùng. Trước đây chỉ
       // có vế đầu, nên người xem chỉ thấy một vùng trống không giải thích gì.
       ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
-      setKetQua(null);
-      setLoi(moTaLoi(e));
+      if (conDung()) {
+        setKetQua(null);
+        setLoi(moTaLoi(e));
+      }
     } finally {
-      setDangChay(false);
+      /*
+       * Chỉ lượt HIỆN TẠI được tắt cờ đang chạy.
+       *
+       * Lượt cũ kết thúc muộn mà tắt cờ thì vòng quay biến mất trong khi lượt mới
+       * vẫn đang chạy — người dùng thấy giao diện đứng yên và tưởng nút hỏng.
+       */
+      if (conDung()) setDangChay(false);
     }
   }
 
   async function kyVaGui(tx: VersionedTransaction) {
-    // Khoá gửi lặp. Bấm nhanh hai lần từng tạo hai lượt gửi song song.
-    if (dangGui) return;
+    /*
+     * KHOÁ NGAY KHI HANDLER NHẬN VIỆC — bằng ref, không chờ render.
+     *
+     * Bản cũ: `if (dangGui) return`, với `dangGui` dẫn xuất từ state `gui`. Hai lần
+     * bấm trong cùng lượt sự kiện đọc cùng một giá trị `false` và cả hai cùng gửi —
+     * trên chuỗi là mất tiền hai lần. Xem probe C03-a.
+     */
+    if (dangGuiRef.current) return;
+    dangGuiRef.current = true;
+
+    /*
+     * CỔNG C06 — kết quả đang hiển thị có thuộc về giao dịch này không?
+     *
+     * Đặt SAU khoá gửi để hai cổng không tranh nhau, và TRƯỚC mọi thứ khác vì đây là
+     * cổng duy nhất chặn được việc ký một giao dịch khác với thứ người dùng đang đọc.
+     *
+     * Không khớp ⇒ KHÔNG ký. Đây là nơi duy nhất trong ví có quyền nói câu đó: SDK
+     * chỉ đọc và mô phỏng, lớp thực thi chính sách là chính ví (xem
+     * `docs/bao-mat/THREAT-MODEL.md` mục 3.8).
+     */
+    const neo = neoRef.current;
+    if (!neo) {
+      ghi("chặn ký: không có kết quả kiểm nào neo vào giao dịch này");
+      setGui({ pha: "thatBai", loi: "Chưa kiểm tra giao dịch này. Hãy kiểm lại trước khi ký." });
+      dangGuiRef.current = false;
+      return;
+    }
+    const k = khopNeo(neo, tx.message.serialize(), ht?.nanNhan ?? "", "devnet");
+    if (!k.khop) {
+      ghi(`chặn ký: ${k.lyDo} — ${k.chiTiet}`);
+      setKetQua(null);
+      setTxCho(null);
+      neoRef.current = null;
+      setGui({
+        pha: "thatBai",
+        loi: "Giao dịch đã thay đổi sau khi kiểm tra. Kết quả cũ không còn áp dụng — hãy kiểm lại.",
+      });
+      dangGuiRef.current = false;
+      return;
+    }
+    if (quaCu(neo)) {
+      /*
+       * Neo khớp nhưng kết quả đã cũ. Đây là câu hỏi KHÁC: message giống hệt mà
+       * trạng thái account có thể đã đổi. Không phải lỗi của ai — chỉ là phán quyết
+       * hết hạn, và ký trên một phán quyết hết hạn là ký mà không biết.
+       */
+      ghi(`chặn ký: kết quả kiểm quá cũ (đo lúc ${neo.kiemLuc})`);
+      setKetQua(null);
+      setTxCho(null);
+      neoRef.current = null;
+      setGui({
+        pha: "thatBai",
+        loi: "Kết quả kiểm tra đã quá cũ nên không còn đáng tin. Hãy kiểm lại.",
+      });
+      dangGuiRef.current = false;
+      return;
+    }
+
+    /*
+     * Gửi phải thuộc về ĐÚNG lượt kiểm tra đang hiển thị.
+     *
+     * Nếu một lượt kiểm tra mới bắt đầu trong lúc người dùng bấm Ký, thẻ cảnh báo
+     * trên màn hình không còn mô tả `tx` này nữa. Chốt lượt tại thời điểm nhận việc
+     * và so lại trước khi đụng vào state.
+     */
+    const luot = luotRef.current;
+    try {
 
     // Luồng nằm ở `gui.ts` để kiểm được bằng stub — ký thật đòi khoá, và bản công
     // khai cố ý không có khoá, nên logic nằm trong component là logic gần như không
@@ -374,15 +575,60 @@ export default function App() {
     const cuoi = await guiGiaoDich({
       conn: conn() as never,
       ky: (t: VersionedTransaction) => t.sign([vi]),
+      /*
+       * Chữ ký lấy từ chính giao dịch đã ký, TRƯỚC khi gửi — bản sửa T02.
+       *
+       * `signatures[0]` là chữ ký của fee payer theo giao thức Solana, và nó chính
+       * là transaction ID. Nó có ngay sau `t.sign(...)`, không phải thứ RPC cấp
+       * phát; chờ `sendTransaction` trả về mới có ID nghĩa là mất ID đúng lúc cần
+       * nhất — khi RPC im lặng.
+       *
+       * Chưa đủ chữ ký thì mảng toàn số 0. Trả `null` để luồng đi nhánh "chưa sẵn
+       * sàng gửi" thay vì bịa ra một ID gồm 64 byte 0 rồi mời người dùng đi tra.
+       */
+      chuKy: (t: VersionedTransaction) => {
+        const s = t.signatures[0];
+        if (!s || s.every((b) => b === 0)) return null;
+        return maBase58(s);
+      },
       tx,
       bao: setGui,
       ghi,
     });
 
+    /*
+     * Lượt đã bị thay thế ⇒ KHÔNG đụng vào state hiển thị.
+     *
+     * Giao dịch vẫn được gửi (nó đã đi rồi, không rút lại được) và `gui` vẫn phản
+     * ánh kết cục thật — chỉ phần dọn thẻ kết quả là bỏ qua, vì thẻ đang hiện thuộc
+     * lượt khác. Xoá nó ở đây là xoá nhầm thứ người dùng đang đọc.
+     */
+    if (luot !== luotRef.current) return;
+
     if (cuoi.pha === "thanhCong") {
       setKetQua(null);
       setTxCho(null);
       await doSoDu();
+    } else if (cuoi.pha === "thatBaiXacNhan") {
+      /*
+       * GIỮ thẻ kiểm tra và giao dịch chờ, nhưng ĐỌC LẠI số dư.
+       *
+       * Giao dịch thất bại vẫn nằm trên chuỗi và vẫn bị trừ phí, nên số dư đã đổi —
+       * không đọc lại thì màn hình hiện một con số đã cũ. Còn thẻ kết quả thì phải
+       * giữ: người dùng cần nó để tra lý do, và đây đúng nhánh mà bản cũ xoá sạch
+       * vì nó tưởng là `thanhCong`.
+       */
+      await doSoDu();
+    }
+    } finally {
+      /*
+       * NHẢ KHOÁ DÙ ĐI ĐƯỜNG NÀO.
+       *
+       * `guiGiaoDich` không bao giờ ném, nhưng `doSoDu()` có thể — và nếu khoá không
+       * được nhả thì nút Ký chết vĩnh viễn cho tới khi tải lại trang. Một khoá chống
+       * gửi lặp mà tự khoá luôn người dùng thì tệ hơn lỗi nó chặn.
+       */
+      dangGuiRef.current = false;
     }
   }
 
@@ -799,8 +1045,48 @@ export default function App() {
                   >
                     <CanhBao
                       ketQua={ketQua}
+                      /*
+                       * BỐI CẢNH LƯỢT KIỂM — thẻ TB-X02.
+                       *
+                       * Suy từ endpoint ĐANG dùng, không hardcode: `chonRpc` ưu tiên
+                       * `ht.rpc` rồi mới tới `VITE_RPC`, nên cluster có thể khác thứ
+                       * người đọc đoán.
+                       *
+                       * `kieu` phân biệt kết quả vừa gọi RPC với kết quả đọc từ file
+                       * mock. Thẻ cấm *"hiển thị live giả"*, và một thẻ cảnh báo dựng
+                       * từ mock trông y hệt một thẻ dựng từ lượt chạy thật.
+                       */
+                      boiCanh={{
+                        cluster: clusterCua(chonRpc(ht)),
+                        nguon: hostCua(chonRpc(ht)),
+                        kieu: cheDo?.loai === "mock" ? "mock" : "live",
+                        ...(cheDo?.loai === "mock" ? { tenMock: cheDo.ten } : {}),
+                      }}
                       onHuy={() => {
                         ghi("người dùng huỷ giao dịch");
+                        /*
+                         * VÔ HIỆU LƯỢT KIỂM ĐANG BAY — không chỉ dọn màn hình.
+                         *
+                         * Đã đo được (`probe-race-c03.ts` ca C03-e): bấm "Chặn & huỷ"
+                         * lúc `inspect()` còn đang chạy thì `conDung()` của lượt đó
+                         * VẪN đúng — huỷ không đụng tới `luotRef`. Lượt về muộn chạy
+                         * tiếp dòng 467-469 và ghi lại cả ba thứ vừa bị dọn:
+                         *
+                         *     neoRef.current = neoKetQua(...)   ← neo sống lại
+                         *     setKetQua(r)                      ← thẻ cảnh báo sống lại
+                         *     setTxCho(tx)                      ← giao dịch sống lại
+                         *
+                         * Hậu quả không dừng ở giao diện nhấp nháy: `neoRef` và `txCho`
+                         * là đúng hai thứ `kyVaGui` cần để cho ký. Người dùng bấm chặn
+                         * một giao dịch Đỏ, rồi một giây sau nút Ký hoạt động trở lại
+                         * trên chính giao dịch đó.
+                         *
+                         * Tăng `luotRef` là cách cả file này đã dùng để nói "kết quả
+                         * lượt cũ không còn áp dụng" — huỷ là đúng một tình huống như
+                         * vậy, chỉ là nó bị bỏ sót.
+                         */
+                        luotRef.current++;
+                        neoRef.current = null;
                         setKetQua(null);
                         setTxCho(null);
                         setGui({ pha: "nghi" });
@@ -827,7 +1113,9 @@ export default function App() {
                     className={`mt-4 rounded-2xl border p-4 text-[13px] ${
                       gui.pha === "thanhCong"
                         ? "border-an/40 text-chu"
-                        : gui.pha === "thatBai" || gui.pha === "chuaRo"
+                        : gui.pha === "thatBai" ||
+                            gui.pha === "chuaRo" ||
+                            gui.pha === "thatBaiXacNhan"
                           ? "border-nguy/40 text-chu"
                           : "border-vien text-chu-mo"
                     }`}
@@ -857,6 +1145,35 @@ export default function App() {
                           Giao dịch chưa được gửi đi, nên chưa có gì thay đổi trên chuỗi. Bạn
                           có thể thử lại.
                         </p>
+                        <p className="mt-1 break-all text-chu-mo">{gui.loi}</p>
+                      </>
+                    )}
+
+                    {/*
+                      THẤT BẠI THỰC THI ĐÃ XÁC NHẬN — màn hình riêng, không dùng lại
+                      câu của `thatBai`.
+
+                      Ba điều người dùng cần biết ở đây và KHÔNG có ở pha nào khác:
+                      giao dịch đã lên chuỗi · nó đã hỏng · **phí vẫn bị trừ**. Câu
+                      "chưa có gì thay đổi trên chuỗi" của `thatBai` là sai ở cả ba.
+                    */}
+                    {gui.pha === "thatBaiXacNhan" && (
+                      <>
+                        <div className="font-semibold">Giao dịch đã chạy và THẤT BẠI</div>
+                        <p className="mt-1">
+                          Giao dịch <strong>đã lên chuỗi</strong> nhưng chương trình từ chối
+                          thực thi. Không có gì được chuyển đi, nhưng{" "}
+                          <strong>phí giao dịch vẫn bị trừ</strong>. Gửi lại y nguyên thì
+                          nhiều khả năng hỏng tiếp — nên xem lý do trước.
+                        </p>
+                        <a
+                          className="mt-1 inline-block break-all underline"
+                          href={`https://explorer.solana.com/tx/${gui.sig}?cluster=devnet`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {gui.sig}
+                        </a>
                         <p className="mt-1 break-all text-chu-mo">{gui.loi}</p>
                       </>
                     )}

@@ -71,6 +71,49 @@ export type InspectResult = {
    *  Trường tuỳ chọn nên không phá hợp đồng đã đóng băng: mã cũ bỏ qua được.
    *  Khớp thì trường này VẮNG MẶT — và khớp không bao giờ làm giảm verdict. */
   loiKhaiLech?: { khai: string; nhanDien: string };
+  /**
+   * Dấu vết từ verdict về dữ kiện đã đo. Thẻ TB-X01.
+   *
+   * CHỈ có mặt khi người gọi bật `chanDoan: true`. Vắng mặt là mặc định, và mã cũ
+   * bỏ qua được — cùng cách `loiKhaiLech` đã làm.
+   *
+   * Nó KHÔNG phải nguồn kết luận: `level` vẫn chỉ do L2 sinh, và bật/tắt trường này
+   * không đổi một bit nào của verdict. Nó chỉ nói *"cảnh báo này dựa trên dữ kiện
+   * nào"* — thứ trước đây chỉ tồn tại trong câu tiếng Việt của `detail`.
+   */
+  chanDoan?: ChanDoan;
+};
+
+/**
+ * Chẩn đoán nội bộ — có version, và các khoá là ID ổn định.
+ *
+ * `phienBan` để consumer biết mình đang đọc schema nào; thẻ đòi *"diagnostic schema
+ * nội bộ có version"*.
+ *
+ * Mọi khoá ở đây là base58 hoặc số thứ tự — **không** dùng text tiếng Việt để join.
+ * Lý do cụ thể: `diff.ts` từng nối cảnh báo với dòng bảng bằng `detail.includes(...)`
+ * và im lặng sai hai lần (luật 13, luật 11).
+ */
+export type ChanDoan = {
+  phienBan: 1;
+  /** Mỗi cảnh báo: từ mã lý do → luật → dữ kiện. */
+  canhBao: Array<{
+    ruleId: number;
+    reasonCode: string;
+    level: Level;
+    /** Dữ kiện luật đã dựa vào. Rỗng ⇒ luật chưa khai, xem `thieuBangChung`. */
+    bangChung: Array<{ loai: string; khoa: string }>;
+  }>;
+  /**
+   * Cảnh báo chưa truy vết được tới dữ kiện.
+   *
+   * Thẻ đòi: *"Khi thiếu liên kết, hiển thị 'chưa có bằng chứng truy vết chi tiết'
+   * thay vì suy diễn instruction gây lỗi từ vị trí trong mảng."* Nên chỗ này đếm ra,
+   * không đoán bù.
+   */
+  thieuBangChung: number;
+  /** Nguồn của từng con số — để người đọc biết dữ kiện đến từ tầng nào. */
+  nguon: { tang: "L1"; coverage: Coverage; simulationOk: boolean };
 };
 
 /**
@@ -103,4 +146,15 @@ export type InspectOptions = {
    * người ký ⇒ Custos nâng nghi ngờ thay vì đoán.
    */
   nguoiDung?: string;
+  /**
+   * Bật dấu vết chẩn đoán (TB-X01). Mặc định TẮT.
+   *
+   * Tắt là mặc định có chủ ý: `chanDoan` mang địa chỉ đầy đủ của mọi tài khoản liên
+   * quan, và phần lớn consumer không cần chúng trong đường hiển thị. Thẻ đòi *"tách
+   * raw diagnostics nhạy cảm khỏi phần hiển thị/export mặc định"*.
+   *
+   * Bật hay tắt **không đổi verdict** và **không thêm một lượt RPC nào** — dữ liệu
+   * lấy từ `l2.hits` đã tính xong.
+   */
+  chanDoan?: boolean;
 };

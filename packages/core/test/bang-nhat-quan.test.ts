@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import type { Facts, AccountFact, TokenAccountFact, MintFact } from "../src/facts.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import { dungBangChenhLech, NHAN } from "../src/diff.ts";
@@ -118,6 +119,84 @@ test("MÀU · luật 13 kích hoạt ⇒ dòng SOL phải là `danger`, không �
     "danger",
     "engine gắn cờ mà bảng tô màu thông tin thì người dùng không biết tin bên nào",
   );
+});
+
+test("MÀU · luật 11 kích hoạt ⇒ dòng số dư token phải là `danger`", () => {
+  /*
+   * Cùng hình dạng lỗi với bài luật 13 ngay trên, và là lỗi THỨ HAI của cùng cơ chế.
+   *
+   * Bảng từng tô màu bằng `hits.some(h => h.detail.includes(địa_chỉ_token_account))`.
+   * Luật 11 cộng theo **mint** nên `detail` chỉ nhúng mint — hai định danh khác nhau,
+   * không bao giờ khớp.
+   *
+   * Đo được trên `R11-pos` trước bản vá: hai token rời ví sạch (500000000 → 0 và
+   * 300000000 → 0), verdict Vàng với `OUTFLOW_KHONG_KHOP`, và **cả hai dòng số dư
+   * vẫn tô `info`**. Người dùng thấy cảnh báo mà bảng nói bình thường.
+   *
+   * Bản vá (TB-X01) cho `RuleHit` mang `bangChung` — ID ổn định thay cho dò chuỗi.
+   * Mutation: gỡ `bangChung` khỏi luật 11 ⇒ 2 dòng đỏ tụt về 0; tắt `coBangChung`
+   * trong `diff.ts` ⇒ cũng về 0.
+   *
+   * Luật 11 cần ÍT NHẤT HAI loại tài sản cùng rời ví mới kích hoạt — một loại là
+   * hành vi ví bình thường, xem chú thích trong `rules.ts`.
+   */
+  const MINT_A = "MintAAA11111111111111111111111111111111111111";
+  const MINT_B = "MintBBB11111111111111111111111111111111111111";
+  const ta = (address: string, m: string, truoc: bigint): TokenAccountFact => ({
+    address,
+    mint: m,
+    ownerBefore: TOI,
+    ownerAfter: TOI,
+    amountBefore: truoc,
+    amountAfter: 0n,
+    delegateBefore: null,
+    delegateAfter: null,
+    delegatedAmountAfter: 0n,
+    closeAuthorityBefore: null,
+    closeAuthorityAfter: null,
+    programOwnerBefore: TOK,
+    programOwnerAfter: TOK,
+  });
+
+  const f = facts({
+    accounts: [acc({ address: TOI, isSigner: true, lamportsBefore: 100_000_000n, lamportsAfter: 100_000_000n - PHI })],
+    tokenAccounts: [ta("ataA", MINT_A, 500_000_000n), ta("ataB", MINT_B, 300_000_000n)],
+    mints: [mint(MINT_A, 6, "AAA"), mint(MINT_B, 6, "BBB")],
+    solDelta: { [TOI]: -PHI },
+  });
+
+  const r = danhGia(f);
+  assert.ok(r.reasonCodes.includes("OUTFLOW_KHONG_KHOP"), "tiền đề: luật 11 phải kích hoạt");
+
+  const do_ = bang(f).filter((d) => d.severity === "danger");
+  assert.equal(
+    do_.length,
+    2,
+    "hai token rời ví sạch mà bảng không tô đỏ dòng nào — engine gắn cờ, bảng nói bình thường",
+  );
+});
+
+test("MÀU · nối cảnh báo với dòng bảng bằng ID ổn định, KHÔNG dò chuỗi", () => {
+  /*
+   * Canh chính cơ chế, không chỉ canh một ca. Hai lỗi đã xảy ra (luật 13, luật 11)
+   * đều vì bảng dò base58 bên trong câu tiếng Việt; luật thứ ba mắc lại sẽ không ai
+   * thấy nếu cơ chế bị tháo về cách cũ.
+   */
+  const src = readFileSync(new URL("../src/diff.ts", import.meta.url), "utf8");
+  assert.match(src, /coBangChung/, "`diff.ts` phải nối theo `bangChung`, không dò chuỗi");
+  assert.match(
+    src,
+    /h\.bangChung\?\.some\(\(b\) => b\.loai === loai && b\.khoa === khoa\)/,
+    "phép nối phải so CẢ loại lẫn khoá — hai luật có thể cầm hai loại định danh khác nhau",
+  );
+  assert.match(
+    src,
+    /h\.bangChung === undefined && h\.detail\.includes/,
+    "đường lui `detail` chỉ được dùng cho luật CHƯA gắn bằng chứng",
+  );
+
+  const rules = readFileSync(new URL("../src/l2/rules.ts", import.meta.url), "utf8");
+  assert.match(rules, /bangChung\?: BangChung\[\]/, "`RuleHit` phải có trường bằng chứng tuỳ chọn");
 });
 
 test("MÀU · ÂM TÍNH — chỉ mất phí thì KHÔNG dòng nào bị tô đỏ", () => {

@@ -70,5 +70,35 @@ export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
     });
   }
 
+  /*
+   * DẤU VẾT TỪ CẢNH BÁO TỚI DỮ KIỆN. Thẻ TB-X01.
+   *
+   * Chỉ hiện khi người gọi bật `chanDoan: true` — mặc định vắng mặt, nên mức Kỹ thuật
+   * của consumer cũ không đổi một dòng nào.
+   *
+   * Đây đúng là chỗ nó thuộc về: mức này tồn tại để *"thôi dịch"* cho người muốn tự
+   * kiểm chứng, và với họ `luật 11 → OUTFLOW_KHONG_KHOP → mint 43JG…` hữu ích hơn mọi
+   * câu tiếng Việt.
+   *
+   * Cảnh báo CHƯA truy vết được thì nói thẳng là chưa có, không suy diễn dữ kiện từ
+   * vị trí trong mảng — thẻ cấm đích danh việc đó.
+   */
+  const cd = ketQua.chanDoan;
+  if (cd) {
+    for (const c of cd.canhBao) {
+      const dan =
+        c.bangChung.length > 0
+          ? c.bangChung.map((b) => `${b.loai}:${b.khoa}`).join(" · ")
+          : "chưa có bằng chứng truy vết chi tiết";
+      ra.push({ nhan: `Dấu vết · luật ${c.ruleId} · ${c.reasonCode}`, giaTri: dan });
+    }
+    if (cd.thieuBangChung > 0) {
+      ra.push({
+        nhan: "Dấu vết chưa đầy đủ",
+        giaTri: `${cd.thieuBangChung}/${cd.canhBao.length} cảnh báo chưa truy vết được tới dữ kiện`,
+      });
+    }
+  }
+
   return ra;
 }
