@@ -58,115 +58,15 @@ async function doHanMacDinh(): Promise<number> {
   return Math.round((Date.now() - t0) / 100) * 100;
 }
 
-/**
- * Câu này có nêu phần giao dịch CHƯA đọc hiểu được không?
- *
- * Dùng chung cho cả mô hình lẫn câu mẫu — hai bên phải bị đo bằng đúng một thước,
- * nếu không thì phần chênh đo được chỉ là chênh giữa hai cách đếm.
- */
-const neuCoverage = (chu: string): boolean =>
-  /chưa (được )?(phân tích|đọc|xác minh|hiểu)|không (thể )?(đọc|hiểu)|chưa đọc hiểu/i.test(chu);
-
-/** Địa chỉ Solana. Whitelist gửi mô hình KHÔNG chứa địa chỉ nào — nên thấy là bịa. */
-const DIA_CHI = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
-
-/**
- * Số mà mô hình ĐƯỢC PHÉP nhắc: số dư trước/sau đã chia decimals, và coverage.
- * Mọi số khác trong lời giải thích là số mô hình tự nghĩ ra.
- */
-export function soChoPhep(facts: Facts, ma: string[], hits: unknown[] = []): Set<string> {
-  const ra = new Set<string>();
-  const dec = (m: string) => facts.mints.find((x) => x.address === m)?.decimals ?? 0;
-  for (const t of facts.tokenAccounts) {
-    ra.add(dinhDangSo(t.amountBefore, dec(t.mint)));
-    ra.add(dinhDangSo(t.amountAfter, dec(t.mint)));
-  }
-  /*
-   * Lấy số từ CHÍNH BẢNG CHÊNH LỆCH — nguồn mà phần hiển thị dùng.
-   *
-   * Bản đầu tự dựng lại danh sách số cho phép và bỏ sót SOL delta lẫn cách định
-   * dạng thật, nên nó tố 13/33 ca "bịa số" trên đường TẤT ĐỊNH. Đường đó dựng câu
-   * từ facts nên không bịa được: chính bộ đếm sai.
-   *
-   * Câu mẫu tất định là MẪU ĐỐI CHỨNG của bài đo này. Bộ đếm nào tố cáo nó thì sẽ
-   * tố cáo oan mô hình y hệt — và đọc một tỉ lệ ảo tưởng là đã đo được cái gì đó
-   * còn tệ hơn không đo. Hiệu chỉnh tới khi mẫu đối chứng sạch rồi mới tin số.
-   */
-  // SOL: câu mẫu quy lamport ra SOL (9 chữ số thập phân). Bảng chênh lệch có thể
-  // rỗng ở những ca chỉ động tới SOL, nên phải lấy thẳng từ `solDelta`.
-  for (const v of Object.values(facts.solDelta)) {
-    const x = v < 0n ? -v : v;
-    ra.add(dinhDangSo(x, 9));
-    ra.add(dinhDangSo(x, 0));
-  }
-  for (const d of dungBangChenhLech(facts, hits as never)) {
-    for (const v of [d.before, d.after]) {
-      for (const m of String(v).matchAll(/\d[\d.,]*/g)) ra.add(m[0].replace(/[.,]$/, ""));
-    }
-  }
-  ra.add(String(facts.coverage.analyzed));
-  ra.add(String(facts.coverage.total));
-  ra.add(String(facts.instructions.length));
-  ra.add(String(ma.length));
-  /*
-   * LẦN THỨ TƯ BỘ ĐẾM NÀY TỐ OAN — và lần đầu có bằng chứng để phán xử.
-   *
-   * Lượt live 12/09 tố 10 vi phạm. Đối chiếu từng câu với facts: **7 câu nói đúng
-   * facts**, chỉ là whitelist thiếu hai nguồn mà chính prompt gửi cho mô hình:
-   *
-   *   1. `coverage.unverifiedPrograms` — prompt gửi nó, câu mẫu tất định KHÔNG in
-   *      nó ra, nên `soTuCauMau` không nhặt được. Mô hình nói "2 chương trình chưa
-   *      được xác minh" với `unverifiedPrograms: 2` là ĐỌC ĐÚNG, không phải bịa.
-   *   2. `total - analyzed` — số lệnh CHƯA đọc hiểu được. Đây là phép trừ trên hai
-   *      số đã cho phép, không phải thông tin mới. Cấm nó tức là cấm mô hình diễn
-   *      đạt cùng một sự thật theo chiều ngược lại.
-   *
-   * Ba câu còn lại sai thật (MN-07 nói 10 lệnh khi chưa đọc hiểu 12; MN-08 nói 9
-   * khi là 11; MN-10 nói 4 khi là 5) — và chỉ sau khi vá hai nguồn này thì ba cái
-   * đó mới nổi lên được. Một bộ đếm kêu 10 lần để đúng 3 lần thì người đọc tắt nó
-   * trước khi tới cái thứ ba.
-   */
-  ra.add(String(facts.coverage.unverifiedPrograms));
-  ra.add(String(facts.coverage.total - facts.coverage.analyzed));
-  // Số 0 và 1 xuất hiện tự nhiên trong câu tiếng Việt ("một lệnh", "0 đồng").
-  ra.add("0");
-  ra.add("1");
-  return ra;
-}
-
 /*
- * ĐƯỜNG TẤT ĐỊNH LÀ MẪU ĐỐI CHỨNG, VÀ NÓ ĐỊNH NGHĨA TẬP SỐ HỢP LỆ.
+ * Phần thuần đã chuyển sang `eval-ai-so.ts` — xem T03 và thẻ TB-C04.
  *
- * Tôi đã ba lần tự dựng lại danh sách "số được phép" và ba lần bỏ sót một nguồn:
- * SOL delta, tuổi ví, cách định dạng `500,0`. Mỗi lần bỏ sót là một lần bài đo tố
- * cáo oan chính đường KHÔNG THỂ BỊA — mà một bộ đo hay tố oan thì đọc số của nó
- * cũng vô nghĩa. Đây đúng lỗi mà sản phẩm này sinh ra để chống, gặp lại trong
- * chính công cụ đo nó.
- *
- * Nên thôi đoán: câu mẫu tất định dựng chữ từ facts, vậy MỌI số nó in ra đều
- * grounded theo định nghĩa. Lấy luôn tập đó làm chuẩn.
- *
- * GIỚI HẠN, nói trước khi ai hỏi: cách này bắt được số mô hình BỊA RA, không bắt
- * được số grounded nhưng GHÉP SAI (lấy đúng số của ví A gán cho ví B). Loại sai
- * thứ hai cần người đọc — rubric ở `docs/AI-EVALUATION.md`.
+ * Giữ `export` lại ở đây để mọi nơi đang import từ `eval-ai.ts` không gãy; nhưng
+ * import từ file NÀY vẫn kéo theo `await main()` ở cuối, nên test phải import từ
+ * `eval-ai-so.ts`. Guard `c04KhongGhi.test.ts` canh đúng chỗ đó.
  */
-function soTuCauMau(chu: string): Set<string> {
-  return new Set(
-    [...chu.matchAll(/(?<![\w…])\d[\d.,]*(?![\w…])/g)].map((m) => m[0].replace(/[.,]$/, "")),
-  );
-}
-
-export function soLa(chu: string, chophep: Set<string>): string[] {
-  /*
-   * Chỉ tính chữ số ĐỨNG RIÊNG như một lượng. Bản đầu quét mọi chuỗi số và báo
-   * 27/33 ca "bịa số" trên đường TẤT ĐỊNH — đường không thể bịa. Nguyên nhân:
-   * câu mẫu viết tắt địa chỉ thành `43JG…4tjd`, và bộ đếm nhặt "43" ra làm một
-   * con số. Một phép đo báo động ở nơi không thể có lỗi thì phép đo đó sai.
-   */
-  return [...chu.matchAll(/(?<![\w…])\d[\d.,]*(?![\w…])/g)]
-    .map((m) => m[0].replace(/[.,]$/, ""))
-    .filter((s) => !chophep.has(s) && !chophep.has(s.replace(/[.,]/g, "")));
-}
+export { soChoPhep, soLa, soTuCauMau, neuCoverage, DIA_CHI } from "./eval-ai-so.ts";
+import { soChoPhep, soLa, soTuCauMau, neuCoverage, DIA_CHI } from "./eval-ai-so.ts";
 
 /* ── mô hình GIẢ, cố tình nói bậy ─────────────────────────────────────────── */
 
@@ -576,6 +476,7 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
    * `docs/AI-EVALUATION.md`.
    */
   let soCaKhacCauMau = 0;
+  let soLuotSeBiCat = 0;
   let soCaNoiVeCoverage = 0;
   let soCaCauMauNoiVeCoverage = 0;
   let soCaCoCoverageKhuyet = 0;
@@ -588,8 +489,33 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     const l2 = danhGia(facts);
     const t0 = Date.now();
     const r = await dienGiaiBangMoHinh(goi)(facts, l2.reasonCodes, "vi", {});
-    tre.push(Date.now() - t0);
+    const msTran = Date.now() - t0;
+    tre.push(msTran);
     const nen = await dienGiaiKhongAI(facts, l2.reasonCodes, "vi", {});
+
+    /*
+     * ĐƯỜNG SẢN XUẤT CHẠY QUA `boiThoiHan`, ĐƯỜNG ĐO NÀY THÌ KHÔNG — và trước đây
+     * báo cáo gộp hai thứ đó làm một.
+     *
+     * T04-d. Trường cũ tên `soLuotVuotHanMacDinh` đếm số lượt có `msTran > 4000`.
+     * Đó là câu trả lời cho *"nếu bọc thời hạn mặc định thì bao nhiêu lượt sẽ rụng"*
+     * — một ƯỚC LƯỢNG. Nó KHÔNG phải số timeout quan sát được, vì lượt đo này gọi
+     * interpreter trần nên không lượt nào thật sự bị cắt.
+     *
+     * Hai con số đó khác nhau ở một chỗ quan trọng: `boiThoiHan` đua `Promise.race`
+     * với đồng hồ, nên một lượt 4.050 ms có thể rụng hoặc không tuỳ mili-giây, và
+     * chi phí token vẫn bị tính dù kết quả bị bỏ.
+     *
+     * Nên đo cả hai, và đặt tên để không ai đọc nhầm nữa.
+     *
+     * Phần "nếu bọc thì sao" tính bằng so sánh trực tiếp `msTran` với hạn, KHÔNG
+     * phát lại độ trễ bằng `setTimeout`: phát lại đúng 38 lượt sẽ cộng thêm ~100
+     * giây vào mỗi lượt đo mà không cho biết thêm gì — `boiThoiHan` là một
+     * `Promise.race` với đồng hồ, kết quả của nó hoàn toàn quyết định bởi `msTran`
+     * so với hạn.
+     */
+    if (msTran > han) soLuotSeBiCat++;
+
     if (r.explanation === nen.explanation) luiVeTatDinh++;
     else {
       soCaKhacCauMau++;
@@ -687,19 +613,30 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     treTrungViMs: trungVi(tre),
     treCaoNhatMs: Math.max(...tre),
     /*
-     * SỐ LƯỢT VƯỢT THỜI HẠN MẶC ĐỊNH — số mà bên tích hợp cần, không phải trung vị.
+     * ĐỘ TRỄ VÀ THỜI HẠN — ba con số, và chúng KHÔNG được gộp làm một.
      *
-     * `boiThoiHan` mặc định 4000 ms. Lượt 12/09 có `treCaoNhatMs` 4189 — tức đã có
-     * lượt vượt. Vượt KHÔNG hỏng gì: nó rơi về câu tất định, `level` của L2 không
-     * bị đụng. Nhưng nó có nghĩa là lớp AI im lặng biến mất ở đúng những ca chậm
-     * nhất, và trung vị 2853 ms không nói được điều đó.
+     * T04-d của review 12/09: tài liệu ghi "1–2 lượt vượt hạn" trong khi artifact
+     * ghi 4, và quan trọng hơn — nó gọi con số đó là *timeout*, trong khi lượt đo
+     * này gọi `dienGiaiBangMoHinh` TRẦN, không bọc `boiThoiHan`. Không lượt nào
+     * thật sự bị cắt. Đó là ƯỚC LƯỢNG "nếu bọc thì bao nhiêu lượt rụng".
      *
-     * Đo ở đây là ƯỚC LƯỢNG: bài này gọi `dienGiaiBangMoHinh` trần, không bọc
-     * `boiThoiHan`, nên không có lượt nào thật sự bị cắt. Nó trả lời "nếu bọc mặc
-     * định thì bao nhiêu lượt rụng", chứ không phải "bao nhiêu lượt đã rụng".
+     * Tên cũ `soLuotVuotHanMacDinh` không nói ra điều đó nên bị đọc thành số quan
+     * sát. Đổi tên là một phần của bản sửa, không phải việc dọn dẹp:
+     *
+     *   · `soLuotUocSeBiCat`     — ƯỚC LƯỢNG, đo trên đường trần
+     *   · `soLuotBiCatThatSu`    — quan sát trên đường CÓ bọc. Ở lượt đo này luôn
+     *                              bằng 0 vì đường đo không bọc; ghi ra để chỗ
+     *                              trống đó nhìn thấy được thay vì bị suy diễn.
+     *   · `duongDoCoBocThoiHan`  — nói thẳng đường đo có giống sản xuất không
+     *
+     * Vượt hạn KHÔNG hỏng gì: rơi về câu tất định, `level` của L2 không bị đụng.
+     * Nhưng nó nghĩa là lớp AI im lặng biến mất ở đúng những ca chậm nhất — và
+     * token vẫn bị tính cho một câu không ai đọc.
      */
     hanMacDinhMs: han,
-    soLuotVuotHanMacDinh: tre.filter((x) => x > han).length,
+    duongDoCoBocThoiHan: false,
+    soLuotUocSeBiCat: soLuotSeBiCat,
+    soLuotBiCatThatSu: 0,
     /*
      * GIÁ TRỊ TĂNG THÊM. `soCaNoiVeCoverage` phải đọc KÈM `soCaCauMauNoiVeCoverage`
      * — con số tuyệt đối một mình không nói gì, vì câu mẫu cũng nêu coverage. Chỉ
