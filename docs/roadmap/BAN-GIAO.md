@@ -1,14 +1,168 @@
 # Bàn giao phiên thực thi Custos
 
-Đọc [roadmap](../../ROADMAP-CLAUDE.md) và [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên; trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
+Đọc [roadmap Technical](../../ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** — và
+[tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
+trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng
+## Hiện trạng — phiên Technical, HEAD `780cf6d`
 
-- Bắt đầu phiên ở `55388d6`; đã nghiệm thu **R00, R01, R02, U01–U07, I01–I03, S01, S03, A01, B01, B02, B04, D01, D02, D03, P01, P03, V01 (phần khả dụng), V02**.
-- **Tám lỗi** đã sửa: **F01, F02, F03** (P1) và **F04, F05, F06, F07, F08, F09** (P2). Mỗi lỗi được **tái hiện trước khi sửa** và **đo lại sau khi sửa**.
-- Bộ test: **451 pass, 0 fail**. Eval AI: 13/13 bẫy chặn · 3/3 đối chứng qua. axe: **40/40, 0 vi phạm** trên bản dựng sau thay đổi.
-- Chưa push. Roadmap, báo cáo đánh giá và thư mục bằng chứng đã được commit vào repo.
-- Quyền đã được cấp: đọc/sửa file trong phạm vi, chạy kiểm thử, build, tạo artifact cục bộ, commit cục bộ. **Chưa được** push, publish, deprecate gói, hoặc liên hệ bên ngoài.
+**Đang làm roadmap Technical** sau khi chủ dự án cho biết BTC đã cho phép đổi track.
+Roadmap trước (`ROADMAP-CLAUDE.md`) đã đóng phần khả dụng; lịch sử giữ nguyên.
+
+- **Bộ test: 707 pass, 0 fail** (đo 15/09; lượt 12/09 ở [g00](../review/technical/g00-20260912-024738/BAO-CAO.md) cho 690).
+  Con số **451** ở bản trước của dòng này là số của một lượt đo cũ và đã lạc hậu — đó
+  chính là **T04-c**. Số lịch sử chỉ được giữ khi gắn rõ bản mã/ngày.
+- **Bốn lỗi mới đang mở: T01–T04.** Đều đã **tái hiện lại** ở G00 chứ không chép kết
+  luận của review. Probe theo Git: `scripts/ky-thuat/probe-gui-t01-t02.ts` —
+  **2/5 ca nói đúng sự thật**.
+- Đã nghiệm thu ở roadmap Technical: **TB-G00, G01, G02, C01–C06, L01, D01, S01–S03, B01–B06, X01–X03, I01–I03, P01** — 27 thẻ, trong đó **I03 chỉ đóng phần local**. **Nhánh G, C, S, X, I đóng hết phần Claude làm được; nhánh B chỉ còn B07 (cần Devnet); còn P02.**
+- **Việc tiếp theo:** **TB-P02** — thẻ cuối Claude làm một mình được. **TB-B07** giữ WAIT_INPUT.
+- **TB-X03 xong: 10 probe trình duyệt chạy lại trên mã hiện tại**, tất cả PASS, dấu vết
+  giao diện `c90436fd`. Bằng chứng cũ đo trên `780cf6d` đã lạc hậu vì phiên này sửa
+  `SoLieu.tsx` và `locNhatKy.ts` — **phải chạy lại, không tin số cũ**, đúng bài học I01.
+- **Lỗ bằng chứng của X03, và bản vá tự sinh lỗi mới.** Bốn probe chỉ `print` rồi thoát,
+  không để lại biên bản nào. Thêm `ghi_bang_chung` cho cả bốn — rồi
+  `soi-yeu-cau-va-huy.py` ghi ra `soKiem: 0` kèm `dat: true`, vì nó in trực tiếp ở hai
+  khối thay vì đi qua hàm gom. **Một biên bản nói "đạt" với 0 phép kiểm tệ hơn không có
+  biên bản:** không có thì người đọc biết là chưa đo, có mà rỗng thì cổng xanh và câu
+  hỏi tắt luôn. Guard `bangChungA11y.test.ts` quét cả thư mục nên probe thứ 11 tự được canh.
+- **SỐ ĐỘ TRỄ TRÔI LẦN THỨ HAI.** P01 sửa `~850 ms` → 1596/3874/3877; lượt đo 15/09 cho
+  trung vị **1351 ms**, p95 quan sát **5359 ms**, cao nhất **8896 ms**, dao động **10,6×**.
+  Cùng bản mã, cùng máy — thứ đổi là RPC công cộng. **Trung vị ổn định (1351 ở cả hai
+  phiên n=30); phần đuôi thì không hứa được.** Gốc là ba chỗ công bố đều gõ tay, **0 neo**.
+  Đã thêm trường `hieuNang` vào `so-lieu.json` + 6 mốc đồng bộ + 6 neo `NEO_DONG_BO`.
+- **"Điểm ngoại lai là retry" nay có số, không còn đọc bằng mắt:** tách 30 lượt theo số
+  RPC — 19 lượt 7 RPC trung vị **852 ms**, 11 lượt >7 RPC trung vị **2875 ms**, chênh
+  **3,4×**, Pearson **r = 0,84**. Phép tách nằm trong `tao-so-lieu.ts` nên mỗi lượt đo
+  sau tự có con số ấy.
+- **Bốn file mã nguồn bị Git coi là NHỊ PHÂN** (`Bin 0 -> 4454 bytes`): `locNhatKy.ts`,
+  `locNhatKy.test.ts`, `fuzz-s02.ts` mang byte điều khiển **thô** trong fixture — đúng
+  chủ ý vì chúng kiểm việc lọc đầu vào xấu, nhưng NUL làm Git phân loại cả file là nhị
+  phân ⇒ không diff, không review trên GitHub được. Đổi 13 byte sang escape; ngữ nghĩa
+  lúc chạy không đổi, test vẫn 6/6.
+- **TB-I03 đóng phần LOCAL, phần remote để mở** — đúng quy tắc trạng thái thẻ định
+  trước, không gộp hai thứ vào một ô DONE. CI nay ba tầng: **tất định** (`check` ·
+  `replay-rpc` · `doi-khang` · `thu-tich-hop:deterministic` · chặn rò rỉ khoá — chặn
+  deploy) · **browser** và **live Devnet** (cả hai `workflow_dispatch`, chạy tay).
+  Tách vì hai tầng sau đỏ được vì lý do KHÔNG phải lỗi sản phẩm: Chromium tải hỏng,
+  RPC công cộng chậm. Rà trước: **5/14 tiêu chí thiếu**; sau: **14/14**.
+  **Chưa chạy remote lần nào** — chưa có quyền push, nên không có URL run nào để dẫn.
+- **Hai lần trong phiên này tôi viết guard ĐỎ VÌ LÝ DO SAI**, cùng một hình dạng:
+  neo vào một mẫu chung thay vì vào đúng vùng cần soi. (a) `indexOf("<GioiHan")` bắt
+  khối đầu trong **sáu** khối của `SoLieu.tsx` — khối nói về cohort, cách mục eval 190
+  dòng. (b) `/^  [a-z0-9-]+:$/` trên cả `deploy.yml` bắt trúng `  push:` trong khối
+  `on:`, và `indexOf("npm run check")` bắt trúng **chú thích giải thích thứ tự** thay
+  vì bước thật — ba bài đỏ, không bài nào chỉ vào lỗi có thật.
+  **Guard đỏ vì lý do sai nguy hiểm ngang guard không đỏ được:** người sửa sẽ chiều nó
+  ở đúng chỗ nó chỉ, tức làm hỏng một chỗ vô can, hoặc xoá lời giải thích thay vì sửa lệnh.
+- **Bộ test nay 707** (thêm 6 bài `evalMoHinhThat` + 11 bài `ciBaTang`). Deck, release
+  notes và `so-lieu.json` đã sinh lại; `npm run so-lieu` chạy trọn vẹn và **idempotent**
+  (lượt thứ hai không đổi file nào).
+- **HEAD `780cf6d` ĐỎ 11 TEST — phát hiện 15/09, đã sửa, chưa commit.** Tái hiện: khôi
+  phục `apps/demo-wallet/public/so-lieu.json` bản HEAD rồi chạy test ⇒ **11 bài đỏ**
+  (số xanh của lượt tái hiện đó cố ý không ghi ra đây: một con số "N pass" của một
+  lượt dựng lại lỗi sẽ bị đọc thành số hiện tại — đúng hình dạng T04-c).
+  Nguyên nhân là **lỗi thứ tự** trong `a0f2c91`: file số liệu sinh TRƯỚC khi
+  tài liệu cập nhật, nên nó giữ ảnh chụp cũ (`test.pass: 487`, `msMotLuot: 664`,
+  `moHinhThat: "BLOCKED_BY_SECRET"`) trong khi README/ADR/PITCH/deck đã nói số mới.
+  Chú thích `deploy.yml:53-63` cảnh báo đúng bẫy này nhưng chỉ ép thứ tự **trong CI**.
+  Cách chạy đúng là `npm run so-lieu` (đo rồi mới đồng bộ), không gọi lẻ từng script.
+- **Năm bề mặt nói ĐỘI CHƯA làm một việc đội ĐÃ làm** — lượt eval mô hình thật chạy
+  11/09 (`moHinhThat.trangThai: "đã đo"`), nhưng `SoLieu.tsx` (trang công khai),
+  `AI-EVALUATION.md`, `README.md`, `kiem-nop-bai.ts` và `docs/nop-bai/README.md` đều
+  gõ tay "chưa đo". Trang số liệu tự mâu thuẫn cách nhau hai dòng: *"Chưa đo với mô
+  hình thật … đánh dấu `đã đo` trong dữ liệu"*. Hướng sai là **nói giảm** — nhưng thể
+  lệ phạt "trình bày sai" không phân biệt chiều, và ô trống giả trong checklist nộp
+  bài dẫn tới quyết định sai của chính đội. Đã sửa cả năm; guard mới
+  `packages/core/test/evalMoHinhThat.test.ts` (6 bài, **mutation 5 hướng đều đỏ**).
+- **Một mốc đồng bộ gãy vì chính tôi.** Sửa câu *"Tất cả nằm trong `src/tich-hop.js`"*
+  (nay sai do I02) mà không tra ai neo nó — đó là mốc regex của
+  `dong-bo-so-tai-lieu.mjs:243`, và `NEO_DONG_BO` không có dòng này nên `check` vẫn
+  xanh. Lượt `npm run so-lieu` kế tiếp ném lỗi **giữa chừng, sau khi đã ghi
+  `README.md`** — một lượt đồng bộ ghi nửa vời, không dấu hiệu nào trên cây làm việc.
+  **Bài học dùng lại được: trước khi sửa một dòng tài liệu, grep xem script nào neo nó.**
+- **Số hiện tại sau khi đồng bộ đúng thứ tự:** **707 test · 0 fail** · `inspect()`
+  **656 ms** (trung vị 10 lượt, `lichSuPass`) · cài→kết quả đầu **12 giây** ·
+  `moHinhThat: "đã đo"`. Deck và release notes đã sinh lại cho 696.
+  Dấu vết: `so-lieu.json` `087c34ff` → sau sync đổi tiếp · guard `b48b1429`.
+- **Consumer nay có HỢP ĐỒNG KÝ** (I02): `vi-du-tich-hop/src/ky.js`. Trước đó `tich-hop.js` dừng ở
+  quyết định `cho`/`lyDo` — không có ai ký, nên câu "signer không được gọi khi chặn" không kiểm được.
+- **Năm chốt trước khi signer được chạm vào:** CHẶN · HỎI chưa đồng ý · `khopNeo` (dApp tráo giao
+  dịch giữa lúc kiểm và lúc ký) · `quaCu` · rồi mới ký. `nguoiDungDongY` mặc định `false` — quên
+  truyền cờ thì KHÔNG ký.
+- **Hợp đồng ký ở file riêng có chủ ý:** `dongMaTichHop` đếm đúng `tich-hop.js` và công bố ở sáu
+  chỗ; `tich-hop.js` giữ nguyên **30 dòng**. Policy là của consumer, SDK chỉ trả thông tin.
+- **SỐ HIỆU NĂNG CÔNG BỐ ĐÃ SAI VÀ ĐÃ SỬA** (P01): `~850 ms` là trung vị của **4 lượt** sau khi
+  bỏ lượt đầu. Đo lại 30 lượt cho **trung vị 1596 ms**, p95 quan sát **3874 ms**, dải 834–3877 ms
+  (dao động 4,6×). Sửa ở `HIEU-NANG.md`, `README.md`, `ADR-0001` — ba chỗ đều gõ tay, không có
+  anchor đồng bộ, nên chúng trôi im lặng.
+- **Lượt hỏng từng biến mất khỏi phép đo:** vòng đo `continue` im lặng khi timeout. Nay ghi
+  `luotHong` kèm lý do và `tyLeHoanTat` — lượt 14/09 đạt 30/30, 0 hỏng.
+- **Playwright + Chromium 149 đã cài trong phiên này** — 16 probe trình duyệt của repo nay chạy được.
+- **`npm run thu-goi` xanh 6/6 trên mã hiện tại** (I01): JS thuần chạy bằng `node` trần, `tsc` với
+  `strict`+`skipLibCheck:false` OK, **10/10 bẫy đối kháng bị chặn**, 3 ca đối chứng đi lọt đúng.
+  Bằng chứng cũ đo 12/09 **không phủ** mã phiên này, nên phải chạy lại — không tin số cũ.
+- **Probe X02 đã chạy trên Chromium thật và xanh**, mutation 3 hướng đều đỏ. Nó bắt được ba lỗi,
+  và **cả ba là của chính probe** — đó là lý do phải chạy thật thay vì tin bài đọc mã.
+- **Probe X02 đã viết:** `scripts/kiem-trinh-duyet/soi-boi-canh-x02.py` — chạy offline bằng
+  `?mock=danger` và `?mock=safe`, không cần Devnet. Kiểm: khối bối cảnh đóng sẵn, mock KHÔNG
+  được dán nhãn "chạy thật", dòng Dấu vết tới được người xem, ca đối chứng không hiện Nguy hiểm,
+  nút huỷ mobile ≥44px.
+- **`npm audit` đã chạy lại 14/09:** 0 critical · **5 high** · 0 moderate — khớp nguyên văn
+  `docs/PHU-THUOC.md`. Cả 5 high đều dải `*` hoặc dải mở, tức **chưa có bản vá thượng nguồn**;
+  6 moderate đã biến mất nhờ `overrides`. Không chạy `npm audit fix --force`.
+- **Chưa kiểm trong phiên này:** Devnet live (TB-B07), thiết bị thật,
+  WebKit/Firefox. Bộ axe đã chạy lại trên mã hiện tại: **PASS toàn bộ**.
+- Chưa push. Quyền đã được cấp trong phiên: đọc/sửa code/UI/test/script/tài liệu,
+  chạy kiểm thử, build, tạo artifact cục bộ, commit cục bộ. **Chưa được** push,
+  publish, deploy, liên hệ bên ngoài, gọi API tính phí, ký/gửi giao dịch thật.
+
+### Bốn lỗi T01–T04 — ĐÃ ĐÓNG HẾT trong phiên 12/09
+
+Mỗi lỗi có **tái hiện trước khi sửa** và **phép đo sau khi sửa**, không chép kết luận
+của review.
+
+| Mã | Vấn đề | Bản sửa | Bằng chứng |
+|---|---|---|---|
+| **T01** | Xác nhận chứa `err` vẫn báo `thanhCong`; response sai cấu trúc cũng vậy | pha `thatBaiXacNhan` + `docKetQuaXacNhan()` đọc **nội dung** phản hồi | probe 2/5 → 6/7 ca đúng; đột biến 5 bài đỏ |
+| **T02** | Mất phản hồi gửi bị khẳng định là "chưa gửi đi" | `chuKy?` lấy chữ ký **trước** khi gửi; `maBase58` tự viết | 200 mẫu đối chiếu `bs58`/`PublicKey`, 0 lệch |
+| **T03** | `npm run check` ghi đè `data/eval/ai-ket-qua.json` | tách `scripts/eval-ai-so.ts` (module thuần) | hash **không đổi** quanh `check`, exit 0 |
+| **T04** | Bốn phát biểu tài liệu mạnh hơn bằng chứng | tách 1 trường thành 3; bỏ đếm lượt bằng tay; 451→520 | `t04Claim.test.ts` 5 bài, đã kiểm phủ định |
+
+**Thêm TB-C03** (không thuộc T01–T04, roadmap yêu cầu): ba khoá `ref` chống race và
+gửi lặp. Ba tầng bằng chứng — cơ chế, đường dây, hành vi thật trên Chromium.
+
+### Bốn sai số của chính tôi trong phiên này — ghi lại vì chúng dễ lặp
+
+1. **Suýt viết một lỗi im lặng.** Chỗ mã base58, bản đầu ghép hai `PublicKey` 32 byte
+   — sai, base58 không mã hoá theo khối. Chữ ký sinh ra không tra được trên Explorer,
+   và nhánh đó **chỉ chạy khi mạng hỏng** nên gần như không ai phát hiện.
+2. **Guard theo chuỗi hỏng lần thứ tư.** Bài "module thuần không dùng `process.exit`"
+   đỏ vì chính dòng chú thích ghi quy tắc. Một phép kiểm theo chuỗi không phân biệt
+   được "dùng X" với "cấm X".
+3. **Guard không đỏ được, lần thứ năm.** Bài đếm số test dùng regex `**487 pass`
+   trong khi dòng thật là `**Bộ test: 487 pass` — quét một mẫu không tồn tại, luôn
+   xanh. Regex viết theo **trí nhớ** về định dạng thay vì theo dòng thật.
+4. **Kết luận sai vì đột biến không được áp dụng.** `.Replace()` với chuỗi chứa
+   `\r\n` trong khi file lưu LF ⇒ không khớp, và tôi kết luận nhầm "probe không đỏ
+   được" trong khi chưa đo gì. **Khi phép kiểm phủ định cho kết quả bất ngờ, việc đầu
+   tiên là xác minh đột biến có thật sự vào file.** (Gặp lại lần hai ở TB-S01, lần đó
+   `perl` không khớp và tôi kiểm ngay thay vì đoán.)
+5. **Nói sai về thư viện.** Bản đầu `NGAN-SACH-RPC.md` viết *"web3.js v1 không nhận
+   `AbortSignal`"*. `grep` ra **hai** chỗ có — chỉ là ở `confirmTransaction` strategy
+   và `sendAndConfirmTransaction`, không ở chặng nào Custos gọi. Kết luận cuối không
+   đổi nhưng lý do phải đúng: một phát biểu sai về thư viện bị bác trong ba giây, và
+   lúc đó cả trang mất uy tín chứ không chỉ một dòng.
+
+### Hai phát hiện đáng ghi từ việc ĐỌC code
+
+- **IDL giả không phải đường tấn công runtime** (TB-S01). Bảng mã lệnh đóng băng lúc
+  build; lúc chạy không có lượt tải IDL nào để đầu độc. Rủi ro chuyển sang chuỗi cung
+  ứng ở thời điểm build, và nó có mốc thời gian ghi trong file.
+- **`boiThoiHan` rò rỉ timer** (TB-C05). 10 lượt để lại **đúng 10** handle `Timeout`.
+  Không làm gì hỏng ngay, nhưng giữ event loop sống nên tiến trình CLI không thoát
+  được. `coHan` đã dọn đúng từ đầu — hai hàm cùng mục đích, một cái sạch một cái
+  không, và chỉ phép đo mới thấy.
 
 ## Đối chiếu F01–F11 sau phiên này
 

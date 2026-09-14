@@ -33,7 +33,18 @@
     "thu-tich-hop:devnet": "node scripts/thu-tich-hop.mjs",
     "kiem-san-pham": "node --experimental-strip-types scripts/kiem-san-pham.ts",
     "thu-goi-registry": "node scripts/thu-goi-registry.mjs",
-    "thong-ke-chuong-trinh": "node --experimental-strip-types scripts/thong-ke-chuong-trinh.ts"
+    "thong-ke-chuong-trinh": "node --experimental-strip-types scripts/thong-ke-chuong-trinh.ts",
+    "manifest-benchmark": "node --experimental-strip-types scripts/manifest-benchmark.ts",
+    "capture-rpc": "node --experimental-strip-types scripts/ky-thuat/capture-rpc.ts",
+    "replay-rpc": "node --experimental-strip-types scripts/ky-thuat/chay-replay.ts",
+    "so-baseline": "node --experimental-strip-types scripts/ky-thuat/so-baseline-b06.ts",
+    "danh-gia-b05": "node --experimental-strip-types scripts/ky-thuat/danh-gia-b05.ts",
+    "fuzz-s02": "node --experimental-strip-types scripts/ky-thuat/fuzz-s02.ts",
+    "probe-race": "node --experimental-strip-types scripts/ky-thuat/probe-race-c03.ts",
+    "probe-gui": "node --experimental-strip-types scripts/ky-thuat/probe-gui-t01-t02.ts",
+    "probe-neo": "node --experimental-strip-types scripts/ky-thuat/probe-neo-c06.ts",
+    "probe-timer": "node --experimental-strip-types scripts/ky-thuat/probe-timer-c05.ts",
+    "doi-khang": "npm run fuzz-s02 && npm run probe-race && npm run probe-gui && npm run probe-neo && npm run probe-timer"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
@@ -46,5 +57,9 @@
     "@solana/web3.js": "^1.98.4"
   },
   "license": "MIT",
-  "packageManager": "npm@11.6.2"
+  "packageManager": "npm@11.6.2",
+  "overrides": {
+    "uuid": ">=11.1.1",
+    "stream-json": ">=3.6.0"
+  }
 }

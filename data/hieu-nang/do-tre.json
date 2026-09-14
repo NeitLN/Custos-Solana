@@ -1,26 +1,26 @@
 {
-  "doLuc": "2026-09-08T17:38:29.437108+00:00",
-  "sourceCommit": "d46252deb32a7dec95eb85237555d9aa3ef269ab",
+  "doLuc": "2026-09-14T19:15:19.415243+00:00",
+  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
   "dauVet": {
-    "bam": "8e55349757a0ae24",
-    "soFile": 29
+    "bam": "c90436fd14d2fcb9",
+    "soFile": 30
   },
   "taiTrangNguoi": {
-    "domContentLoaded": 49,
-    "load": 50,
-    "fcp": 100,
+    "domContentLoaded": 56,
+    "load": 57,
+    "fcp": 112,
     "soTepJs": 3,
-    "byteJsQuaDay": 177197,
-    "byteJsGiaiNen": 570826,
+    "byteJsQuaDay": 182181,
+    "byteJsGiaiNen": 586857,
     "nhan": "nguội — context mới, chưa có cache"
   },
   "taiTrangAm": {
-    "domContentLoaded": 36,
-    "load": 37,
+    "domContentLoaded": 39,
+    "load": 39,
     "fcp": 84,
     "soTepJs": 3,
     "byteJsQuaDay": 900,
-    "byteJsGiaiNen": 570826,
+    "byteJsGiaiNen": 586857,
     "nhan": "ấm — cùng context, bundle đã cache"
   },
   "moiTruong": {
@@ -33,49 +33,143 @@
     "rpc": "https://api.devnet.solana.com (mặc định của hiện trường)",
     "banDung": "production (`vite build` + `vite preview`), KHÔNG phải dev server"
   },
-  "bamLanDau": 1348,
+  "bamLanDau": 838,
   "bamCacLuotSau": {
-    "soMau": 4,
-    "trungVi": 846,
-    "caoNhat": 3352,
+    "soMau": 29,
+    "trungVi": 1351,
+    "p95QuanSat": 5359,
+    "caoNhat": 8896,
+    "thapNhat": 839,
+    "daoDong": 10.6,
     "tatCa": [
-      837,
+      842,
+      839,
       841,
-      850,
-      3352
+      8896,
+      847,
+      852,
+      3862,
+      851,
+      852,
+      1342,
+      2868,
+      1351,
+      4881,
+      840,
+      2876,
+      3381,
+      2872,
+      842,
+      1352,
+      1349,
+      1354,
+      1345,
+      842,
+      1844,
+      1351,
+      5359,
+      3369,
+      3360,
+      2875
     ]
   },
   "bamTatCa": {
-    "soMau": 5,
-    "trungVi": 850,
-    "caoNhat": 3352,
+    "soMau": 30,
+    "trungVi": 1351,
+    "p95QuanSat": 5359,
+    "caoNhat": 8896,
+    "thapNhat": 838,
+    "daoDong": 10.6,
     "tatCa": [
-      1348,
-      837,
+      838,
+      842,
+      839,
       841,
-      850,
-      3352
+      8896,
+      847,
+      852,
+      3862,
+      851,
+      852,
+      1342,
+      2868,
+      1351,
+      4881,
+      840,
+      2876,
+      3381,
+      2872,
+      842,
+      1352,
+      1349,
+      1354,
+      1345,
+      842,
+      1844,
+      1351,
+      5359,
+      3369,
+      3360,
+      2875
     ]
   },
   "soLuotRpcMoiLuot": {
-    "soMau": 5,
+    "soMau": 30,
     "trungVi": 7,
-    "caoNhat": 10,
+    "p95QuanSat": 14,
+    "caoNhat": 17,
+    "thapNhat": 7,
+    "daoDong": 2.4,
     "tatCa": [
       7,
       7,
       7,
       7,
-      10
+      17,
+      7,
+      7,
+      7,
+      7,
+      7,
+      8,
+      10,
+      8,
+      9,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      8,
+      8,
+      14,
+      11,
+      11,
+      11
     ]
+  },
+  "luotHong": [],
+  "tyLeHoanTat": {
+    "hoanTat": 30,
+    "hong": 0,
+    "tong": 30
   },
   "tungLuot": [
     {
-      "ms": 1348,
+      "ms": 838,
       "soLuotRpc": 7
     },
     {
-      "ms": 837,
+      "ms": 842,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 839,
       "soLuotRpc": 7
     },
     {
@@ -83,18 +177,115 @@
       "soLuotRpc": 7
     },
     {
-      "ms": 850,
+      "ms": 8896,
+      "soLuotRpc": 17
+    },
+    {
+      "ms": 847,
       "soLuotRpc": 7
     },
     {
-      "ms": 3352,
+      "ms": 852,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 3862,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 851,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 852,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1342,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 2868,
       "soLuotRpc": 10
+    },
+    {
+      "ms": 1351,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 4881,
+      "soLuotRpc": 9
+    },
+    {
+      "ms": 840,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 2876,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 3381,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 2872,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 842,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1352,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1349,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1354,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1345,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 842,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1844,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 1351,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 5359,
+      "soLuotRpc": 14
+    },
+    {
+      "ms": 3369,
+      "soLuotRpc": 11
+    },
+    {
+      "ms": 3360,
+      "soLuotRpc": 11
+    },
+    {
+      "ms": 2875,
+      "soLuotRpc": 11
     }
   ],
   "canhBao": [],
   "khongDo": [
-    "p95 — 3 lượt bấm không đỡ nổi một con số p95",
+    "p95 CỦA TỔNG THỂ — `p95QuanSat` là percentile QUAN SÁT trên n lượt của một phiên, không suy ra được p95 của người dùng thật",
     "mạng bị bóp (3G/4G) — chưa dựng, cần thêm cấu hình throttle",
-    "thiết bị thật — mọi số ở đây từ Chromium headless trên máy dev"
+    "thiết bị thật — mọi số ở đây từ Chromium headless trên máy dev",
+    "so sánh trước/sau — cần chạy lại cùng dataset và cùng điều kiện; một lượt đơn lẻ không nói được xu hướng"
   ]
 }

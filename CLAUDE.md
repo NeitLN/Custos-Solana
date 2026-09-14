@@ -2,7 +2,13 @@
 
 Transaction-intelligence SDK cho ví và dApp Solana: phát hiện hậu quả **không thuộc về hành động chính** của một giao dịch, và giải thích bằng tiếng Việt trước khi người dùng ký.
 
-Dự thi **UniHackfest 2026**, track **Best Product & Business**, chủ đề **AI × Web3**.
+Dự thi **UniHackfest 2026**, chủ đề **AI × Web3**.
+
+**Track đăng ký:** Best Product & Business (form nộp 24/08).
+**Hướng phát triển từ 12/09:** **Best Technical Build** — đang thực thi
+`ROADMAP-TECHNICAL-CUSTOS.md`. Hai dòng này cố ý khác nhau: BTC cho phép đổi track,
+nhưng chưa có bằng chứng biểu mẫu đã cập nhật. Xem
+[ADR-0001](docs/adr/0001-doi-huong-technical-build.md) và TB-H01.
 **Hạn tiếp theo: 19/09/2026** — giờ và tên vòng CHƯA xác nhận.
 Lịch nằm ở `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`, không ghi ngày ở chỗ khác.
 Mốc 05/09 tại Văn Lang không còn là mốc hiện tại; hai văn bản BTC trong repo còn
@@ -25,6 +31,9 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 | `docs/MO-HINH-DOANH-THU.md` | **Ai trả, trả cho gì, giá nào là giả định** — và điều kiện mô hình KHÔNG khả thi. MIT nên core buộc phải miễn phí |
 | `docs/PILOT-TU-LAM.md` | **Bộ tự thử cho đối tác** — từ thư mục trống tới `inspect()` đầu tiên, bốn đường lỗi, ranh giới cưỡng chế, mẫu biên bản |
 | `docs/HIEU-NANG.md` | Độ trễ đo phía trình duyệt trên bản production; vì sao điểm ngoại lai là retry chứ không phải khởi động nguội |
+| `docs/NGAN-SACH-RPC.md` | **Bảy chặng RPC**, chặng nào có đường lui riêng; hai hàm bọc thời hạn; và vì sao **ngừng chờ ≠ huỷ request** |
+| `docs/adr/0001-doi-huong-technical-build.md` | **Vì sao đổi hướng sang Technical Build**, rubric 30/25/25/20 nguyên văn, bằng chứng theo từng mục — và năm điều ADR đó KHÔNG làm |
+| `docs/bao-mat/THREAT-MODEL.md` | **Ai nói dối được với Custos, qua đường nào** — 8 rủi ro kèm cơ chế đã đọc trong code; phân biệt decode/xác minh/đo được/kết luận; 6 điều SDK KHÔNG kiểm soát |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
 | `ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
 | `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |
@@ -40,7 +49,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 38 mẫu dữ liệu · 487 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 38 mẫu dữ liệu · 711 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 

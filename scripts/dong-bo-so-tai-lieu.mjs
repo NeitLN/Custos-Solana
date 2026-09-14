@@ -168,8 +168,60 @@ thayDong("README.md", [
       .replace(/\d+\/\d+ bẫy bị chặn(, \d+\/\d+ câu đúng đi qua)?/,
         `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} bẫy bị chặn` +
         (S.evalAi.soDoiChung ? `, ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} câu đúng đi qua` : ""))],
+  /*
+   * BẢNG RUBRIC TECHNICAL nhắc lại `inspect()` một lần nữa — và nó ĐÃ TRÔI.
+   *
+   * Sáu chỗ khác trong repo ghi 656 ms; dòng này ở lại 664 vì nó không có mốc, và nó
+   * nằm trong CÙNG file README với dòng "Một lượt kiểm tra | **656 ms**" cách đó 49
+   * dòng. Một README tự mâu thuẫn với chính nó ở hai dòng cùng nói một phép đo là
+   * README không đáng đọc — đúng câu chú thích ở đầu khối này đã viết cho `330 test`.
+   *
+   * Thêm mốc riêng thay vì gộp: dòng 30 % và dòng 25 % mang những con số khác nhau,
+   * và một `.replace` chung sẽ phải đoán con số nào thuộc dòng nào.
+   */
+  [/^\| \*\*25 %\*\* Solana stack · hiệu năng \|/, (d) =>
+    d.replace(/`inspect\(\)` \*\*\d+ ms\*\*/, `\`inspect()\` **${S.tichHop.msMotLuot} ms**`)],
   [/^\*\*330 tests\*\*|^Measured, not estimated/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`).replace(/\*\*\d+ labelled samples\*\*/, `**${S.soMau} labelled samples**`)],
 ]);
+
+/*
+ * ĐỘ TRỄ PHÍA NGƯỜI DÙNG — ba chỗ công bố, trước nay KHÔNG chỗ nào có neo.
+ *
+ * Đó là lý do bộ số này trôi HAI lần: `~850 ms` (trung vị 4 lượt sau khi bỏ lượt đầu)
+ * sống tới tận P01, rồi bản sửa của P01 (1596/3874/3877) lại lạc hậu ngay sau lượt đo
+ * kế tiếp — 15/09 cho p95 quan sát 5359 ms và cao nhất 8896 ms.
+ *
+ * Sửa tay lần thứ ba chỉ dời thời điểm trôi. Ba dòng dưới đây nay đọc từ
+ * `so-lieu.json` như mọi con số công khai khác.
+ */
+if (S.hieuNang) {
+  const H = S.hieuNang;
+  const vi = (n) => String(n).replace(".", ",");
+  thayDong("docs/HIEU-NANG.md", [
+    [/^\| Trung vị \(cả \d+ lượt\) \|/, (d) => d.replace(/\*\*[\d.]+ ms\*\*/, `**${H.trungViMs} ms**`)],
+    [/^\| \*\*Percentile 95 quan sát\*\* \|/, (d) => d.replace(/\*\*[\d.]+ ms\*\*/, `**${H.p95QuanSatMs} ms**`)],
+    [/^\| Cao nhất \|/, (d) => d.replace(/\*\*[\d.]+ ms\*\*/, `**${H.caoNhatMs} ms**`)],
+    [/^\| Dao động \(max\/min\) \|/, (d) => d.replace(/\*\*[\d,]+×\*\*/, `**${vi(H.daoDong)}×**`)],
+  ]);
+  thayDong("README.md", [
+    [/^\| \*\*20 %\*\* demo và trình bày \|/, (d) =>
+      d
+        .replace(/FCP \*\*\d+ ms\*\*/, `FCP **${H.fcpNguoiMs} ms**`)
+        .replace(/bấm→thẻ \*\*n=\d+\*\*/, `bấm→thẻ **n=${H.soMau}**`)
+        .replace(/trung vị \*\*[\d.]+ ms\*\*/, `trung vị **${H.trungViMs} ms**`)
+        .replace(/p95 quan sát \*\*[\d.]+ ms\*\*/, `p95 quan sát **${H.p95QuanSatMs} ms**`)],
+  ]);
+  thayDong("docs/adr/0001-doi-huong-technical-build.md", [
+    [/^\| Bấm → thẻ kết quả \|/, (d) =>
+      d
+        .replace(/\*\*n=\d+\*\*/, `**n=${H.soMau}**`)
+        .replace(/\d+ lượt hỏng/, `${H.luotHong} lượt hỏng`)
+        .replace(/trung vị \*\*[\d.]+ ms\*\*/, `trung vị **${H.trungViMs} ms**`)
+        .replace(/p95 quan sát \*\*[\d.]+ ms\*\*/, `p95 quan sát **${H.p95QuanSatMs} ms**`)
+        .replace(/dải \*\*[\d.]+–[\d.]+ ms\*\*/, `dải **${H.thapNhatMs}–${H.caoNhatMs} ms**`)
+        .replace(/dao động [\d,]+×/, `dao động ${vi(H.daoDong)}×`)],
+  ]);
+}
 
 // CLAUDE.md đứng ngoài mọi vòng dọn dẹp trước vì không ai nghĩ nó là "tài liệu công
 // khai" — nhưng nó là thứ mọi phiên làm việc đọc đầu tiên, nên số cũ ở đây lan ra
@@ -235,12 +287,27 @@ if (GIAY) {
   ]);
 }
 
-// Câu "29 dòng, đọc hết được" nằm ngay trong README của chính ví dụ tích hợp — chỗ
+// Câu "30 dòng, đọc hết được" nằm ngay trong README của chính ví dụ tích hợp — chỗ
 // người tích hợp đọc trước khi quyết định thử. Con số này do `dem-dong.mjs` đo từ
 // chính file đó, nên gõ tay là bảo đảm sẽ lệch.
+//
+// MỐC NÀY ĐÃ GÃY MỘT LẦN, và cách nó gãy đáng ghi lại. TB-I02 đưa hợp đồng ký sang
+// `ky.js`, nên câu cũ — "Tất cả nằm trong `src/tich-hop.js`" — thành SAI và bị viết
+// lại. Câu mới không khớp mốc nữa, script ném lỗi giữa chừng SAU KHI đã ghi
+// `README.md` gốc: một lượt đồng bộ ghi được nửa chừng.
+//
+// Script làm đúng (nó ném thay vì im lặng bỏ qua). Thứ thiếu là `NEO_DONG_BO` của
+// `claim.test.ts` không có dòng này, nên `npm run check` vẫn xanh trong khi mốc đã
+// chết — chỉ người chạy `npm run so-lieu` mới biết. Đã thêm neo cùng lúc với sửa này.
+//
+// Mốc mới bám "nằm trong `src/tich-hop.js` — **N dòng**" thay vì bám chữ mở đầu câu:
+// phần đầu câu là văn xuôi và sẽ còn được viết lại, phần này là chỗ con số thật sống.
 if (TH?.dongMa) {
   thayDong("vi-du-tich-hop/README.md", [
-    [/^Tất cả nằm trong `src\/tich-hop\.js`/, (d) => d.replace(/— \d+ dòng,/, `— ${TH.dongMa} dòng,`)],
+    [
+      /nằm trong `src\/tich-hop\.js` — \*\*\d+ dòng\*\*/,
+      (d) => d.replace(/— \*\*\d+ dòng\*\*/, `— **${TH.dongMa} dòng**`),
+    ],
   ]);
 }
 
@@ -252,6 +319,43 @@ if (TH?.dongMa) {
  * 7,2 giây khi thực tế 7,7). Một trang canh tính nhất quán mà tự lệch thì nó là ví
  * dụ ngược cho chính luận điểm của nó.
  */
+/*
+ * BẢNG BẰNG CHỨNG RUBRIC — thêm 13/09 sau khi nó trôi ngay trong phiên viết ra nó.
+ *
+ * README mục "Bằng chứng kỹ thuật" và ADR-0001 mục 4 đều gõ tay số test. Chưa đầy
+ * một giờ sau, `npm run check` thêm 10 bài và cả hai chỗ nói 556 trong khi thực tế
+ * 566 — đúng hình dạng T04-c, lặp lại trong chính tài liệu vừa viết để chống nó.
+ *
+ * Sửa tay hai chỗ đó là đặt hẹn giờ cho lần lệch sau. Đưa vào đây, và vào
+ * `NEO_DONG_BO` của `claim.test.ts`, thì lần sau nó tự đổi.
+ */
+thayDong("README.md", [
+  [/^\| \*\*30 %\*\* độ khó và chiều sâu \|/, (d) =>
+    d.replace(/\*\*\d+\*\* test offline/, `**${S.test.pass}** test offline`)
+     .replace(/\*\*\d+\*\* luật L2/, `**${S.soLuat}** luật L2`)],
+]);
+
+/*
+ * ADR-0002 ghi số test trong bảng tương thích. Bản đầu viết tay `654` và nó sai
+ * ngay trong phiên viết — phép đo cho `661` sau khi thêm bảy bài guard cho chính
+ * ADR đó. Một con số viết tay trong tài liệu kiến trúc là một con số sẽ lệch.
+ */
+thayDong("docs/adr/0002-chan-doan-tuy-chon.md", [
+  [/^\| Bộ test \|/, (d) => d.replace(/\*\*\d+ pass/, `**${S.test.pass} pass`)],
+]);
+
+thayDong("docs/adr/0001-doi-huong-technical-build.md", [
+  [/^\| Test tự động, offline \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
+  // `msMotLuot` đổi mỗi lần chạy lại devnet — nó trôi ngay trong phiên viết ADR
+  // (664 → 656 sau một lượt `thu-tich-hop`). Guard `adrTechnical.test.ts` bắt được,
+  // nhưng cách sửa đúng là đưa vào đây chứ không gõ lại số.
+  [/^\| Một lượt `inspect\(\)` \|/, (d) => d.replace(/\*\*\d+ ms\*\*/, `**${S.tichHop.msMotLuot} ms**`)],
+  [/^\| Lượt gọi RPC mỗi lượt kiểm \|/, (d) =>
+    d.replace(/trung vị \*\*[\d,]+\*\*/, `trung vị **${String(S.chiPhi.luotGoiRpc.trungVi).replace(".", ",")}**`)],
+  [/^\| Luật L2, mỗi luật có ca dương/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soLuat}**`)],
+  [/^\| Mẫu đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+]);
+
 thayDong("docs/BANG-CLAIM.md", [
   [/^\| Test tự động \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
   [/^\| Mẫu đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],

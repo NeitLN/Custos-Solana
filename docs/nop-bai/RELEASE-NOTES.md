@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `82e51a3cff3dfa028a1b3640f2f082afde3a221f`
+**Commit:** `780cf6d5408c031a852ac1fec371bbc5c9dc3207`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -11,14 +11,14 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **487** pass · 0 fail |
+| Test tự động | **711** pass · 0 fail |
 | Luật tất định | **14** — 14 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử đã gắn nhãn | **38** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
 | Coverage trung bình | **82 %** trên 9/20 mẫu |
 | Lệnh chạm tài sản người ký đọc hiểu được | **13/20** |
 | Người dùng thật nêu được hậu quả | **13/20** |
-| Tích hợp từ ngoài monorepo | **8 giây** tới kết quả đầu · **30** dòng mã · **591 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **14.9 giây** tới kết quả đầu · **30** dòng mã · **652 ms** một lượt |
 | Bẫy đối kháng AI bị chặn | **13/13** máy bắt được, 3/3 câu đúng vẫn đi qua |
 
 > **`0` là số CÁO BUỘC, không phải "0 false positive".** Cohort chưa
@@ -29,7 +29,6 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - **Chưa phỏng vấn người mua nào.** Custos bán cho ví và dApp; đội mới hỏi người dùng cuối. Câu *"ai trả tiền"* chưa có dữ liệu.
 - **Chưa bên thứ ba nào tích hợp.** Ví dụ ở `vi-du-tich-hop/` do chính đội dựng — nó đo ma sát tích hợp, không đo nhu cầu thị trường.
 - **Số hiểu 13/20 đo trên giao diện lúc 29/08 và 30/08/2026**, đã thiết kế lại sau đó. Vòng 2 chưa chạy.
-- **Chưa đánh giá với mô hình ngôn ngữ thật** — cần khoá API, bản demo công khai cố ý không nhúng khoá.
 - **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được. Chưa có decoder cho chương trình DEX.
 - **14/14 luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong `packages/core/test/capLuat.test.ts`.
 - **Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet.

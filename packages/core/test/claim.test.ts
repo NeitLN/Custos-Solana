@@ -261,12 +261,44 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
   ["PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
   ["README.md", /^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn/],
+  ["README.md", /^\| \*\*30 %\*\* độ khó và chiều sâu \|/],
+  // Dòng 25 % nhắc lại `inspect()` và đã trôi một lần: sáu chỗ ghi 656 ms trong khi
+  // nó giữ 664 — cùng file, cách dòng đúng của nó 49 dòng.
+  ["README.md", /^\| \*\*25 %\*\* Solana stack · hiệu năng \|/],
+  ["docs/adr/0001-doi-huong-technical-build.md", /^\| Test tự động, offline \|/],
+  ["docs/adr/0002-chan-doan-tuy-chon.md", /^\| Bộ test \|/],
+  ["docs/adr/0001-doi-huong-technical-build.md", /^\| Một lượt `inspect\(\)` \|/],
   ["docs/BAO-CAO-KIEM-CHUNG.md", /^\| Bẫy đối kháng AI bị chặn \|/],
   ["docs/BAO-CAO-TONG.md", /^\| Bẫy đối kháng AI bị chặn \|/],
   ["SEED-DATASET.md", /^> hiện tại có \*\*\d+ mẫu\*\*/],
   ["SEED-DATASET.md", /^> \*"\d+ luật, \d+ mẫu kiểm thử/],
   ["packages/core/README.md", /Coverage chưa đủ trên DeFi/],
   ["packages/core/README.md", /^npx npm@[\d.]+ run check /],
+  /*
+   * BA MỐC CỦA `vi-du-tich-hop/README.md` — thiếu chúng đã gây một lỗi thật.
+   *
+   * TB-I02 chuyển hợp đồng ký sang `ky.js`, nên câu "Tất cả nằm trong
+   * `src/tich-hop.js`" thành sai và bị viết lại. Câu đó là MỐC của
+   * `dong-bo-so-tai-lieu.mjs`, nhưng không nằm trong danh sách này — nên
+   * `npm run check` vẫn xanh trong khi mốc đã chết. Lần chạy `npm run so-lieu` kế
+   * tiếp ném lỗi giữa chừng, sau khi đã ghi xong `README.md` gốc.
+   *
+   * Nửa-ghi là trạng thái tệ hơn cả không chạy: một phần tài liệu mang số mới, phần
+   * còn lại mang số cũ, và không dấu hiệu nào trên cây làm việc nói ra điều đó.
+   */
+  ["vi-du-tich-hop/README.md", /nằm trong `src\/tich-hop\.js` — \*\*\d+ dòng\*\*/],
+  ["vi-du-tich-hop/README.md", /^\| Cài đặt → kết quả đầu tiên \|/],
+  ["vi-du-tich-hop/README.md", /^\| Một lượt `inspect\(\)` \|/],
+  /*
+   * Bốn mốc độ trễ. Bộ số này đã trôi HAI lần vì không mốc nào canh nó: `~850 ms`
+   * sống tới P01, rồi bản sửa của P01 lạc hậu ngay ở lượt đo kế tiếp.
+   */
+  ["docs/HIEU-NANG.md", /^\| Trung vị \(cả \d+ lượt\) \|/],
+  ["docs/HIEU-NANG.md", /^\| \*\*Percentile 95 quan sát\*\* \|/],
+  ["docs/HIEU-NANG.md", /^\| Cao nhất \|/],
+  ["docs/HIEU-NANG.md", /^\| Dao động \(max\/min\) \|/],
+  ["README.md", /^\| \*\*20 %\*\* demo và trình bày \|/],
+  ["docs/adr/0001-doi-huong-technical-build.md", /^\| Bấm → thẻ kết quả \|/],
 ];
 
 test("mọi mốc mà script đồng bộ dựa vào đều còn tìm thấy dòng", () => {
