@@ -329,11 +329,48 @@ export function SoLieu() {
               />
             </div>
 
-            <GioiHan tieuDe="Chưa đo với mô hình thật ở vòng này.">
-              Cần khoá API, mà bản demo công khai cố ý không nhúng khoá. Phần đó đánh dấu{" "}
-              <code className="font-mono text-[13px]">{d.evalAi.moHinhThat ?? "chưa đo"}</code> trong dữ
-              liệu — không để trống cho ai đó tưởng là 0. Cách đo đầy đủ ở{" "}
-              <code className="font-mono text-[13px]">docs/AI-EVALUATION.md</code>.
+            {/*
+             * TIÊU ĐỀ ĐỌC TỪ DỮ LIỆU, KHÔNG GÕ CỨNG.
+             *
+             * Bản trước gõ cứng "Chưa đo với mô hình thật ở vòng này." ngay cạnh ô
+             * in ra `moHinhThat` từ `so-lieu.json`. Sau lượt eval thật ngày 11/09,
+             * dữ liệu chuyển sang "đã đo" còn tiêu đề thì không — trang công khai
+             * đọc thành: *"Chưa đo với mô hình thật. … Phần đó đánh dấu `đã đo`
+             * trong dữ liệu"*, một câu tự mâu thuẫn với chính nó cách nhau hai dòng.
+             *
+             * Hướng sai là nói GIẢM — báo chưa làm một việc đã làm. Nhưng thể lệ
+             * phạt "trình bày sai" chứ không phạt riêng chiều thổi phồng, và một
+             * trang số liệu tự mâu thuẫn thì mọi con số khác trên đó cũng mất tin.
+             *
+             * Chữ gõ tay cạnh một ô đọc từ dữ liệu là chỗ trôi rẻ nhất trong repo
+             * này: không guard nào so hai bên, và người sửa dữ liệu không mở file
+             * giao diện. Nên tiêu đề phải sinh từ cùng một trường.
+             */}
+            <GioiHan
+              tieuDe={
+                d.evalAi.moHinhThat === "đã đo"
+                  ? "Đã đo với mô hình thật — nhưng lợi ích thì chưa đo được."
+                  : "Chưa đo với mô hình thật ở vòng này."
+              }
+            >
+              {d.evalAi.moHinhThat === "đã đo" ? (
+                <>
+                  Lượt live có thật, ghi trong{" "}
+                  <code className="font-mono text-[13px]">data/eval/ai-ket-qua.json</code>. Thứ{" "}
+                  <strong>chưa</strong> đo được là lớp AI có giúp người dùng hiểu hơn không: trên
+                  thước nêu phần chưa đọc hiểu được, mô hình <strong>ngang</strong> câu mẫu, không
+                  hơn. Bản demo công khai vẫn cố ý không nhúng khoá, nên trang này chạy đường tất
+                  định. Cách đo đầy đủ ở{" "}
+                  <code className="font-mono text-[13px]">docs/AI-EVALUATION.md</code>.
+                </>
+              ) : (
+                <>
+                  Cần khoá API, mà bản demo công khai cố ý không nhúng khoá. Phần đó đánh dấu{" "}
+                  <code className="font-mono text-[13px]">{d.evalAi.moHinhThat ?? "chưa đo"}</code>{" "}
+                  trong dữ liệu — không để trống cho ai đó tưởng là 0. Cách đo đầy đủ ở{" "}
+                  <code className="font-mono text-[13px]">docs/AI-EVALUATION.md</code>.
+                </>
+              )}
             </GioiHan>
           </section>
         )}

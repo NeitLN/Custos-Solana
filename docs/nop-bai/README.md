@@ -8,7 +8,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
 | **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
 | **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | ⏸ **hoãn tới khi chốt sản phẩm** — kịch bản sẵn ở `docs/KICH-BAN-VIDEO.md` |
-| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | ✅ **đã nộp 24/08** |
+| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | ⚠️ **đã nộp 24/08 theo track Best Product & Business** — đội chuyển hướng phát triển sang Technical Build từ 12/09, **chưa xác nhận biểu mẫu đã cập nhật**. Xem [ADR-0001](../adr/0001-doi-huong-technical-build.md) và TB-H01 |
 
 ---
 
@@ -73,8 +73,13 @@ npm run nop-bai
 
 Bài đó soi repo rồi tự trả lời: bộ test, cây làm việc, ví dụ tích hợp, deck, ảnh dự
 phòng, tag, metadata repo. Nó **không tự tick** ô nào cần con người, và nó liệt kê
-riêng các ô còn trống về **bằng chứng** — phỏng vấn người mua, bên thứ ba tích hợp,
-usability vòng 2, eval mô hình thật.
+riêng phần **bằng chứng** — phỏng vấn người mua, bên thứ ba tích hợp, usability vòng
+2, eval với mô hình thật. Mỗi ô đọc từ artifact: ô nào đã lấp thì nó nói ra là đã
+lấp, không nằm lì trong danh sách trống.
+
+> Ô *"eval với mô hình thật"* từng gõ cứng chuỗi `BLOCKED_BY_SECRET` thẳng trong mã,
+> nên nó báo CHƯA suốt ba ngày sau khi lượt live đã chạy (`a0f2c91`, 11/09). Một ô
+> trống giả cũng là trình bày sai, và nó dẫn tới quyết định sai của chính đội.
 
 Một checklist gõ tay là danh sách của ngày viết nó. Sau ba lần sửa, ô người ta tin
 nhất lại là ô sai nhất.
