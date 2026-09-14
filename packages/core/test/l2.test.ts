@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Facts, TokenAccountFact, AccountFact, MintFact } from "../src/facts.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
+import { LUAT } from "../src/l2/rules.ts";
 import { REASON, chiLaThongTin } from "../src/constants.ts";
 
 const TOI = "ViNguoiKy1111111111111111111111111111111111";
@@ -160,6 +161,43 @@ test("FAIL-SAFE — lệnh chưa đọc hiểu mà KHÔNG chạm tài sản ngư
 test("FAIL-SAFE — lookup table không giải được thì không bao giờ ra safe", () => {
   const r = danhGia(facts({ lookupTables: [{ address: "Alt1", resolved: false }] }));
   assert.equal(r.level, "warning");
+});
+
+test("FAIL-SAFE 3 tự đứng được, KHÔNG dựa vào luật 10", () => {
+  /*
+   * Bài này sinh ra từ mutation của TB-B04, và nó lấp một lỗ mà bài ngay phía trên
+   * KHÔNG thấy.
+   *
+   * Đo được: tắt fail-safe 3 trong `evaluate.ts` mà **không bài nào trong 609 bài
+   * đỏ**. Lý do không phải fail-safe 3 thừa — mà vì luật 10 cũng bắt đúng điều kiện
+   * đó (`lookupTables.some(!resolved)`) và nâng verdict trước. Hai lớp chồng lên
+   * nhau, nên bài trên xanh dù lớp nào làm việc cũng được.
+   *
+   * Vì sao vẫn cần hai lớp: luật 10 phát MÃ LÝ DO để giao diện giải thích được;
+   * fail-safe 3 là lưới cuối, chạy kể cả khi tập luật bị thay. `danhGia` nhận tham
+   * số `luat` chính là để kiểm điều đó — bỏ luật 10 ra thì chỉ còn fail-safe 3, và
+   * verdict vẫn phải là `warning`.
+   *
+   * Đo: `reasonCodes` rỗng ⇒ không luật nào phát mã, nên `warning` chỉ có thể đến
+   * từ fail-safe.
+   */
+  const f = facts({ lookupTables: [{ address: "Alt1", resolved: false }] });
+  const khongLuat10 = LUAT.filter((l) => l.id !== 10);
+
+  const r = danhGia(f, khongLuat10);
+  assert.equal(r.level, "warning", "bỏ luật 10 thì fail-safe 3 phải tự nâng verdict");
+  assert.deepEqual(
+    r.reasonCodes,
+    [],
+    "không luật nào phát mã ở đây — `warning` phải đến từ fail-safe, không từ luật",
+  );
+
+  // Và ca âm: bảng GIẢI ĐƯỢC thì fail-safe 3 phải im.
+  const rOk = danhGia(
+    facts({ lookupTables: [{ address: "Alt1", resolved: true }] }),
+    khongLuat10,
+  );
+  assert.equal(rOk.level, "safe", "bảng giải được thì không có gì để cảnh báo");
 });
 
 test("FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng", () => {

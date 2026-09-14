@@ -66,17 +66,44 @@ const MAU_DONG = {
   info: "text-slate-700",
 } as const;
 
+/**
+ * Bối cảnh của chính lượt kiểm này — thẻ TB-X02.
+ *
+ * Thẻ đòi *"hiển thị transaction đang kiểm, cluster, kết quả live/replay và phần chưa
+ * hiểu"*. Ba thứ đầu KHÔNG suy được từ `InspectResult`: kết quả không mang cluster,
+ * không mang endpoint, và không biết mình đến từ một lượt chạy thật hay một file mock.
+ *
+ * Trước X02, chữ "Devnet" nằm rải rác trong câu văn của giao diện. Một người đọc câu
+ * *"Đang mô phỏng trên Devnet"* không phân biệt được nó là nhãn cứng hay là thứ đo
+ * được — nên nó không phải bằng chứng.
+ *
+ * TUỲ CHỌN: các chỗ gọi khác (`PhongVan.tsx`) không có bối cảnh và vẫn phải chạy.
+ */
+export type BoiCanh = {
+  /** Cluster THẬT của lượt này, suy từ endpoint đang dùng. */
+  cluster: string;
+  /** Host của endpoint — bỏ path/query vì credential nằm ở đó. */
+  nguon: string;
+  /** `live` = vừa gọi RPC thật; `mock` = đọc file dựng sẵn. Không được lẫn. */
+  kieu: "live" | "mock";
+  /** Tên file mock, chỉ có khi `kieu === "mock"`. */
+  tenMock?: string;
+};
+
 export function CanhBao({
   ketQua,
   onHuy,
   onKy,
   choPhepKy = true,
+  boiCanh,
 }: {
   ketQua: InspectResult;
   onHuy: () => void;
   onKy: () => void;
   /** Bản công khai không nhúng khoá ký — ẩn nút thay vì để nó bấm rồi lỗi. */
   choPhepKy?: boolean;
+  /** Bối cảnh lượt kiểm. Vắng mặt ⇒ khối dữ kiện không hiện, không bịa. */
+  boiCanh?: BoiCanh;
 }) {
   const { analyzed, total, unverifiedPrograms } = ketQua.coverage;
 
@@ -345,6 +372,40 @@ export function CanhBao({
           </button>
           {moKyThuat && (
             <>
+              {/* BỐI CẢNH LƯỢT KIỂM — thẻ TB-X02.
+
+                  Đặt TRƯỚC bảng dữ kiện có chủ ý: câu hỏi đầu tiên của một người
+                  muốn tự kiểm chứng là *"những con số này đến từ đâu"*, không phải
+                  *"những con số này là gì"*.
+
+                  Vắng `boiCanh` thì khối này không hiện — không bịa ra một cluster
+                  mà component không biết. */}
+              {boiCanh && (
+                <dl className="mo-ra mt-2 space-y-1 rounded-xl border border-slate-200 bg-white p-3 font-mono text-[11px] text-slate-600">
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-slate-500">Nguồn kết quả:</dt>
+                    <dd className="break-all font-semibold text-slate-800">
+                      {boiCanh.kieu === "live"
+                        ? "chạy thật — vừa gọi RPC"
+                        : `dữ liệu mock “${boiCanh.tenMock ?? "?"}” — KHÔNG phải kết quả thật`}
+                    </dd>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-slate-500">Cluster:</dt>
+                    <dd className="break-all text-slate-800">{boiCanh.cluster}</dd>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-slate-500">Endpoint:</dt>
+                    <dd className="break-all text-slate-800">{boiCanh.nguon}</dd>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="text-slate-500">Phần chưa đọc hiểu:</dt>
+                    <dd className="break-all text-slate-800">
+                      {total - analyzed}/{total} lệnh · {unverifiedPrograms} chương trình chưa xác minh
+                    </dd>
+                  </div>
+                </dl>
+              )}
               <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
                 {chiTietKyThuat(ketQua).map((d, i) => (
                   <div key={i} className="flex flex-wrap gap-x-2">

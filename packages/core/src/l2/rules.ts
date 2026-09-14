@@ -6,11 +6,46 @@ import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
 /** System Program. Đích của mọi lệnh đóng tài khoản token. */
 const SYSTEM_PROGRAM = "11111111111111111111111111111111";
 
+/**
+ * Một dữ kiện mà luật đã DỰA VÀO để kết luận — dưới dạng ID ổn định.
+ *
+ * Vì sao cần, nói bằng lỗi đã đo được:
+ *
+ *   `diff.ts` từng quyết định màu của mỗi dòng bằng `hits.some(h =>
+ *   h.detail.includes(địa_chỉ))` — dò một chuỗi tiếng Việt để tìm base58 nằm trong
+ *   đó. Cách này im lặng sai khi luật nhúng một định danh KHÁC với thứ bảng đang
+ *   dò. Đo trên `R11-pos`: luật 11 nhúng **mint** (`43JGWQ…`), bảng dò **địa chỉ
+ *   token account** (`6GKSK…`) — không bao giờ khớp. Kết quả: hai token rời ví sạch
+ *   (500000000 → 0 và 300000000 → 0), engine phát `OUTFLOW_KHONG_KHOP`, và cả hai
+ *   dòng số dư vẫn tô `info`. Người dùng thấy cảnh báo Vàng mà bảng nói bình thường.
+ *
+ *   Luật 13 đã dính đúng lỗi này trước đó và được vá riêng bằng `h.ruleId === 13`.
+ *   Vá theo từng luật thì luật thứ ba mắc lại sẽ không ai thấy.
+ *
+ * `loai` cho biết `khoa` là loại định danh nào — hai luật cùng nói về một token có
+ * thể cầm hai khoá khác nhau (mint vs địa chỉ tài khoản), và gộp chúng lại là tái
+ * tạo đúng lỗi trên.
+ */
+export type BangChung =
+  | { loai: "tokenAccount"; khoa: string }
+  | { loai: "mint"; khoa: string }
+  | { loai: "account"; khoa: string }
+  | { loai: "program"; khoa: string }
+  | { loai: "lookupTable"; khoa: string }
+  /** Luật nói về SOL của người được bảo vệ — không gắn với account cụ thể nào. */
+  | { loai: "solNguoiDung"; khoa: "" };
+
 export type RuleHit = {
   ruleId: number;
   level: Level;
   reasonCode: string;
   detail: string;
+  /**
+   * Dữ kiện luật đã dựa vào. TUỲ CHỌN để không phá 16 chỗ trả `RuleHit` hiện có —
+   * luật chưa gắn thì `diff.ts` lui về cách cũ và ghi rõ là chưa có bằng chứng, chứ
+   * không đoán.
+   */
+  bangChung?: BangChung[];
 };
 
 export type Rule = {
@@ -299,6 +334,20 @@ export const luat11: Rule = {
       level: "warning" as const,
       reasonCode: REASON.OUTFLOW_KHONG_KHOP,
       detail: `${-d} ${mint} rời khỏi ví mà giao dịch không có phần nào trả lại`,
+      /*
+       * GẮN CẢ HAI ĐỊNH DANH, và đó là toàn bộ lý do trường này tồn tại.
+       *
+       * Luật này cộng theo `mint`, nên `detail` chỉ nhúng mint. Bảng chênh lệch thì
+       * tô màu theo từng **tài khoản token**. Hai định danh khác nhau cho cùng một
+       * sự việc — dò chuỗi không bao giờ nối được chúng, và đó là lỗi đã đo trên
+       * `R11-pos`.
+       */
+      bangChung: [
+        { loai: "mint" as const, khoa: mint },
+        ...f.tokenAccounts
+          .filter((t) => t.mint === mint && t.ownerBefore === f.signer && t.amountAfter < t.amountBefore)
+          .map((t) => ({ loai: "tokenAccount" as const, khoa: t.address })),
+      ],
     }));
   },
 };
@@ -525,6 +574,15 @@ export const luat13: Rule = {
       ruleId: 13,
       level: "warning" as const,
       reasonCode: REASON.SOL_ROI_VI,
+      /*
+       * Luật này nói về SOL của người được bảo vệ — nó KHÔNG gắn với một tài khoản
+       * cụ thể nào, và đó chính là lý do `diff.ts` từng phải vá riêng bằng
+       * `h.ruleId === 13`: dò `detail` không tìm ra địa chỉ nào để khớp.
+       *
+       * `solNguoiDung` là loại bằng chứng cho đúng tình huống đó, nên ngoại lệ theo
+       * số hiệu luật không cần tồn tại nữa.
+       */
+      bangChung: [{ loai: "solNguoiDung" as const, khoa: "" as const }],
       detail: `${chuyenDi} lamport rời khỏi tay bạn, trên tổng số ${truoc} đang có (đã tính cả wrapped SOL)`,
     }];
   },

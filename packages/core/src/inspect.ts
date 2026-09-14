@@ -77,6 +77,35 @@ export async function inspect(
     loiKhaiLech = { khai: mongDoi.type, nhanDien: detectedPrimaryAction.type };
   }
 
+  /*
+   * CHẨN ĐOÁN — dựng TỪ `l2.hits`, tức dữ liệu của CHÍNH lượt này.
+   *
+   * Thẻ X01 cấm đích danh: *"không gọi lại RPC rồi ghép trace của trạng thái khác
+   * vào cảnh báo cũ"*. `l2.hits` là kết quả của `danhGia(facts)` ở trên, và `facts`
+   * đến từ đúng một lượt `extractFacts` — nên trace và verdict không thể lệch nhau.
+   *
+   * Không có lời gọi mạng nào ở đây, và đó là điều kiểm được: `inspect()` gọi đúng
+   * 5 method RPC, tất cả nằm trong `extractFacts`.
+   */
+  const chanDoan = options.chanDoan
+    ? {
+        phienBan: 1 as const,
+        canhBao: l2.hits.map((h) => ({
+          ruleId: h.ruleId,
+          reasonCode: h.reasonCode,
+          level: h.level,
+          bangChung: (h.bangChung ?? []).map((b) => ({ loai: b.loai, khoa: b.khoa })),
+        })),
+        // Đếm, không đoán bù — xem chú thích `thieuBangChung` trong types.
+        thieuBangChung: l2.hits.filter((h) => (h.bangChung ?? []).length === 0).length,
+        nguon: {
+          tang: "L1" as const,
+          coverage: facts.coverage,
+          simulationOk: facts.simulationOk,
+        },
+      }
+    : null;
+
   return {
     level: l2.level, // CHỈ L2 sinh ra giá trị này
     aiAdvisory,
@@ -86,5 +115,6 @@ export async function inspect(
     coverage: facts.coverage,
     explanation,
     ...(loiKhaiLech ? { loiKhaiLech } : {}),
+    ...(chanDoan ? { chanDoan } : {}),
   };
 }

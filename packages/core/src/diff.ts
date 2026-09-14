@@ -1,6 +1,6 @@
 import type { DiffEntry } from "@custos-solana/types";
 import type { Facts } from "./facts.ts";
-import type { RuleHit } from "./l2/rules.ts";
+import type { RuleHit, BangChung } from "./l2/rules.ts";
 import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
 
@@ -110,7 +110,30 @@ export function dungBangChenhLech(
 
   const decimalsCua = new Map(facts.mints.map((m) => [m.address, m.decimals]));
   const kyHieuChuoi = new Map(facts.mints.map((m) => [m.address, m.kyHieu ?? null]));
-  const coHitO = (chuoi: string) => hits.some((h) => h.detail.includes(chuoi));
+  /*
+   * NỐI CẢNH BÁO VỚI DÒNG BẢNG BẰNG ID ỔN ĐỊNH — không dò chuỗi. Thẻ TB-X01.
+   *
+   * Bản cũ: `hits.some(h => h.detail.includes(địa_chỉ))` — tìm base58 bên trong một
+   * câu tiếng Việt. Nó hoạt động chừng nào luật tình cờ nhúng ĐÚNG định danh mà bảng
+   * đang dò, và im lặng sai khi không.
+   *
+   * Đã sai hai lần, cùng một hình dạng:
+   *   · luật 13 nói về SOL của người dùng, không nhắc địa chỉ tài khoản nào ⇒ dòng
+   *     wSOL không bao giờ đỏ. Vá riêng bằng `h.ruleId === 13`.
+   *   · luật 11 cộng theo **mint** nên `detail` nhúng mint, còn bảng dò **địa chỉ
+   *     token account** ⇒ trên `R11-pos`, hai token rời ví sạch mà cả hai dòng vẫn
+   *     `info` trong khi verdict là Vàng.
+   *
+   * Vá theo từng luật thì luật thứ ba mắc lại sẽ không ai thấy. Nên đọc `bangChung`
+   * — danh sách dữ kiện luật khai là đã dựa vào, dưới dạng ID ổn định.
+   *
+   * `detail.includes` giữ lại làm ĐƯỜNG LUI cho 14 chỗ chưa gắn `bangChung`: bỏ hẳn
+   * sẽ làm mọi dòng mất màu ngay, tức đổi một lỗi im lặng thành một lỗi to hơn.
+   */
+  const coBangChung = (loai: BangChung["loai"], khoa: string) =>
+    hits.some((h) => h.bangChung?.some((b) => b.loai === loai && b.khoa === khoa));
+  const coHitO = (chuoi: string) =>
+    hits.some((h) => h.bangChung === undefined && h.detail.includes(chuoi));
 
   for (const t of doDuocHauQua ? facts.tokenAccounts : []) {
     if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
@@ -131,7 +154,11 @@ export function dungBangChenhLech(
         label: `${NHAN.SO_DU}${nhan} sau khi ký`,
         before: dinhDangSo(t.amountBefore, dec),
         after: dinhDangSo(t.amountAfter, dec),
-        severity: t.amountAfter < t.amountBefore && coHitO(t.address) ? "danger" : "info",
+        severity:
+          t.amountAfter < t.amountBefore &&
+          (coBangChung("tokenAccount", t.address) || coHitO(t.address))
+            ? "danger"
+            : "info",
       });
     }
 
@@ -151,7 +178,8 @@ export function dungBangChenhLech(
         label: `${NHAN.DUOC_PHEP_RUT}${nhan}`,
         before: t.delegateBefore ? rutGon(t.delegateBefore) : "không ai",
         after: `${rutGon(t.delegateAfter)} — tới ${dinhDangSo(t.delegatedAmountAfter, dec)}`,
-        severity: coHitO(t.address) ? "danger" : "warning",
+        severity:
+          coBangChung("tokenAccount", t.address) || coHitO(t.address) ? "danger" : "warning",
         ...(t.delegateBefore ? { truocDayDu: t.delegateBefore } : {}),
         sauDayDu: t.delegateAfter,
       });
@@ -197,11 +225,19 @@ export function dungBangChenhLech(
   const phi = facts.phiUocTinh ?? 0n;
 
   if (doDuocHauQua && sol.roi !== 0n && (sol.roi > phi || sol.roi < 0n)) {
-    // Màu lấy THẲNG từ việc luật 13 có kích hoạt hay không, không dò chuỗi.
-    // Trước đây màu của dòng token dò theo `coHitO(địa chỉ)`, mà luật 13 nói về
-    // SOL của người dùng chứ không nhắc địa chỉ tài khoản nào — nên dòng wSOL
-    // không bao giờ được tô đỏ dù engine đã gắn cờ.
-    const luat13 = hits.some((h) => h.ruleId === 13);
+    /*
+     * Màu lấy từ BẰNG CHỨNG, không dò chuỗi và không theo số hiệu luật.
+     *
+     * Bản đầu dò `coHitO(địa chỉ)`, mà luật 13 nói về SOL của người dùng chứ không
+     * nhắc địa chỉ tài khoản nào — nên dòng wSOL không bao giờ đỏ dù engine đã gắn
+     * cờ. Bản vá đầu tiên là một ngoại lệ theo số hiệu: `h.ruleId === 13`.
+     *
+     * Ngoại lệ đó đã hết cần từ TB-X01: luật 13 nay khai `{loai:"solNguoiDung"}`, và
+     * bất kỳ luật nào sau này nói về SOL của người dùng cũng nối được mà không phải
+     * thêm một `h.ruleId === N` thứ hai. Vá theo từng luật thì luật thứ ba mắc lại
+     * sẽ không ai thấy.
+     */
+    const luat13 = coBangChung("solNguoiDung", "");
     out.push({
       label: NHAN.SO_DU_SOL,
       before: dinhDangSo(sol.truoc, LAMPORTS_DECIMALS),

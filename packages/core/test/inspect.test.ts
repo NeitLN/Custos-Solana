@@ -109,6 +109,23 @@ test("expectedAction KHỚP ⇒ KHÔNG tắt cảnh báo nào (dApp độc hại
   );
   assert.equal(r.aiAdvisory, "review_required", "khớp ngữ cảnh không được xoá cảnh báo đã có");
   assert.equal(r.level, "warning", "và không được hạ verdict");
+  /*
+   * Thêm ở TB-B04 sau khi mutation lộ ra lỗ.
+   *
+   * Đảo `!==` thành `===` ở quy tắc bất đối xứng (`inspect.ts`) chỉ làm **một** bài
+   * đỏ — bài "LỆCH ⇒ nâng nghi ngờ". Bài này thì không, vì nó đặt sẵn
+   * `aiAdvisory: "review_required"` từ L3, nên hai assert trên vẫn đúng dù quy tắc
+   * đã bị đảo ngược hoàn toàn.
+   *
+   * `loiKhaiLech` là thứ phân biệt được: nó CHỈ được đặt khi lời khai lệch, và nó
+   * có mặt trong `InspectResult`. Khai KHỚP mà trường này xuất hiện nghĩa là Custos
+   * đang tố một dApp trung thực — đúng chiều sai mà quy tắc bất đối xứng cấm.
+   */
+  assert.equal(
+    (r as { loiKhaiLech?: unknown }).loiKhaiLech,
+    undefined,
+    "lời khai KHỚP thì không được ghi nhận là lệch",
+  );
 });
 
 test("định dạng số theo kiểu Việt Nam", () => {
