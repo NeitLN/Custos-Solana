@@ -347,6 +347,7 @@ Nói thẳng để bên tích hợp tự quyết định:
 | **Ký hiệu token đọc từ chuỗi** | Custos tự đọc ký hiệu từ Metaplex và extension metadata của Token-2022 — không cần khoá của nhà cung cấp nào. Token không công bố metadata thì hiển thị địa chỉ rút gọn. `kyHieuToken` bạn truyền vào vẫn được ưu tiên trước |
 | **Không đo được thì nói ra** | Account vượt trần 100 của RPC, hoặc RPC không trả dữ liệu, sẽ thành `TRANG_THAI_DO_KHUYET` và verdict không bao giờ là `Bình thường` |
 | **14 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
+| **Token-2022: đọc được 2/26 extension** | Chỉ `PermanentDelegate` và `TransferHook`. 23 extension còn lại **không bị từ chối an toàn** — mint mang chúng vẫn cho ra `MintFact` hợp lệ trông y hệt mint trơn, và `coverage` chỉ đếm instruction nên không hạ. Nghĩa là một mint có `TransferFeeConfig` hay `PausableConfig` đi qua mà verdict không biết. Danh sách đầy đủ và lý do chưa vá: [ma trận hành vi](../../docs/bao-mat/MA-TRAN-HANH-VI.md) mục 2.3 |
 | **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |
 | **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
 | **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
@@ -380,7 +381,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 487 test, chạy offline
+npx npm@11.6.2 run check     # 711 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
