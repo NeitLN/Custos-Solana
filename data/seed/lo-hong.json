@@ -1,9 +1,9 @@
 {
-  "ngayDo": "2026-09-05T07:36:48.424Z",
-  "tong": 11,
+  "ngayDo": "2026-09-12T20:17:30.969Z",
+  "tong": 5,
   "theoMucDo": {
     "low": 0,
-    "moderate": 6,
+    "moderate": 0,
     "high": 5,
     "critical": 0
   },
@@ -17,18 +17,6 @@
       "mucDo": "high"
     },
     {
-      "ten": "@solana/spl-token-group",
-      "mucDo": "moderate"
-    },
-    {
-      "ten": "@solana/spl-token-metadata",
-      "mucDo": "moderate"
-    },
-    {
-      "ten": "@solana/web3.js",
-      "mucDo": "moderate"
-    },
-    {
       "ten": "bigint-buffer",
       "mucDo": "high"
     },
@@ -37,20 +25,8 @@
       "mucDo": "high"
     },
     {
-      "ten": "jayson",
-      "mucDo": "moderate"
-    },
-    {
       "ten": "pptxgenjs",
       "mucDo": "high"
-    },
-    {
-      "ten": "stream-json",
-      "mucDo": "moderate"
-    },
-    {
-      "ten": "uuid",
-      "mucDo": "moderate"
     }
   ]
 }

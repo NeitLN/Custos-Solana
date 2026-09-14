@@ -1,0 +1,81 @@
+{
+  "phienBan": 1,
+  "id": "R10-pos",
+  "captureLuc": "2026-09-12T21:20:51.245Z",
+  "nguon": "api.devnet.solana.com",
+  "banGhi": [
+    {
+      "method": "getAddressLookupTable",
+      "khoa": "getAddressLookupTable:5ddefe9c06f8eb42",
+      "thamSo": {
+        "addr": "D2jFDpbgsYkvRBGcZDn4jkDbT2V9KrB6UZTzgyKYPBMo"
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497381766
+        },
+        "value": null
+      }
+    },
+    {
+      "method": "getMultipleAccountsInfo",
+      "khoa": "getMultipleAccountsInfo:f9539d6b69d61a70",
+      "thamSo": {
+        "keys": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "11111111111111111111111111111111"
+        ]
+      },
+      "ketQua": [
+        {
+          "data": {
+            "__buffer": ""
+          },
+          "executable": false,
+          "lamports": 9823881544,
+          "owner": {
+            "__pubkey": "11111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 0
+        },
+        {
+          "data": {
+            "__buffer": "c3lzdGVtX3Byb2dyYW0="
+          },
+          "executable": true,
+          "lamports": 1,
+          "owner": {
+            "__pubkey": "NativeLoader1111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 14
+        }
+      ]
+    },
+    {
+      "method": "simulateTransaction",
+      "khoa": "simulateTransaction:d94ce0fc785f61e0",
+      "thamSo": {
+        "msg": "gAEAAQISYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAv/HmGj3l6yt/xoWSzqszrDrviyQGKf0OIUmtc9gKqYcBAQIAAgwCAAAA6AMAAAAAAAABsr2XOQ91xBExR09SBEhhgtr3hYH3J0qP6ID0+xQ53j4BAAA=",
+        "addresses": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+        ]
+      },
+      "ketQua": {
+        "__loi": "failed to simulate transaction: invalid transaction: Transaction loads an address table account that doesn't exist"
+      }
+    },
+    {
+      "method": "getFeeForMessage",
+      "khoa": "getFeeForMessage:d41a94d88a1a631c",
+      "thamSo": {
+        "msg": "gAEAAQISYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAv/HmGj3l6yt/xoWSzqszrDrviyQGKf0OIUmtc9gKqYcBAQIAAgwCAAAA6AMAAAAAAAABsr2XOQ91xBExR09SBEhhgtr3hYH3J0qP6ID0+xQ53j4BAAA="
+      },
+      "ketQua": {
+        "__loi": "failed to get fee for message: invalid transaction message: Attempted to lookup addresses from a table that does not exist"
+      }
+    }
+  ]
+}

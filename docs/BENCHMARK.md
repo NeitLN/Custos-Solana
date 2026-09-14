@@ -92,6 +92,88 @@ khác điều kiện quyết định. Ví dụ luật `SPL_SET_AUTHORITY__ACCOUN
 (đổi chủ sang ví lạ) và ca âm (`khongCoMa` — cùng hình dạng nhưng không thoả điều
 kiện). Thiếu ca âm thì một luật bật-mọi-lúc cũng qua được bài kiểm.
 
+### 3.1b · Ba TẦNG bằng chứng — và chúng không thay thế nhau
+
+**Việc TB-B01.** Manifest ở [`data/benchmark/manifest.json`](../data/benchmark/manifest.json),
+sinh bởi `npm run manifest-benchmark`.
+
+Một mẫu nằm trong bộ seed **không** có nghĩa mọi phép kiểm đều chạy được cho nó. Ba
+tầng dưới đây chứng minh ba điều khác nhau, và trộn chúng là cách nói quá dễ nhất:
+
+| Tầng | Chạy gì | Chứng minh | Đủ điều kiện | **Đã chạy** |
+|---|---|---|---|---|
+| `l2-facts` | L2 trên Facts **đã đóng băng** | luật **không hồi quy** | 38/38 | **38/38** |
+| `l1-replay` | dựng lại tx từ base64 → đường L1 sản xuất | **L1 bóc tách đúng** | 29/38 | **19/29** |
+| `devnet-live` | chạy thật trên Devnet (TB-B07) | hành vi runtime | 19/38 | **0** — chưa chạy |
+
+**Hai cột cuối là hai chuyện khác nhau, và gộp chúng là cách nói quá dễ nhất ở
+trang này.** *Đủ điều kiện* = mẫu có đủ dữ liệu để tầng đó chạy được. *Đã chạy* =
+tầng đó thật sự đã chạy trên mẫu và cho kết quả. Một mẫu đủ điều kiện mà chưa chạy
+thì **chưa chứng minh gì cả** — và trước TB-B02, cột bên phải chưa hề tồn tại ở
+trang này.
+
+**Vì sao 38 → 29:** chín mẫu (`R01-neg`, `R02-neg`, `R04-neg`, `R08-neg`, `R12-neg`,
+`R13-pos/neg`, `R14-pos/neg`) **không có file giao dịch** — chúng là ca đối chứng
+dựng bằng cách sửa Facts trực tiếp, để cô lập đúng một điều kiện của luật. Chúng kiểm
+ranh giới L2 rất tốt và **không** nói được gì về L1.
+
+**Vì sao 29 → 19:** mười mẫu `real-mainnet` không chạy lại được trên Devnet — account
+của chúng không tồn tại ở đó.
+
+#### Tầng `l1-replay` — đã chạy 19/29. Việc TB-B02.
+
+Runner offline: `npm run replay-rpc`. Nó đọc fixture RPC đã ghi ở
+[`data/benchmark/rpc/`](../data/benchmark/rpc) và chạy qua **`extractFacts` sản
+xuất**, không qua một bản sao dựng riêng — một replay đi đường riêng chỉ chứng minh
+đường riêng đó đúng.
+
+**Vì sao 29 → 19 lần nữa, và lần này là một từ chối cố ý.** Mười mẫu `real-mainnet`
+**chưa có fixture**. `capture-rpc.ts` không cho ghi fixture cho mẫu mainnet bằng
+endpoint devnet: ALT và account của chúng không tồn tại ở đó, nên fixture sinh ra sẽ
+ghi **một sự thật của devnet** rồi dán nhãn mẫu mainnet. Replay từ nó vẫn tái lập
+được — tái lập đúng một kết quả sai. Đó là kiểu hỏng tệ nhất của một benchmark: nó
+xanh, nó ổn định, và nó nói dối. Mười mẫu đó chờ một endpoint mainnet, không chờ
+thêm code.
+
+Kết quả 19 mẫu đã chạy: **19/19 đạt · 0 hỏng**, mỗi mẫu đo hai tính chất —
+
+| Tính chất | Nghĩa | Kết quả |
+|---|---|---|
+| **Tất định** | cùng fixture, hai lượt chạy giống nhau từng bit | 19/19 |
+| **Nhạy fixture** | đổi một dữ kiện trong fixture ⇒ Facts đổi theo | 19/19 |
+
+Tính chất thứ hai là thứ phân biệt một replay thật với một replay trả kết quả dựng
+sẵn — thiếu nó thì một adapter bỏ qua hoàn toàn dữ liệu vẫn xanh và vẫn tất định.
+
+**Vì sao KHÔNG so với Facts đóng băng.** Bản đầu của runner so Facts replay với
+`data/seed/facts/<id>.json` và được **18/19 lệch**. Không cái nào là lỗi của replay:
+decoder đã tốt lên sau 21/08 (thêm `authority`, `coverage.analyzed` 1 → 2), số dư ví
+devnet đã đổi vì airdrop, và bản đóng băng thiếu 5 trường schema mới. Bản đóng băng
+là **ảnh chụp L1 của ngày 21/08, không phải ground truth** — bắt L1 hôm nay khớp nó
+là bắt sản phẩm đứng yên, và sẽ đỏ đúng lúc decoder tốt lên. Độ lệch vẫn được in ra
+mỗi lượt chạy, nhưng để **báo cáo**, không làm runner đỏ.
+
+> **Replay KHÔNG phải một lần thực thi SVM mới.** `simulateTransaction` trong fixture
+> là kết quả một lần chạy SVM **trong quá khứ, trên máy khác**. Tầng này chứng minh
+> L1 bóc tách đúng thứ RPC trả về; nó không nói Solana hôm nay sẽ xử lý giao dịch đó
+> như vậy. Muốn điều đó thì phải chạy thật — TB-B07, tức cột *Đã chạy* của
+> `devnet-live`, hiện là **0**.
+
+**Giới hạn còn lại của tầng này:** fixture **thừa** chưa bị phát hiện. Adapter đếm
+được bản ghi nào đã dùng (`daDung()`), nhưng runner chưa đối chiếu, nên một fixture
+ghi dư bản ghi sẽ không làm gì đỏ. Điều này không ảnh hưởng tính đúng của 19 mẫu đã
+chạy — ghi ở đây để không ai đọc *"19/19 đạt"* thành *"fixture đã được kiểm toàn
+diện"*.
+
+> **Điều tầng `l2-facts` KHÔNG chứng minh:** rằng L1 đã giải mã đúng. Ở tầng này Facts
+> là **đầu vào**, không phải đầu ra. Giữ Facts synthetic để hồi quy là hợp lệ; ghi nó
+> thành *"bằng chứng L1 giải mã đúng"* thì không.
+
+Mỗi mẫu trong manifest mang **hash nội dung** (`git hash-object`, ổn định qua CRLF/LF)
+và **giới hạn của chính nó**. Manifest **không gọi engine Custos** — kỳ vọng chép
+nguyên từ `index.json`, nơi người gán nhãn viết tay khi dựng mẫu. Một oracle tự sinh
+kỳ vọng bằng engine đang kiểm thì mọi bài xanh vĩnh viễn, kể cả khi engine sai.
+
 ### 3.2 · Cohort — 20 giao dịch mainnet, **cố định**
 
 Danh sách chữ ký ghi ở `data/seed/cohort-audit.json` và **tái sử dụng mọi lần chạy**.
@@ -200,6 +282,7 @@ nó chuyển từ 0 sang 1.
 
 ```bash
 npm run check                       # 38 mẫu seed, hồi quy từng mẫu, offline
+npm run manifest-benchmark          # sinh lại manifest + hash + phân tầng
 
 # cohort — chạm mainnet, phải khai báo ý định
 CUSTOS_OFFLINE_MAINNET_RESEARCH=1 node --experimental-strip-types \
@@ -222,3 +305,90 @@ và nếu neo lại thì phải ghi ngày mới ở mọi chỗ, không được
 - Không nói bộ seed đã đủ. 28/38 mẫu là `synthetic-devnet` — đội tự dựng đầu vào để
   kích hoạt luật của chính đội. Điều đó hợp lệ để kiểm luật, và **không** thay được
   dữ liệu độc lập.
+- Không nói tập kiểm tính chất (mục 8) là accuracy hay thẩm định độc lập. Nó đo
+  **độ đáp ứng tính chất** trên 19/38 mẫu, và một trong ba tính chất còn **chưa
+  chứng minh được** là nó bắt được lỗi.
+
+---
+
+## 8 · Tập kiểm TÍNH CHẤT — và vì sao nó không phải accuracy
+
+**Việc TB-B05.** Chạy lại: `npm run danh-gia-b05` (offline). Biên bản máy:
+[`data/benchmark/danh-gia-b05.json`](../data/benchmark/danh-gia-b05.json).
+
+Mục 1 và 2 nói vì sao trang này **không** có confusion matrix và **không** có tập giữ
+lại. Mục này trả lời câu còn lại: *nếu chưa đo được độ chính xác, thì đo được cái gì?*
+
+Đáp: **độ đáp ứng tính chất** — những bất biến suy từ tài liệu RPC của Solana, kiểm
+trên 19 mẫu chạy được qua đường L1 sản xuất.
+
+### 8.1 · Nguồn của tính chất — và vì sao KHÔNG dùng đặc tả nội bộ
+
+Thẻ đòi *"expected properties theo đặc tả/nguồn **độc lập với verdict**"*. Đặc tả nội
+bộ không đạt điều kiện đó, và lịch sử git nói thẳng:
+
+| | commit | thời điểm |
+|---|---|---|
+| `DAC-TA-CORE.md` | `63959f3` | 21/08 **21:55:31** |
+| engine L2 | `42c33d0` | 21/08 **21:57:03** |
+
+**92 giây**, cùng người, cùng phiên. Dùng nó làm nguồn kỳ vọng rồi gọi là độc lập sẽ
+lặp đúng lỗi vòng tròn mà mục 1 đã tự cảnh báo.
+
+Nguồn dùng ở đây là [tài liệu `simulateTransaction` của
+Solana](https://solana.com/docs/rpc/http/simulatetransaction) — tồn tại trước dự án,
+không ai trong đội viết.
+
+### 8.2 · Ba tính chất, và **chỉ hai** được chứng minh
+
+| | Tính chất | Áp dụng | Đạt | Đã chứng minh bắt được lỗi? |
+|---|---|---|---|---|
+| **P1** | mô phỏng hỏng ⇒ KHÔNG có trạng thái sau | 4/19 | **4/4** | gỡ vế `!v.err` ⇒ tụt còn **1/4** |
+| **P2** | không đo được ⇒ phải ghi vào `accountKhongDoDuoc` | 4/19 | **4/4** | tắt nhánh ghi khuyết ⇒ tụt còn **0/4** |
+| **P3** | ALT không giải được ⇒ verdict không bao giờ `safe` | 1/19 | 1/1 | **CHƯA** |
+
+**Cột cuối là cột quan trọng nhất, và P3 không có nó.**
+
+Một tính chất "1/1 đạt" mà không chứng minh được là nó *bắt* được lỗi thì chưa phải
+tính chất — nó là một phép đếm. Mẫu duy nhất kích hoạt P3 (`R10-pos`) cũng có
+`simulationOk: false`, nên fail-safe 1 đã nâng verdict lên `warning` trước khi lớp ALT
+kịp làm gì. Tắt fail-safe 3 hay tắt luật 10 đều không kéo P3 xuống được.
+
+Đây **cùng hình dạng** với phát hiện FS3 ở [mục 3 của
+`MUTATION-B04.md`](bao-mat/MUTATION-B04.md): hai lớp chồng nhau, không tách được bằng
+dữ liệu hiện có. Muốn tách cần một mẫu **ALT hỏng mà mô phỏng THÀNH CÔNG** — bộ 19
+fixture không có, và dựng nó cần Devnet.
+
+Ghi P3 vào bảng với ô trống, chứ không bỏ nó đi: bỏ đi thì bảng trông hoàn hảo và mất
+luôn thông tin rằng còn một tính chất chưa kiểm được.
+
+### 8.3 · 19 mẫu KHÔNG đánh giá được — nhóm riêng, không trộn vào mẫu số
+
+Nghiệm thu thẻ đòi *"số không đánh giá được và lý do"*. 19/38 mẫu không chạy được ở
+tầng này, chia hai nhóm:
+
+| Số | Lý do |
+|---|---|
+| **10** | mẫu `real-mainnet` — `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó |
+| **9** | không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp |
+
+19 + 19 = 38. Trộn hai nhóm này vào mẫu số là cách một tập đánh giá tự thu nhỏ mà
+người đọc vẫn thấy tỉ lệ đẹp.
+
+### 8.4 · Ba điều mục này KHÔNG nói
+
+- **Không phải accuracy.** Đây là độ đáp ứng tính chất trên tập kiểm của đội. Thẻ nói
+  rõ: *"Nếu chỉ có synthetic properties, báo độ đáp ứng trên tập kiểm này; không công
+  bố accuracy thị trường."*
+- **Không phải thẩm định bảo mật độc lập.** Đội tự dựng cả mẫu lẫn tính chất. Gọi nó
+  là *independent security validation* là sai sự thật — thẻ cấm đích danh.
+- **Không có tập giữ lại.** `data/seed/giu-lai/` vẫn trống, và mục 2 nói vì sao. Không
+  mẫu nào trong 38 mẫu cũ được đổi tên thành held-out — thẻ cấm điều đó, và
+  `giuLai.test.ts` canh.
+
+### 8.5 · Không phân loại TP/FP/TN/FN
+
+Thẻ cho phép phân loại *"chỉ khi nhãn và bài toán nhị phân có nghĩa"*. Ở đây không:
+một mẫu có thể vừa đạt tính chất này vừa sai tính chất kia, và "dương tính" không có
+nghĩa xác định. Ép vào bốn ô sẽ sinh ra một con số nghe như accuracy — đúng thứ mục 1
+đã từ chối công bố.
