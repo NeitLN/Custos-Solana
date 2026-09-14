@@ -1,0 +1,189 @@
+{
+  "doLuc": "2026-09-14T19:23:43.509215+00:00",
+  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+  "dauVet": {
+    "bam": "c90436fd14d2fcb9",
+    "soFile": 30
+  },
+  "the": "TB-S02",
+  "soKiem": 35,
+  "soHong": 0,
+  "kiem": [
+    {
+      "ten": "base64 hỏng · không trắng trang",
+      "dat": true,
+      "chiTiet": "1562 ký tự"
+    },
+    {
+      "ten": "base64 hỏng · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "base64 hỏng · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "base64 hỏng · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3274 ms"
+    },
+    {
+      "ten": "base64 hỏng · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "rỗng · không trắng trang",
+      "dat": true,
+      "chiTiet": "1251 ký tự"
+    },
+    {
+      "ten": "rỗng · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "rỗng · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "rỗng · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3185 ms"
+    },
+    {
+      "ten": "rỗng · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "quá dài — 12.000 ký tự · không trắng trang",
+      "dat": true,
+      "chiTiet": "1581 ký tự"
+    },
+    {
+      "ten": "quá dài — 12.000 ký tự · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "quá dài — 12.000 ký tự · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "quá dài — 12.000 ký tự · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3223 ms"
+    },
+    {
+      "ten": "quá dài — 12.000 ký tự · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "HTML trong payload · không trắng trang",
+      "dat": true,
+      "chiTiet": "1562 ký tự"
+    },
+    {
+      "ten": "HTML trong payload · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "HTML trong payload · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "HTML trong payload · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3184 ms"
+    },
+    {
+      "ten": "HTML trong payload · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "Bidi · không trắng trang",
+      "dat": true,
+      "chiTiet": "1562 ký tự"
+    },
+    {
+      "ten": "Bidi · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "Bidi · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "Bidi · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3222 ms"
+    },
+    {
+      "ten": "Bidi · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "JSON chứ không phải base64 · không trắng trang",
+      "dat": true,
+      "chiTiet": "1562 ký tự"
+    },
+    {
+      "ten": "JSON chứ không phải base64 · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "JSON chứ không phải base64 · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "JSON chứ không phải base64 · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3192 ms"
+    },
+    {
+      "ten": "JSON chứ không phải base64 · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải giao dịch · không trắng trang",
+      "dat": true,
+      "chiTiet": "1572 ký tự"
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải giao dịch · không phán quyết",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải giao dịch · HTML không thực thi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải giao dịch · xong trong ngân sách",
+      "dat": true,
+      "chiTiet": "3323 ms"
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải giao dịch · không lỗi console",
+      "dat": true,
+      "chiTiet": ""
+    }
+  ],
+  "dat": true
+}
