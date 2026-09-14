@@ -1,0 +1,24 @@
+  ok   T01-a  xác nhận về, err = null (thành công thật)
+        thực tế: thanhCong   ·   đúng phải là: thanhCong
+  SAI  T01-b  xác nhận về, err = InstructionError (thực thi HỎNG trên chuỗi)
+        thực tế: thanhCong   ·   đúng phải là: thatBaiXacNhan
+        vì: đã xác nhận và value.err khác null ⇒ thực thi thất bại, KHÔNG phải chưa rõ
+  SAI  T01-c  xác nhận về nhưng response sai cấu trúc (không có value)
+        thực tế: thanhCong   ·   đúng phải là: chuaRo
+        vì: không đọc được err thì không biết kết quả — chưa rõ mới đúng
+  ok   T02-a  sendTransaction ném lỗi TRƯỚC khi gửi (ví dụ dựng request hỏng)
+        thực tế: thatBai   ·   đúng phải là: thatBai
+  SAI  T02-b  RPC ĐÃ nhận request rồi mất phản hồi (network error sau khi gửi)
+        thực tế: thatBai   ·   đúng phải là: chuaRo
+        vì: đã bắt đầu gửi mà mất phản hồi ⇒ không ai biết nó có lên chuỗi hay không
+
+2/5 ca nói đúng sự thật.
+CÒN LỖI: T01-b, T01-c, T02-b
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "T01-a",
+      "mo": "xác nhận về, err = null (thành công thật)",
+      "phaThucTe": "thanhCong",

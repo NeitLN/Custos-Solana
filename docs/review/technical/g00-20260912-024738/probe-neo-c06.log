@@ -1,0 +1,72 @@
+  ok   C06-1  neo của một message khớp chính message đó
+        neo tự khớp
+  ok   C06-2  đổi message sau khi kiểm ⇒ neo KHÔNG khớp
+        khop=false lyDo=message-khac
+  ok   C06-3  đổi blockhash ⇒ neo KHÔNG khớp (mặc định re-inspect)
+        khop=false lyDo=message-khac
+  ok   C06-4  đổi người được bảo vệ ⇒ neo KHÔNG khớp
+        khop=false lyDo=nguoi-dung-khac
+  ok   C06-5  đổi cluster ⇒ neo KHÔNG khớp
+        khop=false lyDo=cluster-khac
+  ok   C06-6  neo là dấu vết băm, KHÔNG chứa message gốc
+        độ dài neo 148 ký tự, có chứa message gốc: false
+  ok   C06-7  thêm neo không đổi verdict của L2
+        R01-pos vẫn là danger
+
+7/7 ca đạt.
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "C06-1",
+      "mo": "neo của một message khớp chính message đó",
+      "dat": true,
+      "thucTe": "neo tự khớp",
+      "vi": "nếu ca này sai thì hàm neo hỏng, không phải sản phẩm"
+    },
+    {
+      "ma": "C06-2",
+      "mo": "đổi message sau khi kiểm ⇒ neo KHÔNG khớp",
+      "dat": true,
+      "thucTe": "khop=false lyDo=message-khac",
+      "vi": "thẻ cảnh báo mô tả A mà người dùng sắp ký B — phải chặn ở consumer"
+    },
+    {
+      "ma": "C06-3",
+      "mo": "đổi blockhash ⇒ neo KHÔNG khớp (mặc định re-inspect)",
+      "dat": true,
+      "thucTe": "khop=false lyDo=message-khac",
+      "vi": "blockhash nằm trong message; coi hai message khác byte là như nhau cần một chứng minh riêng"
+    },
+    {
+      "ma": "C06-4",
+      "mo": "đổi người được bảo vệ ⇒ neo KHÔNG khớp",
+      "dat": true,
+      "thucTe": "khop=false lyDo=nguoi-dung-khac",
+      "vi": "cùng giao dịch nhưng người khác thì kết luận khác — không dùng lại được"
+    },
+    {
+      "ma": "C06-5",
+      "mo": "đổi cluster ⇒ neo KHÔNG khớp",
+      "dat": true,
+      "thucTe": "khop=false lyDo=cluster-khac",
+      "vi": "cùng byte trên hai cluster là hai giao dịch khác nhau về hậu quả"
+    },
+    {
+      "ma": "C06-6",
+      "mo": "neo là dấu vết băm, KHÔNG chứa message gốc",
+      "dat": true,
+      "thucTe": "độ dài neo 148 ký tự, có chứa message gốc: false",
+      "vi": "neo mang nguyên message thì mọi nơi log kết quả đều log cả giao dịch chưa ký"
+    },
+    {
+      "ma": "C06-7",
+      "mo": "thêm neo không đổi verdict của L2",
+      "dat": true,
+      "thucTe": "R01-pos vẫn là danger",
+      "vi": "neo là siêu dữ liệu; nó không được tham gia vào việc quyết định mức"
+    }
+  ],
+  "soSai": 0
+}

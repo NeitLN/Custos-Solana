@@ -1,0 +1,18 @@
+[
+  {
+    "file": "data/eval/ai-ket-qua.json",
+    "sha256": "4875111ACB20B2D5FA586D88B6BD96FA747D10A6F160B1245E45CCD5D5FF077B"
+  },
+  {
+    "file": "data/tich-hop/ket-qua.json",
+    "sha256": "85BBB508E7C530EE9422EFDB402B69C1A9FD625A5CF572FD5E14784326A37FD6"
+  },
+  {
+    "file": "data/a11y/ket-qua.json",
+    "sha256": "5137326516A47B9C8ED5A8F6A9E9A1B82DF3883AE5FE2D046C190585A724FFBC"
+  },
+  {
+    "file": "apps/demo-wallet/public/so-lieu.json",
+    "sha256": "FB5859A9DF7A9D63DB11C327EFE8531AC1E95A52E2E10116EC29FE504A153BAA"
+  }
+]

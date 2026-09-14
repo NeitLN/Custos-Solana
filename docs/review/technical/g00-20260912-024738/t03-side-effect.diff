@@ -1,0 +1,11 @@
+diff --git a/data/eval/ai-ket-qua.json b/data/eval/ai-ket-qua.json
+index 73459a6..d7de82d 100644
+--- a/data/eval/ai-ket-qua.json
++++ b/data/eval/ai-ket-qua.json
+@@ -1,5 +1,5 @@
+ {
+-  "doLuc": "2026-09-11T18:11:56.441Z",
++  "doLuc": "2026-09-11T19:49:43.592Z",
+   "soMau": 38,
+   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
+   "template": {

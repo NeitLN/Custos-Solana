@@ -1,0 +1,89 @@
+  ok   T01-a  xác nhận về, err = null (thành công thật)
+        thực tế: thanhCong   ·   đúng phải là: thanhCong
+  ok   T01-b  xác nhận về, err = InstructionError (thực thi HỎNG trên chuỗi)
+        thực tế: thatBaiXacNhan   ·   đúng phải là: thatBaiXacNhan
+  ok   T01-c  xác nhận về nhưng response sai cấu trúc (không có value)
+        thực tế: chuaRo   ·   đúng phải là: chuaRo
+  ok   T02-a  sendTransaction ném lỗi TRƯỚC khi gửi (ví dụ dựng request hỏng)
+        thực tế: thatBai   ·   đúng phải là: thatBai
+ cũ    T02-b  mất phản hồi · người gọi KHÔNG truyền `chuKy` (luồng cũ)
+        thực tế: thatBai   ·   đúng phải là: chuaRo
+        vì: đã bắt đầu gửi mà mất phản hồi ⇒ không ai biết nó có lên chuỗi hay không
+  ok   T02-c  mất phản hồi · người gọi CÓ truyền `chuKy` (bản sửa T02)
+        thực tế: chuaRo   ·   đúng phải là: chuaRo
+  ok   T02-d  transaction CHƯA đủ chữ ký bắt buộc ⇒ `chuKy` trả null
+        thực tế: thatBai   ·   đúng phải là: thatBai
+
+6/7 ca nói đúng sự thật.
+1 ca CỐ Ý còn sai (mô phỏng người gọi cũ, không phải lỗi chưa sửa): T02-b
+Không còn lỗi ngoài dự kiến.
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "T01-a",
+      "mo": "xác nhận về, err = null (thành công thật)",
+      "phaThucTe": "thanhCong",
+      "phaDung": "thanhCong",
+      "khop": true,
+      "vi": "err null nghĩa là đã thực thi xong, không lỗi",
+      "conYSai": false
+    },
+    {
+      "ma": "T01-b",
+      "mo": "xác nhận về, err = InstructionError (thực thi HỎNG trên chuỗi)",
+      "phaThucTe": "thatBaiXacNhan",
+      "phaDung": "thatBaiXacNhan",
+      "khop": true,
+      "vi": "đã xác nhận và value.err khác null ⇒ thực thi thất bại, KHÔNG phải chưa rõ",
+      "conYSai": false
+    },
+    {
+      "ma": "T01-c",
+      "mo": "xác nhận về nhưng response sai cấu trúc (không có value)",
+      "phaThucTe": "chuaRo",
+      "phaDung": "chuaRo",
+      "khop": true,
+      "vi": "không đọc được err thì không biết kết quả — chưa rõ mới đúng",
+      "conYSai": false
+    },
+    {
+      "ma": "T02-a",
+      "mo": "sendTransaction ném lỗi TRƯỚC khi gửi (ví dụ dựng request hỏng)",
+      "phaThucTe": "thatBai",
+      "phaDung": "thatBai",
+      "khop": true,
+      "vi": "chưa rời máy thì nói chưa gửi là đúng",
+      "conYSai": false
+    },
+    {
+      "ma": "T02-b",
+      "mo": "mất phản hồi · người gọi KHÔNG truyền `chuKy` (luồng cũ)",
+      "phaThucTe": "thatBai",
+      "phaDung": "chuaRo",
+      "khop": false,
+      "vi": "đã bắt đầu gửi mà mất phản hồi ⇒ không ai biết nó có lên chuỗi hay không",
+      "conYSai": true
+    },
+    {
+      "ma": "T02-c",
+      "mo": "mất phản hồi · người gọi CÓ truyền `chuKy` (bản sửa T02)",
+      "phaThucTe": "chuaRo",
+      "phaDung": "chuaRo",
+      "khop": true,
+      "vi": "có chữ ký từ trước khi gửi ⇒ phân loại đúng được dù RPC im lặng",
+      "conYSai": false
+    },
+    {
+      "ma": "T02-d",
+      "mo": "transaction CHƯA đủ chữ ký bắt buộc ⇒ `chuKy` trả null",
+      "phaThucTe": "thatBai",
+      "phaDung": "thatBai",
+      "khop": true,
+      "vi": "chưa đủ chữ ký thì chưa có ID tra cứu — và cũng thật sự chưa gửi được",
+      "conYSai": false
+    }
+  ],
+  "soSai": 0
+}
