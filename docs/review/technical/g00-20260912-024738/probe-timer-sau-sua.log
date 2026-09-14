@@ -1,0 +1,33 @@
+  ok   C05-1  `coHan` dọn timer sau khi việc xong sớm
+        Timeout trước 0 → sau 0
+  ok   C05-2  `boiThoiHan` dọn timer sau khi mô hình trả về sớm
+        Timeout trước 0 → sau 0
+  ok   C05-3  10 lượt `boiThoiHan` KHÔNG để lại 10 timer
+        Timeout trước 0 → sau 0 (thêm 0 sau 10 lượt)
+
+3/3 ca đạt.
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "C05-1",
+      "mo": "`coHan` dọn timer sau khi việc xong sớm",
+      "dat": true,
+      "thucTe": "Timeout trước 0 → sau 0"
+    },
+    {
+      "ma": "C05-2",
+      "mo": "`boiThoiHan` dọn timer sau khi mô hình trả về sớm",
+      "dat": true,
+      "thucTe": "Timeout trước 0 → sau 0"
+    },
+    {
+      "ma": "C05-3",
+      "mo": "10 lượt `boiThoiHan` KHÔNG để lại 10 timer",
+      "dat": true,
+      "thucTe": "Timeout trước 0 → sau 0 (thêm 0 sau 10 lượt)"
+    }
+  ],
+  "soSai": 0
+}

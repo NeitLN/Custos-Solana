@@ -1,0 +1,37 @@
+  PASS  base64 hỏng · không trắng trang
+  PASS  base64 hỏng · không phán quyết
+  PASS  base64 hỏng · HTML không thực thi
+  PASS  base64 hỏng · xong trong ngân sách
+  PASS  base64 hỏng · không lỗi console
+  PASS  rỗng · không trắng trang
+  PASS  rỗng · không phán quyết
+  PASS  rỗng · HTML không thực thi
+  PASS  rỗng · xong trong ngân sách
+  PASS  rỗng · không lỗi console
+  PASS  quá dài — 12.000 ký tự · không trắng trang
+  PASS  quá dài — 12.000 ký tự · không phán quyết
+  PASS  quá dài — 12.000 ký tự · HTML không thực thi
+  PASS  quá dài — 12.000 ký tự · xong trong ngân sách
+  PASS  quá dài — 12.000 ký tự · không lỗi console
+  PASS  HTML trong payload · không trắng trang
+  PASS  HTML trong payload · không phán quyết
+  PASS  HTML trong payload · HTML không thực thi
+  PASS  HTML trong payload · xong trong ngân sách
+  PASS  HTML trong payload · không lỗi console
+  PASS  Bidi · không trắng trang
+  PASS  Bidi · không phán quyết
+  PASS  Bidi · HTML không thực thi
+  PASS  Bidi · xong trong ngân sách
+  PASS  Bidi · không lỗi console
+  PASS  JSON chứ không phải base64 · không trắng trang
+  PASS  JSON chứ không phải base64 · không phán quyết
+  PASS  JSON chứ không phải base64 · HTML không thực thi
+  PASS  JSON chứ không phải base64 · xong trong ngân sách
+  PASS  JSON chứ không phải base64 · không lỗi console
+  PASS  base64 hợp lệ nhưng không phải giao dịch · không trắng trang
+  PASS  base64 hợp lệ nhưng không phải giao dịch · không phán quyết
+  PASS  base64 hợp lệ nhưng không phải giao dịch · HTML không thực thi
+  PASS  base64 hợp lệ nhưng không phải giao dịch · xong trong ngân sách
+  PASS  base64 hợp lệ nhưng không phải giao dịch · không lỗi console
+
+Tất cả PASS.

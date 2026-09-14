@@ -1,0 +1,7 @@
+  PASS  C03-1 · bấm đúp không tạo hai lượt kiểm tra chồng nhau
+  PASS  C03-2 · chỉ một thẻ kết quả
+  PASS  C03-3 · không lỗi JavaScript
+  PASS  C03-4 · đổi kịch bản giữa chừng ⇒ kết quả thuộc lượt SAU CÙNG
+  PASS  C03-5 · vẫn chỉ một thẻ kết quả sau khi đổi kịch bản
+
+Tất cả PASS.

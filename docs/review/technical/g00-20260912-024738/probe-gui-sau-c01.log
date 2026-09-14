@@ -1,0 +1,61 @@
+  ok   T01-a  xác nhận về, err = null (thành công thật)
+        thực tế: thanhCong   ·   đúng phải là: thanhCong
+  ok   T01-b  xác nhận về, err = InstructionError (thực thi HỎNG trên chuỗi)
+        thực tế: thatBaiXacNhan   ·   đúng phải là: thatBaiXacNhan
+  ok   T01-c  xác nhận về nhưng response sai cấu trúc (không có value)
+        thực tế: chuaRo   ·   đúng phải là: chuaRo
+  ok   T02-a  sendTransaction ném lỗi TRƯỚC khi gửi (ví dụ dựng request hỏng)
+        thực tế: thatBai   ·   đúng phải là: thatBai
+  SAI  T02-b  RPC ĐÃ nhận request rồi mất phản hồi (network error sau khi gửi)
+        thực tế: thatBai   ·   đúng phải là: chuaRo
+        vì: đã bắt đầu gửi mà mất phản hồi ⇒ không ai biết nó có lên chuỗi hay không
+
+4/5 ca nói đúng sự thật.
+CÒN LỖI: T02-b
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "T01-a",
+      "mo": "xác nhận về, err = null (thành công thật)",
+      "phaThucTe": "thanhCong",
+      "phaDung": "thanhCong",
+      "khop": true,
+      "vi": "err null nghĩa là đã thực thi xong, không lỗi"
+    },
+    {
+      "ma": "T01-b",
+      "mo": "xác nhận về, err = InstructionError (thực thi HỎNG trên chuỗi)",
+      "phaThucTe": "thatBaiXacNhan",
+      "phaDung": "thatBaiXacNhan",
+      "khop": true,
+      "vi": "đã xác nhận và value.err khác null ⇒ thực thi thất bại, KHÔNG phải chưa rõ"
+    },
+    {
+      "ma": "T01-c",
+      "mo": "xác nhận về nhưng response sai cấu trúc (không có value)",
+      "phaThucTe": "chuaRo",
+      "phaDung": "chuaRo",
+      "khop": true,
+      "vi": "không đọc được err thì không biết kết quả — chưa rõ mới đúng"
+    },
+    {
+      "ma": "T02-a",
+      "mo": "sendTransaction ném lỗi TRƯỚC khi gửi (ví dụ dựng request hỏng)",
+      "phaThucTe": "thatBai",
+      "phaDung": "thatBai",
+      "khop": true,
+      "vi": "chưa rời máy thì nói chưa gửi là đúng"
+    },
+    {
+      "ma": "T02-b",
+      "mo": "RPC ĐÃ nhận request rồi mất phản hồi (network error sau khi gửi)",
+      "phaThucTe": "thatBai",
+      "phaDung": "chuaRo",
+      "khop": false,
+      "vi": "đã bắt đầu gửi mà mất phản hồi ⇒ không ai biết nó có lên chuỗi hay không"
+    }
+  ],
+  "soSai": 1
+}

@@ -1,0 +1,53 @@
+ sai   C03-a  bấm đúp trong cùng lượt sự kiện · khoá bằng state React
+        số lần bắt đầu gửi: 2 (mong đợi 1) · stateDangGui=true
+        vì: state React không cập nhật closure của lượt render hiện tại ⇒ cả hai lần bấm cùng đi qua cổng
+  ok   C03-b  bấm đúp · khoá bằng ref đồng bộ
+        số lần bắt đầu gửi: 1 (mong đợi 1)
+ sai   C03-c  request A chậm về sau B · không có ID lượt
+        màn hình đang hiện: A-cham (mong đợi B-nhanh — thứ người dùng bấm sau cùng)
+        vì: lượt cũ ghi đè lượt mới ⇒ thẻ cảnh báo và giao dịch chờ thuộc hai lượt khác nhau
+  ok   C03-d  request A chậm về sau B · CÓ ID lượt
+        màn hình đang hiện: B-nhanh (mong đợi B-nhanh)
+
+4/4 ca cho kết quả ĐÚNG NHƯ MONG ĐỢI.
+  2 ca mô phỏng CÁCH LÀM SAI và hỏng đúng như dự kiến: C03-a, C03-c
+  Không có cơ chế nào hỏng ngoài dự kiến.
+
+--- JSON ---
+{
+  "ket": [
+    {
+      "ma": "C03-a",
+      "mo": "bấm đúp trong cùng lượt sự kiện · khoá bằng state React",
+      "dat": false,
+      "thucTe": "số lần bắt đầu gửi: 2 (mong đợi 1) · stateDangGui=true",
+      "vi": "state React không cập nhật closure của lượt render hiện tại ⇒ cả hai lần bấm cùng đi qua cổng",
+      "laCachSai": true
+    },
+    {
+      "ma": "C03-b",
+      "mo": "bấm đúp · khoá bằng ref đồng bộ",
+      "dat": true,
+      "thucTe": "số lần bắt đầu gửi: 1 (mong đợi 1)",
+      "vi": "ref phải chặn được — nếu ca này cũng sai thì mô hình probe sai, không phải sản phẩm",
+      "laCachSai": false
+    },
+    {
+      "ma": "C03-c",
+      "mo": "request A chậm về sau B · không có ID lượt",
+      "dat": false,
+      "thucTe": "màn hình đang hiện: A-cham (mong đợi B-nhanh — thứ người dùng bấm sau cùng)",
+      "vi": "lượt cũ ghi đè lượt mới ⇒ thẻ cảnh báo và giao dịch chờ thuộc hai lượt khác nhau",
+      "laCachSai": true
+    },
+    {
+      "ma": "C03-d",
+      "mo": "request A chậm về sau B · CÓ ID lượt",
+      "dat": true,
+      "thucTe": "màn hình đang hiện: B-nhanh (mong đợi B-nhanh)",
+      "vi": "ID lượt phải loại được kết quả cũ",
+      "laCachSai": false
+    }
+  ],
+  "soHongNgoaiDuKien": 0
+}
