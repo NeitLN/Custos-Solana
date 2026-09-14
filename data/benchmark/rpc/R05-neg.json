@@ -1,0 +1,219 @@
+{
+  "phienBan": 1,
+  "id": "R05-neg",
+  "captureLuc": "2026-09-12T21:09:03.104Z",
+  "nguon": "api.devnet.solana.com",
+  "banGhi": [
+    {
+      "method": "getMultipleAccountsInfo",
+      "khoa": "getMultipleAccountsInfo:2fec843768987acd",
+      "thamSo": {
+        "keys": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "3Ku3fsds5gmRNuwPHpzfYx7VXfXkkDFD1hUHezJHhRNx",
+          "11111111111111111111111111111111",
+          "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "2679oskfgNCfceoqNkeiBnBeugr4a8jdBqHhVFBaXf8f",
+          "SysvarRent111111111111111111111111111111111"
+        ]
+      },
+      "ketQua": [
+        {
+          "data": {
+            "__buffer": ""
+          },
+          "executable": false,
+          "lamports": 9823881544,
+          "owner": {
+            "__pubkey": "11111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 0
+        },
+        null,
+        {
+          "data": {
+            "__buffer": "c3lzdGVtX3Byb2dyYW0="
+          },
+          "executable": true,
+          "lamports": 1,
+          "owner": {
+            "__pubkey": "NativeLoader1111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 14
+        },
+        {
+          "data": {
+            "__buffer": "AgAAAL4zkcMPRYarxgednZ3r504XyexzY/JuY/2bbqm+blYz"
+          },
+          "executable": true,
+          "lamports": 1159846,
+          "owner": {
+            "__pubkey": "BPFLoaderUpgradeab1e11111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 36
+        },
+        {
+          "data": {
+            "__buffer": "AQAAABJgVo2Gx/jUOzni23KjEoSbngxHD9Fp2ewrngOWPC0MAAAAAAAAAAAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+          },
+          "executable": false,
+          "lamports": 1461600,
+          "owner": {
+            "__pubkey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 82
+        },
+        {
+          "data": {
+            "__buffer": "2BMAAAAAAAAAAAAAAADwPzI="
+          },
+          "executable": false,
+          "lamports": 1009200,
+          "owner": {
+            "__pubkey": "Sysvar1111111111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 17
+        }
+      ]
+    },
+    {
+      "method": "simulateTransaction",
+      "khoa": "simulateTransaction:ab439a61841ec827",
+      "thamSo": {
+        "msg": "gAIABAYSYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDCKOrVPBDZzZt+iF86NvEGL+3pRFMCuvXTVadWVblm35AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG3fbh7nWP3hhCXbzkbM3athr8TYO5DSf+vfko2KGL/BAqjAIqooj3SKDKDwUqbfnQ3u4Ny1DF7qhDUEQH/0KUBqfVFxksXFEhjMlMPUrxf1ja7gibof1E49vZigAAAAB2zPRzh7ViqrOXEWtmWCaHux0T8cwaZsNdWWVg5YmM1gICAgABNAAAAADwHR8AAAAAAKUAAAAAAAAABt324e51j94YQl285GzN2rYa/E2DuQ0n/r35KNihi/wDBAEEAAUBAQA=",
+        "addresses": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "2679oskfgNCfceoqNkeiBnBeugr4a8jdBqHhVFBaXf8f",
+          "3Ku3fsds5gmRNuwPHpzfYx7VXfXkkDFD1hUHezJHhRNx"
+        ]
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497377431
+        },
+        "value": {
+          "accounts": [
+            {
+              "data": [
+                "",
+                "base64"
+              ],
+              "executable": false,
+              "lamports": 9821832264,
+              "owner": "11111111111111111111111111111111",
+              "rentEpoch": 18446744073709552000,
+              "space": 0
+            },
+            {
+              "data": [
+                "AQAAABJgVo2Gx/jUOzni23KjEoSbngxHD9Fp2ewrngOWPC0MAAAAAAAAAAAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                "base64"
+              ],
+              "executable": false,
+              "lamports": 1461600,
+              "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+              "rentEpoch": 18446744073709552000,
+              "space": 82
+            },
+            {
+              "data": [
+                "ECqMAiqiiPdIoMoPBSpt+dDe7g3LUMXuqENQRAf/QpQSYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "base64"
+              ],
+              "executable": false,
+              "lamports": 2039280,
+              "owner": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+              "rentEpoch": 18446744073709552000,
+              "space": 165
+            }
+          ],
+          "err": null,
+          "fee": 10000,
+          "innerInstructions": [],
+          "loadedAccountsDataSize": 711586,
+          "loadedAddresses": {
+            "readonly": [],
+            "writable": []
+          },
+          "logs": [
+            "Program 11111111111111111111111111111111 invoke [1]",
+            "Program 11111111111111111111111111111111 success",
+            "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb invoke [1]",
+            "Program log: Instruction: InitializeAccount",
+            "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb consumed 1900 of 202850 compute units",
+            "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb success"
+          ],
+          "postBalances": [
+            9821832264,
+            2039280,
+            1,
+            1159846,
+            1461600,
+            1009200
+          ],
+          "postTokenBalances": [
+            {
+              "accountIndex": 1,
+              "mint": "2679oskfgNCfceoqNkeiBnBeugr4a8jdBqHhVFBaXf8f",
+              "owner": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+              "programId": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+              "uiTokenAmount": {
+                "amount": "0",
+                "decimals": 6,
+                "uiAmount": 0,
+                "uiAmountString": "0"
+              }
+            }
+          ],
+          "preBalances": [
+            9823881544,
+            0,
+            1,
+            1159846,
+            1461600,
+            1009200
+          ],
+          "preTokenBalances": [],
+          "replacementBlockhash": {
+            "blockhash": "8WQ3KYLmEL4GPWcYTCD4ijAWJk1x5LvKpYagFDtMNurC",
+            "lastValidBlockHeight": 485070493
+          },
+          "returnData": null,
+          "unitsConsumed": 2050
+        }
+      }
+    },
+    {
+      "method": "getMultipleAccountsInfo",
+      "khoa": "getMultipleAccountsInfo:5de52a187382f6f9",
+      "thamSo": {
+        "keys": [
+          "3gBbWMnaEP35VHKjZFCxq5t1WbQac1rQ7inuB1wT682u"
+        ]
+      },
+      "ketQua": [
+        null
+      ]
+    },
+    {
+      "method": "getFeeForMessage",
+      "khoa": "getFeeForMessage:dc88cfa6444cf621",
+      "thamSo": {
+        "msg": "gAIABAYSYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDCKOrVPBDZzZt+iF86NvEGL+3pRFMCuvXTVadWVblm35AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG3fbh7nWP3hhCXbzkbM3athr8TYO5DSf+vfko2KGL/BAqjAIqooj3SKDKDwUqbfnQ3u4Ny1DF7qhDUEQH/0KUBqfVFxksXFEhjMlMPUrxf1ja7gibof1E49vZigAAAAB2zPRzh7ViqrOXEWtmWCaHux0T8cwaZsNdWWVg5YmM1gICAgABNAAAAADwHR8AAAAAAKUAAAAAAAAABt324e51j94YQl285GzN2rYa/E2DuQ0n/r35KNihi/wDBAEEAAUBAQA="
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497377459
+        },
+        "value": null
+      }
+    }
+  ]
+}

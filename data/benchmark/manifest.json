@@ -1,0 +1,1234 @@
+{
+  "phienBan": 1,
+  "sinhLuc": "2026-09-12T20:41:41.713Z",
+  "nguon": "data/seed/index.json",
+  "thuLuc": "2026-08-21T00:24:40.946Z",
+  "bamNguon": "c3a3c0f63974d8daacc0089d880cf3b160004cb9",
+  "soMau": 38,
+  "soBoQua": 0,
+  "boQua": [],
+  "theoTang": {
+    "l2-facts": 38,
+    "l1-replay": 29,
+    "devnet-live": 19
+  },
+  "theoNhan": {
+    "development": 38,
+    "held-out": 0
+  },
+  "mau": [
+    {
+      "id": "R01-pos",
+      "luat": 1,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R01-pos.json",
+          "bam": "5971ab421f213b37d1a426f90e66f1d3efcf734d"
+        },
+        "giaoDich": {
+          "duong": "tx/R01-pos.base64",
+          "bam": "3e41c4dcfe0d4c7d62a44adaac6db49c8ed20d17"
+        }
+      },
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "SetAuthority đổi AccountOwner của tài khoản token người ký sang ví lạ.",
+      "ganNhanLuc": "2026-08-21T00:23:45.504Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R02-pos",
+      "luat": 2,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R02-pos.json",
+          "bam": "4842ec370dd95d40b223269104fcebdd5386da10"
+        },
+        "giaoDich": {
+          "duong": "tx/R02-pos.base64",
+          "bam": "c846026f87b7c87702865f6c96c49b2d3efaa60e"
+        }
+      },
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Trao quyền đóng tài khoản token cho bên thứ ba.",
+      "ganNhanLuc": "2026-08-21T00:23:45.654Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R03-pos",
+      "luat": 3,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R03-pos.json",
+          "bam": "8d4c0e6c0ffb6f2ee45d597b6938dd6382ba9444"
+        },
+        "giaoDich": {
+          "duong": "tx/R03-pos.base64",
+          "bam": "0c43484a49915bb317c4bdb5ef23a0b0684b57f6"
+        }
+      },
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SPL_APPROVE_DELEGATE_LON"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Approve delegate với hạn mức u64::MAX, vượt xa số dư đang có.",
+      "ganNhanLuc": "2026-08-21T00:23:45.801Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R03-neg",
+      "luat": 3,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R03-neg.json",
+          "bam": "804aba4a9ad8501af2b435b637fb4448658c8e75"
+        },
+        "giaoDich": {
+          "duong": "tx/R03-neg.base64",
+          "bam": "02e5384f7e169d9346710d9c3a091b85ae8f666e"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_APPROVE_DELEGATE_LON"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Approve ĐÚNG trong phạm vi số dư — hành vi chuẩn của nhiều dApp, không được gắn cờ.",
+      "ganNhanLuc": "2026-08-21T00:23:45.947Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R08-pos",
+      "luat": 8,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R08-pos.json",
+          "bam": "2cd1ea57b43d49aaa205eb66bf7fc23f43cef14c"
+        },
+        "giaoDich": {
+          "duong": "tx/R08-pos.base64",
+          "bam": "9a24c4e789db229128a1224dc92fea5e8df1196c"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "VI_NHAN_MOI_TAO"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Chuyển 80% số dư sang ví vừa được tạo. Luật 8 chỉ kích hoạt khi tra được tuổi ví.",
+      "ganNhanLuc": "2026-08-21T00:23:55.368Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R11-pos",
+      "luat": 11,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R11-pos.json",
+          "bam": "8ab0424eddfe6bfb3ccc7ede6de43a425c96d7ad"
+        },
+        "giaoDich": {
+          "duong": "tx/R11-pos.base64",
+          "bam": "f5b3af1768256ad36476b6f26ed639c1d5c3a6a4"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "OUTFLOW_KHONG_KHOP"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "HAI loại tài sản cùng rời ví trong một giao dịch — không hành động bình thường nào cần vậy.",
+      "ganNhanLuc": "2026-08-21T00:23:58.374Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R12-pos",
+      "luat": 12,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R12-pos.json",
+          "bam": "9608297ffc2810565b3e16211fe221b78f468369"
+        },
+        "giaoDich": {
+          "duong": "tx/R12-pos.base64",
+          "bam": "91a4cc48e0bd5d0bb0ccd9eb7ac929c9bcec878a"
+        }
+      },
+      "kyVong": {
+        "level": "danger",
+        "coMa": [
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "SystemProgram.assign giao account của người ký cho chương trình khác điều khiển. Đây là vector mà mô phỏng của Blowfish từng bỏ lọt; Custos bắt được vì so sánh TRẠNG THÁI.",
+      "ganNhanLuc": "2026-08-21T00:23:59.805Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R09-pos",
+      "luat": 9,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R09-pos.json",
+          "bam": "3948c7e60876e2f5a97a0d5da0d7d3528fb50b7d"
+        },
+        "giaoDich": {
+          "duong": "tx/R09-pos.base64",
+          "bam": "e726672e13cd916d667be424457191506701f0d2"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "PROGRAM_CHUA_XAC_MINH"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Chương trình chưa xác minh (SPL Memo) GHI vào tài khoản token của người ký.",
+      "ganNhanLuc": "2026-08-21T00:24:01.261Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R09-neg",
+      "luat": 9,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R09-neg.json",
+          "bam": "bce8b2c644acacf1ad9bbf4d5783f3e360e34208"
+        },
+        "giaoDich": {
+          "duong": "tx/R09-neg.base64",
+          "bam": "b9414790add8f2918a644a33897641f8ce15c48a"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "PROGRAM_CHUA_XAC_MINH"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Cùng chương trình chưa xác minh, nhưng KHÔNG ghi vào tài khoản nào của người ký. Mô hình tài khoản Solana bảo đảm nó không hại được người ký trong giao dịch này.",
+      "ganNhanLuc": "2026-08-21T00:24:02.169Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R06-pos",
+      "luat": 6,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R06-pos.json",
+          "bam": "b4f88da8f6b013b5465085c3c5a0ae8a0752adf5"
+        },
+        "giaoDich": {
+          "duong": "tx/R06-pos.base64",
+          "bam": "8396d9539c4a59fc5a26fb4834e9e499567f8901"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Token trong giao dịch vẫn còn mint authority — người phát hành tạo thêm được không giới hạn.",
+      "ganNhanLuc": "2026-08-21T00:24:05.087Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R06-neg",
+      "luat": 6,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R06-neg.json",
+          "bam": "0ec03c4f010c05d7de84dfeb5bed6172fbe472df"
+        },
+        "giaoDich": {
+          "duong": "tx/R06-neg.base64",
+          "bam": "8ec45158a59b3a49cd903fc88348cb891e944e79"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Cùng hình dạng giao dịch, nhưng mint authority ĐÃ thu hồi — không được gắn cờ.",
+      "ganNhanLuc": "2026-08-21T00:24:12.804Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R04-pos",
+      "luat": 4,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R04-pos.json",
+          "bam": "219b91df662aacbf825f722b61f566b1584a2b9f"
+        },
+        "giaoDich": {
+          "duong": "tx/R04-pos.base64",
+          "bam": "953dfe6d633b123f93f07b361c988f400012e32d"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "TOKEN2022_PERMANENT_DELEGATE"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Token-2022 có quyền rút vĩnh viễn, nhưng chính người ký chuyển tiền — delegate KHÔNG ra tay. Chỉ được ra Vàng: sự tồn tại của một tính năng giao thức không phải là tội.",
+      "ganNhanLuc": "2026-08-21T00:24:24.984Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R11-neg",
+      "luat": 11,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R11-neg.json",
+          "bam": "4a9426a84c5b72241266e505e3532581ae612960"
+        },
+        "giaoDich": {
+          "duong": "tx/R11-neg.base64",
+          "bam": "b666243110925c44426cd6da3d2312313736ef6b"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "OUTFLOW_KHONG_KHOP"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Gửi MỘT loại tài sản cho ai đó — hành vi thường gặp nhất của một cái ví.",
+      "ganNhanLuc": "2026-08-21T00:24:26.044Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "MN-01",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/32w3AFDTATEYrKABix6DkQkQHUFpqz7poA5cBkphprvng9nogyEpU8aGbfbNrMJSNNnKxghigKF79dZUTJQ5T11Q",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-01.json",
+          "bam": "bd0fdf204560cee63efa2cb99c7a4f8f20ddd64e"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-01.base64",
+          "bam": "9cca28ce787e900141525ba5adf8b0ae636f6795"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:27.012Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-02",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/35DXEvoG3WgfXq7BUfRxcye7p2pxgiLLpwuXjincGjBN7wEMxrZH7MYZZU8kFHqZHnovdxgrc8fiQSVLpubJpuaF",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-02.json",
+          "bam": "b06f37a717b4e9d06e59f5d2f1942b8468f18caa"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-02.base64",
+          "bam": "c35a888986090340e748f5f005aa5440e3cfdb93"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:28.680Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-03",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/53BDZfe1WJLEjvbB3m5nBYTXgnfamVqCQJGjKYvPdaQEVTkyChMCTzaJB8HMoB8Pha3YCVKrzAUsp3hZjunMv21z",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-03.json",
+          "bam": "57d2416b9744329ae801f7974465d301d967a899"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-03.base64",
+          "bam": "937d74ec7ff68579608402069dd2fa07f4e343be"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:29.941Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-04",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/2JhhTE2nDfBKVdx9bj6HFgkpFuLLt1LqCPBXsu6ZM9iysS19vatdbBUZPyPnhMRPsnq9wcZ8XU1aTn1LvozipRYX",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-04.json",
+          "bam": "2cbc1453dd9ea4be7cf0bc9a16b2cf77b35e60ef"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-04.base64",
+          "bam": "e1573e44e58f3d32fc06c6eda7e5cb6a49691abd"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:30.961Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-05",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4LB1z63EKx7U6cwzih6fFfxLXPsRUnubZHUUkT6LCYUB71p6TfEMMQLdWbiaAetqaPY3LbJqeDpxjFa9KDrhyGgp",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-05.json",
+          "bam": "ae1b17b9f69c6330118320369337337bff7d0d87"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-05.base64",
+          "bam": "4d747a51e8f13f02d6d4a353fca6da49fa7b5f7a"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:32.666Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-06",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4U9jjyfJ3bGU95HiW2jvjmggGpqYDvAhLewbx88aSxT2n8hvZCpDMpTPJCZhbwueWRVC6oZBBkU9q86jVsZ88CVX",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-06.json",
+          "bam": "89bbc838b77b256d8992fcd5384b33261e6df709"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-06.base64",
+          "bam": "43a289ceffcafea3e363c1ec162129c3acd41d96"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:33.988Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-07",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/n9P3o3xt1KTL6wd8X34iDdgqu9GZcVBDoxSqxZ8eTvpFT1k18KucaxWUK6H8tXjm9L9sMRGQvixqAHuYBcfQD7g",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-07.json",
+          "bam": "ae35ae80a5bfd577137d97cf7090ee541e0aa7ad"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-07.base64",
+          "bam": "6075baa651b210679737bce9d92b39acb594008a"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:36.973Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-08",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4R3vmhtEUQbH8QEkkQEN9SPvVD5LByh1mJFpUTkZpsV1kxBpjZYuETxe9SGB2gdpSTTnrkrsiZy74xVEJfDjGwNt",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-08.json",
+          "bam": "723c6be380668c62cb70b65e9a0b8e47784c9116"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-08.base64",
+          "bam": "0a1b9efa87948ef8e13f2405e84a0ff16bdfb0e1"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:37.993Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-09",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/3Snk3xyS1ZNsUFM3K6aii6FX1zs9SYVk2cyMBSsVmjFHNV39QoaYHjmFzL38UXo2aHpwF2K2LWhXYHA92inW35wx",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-09.json",
+          "bam": "06fdf871229d24583a8041abea2efb297a3afc28"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-09.base64",
+          "bam": "18e2efd0bd8571717e33ab4ee2133b8d5ac1dccb"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:39.360Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "MN-10",
+      "luat": null,
+      "cuc": "am",
+      "nguonGoc": "real-mainnet",
+      "nguon": "https://explorer.solana.com/tx/4Um85R6hKJNtdE1xtnb45P4QHC2e1YktANKVVoRm3rUcwBZNxnNjehTcwzkHuobsdAtFPMr7wARrkZ6iFM5TKJWT",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/MN-10.json",
+          "bam": "246872012b3aadbfec395bf89a37686abcd3c542"
+        },
+        "giaoDich": {
+          "duong": "tx/MN-10.base64",
+          "bam": "da3d74231276e5d4ae150878f289d3facc9a3d39"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "SPL_APPROVE_DELEGATE_LON",
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch SPL Token mainnet lấy ngẫu nhiên, không chọn lọc. KHÔNG khẳng định nó lành tính — chỉ khẳng định nếu Custos gắn Đỏ thì phải soi tay để biết đó là tấn công thật hay báo nhầm.",
+      "ganNhanLuc": "2026-08-21T00:24:40.346Z",
+      "gioiHan": "giao dịch công khai lấy ngẫu nhiên — chưa gán ground truth, không suy ra tỉ lệ báo nhầm"
+    },
+    {
+      "id": "R05-pos",
+      "luat": 5,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R05-pos.json",
+          "bam": "3b6cf614e630dd5bb2d6adce5a766717b9e6df4d"
+        },
+        "giaoDich": {
+          "duong": "tx/R05-pos.base64",
+          "bam": "3fa5df91f6f8681012d1371d1513cbfbc2cb4849"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "TOKEN2022_TRANSFER_HOOK"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Mint Token-2022 có transfer hook trỏ tới chương trình Custos chưa đọc hiểu. Chỉ được ra Vàng: transfer hook là năng lực hợp lệ của giao thức.",
+      "ganNhanLuc": "2026-08-21T15:23:55.279Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R05-neg",
+      "luat": 5,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R05-neg.json",
+          "bam": "76adf1937f2d00a5e39c4e519a6c40be6594a498"
+        },
+        "giaoDich": {
+          "duong": "tx/R05-neg.base64",
+          "bam": "01490c1d4c8f1666c653c10113356f0218b33f6b"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "TOKEN2022_TRANSFER_HOOK"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Mint Token-2022 y hệt nhưng KHÔNG cài transfer hook. Bản thân việc là Token-2022 không phải dấu hiệu gì cả.",
+      "ganNhanLuc": "2026-08-21T15:23:56.710Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R07-pos",
+      "luat": 7,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R07-pos.json",
+          "bam": "706788443d94f88154d2d93343ba0c5cbbc435b8"
+        },
+        "giaoDich": {
+          "duong": "tx/R07-pos.base64",
+          "bam": "51c6e09dd6beb6fa83fc9969f523f7e6d0a5a39e"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "FREEZE_AUTHORITY_CON_HIEU_LUC"
+        ],
+        "khongCoMa": [
+          "MINT_AUTHORITY_CHUA_THU_HOI"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Người phát hành vẫn đóng băng được tài khoản của người ký. Đây là THUỘC TÍNH của token — USDC cũng có — nên chỉ Vàng và phải mang giọng thông tin.",
+      "ganNhanLuc": "2026-08-21T15:24:09.590Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R07-neg",
+      "luat": 7,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R07-neg.json",
+          "bam": "f1cc32cb6be4718183f545746c588794f9333d54"
+        },
+        "giaoDich": {
+          "duong": "tx/R07-neg.base64",
+          "bam": "5df6575ceb2f33e1dd900aed673488d7e3cd9487"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "FREEZE_AUTHORITY_CON_HIEU_LUC"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch chuyển token y hệt, nhưng mint đã thu hồi cả quyền đóng băng lẫn quyền tạo thêm.",
+      "ganNhanLuc": "2026-08-21T15:25:24.576Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R10-pos",
+      "luat": 10,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R10-pos.json",
+          "bam": "4f10657064ab159fa624d375870aeae2e66d6c43"
+        },
+        "giaoDich": {
+          "duong": "tx/R10-pos.base64",
+          "bam": "b0ea606d5b2521cd85ba27854222719f3bb35dd2"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "ALT_KHONG_GIAI_DUOC"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch trỏ tới bảng tra địa chỉ không đọc được, nên danh sách tài khoản có thể còn thiếu và bảng chênh lệch có thể đang bỏ sót.",
+      "ganNhanLuc": "2026-08-21T15:25:25.492Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R10-neg",
+      "luat": 10,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "tự dựng trên devnet",
+      "nhan": "development",
+      "tang": [
+        "l2-facts",
+        "l1-replay",
+        "devnet-live"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R10-neg.json",
+          "bam": "06c0333cb100f963b5db17b29fb600c68c6effd7"
+        },
+        "giaoDich": {
+          "duong": "tx/R10-neg.base64",
+          "bam": "50d32d9f753e534cb9bab93cb9d5d93e65615ad3"
+        }
+      },
+      "kyVong": {
+        "level": "khong-phai-danger",
+        "khongCoMa": [
+          "ALT_KHONG_GIAI_DUOC"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch dùng bảng tra địa chỉ thật, giải được bình thường. ALT là kỹ thuật hợp lệ và phổ biến — 7/10 giao dịch mainnet trong bộ dữ liệu có dùng.",
+      "ganNhanLuc": "2026-08-21T15:25:30.430Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R13-pos",
+      "luat": 13,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 13",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R13-pos.json",
+          "bam": "a334e9c33d93f60b2d173d699f3ce2e0ccedb500"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "SOL_ROI_VI"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Gần như toàn bộ SOL rời ví sang một địa chỉ lạ, trừ phí và tiền đặt cọc vẫn còn 99%, và người ký KHÔNG nhận lại tài sản nào.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R13-neg",
+      "luat": 13,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 13",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R13-neg.json",
+          "bam": "711dd552f8a3d8a339e31b08e38d71ae0b22193c"
+        }
+      },
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "SOL_ROI_VI"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "CÙNG khoản SOL đi ra như R13-pos, khác đúng một điều: người ký nhận lại token. Đây là lệnh mua, không phải bị rút — luật 13 phải im.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R14-pos",
+      "luat": 14,
+      "cuc": "duong",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 14",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R14-pos.json",
+          "bam": "b3fec1504fe0c6b466c9c1b23915ac6caf27f8cb"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "coMa": [
+          "NGUOI_DUNG_KHONG_RO"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Giao dịch cần hai chữ ký và ví không cho biết địa chỉ nào là của người dùng, nên Custos không chắc đang bảo vệ ai.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R14-neg",
+      "luat": 14,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — đóng băng cho luật 14",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R14-neg.json",
+          "bam": "506891d6ee29004648d1189c8993e752049aa5a1"
+        }
+      },
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "NGUOI_DUNG_KHONG_RO"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "CÙNG hai người ký như R14-pos, khác đúng một điều: ví đã chỉ định người dùng. Custos biết đang bảo vệ ai nên luật 14 phải im.",
+      "ganNhanLuc": "2026-09-03T17:18:08.145507Z",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R01-neg",
+      "luat": 1,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R01-neg.json",
+          "bam": "d106e3697b703152bb7bdbd321c01cb05b393699"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "CÙNG một lệnh đổi chủ tài khoản token như R01-pos, khác đúng một điều: tài khoản vốn thuộc về ví KHÁC, không phải người sắp ký. Không phải mất mát của người ký thì luật 1 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R02-neg",
+      "luat": 2,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R02-neg.json",
+          "bam": "6f2e3ad382ab5838733884df5c8583da8f727d45"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "CÙNG một lệnh đặt close authority như R02-pos, khác đúng một điều: quyền đó đặt cho CHÍNH người ký. Tự giữ quyền của mình thì không mất gì — luật 2 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R04-neg",
+      "luat": 4,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R04-neg.json",
+          "bam": "5a5dc605c2fedf90bf290832468af1d96fb23351"
+        }
+      },
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "TOKEN2022_PERMANENT_DELEGATE"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Mint có permanent delegate vẫn nằm trong giao dịch như R04-pos, khác đúng một điều: giao dịch KHÔNG chạm token nào của mint ấy. Gắn cờ cho sự tồn tại của một tính năng là cách nhanh nhất tạo báo nhầm — luật 4 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R08-neg",
+      "luat": 8,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R08-neg.json",
+          "bam": "d394fccb70b3a863193b5c3dcf9780ac2a865279"
+        }
+      },
+      "kyVong": {
+        "level": "warning",
+        "khongCoMa": [
+          "VI_NHAN_MOI_TAO"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "CÙNG lượng token đi tới CÙNG ví nhận như R08-pos, khác đúng một điều: ví nhận đã tồn tại hơn một năm thay vì vài giây. Ví cũ thì luật 8 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    },
+    {
+      "id": "R12-neg",
+      "luat": 12,
+      "cuc": "am",
+      "nguonGoc": "synthetic-devnet",
+      "nguon": "Facts dựng tay — ca đối chứng suy từ mẫu dương của chính luật",
+      "nhan": "development",
+      "tang": [
+        "l2-facts"
+      ],
+      "tep": {
+        "facts": {
+          "duong": "facts/R12-neg.json",
+          "bam": "126a8e8b2e57d7eded1680a0cc806cd318ed45d1"
+        }
+      },
+      "kyVong": {
+        "level": "safe",
+        "khongCoMa": [
+          "SYSTEM_ASSIGN_DOI_OWNER"
+        ]
+      },
+      "nguonKyVong": "người gán nhãn khi dựng mẫu",
+      "bangChung": "Account cũng đổi program sở hữu như R12-pos, khác đúng một điều: nó về System Program VÀ lamport về 0 — tức là đóng tài khoản, nửa sau của mọi lệnh unwrap wSOL. Luật 12 phải im.",
+      "ganNhanLuc": "2026-09-07T17:39:49.479196+00:00",
+      "gioiHan": "đội tự dựng đầu vào — kiểm được luật, KHÔNG thay được dữ liệu độc lập"
+    }
+  ]
+}

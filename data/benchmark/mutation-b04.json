@@ -1,0 +1,86 @@
+{
+  "ngay": "2026-09-14",
+  "soRanhGioi": 7,
+  "soCoCanh": 7,
+  "ket": [
+    {
+      "ma": "FS1",
+      "ranhGioi": "fail-safe 1 — mo phong hong",
+      "soBaiDo": 2,
+      "baiDo": [
+        "FAIL-SAFE — mô phỏng hỏng thì không bao giờ ra safe",
+        "TRUNG THỰC — mô phỏng hỏng thì KHÔNG được bịa hậu quả, nhưng vẫn giữ dòng trung thực"
+      ],
+      "doanTruoc": "failsafe.test.ts, l2.test.ts"
+    },
+    {
+      "ma": "FS2",
+      "ranhGioi": "fail-safe 2 — chua doc hieu ma cham tai san",
+      "soBaiDo": 1,
+      "baiDo": [
+        "BẤT BIẾN — chương trình KHÔNG RÕ chạm tài sản: phải có mã lý do"
+      ],
+      "doanTruoc": "l2.test.ts"
+    },
+    {
+      "ma": "FS3",
+      "ranhGioi": "fail-safe 3 — ALT khong giai duoc",
+      "soBaiDo": 1,
+      "baiDo": [
+        "FAIL-SAFE 3 tự đứng được, KHÔNG dựa vào luật 10"
+      ],
+      "doanTruoc": "l2.test.ts",
+      "soBaiDoTruocKhiVa": 0,
+      "daVa": true
+    },
+    {
+      "ma": "FS4",
+      "ranhGioi": "fail-safe 4 — account khong do duoc trang thai sau",
+      "soBaiDo": 3,
+      "baiDo": [
+        "A1 — simulate trả accounts=null KHÔNG được bịa ra mất mát",
+        "F2 — account thứ 101 trở đi KHÔNG được biến mất âm thầm",
+        "TRUNG THỰC — mô phỏng hỏng thì KHÔNG được bịa hậu quả, nhưng vẫn giữ dòng trung thực"
+      ],
+      "doanTruoc": "do-khuyet.test.ts"
+    },
+    {
+      "ma": "CAO",
+      "ranhGioi": "caoHon() — verdict chi duoc NANG, khong duoc ha",
+      "soBaiDo": 56,
+      "baiDo": [
+        "A1 — simulate trả accounts=null KHÔNG được bịa ra mất mát",
+        "A1b — mô phỏng HỎNG cũng không được bịa ra mất mát",
+        "BẤT BIẾN — chương trình KHÔNG RÕ chạm tài sản: phải có mã lý do",
+        "F2 — account thứ 101 trở đi KHÔNG được biến mất âm thầm",
+        "FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng",
+        "FAIL-SAFE — lookup table không giải được thì không bao giờ ra safe"
+      ],
+      "doanTruoc": "l2.test.ts (fail-safe khong ha Do xuong Vang)"
+    },
+    {
+      "ma": "LVL",
+      "ranhGioi": "level chi do L2 sinh — L3 khong duoc cham",
+      "soBaiDo": 3,
+      "baiDo": [
+        "TRUNG THỰC — chỉ đổi chủ mà KHÔNG chuyển tiền thì số dư KHÔNG được hiện 500 → 0",
+        "quy tắc bất đối xứng của `expectedAction` còn trong code",
+        "ĐẦU-CUỐI — giao dịch tấn công ra verdict ĐỎ"
+      ],
+      "doanTruoc": "inspect.test.ts (L3 khong sua duoc level)"
+    },
+    {
+      "ma": "EXP",
+      "ranhGioi": "expectedAction bat doi xung — khop KHONG duoc ha, lech moi nang",
+      "soBaiDo": 2,
+      "baiDo": [
+        "expectedAction KHỚP ⇒ KHÔNG tắt cảnh báo nào",
+        "expectedAction LỆCH ⇒ nâng nghi ngờ"
+      ],
+      "doanTruoc": "inspect.test.ts (expectedAction LECH / KHOP)",
+      "soBaiDoTruocKhiVa": 1,
+      "daVa": true
+    }
+  ],
+  "ghiChu": "FS3 va EXP luc dau KHONG co bai nao do. Da them 2 bai kiem roi mutation lai: ca hai nay deu do. Moi mutation duoc hoan nguyen ngay sau khi do, da xac minh bang so sanh byte."
+}

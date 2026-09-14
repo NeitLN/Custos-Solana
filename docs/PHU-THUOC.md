@@ -1,6 +1,27 @@
 # Xử trí lỗ hổng phụ thuộc
 
-**Đo ngày 08/09/2026** · `npm audit` · 0 critical · 5 high · 6 moderate
+**Đo lại 13/09/2026** · `npm audit` · 0 critical · **5 high** · 0 moderate
+
+> **SÁU ADVISORY ĐÃ ĐƯỢC VÁ THẬT — kết luận cũ của trang này chỉ đúng một nửa.**
+>
+> Bản 08/09 viết *"chờ bản vá không phải một kế hoạch"* và áp câu đó cho **cả 11**
+> advisory. Đo lại ở TB-S03 cho thấy nó **đúng với 5 high, sai với 6 moderate**:
+>
+> | Gói | Dải bị ảnh hưởng | Đọc ra |
+> |---|---|---|
+> | `uuid` | `<11.1.1` | có **giới hạn trên** ⇒ bản vá tồn tại |
+> | `stream-json` | `<=3.4.0` | có **giới hạn trên** ⇒ bản vá tồn tại |
+> | `bigint-buffer` · `image-size` · `spl-token` … | `*` | **không** giới hạn trên ⇒ chưa có bản vá |
+>
+> Dấu hiệu phân biệt nằm ngay trong `npm audit --json`: dải `*` nghĩa là **mọi**
+> phiên bản đều dính, còn `<11.1.1` nghĩa là đã có bản sạch. Bản trước đọc
+> `fixAvailable` — trường đó đề xuất `@solana/web3.js@0.0.3`, một bản hạ cấp mười năm
+> tuổi, nên nó bị bỏ qua **cùng với** thông tin hữu ích nằm cạnh.
+>
+> Cách vá: `overrides` với **dải mở** (`>=11.1.1`), không phải `^11.1.1`. Bản đầu
+> dùng `^` và ép `rpc-websockets` — vốn đã dùng `uuid@14.0.2` sạch — **xuống** 11.x,
+> làm cây phụ thuộc không hợp lệ (`npm ls` báo `invalid`). Một bản vá hạ cấp nhánh
+> vốn an toàn thì không phải bản vá.
 
 Trang này tồn tại vì *biết con số* không phải là *đã xử lý*. Mỗi mục dưới đây trả lời
 bốn câu: nó nằm ở đâu, có tới được người dùng không, có bản vá thật không, và quyết
@@ -33,12 +54,21 @@ Hai điều đọc ra được, và điều thứ hai mạnh hơn câu ở bản
    là `<=2.0.2` — **nâng lên cũng không sửa được gì**, nên `overrides` để kéo `2.x`
    là công vô ích, không phải một phương án đang bị bỏ qua.
 
-Nói cách khác: **chờ bản vá không phải một kế hoạch.** Thứ thay cho bản vá là lập
-luận phơi nhiễm ở mục 3 — và từ vòng này, lập luận đó có test canh (mục 3.4).
+Nói cách khác: **với năm advisory HIGH, chờ bản vá không phải một kế hoạch.** Thứ
+thay cho bản vá là lập luận phơi nhiễm ở mục 3 — và từ vòng này, lập luận đó có test
+canh (mục 3.4).
+
+> **Câu trên từng được viết cho CẢ 11 advisory, và cái sai đó tốn năm ngày.**
+> Sáu advisory moderate có dải bị ảnh hưởng **giới hạn trên** (`uuid <11.1.1`,
+> `stream-json <=3.4.0`) — tức bản vá đã tồn tại từ trước. Chỉ nhóm high mới có dải
+> `*`, nghĩa là mọi phiên bản đều dính. Phân biệt nằm ngay trong `npm audit --json`;
+> bản trước không đọc tới vì đã kết luận từ `fixAvailable` (trường đó đề xuất
+> `@solana/web3.js@0.0.3`, một bản hạ cấp mười năm tuổi, nên bị bỏ qua cùng với
+> thông tin hữu ích nằm cạnh). Xem mục 3.2.
 
 ---
 
-## 1 · Mười một advisory, ba nguyên nhân gốc
+## 1 · Năm advisory còn lại, hai nguyên nhân gốc
 
 | Nguyên nhân gốc | Mức | Đường vào | Số advisory kéo theo |
 |---|---|---|---|
@@ -106,7 +136,19 @@ không làm sập cả lượt kiểm tra, và nó giữ đúng lời hứa đó
 - **Theo dõi:** khi `@solana/spl-token` phát hành bản bỏ `bigint-buffer` (hoặc
   `bigint-buffer` vá), nâng ngay. Đây là bản vá duy nhất đáng chờ trong ba mục.
 
-### 3.2 · `jayson` → `stream-json`, `uuid` — moderate, không vào runtime người dùng
+### 3.2 · `jayson` → `stream-json`, `uuid` — ✅ **ĐÃ VÁ 13/09**, không còn advisory
+
+> **Mục này giữ nguyên phần phân tích cũ làm dấu vết.** Kết luận cũ (*"không vào
+> runtime người dùng nên chấp nhận được"*) **đúng nhưng chưa đủ**: đã có bản vá thật
+> và trang này bỏ lỡ nó suốt năm ngày, vì câu *"thượng nguồn chưa có fix"* ở mục 0
+> được áp cho cả 11 advisory thay vì kiểm từng cái.
+>
+> `overrides: { "uuid": ">=11.1.1", "stream-json": ">=3.6.0" }` trong `package.json`.
+> Sau đó `npm audit` còn **5**, và cả bốn cổng đều xanh: 566 test · build hai app ·
+> devnet 6/6 · `thu-goi` 10/10 bẫy + 3/3 đối chứng.
+>
+> **Bài học giữ lại:** "không tới được người dùng" là lý do để **hạ ưu tiên**, không
+> phải lý do để **ngừng tìm bản vá**.
 
 `jayson` là client JSON-RPC **của Node** trong `@solana/web3.js`. Bundle trình duyệt
 không chứa nó (mục 2). Trên Node, nó chỉ chạy trong các script đo của repo, nối tới
@@ -167,8 +209,8 @@ và đúng lúc đó bài kiểm chặn họ lại.
 | | |
 |---|---|
 | **Người chịu trách nhiệm** | **vai A** (sở hữu Custos Core + SDK — xem bảng vai trong `CLAUDE.md`) |
-| **Quyết định** | chấp nhận 11 advisory, **tạm thời và có điều kiện** |
-| **Đo lần này** | 08/09/2026 · `npm audit` · 0 critical · 5 high · 6 moderate |
+| **Quyết định** | **6 đã vá** (`overrides`, 13/09) · **5 chấp nhận** tạm thời và có điều kiện |
+| **Đo lần này** | 13/09/2026 · `npm audit` · 0 critical · **5 high** · 0 moderate |
 | **Xem lại khi** | (a) một trong bốn bài kiểm ở 3.4 đỏ · (b) thượng nguồn ra bản đã vá thật · (c) trước khi nộp bài, hạn 19/09/2026 — tuỳ điều nào tới trước |
 
 Ba điều kiện, không phải một ngày duy nhất. Đặt mỗi một ngày thì rủi ro trôi tự do
@@ -178,8 +220,12 @@ giữa hai lần xem; đặt mỗi "khi test đỏ" thì bỏ sót bản vá th�
 
 ## 4 · Điều trang này KHÔNG nói
 
-- Không nói *"11 lỗ hổng đã được vá"*. Chúng **chưa** được vá; chúng đã được **đánh
-  giá và chấp nhận có điều kiện**, và điều kiện được ghi ra để kiểm lại.
+- Không nói *"11 lỗ hổng đã được vá"*. **Sáu** đã vá thật (13/09, `overrides`);
+  **năm** còn lại **chưa** được vá — chúng được **đánh giá và chấp nhận có điều
+  kiện**, và điều kiện được ghi ra để kiểm lại.
+- Không nói *"đã hết moderate nên an toàn hơn"*. Năm advisory còn lại đều là **high**,
+  và một trong số đó (`bigint-buffer`) nằm **trong bundle trình duyệt**. Xoá sáu
+  moderate không đụng gì tới rủi ro đó.
 - Không nói bundle *"sạch tuyệt đối"*. Phép đo ở mục 2 dựa vào chuỗi ký tự trong file
   đã minify — mạnh, nhưng không phải chứng minh hình thức.
 - Không nói rủi ro bằng **không**. `bigint-buffer` nằm trong đường đọc thật; lập luận

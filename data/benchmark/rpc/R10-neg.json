@@ -1,0 +1,153 @@
+{
+  "phienBan": 1,
+  "id": "R10-neg",
+  "captureLuc": "2026-09-12T21:16:33.747Z",
+  "nguon": "api.devnet.solana.com",
+  "banGhi": [
+    {
+      "method": "getFeeForMessage",
+      "khoa": "getFeeForMessage:08ccca4d852f1c78",
+      "thamSo": {
+        "msg": "gAEAAQISYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYkixEEJQP0SKtmij6mg1J5hwq4HGLRFrCHwAlQV3ACoBAQIAAgwCAAAA6AMAAAAAAAAB3+TlDC1i+GaWKrxLXXSlOvW8IXBAwU75qv8UK9rBdRUBAAA="
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497380194
+        },
+        "value": null
+      }
+    },
+    {
+      "method": "getAddressLookupTable",
+      "khoa": "getAddressLookupTable:7bbb7d5e99406e62",
+      "thamSo": {
+        "addr": "G4zMRxz49iN1ainvVPE4wqp22AYGcwrRVLkzy5i51m16"
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497380194
+        },
+        "value": {
+          "key": {
+            "__pubkey": "G4zMRxz49iN1ainvVPE4wqp22AYGcwrRVLkzy5i51m16"
+          },
+          "state": {
+            "deactivationSlot": "18446744073709551615",
+            "lastExtendedSlot": 486237648,
+            "lastExtendedSlotStartIndex": 0,
+            "authority": {
+              "__pubkey": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+            },
+            "addresses": [
+              {
+                "__pubkey": "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T"
+              },
+              {
+                "__pubkey": "BsCD6xVmjhYpGZQDgYLHoKFaM8KXSh1CZoKSMVk7JJvT"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "method": "getMultipleAccountsInfo",
+      "khoa": "getMultipleAccountsInfo:e66be369f26bfd64",
+      "thamSo": {
+        "keys": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "11111111111111111111111111111111",
+          "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T"
+        ]
+      },
+      "ketQua": [
+        {
+          "data": {
+            "__buffer": ""
+          },
+          "executable": false,
+          "lamports": 9823881544,
+          "owner": {
+            "__pubkey": "11111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 0
+        },
+        {
+          "data": {
+            "__buffer": "c3lzdGVtX3Byb2dyYW0="
+          },
+          "executable": true,
+          "lamports": 1,
+          "owner": {
+            "__pubkey": "NativeLoader1111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 14
+        },
+        null
+      ]
+    },
+    {
+      "method": "simulateTransaction",
+      "khoa": "simulateTransaction:110c15f360464df6",
+      "thamSo": {
+        "msg": "gAEAAQISYFaNhsf41Ds54ttyoxKEm54MRw/RadnsK54DljwtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYkixEEJQP0SKtmij6mg1J5hwq4HGLRFrCHwAlQV3ACoBAQIAAgwCAAAA6AMAAAAAAAAB3+TlDC1i+GaWKrxLXXSlOvW8IXBAwU75qv8UK9rBdRUBAAA=",
+        "addresses": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T"
+        ]
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0-rc.0",
+          "slot": 497380195
+        },
+        "value": {
+          "accounts": [
+            null,
+            null
+          ],
+          "err": {
+            "InsufficientFundsForRent": {
+              "account_index": 2
+            }
+          },
+          "fee": 5000,
+          "innerInstructions": [],
+          "loadedAccountsDataSize": 8390,
+          "loadedAddresses": {
+            "readonly": [],
+            "writable": [
+              "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T"
+            ]
+          },
+          "logs": [
+            "Program 11111111111111111111111111111111 invoke [1]",
+            "Program 11111111111111111111111111111111 success"
+          ],
+          "postBalances": [
+            9823876544,
+            1,
+            0
+          ],
+          "postTokenBalances": [],
+          "preBalances": [
+            9823881544,
+            1,
+            0
+          ],
+          "preTokenBalances": [],
+          "replacementBlockhash": {
+            "blockhash": "CFwUnMyCaE1XCVDkm1HptZcqDAJiLYQKoURZerQJKbNG",
+            "lastValidBlockHeight": 485072653
+          },
+          "returnData": null,
+          "unitsConsumed": 150
+        }
+      }
+    }
+  ]
+}

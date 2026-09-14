@@ -1,0 +1,263 @@
+{
+  "chayLuc": "2026-09-14T16:15:02.202Z",
+  "soMauChayDuoc": 19,
+  "soKhongDanhGiaDuoc": 19,
+  "tinhChat": [
+    {
+      "ma": "P1",
+      "ten": "mô phỏng hỏng ⇒ KHÔNG có trạng thái sau",
+      "nguon": "spec `simulateTransaction`: `err != null` nghĩa là giao dịch không thực thi, nên mọi trạng thái sau đều không tồn tại",
+      "apDung": 4,
+      "dat": 4,
+      "daChungMinh": "gỡ vế `!v.err` khỏi `coDuLieuAccount` ⇒ 4/4 tụt còn 1/4"
+    },
+    {
+      "ma": "P2",
+      "ten": "không đo được ⇒ PHẢI ghi vào `accountKhongDoDuoc`",
+      "nguon": "cùng spec: RPC vẫn trả mảng `accounts` toàn `null` khi mô phỏng hỏng — chỗ trống mang hình dạng dữ liệu, phải được khai là không đo được",
+      "apDung": 4,
+      "dat": 4,
+      "daChungMinh": "tắt nhánh ghi account khuyết ⇒ 4/4 tụt còn 0/4"
+    },
+    {
+      "ma": "P3",
+      "ten": "ALT không giải được ⇒ verdict không bao giờ `safe`",
+      "nguon": "spec ALT: bảng không giải được thì danh sách account của giao dịch có thể còn thiếu",
+      "apDung": 1,
+      "dat": 1,
+      "daChungMinh": ""
+    }
+  ],
+  "theoMau": [
+    {
+      "id": "R01-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R02-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R03-neg",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R03-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R04-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R05-neg",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R05-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R06-neg",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R06-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R07-neg",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R07-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R08-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R09-neg",
+      "ket": {
+        "P1": "dat",
+        "P2": "dat",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R09-pos",
+      "ket": {
+        "P1": "dat",
+        "P2": "dat",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R10-neg",
+      "ket": {
+        "P1": "dat",
+        "P2": "dat",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R10-pos",
+      "ket": {
+        "P1": "dat",
+        "P2": "dat",
+        "P3": "dat"
+      }
+    },
+    {
+      "id": "R11-neg",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R11-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    },
+    {
+      "id": "R12-pos",
+      "ket": {
+        "P1": "khong-ap-dung",
+        "P2": "khong-ap-dung",
+        "P3": "khong-ap-dung"
+      }
+    }
+  ],
+  "khongDanhGiaDuoc": [
+    {
+      "id": "MN-01",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-02",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-03",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-04",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-05",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-06",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-07",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-08",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-09",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "MN-10",
+      "lyDo": "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+    },
+    {
+      "id": "R13-pos",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R13-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R14-pos",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R14-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R01-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R02-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R04-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R08-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    },
+    {
+      "id": "R12-neg",
+      "lyDo": "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
+    }
+  ]
+}
