@@ -76,7 +76,12 @@ GOC = Path(__file__).resolve().parents[2]
 TRANG = "http://localhost:4173/Custos-Solana/"
 # Năm chứ không ba: phương sai của RPC devnet lớn, và ba mẫu thì một lượt xui làm
 # lệch hẳn trung vị. Năm vẫn ÍT — báo trung vị và cao nhất, không báo p95.
-SO_LUOT_BAM = 5
+# THẺ TB-P01 ĐÒI ÍT NHẤT 30 LƯỢT MỖI CẤU HÌNH.
+#
+# Bản trước đo 5 lượt, và `khongDo` phải tự khai *"p95 — 3 lượt bấm không đỡ nổi một
+# con số p95"*. Với n=30, p95 vẫn là **percentile quan sát**, không phải p95 của tổng
+# thể — thẻ nói rõ phải gọi đúng tên nó và kèm n/max/phân bố.
+SO_LUOT_BAM = 30
 O_KET_QUA = "[aria-label='Kết quả kiểm tra giao dịch']"
 
 # Đo là ĐO, không phải chấm đỗ/trượt. Ngưỡng ở đây chỉ để in cảnh báo, và chúng là
@@ -163,7 +168,15 @@ async def do_bam_ket_qua(ctx) -> dict:
     """
     ms: list[int] = []
     soRpc: list[int] = []
-    for _ in range(SO_LUOT_BAM):
+    # LƯỢT HỎNG PHẢI ĐƯỢC ĐẾM, KHÔNG ĐƯỢC `continue` IM LẶNG.
+    #
+    # Bản trước bỏ qua lượt không thấy nút và lượt timeout. Hậu quả: một lượt chạy mà
+    # 20/30 lần timeout vẫn báo "trung vị 840 ms" trên 10 lượt còn lại — con số đúng
+    # cho một tập đã bị lọc, và tập đó lọc theo đúng tiêu chí "lượt nào nhanh thì giữ".
+    #
+    # Thẻ TB-P01 cấm đích danh: *"lưu từng lượt và lỗi; không bỏ outlier"*.
+    hong: list[dict] = []
+    for i in range(SO_LUOT_BAM):
         pg = await ctx.new_page()
         dem = {"n": 0}
         # Đếm ở TẦNG MẠNG. Đọc số lượt gọi từ mã sản phẩm là tin chính thứ đang đo.
@@ -173,6 +186,7 @@ async def do_bam_ket_qua(ctx) -> dict:
         await pg.wait_for_timeout(800)
         nut = pg.locator("button.nut-nhan, button:has-text('Nhận quà')").first
         if await nut.count() == 0:
+            hong.append({"luot": i, "lyDo": "không tìm thấy nút kịch bản"})
             await pg.close()
             continue
         truoc = dem["n"]
@@ -181,19 +195,41 @@ async def do_bam_ket_qua(ctx) -> dict:
         try:
             await pg.wait_for_selector(O_KET_QUA, timeout=60000)
         except Exception:
+            hong.append(
+                {"luot": i, "lyDo": "quá hạn 60 s — không thấy thẻ kết quả", "soLuotRpc": dem["n"] - truoc}
+            )
             await pg.close()
             continue
         t1 = await pg.evaluate("() => performance.now()")
         ms.append(round(t1 - t0))
         soRpc.append(dem["n"] - truoc)
         await pg.close()
-    return {"ms": ms, "soLuotRpc": soRpc}
+    return {"ms": ms, "soLuotRpc": soRpc, "hong": hong}
 
 
 def tomTat(xs: list[int]) -> dict | None:
+    """Tóm tắt một tập số đo — kèm percentile QUAN SÁT, không gọi là p95 của tổng thể.
+
+    Thẻ TB-P01: *"nếu báo p95 từ mẫu nhỏ phải gọi là percentile quan sát, kèm n/max/
+    phân bố và độ không ổn định"*. Nên trường tên là `p95QuanSat`, và `soMau` luôn đi
+    kèm để người đọc tự hạ mức kết luận.
+    """
     if not xs:
         return None
-    return {"soMau": len(xs), "trungVi": round(statistics.median(xs)), "caoNhat": max(xs), "tatCa": xs}
+    sx = sorted(xs)
+    # Percentile kiểu "nearest-rank": với n=30 thì p95 là phần tử thứ 29 (1-indexed).
+    # Không nội suy — nội suy trên mẫu nhỏ tạo ra một con số không có lượt nào đạt.
+    k = max(0, min(len(sx) - 1, -(-95 * len(sx) // 100) - 1))
+    return {
+        "soMau": len(xs),
+        "trungVi": round(statistics.median(xs)),
+        "p95QuanSat": sx[k],
+        "caoNhat": max(xs),
+        "thapNhat": min(xs),
+        # Độ không ổn định: khoảng cách giữa nhanh nhất và chậm nhất, theo lần.
+        "daoDong": round(max(xs) / min(xs), 1) if min(xs) > 0 else None,
+        "tatCa": xs,
+    }
 
 
 async def main() -> None:
@@ -241,6 +277,17 @@ async def main() -> None:
     ket["bamCacLuotSau"] = tomTat(bam["ms"][1:])
     ket["bamTatCa"] = tomTat(bam["ms"])
     ket["soLuotRpcMoiLuot"] = tomTat(bam["soLuotRpc"])
+    # LƯỢT HỎNG ĐI VÀO BÁO CÁO, không dừng ở biến cục bộ.
+    #
+    # Suýt mất: vòng đo đã thu `hong` nhưng ba dòng trên chỉ lấy `ms`, nên mọi lượt
+    # timeout biến mất khỏi JSON. Một tập đã lọc theo tiêu chí "lượt nào xong thì giữ"
+    # cho ra trung vị đẹp và vô nghĩa.
+    ket["luotHong"] = bam["hong"]
+    ket["tyLeHoanTat"] = {
+        "hoanTat": len(bam["ms"]),
+        "hong": len(bam["hong"]),
+        "tong": SO_LUOT_BAM,
+    }
     """
     GHÉP CẶP thời gian với số lượt RPC của CÙNG lượt bấm.
 
@@ -323,9 +370,12 @@ def ghi(ket: dict, canh: list[str]) -> None:
                 **ket,
                 "canhBao": canh,
                 "khongDo": [
-                    "p95 — 3 lượt bấm không đỡ nổi một con số p95",
+                    "p95 CỦA TỔNG THỂ — `p95QuanSat` là percentile QUAN SÁT trên n lượt "
+                    "của một phiên, không suy ra được p95 của người dùng thật",
                     "mạng bị bóp (3G/4G) — chưa dựng, cần thêm cấu hình throttle",
                     "thiết bị thật — mọi số ở đây từ Chromium headless trên máy dev",
+                    "so sánh trước/sau — cần chạy lại cùng dataset và cùng điều kiện; "
+                    "một lượt đơn lẻ không nói được xu hướng",
                 ],
             },
             ensure_ascii=False,

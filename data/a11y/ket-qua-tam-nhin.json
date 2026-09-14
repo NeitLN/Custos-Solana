@@ -1,0 +1,54 @@
+{
+  "doLuc": "2026-09-14T19:25:01.916940+00:00",
+  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+  "dauVet": {
+    "bam": "c90436fd14d2fcb9",
+    "soFile": 30
+  },
+  "khungDaKiem": [
+    {
+      "ten": "320",
+      "rong": 320,
+      "cao": 720
+    },
+    {
+      "ten": "375",
+      "rong": 375,
+      "cao": 812
+    },
+    {
+      "ten": "768",
+      "rong": 768,
+      "cao": 1024
+    }
+  ],
+  "soKiem": 3,
+  "soHong": 0,
+  "kiem": [
+    {
+      "khung": "320",
+      "dat": true,
+      "top": 9,
+      "vh": 720,
+      "scrollY": 1330,
+      "focusTrongKetQua": true
+    },
+    {
+      "khung": "375",
+      "dat": true,
+      "top": 9,
+      "vh": 812,
+      "scrollY": 1252,
+      "focusTrongKetQua": true
+    },
+    {
+      "khung": "768",
+      "dat": true,
+      "top": 134,
+      "vh": 1024,
+      "scrollY": 912,
+      "focusTrongKetQua": true
+    }
+  ],
+  "dat": true
+}

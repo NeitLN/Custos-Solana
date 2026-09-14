@@ -91,9 +91,24 @@ không commit nào đụng thứ khác.
 
 ## 5 · Kết luận
 
-**Luồng cốt lõi không còn lỗi đã xác nhận.** Mười một lỗi F01–F11 của báo cáo đánh
-giá: mười đã sửa và đo lại, một (**F11**) đã đánh giá và ghi quyết định chấp nhận có
-điều kiện vì không có bản vá để áp.
+**Luồng cốt lõi không còn lỗi đã xác nhận — tại thời điểm chạy V01 (11/09).** Mười
+một lỗi F01–F11 của báo cáo đánh giá: mười đã sửa và đo lại, một (**F11**) đã đánh
+giá và ghi quyết định chấp nhận có điều kiện vì không có bản vá để áp.
+
+> **Câu trên đã hết hạn sau một ngày, và đó là bài học của chính nó.**
+>
+> Review Technical 12/09 tìm thêm **bốn lỗi** mà V01 không thấy: **T01** (xác nhận
+> chứa `err` vẫn báo thành công), **T02** (mất phản hồi gửi bị khẳng định là chưa
+> gửi), **T03** (chạy test làm bẩn artifact eval), **T04** (tài liệu nói mạnh hơn
+> bằng chứng — gồm chính câu này).
+>
+> Cả bốn **đã sửa và đo lại** ở phiên 12/09: T01/T02 tại
+> [`TB-C01`/`TB-C02`](roadmap/TIEN-DO.md), T03 tại `TB-C04`, T04 tại `TB-L01`. Bằng
+> chứng ở [`g00`](review/technical/g00-20260912-024738/BAO-CAO.md).
+>
+> Điều cần rút ra không phải *"V01 sai"* — nó đúng với những lỗi đã biết lúc đó. Là:
+> **một câu tổng quát không gắn bản mã sẽ tự trở thành lời nói dối** khi có người
+> nhìn kỹ hơn. Mọi phát biểu kiểu này từ nay phải kèm ngày và phạm vi.
 
 **Mọi kiểm bắt buộc qua trên bản cuối**, cùng một bản mã, mã thoát 0.
 

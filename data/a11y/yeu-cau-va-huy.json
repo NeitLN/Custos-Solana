@@ -1,0 +1,41 @@
+{
+  "doLuc": "2026-09-14T19:26:52.842758+00:00",
+  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+  "dauVet": {
+    "bam": "c90436fd14d2fcb9",
+    "soFile": 30
+  },
+  "hoiQuy": [
+    "F06",
+    "F07"
+  ],
+  "khung": {
+    "rong": 375,
+    "cao": 812
+  },
+  "soKiem": 4,
+  "soHong": 0,
+  "kiem": [
+    {
+      "ten": "F06 · payload hỏng có phản hồi",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "F06 · không sinh ra khối kết quả",
+      "dat": true,
+      "chiTiet": "0 khối"
+    },
+    {
+      "ten": "F06 · không hiện nhãn phán quyết nào",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "F07 · huỷ có xác nhận thấy được",
+      "dat": true,
+      "chiTiet": ""
+    }
+  ],
+  "dat": true
+}

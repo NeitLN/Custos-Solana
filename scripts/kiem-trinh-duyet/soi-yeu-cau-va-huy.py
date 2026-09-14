@@ -21,18 +21,62 @@ sẽ báo đỏ nhầm chính câu đúng. Thứ cần kiểm là TÍNH CHẤT: 
 sinh ra phán quyết nào.
 """
 import asyncio
+import json
+import subprocess
 import sys
+from datetime import datetime, timezone
+from pathlib import Path
 
+import dauvet
 from playwright.async_api import async_playwright
 
+GOC = Path(__file__).resolve().parents[2]
 VI = "http://localhost:5188"
 
 # Ba nhãn phán quyết của sản phẩm. Payload hỏng không được tạo ra cái nào.
 PHAN_QUYET = ["Bình thường", "Cần xem kỹ", "Nguy hiểm"]
 
 
+def ghi_bang_chung(muc: list[dict], hong: list[str]) -> None:
+    """Ghi ra `data/a11y/yeu-cau-va-huy.json` — xem chú thích ở `soi-race-gui.py`.
+
+    F06 và F07 là hai lỗi giao diện đã xảy ra thật. Hồi quy cho chúng mà không để
+    lại biên bản thì lần sau không ai biết chúng còn được canh hay không.
+    """
+    try:
+        sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=GOC, capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except Exception:
+        sha = None
+
+    d = GOC / "data" / "a11y"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "yeu-cau-va-huy.json").write_text(
+        json.dumps(
+            {
+                "doLuc": datetime.now(timezone.utc).isoformat(),
+                "sourceCommit": sha,
+                "dauVet": dauvet.doc("giao-dien"),
+                "hoiQuy": ["F06", "F07"],
+                "khung": {"rong": 375, "cao": 812},
+                "soKiem": len(muc),
+                "soHong": len(hong),
+                "kiem": muc,
+                "dat": not hong,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print("→ data/a11y/yeu-cau-va-huy.json")
+
+
 async def main() -> None:
     hong: list[str] = []
+    muc: list[dict] = []
     async with async_playwright() as p:
         b = await p.chromium.launch()
 
@@ -53,6 +97,7 @@ async def main() -> None:
             ("F06 · không hiện nhãn phán quyết nào", not nhan_lo, ", ".join(nhan_lo)),
         ]:
             print(f"  {'PASS' if dat else 'FAIL'}  {ten}" + (f"   <<< {chi_tiet}" if not dat else ""))
+            muc.append({"ten": ten, "dat": bool(dat), "chiTiet": chi_tiet})
             if not dat:
                 hong.append(ten)
         await ctx.close()
@@ -78,11 +123,14 @@ async def main() -> None:
             chu = await pg.inner_text("body")
             dat = "Đã huỷ yêu cầu" in chu and "chưa được gửi" in chu
             print(f"  {'PASS' if dat else 'FAIL'}  F07 · huỷ có xác nhận thấy được")
+            muc.append({"ten": "F07 · huỷ có xác nhận thấy được", "dat": bool(dat), "chiTiet": ""})
             if not dat:
                 hong.append("F07")
         await ctx.close()
         await b.close()
 
+    print()
+    ghi_bang_chung(muc, hong)
     print("\n" + ("=== TẤT CẢ PASS ===" if not hong else "=== FAIL: " + ", ".join(hong)))
     sys.exit(1 if hong else 0)
 
