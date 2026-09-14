@@ -107,37 +107,61 @@ Câu nói được: *"760 token vào và 184 token ra mỗi lượt, đo trên 3
 nói được: *"chi phí AI có trần cứng"* — 400 là mặc định, bên tích hợp nâng được, và
 nó không tính token đầu vào.
 
-### Thời hạn 4 giây cắt mất 1–2 lượt trong 38 — mỗi lượt chạy
+### Thời hạn 4 giây — và một đính chính về cách đo nó
 
-`boiThoiHan` mặc định **4.000 ms**. Bảy lượt đo 12/09 cho độ trễ cao nhất **4.054 ·
-4.189 · 4.321 · 4.561 · 4.847 · 4.968 ms** — tức **đuôi phân bố nằm đúng trên vạch**,
-không phải dưới nó. Trung vị thì ổn định quanh **2,7–3,0 s**, xa vạch.
+`boiThoiHan` mặc định **4.000 ms**. Độ trễ cao nhất quan sát qua các lượt đo 12/09
+nằm trong khoảng **4.054 – 4.968 ms**, tức **đuôi phân bố nằm đúng trên vạch**.
+Trung vị ổn định quanh **2,7 – 3,0 s**, xa vạch.
 
-Hệ quả, và nó là chi phí thật: lượt bị cắt **vẫn bị tính tiền** (nhà cung cấp đã sinh
-xong token) nhưng kết quả bị bỏ, người dùng nhận câu tất định. Trả tiền cho một câu
-không ai đọc.
+> **ĐÍNH CHÍNH — bản trước của đoạn này nói sai hai lần.** Nó ghi *"cắt mất 1–2
+> lượt"* trong khi artifact ghi **4**, và nó gọi con số đó là **timeout**.
+>
+> Con số đó không phải timeout quan sát được. Script đo gọi `dienGiaiBangMoHinh`
+> **trần**, không bọc `boiThoiHan`, nên **không lượt nào thật sự bị cắt** — nó chỉ
+> đếm số lượt có độ trễ vượt ngưỡng, tức trả lời *"nếu bọc thời hạn mặc định thì
+> bao nhiêu lượt sẽ rụng"*. Một ước lượng, không phải một quan sát.
+>
+> Artifact nay ghi ba trường tách bạch thay vì một:
+>
+> | Trường | Nghĩa | Lượt gần nhất |
+> |---|---|---|
+> | `duongDoCoBocThoiHan` | đường đo có giống sản xuất không | **false** |
+> | `soLuotUocSeBiCat` | **ước lượng** nếu bọc hạn mặc định | **1** / 38 |
+> | `soLuotBiCatThatSu` | **quan sát** trên đường có bọc | **0** — vì đường đo không bọc |
+>
+> Ước lượng dao động theo lượt đo (**1 – 4 / 38**) vì độ trễ đuôi nằm sát vạch 4.000
+> ms: cùng một mẫu lúc vượt lúc không.
+
+Hệ quả nếu áp thời hạn trong sản xuất, và nó là chi phí thật: lượt bị cắt **vẫn bị
+tính tiền** (nhà cung cấp đã sinh xong token) nhưng kết quả bị bỏ, người dùng nhận
+câu tất định. Trả tiền cho một câu không ai đọc.
 
 Không hỏng gì — đường lui đúng thiết kế, `level` của L2 không bị đụng. Nhưng
-*"lớp AI chạy cho 38/38 mẫu"* là câu **sai**; câu đúng là *"36–37/38, phần còn lại
-rơi về câu tất định vì quá hạn"*.
+*"lớp AI chạy cho 38/38 mẫu"* vẫn là câu **sai** vì một lý do khác, lớn hơn: **9 lượt
+lui về câu tất định** ngay cả khi không có thời hạn nào (bộ chắn vứt câu, hoặc mô hình
+trả thứ không dùng được). Xem `luiVeTatDinh`.
 
-`data/eval/ai-ket-qua.json` ghi thẳng `hanMacDinhMs` và `soLuotVuotHanMacDinh`. Con
-số hạn **được đo**, không chép tay: bọc một Interpreter treo vĩnh viễn rồi bấm giờ —
-nếu ai đổi 4000 thành số khác, báo cáo tự đổi theo.
+Con số hạn **được đo**, không chép tay: bọc một Interpreter treo vĩnh viễn rồi bấm
+giờ — ai đổi 4000 thành số khác thì báo cáo tự đổi theo.
 
 ### Mô hình đếm sai số lệnh ở những giao dịch đọc hiểu được 0 %
 
 Đây là **phát hiện bất lợi**, ghi lại nguyên vẹn.
 
-Bảy lượt chạy live, mỗi lượt có **1–4 câu** (3 · 3 · 2 · 2 · 4 · 2 · 1) chứa một
-con số không suy ra được từ facts. Chúng luôn rơi vào cùng bốn ca — **MN-04 · MN-07 · MN-08 · MN-10** — và luôn
+Qua nhiều lượt chạy live, mỗi lượt có **1–4 câu** chứa một con số không suy ra
+được từ facts — dao động, không cố định.
+
+> Đoạn này từng ghi *"bảy lượt"* trong khi một đoạn khác ghi *"tám lượt"*, và cả hai
+> đều lạc hậu sau lượt chạy kế tiếp. Đếm lượt bằng tay ở bốn chỗ khác nhau là cách
+> chắc chắn tạo ra mâu thuẫn — đó chính là **T04-d**. Nay nói theo dải quan sát
+> được; ai cần con số chính xác của một lượt thì đọc artifact. Chúng luôn rơi vào cùng bốn ca — **MN-04 · MN-07 · MN-08 · MN-10** — và luôn
 cùng một hình dạng: mô hình nói *"có N lệnh chưa đọc hiểu được"* với N **gần đúng
 nhưng không bằng** `total − analyzed` (nói 10 khi là 12, nói 9 khi là 11, nói 4 khi
 là 5, nói 7 khi là 8).
 
 | | |
 |---|---|
-| Tần suất | **1–4 / 38 mỗi lượt** qua 7 lượt, không cố định — cùng một ca lúc dính lúc không |
+| Tần suất | **1–4 / 38 mỗi lượt**, không cố định — cùng một ca lúc dính lúc không |
 | Luôn là ca nào | MN-04, MN-07, MN-08, MN-10 — cả bốn đều `analyzed = 0` |
 | Hướng sai | **luôn thấp hơn** sự thật, lệch 1–2 đơn vị |
 
@@ -172,7 +196,7 @@ Câu hỏi đúng là câu ngược lại: **mô hình có nói được gì mà
 
 **Dòng thứ ba là dòng quan trọng nhất, và nó nói "hoà", không nói "AI hơn".**
 
-Tám lượt đo cho mô hình **13 hoặc 14** trên 16 ca có coverage khuyết; câu mẫu luôn
+Các lượt đo cho mô hình **13 hoặc 14** trên 16 ca có coverage khuyết; câu mẫu luôn
 **14** (nó tất định nên không đổi). Không ổn định — cùng một ca lúc nêu lúc không.
 
 > **Một đính chính về chính đoạn này.** Bản đầu viết *"13/16, ổn định qua ba lượt,

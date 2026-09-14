@@ -39,6 +39,12 @@ const json = <T>(p: string): T | null => {
 const soLieu = json<{ test: { pass: number; fail: number }; soLuat: number; soMau: number; nguoiMua: number }>(
   "apps/demo-wallet/public/so-lieu.json",
 );
+// Đọc THẲNG artifact eval, không qua `so-lieu.json`. Hai lý do, cả hai đo được:
+// `so-lieu.json` là bản sao sinh lại bằng tay và đã lạc hậu ba ngày trong repo này;
+// và ô checklist hỏi "đã chạy chưa", câu đó chỉ artifact gốc trả lời được.
+const evalAi = json<{ moHinhThat?: { trangThai?: string; moHinh?: string; xong?: string } }>(
+  "data/eval/ai-ket-qua.json",
+);
 const bcTichHop = docBangChungTichHop();
 // Cổng hỏi "lượt vừa chạy ra sao", KHÔNG hỏi "đã từng pass chưa". Hai câu đó từng
 // là một, và đó là lý do một lượt fail vẫn được in ra như tám kịch bản đều pass.
@@ -176,7 +182,35 @@ const oTrongBangChung = [
   ["Phỏng vấn người mua", `${soLieu?.nguoiMua ?? 0} — đội quyết định không làm kỳ này`],
   ["Bên thứ ba tích hợp", bcTichHop?.doiTac ? "có" : "0 — ví dụ tích hợp do chính đội dựng"],
   ["Usability vòng 2", existsSync("data/seed/phong-van-vong-2.json") ? "có" : "chưa chạy"],
-  ["Eval với mô hình thật", "BLOCKED_BY_SECRET — cần ANTHROPIC_API_KEY"],
+  /*
+   * ĐỌC TỪ ARTIFACT, KHÔNG GÕ CỨNG — và dòng này từng gõ cứng đúng một chuỗi.
+   *
+   * `"BLOCKED_BY_SECRET — cần ANTHROPIC_API_KEY"` nằm thẳng trong mã, nên checklist
+   * nói câu đó bất kể dữ liệu. Lượt eval với mô hình thật chạy 11/09 (`a0f2c91`) ghi
+   * `trangThai: "đã đo"` vào `data/eval/ai-ket-qua.json`, mà cổng nộp bài vẫn in
+   * BLOCKED suốt ba ngày sau đó.
+   *
+   * Hướng sai ở đây là nói GIẢM — báo chưa làm một việc đã làm. Thể lệ phạt "trình
+   * bày sai", không phân biệt sai theo chiều nào, và một ô trống giả trong checklist
+   * nộp bài dẫn tới quyết định sai của chính đội.
+   *
+   * `tao-release-notes.ts` đọc đúng trường này từ đầu (`!== "đã đo"`); hai cổng cùng
+   * đọc một artifact mà một cổng gõ tay là cách rẻ nhất để chúng nói khác nhau.
+   */
+  [
+    "Eval với mô hình thật",
+    (() => {
+      const tt = evalAi?.moHinhThat?.trangThai;
+      if (!tt) return "chưa chạy lần nào — `npm run eval-ai -- --that`";
+      if (tt !== "đã đo") return `${tt} — cần ANTHROPIC_API_KEY`;
+      const m = evalAi?.moHinhThat?.moHinh ?? "mô hình thật";
+      // `xong` đã là chuỗi ISO sẵn trong artifact. `thoiDiem()` nhận một LuotTichHop
+      // rồi tự rút `finishedAt`/`doLuc` ra — gọi nó ở đây là bọc một chuỗi vào hàm
+      // chuyên bóc chuỗi khỏi object, tức sai kiểu và cho `null` nếu lọt qua.
+      const xong = evalAi?.moHinhThat?.xong;
+      return `đã đo — ${m}${xong ? ` · ${xong}` : ""}`;
+    })(),
+  ],
 ];
 
 /*

@@ -23,6 +23,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Hạn hữu hạn cho MỌI job. Không có nó, một bước treo (npm registry không phản
+    # hồi, một probe chờ selector không bao giờ tới) chiếm runner tới mức mặc định
+    # 6 TIẾNG — và trong tuần trước hạn thi, đó là cả một buổi tối không ai deploy
+    # được mà cũng không ai thấy lỗi. Số đặt gấp ~3 lần lượt chạy thật để nhiễu
+    # mạng không làm đỏ oan: job này đo 20,5 s cục bộ, cộng `npm ci`.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -81,6 +87,33 @@ jobs:
       - name: Cổng tích hợp tất định
         run: npm run thu-tich-hop:deterministic
 
+      # REPLAY RPC — phát lại response ĐÃ GHI, không gọi mạng.
+      #
+      # `npm run check` chạy unit test trên Facts đã bóc sẵn. Replay hỏi câu trước
+      # đó: L1 bóc response RPC thô ra Facts có đúng không. Hai câu khác nhau, và
+      # bộ test không phủ được câu này vì nó bắt đầu từ sau bước bóc.
+      #
+      # Đo được là offline THẬT, không tin chú thích: chặn `http`/`https`/`net`/
+      # `dns`/`fetch` rồi chạy lại ⇒ exit 0, không chạm đường nào. Nó chỉ đọc
+      # `data/benchmark/rpc/` và `data/seed/`.
+      #
+      # 959 ms cục bộ. Đặt sau `check` vì `check` là cổng rẻ hơn và bắt nhiều hơn.
+      - name: Replay RPC đã ghi (offline)
+        run: npm run replay-rpc
+
+      # BỘ ĐỐI KHÁNG — năm probe, tất cả trong tiến trình.
+      #
+      # `fuzz-s02` (đầu vào méo) · `probe-race-c03` (race của giao diện, dựng lại
+      # bằng mô hình thay vì Playwright — xem chú thích trong chính file đó) ·
+      # `probe-gui-t01-t02` (tái hiện T01/T02) · `probe-neo-c06` (neo kết quả) ·
+      # `probe-timer-c05` (thời hạn). Không cái nào mở trình duyệt hay socket: đã
+      # đo bằng cách chặn mạng rồi chạy lại, cả năm exit 0.
+      #
+      # 3,4 s cục bộ. Cộng với replay là +4,3 s trên một job ~15 s — đổi lại, năm
+      # probe này từng bắt bốn lỗi sản phẩm thật mà bộ test không thấy.
+      - name: Bộ probe đối kháng (offline)
+        run: npm run doi-khang
+
       # `base` nằm trong vite.config.ts, không truyền qua biến môi trường —
       # xem chú thích trong file đó để biết vì sao.
       - name: Build ví mẫu
@@ -125,6 +158,10 @@ jobs:
   # xuống theo.
   goi-sdk:
     runs-on: ubuntu-latest
+    # Job này gọi `npm install` THẬT ra registry (xem chú thích trên). Đó đúng là
+    # loại bước treo được vì lý do ngoài repo, nên hạn phải chặt hơn job build.
+    # Đo cục bộ: 28 s.
+    timeout-minutes: 10
     # Quyền `pages: write` và `id-token: write` khai ở cấp workflow là để cho job
     # deploy. Job này chỉ đọc mã nguồn, nên hạ xuống đúng mức nó cần.
     permissions:
@@ -155,9 +192,154 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
         uses: actions/deploy-pages@v4
+
+  # ══════════════════════════════════════════════════════════════════════════════
+  # HAI JOB DƯỚI ĐÂY CHẠY TAY (`workflow_dispatch`), KHÔNG NẰM TRÊN ĐƯỜNG PUSH.
+  #
+  # Thẻ TB-I03 bước 3 đòi tách ba tầng: tất định · browser · live. Hai tầng sau có
+  # chung một tính chất mà tầng đầu không có — chúng đỏ được vì lý do KHÔNG PHẢI
+  # lỗi sản phẩm (Chromium tải hỏng, RPC Devnet công cộng chậm). Đặt chúng trên
+  # đường chặn deploy là dạy người đọc bỏ qua CI, và một CI bị bỏ qua thì tệ hơn
+  # không có CI.
+  #
+  # `soi-trinh-duyet.py` đã tự khai điều này từ trước và tôi giữ nguyên quyết định
+  # đó: *"KHÔNG nằm trong CI, và cố ý như vậy — Playwright kéo theo một trình duyệt
+  # vài trăm MB, thêm nó vào đường deploy ngay trước hạn thi là đổi một rủi ro nhỏ
+  # lấy một rủi ro lớn."* Nhưng "không chặn deploy" ≠ "không chạy được trên CI":
+  # hai job này cho phép chạy chủ động trên đúng một revision khi cần bằng chứng.
+  # ══════════════════════════════════════════════════════════════════════════════
+
+  # TẦNG BROWSER — Chromium thật, ghim tool, artifact kể cả khi đỏ.
+  browser:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.12.0"
+      - name: Ghim npm 11.6.2
+        run: |
+          npm install -g npm@11.6.2
+          npm --version
+      # `npm ci` CẦN cho probe, không chỉ để build: `soi-trinh-duyet.py` đọc
+      # `node_modules/axe-core/axe.min.js` và so bản đang chạy với hằng `AXE_GHIM`
+      # (4.13.0). Không có bước này thì probe đỏ vì thiếu file, không phải vì giao diện.
+      - run: npm ci
+
+      - uses: actions/setup-python@v5
+        with:
+          # Máy đội chạy 3.14. Ghim hai số để runner không nhảy sang bản minor khác
+          # giữa hai lượt chạy — cùng lý do đã ghim Node và npm ở job build.
+          python-version: "3.14"
+
+      # Playwright ghim trong `requirements.txt` (1.61.0), và `playwright install`
+      # gắn liền phiên bản Chromium với phiên bản Playwright bên dưới. Đó là cách
+      # repo này đã chọn để "0 vi phạm axe" có nghĩa: nói rõ axe nào, Chromium nào.
+      - name: Cài Playwright và Chromium (đã ghim)
+        run: |
+          pip install -r scripts/kiem-trinh-duyet/requirements.txt
+          playwright install --with-deps chromium
+
+      # Hai server dev, đúng cổng probe gõ cứng (5188/5189) với `--strictPort`.
+      # KHÔNG dùng `vite preview`: nó phục vụ ở base `/Custos-Solana/` còn probe
+      # gọi `http://localhost:5188/`, và `trang-tan-cong` không có script preview.
+      #
+      # Vòng chờ viết tay thay vì `npx --yes wait-on`: `--yes` kéo bản MỚI NHẤT của
+      # một gói lúc chạy, tức thêm đúng một phụ thuộc không ghim vào một workflow mà
+      # cả phần còn lại đã ghim Node, npm, axe-core, Playwright và Python. Một job
+      # đỏ vì `wait-on` đổi hành vi ở bản minor là loại đỏ không ai đoán được.
+      #
+      # `curl` có sẵn trên runner. Chờ tối đa 90 s rồi báo lỗi RÕ, không treo tới
+      # timeout của job — hai cách đỏ đó đọc log khác hẳn nhau.
+      - name: Dựng hai server
+        run: |
+          npm run vi &
+          npm run tan-cong &
+          for cong in 5188 5189; do
+            n=0
+            until curl -sf -o /dev/null "http://localhost:$cong/"; do
+              n=$((n+1))
+              if [ $n -ge 90 ]; then
+                echo "✖ server cổng $cong không lên sau 90 s"
+                exit 1
+              fi
+              sleep 1
+            done
+            echo "✓ cổng $cong sẵn sàng sau ${n}s"
+          done
+
+      - name: Probe khả năng tiếp cận và bốn luồng demo
+        run: python scripts/kiem-trinh-duyet/soi-trinh-duyet.py
+
+      - name: Probe vùng bấm
+        run: python scripts/kiem-trinh-duyet/soi-vung-bam.py
+
+      - name: Probe bối cảnh cảnh báo (X02)
+        run: python scripts/kiem-trinh-duyet/soi-boi-canh-x02.py
+
+      # `if: always()` là cả điểm của bước này. Một probe đỏ mà không để lại gì thì
+      # người đọc log chỉ thấy "assert failed" và phải chạy lại trên máy mình để
+      # biết chuyện gì — đúng cái vòng lặp mà `data/a11y/*.json` sinh ra để cắt.
+      - name: Giữ bằng chứng kể cả khi đỏ
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bang-chung-browser
+          path: |
+            data/a11y/
+            data/hieu-nang/
+          # Probe đỏ sớm có thể chưa kịp ghi file nào. Không cảnh báo — thư mục
+          # rỗng là trạng thái hợp lệ ở đây, và một warning đỏ oan làm loãng log.
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # TẦNG LIVE — Devnet công cộng. Chạy tay, và KHÔNG có khoá nào.
+  live-devnet:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.12.0"
+      - name: Ghim npm 11.6.2
+        run: |
+          npm install -g npm@11.6.2
+          npm --version
+      - run: npm ci
+
+      # KHÔNG `secrets:` ở đâu trong job này, và đó là tính chất kiểm được chứ
+      # không phải lời hứa: endpoint đọc từ `hien-truong.json` →
+      # `https://api.devnet.solana.com`, RPC Devnet công cộng. `thu-tich-hop.mjs`
+      # không đọc một biến môi trường nào (grep `env.` ra rỗng).
+      #
+      # Devnet, KHÔNG phải mainnet: mô phỏng không cần chữ ký, nên job này không
+      # ký và không gửi giao dịch nào cần khoá.
+      - name: Lượt tích hợp live trên Devnet công cộng
+        run: npm run thu-tich-hop:devnet
+
+      # RPC công cộng chậm ⇒ lượt đỏ. Đó KHÔNG phải lỗi phát hiện, nên artifact
+      # phải còn lại để phân biệt hai loại đỏ — `failureCategory` trong chính file
+      # này nói ra loại nào.
+      - name: Giữ bằng chứng lượt live
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bang-chung-live-devnet
+          path: data/tich-hop/
+          if-no-files-found: ignore
+          retention-days: 14

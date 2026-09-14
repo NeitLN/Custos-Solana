@@ -1,7 +1,13 @@
 # Đánh giá lớp mô hình
 
-**Đo ngày 04/09/2026** · script [`scripts/eval-ai.ts`](../scripts/eval-ai.ts) · số liệu
-[`data/eval/ai-ket-qua.json`](../data/eval/ai-ket-qua.json)
+**Đường tất định đo 04/09/2026** · **lượt với mô hình thật đo 11/09/2026**
+(`claude-haiku-4-5-20251001`) · script [`scripts/eval-ai.ts`](../scripts/eval-ai.ts) ·
+số liệu [`data/eval/ai-ket-qua.json`](../data/eval/ai-ket-qua.json)
+
+> Hai ngày, cố ý tách. Bộ bẫy đối kháng chạy trên đường **tất định** và không cần
+> khoá; lượt **live** cần `ANTHROPIC_API_KEY` nên chạy riêng, muộn hơn một tuần. Gộp
+> chúng thành một ngày là nói sai về phạm vi của cả hai — và header từng chỉ mang
+> ngày 04/09 trong khi mục 4 bên dưới đã phải nói về lượt 11/09.
 
 Trang này trả lời một câu giám khảo chắc chắn hỏi: *"AI hơn câu mẫu ở chỗ nào — hay
 nó chỉ là câu chữ?"* Và câu đi kèm mà ít ai hỏi nhưng quan trọng hơn: *"AI làm hỏng
@@ -199,14 +205,27 @@ một bẫy lọt.
 
 1. **Neo bắt số BỊA RA, không bắt số GHÉP SAI.** Mô hình lấy đúng số của ví A rồi
    gán cho ví B thì máy không thấy. Loại sai đó cần người đọc, rubric ở mục 5.
-2. **Chưa đo với mô hình thật ở vòng này.** Cần `ANTHROPIC_API_KEY`; bản demo công
-   khai cố ý không nhúng khoá. Phần đó đánh dấu `BLOCKED_BY_SECRET` trong dữ liệu,
-   **không phải để trống cho ai đó tưởng là 0**. Lượt chạy với mô hình thật hồi
-   22/08 có biên bản riêng ở `docs/bao-mat/`.
+2. **Đã đo với mô hình thật — và kết quả không có lợi cho lớp AI.** Lượt live chạy
+   `claude-haiku-4-5-20251001` trên 38 mẫu, khoá đọc từ biến môi trường, ghi ở
+   `data/eval/ai-ket-qua.json` (`moHinhThat.trangThai: "đã đo"`). Số đo và kết luận:
+   `docs/DON-VI-KINH-TE.md` mục 3 và `docs/BANG-CLAIM.md`.
 
-   Từ vòng này, một lượt offline **không còn xoá** lượt live đã đo: nó giữ nguyên
-   trong trường `liveGanNhat`. Trước đó thì có — và đã xảy ra thật, nên số đo live
-   22/08 giờ chỉ còn sống trong biên bản markdown, không còn dạng máy đọc được.
+   Điều **chưa** đo được không phải lượt chạy, mà là *lợi ích*: trên thước nêu phần
+   chưa đọc hiểu được, mô hình **ngang** câu mẫu chứ không hơn. Câu *"AI giúp người
+   dùng hiểu hơn"* vẫn nằm trong danh sách KHÔNG được nói — nó cần usability vòng 2,
+   máy không trả lời được.
+
+   > Mục này từng viết *"Chưa đo với mô hình thật ở vòng này"* và giữ nguyên câu đó
+   > sau khi lượt live đã chạy. Chữ gõ tay không có đường đồng bộ nào; nó chỉ sai đi
+   > theo thời gian. Nay có guard neo đúng trường `moHinhThat.trangThai`.
+
+   Bản demo công khai vẫn **cố ý không nhúng khoá** — đó là lý do trang số liệu chạy
+   đường tất định, không phải vì chưa đo bao giờ. Không có khoá thì lượt eval đánh dấu
+   `BLOCKED_BY_SECRET`, **không phải để trống cho ai đó tưởng là 0**.
+
+   Một lượt offline **không còn xoá** lượt live đã đo: nó giữ nguyên trong trường
+   `liveGanNhat`. Trước đó thì có — và đã xảy ra thật, nên số đo live 22/08 giờ chỉ
+   còn sống trong biên bản markdown ở `docs/bao-mat/`, không còn dạng máy đọc được.
 3. **Bộ mẫu 33, không phải hàng nghìn.** Đủ để bắt lỗi hạng nặng, không đủ để nói
    tỉ lệ.
 4. **Không đo chất lượng câu chữ.** Máy chỉ đo được thứ máy kiểm được.
