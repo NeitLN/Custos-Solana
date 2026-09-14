@@ -133,6 +133,58 @@ const cohort = docJson<Cohort>("data/seed/cohort-ket-qua.json");
 const chiPhi = docJson<ChiPhi>("data/seed/chi-phi.json");
 const test = demTest();
 
+/*
+ * ĐỘ TRỄ PHÍA NGƯỜI DÙNG — nguồn duy nhất cho ba chỗ đang gõ tay.
+ *
+ * `HIEU-NANG.md`, `README.md` và `ADR-0001` đều công bố cùng bộ số này, cả ba gõ tay,
+ * **không chỗ nào có đường đồng bộ**. Đó là lý do P01 đã trôi một lần (~850 ms là
+ * trung vị của 4 lượt sau khi bỏ lượt đầu, trong khi 30 lượt cho 1596 ms) — và trôi
+ * lần thứ hai ngay sau đó: lượt đo 15/09 cho p95 quan sát 5359 ms, cao nhất 8896 ms,
+ * còn ba tài liệu vẫn nói 3874/3877.
+ *
+ * Sửa tay lần nữa chỉ dời thời điểm trôi. Đưa nó vào đây để `npm run so-lieu` chép
+ * đi, giống mọi con số khác trên trang công khai.
+ */
+type DoTre = {
+  doLuc: string;
+  bamTatCa: { soMau: number; trungVi: number; p95QuanSat: number; caoNhat: number; thapNhat: number; daoDong: number };
+  bamCacLuotSau: { trungVi: number };
+  bamLanDau: number;
+  soLuotRpcMoiLuot: { trungVi: number; caoNhat: number };
+  tyLeHoanTat: { hoanTat: number; hong: number; tong: number };
+  taiTrangNguoi: { fcp: number; byteJsQuaDay: number; byteJsGiaiNen: number; soTepJs: number };
+  taiTrangAm: { fcp: number };
+  tungLuot: Array<{ ms: number; soLuotRpc: number }>;
+};
+const doTre = docJson<DoTre>("data/hieu-nang/do-tre.json");
+
+/**
+ * Tách lượt CÓ retry khỏi lượt không, theo số lượt RPC của chính lượt đó.
+ *
+ * `HIEU-NANG.md` mục 3 kết luận *"điểm ngoại lai là retry, không phải khởi động
+ * nguội"* — đúng, nhưng bằng chứng trong đó là ba dãy số đọc bằng mắt. Ghép cặp
+ * (ms, số RPC) rồi tách nhóm cho ra con số nói thẳng điều ấy, và nó đi kèm mọi lượt
+ * đo sau này thay vì phải kể lại.
+ */
+function tachTheoRetry(t: DoTre["tungLuot"] | undefined) {
+  if (!t?.length) return null;
+  const tv = (a: number[]) => {
+    const s = [...a].sort((x, y) => x - y);
+    return s.length % 2 ? s[(s.length - 1) / 2]! : Math.round((s[s.length / 2 - 1]! + s[s.length / 2]!) / 2);
+  };
+  // Trung vị số RPC là mức "không retry"; lượt nào vượt là lượt client đã thử lại.
+  const moc = tv(t.map((x) => x.soLuotRpc));
+  const thuong = t.filter((x) => x.soLuotRpc <= moc).map((x) => x.ms);
+  const coRetry = t.filter((x) => x.soLuotRpc > moc).map((x) => x.ms);
+  if (!thuong.length || !coRetry.length) return null;
+  return {
+    mocRpc: moc,
+    khongRetry: { soLuot: thuong.length, trungVi: tv(thuong) },
+    coRetry: { soLuot: coRetry.length, trungVi: tv(coRetry) },
+    tyLeTrungVi: Math.round((tv(coRetry) / tv(thuong)) * 10) / 10,
+  };
+}
+
 const soLuat = (readFileSync("packages/core/src/l2/rules.ts", "utf8").match(/export const luat\d+/g) ?? []).length;
 const soMau = existsSync("data/seed/facts") ? readdirSync("data/seed/facts").filter((f) => f.endsWith(".json")).length : 0;
 
@@ -322,6 +374,28 @@ const soLieu = {
     luotGoiRpc: chiPhi.tongLuotGoi,
   },
   test,
+  /*
+   * Đo trên bản dựng production qua `vite preview`, KHÔNG phải dev server. Chỉ lấy
+   * phần tài liệu công bố; `tungLuot` giữ nguyên trong artifact gốc vì nó là dữ liệu
+   * thô, không phải claim.
+   *
+   * `p95QuanSat` giữ đúng tên dài. Đặt là `p95` trần thì nó bị đọc thành p95 của
+   * tổng thể người dùng — `hieuNangP01.test.ts` có bài riêng cấm đúng chuyện đó.
+   */
+  hieuNang: doTre && {
+    ngayDo: doTre.doLuc,
+    soMau: doTre.bamTatCa.soMau,
+    trungViMs: doTre.bamTatCa.trungVi,
+    p95QuanSatMs: doTre.bamTatCa.p95QuanSat,
+    caoNhatMs: doTre.bamTatCa.caoNhat,
+    thapNhatMs: doTre.bamTatCa.thapNhat,
+    daoDong: doTre.bamTatCa.daoDong,
+    luotHong: doTre.tyLeHoanTat.hong,
+    rpcTrungVi: doTre.soLuotRpcMoiLuot.trungVi,
+    rpcCaoNhat: doTre.soLuotRpcMoiLuot.caoNhat,
+    fcpNguoiMs: doTre.taiTrangNguoi.fcp,
+    theoRetry: tachTheoRetry(doTre.tungLuot),
+  },
   soLuat,
   soMau,
 };

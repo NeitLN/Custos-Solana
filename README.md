@@ -3,8 +3,18 @@
 > Custos phát hiện những hậu quả **không thuộc về hành động chính** của một giao dịch Solana, và giải thích bằng tiếng Việt trước khi người dùng ký.
 
 Transaction-intelligence SDK cho ví và dApp Solana.
-Dự thi **UniHackfest 2026** — track Best Product & Business, chủ đề AI × Web3.
+Dự thi **UniHackfest 2026**, chủ đề AI × Web3.
 Hạn tiếp theo **19/09/2026** — xem `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`.
+
+| | |
+|---|---|
+| **Track đăng ký** (form nộp 24/08) | Best Product & Business |
+| **Hướng phát triển** từ 12/09 | **Best Technical Build** |
+
+Hai dòng đó **cố ý khác nhau**. Chủ dự án cho biết BTC cho phép đổi track; được phép
+đổi không đồng nghĩa biểu mẫu đã cập nhật, và repo không tự khai một trạng thái đăng
+ký chưa kiểm chứng được. Lý do và bằng chứng theo từng mục rubric:
+[ADR-0001](docs/adr/0001-doi-huong-technical-build.md).
 
 ## Demo chạy được
 
@@ -22,6 +32,25 @@ một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có
 
 ## Ai mua — và điều đó đã chứng minh tới đâu
 
+## Bằng chứng kỹ thuật — số đo được, không phải lời hứa
+
+Mọi con số sinh từ `npm run so-lieu` hoặc artifact trong repo; **không con số nào gõ
+tay**. Đối chiếu từng mục rubric ở [ADR-0001](docs/adr/0001-doi-huong-technical-build.md).
+
+| Mục rubric Technical | Bằng chứng |
+|---|---|
+| **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **711** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
+| **25 %** kiến trúc on-chain/off-chain | Ba lớp L1/L2/L3, ranh giới cưỡng chế **bằng kiểu**: chỉ L2 sinh `level`, AI không bao giờ · **không** smart contract, và [nói rõ vì sao](docs/adr/0001-doi-huong-technical-build.md) |
+| **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **656 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
+| **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **112 ms** · bấm→thẻ **n=30**, trung vị **1351 ms**, p95 quan sát **5359 ms** · demo công khai dựng lại mỗi lần push |
+
+**Nguyên tắc kiến trúc, nói một câu:** ưu tiên phát hiện qua **thay đổi trạng thái**,
+không qua **đọc instruction**. Kẻ tấn công giấu được instruction — bọc trong CPI, gói
+trong program riêng, nén địa chỉ vào ALT — nhưng không giấu được hậu quả.
+
+**Chưa đo được:** tỉ lệ báo nhầm (chưa có ground truth) · thiết bị thật, WebKit,
+Firefox (mọi số giao diện đo trên Chromium headless) · video demo dự phòng.
+
 **Người mua là ví và dApp, không phải người dùng cuối.** Người dùng cuối là người
 thụ hưởng: họ không cài SDK, không trả tiền.
 
@@ -35,7 +64,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 11,7 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 12 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -57,11 +86,11 @@ if (ketQua.level !== "safe" || ketQua.aiAdvisory) hienCanhBao(ketQua);
 
 Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ thành "ký được".
 
-| Đo trên Devnet, 11/09/2026 — lượt pass gần nhất | |
+| Đo trên Devnet, 12/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **11,7 giây** — trung vị 10 lượt trên 10 bản dựng, dải 7,8–23,5 |
+| Cài đặt → kết quả đầu tiên | **12 giây** — trung vị 10 lượt trên 10 bản dựng, dải 7,8–23,5 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **664 ms** — trung vị 10 lượt trên 10 bản dựng |
+| Một lượt kiểm tra | **656 ms** — trung vị 10 lượt trên 10 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
@@ -77,6 +106,22 @@ Tách vì một lượt live đỏ **không** có nghĩa là phát hiện sai �
 cả ba check của kịch bản lành tính cùng đỏ trong khi sản phẩm fail-closed hoàn toàn
 đúng. Gộp hai câu hỏi vào một lệnh là cách nhanh nhất để tự ghi một lỗi mạng thành
 lỗi bảo mật của chính mình.
+
+### CI ba tầng — và chỉ một tầng được chặn deploy
+
+Cùng nguyên tắc đó áp cho cả workflow. Ba tầng đỏ vì ba loại lý do khác nhau, nên
+chúng không dùng chung một cổng:
+
+| Tầng | Gồm | Khi nào chạy | Đỏ nghĩa là |
+|---|---|---|---|
+| **Tất định** | `check` · `replay-rpc` · `doi-khang` · `thu-tich-hop:deterministic` · chặn rò rỉ khoá | mỗi lần push `main` | **sản phẩm sai** — chặn deploy |
+| **Browser** | axe · vùng bấm · bối cảnh cảnh báo, trên Chromium ghim | chạy tay | có thể do trình duyệt tải hỏng |
+| **Live Devnet** | `thu-tich-hop:devnet` | chạy tay | có thể do RPC công cộng chậm |
+
+Hai tầng sau lưu bằng chứng **kể cả khi đỏ** (`if: always()`) — artifact chỉ còn khi
+xanh là artifact mất đúng lúc cần nhất. Không tầng nào dùng secret, và không tầng nào
+chạm mainnet: mô phỏng không cần chữ ký. Cấu trúc này có bài kiểm riêng
+(`packages/core/test/ciBaTang.test.ts`), vì một file CI hỏng chỉ lộ ra lúc push.
 
 ## Sản phẩm làm gì
 
@@ -110,7 +155,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **487**, chạy trong `npm run check` |
+| Test | **711**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
@@ -122,19 +167,19 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 | Bằng chứng | Trả lời được | Không trả lời được |
 |---|---|---|
-| **487 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
+| **711 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
 | **38 mẫu** đã gắn nhãn | luật bật đúng ca, im đúng ca đối chứng | tỉ lệ đúng/sai trên traffic thật |
 | **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
 | **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
 | **Ví dụ tích hợp** | SDK dùng được từ ngoài, mất bao lâu | có bên thứ ba nào chọn dùng |
-| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | mô hình không bịa được địa chỉ hay số tiền | chất lượng câu chữ; chưa đo với mô hình thật |
+| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | mô hình không bịa được địa chỉ hay số tiền; lớp AI **đã** chạy với mô hình thật | lợi ích của lớp AI — trên thước nêu phần chưa đọc hiểu, nó **ngang** câu mẫu, không hơn |
 
 Trang [/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html) hiện từng con
 số kèm cách đo, ngày đo, **và mục "điều đội chưa đo được"**.
 
 ### Phụ thuộc có lỗ hổng đã biết
 
-`npm audit` ngày 05/09/2026: **11 lỗ hổng — 5 high · 6 moderate**. Chia hai nhóm,
+`npm audit` ngày 13/09/2026: **5 lỗ hổng — 5 high · 0 moderate**. Chia hai nhóm,
 vì hai nhóm này có hậu quả khác hẳn nhau:
 
 | Nhóm | Lỗ hổng | Có vào sản phẩm không |
@@ -223,7 +268,7 @@ Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nv
 ```bash
 nvm use                  # đọc .nvmrc → 24.12.0
 npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 487 test
+npx npm@11.6.2 run check # typecheck + 711 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -262,7 +307,7 @@ belong to the transaction's stated main action**, and explains them in Vietnames
   transaction it actually understood, and the UI shows it.
 - **Fail closed.** Timeout, RPC failure, or missing data becomes a warning — never "safe".
 
-Measured, not estimated: **487 tests**, **38 labelled samples**, **14 rules**, average
+Measured, not estimated: **711 tests**, **38 labelled samples**, **14 rules**, average
 **82 % coverage** on 9 replayable public transactions stored offline. Runtime and demo
 are **Devnet-only**.
 
