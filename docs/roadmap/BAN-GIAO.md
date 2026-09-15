@@ -16,9 +16,12 @@ Roadmap trước (`ROADMAP-CLAUDE.md`) đã đóng phần khả dụng; lịch s
   luận của review. Probe theo Git: `scripts/ky-thuat/probe-gui-t01-t02.ts` —
   **2/5 ca nói đúng sự thật**.
 - Đã nghiệm thu ở roadmap Technical: **TB-G00, G01, G02, C01–C06, L01, D01, S01–S03, B01–B06, X01–X03, I01–I03, P01–P02** — 28 thẻ, trong đó **I03 chỉ đóng phần local**. **Nhánh G, C, S, X, P đóng hết; nhánh I đóng hết phần Claude làm được; nhánh B chỉ còn B07 (cần Devnet).**
-- **Không còn thẻ nào Claude làm một mình được.** **TB-B07** cần Devnet · **TB-H01/H02**
-  cần chủ dự án · phần remote CI của I03 nằm trong H02. (Câu này từng sai một lần —
-  xem cảnh báo ở `TIEN-DO.md`.)
+- **Việc tiếp theo: TB-D02** (pitch Technical) — phụ thuộc `D01, X03, I02` đều đã DONE.
+  **TB-B07** cần Devnet · **TB-H01/H02** cần chủ dự án · phần remote CI của I03 nằm
+  trong H02 · **TB-V01** còn thiếu B07, và D03/D04/V02 đứng sau nó.
+- **Tôi đã viết nhầm "không còn thẻ nào Claude làm một mình được" vào cả hai sổ**, rồi
+  tự bắt lại khi đếm thẻ chưa DONE. Sai vì đọc bảng thay vì đọc thẻ — đúng cách mà cùng
+  câu đó đã sai hồi 12/09. Xem cảnh báo ở `TIEN-DO.md`.
 - **TB-P02 xong, và kết luận không phải "đã tối ưu".** Bottleneck lớn nhất — retry của
   RPC công cộng, 3,4× và r = 0,84 — **ngoài tay đội**. Thứ sửa được là một vòng RTT
   thừa: `fetch.ts` đọc `AccountInfo` của mint thiếu bằng một lượt RPC rồi **vứt đi**,
