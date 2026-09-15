@@ -20,6 +20,20 @@ export type TuyChonAnthropic = {
   model?: string;
   maxTokens?: number;
   /**
+   * Số lần SDK thử lại một lượt gọi hỏng. Mặc định của SDK Anthropic là **2**, tức
+   * một `messages.create` có thể thành **ba** lượt HTTP khi gặp 429 hoặc 5xx.
+   *
+   * Vì sao phải khai ra: `NGAN-SACH-RPC.md` mục 4 ghi thẳng *"Chưa làm: truyền
+   * `maxRetries` tường minh để biến nó thành một trần thật"*, và artifact eval ghi
+   * `datMaxRetriesTuongMinh: false` để phần chi phí không giả định mỗi lần kiểm là
+   * đúng một lượt gọi. Không đặt được thì con số token trên slide là cận dưới của
+   * một khoảng mà không ai biết cận trên.
+   *
+   * KHÔNG đổi mặc định. Hạ nó xuống 0 làm sản phẩm kém chịu lỗi hơn để đổi lấy một
+   * con số đẹp hơn — sai hướng. Thứ thiếu là *khai báo*, không phải *ít retry hơn*.
+   */
+  maxRetries?: number;
+  /**
    * Nhận số token thật của mỗi lượt gọi, để đo chi phí.
    *
    * Chỉ có nhà cung cấp mới biết con số này — đếm ký tự rồi chia ra token là ước
@@ -47,6 +61,16 @@ export const MODEL_MAC_DINH = "claude-haiku-4-5-20251001";
  */
 export const TOKEN_RA_MAC_DINH = 400;
 
+/**
+ * Số lần thử lại — **bằng đúng mặc định của SDK Anthropic**, khai ra thay vì thừa hưởng.
+ *
+ * Xuất ra để `eval-ai.ts` ghi vào artifact đúng con số mã đang dùng, thay vì gõ lại
+ * `2` ở chỗ khác. Đó là lỗi cùng loại với `MODEL_MAC_DINH`: đổi ở đây mà quên sửa bên
+ * kia thì báo cáo khai một đằng, mã chạy một nẻo, và không có gì báo vì cả hai đều là
+ * số hợp lệ.
+ */
+export const RETRY_MAC_DINH = 2;
+
 export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
   const apiKey = tuyChon.apiKey ?? process.env["ANTHROPIC_API_KEY"];
   if (!apiKey) {
@@ -73,7 +97,17 @@ export function dungGoiAnthropic(tuyChon: TuyChonAnthropic = {}): GoiMoHinh {
           "không cần mô hình).",
       );
     }
-    const client = new Anthropic({ apiKey });
+    /*
+     * `maxRetries` TƯỜNG MINH — TB-P02.
+     *
+     * SDK mặc định 2, tức một lượt gọi có thể thành BA lượt HTTP. Bản trước không
+     * truyền gì nên nó thừa hưởng mặc định đó, và `NGAN-SACH-RPC.md` mục 4 phải ghi
+     * *"Chưa làm: truyền `maxRetries` tường minh để biến nó thành một trần thật"*.
+     *
+     * Giữ NGUYÊN giá trị 2. Thứ thiếu là lời khai, không phải ít retry hơn: hạ nó
+     * xuống làm sản phẩm kém chịu lỗi để đổi lấy một con số chi phí đẹp hơn.
+     */
+    const client = new Anthropic({ apiKey, maxRetries: tuyChon.maxRetries ?? RETRY_MAC_DINH });
 
     const r = await client.messages.create({
       model: tuyChon.model ?? MODEL_MAC_DINH,

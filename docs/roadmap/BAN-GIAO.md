@@ -15,8 +15,22 @@ Roadmap trước (`ROADMAP-CLAUDE.md`) đã đóng phần khả dụng; lịch s
 - **Bốn lỗi mới đang mở: T01–T04.** Đều đã **tái hiện lại** ở G00 chứ không chép kết
   luận của review. Probe theo Git: `scripts/ky-thuat/probe-gui-t01-t02.ts` —
   **2/5 ca nói đúng sự thật**.
-- Đã nghiệm thu ở roadmap Technical: **TB-G00, G01, G02, C01–C06, L01, D01, S01–S03, B01–B06, X01–X03, I01–I03, P01** — 27 thẻ, trong đó **I03 chỉ đóng phần local**. **Nhánh G, C, S, X, I đóng hết phần Claude làm được; nhánh B chỉ còn B07 (cần Devnet); còn P02.**
-- **Việc tiếp theo:** **TB-P02** — thẻ cuối Claude làm một mình được. **TB-B07** giữ WAIT_INPUT.
+- Đã nghiệm thu ở roadmap Technical: **TB-G00, G01, G02, C01–C06, L01, D01, S01–S03, B01–B06, X01–X03, I01–I03, P01–P02** — 28 thẻ, trong đó **I03 chỉ đóng phần local**. **Nhánh G, C, S, X, P đóng hết; nhánh I đóng hết phần Claude làm được; nhánh B chỉ còn B07 (cần Devnet).**
+- **Không còn thẻ nào Claude làm một mình được.** **TB-B07** cần Devnet · **TB-H01/H02**
+  cần chủ dự án · phần remote CI của I03 nằm trong H02. (Câu này từng sai một lần —
+  xem cảnh báo ở `TIEN-DO.md`.)
+- **TB-P02 xong, và kết luận không phải "đã tối ưu".** Bottleneck lớn nhất — retry của
+  RPC công cộng, 3,4× và r = 0,84 — **ngoài tay đội**. Thứ sửa được là một vòng RTT
+  thừa: `fetch.ts` đọc `AccountInfo` của mint thiếu bằng một lượt RPC rồi **vứt đi**,
+  vì phần ký hiệu token tra `allKeys.findIndex(...)` mà đúng nhóm mint ấy theo định
+  nghĩa không có trong `allKeys` (14/14 fixture xác nhận). Kết quả: **93 → 81** lượt
+  RPC (−12,9 %), và mint Token-2022 đọc được ký hiệu ngay thay vì rơi xuống PDA
+  Metaplex nơi nó thường trống — **nhanh hơn VÀ đúng hơn**.
+- **`maxRetries` nay tường minh** (`RETRY_MAC_DINH = 2`), đóng việc `NGAN-SACH-RPC.md`
+  tự ghi là "chưa làm". **Không hạ giá trị** — guard canh cả hai chiều, vì hạ nó xuống
+  0 làm số chi phí đẹp hơn và sản phẩm kém chịu lỗi hơn đúng lúc gặp 429.
+- **`so-baseline` chạy lại SAU khi sửa** (0/5 lệch), không chép số của lượt trước. Đây
+  là thứ tôi suýt bỏ qua — ghi lại vì nó đúng loại lỗi phiên này đã gặp ba lần.
 - **TB-X03 xong: 10 probe trình duyệt chạy lại trên mã hiện tại**, tất cả PASS, dấu vết
   giao diện `c90436fd`. Bằng chứng cũ đo trên `780cf6d` đã lạc hậu vì phiên này sửa
   `SoLieu.tsx` và `locNhatKy.ts` — **phải chạy lại, không tin số cũ**, đúng bài học I01.
