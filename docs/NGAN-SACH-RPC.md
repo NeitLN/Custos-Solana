@@ -85,8 +85,14 @@ Artifact `data/eval/ai-ket-qua.json` ghi thẳng `sdkMaxRetriesMacDinh: 2` và
 `datMaxRetriesTuongMinh: false` để con số chi phí không giả định mỗi lần kiểm là đúng
 một lượt gọi. Chi tiết: [`DON-VI-KINH-TE.md`](DON-VI-KINH-TE.md) mục 3.
 
-**Chưa làm:** truyền `maxRetries` tường minh để biến nó thành một trần thật. Ghi đúng
-như vậy thay vì ghi một con số đẹp hơn sự thật.
+**Đã làm ở TB-P02:** adapter truyền `maxRetries` **tường minh**
+(`RETRY_MAC_DINH = 2`, xuất từ `anthropic.ts`) thay vì thừa hưởng im lặng. Giá trị
+**không đổi** — thứ đổi là nó thành một trần khai báo được, và `eval-ai.ts` đọc thẳng
+hằng đó nên artifact không còn khai một đằng mã chạy một nẻo.
+
+> **Không hạ nó xuống.** `maxRetries: 0` làm con số chi phí đẹp hơn ngay, và làm sản
+> phẩm kém chịu lỗi hơn đúng lúc nhà cung cấp trả 429. `toiUuP02.test.ts` canh cả hai
+> chiều: phải tường minh, và phải còn bằng 2.
 
 ## 5 · Huỷ chờ — điều KHÔNG làm được, nói trước
 
@@ -140,3 +146,67 @@ làm.
 | Người dùng huỷ giữa chừng | ⚠️ ngừng chờ được, **không** huỷ được request — mục 5 |
 | Subscription không tích luỹ | ⚠️ **không áp dụng**: lõi không mở subscription nào. `confirmTransaction` của web3.js có dùng WebSocket nhưng nó thuộc consumer, không thuộc SDK |
 | Đo trên mạng công cộng | ❌ **cố ý không** — thẻ nói *"không lấy mạng công cộng làm test tất định"*. Mọi bài trên đều dùng stub trong tiến trình |
+
+---
+
+## 7 · Tối ưu TB-P02 — cái gì đổi, cái gì cố ý giữ nguyên
+
+### 7.1 · Xếp hạng bottleneck theo tác động người dùng
+
+Đo trên 30 lượt bấm thật (`data/hieu-nang/do-tre.json`) và 19 fixture RPC:
+
+| Nguồn | Đóng góp đo được | Tối ưu được? |
+|---|---|---|
+| **Retry của RPC công cộng** | 11/30 lượt gọi >7 lần RPC, trung vị **2875 ms** so với **852 ms** — chênh **3,4×**, Pearson **r = 0,84** | ❌ **ngoài tay đội** — đó là hạ tầng công cộng |
+| Một vòng RTT thừa | ~**53 ms** (đo devnet, n=7, trung vị) | ✅ đã cắt — mục 7.2 |
+| Tải trang | FCP **112 ms** nguội, 84 ms ấm | đã nhỏ, không đụng |
+
+**Bottleneck lớn nhất nằm ngoài tầm với.** Nói ra vì nó quyết định phần còn lại: mọi
+thứ đội tối ưu được cộng lại vẫn nhỏ hơn dao động của một endpoint công cộng.
+
+### 7.2 · Đã đổi — dùng lại dữ liệu đã trả tiền để lấy
+
+`fetch.ts` đọc tài khoản mint của những mint **không** nằm trong `allKeys` bằng một
+lượt RPC riêng, lấy `decimals`, rồi **vứt `AccountInfo` đi**. Phần ký hiệu token ngay
+dưới dựng `duLieuMint` bằng `allKeys.findIndex(...)` — mà theo đúng định nghĩa của
+`thieu` thì chúng không có trong `allKeys`, nên `findIndex` **luôn** trả `-1`.
+
+Đo trên fixture: **14/14** mẫu cho `0/1` (và `0/2`) mint thiếu nằm trong `allKeys`.
+Con đường Token-2022 — *"metadata nằm ngay trong tài khoản mint, không tốn lượt gọi
+nào"* — chưa bao giờ chạy được cho đúng nhóm mint repo vừa bỏ một lượt RPC ra đọc.
+
+| | Trước | Sau |
+|---|---|---|
+| Lượt PDA Metaplex cho mint thiếu | **12/12** mẫu, luôn luôn | **0** |
+| Tổng lượt RPC trên 19 fixture | 93 | **81** (−12,9 %) |
+| Trung bình mỗi lượt kiểm | 4,89 | **4,26** |
+
+**Lợi ích kép, và vế thứ hai quan trọng hơn:** mint Token-2022 hiếm khi có PDA
+Metaplex, nên đường cũ thường trả ký hiệu `null` và bảng chênh lệch hiện `Agsm…Lf4Z`
+thay vì tên token. Nay đọc được ngay trong tài khoản mint.
+
+**Chi phí:** một `Map` giữ thêm tối đa vài `AccountInfo` trong một lượt kiểm. Không
+phải cache — nó sống đúng trong phạm vi một lần gọi `inspect()` và chết cùng nó.
+
+**Thời gian:** ~53 ms mỗi lượt có nhánh đó, tức **6,2 %** của một lượt không retry
+(852 ms) và **3,9 %** của trung vị chung (1351 ms). Nhỏ so với retry, nhưng nó là
+phần đội **kiểm soát được**.
+
+### 7.3 · Đã cân nhắc và CỐ Ý KHÔNG làm
+
+| Ý | Vì sao không |
+|---|---|
+| **Cache balances / authority / verdict** | Thẻ cấm bằng đúng chữ. Một verdict cache lại là một verdict nói về giao dịch khác |
+| **Gộp `getMultipleAccountsInfo` #1 với #2** | Không gộp được: #2 chỉ biết hỏi gì **sau** khi #1 và `simulateTransaction` trả về |
+| **`disableRetryOnRateLimit`** | Sai hướng — nó làm sản phẩm kém chịu lỗi để đổi lấy số đo đẹp hơn |
+| **Lazy-load `@solana/web3.js`** (346 KB) | Ví và trang phỏng vấn đều gọi `inspect()` thật, nên lazy chỉ **dời** chi phí. Trang số liệu đã không kéo nó — tách chunk vốn đúng sẵn |
+| **Hạ `MAX_VI_TRA` / `HAN_LAM_GIAU_MS`** | Ba chặng làm giàu đã có `Promise.all` + hạn 2500 ms riêng; chúng không nằm trên đường găng |
+| **`AbortSignal` xuống transport** | Mục 5 — cần ADR và consumer test, chưa có |
+
+### 7.4 · Không hồi quy — đo, không hứa
+
+| | Trước | Sau |
+|---|---|---|
+| Replay 19 fixture | 19/29 đạt · 0 hỏng | **19/29 đạt · 0 hỏng** |
+| `so-baseline` verdict | lệch kỳ vọng người gán **0/5** ca | **0/5** |
+| Bộ test | xanh | xanh |

@@ -346,11 +346,32 @@ export async function extractFacts(
     if (m) { mints.push(m); daCo.add(addr); }
   }
   const thieu = [...mintAddrs].filter((a) => !daCo.has(a));
+  /*
+   * GIỮ LẠI DỮ LIỆU VỪA TRẢ TIỀN ĐỂ LẤY — TB-P02.
+   *
+   * Lượt gọi này đọc tài khoản mint của những mint KHÔNG nằm trong `allKeys`. Bản
+   * trước dùng `info[i]` để lấy `decimals` rồi **vứt nó đi**; phần ký hiệu token
+   * bên dưới dựng `duLieuMint` bằng `allKeys.findIndex(...)`, mà theo đúng định
+   * nghĩa `thieu` thì những mint này KHÔNG có trong `allKeys` — `findIndex` trả
+   * `-1`, nên chúng luôn vào `docKyHieuToken` với dữ liệu `null`.
+   *
+   * Đo được trên 14/14 fixture có nhánh này: `0/1` (và `0/2`) mint thiếu nằm trong
+   * `allKeys`. Nghĩa là con đường Token-2022 — *"metadata nằm ngay trong tài khoản
+   * mint, không tốn lượt gọi nào"* — chưa bao giờ chạy được cho đúng nhóm mint mà
+   * repo vừa bỏ một lượt RPC ra để đọc.
+   *
+   * Hệ quả không chỉ là chậm: mint Token-2022 thiếu `decimals` bị đẩy xuống nhánh
+   * PDA Metaplex, nơi nó thường KHÔNG có metadata, nên ký hiệu về `null` và bảng
+   * chênh lệch hiện địa chỉ rút gọn thay vì tên token. Vừa tốn thêm một vòng RTT
+   * vừa cho kết quả xấu hơn.
+   */
+  const duLieuMintThieu = new Map<string, AccountInfo<Buffer> | null>();
   if (thieu.length > 0) {
     try {
       const keys = thieu.map((a) => new PublicKey(a));
       const info = await getManyAccounts(conn, keys);
       thieu.forEach((addr, i) => {
+        duLieuMintThieu.set(addr, info[i] ?? null);
         const m = parseMint(addr, info[i] ?? null);
         if (m) mints.push(m);
       });
@@ -371,7 +392,10 @@ export async function extractFacts(
     const duLieuMint = new Map(
       mints.map((m) => {
         const i = allKeys.findIndex((k) => k.toBase58() === m.address);
-        return [m.address, i >= 0 ? (before[i] ?? null) : null] as const;
+        if (i >= 0) return [m.address, before[i] ?? null] as const;
+        // Mint không nằm trong `allKeys` thì lấy từ lượt gọi riêng bên trên, thay vì
+        // trả `null` và ép nó đi đường PDA Metaplex — xem chú thích ở nhánh `thieu`.
+        return [m.address, duLieuMintThieu.get(m.address) ?? null] as const;
       }),
     );
     const kyHieu = await docKyHieuToken(conn, duLieuMint);

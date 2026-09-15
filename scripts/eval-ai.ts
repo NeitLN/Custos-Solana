@@ -406,7 +406,7 @@ function trungVi(xs: number[]): number {
 
 async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
   // Đường này chỉ chạy khi có khoá. Giữ tách hàm để phần không-khoá đọc được rõ.
-  const { dungGoiAnthropic, MODEL_MAC_DINH, TOKEN_RA_MAC_DINH } = await import(
+  const { dungGoiAnthropic, MODEL_MAC_DINH, TOKEN_RA_MAC_DINH, RETRY_MAC_DINH } = await import(
     "../packages/ai/src/anthropic.ts"
   );
   const { SYSTEM_PROMPT } = await import("../packages/ai/src/moHinh.ts");
@@ -597,11 +597,17 @@ async function doMoHinhThat(_mau: Mau[]): Promise<Record<string, unknown>> {
     tokenRaToiDaLaMacDinh: true,
     /*
      * SDK Anthropic mặc định `maxRetries = 2`, tức một lượt gọi có thể thành BA lượt
-     * HTTP. Adapter không đặt tường minh nên nó thừa hưởng mặc định đó. Ghi ra để
-     * phần chi phí không giả định mỗi lần kiểm là đúng một lượt gọi.
+     * HTTP. Ghi ra để phần chi phí không giả định mỗi lần kiểm là đúng một lượt gọi.
+     *
+     * Từ TB-P02 adapter ĐẶT TƯỜNG MINH con số đó (`RETRY_MAC_DINH`) thay vì thừa
+     * hưởng im lặng. Giá trị không đổi — thứ đổi là nó thành một trần khai báo được,
+     * đúng việc `NGAN-SACH-RPC.md` mục 4 ghi là "chưa làm".
+     *
+     * Đọc từ hằng thay vì gõ lại `2`: đổi ở adapter mà quên sửa ở đây thì artifact
+     * khai một đằng, mã chạy một nẻo — cùng lỗi mà `MODEL_MAC_DINH` sinh ra để chặn.
      */
-    sdkMaxRetriesMacDinh: 2,
-    datMaxRetriesTuongMinh: false,
+    sdkMaxRetriesMacDinh: RETRY_MAC_DINH,
+    datMaxRetriesTuongMinh: true,
     // Prompt đổi là kết quả cũ hết so sánh được. Ghi độ dài + băm ngắn thay vì cả
     // prompt: nó dài, và bản đầy đủ đã nằm trong `moHinh.ts` ở đúng commit này.
     promptDoDai: SYSTEM_PROMPT.length,
