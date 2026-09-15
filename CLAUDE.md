@@ -37,6 +37,7 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
 | `ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
 | `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |
+| `docs/BAN-GIAO-CHO-CODEX.md` | **Việc còn mở và việc KHÔNG làm được** — viết cho một agent khác không có ngữ cảnh phiên: cái gì chặn và vì sao, thẻ nào ai làm được, và **năm bài học về guard đỏ vì lý do sai** |
 
 > **Tài liệu lập kế hoạch đã hoàn thành nằm trong lịch sử git, không ở HEAD.**
 > `KE-HOACH-15-NGAY.md`, `KHOI-DONG-22-08.md`, `ROADMAP-BUILD.md`, `ROADMAP-DIEM-SO.md`,
