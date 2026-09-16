@@ -1,0 +1,58 @@
+
+Chromium 149.0.7827.55 · Playwright 1.61.0 · axe-core 4.13.0
+2026-09-15T20:23:41+00:00
+
+  PASS  axe-core đúng bản ghim (4.13.0)
+A · ví — giao dịch nguy hiểm
+  PASS  axe · ví nghỉ · điện thoại
+  PASS  điện thoại · ra mức Nguy hiểm
+  PASS  điện thoại · bảng hậu quả 500 → 0
+  PASS  điện thoại · coverage 2 trên 3
+  PASS  điện thoại · 0 lỗi console
+  PASS  điện thoại · không tràn ngang
+  PASS  axe · ví đang cảnh báo · điện thoại
+  PASS  điện thoại · mọi CTA chính ≥44px
+  PASS  axe · ví nghỉ · máy tính
+  PASS  máy tính · ra mức Nguy hiểm
+  PASS  máy tính · bảng hậu quả 500 → 0
+  PASS  máy tính · coverage 2 trên 3
+  PASS  máy tính · 0 lỗi console
+  PASS  máy tính · không tràn ngang
+  PASS  axe · ví đang cảnh báo · máy tính
+  PASS  máy tính · mọi CTA chính ≥44px
+
+B · ví — giao dịch bình thường
+  PASS  lành tính → Bình thường
+  PASS  KHÔNG hiện chữ 'an toàn'
+
+C · trang tấn công → ví
+  PASS  axe · trang tấn công
+  PASS  window.open gọi ĐỒNG BỘ trong cử chỉ bấm
+  PASS  URL mang giao dịch + lời khai airdrop
+  PASS  ví nhận và ra Nguy hiểm
+  PASS  bắt được lời khai gian
+
+D · Devnet treo (đường lỗi)
+  PASS  thẻ lỗi hiện ra (9.4s)
+  PASS  dừng theo hạn ~9s, không chờ ~30s
+  PASS  nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch
+  PASS  có đường lui dữ liệu mẫu CÓ NHÃN
+  PASS  axe · trang tấn công · trạng thái lỗi
+  FAIL  thử lại gọi lại RPC và đi tiếp được   <<< http://localhost:8099/#tx=AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+E · prefers-reduced-motion
+  PASS  cảnh báo vẫn hiện khi tắt chuyển động
+  PASS  0 animation còn chạy
+
+F · trang số liệu · trang phỏng vấn
+  PASS  axe · số liệu · điện thoại
+  PASS  số liệu · điện thoại · không tràn ngang
+  PASS  axe · số liệu · máy tính
+  PASS  số liệu · máy tính · không tràn ngang
+  PASS  axe · phỏng vấn · điện thoại
+  PASS  phỏng vấn · điện thoại · không tràn ngang
+  PASS  axe · phỏng vấn · máy tính
+  PASS  phỏng vấn · máy tính · không tràn ngang
+
+=== 1 FAIL: thử lại gọi lại RPC và đi tiếp được
+→ data/a11y/ket-qua.json

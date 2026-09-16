@@ -32,9 +32,9 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 | | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **12 giây** — trung vị 10 lượt trên 10 bản dựng, dải 7,8–23,5 |
+| Cài đặt → kết quả đầu tiên | **12,4 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7,8–23,5 |
 | Dòng mã tích hợp | **30** (`src/tich-hop.js`) |
-| Một lượt `inspect()` | **656 ms** — trung vị 10 lượt trên 10 bản dựng |
+| Một lượt `inspect()` | **630 ms** — trung vị 10 lượt trên 8 bản dựng |
 | Cần khoá riêng | **không** — `inspect()` mô phỏng, mô phỏng không đòi chữ ký |
 | Cần khoá API mô hình | **không** — đường tất định `dienGiaiKhongAI` |
 
@@ -73,3 +73,15 @@ kịch bản tấn công thì **không được kiểm** — và bài test vẫn
 nó chỉ khẳng định "không phải safe".
 
 **Bên tích hợp: truyền tài khoản token bạn đang dùng, đừng suy ra.**
+
+
+### Giữ neo từ lúc kiểm đến lúc ký
+
+`kySauKhiKiem` yêu cầu `neo` được giữ cùng kết quả kiểm. Không tạo lại neo ở nút Ký.
+Consumer tạo bản sao transaction (`VersionedTransaction.deserialize(tx.serialize())`),
+chụp `neoKetQua(snapshot.message.serialize(), vi, cluster)` trước khi await kiểm
+chính snapshot đó, rồi giữ cặp `{quyetDinh, neo}` trong state riêng của ví.
+Khi ký, truyền cặp này cùng transaction hiện tại vào `kySauKhiKiem`.
+Neo phải thuộc state tin cậy của ví, không nhận từ dApp. Đổi message, ví, cluster
+hoặc hết hạn thì kiểm lại. Thiếu neo bị từ chối. SDK không tự giữ state cho consumer.
+30 dòng chỉ đo hàm gọi SDK trong `tich-hop.js`, không tính toàn bộ hợp đồng ký.

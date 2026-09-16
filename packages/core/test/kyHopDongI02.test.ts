@@ -7,6 +7,7 @@ import {
   Keypair, SystemProgram, TransactionMessage, VersionedTransaction,
 } from "@solana/web3.js";
 import { kySauKhiKiem } from "../../../vi-du-tich-hop/src/ky.js";
+import { neoKetQua } from "../src/neo.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -59,6 +60,30 @@ function stub() {
 
 const chung = { viNguoiDung: VI.publicKey.toBase58(), cluster: "devnet" as const };
 
+test("neo lúc kiểm phải bắt được tx bị sửa tại chỗ trước khi ký", () => {
+  const t = tx(1000);
+  const neo = neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster);
+  t.message.recentBlockhash = LA.publicKey.toBase58();
+  const s = stub();
+  const r = kySauKhiKiem({ quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
+    tx: t, neo, ...chung, signer: s.ky });
+  assert.equal(r.daKy, false);
+  assert.equal(r.lyDo, "giao_dich_da_doi");
+  assert.equal(s.lan.length, 0);
+});
+
+test("tuổi kết quả tính từ lúc kiểm, không phải lúc bấm ký", () => {
+  const t = tx(1000);
+  const neo = neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster,
+    new Date(Date.now() - 60_000).toISOString());
+  const s = stub();
+  const r = kySauKhiKiem({ quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
+    tx: t, neo, ...chung, signer: s.ky, msToiDa: 30_000 });
+  assert.equal(r.daKy, false);
+  assert.equal(r.lyDo, "ket_qua_qua_cu");
+  assert.equal(s.lan.length, 0);
+});
+
 /* ── 1 · Signer KHÔNG được gọi ở mọi nhánh từ chối ─────────────────────────── */
 
 test("CHẶN vì phát hiện ⇒ signer không được gọi lần nào", () => {
@@ -66,7 +91,7 @@ test("CHẶN vì phát hiện ⇒ signer không được gọi lần nào", () =
   const t = tx(1000);
   const r = kySauKhiKiem({
     quyetDinh: { cho: "chan", lyDo: "phat_hien" },
-    tx: t,
+    tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
   });
@@ -83,7 +108,7 @@ test("CHẶN vì không kiểm được ⇒ cũng không ký, và lý do KHÁC",
   const s = stub();
   const r = kySauKhiKiem({
     quyetDinh: { cho: "chan", lyDo: "khong_kiem_duoc" },
-    tx: tx(1000),
+    tx: tx(1000), neo: neoKetQua(tx(1000).message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
   });
@@ -100,7 +125,7 @@ test("HỎI mà người dùng CHƯA đồng ý ⇒ không ký — mặc định
   const s = stub();
   const r = kySauKhiKiem({
     quyetDinh: { cho: "hoi", lyDo: "coverage_khuyet" },
-    tx: tx(1000),
+    tx: tx(1000), neo: neoKetQua(tx(1000).message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
   });
@@ -123,7 +148,7 @@ test("dApp tráo giao dịch sau khi kiểm ⇒ KHÔNG ký, dù quyết định 
   const sapKy = tx(999_999_999); // dApp đổi số tiền
   const r = kySauKhiKiem({
     quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
-    tx: daKiem,
+    tx: daKiem, neo: neoKetQua(daKiem.message.serialize(), chung.viNguoiDung, chung.cluster),
     txSapKy: sapKy,
     ...chung,
     signer: s.ky,
@@ -145,7 +170,7 @@ test("cho phép ký + neo khớp ⇒ signer được gọi ĐÚNG MỘT LẦN, v
   const t = tx(1000);
   const r = kySauKhiKiem({
     quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
-    tx: t,
+    tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
   });
@@ -182,7 +207,7 @@ test("signer nhận bytes của tx SẮP KÝ, không phải của tx đã kiểm
 
   const r = kySauKhiKiem({
     quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
-    tx: daKiem,
+    tx: daKiem, neo: neoKetQua(daKiem.message.serialize(), chung.viNguoiDung, chung.cluster),
     txSapKy: sapKy,
     ...chung,
     signer: s.ky,
@@ -215,7 +240,7 @@ test("HỎI mà người dùng ĐỒNG Ý ⇒ ký được, và vẫn qua neo", 
   const t = tx(1000);
   const r = kySauKhiKiem({
     quyetDinh: { cho: "hoi", lyDo: "phat_hien" },
-    tx: t,
+    tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
     nguoiDungDongY: true,
@@ -232,7 +257,7 @@ test("kết quả kiểm QUÁ CŨ ⇒ không ký, dù mọi thứ khác khớp",
   const s = stub();
   const r = kySauKhiKiem({
     quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
-    tx: tx(1000),
+    tx: tx(1000), neo: neoKetQua(tx(1000).message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
     signer: s.ky,
     msToiDa: -1, // mọi kết quả đều đã quá hạn

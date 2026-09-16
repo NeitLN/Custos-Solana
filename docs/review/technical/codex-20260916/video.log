@@ -1,0 +1,5 @@
+{'seconds': 5.08, 'event': 'Chạy mô phỏng nguy hiểm trên Devnet'}
+{'seconds': 24.02, 'event': 'Hủy yêu cầu nguy hiểm; không ký, không gửi'}
+{'seconds': 28.08, 'event': 'Chạy ca đối chứng Gửi 10 token'}
+{'seconds': 39.22, 'event': 'Tiêm lỗi chặn RPC trong trình duyệt; không phải Devnet gặp sự cố'}
+{'seconds': 55.34, 'event': 'Kết thúc: lỗi hạ tầng không phải nhãn an toàn'}

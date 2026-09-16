@@ -248,3 +248,11 @@ npm run kiem-san-pham           # ô "Lỗ hổng phụ thuộc có xử trí"
 Ô trong cổng sản phẩm chỉ xanh khi **vừa có số, vừa có trang này**. Có số mà không
 nói định làm gì với nó thì chưa phải là đã xử lý — và đó chính là lý do trang này tồn
 tại.
+
+
+### Kiểm lại trong bàn giao Codex — 16/09/2026
+
+`npm audit` vẫn ghi 5 high, 0 moderate, 0 critical; artifact ở
+`docs/review/technical/codex-20260916/audit.json`. Các test phơi nhiễm nằm trong lượt
+check mới đã đạt. Giữ quyết định chấp nhận có điều kiện ở mục 3.5; chưa có kết luận
+rằng 5 high đã vá hoặc không thể khai thác. Xem lại trước nộp nếu phụ thuộc thay đổi.

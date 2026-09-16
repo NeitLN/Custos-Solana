@@ -189,6 +189,7 @@ def ghi_bang_chung() -> None:
                 "khung": [{"ten": t, "rong": w, "cao": h} for t, w, h in KHUNG],
                 "soKiem": len(kiem),
                 "soDat": sum(1 for k in kiem if k["dat"]),
+                "soHong": sum(1 for k in kiem if not k["dat"]),
                 "viPham": vi_pham,
                 "kiem": kiem,
                 "dat": not loi,

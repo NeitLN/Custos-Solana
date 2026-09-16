@@ -1,0 +1,32 @@
+
+> so-lieu
+> node --experimental-strip-types scripts/tao-so-lieu.ts && node scripts/dong-bo-so-tai-lieu.mjs --da-do
+
+không đổi -> apps/demo-wallet/public/so-lieu.json (giữ sinhLuc 2026-09-15T20:23:26.190Z)
+  14 luật · 38 mẫu · 719 test · coverage 82% trên 9 mẫu
+nguồn: 719 test · 38 mẫu · coverage 82% trên 9/20 · chạm tài sản 13/20
+  vi-du-tich-hop/README.md: 0 dòng đổi
+  README.md: 1 dòng đổi
+  README.md: 0 dòng đổi
+  docs/HIEU-NANG.md: 0 dòng đổi
+  README.md: 0 dòng đổi
+  docs/adr/0001-doi-huong-technical-build.md: 0 dòng đổi
+  CLAUDE.md: 0 dòng đổi
+  SEED-DATASET.md: 0 dòng đổi
+  PITCH-VA-PHAN-BIEN.md: 0 dòng đổi
+  PITCH-VA-PHAN-BIEN.md: 0 dòng đổi
+  vi-du-tich-hop/README.md: 0 dòng đổi
+  README.md: 0 dòng đổi
+  docs/adr/0002-chan-doan-tuy-chon.md: 0 dòng đổi
+  docs/adr/0001-doi-huong-technical-build.md: 0 dòng đổi
+  docs/BANG-CLAIM.md: 0 dòng đổi
+  README.md: 0 dòng đổi
+  README.md: 1 dòng đổi
+  vi-du-tich-hop/README.md: 0 dòng đổi
+  README.md: 0 dòng đổi
+  docs/BAO-CAO-KIEM-CHUNG.md: 0 dòng đổi
+  docs/BAO-CAO-TONG.md: 0 dòng đổi
+  packages/core/README.md: 0 dòng đổi
+  docs/BAO-CAO-TONG.md: 0 dòng đổi
+  docs/BAO-CAO-KIEM-CHUNG.md: 0 dòng đổi
+xong. Chạy `npm run check` để guard xác nhận.

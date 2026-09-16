@@ -1,5 +1,9 @@
 # Kịch bản video demo 60–90 giây
 
+**Bản hiện hành 16/09:** [CUSTOS-DEMO.mp4](nop-bai/video/CUSTOS-DEMO.mp4), khoảng 80 giây, không thu âm. Quay UI production thật: nguy hiểm → hủy → đối chứng → chặn RPC chủ động. Caption phân biệt live simulation với fault injection. Không ký/gửi, không cần dựng lại hiện trường. Script: `scripts/ky-thuat/quay-demo-codex.py`; số mốc thực tế: `review/technical/codex-20260916/video-events.json`.
+
+Khi mất mạng, phát MP4 hoặc mở deck. Demo tương tác vẫn cần mạng. Phần hướng dẫn cũ dưới đây là lịch sử; không thực hiện bước tạo hiện trường/ký thật để quay bản hiện hành.
+
 **Bắt buộc nộp.** Thể lệ: *"60–90 giây, quay màn hình thao tác live, **không dùng
 mockup dàn dựng**"*. Thiếu là hồ sơ có thể bị loại — không phải trừ điểm.
 

@@ -2,6 +2,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { docBangChungTichHop, thoiDiem } from "./bangChungTichHop.ts";
 import { bangChungConHieuLuc, laGiaoDien, type DauVet } from "./toTien.ts";
+import { coMainnetRuntime } from "./kiem-runtime-mainnet.ts";
 
 /**
  * CỔNG CHỈ-SẢN-PHẨM.
@@ -160,7 +161,8 @@ if (NHANH) {
   const dinh = (r.stdout ?? "")
     .split(NL)
     .map((x) => x.trim())
-    .filter((x) => x && !x.includes("/test/"));
+    .filter((x) => x && !x.includes("/test/") && !x.endsWith(".d.ts"))
+    .filter((x) => coMainnetRuntime(readFileSync(x, "utf8")));
   them(
     "Runtime chỉ Devnet",
     dinh.length === 0 ? "DAT" : "HONG",

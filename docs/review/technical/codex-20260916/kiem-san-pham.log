@@ -1,0 +1,25 @@
+
+> kiem-san-pham
+> node --experimental-strip-types scripts/kiem-san-pham.ts
+
+CỔNG CHỈ-SẢN-PHẨM · cdd53c1
+
+  ✓ Typecheck và bộ test                   719 test pass · 0 fail
+  ✓ Cổng tích hợp tất định                 14 kiểm tra, fixture — không mạng
+  ✓ Gói dùng được từ ngoài + bẫy           10/10 bẫy bị chặn trên tarball
+  ~ Lượt live gần nhất                     đo trên cây có mã chưa commit
+  ✓ Runtime chỉ Devnet                     không endpoint Mainnet nào trong runtime
+  ✓ Không khoá trong bundle                đã soi bundle công khai
+  ✓ Số liệu khớp artifact                  mọi tài liệu khớp một nguồn
+  ✓ Registry khớp source                   cả hai 0.2.0
+  ✓ Accessibility bản hiện tại             không vi phạm serious/critical
+  ✓ Lỗ hổng phụ thuộc có xử trí            5 high · 0 moderate, đã ghi xử trí
+  ✖ Cây làm việc sạch                      35 file chưa commit
+
+9 đạt · 1 hỏng · 1 chưa rõ · 0 chờ chủ dự án
+
+  CHƯA RÕ — không được đọc thành đạt:
+    Lượt live gần nhất — đo trên cây có mã chưa commit
+
+✖ SẢN PHẨM CHƯA ĐẠT — 1 ô hỏng:
+    Cây làm việc sạch — 35 file chưa commit

@@ -1,0 +1,560 @@
+{
+  "sourceCommit": "cdd53c112843adc95d39db525cf4b61b0c773978",
+  "measuredAt": "2026-09-15T20:20:48.708Z",
+  "cluster": "devnet",
+  "rpcHost": "api.devnet.solana.com",
+  "harness": "scripts/ky-thuat/kiem-devnet-b07.ts",
+  "broadcast": false,
+  "cases": [
+    {
+      "name": "nguy-hiem",
+      "source": "devnet-live",
+      "txBase64": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQACBRJgVo2Gx/jUOzni23KjEoSbngxHD9Fp2ewrngOWPC0M1/LAgIVARSkUCNQhxVMjbSJDkIPOifVAejfk0rOUEpEWXG2kWaXP7csCgTZjjZU12AyqOszNEQoF9Iytl8q9PgVKU1qZKSEGTSTocWDaOHx8NbXdvJK7geQfqEBBBUSNBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKmjcBDHvNfod2T7SBWj+F6KM5rrhn9i4Cmso8FvGdLRxAMDAA1uaGFuIHF1YSB0YW5nBAMBAgAJAwBlzR0AAAAABAIBACMGAgGpu1R6K9Y1kg7UlYhwcLVTVWI1FlbI115SDSs8otxCUwA=",
+      "facts": {
+        "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+        "tuoiViNhan": {
+          "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz": 621.4106041666535
+        },
+        "simulationOk": true,
+        "simulationError": null,
+        "accounts": [
+          {
+            "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "isSigner": true,
+            "programOwnerBefore": "11111111111111111111111111111111",
+            "programOwnerAfter": "11111111111111111111111111111111",
+            "lamportsBefore": "9823881544",
+            "lamportsAfter": "9823876544"
+          },
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          },
+          {
+            "address": "2WHiNsY1wruHBmULS9xWsuK2fy2Lmkuwg3BjSBBsR2JZ",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          }
+        ],
+        "tokenAccounts": [
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "ownerAfter": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz",
+            "amountBefore": "500000000",
+            "amountAfter": "0",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          {
+            "address": "2WHiNsY1wruHBmULS9xWsuK2fy2Lmkuwg3BjSBBsR2JZ",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz",
+            "ownerAfter": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz",
+            "amountBefore": "0",
+            "amountAfter": "500000000",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          }
+        ],
+        "mints": [
+          {
+            "address": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "mintAuthority": null,
+            "freezeAuthority": null,
+            "permanentDelegate": null,
+            "transferHookProgramId": null,
+            "isToken2022": false,
+            "decimals": 6,
+            "kyHieu": null
+          }
+        ],
+        "solDelta": {
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-5000"
+        },
+        "instructions": [
+          {
+            "index": 0,
+            "programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": null,
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": false
+          },
+          {
+            "index": 1,
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": {
+              "kind": "transfer",
+              "authority": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+            },
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": true
+          },
+          {
+            "index": 2,
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": {
+              "kind": "setAuthority"
+            },
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": true
+          }
+        ],
+        "lookupTables": [],
+        "accountKhongDoDuoc": [],
+        "nguoiKy": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+        ],
+        "nguoiDungDuocChiDinh": true,
+        "phiUocTinh": "5000",
+        "phiChinhXac": true,
+        "coverage": {
+          "analyzed": 2,
+          "total": 3,
+          "unverifiedPrograms": 1
+        }
+      },
+      "verdict": {
+        "level": "danger",
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "hits": [
+          {
+            "ruleId": 1,
+            "level": "danger",
+            "reasonCode": "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+            "detail": "Tài khoản FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG đổi chủ từ 2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF sang CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz"
+          }
+        ]
+      },
+      "diff": [
+        {
+          "label": "Số dư 7KwS…ZL5h sau khi ký",
+          "before": "500,0",
+          "after": "0,0",
+          "severity": "danger"
+        },
+        {
+          "label": "Chủ sở hữu tài khoản 7KwS…ZL5h",
+          "before": "Bạn",
+          "after": "CRZa…picz",
+          "severity": "danger",
+          "sauDayDu": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz"
+        },
+        {
+          "label": "Phí mạng",
+          "before": "—",
+          "after": "0,000005 SOL",
+          "severity": "info"
+        }
+      ]
+    },
+    {
+      "name": "lanh",
+      "source": "devnet-live",
+      "txBase64": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABBBJgVo2Gx/jUOzni23KjEoSbngxHD9Fp2ewrngOWPC0M1/LAgIVARSkUCNQhxVMjbSJDkIPOifVAejfk0rOUEpFgkpaUSMzsYUisDQRGwu3teQomHcIYeT9eF83z1zzGsgbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpo3AQx7zX6Hdk+0gVo/heijOa64Z/YuAprKPBbxnS0cQBAwMBAgAJA4CWmAAAAAAAAA==",
+      "facts": {
+        "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+        "tuoiViNhan": {
+          "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP": 621.3138766666916
+        },
+        "simulationOk": true,
+        "simulationError": null,
+        "accounts": [
+          {
+            "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "isSigner": true,
+            "programOwnerBefore": "11111111111111111111111111111111",
+            "programOwnerAfter": "11111111111111111111111111111111",
+            "lamportsBefore": "9823881544",
+            "lamportsAfter": "9823876544"
+          },
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          },
+          {
+            "address": "7VynNmSRFJTADJ3icpjiCttJsPDGVD4ixYBkMhBiogKb",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          }
+        ],
+        "tokenAccounts": [
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "ownerAfter": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "amountBefore": "500000000",
+            "amountAfter": "490000000",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          {
+            "address": "7VynNmSRFJTADJ3icpjiCttJsPDGVD4ixYBkMhBiogKb",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP",
+            "ownerAfter": "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP",
+            "amountBefore": "0",
+            "amountAfter": "10000000",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          }
+        ],
+        "mints": [
+          {
+            "address": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "mintAuthority": null,
+            "freezeAuthority": null,
+            "permanentDelegate": null,
+            "transferHookProgramId": null,
+            "isToken2022": false,
+            "decimals": 6,
+            "kyHieu": null
+          }
+        ],
+        "solDelta": {
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-5000"
+        },
+        "instructions": [
+          {
+            "index": 0,
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": {
+              "kind": "transfer",
+              "authority": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+            },
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": true
+          }
+        ],
+        "lookupTables": [],
+        "accountKhongDoDuoc": [],
+        "nguoiKy": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+        ],
+        "nguoiDungDuocChiDinh": true,
+        "phiUocTinh": "5000",
+        "phiChinhXac": true,
+        "coverage": {
+          "analyzed": 1,
+          "total": 1,
+          "unverifiedPrograms": 0
+        }
+      },
+      "verdict": {
+        "level": "safe",
+        "reasonCodes": [],
+        "hits": []
+      },
+      "diff": [
+        {
+          "label": "Số dư 7KwS…ZL5h sau khi ký",
+          "before": "500,0",
+          "after": "490,0",
+          "severity": "info"
+        },
+        {
+          "label": "Phí mạng",
+          "before": "—",
+          "after": "0,000005 SOL",
+          "severity": "info"
+        }
+      ]
+    },
+    {
+      "name": "coverage-khuyet",
+      "source": "devnet-live",
+      "txBase64": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQACBRJgVo2Gx/jUOzni23KjEoSbngxHD9Fp2ewrngOWPC0M1/LAgIVARSkUCNQhxVMjbSJDkIPOifVAejfk0rOUEpFgkpaUSMzsYUisDQRGwu3teQomHcIYeT9eF83z1zzGsgVKU1qZKSEGTSTocWDaOHx8NbXdvJK7geQfqEBBBUSNBt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKmjcBDHvNfod2T7SBWj+F6KM5rrhn9i4Cmso8FvGdLRxAIDABVjYSBkb2kgY2h1bmcgY292ZXJhZ2UEAwECAAkDQEIPAAAAAAAA",
+      "facts": {
+        "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+        "tuoiViNhan": {
+          "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP": 621.3140613889032
+        },
+        "simulationOk": true,
+        "simulationError": null,
+        "accounts": [
+          {
+            "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "isSigner": true,
+            "programOwnerBefore": "11111111111111111111111111111111",
+            "programOwnerAfter": "11111111111111111111111111111111",
+            "lamportsBefore": "9823881544",
+            "lamportsAfter": "9823876544"
+          },
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          },
+          {
+            "address": "7VynNmSRFJTADJ3icpjiCttJsPDGVD4ixYBkMhBiogKb",
+            "isSigner": false,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "lamportsBefore": "1855569",
+            "lamportsAfter": "1855569"
+          }
+        ],
+        "tokenAccounts": [
+          {
+            "address": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "ownerAfter": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+            "amountBefore": "500000000",
+            "amountAfter": "499000000",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          {
+            "address": "7VynNmSRFJTADJ3icpjiCttJsPDGVD4ixYBkMhBiogKb",
+            "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "ownerBefore": "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP",
+            "ownerAfter": "fWSrGtodxQDWPMFpiWueSCQixa9funY3SyUPfGoWHyP",
+            "amountBefore": "0",
+            "amountAfter": "1000000",
+            "delegateBefore": null,
+            "delegateAfter": null,
+            "delegatedAmountAfter": "0",
+            "closeAuthorityBefore": null,
+            "closeAuthorityAfter": null,
+            "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "programOwnerAfter": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          }
+        ],
+        "mints": [
+          {
+            "address": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+            "mintAuthority": null,
+            "freezeAuthority": null,
+            "permanentDelegate": null,
+            "transferHookProgramId": null,
+            "isToken2022": false,
+            "decimals": 6,
+            "kyHieu": null
+          }
+        ],
+        "solDelta": {
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-5000"
+        },
+        "instructions": [
+          {
+            "index": 0,
+            "programId": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": null,
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": false
+          },
+          {
+            "index": 1,
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": {
+              "kind": "transfer",
+              "authority": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+            },
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": true
+          }
+        ],
+        "lookupTables": [],
+        "accountKhongDoDuoc": [],
+        "nguoiKy": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+        ],
+        "nguoiDungDuocChiDinh": true,
+        "phiUocTinh": "5000",
+        "phiChinhXac": true,
+        "coverage": {
+          "analyzed": 1,
+          "total": 2,
+          "unverifiedPrograms": 1
+        }
+      },
+      "verdict": {
+        "level": "safe",
+        "reasonCodes": [],
+        "hits": []
+      },
+      "diff": [
+        {
+          "label": "Số dư 7KwS…ZL5h sau khi ký",
+          "before": "500,0",
+          "after": "499,0",
+          "severity": "info"
+        },
+        {
+          "label": "Phí mạng",
+          "before": "—",
+          "after": "0,000005 SOL",
+          "severity": "info"
+        }
+      ]
+    },
+    {
+      "name": "rpc-loi",
+      "source": "fault-injection-on-devnet-reads",
+      "facts": {
+        "signer": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+        "tuoiViNhan": {},
+        "simulationOk": false,
+        "simulationError": "TB-B07 fault injection: RPC mô phỏng không trả kết quả",
+        "accounts": [],
+        "tokenAccounts": [],
+        "mints": [],
+        "solDelta": {},
+        "instructions": [
+          {
+            "index": 0,
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "isInner": false,
+            "parentIndex": null,
+            "decoded": {
+              "kind": "transfer",
+              "authority": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+            },
+            "fromLookupTable": false,
+            "chamTaiSanNguoiKy": true
+          }
+        ],
+        "lookupTables": [],
+        "accountKhongDoDuoc": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+          "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+          "7VynNmSRFJTADJ3icpjiCttJsPDGVD4ixYBkMhBiogKb"
+        ],
+        "nguoiKy": [
+          "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF"
+        ],
+        "nguoiDungDuocChiDinh": true,
+        "phiUocTinh": "5000",
+        "phiChinhXac": true,
+        "coverage": {
+          "analyzed": 0,
+          "total": 1,
+          "unverifiedPrograms": 0
+        }
+      },
+      "verdict": {
+        "level": "warning",
+        "reasonCodes": [
+          "MO_PHONG_HONG",
+          "TRANG_THAI_DO_KHUYET"
+        ],
+        "hits": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "ten": "nguy-hiem: mô phỏng thành công",
+      "dat": true
+    },
+    {
+      "ten": "nguy-hiem: transaction chưa ký",
+      "dat": true
+    },
+    {
+      "ten": "nguy-hiem: L2 danger",
+      "dat": true
+    },
+    {
+      "ten": "nguy-hiem: số dư đo được 500 → 0",
+      "dat": true
+    },
+    {
+      "ten": "nguy-hiem: owner đổi đúng đích",
+      "dat": true
+    },
+    {
+      "ten": "lanh: mô phỏng thành công",
+      "dat": true
+    },
+    {
+      "ten": "lanh: transaction chưa ký",
+      "dat": true
+    },
+    {
+      "ten": "lanh: L2 safe",
+      "dat": true
+    },
+    {
+      "ten": "coverage-khuyet: mô phỏng thành công",
+      "dat": true
+    },
+    {
+      "ten": "coverage-khuyet: transaction chưa ký",
+      "dat": true
+    },
+    {
+      "ten": "coverage-khuyet: công khai phần không đọc",
+      "dat": true
+    },
+    {
+      "ten": "RPC mô phỏng lỗi không thành safe",
+      "dat": true
+    },
+    {
+      "ten": "RPC lỗi có reason code",
+      "dat": true
+    }
+  ],
+  "error": null,
+  "pass": true
+}

@@ -1,0 +1,14 @@
+PASS nguy-hiem: mô phỏng thành công
+PASS nguy-hiem: transaction chưa ký
+PASS nguy-hiem: L2 danger
+PASS nguy-hiem: số dư đo được 500 → 0
+PASS nguy-hiem: owner đổi đúng đích
+PASS lanh: mô phỏng thành công
+PASS lanh: transaction chưa ký
+PASS lanh: L2 safe
+PASS coverage-khuyet: mô phỏng thành công
+PASS coverage-khuyet: transaction chưa ký
+PASS coverage-khuyet: công khai phần không đọc
+PASS RPC mô phỏng lỗi không thành safe
+PASS RPC lỗi có reason code
+13/13; pass=true

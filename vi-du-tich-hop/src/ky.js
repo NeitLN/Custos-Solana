@@ -22,7 +22,7 @@
  *
  * Đây là TB-C06 áp ở tầng consumer. SDK cung cấp cơ chế; ví phải gọi nó.
  */
-import { neoKetQua, khopNeo, quaCu } from "@custos-solana/core";
+import { khopNeo, quaCu } from "@custos-solana/core";
 
 /**
  * Ký một giao dịch ĐÃ QUA KIỂM — hoặc từ chối và nói rõ vì sao.
@@ -44,6 +44,7 @@ import { neoKetQua, khopNeo, quaCu } from "@custos-solana/core";
  */
 export function kySauKhiKiem({
   quyetDinh,
+  neo,
   tx,
   txSapKy,
   viNguoiDung,
@@ -63,8 +64,9 @@ export function kySauKhiKiem({
     return { daKy: false, lyDo: "cho_nguoi_dung", chiTiet: quyetDinh.lyDo };
   }
 
-  // (3) Neo kết quả vào ĐÚNG giao dịch đã kiểm, rồi đối chiếu với thứ sắp ký.
-  const neo = neoKetQua(tx.message.serialize(), viNguoiDung, cluster);
+  // (3) Consumer giữ neo từ lượt kiểm; TUYỆT ĐỐI không tạo lại lúc ký.
+  // Chụp bytes trước await inspect, kiểm chính snapshot đó, giữ neo cùng kết quả.
+  if (!neo) return { daKy: false, lyDo: "thieu_neo" };
   const sapKy = txSapKy ?? tx;
   const k = khopNeo(neo, sapKy.message.serialize(), viNguoiDung, cluster);
   if (!k.khop) {

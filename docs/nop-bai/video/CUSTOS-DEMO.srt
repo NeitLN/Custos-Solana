@@ -1,0 +1,29 @@
+1
+00:00:00,000 --> 00:00:05,080
+Custos SDK · Ví mẫu trên Solana Devnet
+Bản ghi thao tác thật · chỉ mô phỏng, không ký/gửi
+
+2
+00:00:05,080 --> 00:00:24,020
+Ca nguy hiểm: chuyển token + đổi chủ tài khoản
+Coverage 2/3 lệnh; rule/reason có sẵn, trace dữ kiện mới phủ một phần
+
+3
+00:00:24,020 --> 00:00:28,080
+Hủy yêu cầu nguy hiểm
+Không ký và không gửi giao dịch
+
+4
+00:00:28,080 --> 00:00:39,220
+Đối chứng: gửi 10 token · số dư 500 → 490
+Không phát hiện nguy hiểm trong phần đã đọc
+
+5
+00:00:39,220 --> 00:00:55,340
+Chủ động chặn RPC trong trình duyệt để thử lỗi
+Đây là fault injection, không phải sự cố Devnet thực tế
+
+6
+00:00:55,340 --> 00:01:21,000
+Không kiểm được ≠ an toàn
+Video này có thể phát lại khi mất mạng; demo tương tác vẫn cần mạng

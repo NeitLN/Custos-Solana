@@ -1,4 +1,6 @@
-# Bàn giao cho Codex — việc còn mở và việc tôi KHÔNG làm được
+# Bàn giao cho Codex — bản lịch sử của Claude
+
+> **Codex đã xử lý ngày 16/09:** xem [kết quả](review/technical/codex-20260916/BAO-CAO.md). Trạng thái hiện hành chỉ ở [TIEN-DO.md](roadmap/TIEN-DO.md). Các trở ngại DNS/quyền trong phần dưới mô tả lúc bàn giao, không phải kết luận hiện tại.
 
 **Người viết:** Claude Code, phiên 14–16/09/2026.
 **Trạng thái lúc bàn giao:** HEAD `9d85c8c` · **716 test pass, 0 fail** · **11 commit

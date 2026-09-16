@@ -81,7 +81,7 @@ số nào gõ tay.
 | Bằng chứng | Số |
 |---|---|
 | Luật L2, mỗi luật có ca dương **và** ca đối chứng | **14** |
-| Test tự động, offline | **716** |
+| Test tự động, offline | **719** |
 | Mẫu đã gắn nhãn | **38** |
 | Xử lý đặc thù Solana | CPI/inner instruction · ALT · Token-2022 (Permanent Delegate, Transfer Hook) · nhiều signer, phân biệt người dùng với fee payer |
 | Phân tầng tin cậy | 8 rủi ro có cơ chế hoặc khai là giới hạn — [`THREAT-MODEL.md`](../bao-mat/THREAT-MODEL.md) |
@@ -113,7 +113,7 @@ nằm giữa người dùng và khoá, và không hứa là có.
 | Coverage trung bình | **82 %** trên 9/20 mẫu còn mô phỏng được |
 | Lượt gọi RPC mỗi lượt kiểm | trung vị **6,5** (dải 4–9) |
 | Cài từ ngoài repo tới kết quả đầu | **11,7 s** · **30** dòng mã tích hợp |
-| Một lượt `inspect()` | **656 ms** |
+| Một lượt `inspect()` | **630 ms** |
 | Ngân sách RPC và thời hạn từng chặng | [`NGAN-SACH-RPC.md`](../NGAN-SACH-RPC.md) |
 
 **Composability đo bằng consumer ngoài repo**, không bằng lời: 10/10 bẫy bị chặn trên

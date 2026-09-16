@@ -1,0 +1,32 @@
+{
+  "extractedOutsideRepo": true,
+  "pages": [
+    {
+      "page": "/",
+      "mounted": true,
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "page": "/so-lieu.html",
+      "mounted": true,
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "page": "/phong-van.html",
+      "mounted": true,
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "page": "/tan-cong/",
+      "mounted": true,
+      "pageErrors": [],
+      "httpErrors": []
+    }
+  ],
+  "videoDurationSeconds": 79.8,
+  "videoOfflinePlayback": true,
+  "pass": true
+}

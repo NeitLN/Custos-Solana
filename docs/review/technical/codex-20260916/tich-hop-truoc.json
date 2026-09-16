@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "doiTac": null,
+  "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos.",
+  "lastAttempt": {
+    "dat": false,
+    "sourceCommit": "9d85c8c2ee9a83091a269ea49c9db6d78863e2e5",
+    "dirtyWorktree": false,
+    "dauVet": {
+      "bam": "6baf5fabc6f966d5",
+      "soFile": 121
+    },
+    "node": "v24.12.0",
+    "npm": "11.6.2",
+    "startedAt": "2026-09-15T17:28:54.217Z",
+    "finishedAt": "2026-09-15T17:29:34.981Z",
+    "exitCode": 1,
+    "failureCategory": "timeout",
+    "loi": "hạ tầng: timeout — lấy blockhash quá hạn sau 8000 ms",
+    "kiem": [
+      {
+        "ten": "lượt chạy hoàn tất",
+        "dat": false,
+        "chiTiet": "timeout — lấy blockhash quá hạn sau 8000 ms"
+      }
+    ],
+    "msCaiDat": 17695,
+    "msChay": 13391,
+    "doLuc": "2026-09-15T17:29:31.301Z",
+    "rpc": "https://api.devnet.solana.com",
+    "chang": {
+      "blockhash_1": 7985
+    },
+    "hoTang": {
+      "loai": "timeout",
+      "chiTiet": "timeout — lấy blockhash quá hạn sau 8000 ms"
+    },
+    "dongMaTichHop": 30
+  },
+  "lastSuccessful": {
+    "dat": true,
+    "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+    "dirtyWorktree": true,
+    "dauVet": {
+      "bam": "3a969d1bf5e0a376",
+      "soFile": 103
+    },
+    "node": "v24.12.0",
+    "npm": "11.6.2",
+    "startedAt": "2026-09-12T20:15:37.716Z",
+    "finishedAt": "2026-09-12T20:16:07.038Z",
+    "exitCode": 0,
+    "failureCategory": null,
+    "loi": null,
+    "kiem": [
+      {
+        "ten": "giao dịch bình thường cho KÝ",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường ở mức safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch bình thường đọc hiểu hết lệnh",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch giả danh airdrop bị CHẶN",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có mã lý do kèm theo, không chặn suông",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "giao dịch nguy hiểm KHÔNG bao giờ là safe",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "RPC hỏng KHÔNG trở thành ký được",
+        "dat": true,
+        "chiTiet": "đạt"
+      },
+      {
+        "ten": "có lý do kỹ thuật để hiển thị",
+        "dat": true,
+        "chiTiet": "đạt"
+      }
+    ],
+    "msCaiDat": 14265,
+    "msChay": 9095,
+    "doLuc": "2026-09-12T20:16:06.475Z",
+    "rpc": "https://api.devnet.solana.com",
+    "chang": {
+      "blockhash_1": 376,
+      "inspect_1": 244,
+      "blockhash_2": 52
+    },
+    "hoTang": null,
+    "msKetQuaDau": 650,
+    "msMotLuotKiem": 652,
+    "msLuot": [
+      649,
+      650,
+      652,
+      665,
+      775
+    ],
+    "dongMaTichHop": 30,
+    "msDenKetQuaDauTien": 14915
+  },
+  "lichSuPass": [
+    {
+      "finishedAt": "2026-09-08T14:01:26.646Z",
+      "sourceCommit": "107d53ad71150a63b87368d937059f0b057c115b",
+      "msDenKetQuaDauTien": 11688,
+      "msMotLuotKiem": 682
+    },
+    {
+      "finishedAt": "2026-09-08T14:38:13.782Z",
+      "sourceCommit": "465b4913a2cfa38368da469fb7f7f38474eb08a9",
+      "msDenKetQuaDauTien": 15109,
+      "msMotLuotKiem": 655
+    },
+    {
+      "finishedAt": "2026-09-08T19:00:34.721Z",
+      "sourceCommit": "1b91f7236936b5835ee83919ac380477f3c74b7e",
+      "msDenKetQuaDauTien": 8087,
+      "msMotLuotKiem": 694
+    },
+    {
+      "finishedAt": "2026-09-08T19:08:16.770Z",
+      "sourceCommit": "cf53ebc0595e58f150897ee67f3baaca52aba526",
+      "msDenKetQuaDauTien": 7766,
+      "msMotLuotKiem": 671
+    },
+    {
+      "finishedAt": "2026-09-09T06:02:51.931Z",
+      "sourceCommit": "308d706cf39a21b4c37bf6a8c9ef91008becf040",
+      "msDenKetQuaDauTien": 23508,
+      "msMotLuotKiem": 610
+    },
+    {
+      "finishedAt": "2026-09-09T06:19:03.815Z",
+      "sourceCommit": "37b9d88669d0284cb83ffef322b5560cdb3d089f",
+      "msDenKetQuaDauTien": 19426,
+      "msMotLuotKiem": 656
+    },
+    {
+      "finishedAt": "2026-09-09T06:52:31.308Z",
+      "sourceCommit": "e8d3e86dd238e0e3c31afb6cd0e6262383cf60df",
+      "msDenKetQuaDauTien": 12382,
+      "msMotLuotKiem": 631
+    },
+    {
+      "finishedAt": "2026-09-11T16:37:22.790Z",
+      "sourceCommit": "9f5faf989376661c2b965bb630a2344f6fdadbbd",
+      "msDenKetQuaDauTien": 9288,
+      "msMotLuotKiem": 1332
+    },
+    {
+      "finishedAt": "2026-09-11T17:40:47.588Z",
+      "sourceCommit": "82e51a3cff3dfa028a1b3640f2f082afde3a221f",
+      "msDenKetQuaDauTien": 7959,
+      "msMotLuotKiem": 591
+    },
+    {
+      "finishedAt": "2026-09-12T20:16:07.038Z",
+      "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+      "msDenKetQuaDauTien": 14915,
+      "msMotLuotKiem": 652
+    }
+  ]
+}
