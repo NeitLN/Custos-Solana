@@ -31,7 +31,13 @@ html {
 body {
   min-width: 320px;
   margin: 0;
-  background: var(--color-giay);
+  background:
+    radial-gradient(42rem 31rem at 100% -8%, rgba(255, 195, 91, 0.24), transparent 66%),
+    radial-gradient(35rem 30rem at -10% 96%, rgba(243, 142, 102, 0.12), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(164, 113, 47, 0.032) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(164, 113, 47, 0.032) 0 1px, transparent 1px 22px),
+    linear-gradient(140deg, #fffdf6 0%, #fff8e8 52%, #fffcf5 100%);
+  background-attachment: fixed;
   color: var(--color-muc);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,8 +61,36 @@ h2 {
 /* Băng cảnh báo — thứ DUY NHẤT trên trang nói thật. Không bao giờ được gỡ, và
    cố ý không đẹp: nó phải cắt ngang thẩm mỹ của trang. */
 .bang-that {
+  overflow: hidden;
   color: #fff;
   background: #b0173a;
+}
+
+.bang-that__track {
+  display: flex;
+  width: max-content;
+  animation: bang-that-marquee 18s linear infinite;
+}
+
+.bang-that__message {
+  flex: none;
+  padding: 0.5rem max(1rem, 7vw) 0.5rem 1rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@keyframes bang-that-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .the-thuong {
@@ -135,5 +169,20 @@ h2 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .bang-that__track {
+    width: 100%;
+    animation: none;
+  }
+
+  .bang-that__message {
+    width: 100%;
+    padding-inline: 1rem;
+    text-align: center;
+  }
+
+  .bang-that__message[aria-hidden="true"] {
+    display: none;
   }
 }
