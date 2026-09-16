@@ -46,6 +46,13 @@ goi-sdk/
 /ban-trinh-dien/
 /Custos-ban-trinh-dien.zip
 
+# Gói review đóng cho agent ngoài — sinh lại được bằng
+# `scripts/ky-thuat/dong-goi-review-codex.py`, 4,7 MB. Nguồn của nó đã nằm trong
+# repo; commit thêm bản nén chỉ làm lịch sử nặng vĩnh viễn mà không thêm thông tin.
+# Video demo thì NGƯỢC LẠI và vẫn được commit: checklist nộp bài đòi file thật,
+# và không có nguồn nào sinh lại được nó.
+/docs/nop-bai/CUSTOS-REVIEW.zip
+
 # Bytecode Python — sinh ra từ lúc bộ kiểm trình duyệt có module dùng chung
 # (`scripts/kiem-trinh-duyet/dauvet.py`). Không phải nguồn, và commit vào thì
 # mỗi phiên bản Python lại ghi đè một bản khác.
