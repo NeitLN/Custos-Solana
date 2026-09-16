@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `e48e46cfdae0a8bc9de256d2e4b7b4c437b3ed31`
+**Commit:** `c21df2b4bcab2d94d071c55882577d02437a061e`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -11,7 +11,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **722** pass · 0 fail |
+| Test tự động | **726** pass · 0 fail |
 | Luật tất định | **14** — 14 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử đã gắn nhãn | **38** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
