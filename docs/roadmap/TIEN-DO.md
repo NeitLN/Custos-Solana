@@ -8,7 +8,11 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 | [ROADMAP-TECHNICAL-CUSTOS.md](../../ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |
 
-**Cập nhật 16/09/2026:** HEAD `cdd53c1` + working tree Codex. Đã xử lý bàn giao ở [báo cáo hiện hành](../review/technical/codex-20260916/BAO-CAO.md). Mã chưa commit; không suy trạng thái cổng phát hành từ số test.
+**Cập nhật 17/09/2026:** HEAD `ec7d7b5`, **cây làm việc sạch**, 22 commit chưa push.
+**722 test pass, 0 fail.** Cổng `kiem-san-pham`: **11 đạt · 0 hỏng · 0 chưa rõ** — lần
+đầu không còn ô nào ở trạng thái "chưa đo được". `nop-bai --strict`: **11/13**, hai ô
+còn lại là `[ngoài]` (4 câu chưa hỏi BTC) và `[người]` (chưa tạo tag).
+Nền tảng: [báo cáo Codex 16/09](../review/technical/codex-20260916/BAO-CAO.md).
 
 **Đổi track:** được BTC cho phép theo thông tin chủ dự án; chưa xác nhận biểu mẫu đã đổi hoặc cách áp mục contract. TB-H01/H02 còn WAIT_INPUT.
 
@@ -119,7 +123,7 @@ BLOCKED_TECH · DEFERRED_SCOPE. Một thẻ **bắt buộc** đang WAIT_INPUT/BL
 | TB-D01 | Một nguồn cho claim hiện hành **[T04]** | P2 | L01 | **DONE** | 451 → **520** qua `npm run so-lieu`; deck và release notes sinh lại (hai guard số test đã bắt được, đúng việc của chúng). `NGHIEM-THU-V01.md` gắn ngày cho câu *“không còn lỗi đã xác nhận”* và liệt kê bốn lỗi tìm ra **sau** nó. Guard mới `t04Claim.test.ts` 5 bài — **đã kiểm phủ định**, và bài đầu lúc viết KHÔNG đỏ được vì regex dựng theo trí nhớ về định dạng (`**487 pass` trong khi dòng thật là `**Bộ test: 487 pass`); đây là lần thứ năm cùng hình dạng lỗi đó. |
 | TB-D02 | Pitch Technical và bộ câu hỏi phản biện | P2 | D01, X03, I02 | DONE | Pitch Technical, 11 phản biện, deck 12 slide; đã render PowerPoint và kiểm schema. Thu hẹp claim trace 2/14 luật. |
 | TB-D03 | Video demo và phương án mất mạng | P2 | D02, B07 | DONE | MP4 khoảng 80 giây có caption; nguy hiểm, đối chứng, trace/rule và RPC fault injection. Có video dự phòng offline. |
-| TB-V01 | Nghiệm thu Technical trên bản ứng viên | P1 | C01–C06, S01–S03, B01–B07, X01–X03, I01–I03, P01–P02, L01, D01 | PARTIAL | Kiểm cục bộ và live đã chạy; mã chưa commit, bằng chứng live mang dirtyWorktree. Không đóng nghiệm thu nguồn sạch. Báo cáo codex-20260916. |
+| TB-V01 | Nghiệm thu Technical trên bản ứng viên | P1 | C01–C06, S01–S03, B01–B07, X01–X03, I01–I03, P01–P02, L01, D01 | **DONE (nguồn sạch, phần local)** | **Điều kiện chặn của bản PARTIAL đã hết:** lượt live chạy lại trên cây SẠCH (`c459ba7`, `inspect()` 574 ms), artifact không còn `dirtyWorktree`. Cổng `kiem-san-pham`: **11 đạt · 0 hỏng · 0 chưa rõ** — kể cả ô *"Lượt live gần nhất"* và *"Accessibility bản hiện tại"* vốn là hai ô khó nhất vì chúng so **dấu vết nội dung**, không so SHA. **Phải chạy lại 8 probe UI** vì ba commit đổi giao diện (`ac69a73` animation LED · `ec39cb3` branding · `8ceb8ab` nền trang) làm dấu vết đổi `c90436fd → 7c7e5a44`, số file 30 → 35; bằng chứng cũ nói về một bản dựng khác. Kết quả trên giao diện mới: axe toàn PASS, vùng bấm **26/26** đạt 44px, bàn phím/phóng to **16/16**, và **0 animation còn chạy** khi bật `prefers-reduced-motion` — animation mới vẫn tôn trọng thiết lập đó. **Không đóng phần remote:** CI trên revision ứng viên vẫn ở TB-H02, chưa push nên chưa có run thật; repo **không** giả một URL run. Ghi theo đúng quy tắc trạng thái của TB-I03 — local và remote không chung một ô. |
 | TB-D04 | Gói nộp có thể chạy và review độc lập | P2 | V01, D03 | DONE — gói review | CUSTOS-REVIEW.zip có demo độc lập, deck, video, hướng dẫn và SHA-256. Vì V01 PARTIAL, chưa gọi release candidate. |
 | TB-V02 | Chấm lại, báo cáo khoảng trống và bàn giao | P2 | D04 | DONE | Báo cáo codex-20260916/BAO-CAO.md: 7,75/10 có điều kiện, bốn kết luận riêng; không ước lượng xác suất giải. |
 | TB-H01 | Xác nhận cách áp rubric và trạng thái đăng ký | — | — | **WAIT_INPUT** | Cần BTC. Câu hỏi: mục 25% chấm một SDK off-chain không có contract riêng như thế nào? **Không** để nó chặn việc sửa code. |

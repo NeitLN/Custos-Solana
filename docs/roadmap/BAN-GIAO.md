@@ -4,7 +4,31 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — cập nhật Codex 16/09/2026
+## Hiện trạng — cập nhật 17/09/2026
+
+**722 pass, 0 fail.** HEAD `ec7d7b5`, **cây sạch**, 22 commit chưa push.
+Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**; `nop-bai --strict` **11/13**, hai
+ô còn lại đều không phải việc của máy: 4 câu chưa hỏi BTC, và chưa tạo tag.
+
+**Một lỗi trong chính công cụ đo, đã sửa.** `git()` ở `kiem-san-pham.ts` và `toTien.ts`
+gọi `.trim()` trên toàn bộ output `git status --porcelain`, ăn mất khoảng trắng đầu
+của **dòng đầu tiên**, nên `slice(3)` cắt vào tên file: `" M README.md"` thành
+`"EADME.md"`. Hai hậu quả ngược nhau — cổng `git checkout` tên sai nên **không trả lại
+file nó vừa làm bẩn**; còn `toTien.ts` đếm thiếu file mã bẩn nên có thể **nói giảm** về
+mức bẩn của cây. Chỉ hỏng đúng một dòng (dòng đầu theo alphabet), nên tái hiện bằng
+cách chạy lại không ra — phải đọc thẳng chuỗi trả về mới thấy. Guard
+`tenFileBan.test.ts`, mutation 2 hướng đều đỏ.
+
+**Bằng chứng UI phải chạy lại toàn bộ:** ba commit đổi giao diện làm dấu vết
+`c90436fd → 7c7e5a44` (30 → 35 file). 8 probe chạy lại trên bản mới, tất cả PASS.
+Hai biên bản `ban-trinh-dien` và `phong-van-vong-2` cố ý để lạc hậu — chúng thuộc
+roadmap cũ, lạc hậu vì dấu vết đổi chứ không vì thứ chúng đo thay đổi.
+
+**TB-V01 đóng phần local** (nguồn sạch); phần remote vẫn ở H02.
+
+---
+
+## Lịch sử — bàn giao Codex 16/09/2026
 
 Bộ test: **719 pass, 0 fail** trên working tree sau bàn giao. HEAD `cdd53c1`; chưa commit/push.
 Đọc [báo cáo hiện hành](../review/technical/codex-20260916/BAO-CAO.md) và bảng Technical trong TIEN-DO.md.
