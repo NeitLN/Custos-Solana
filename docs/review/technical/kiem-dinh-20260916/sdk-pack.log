@@ -1,0 +1,8 @@
+✓ custos-solana-types-0.1.1.tgz
+✓ custos-solana-core-0.1.1.tgz
+✓ custos-solana-ai-0.2.0.tgz
+
+Ba tarball nằm ở: C:\Users\Viet Tien\Downloads\Hackathon\goi-sdk
+Cài vào một project bất kỳ:  npm install <thư-mục>/*.tgz
+(node:24548) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)

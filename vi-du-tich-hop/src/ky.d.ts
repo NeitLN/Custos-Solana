@@ -20,6 +20,7 @@
  * khi họ copy `ky.js` về.
  */
 import type { VersionedTransaction } from "@solana/web3.js";
+import type { NeoKetQua } from "@custos-solana/core";
 
 /** Quyết định từ `kiemTruocKhiKy` — `cho` nói làm gì, `lyDo` nói vì sao. */
 export type QuyetDinh = {
@@ -32,6 +33,7 @@ export type QuyetDinh = {
  * gộp chúng lại là cách nhanh nhất làm người dùng nghĩ Custos hay báo bừa.
  */
 export type LyDoKhongKy =
+  | "thieu_neo"
   | "bi_chan"
   | "cho_nguoi_dung"
   | "giao_dich_da_doi"
@@ -43,6 +45,8 @@ export type KetQuaKy =
 
 export function kySauKhiKiem(p: {
   quyetDinh: QuyetDinh;
+  /** Neo giữ cùng kết quả inspect, KHÔNG tạo mới khi ký. */
+  neo: NeoKetQua;
   /** Giao dịch ĐÃ qua `inspect()`. */
   tx: VersionedTransaction;
   /** Giao dịch sắp ký — mặc định là `tx`. Khác nhau ⇒ dApp đã tráo. */

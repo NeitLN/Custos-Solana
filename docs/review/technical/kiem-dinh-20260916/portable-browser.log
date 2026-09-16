@@ -1,0 +1,18 @@
+BỘ MANG ĐI · phục vụ bởi `phuc-vu.mjs` ở cổng 8099
+
+  PASS  ví mẫu · ứng dụng dựng được   (#root 15579 ký tự)
+  PASS  ví mẫu · không tài nguyên nào 404
+  PASS  ví mẫu · không lỗi console
+  PASS  phỏng vấn · ứng dụng dựng được   (#root 8496 ký tự)
+  PASS  phỏng vấn · không tài nguyên nào 404
+  PASS  phỏng vấn · không lỗi console
+  PASS  số liệu · ứng dụng dựng được   (#root 16451 ký tự)
+  PASS  số liệu · không tài nguyên nào 404
+  PASS  số liệu · không lỗi console
+  PASS  trang tấn công · ứng dụng dựng được   (#root 3974 ký tự)
+  PASS  trang tấn công · không tài nguyên nào 404
+  PASS  trang tấn công · không lỗi console
+
+→ data/a11y/ban-trinh-dien.json
+
+=== TẤT CẢ 12 PASS ===

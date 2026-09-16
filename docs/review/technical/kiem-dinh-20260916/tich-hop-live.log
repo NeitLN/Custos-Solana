@@ -1,0 +1,34 @@
+
+> thu-tich-hop:devnet
+> node scripts/thu-tich-hop.mjs
+
+1/4 · đóng gói tarball SDK
+2/4 · dàn dApp mẫu ra ngoài monorepo
+3/4 · npm install ở vị trí người ngoài
+4/4 · chạy ba kịch bản trên Devnet
+
+[1] chuyển 0,01 SOL — mức safe · quyết định "ky"
+  PASS  giao dịch bình thường cho KÝ
+  PASS  giao dịch bình thường ở mức safe
+  PASS  giao dịch bình thường đọc hiểu hết lệnh
+
+[2] "nhận airdrop" — mức danger · quyết định "chan" · trung vị 627 ms trên 5 lượt (618–880)
+    mã lý do: SPL_SET_AUTHORITY__ACCOUNT_OWNER
+    đọc hiểu: 2/2 lệnh
+  PASS  giao dịch giả danh airdrop bị CHẶN
+  PASS  có mã lý do kèm theo, không chặn suông
+  PASS  giao dịch nguy hiểm KHÔNG bao giờ là safe
+
+[3] RPC chết — quyết định "chan"
+  PASS  RPC hỏng KHÔNG trở thành ký được
+  PASS  có lý do kỹ thuật để hiển thị
+
+=== TẤT CẢ PASS · tổng 4005 ms ===
+
+  cài đặt            : 10.4 s
+  chạy ba kịch bản   : 6.4 s
+  -> tới kết quả đầu : 11.0 s
+  một lượt inspect() : 627 ms
+  dòng mã tích hợp   : 30
+
+→ data/tich-hop/ket-qua.json

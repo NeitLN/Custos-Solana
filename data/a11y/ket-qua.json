@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-14T19:09:30.905669+00:00",
-  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+  "doLuc": "2026-09-16T02:59:27.974798+00:00",
+  "sourceCommit": "cdd53c112843adc95d39db525cf4b61b0c773978",
   "dauVet": {
     "bam": "c90436fd14d2fcb9",
     "soFile": 30
@@ -24,6 +24,7 @@
   ],
   "soKiem": 40,
   "soDat": 40,
+  "soHong": 0,
   "viPham": [],
   "kiem": [
     {

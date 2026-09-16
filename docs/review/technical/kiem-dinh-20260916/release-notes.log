@@ -1,0 +1,6 @@
+
+> release-notes
+> node --experimental-strip-types scripts/tao-release-notes.ts
+
+✓ docs/nop-bai/RELEASE-NOTES.md · 6 giới hạn sinh từ dữ liệu
+  commit cdd53c1 · ai@0.2.0 · 719 test

@@ -1,0 +1,21 @@
+✔ neo lúc kiểm phải bắt được tx bị sửa tại chỗ trước khi ký (3.401ms)
+✔ tuổi kết quả tính từ lúc kiểm, không phải lúc bấm ký (0.6603ms)
+✔ CHẶN vì phát hiện ⇒ signer không được gọi lần nào (0.3754ms)
+✔ CHẶN vì không kiểm được ⇒ cũng không ký, và lý do KHÁC (0.4817ms)
+✔ HỎI mà người dùng CHƯA đồng ý ⇒ không ký — mặc định là fail-safe (0.5025ms)
+✔ dApp tráo giao dịch sau khi kiểm ⇒ KHÔNG ký, dù quyết định là cho phép (0.617ms)
+✔ cho phép ký + neo khớp ⇒ signer được gọi ĐÚNG MỘT LẦN, với đúng bytes (1.1468ms)
+✔ signer nhận bytes của tx SẮP KÝ, không phải của tx đã kiểm (1.1684ms)
+✔ HỎI mà người dùng ĐỒNG Ý ⇒ ký được, và vẫn qua neo (0.5147ms)
+✔ kết quả kiểm QUÁ CŨ ⇒ không ký, dù mọi thứ khác khớp (0.5542ms)
+✔ hợp đồng ký nằm ở file RIÊNG, không thổi số dòng tích hợp (0.4895ms)
+✔ SDK không cấm ký — policy do consumer áp (0.3353ms)
+✔ consumer KHÔNG gọi mạng hay ký thật khi chạy test (0.2933ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 393.6833

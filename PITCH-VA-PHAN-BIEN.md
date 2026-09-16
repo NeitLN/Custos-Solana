@@ -1,4 +1,99 @@
-# Pitch 4 phút và phản biện 2 phút
+# Pitch Technical Build và bộ phản biện
+
+**Bản hiện hành:** TB-D02, chuẩn bị cho Best Technical Build. Đăng ký BTC vẫn là Best Product & Business theo form cũ; chưa có xác nhận biểu mẫu đã đổi. **Thời lượng vòng hiện tại chưa xác nhận**: bản tập dưới dùng 4 phút làm tham chiếu, không phải lịch BTC đã chốt. Nguồn: [thông tin vòng hiện tại](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+
+## 1. Luận điểm và mạch nói hiện hành
+
+> Custos là SDK giúp ví/dApp đọc hậu quả của giao dịch Solana trước khi ký, truy vết lý do cảnh báo và công khai phần chưa đo được. Engine luật quyết định mức cảnh báo; lớp diễn giải tùy chọn không được hạ mức đó.
+
+| Phần | Nội dung nói | Bằng chứng mở khi cần |
+|---|---|---|
+| Vấn đề | Một giao dịch có thể đổi quyền tài khoản mà số dư không đổi; chỉ nhìn số tiền chưa đủ để ra quyết định. | Ca đổi owner trong `scripts/ky-thuat/so-baseline-b06.ts` |
+| Demo ca khó | Mở ví mẫu; chạy Nhận quà tặng. Chỉ vào chuyển token và đổi chủ như hai hậu quả khác nhau. Đọc đúng coverage trên màn hình. | `apps/demo-wallet/public/hien-truong.json`; log TB-B07 |
+| Pipeline | RPC trả trạng thái account và simulation. L1 dựng Facts; L2 áp luật; bảng chênh lệch và trace nối cảnh báo tới dữ kiện. L3 chỉ diễn giải. | `packages/core/src/l1/fetch.ts`, `l2/evaluate.ts`, `inspect.ts` |
+| Ranh giới tin cậy | SDK không tự cấm blockchain nhận giao dịch. Ví phải áp policy trước signer; payload của dApp và lời AI không được giảm cảnh báo. | `vi-du-tich-hop/src/ky.js`; `docs/bao-mat/THREAT-MODEL.md` |
+| So sánh thành phần | B06 so đọc top-level, balance delta và engine đầy đủ trên cùng Facts. Chỉ nêu phần mỗi cách bỏ sót; không tuyên bố thắng các ví thương mại. | `npm run so-baseline`; `docs/BENCHMARK.md` |
+| Hoàn thiện | Gói SDK cài từ tarball ngoài monorepo; replay, ca đối kháng và Devnet kiểm riêng. Test không đồng nghĩa accuracy ngoài thị trường. | `data/tich-hop/ket-qua.json`; `data/benchmark/` |
+| Kết | Điểm Custos muốn chứng minh là một kết luận truy được tới dữ kiện, và một giới hạn không bị giấu đi. | Rule/reason; trace dữ kiện mới phủ một phần; cảnh báo khuyết dữ liệu |
+
+**Nhịp tập tham chiếu:** 25 giây vấn đề, 60 giây demo, 45 giây pipeline/trust boundary, 40 giây so sánh, 45 giây tích hợp/giới hạn, 25 giây kết. Nếu BTC cho ít thời gian hơn, giữ demo + ranh giới + kết luận, chuyển benchmark chi tiết sang Q&A. Không nói phần marketing của phụ lục lịch sử trong mạch chính.
+
+## 2. Sơ đồ kiến trúc để giải thích
+
+```mermaid
+flowchart LR
+  TX[Transaction chưa ký] --> L1[L1: RPC / account / simulation / Facts]
+  L1 --> L2[L2: luật và reasonCodes]
+  L1 --> DIFF[Bảng hậu quả trước / sau]
+  L2 --> TRACE[Trace gắn dữ kiện]
+  L2 --> L3[L3: diễn giải tùy chọn]
+  DIFF --> UI[Ví: hiển thị kết quả]
+  TRACE --> UI
+  L3 --> UI
+  UI --> POLICY[Consumer áp policy và kiểm đúng message]
+  POLICY --> SIGNER[Signer của ví]
+```
+
+`inspect()` không ký/gửi. Mô phỏng dùng trạng thái chuỗi tại lúc đọc; không bảo đảm trạng thái khi thực thi sau đó giống hệt. Trace chỉ có ích nếu gắn với cùng input/lượt kiểm.
+
+## 3. Mười một câu phản biện Technical
+
+### T1. Vì sao không chỉ đọc instruction?
+
+Đọc top-level thấy lệnh bên ngoài nhưng có thể thiếu hậu quả qua CPI và quan hệ account. Custos kết hợp decode với trạng thái trước/sau. **Nguồn:** `l1/fetch.ts`, `l1/coverage.ts`; B06. Không nói các ví khác chỉ đọc top-level.
+
+### T2. Balance delta chưa đủ ở đâu?
+
+Đổi owner/delegate có thể ảnh hưởng quyền kiểm soát mà số dư hiện tại không đổi. Với ca chỉ SetAuthority, không được vẽ số dư về 0. **Nguồn:** `scripts/tan-cong.ts`, `packages/core/src/diff.ts`, ca đối chứng B06.
+
+### T3. IDL biết được gì?
+
+IDL giúp nhận diện cấu trúc/tên lệnh khi tương thích. Nó không chứng nhận program lành tính hay chứng minh mọi hậu quả. **Nguồn:** `l1/bang-idl.ts`, `docs/DECODER-TIEP-THEO.md`, threat model.
+
+### T4. Ai thật sự chặn ký?
+
+Consumer ví áp policy trước signer; SDK trả kết quả. `vi-du-tich-hop/src/ky.js` kiểm quyết định, sự đồng ý, đúng message và độ mới trước khi gọi signer. Consumer cố tình bỏ qua SDK nằm ngoài khả năng cưỡng chế của Custos.
+
+### T5. RPC nói sai thì sao?
+
+RPC là một giả định tin cậy. Custos kiểm cấu trúc, dữ liệu thiếu và timeout nhưng không có cơ chế đồng thuận độc lập để chứng minh mọi response đúng. **Nguồn:** `docs/bao-mat/THREAT-MODEL.md`, `docs/NGAN-SACH-RPC.md`. Không hứa chống được RPC ác ý hoàn toàn.
+
+### T6. Simulation khác thực thi như thế nào?
+
+Simulation không broadcast và dùng trạng thái quan sát. State, blockhash hoặc message có thể đổi trước khi ký. Consumer ràng buộc message/độ mới, nhưng không tạo atomic snapshot xuyên các RPC. **Nguồn:** `docs/bao-mat/THREAT-MODEL.md`, code TB-C06 và `vi-du-tich-hop/src/ky.js`.
+
+### T7. Tại sao không có smart contract riêng?
+
+Trách nhiệm hiện tại là kiểm trước ký từ phía ví. Thêm contract không tự khiến lớp đọc đáng tin hơn và còn mở thêm bề mặt lỗi. Rubric có mục smart contract; nhóm đang chờ xác nhận cách áp cho SDK. **Nguồn:** `docs/adr/0001-doi-huong-technical-build.md`, TB-H01. Không khẳng định chắc chắn được tối đa 25%.
+
+### T8. AI đóng góp được gì?
+
+Hiện chưa chứng minh ưu thế so với template trên phép đo đang có. AI là diễn giải tùy chọn; L2 giữ verdict và có fallback. **Nguồn:** `data/eval/ai-ket-qua.json`, `docs/DON-VI-KINH-TE.md`. Không dùng số token/chữ dài hơn thay cho lợi ích người dùng.
+
+### T9. Benchmark do đội tự gắn nhãn thì chứng minh gì?
+
+Nó kiểm hành vi theo đặc tả và hồi quy trên phạm vi đã công bố. Facts synthetic, RPC replay và Devnet live là các tầng khác nhau. Held-out sau khi được dùng để sửa engine phải đổi trạng thái. **Nguồn:** `data/benchmark/manifest.json`, `data/benchmark/danh-gia-b05.json`, `docs/BENCHMARK.md`. Chưa có accuracy thị trường.
+
+### T10. Chưa hỗ trợ gì?
+
+Trace hiện có rule/reason; liên kết dữ kiện có cấu trúc chỉ phủ 2/14 luật. Ca demo đổi owner hiện phát luật 1 chưa có `bangChung` chi tiết, nên không hứa đường truy dữ kiện đầy đủ cho ca này.
+
+Không phải mọi program/extension đều có semantics được hiểu; live smoke suite không phủ toàn bộ manifest. UI mới kiểm Chromium giả lập, chưa thiết bị thật hoặc mọi trình duyệt. Đăng ký track và CI remote mới chưa được xác nhận. **Nguồn:** sổ tiến độ, B07 và báo cáo nghiệm thu hiện hành.
+
+### T11. Advisory còn lại xử lý thế nào?
+
+Phân biệt số advisory với đường có thể khai thác; sáu moderate đã được xử lý bằng dependency overrides, còn năm high có phân tích phơi nhiễm và điều kiện xem lại. Không gọi đã vá hoặc rủi ro bằng 0. **Nguồn:** `docs/PHU-THUOC.md`, `data/seed/lo-hong.json`, test phơi nhiễm.
+
+## 4. Cách dùng deck và tránh phát biểu quá mức
+
+- Slide 1–10 là mạch Technical; slide 11–12 là dự phòng Q&A. Nội dung thị trường/giá trong phụ lục chỉ là lịch sử hoặc giả thuyết.
+- Số động lấy từ `apps/demo-wallet/public/so-lieu.json`; dựng lại bằng `node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json`.
+- Video ghi thao tác thật với mô phỏng Devnet chưa ký; không gọi đó là giao dịch đã broadcast.
+- Phần lịch sử bên dưới giữ các neo đồng bộ của repo và xuất xứ dữ liệu. Nó không xác nhận thông tin đối thủ/giá/lịch cũ còn hiện hành; không đọc nguyên văn trên sân khấu.
+
+---
+
+# Phụ lục lịch sử — pitch Product & Business (không dùng làm mạch chính)
 
 **4 phút pitch + demo · 2 phút Q&A · 1 phút chuyển tiếp** — đúng định dạng Vòng Loại
 Online Toàn Quốc trong thể lệ BTC. Vòng của hạn 19/09 CHƯA xác nhận dùng định dạng
@@ -121,7 +216,7 @@ Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mấ
 | **0:00–0:30** | **Mở bằng thất bại đo được, không bằng định nghĩa vấn đề.** *"Trong 20 người chúng em thử, hai người nhìn thấy cảnh báo đỏ rồi vẫn ký — vì phí chỉ 0,000005 SOL và có chữ 'demo'. Vấn đề không phải thiếu cảnh báo. Vấn đề là người dùng không hiểu hậu quả trước khi ký."* | Câu này mạnh hơn mọi định nghĩa. Nó là dữ liệu, và nó là thất bại của chính đội — giám khảo nghe được ngay là đội đo thật |
 | **0:30–0:45** | **Nhượng bộ, rút gọn.** *"Ví lớn đã có mô phỏng. Phantom cảnh báo `setAuthority`. Chúng em không cạnh tranh ở đó. Chỗ khác là khi mô phỏng KHÔNG hiểu hết — Coinspect từng công bố một ca bỏ lọt instruction đổi quyền sở hữu."* | **Rút từ 30 giây xuống 15.** Nói sớm, nói thẳng, rồi đi tiếp. Đừng ở lại trong thế phòng thủ |
 | **0:45–2:00** | **Demo.** Cùng một giao dịch, hai kết cục | Chỉ tay vào dòng coverage: *"nó nói luôn phần nó chưa hiểu"* |
-| **2:00–2:30** | **Tích hợp — số đo, không phải lời hứa.** Một SDK call trên màn hình. *"Đội em dựng một dApp mẫu ngoài repo, cài SDK từ tarball vừa đóng gói: 12 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã. Lỗi RPC thì CHẶN, không bao giờ thành ký được."* **Không nói "cài từ npm"** — bài đo cài từ tarball vừa đóng gói để đo đúng mã hôm nay. Gói trên npm (`0.2.0`) đã có đủ neo và đã nghiệm thu 10/10, nhưng đó là phép đo khác. | **Ô mới.** Đây là bằng chứng kỹ thuật gần "ai dùng được" nhất mà đội có. Nói rõ **đội tự dựng** — xem ô 2:30 |
+| **2:00–2:30** | **Tích hợp — số đo, không phải lời hứa.** Một SDK call trên màn hình. *"Đội em dựng một dApp mẫu ngoài repo, cài SDK từ tarball vừa đóng gói: 12,4 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã. Lỗi RPC thì CHẶN, không bao giờ thành ký được."* **Không nói "cài từ npm"** — bài đo cài từ tarball vừa đóng gói để đo đúng mã hôm nay. Gói trên npm (`0.2.0`) đã có đủ neo và đã nghiệm thu 10/10, nhưng đó là phép đo khác. | **Ô mới.** Đây là bằng chứng kỹ thuật gần "ai dùng được" nhất mà đội có. Nói rõ **đội tự dựng** — xem ô 2:30 |
 | **2:30–2:55** | **Ai mua, và điều đội CHƯA chứng minh.** *"Người mua là ví và dApp, không phải người dùng cuối. Chúng em chưa phỏng vấn người mua nào, và chưa bên thứ ba nào tích hợp. Bộ câu hỏi đã soạn, chưa chạy. Chúng em không gọi dApp mẫu của mình là khách hàng."* | **Ô khó nhất, và là ô ăn điểm nếu nói đúng.** Thừa nhận trước thì mất một chút; để giám khảo moi ra thì mất nhiều hơn. **Không** vòng vo, **không** đổi chủ đề sang số người dùng cuối |
 | **2:55–3:15** | **Giới hạn của AI.** Verdict do engine luật quyết. AI không được xác nhận an toàn | Giữ **nguyên văn** câu đó — nó là câu ghi điểm |
 | **3:15–3:45** | **Vì sao tin được con số của đội.** *"Bộ kiểm của chúng em bắt được lỗi của chính chúng em: một bản SDK đã lên npm thiếu bản vá bảo mật, một bộ đếm tố oan chính đường không thể sai, và tuổi người tham gia vượt quá phạm vi họ đồng ý. Cả ba đều ghi trong repo, kèm cách phát hiện."* | **Ô mới, và là khác biệt thật.** Đội nào cũng nói "chúng em cẩn thận". Rất ít đội chỉ ra được lỗi mình tự bắt |
@@ -361,20 +456,20 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
-### 14. "716 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "719 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 716 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 719 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (716)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (719)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 716 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 719 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*
