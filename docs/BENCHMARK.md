@@ -104,7 +104,7 @@ tầng dưới đây chứng minh ba điều khác nhau, và trộn chúng là c
 |---|---|---|---|---|
 | `l2-facts` | L2 trên Facts **đã đóng băng** | luật **không hồi quy** | 38/38 | **38/38** |
 | `l1-replay` | dựng lại tx từ base64 → đường L1 sản xuất | **L1 bóc tách đúng** | 29/38 | **19/29** |
-| `devnet-live` | chạy thật trên Devnet (TB-B07) | hành vi runtime | 19/38 | **0** — chưa chạy |
+| `devnet-live` | chạy thật trên Devnet (TB-B07) | hành vi runtime | 19/38 | **0/19 fixture** — nhưng xem mục 3b: có **suite live riêng 4 ca** |
 
 **Hai cột cuối là hai chuyện khác nhau, và gộp chúng là cách nói quá dễ nhất ở
 trang này.** *Đủ điều kiện* = mẫu có đủ dữ liệu để tầng đó chạy được. *Đã chạy* =
@@ -119,6 +119,36 @@ ranh giới L2 rất tốt và **không** nói được gì về L1.
 
 **Vì sao 29 → 19:** mười mẫu `real-mainnet` không chạy lại được trên Devnet — account
 của chúng không tồn tại ở đó.
+
+### 3b · Suite live TB-B07 — runtime ĐÃ được kiểm, nhưng không phải trên 19 fixture
+
+Bảng trên nói về **19 fixture**. Nó KHÔNG nói runtime chưa hề được kiểm — và một
+người đọc dừng ở cột *Đã chạy: 0* sẽ kết luận đúng điều đó.
+
+Ngày 15/09 chạy một suite live **riêng** trên Devnet:
+`scripts/ky-thuat/kiem-devnet-b07.ts`, **4 ca · 13 kiểm · 13/13 đạt**. Artifact:
+[`b07.json`](review/technical/codex-20260916/b07.json) và raw RPC đi kèm.
+
+| Ca | Nguồn | Kiểm gì |
+|---|---|---|
+| `nguy-hiem` | `devnet-live` | mô phỏng thành công · tx **chưa ký** · L2 `danger` · số dư 500 → 0 · owner đổi đúng đích |
+| `lanh` | `devnet-live` | mô phỏng thành công · tx chưa ký · L2 `safe` |
+| `coverage-khuyet` | `devnet-live` | mô phỏng thành công · tx chưa ký · **công khai phần không đọc được** |
+| `rpc-loi` | fault injection trên đường đọc Devnet | RPC lỗi **không** thành `safe` · có mã lý do |
+
+`broadcast: false` — **không giao dịch nào lên chuỗi**. Suite mô phỏng giao dịch chưa
+ký; nó không cần khoá và không gửi gì.
+
+**Hai chuyện khác nhau, đừng gộp:**
+
+| | |
+|---|---|
+| *19 fixture chạy live* | **chưa** — và bảng mục 3 nói đúng |
+| *hành vi runtime đã kiểm* | **rồi** — 4 ca, 13 kiểm, trên RPC Devnet thật |
+
+Suite này **không** biến 19 fixture lịch sử thành 19 fixture đã capture live. Muốn cột
+kia khác 0 thì phải chạy lại đúng 19 mẫu ấy trên Devnet, và mười mẫu `real-mainnet`
+trong đó vẫn sẽ không chạy được vì account không tồn tại ở Devnet.
 
 #### Tầng `l1-replay` — đã chạy 19/29. Việc TB-B02.
 
@@ -156,8 +186,9 @@ mỗi lượt chạy, nhưng để **báo cáo**, không làm runner đỏ.
 > **Replay KHÔNG phải một lần thực thi SVM mới.** `simulateTransaction` trong fixture
 > là kết quả một lần chạy SVM **trong quá khứ, trên máy khác**. Tầng này chứng minh
 > L1 bóc tách đúng thứ RPC trả về; nó không nói Solana hôm nay sẽ xử lý giao dịch đó
-> như vậy. Muốn điều đó thì phải chạy thật — TB-B07, tức cột *Đã chạy* của
-> `devnet-live`, hiện là **0**.
+> như vậy. Muốn điều đó thì phải chạy thật — TB-B07, và cột *Đã chạy* của
+> `devnet-live` **trên 19 fixture này** vẫn là **0**. Runtime đã được kiểm bằng một
+> suite live **riêng**; xem mục 3b.
 
 **Giới hạn còn lại của tầng này:** fixture **thừa** chưa bị phát hiện. Adapter đếm
 được bản ghi nào đã dùng (`daDung()`), nhưng runner chưa đối chiếu, nên một fixture

@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-16T20:08:29.536Z",
+  "sinhLuc": "2026-09-16T20:27:52.218Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -66,7 +66,7 @@
     }
   },
   "test": {
-    "pass": 722,
+    "pass": 726,
     "fail": 0
   },
   "hieuNang": {
