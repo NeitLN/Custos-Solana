@@ -404,9 +404,41 @@ export default function App() {
 
   return (
     <div className="app-shell min-h-screen bg-nen text-chu">
-      <div className="scope-bar px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.18em] sm:text-[11px]">
-        <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-        Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+      <div className="scope-bar" role="status">
+        <div className="scope-bar__track">
+          <span className="scope-bar__message">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+          <span className="scope-bar__message" aria-hidden="true">
+            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
+            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
+          </span>
+        </div>
       </div>
 
       {cheDo?.loai === "mock" && (

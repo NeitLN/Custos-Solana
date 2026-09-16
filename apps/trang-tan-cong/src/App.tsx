@@ -251,8 +251,17 @@ export default function App() {
   return (
     <div className="min-h-screen">
       {/* Băng duy nhất nói thật trên cả trang. */}
-      <div className="bang-that px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] sm:text-[12px]">
-        ⚠ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet
+      <div className="bang-that" role="status">
+        <div className="bang-that__track">
+          <span className="bang-that__message">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
+        </div>
       </div>
 
       <header className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-6">

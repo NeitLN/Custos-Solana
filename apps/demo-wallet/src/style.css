@@ -98,9 +98,27 @@ button {
 }
 
 .scope-bar {
+  overflow: hidden;
   color: #72510c;
   background: #fff4d6;
   border-bottom: 1px solid #edd99f;
+}
+
+.scope-bar__track {
+  display: flex;
+  width: max-content;
+  animation: scope-marquee 18s linear infinite;
+}
+
+.scope-bar__message {
+  flex: none;
+  padding: 0.5rem max(1rem, 7vw) 0.5rem 1rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .scope-dot {
@@ -643,6 +661,16 @@ button {
   }
 }
 
+@keyframes scope-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @keyframes orbit-pulse {
   0% {
     opacity: 0.7;
@@ -695,5 +723,20 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .scope-bar__track {
+    width: 100%;
+    animation: none;
+  }
+
+  .scope-bar__message {
+    width: 100%;
+    padding-inline: 1rem;
+    text-align: center;
+  }
+
+  .scope-bar__message[aria-hidden="true"] {
+    display: none;
   }
 }
