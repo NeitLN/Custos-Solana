@@ -113,7 +113,7 @@ nằm giữa người dùng và khoá, và không hứa là có.
 | Coverage trung bình | **82 %** trên 9/20 mẫu còn mô phỏng được |
 | Lượt gọi RPC mỗi lượt kiểm | trung vị **6,5** (dải 4–9) |
 | Cài từ ngoài repo tới kết quả đầu | **11,7 s** · **30** dòng mã tích hợp |
-| Một lượt `inspect()` | **628 ms** |
+| Một lượt `inspect()` | **620 ms** |
 | Ngân sách RPC và thời hạn từng chặng | [`NGAN-SACH-RPC.md`](../NGAN-SACH-RPC.md) |
 
 **Composability đo bằng consumer ngoài repo**, không bằng lời: 10/10 bẫy bị chặn trên
