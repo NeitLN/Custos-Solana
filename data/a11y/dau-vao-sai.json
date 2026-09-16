@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-14T19:23:43.509215+00:00",
-  "sourceCommit": "780cf6d5408c031a852ac1fec371bbc5c9dc3207",
+  "doLuc": "2026-09-16T20:02:47.426865+00:00",
+  "sourceCommit": "f8ee7abeec89a465fe9eb2c9880700d831d8ae9a",
   "dauVet": {
-    "bam": "c90436fd14d2fcb9",
-    "soFile": 30
+    "bam": "7c7e5a447dc94d1c",
+    "soFile": 35
   },
   "the": "TB-S02",
   "soKiem": 35,
@@ -12,7 +12,7 @@
     {
       "ten": "base64 hỏng · không trắng trang",
       "dat": true,
-      "chiTiet": "1562 ký tự"
+      "chiTiet": "1961 ký tự"
     },
     {
       "ten": "base64 hỏng · không phán quyết",
@@ -27,7 +27,7 @@
     {
       "ten": "base64 hỏng · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3274 ms"
+      "chiTiet": "3191 ms"
     },
     {
       "ten": "base64 hỏng · không lỗi console",
@@ -37,7 +37,7 @@
     {
       "ten": "rỗng · không trắng trang",
       "dat": true,
-      "chiTiet": "1251 ký tự"
+      "chiTiet": "1650 ký tự"
     },
     {
       "ten": "rỗng · không phán quyết",
@@ -52,7 +52,7 @@
     {
       "ten": "rỗng · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3185 ms"
+      "chiTiet": "3172 ms"
     },
     {
       "ten": "rỗng · không lỗi console",
@@ -62,7 +62,7 @@
     {
       "ten": "quá dài — 12.000 ký tự · không trắng trang",
       "dat": true,
-      "chiTiet": "1581 ký tự"
+      "chiTiet": "1980 ký tự"
     },
     {
       "ten": "quá dài — 12.000 ký tự · không phán quyết",
@@ -77,7 +77,7 @@
     {
       "ten": "quá dài — 12.000 ký tự · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3223 ms"
+      "chiTiet": "3214 ms"
     },
     {
       "ten": "quá dài — 12.000 ký tự · không lỗi console",
@@ -87,7 +87,7 @@
     {
       "ten": "HTML trong payload · không trắng trang",
       "dat": true,
-      "chiTiet": "1562 ký tự"
+      "chiTiet": "1961 ký tự"
     },
     {
       "ten": "HTML trong payload · không phán quyết",
@@ -102,7 +102,7 @@
     {
       "ten": "HTML trong payload · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3184 ms"
+      "chiTiet": "3266 ms"
     },
     {
       "ten": "HTML trong payload · không lỗi console",
@@ -112,7 +112,7 @@
     {
       "ten": "Bidi · không trắng trang",
       "dat": true,
-      "chiTiet": "1562 ký tự"
+      "chiTiet": "1961 ký tự"
     },
     {
       "ten": "Bidi · không phán quyết",
@@ -137,7 +137,7 @@
     {
       "ten": "JSON chứ không phải base64 · không trắng trang",
       "dat": true,
-      "chiTiet": "1562 ký tự"
+      "chiTiet": "1961 ký tự"
     },
     {
       "ten": "JSON chứ không phải base64 · không phán quyết",
@@ -152,7 +152,7 @@
     {
       "ten": "JSON chứ không phải base64 · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3192 ms"
+      "chiTiet": "3209 ms"
     },
     {
       "ten": "JSON chứ không phải base64 · không lỗi console",
@@ -162,7 +162,7 @@
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · không trắng trang",
       "dat": true,
-      "chiTiet": "1572 ký tự"
+      "chiTiet": "1971 ký tự"
     },
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · không phán quyết",
@@ -177,7 +177,7 @@
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3323 ms"
+      "chiTiet": "3209 ms"
     },
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · không lỗi console",
