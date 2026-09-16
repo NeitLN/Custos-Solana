@@ -63,6 +63,22 @@ const sha = execFileSync("git", ["rev-parse", "--short", "HEAD"], { encoding: "u
 const sach = execFileSync("git", ["status", "--porcelain"], { encoding: "utf8" }).trim() === "";
 const theTag = execFileSync("git", ["tag"], { encoding: "utf8" }).trim();
 
+/*
+ * Video: chỉ tick khi có FILE THẬT. Không suy từ tài liệu nói "đã quay".
+ *
+ * Phép đo này TỪNG nằm trong khối `if (STRICT)`, còn ô khai báo gõ cứng
+ * `xong: false` kèm câu "Chưa có". Hệ quả: `npm run nop-bai` báo THIẾU video
+ * trong khi `docs/nop-bai/video/CUSTOS-DEMO.mp4` đã nằm đó — và chỉ chế độ
+ * `--strict` mới nói đúng.
+ *
+ * Đó là ô **báo giảm**: khai chưa làm một việc đã làm. Cùng hướng sai với lỗi
+ * `moHinhThat`/`liveGanNhat` ở `evalMoHinhThat.test.ts`. Một cổng gõ cứng trạng
+ * thái rồi trông vào nhánh khác ghi đè thì sai ngay khi nhánh đó không chạy —
+ * nên phép đo về đúng chỗ khai báo, chạy ở MỌI chế độ.
+ */
+const coVideo = existsSync("docs/nop-bai/video") &&
+  readdirSync("docs/nop-bai/video").some((f) => /\.(mp4|mov|webm)$/i.test(f));
+
 const muc: Muc[] = [
   {
     ten: "Bộ test xanh",
@@ -102,8 +118,10 @@ const muc: Muc[] = [
   },
   {
     ten: "Video demo dự phòng",
-    xong: false,
-    chiTiet: "THỂ LỆ GHI LÀ BẮT BUỘC. Chưa có. Thiếu nó là mất lượt nếu sự cố kỹ thuật",
+    xong: coVideo,
+    chiTiet: coVideo
+      ? "có file trong docs/nop-bai/video"
+      : "THỂ LỆ GHI LÀ BẮT BUỘC. Không có file video nào — không tick theo lời, chỉ tick theo file",
     ai: "người",
   },
   {
@@ -406,16 +424,7 @@ if (STRICT) {
     ai: "người",
   });
 
-  // Video: chỉ tick khi có FILE THẬT. Không suy từ tài liệu nói "đã quay".
-  const coVideo = existsSync("docs/nop-bai/video") &&
-    readdirSync("docs/nop-bai/video").some((f) => /\.(mp4|mov|webm)$/i.test(f));
-  const i = muc.findIndex((x) => x.ten === "Video demo dự phòng");
-  if (i !== -1) {
-    muc[i]!.xong = coVideo;
-    muc[i]!.chiTiet = coVideo
-      ? `có file trong docs/nop-bai/video`
-      : "THỂ LỆ GHI LÀ BẮT BUỘC. Không có file video nào — không tick theo lời, chỉ tick theo file";
-  }
+  // Video đo ở chỗ khai báo `coVideo`, chạy mọi chế độ — xem ghi chú tại đó.
 }
 
 const xong = muc.filter((m) => m.xong).length;
