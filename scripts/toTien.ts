@@ -184,8 +184,26 @@ export function bangChungConHieuLuc(
       return { con: false, vi: `nội dung mã đã đổi sau lượt đo (${dauVetCu.bam} → ${nay.bam})` };
     }
   } else if (git(["status", "--porcelain", "--untracked-files=all"])) {
-    const ban = (git(["status", "--porcelain", "--untracked-files=all"]) ?? "")
+    /*
+     * ĐỌC LẠI KHÔNG QUA `git()` — nó `.trim()` cả chuỗi và ăn mất khoảng trắng đầu
+     * của DÒNG ĐẦU TIÊN, nên `slice(3)` cắt vào tên file: `" M README.md"` thành
+     * `"EADME.md"`. Chỉ hỏng một dòng, nên nó sống lâu.
+     *
+     * Ở đây hậu quả là bỏ SÓT: tên sai không khớp `dangKe()`, nên một file mã đang
+     * bẩn bị đếm thiếu và hàm có thể kết luận "cây sạch" khi nó không sạch. Cùng một
+     * lỗi, hai hậu quả ngược nhau ở hai chỗ gọi.
+     */
+    let raw: string;
+    try {
+      raw = execFileSync("git", ["status", "--porcelain", "--untracked-files=all"], {
+        encoding: "utf8",
+      });
+    } catch {
+      raw = "";
+    }
+    const ban = raw
       .split(String.fromCharCode(10))
+      .filter((l) => l.length > 3)
       .map((l) => l.slice(3).replace(String.fromCharCode(13), "").trim())
       .filter((f) => f && dangKe(f));
     if (ban.length) {

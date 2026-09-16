@@ -73,6 +73,42 @@ const git = (args: string[]) => {
   }
 };
 
+/**
+ * Tên file từ `git status --porcelain` — **không** đi qua `git()`.
+ *
+ * LỖI ĐÃ XẢY RA, và nó khó thấy đúng vì chỉ hỏng một dòng duy nhất.
+ *
+ * `git()` gọi `.trim()` trên TOÀN BỘ output. Mỗi dòng porcelain có tiền tố ba ký tự
+ * (`" M "`, `"?? "`, `"M  "`), nên `.trim()` ăn mất khoảng trắng đầu của **dòng đầu
+ * tiên** — và chỉ dòng đó. `slice(3)` sau đấy cắt luôn vào tên file:
+ *
+ *     RAW      " M README.md"  → slice(3) → "README.md"   ✓
+ *     .trim()  "M README.md"   → slice(3) → "EADME.md"    ✗
+ *
+ * Hậu quả không dừng ở một dòng log xấu: cổng này `git checkout --` từng file để trả
+ * lại thứ nó vừa làm bẩn. Với tên sai, `git` ném `pathspec 'EADME.md' did not match`,
+ * **file đó không được trả lại**, và cổng tự để lại rác trên cây làm việc nó vừa
+ * tuyên bố là bẩn.
+ *
+ * Vì sao khó tái hiện: file bị cắt phải rơi đúng dòng đầu, tức đầu bảng chữ cái trong
+ * tập file đang bẩn. Đổi tập file là lỗi biến mất.
+ */
+function tenFileBan(themUntracked = false): string[] {
+  const args = ["status", "--porcelain"];
+  if (themUntracked) args.push("--untracked-files=all");
+  let raw: string;
+  try {
+    raw = execFileSync("git", args, { encoding: "utf8" });
+  } catch {
+    return [];
+  }
+  return raw
+    .split(NL)
+    .filter((d) => d.length > 3) // bỏ dòng rỗng cuối, KHÔNG trim cả chuỗi
+    .map((d) => d.slice(3).replace(String.fromCharCode(13), "").trim())
+    .filter(Boolean);
+}
+
 const HEAD = git(["rev-parse", "HEAD"]) ?? "";
 
 console.log(`CỔNG CHỈ-SẢN-PHẨM · ${HEAD.slice(0, 7)}${NHANH ? " · chế độ nhanh" : ""}${NL}`);
@@ -200,19 +236,11 @@ if (NHANH) {
 if (NHANH) {
   them("Số liệu khớp artifact", "CHUA_DO", "bỏ qua ở chế độ --nhanh");
 } else {
-  const banDau = new Set(
-    (git(["status", "--porcelain"]) ?? "")
-      .split(NL)
-      .map((d) => d.slice(3).trim())
-      .filter(Boolean),
-  );
+  const banDau = new Set(tenFileBan());
 
   const r = chay("node", ["scripts/dong-bo-so-tai-lieu.mjs", "--da-do"]);
 
-  const sau = (git(["status", "--porcelain"]) ?? "")
-    .split(NL)
-    .map((d) => d.slice(3).trim())
-    .filter(Boolean);
+  const sau = tenFileBan();
   const doCong = sau.filter((f) => !banDau.has(f));
 
   // Trả lại đúng thứ cổng vừa làm bẩn, không đụng thứ người dùng đang sửa.
