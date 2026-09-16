@@ -450,8 +450,12 @@ export default function App() {
       <div className="relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="brand-mark grid h-10 w-10 place-items-center rounded-[11px] text-white">
-              <ShieldIcon className="h-6 w-6" />
+            <div className="brand-mark grid h-11 w-11 shrink-0 place-items-center" aria-hidden="true">
+              <img
+                className="brand-dino"
+                src={`${import.meta.env.BASE_URL}custos-dino.png`}
+                alt=""
+              />
             </div>
             <div>
               <h1 className="text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
