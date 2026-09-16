@@ -207,8 +207,14 @@ một bẫy lọt.
    gán cho ví B thì máy không thấy. Loại sai đó cần người đọc, rubric ở mục 5.
 2. **Đã đo với mô hình thật — và kết quả không có lợi cho lớp AI.** Lượt live chạy
    `claude-haiku-4-5-20251001` trên 38 mẫu, khoá đọc từ biến môi trường, ghi ở
-   `data/eval/ai-ket-qua.json` (`moHinhThat.trangThai: "đã đo"`). Số đo và kết luận:
-   `docs/DON-VI-KINH-TE.md` mục 3 và `docs/BANG-CLAIM.md`.
+   `data/eval/ai-ket-qua.json` (`liveGanNhat.trangThai: "đã đo"`, lượt 11/09). Số đo
+   và kết luận: `docs/DON-VI-KINH-TE.md` mục 3 và `docs/BANG-CLAIM.md`.
+
+   **Lượt chạy GẦN NHẤT thì không đo được**: nó chạy không có `ANTHROPIC_API_KEY` nên
+   `moHinhThat.trangThai` là `BLOCKED_BY_SECRET`. Hai trường, hai câu hỏi khác nhau —
+   *đã từng đo chưa* trả lời bằng `liveGanNhat`, *lần gần nhất có đo không* trả lời
+   bằng `moHinhThat`. Con số ở các trang khác là của lượt 11/09, không phải của lần
+   chạy mới nhất.
 
    Điều **chưa** đo được không phải lượt chạy, mà là *lợi ích*: trên thước nêu phần
    chưa đọc hiểu được, mô hình **ngang** câu mẫu chứ không hơn. Câu *"AI giúp người
@@ -217,7 +223,12 @@ một bẫy lọt.
 
    > Mục này từng viết *"Chưa đo với mô hình thật ở vòng này"* và giữ nguyên câu đó
    > sau khi lượt live đã chạy. Chữ gõ tay không có đường đồng bộ nào; nó chỉ sai đi
-   > theo thời gian. Nay có guard neo đúng trường `moHinhThat.trangThai`.
+   > theo thời gian. Nay có guard neo vào artifact.
+   >
+   > Guard đầu tiên chỉ đọc `moHinhThat.trangThai`, và thế là sai theo hướng ngược
+   > lại: một lượt offline làm trường đó thành `BLOCKED_BY_SECRET`, guard ÉP mục này
+   > quay về *"chưa đo"* trong khi `liveGanNhat` vẫn còn lượt live — tức **nói giảm**,
+   > khai chưa làm một việc đã làm. Nay guard đọc cả hai trường.
 
    Bản demo công khai vẫn **cố ý không nhúng khoá** — đó là lý do trang số liệu chạy
    đường tất định, không phải vì chưa đo bao giờ. Không có khoá thì lượt eval đánh dấu

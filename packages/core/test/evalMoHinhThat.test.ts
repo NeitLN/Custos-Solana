@@ -37,9 +37,24 @@ type Eval = {
 };
 
 const EV = JSON.parse(doc("data/eval/ai-ket-qua.json")) as Eval;
-const DA_DO = EV.moHinhThat?.trangThai === "đã đo";
 
-/** Cụm khẳng định CHƯA chạy lượt live. Đây là thứ phải biến mất khi đã đo. */
+/**
+ * HAI CÂU HỎI KHÁC NHAU, TRƯỚC ĐÂY DÙNG CHUNG MỘT BIẾN.
+ *
+ * `DA_DO` hỏi *lượt GẦN NHẤT có đo được không* — sai khi chạy thiếu khoá.
+ * `TUNG_DO` hỏi *đội đã từng chạy lượt live chưa* — một lượt offline không xoá được
+ * câu trả lời đó, vì `eval-ai.ts` giữ lượt live trong `liveGanNhat` (bất biến có bài
+ * canh riêng ở cuối file).
+ *
+ * Gộp hai câu vào một biến sinh ra lỗi ngược hướng với lỗi ngày 11–14/09: artifact
+ * nói `BLOCKED_BY_SECRET` trong khi `liveGanNhat` vẫn còn lượt live, và tài liệu bị
+ * ÉP quay về "chưa đo với mô hình thật" — tức **nói giảm**, khai chưa làm một việc
+ * đã làm. Chính comment đầu file này gọi đó là hướng sai.
+ */
+const DA_DO = EV.moHinhThat?.trangThai === "đã đo";
+const TUNG_DO = DA_DO || EV.liveGanNhat?.trangThai === "đã đo";
+
+/** Cụm khẳng định CHƯA chạy lượt live. Đây là thứ phải biến mất khi đã TỪNG đo. */
 const CHUA_DO = /chưa (đo|chạy|từng chạy)[^.\n]{0,40}(với )?mô hình (ngôn ngữ )?thật/i;
 
 test("artifact eval có trường trạng thái đọc được — nếu không, ba bài dưới vô nghĩa", () => {
@@ -121,11 +136,11 @@ test("AI-EVALUATION.md nói cùng chiều với artifact", () => {
     .filter((d) => !d.trimStart().startsWith(">"))
     .join("\n");
 
-  if (DA_DO) {
+  if (TUNG_DO) {
     assert.doesNotMatch(
       than,
       CHUA_DO,
-      'artifact nói "đã đo" mà AI-EVALUATION.md vẫn khẳng định chưa đo (ngoài blockquote kể lại lỗi cũ)',
+      'artifact còn bằng chứng lượt live mà AI-EVALUATION.md vẫn khẳng định chưa đo (ngoài blockquote kể lại lỗi cũ)',
     );
     assert.match(
       than,
@@ -134,6 +149,39 @@ test("AI-EVALUATION.md nói cùng chiều với artifact", () => {
     );
   } else {
     assert.match(than, CHUA_DO, "artifact chưa có lượt live thì tài liệu phải nói rõ là chưa");
+  }
+
+  /*
+   * Khi lượt GẦN NHẤT bị chặn mà lượt live cũ vẫn còn, nói "đã đo" không thôi là
+   * chưa đủ: người đọc sẽ tưởng con số trên trang là của lần chạy mới nhất. Giới hạn
+   * số 2 phải nói ra cả vế thứ hai.
+   *
+   * ĐÒI CÂU NÓI THẲNG VỀ LƯỢT GẦN NHẤT, KHÔNG ĐÒI CHỮ `BLOCKED_BY_SECRET` CÓ MẶT.
+   * Hai bản trước đều xanh vì lý do sai, và cả hai lần đều do quét quá rộng:
+   *
+   *   1. Quét cả `than` — xanh nhờ chữ `ANTHROPIC_API_KEY` ở đoạn nói về bản demo.
+   *   2. Quét lát cắt giới hạn số 2 — vẫn xanh, vì đoạn "Bản demo công khai … đánh
+   *      dấu `BLOCKED_BY_SECRET`" NẰM TRONG chính mục đó, với nghĩa hoàn toàn khác
+   *      (nói về bản demo, không nói về lượt chạy gần nhất).
+   *
+   * Cụm `BLOCKED_BY_SECRET` xuất hiện hợp lệ ở nhiều nghĩa, nên sự có mặt của nó
+   * không chứng minh được điều cần chứng minh. Thứ phải có là một câu gắn trạng thái
+   * đó vào LƯỢT GẦN NHẤT.
+   */
+  if (TUNG_DO && !DA_DO) {
+    const gioiHan2 = than.slice(
+      than.indexOf("2. **Đã đo với mô hình thật"),
+      than.indexOf("3. **Bộ mẫu"),
+    );
+    assert.ok(
+      gioiHan2.length > 0,
+      "không tìm thấy giới hạn số 2 trong AI-EVALUATION.md — bài này neo nhầm chỗ",
+    );
+    assert.match(
+      gioiHan2,
+      /(lượt|lần) (chạy )?(gần nhất|mới nhất)[^.]{0,80}(không đo được|bị chặn|thiếu khoá|không có khoá|BLOCKED_BY_SECRET)/i,
+      "giới hạn số 2 không có câu nào nói LƯỢT GẦN NHẤT không đo được — người đọc tưởng số là của lần chạy mới nhất",
+    );
   }
 });
 
@@ -147,11 +195,11 @@ test("README bảng bốn loại bằng chứng nói cùng chiều với artifac
     .find((d) => /^\| \*\*Đánh giá AI\*\*/.test(d));
   assert.ok(dong, "README mất dòng `| **Đánh giá AI**` — mốc đồng bộ cũng gãy theo");
 
-  if (DA_DO) {
+  if (TUNG_DO) {
     assert.doesNotMatch(
       dong,
       CHUA_DO,
-      'artifact nói "đã đo" mà dòng README vẫn ghi "chưa đo với mô hình thật"',
+      'artifact còn bằng chứng lượt live mà dòng README vẫn ghi "chưa đo với mô hình thật"',
     );
   }
 });
