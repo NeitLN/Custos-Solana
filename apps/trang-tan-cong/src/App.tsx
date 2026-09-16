@@ -266,12 +266,12 @@ export default function App() {
 
       <header className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-6">
         <div className="flex items-center gap-2.5">
-          <div
-            className="grid h-9 w-9 place-items-center rounded-[10px] font-bold text-white"
-            style={{ background: "var(--color-hieu)" }}
-            aria-hidden="true"
-          >
-            S
+          <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden" aria-hidden="true">
+            <img
+              className="h-full w-full scale-[1.18] object-contain"
+              src={`${import.meta.env.BASE_URL}solbonus-cash.png`}
+              alt=""
+            />
           </div>
           <div>
             <div className="text-[16px] font-semibold tracking-[-0.02em]">SolBonus</div>
