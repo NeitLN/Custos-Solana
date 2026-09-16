@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `f8ee7abeec89a465fe9eb2c9880700d831d8ae9a`
+**Commit:** `f3e7564262cd8d13b39bdc8c36440669cfefe350`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -18,7 +18,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 | Coverage trung bình | **82 %** trên 9/20 mẫu |
 | Lệnh chạm tài sản người ký đọc hiểu được | **13/20** |
 | Người dùng thật nêu được hậu quả | **13/20** |
-| Tích hợp từ ngoài monorepo | **10.9 giây** tới kết quả đầu · **30** dòng mã · **639 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **7.9 giây** tới kết quả đầu · **30** dòng mã · **574 ms** một lượt |
 | Bẫy đối kháng AI bị chặn | **13/13** máy bắt được, 3/3 câu đúng vẫn đi qua |
 
 > **`0` là số CÁO BUỘC, không phải "0 false positive".** Cohort chưa
