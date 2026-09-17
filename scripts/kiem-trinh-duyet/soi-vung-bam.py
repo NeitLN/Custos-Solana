@@ -76,7 +76,33 @@ def ghi_bang_chung(muc: list[dict], viPham: list[dict], canSua: list[dict]) -> N
     print("→ data/a11y/vung-bam.json")
 
 
+async def cho_animation(pg) -> None:
+    """Chờ mọi animation HỮU HẠN chạy xong trước khi đo.
+
+    Đo vùng bấm giữa chừng animation là đo một khung hình, không phải đo sản phẩm.
+    `SECTION.result-card` chạy `result-in` với `scale(0.994448)`, nên một nút cao
+    đúng 44px đo ra 43,76 nếu bắt đúng lúc.
+
+    Bài này trước đây chờ mù `wait_for_timeout(1200)`. Nó ĐÚNG, nhưng đúng do may —
+    animation ngắn hơn 1200ms. Đổi thành chờ tường minh thì không phụ thuộc vào may
+    nữa, và không tốn 1,2 giây khi animation đã xong sớm.
+
+    Bỏ qua animation lặp vô hạn (`scope-marquee`, `status-pulse`, `brand-float`,
+    `network-ping`) — chờ chúng là treo vĩnh viễn. Chúng không đổi kích thước nút.
+    """
+    await pg.evaluate(
+        """async () => {
+            const huuHan = document.getAnimations().filter((a) => {
+                const t = a.effect && a.effect.getTiming ? a.effect.getTiming() : null;
+                return !t || t.iterations !== Infinity;
+            });
+            await Promise.all(huuHan.map((a) => a.finished.catch(() => {})));
+        }""",
+    )
+
+
 async def do_trang(pg, ten: str) -> list[dict]:
+    await cho_animation(pg)
     return await pg.evaluate(
         """(nhan) => {
             const ra = [];
@@ -87,11 +113,24 @@ async def do_trang(pg, ten: str) -> list[dict]:
                 // Ô ẩn bằng CSS (checkbox 1x1) không phải thứ người dùng chạm.
                 if (r.width <= 2 && r.height <= 2) continue;
                 if (r.width === 0 || r.height === 0) continue;
+                /*
+                 * LÀM TRÒN LÊN LÀ TỰ XOÁ VI PHẠM.
+                 *
+                 * `Math.round` biến 43,76 thành 44 — đúng con số ngưỡng — nên một nút
+                 * thiếu 0,24px đi lọt và bài này báo "26/26 đạt". `soi-boi-canh-x02.py`
+                 * đo cùng nút đó, không làm tròn, và thấy 43,8. Hai bài cùng đo một
+                 * sản phẩm ra hai kết luận; bài làm tròn là bài sai.
+                 *
+                 * `Math.floor` để số lẻ luôn nghiêng về phía BÁO, không về phía bỏ qua:
+                 * một phép đo an toàn phải sai theo hướng thận trọng. Giữ thêm số thật
+                 * ở `caoThat` để biên bản nói được nút thiếu bao nhiêu.
+                 */
                 ra.push({
                     trang: nhan,
                     chu: (el.textContent || el.getAttribute("aria-label") || "?").trim().slice(0, 34),
-                    rong: Math.round(r.width),
-                    cao: Math.round(r.height),
+                    rong: Math.floor(r.width),
+                    cao: Math.floor(r.height),
+                    caoThat: Math.round(r.height * 100) / 100,
                 });
             }
             return ra;

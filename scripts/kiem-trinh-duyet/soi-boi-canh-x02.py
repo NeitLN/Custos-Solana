@@ -122,16 +122,38 @@ async def main() -> None:
             if await huy.count() == 0:
                 hong.append("mobile: không tìm thấy nút huỷ")
             else:
+                # ĐO VÙNG BẤM THÌ PHẢI CHỜ ANIMATION XONG — nếu không là đo một
+                # khung hình giữa chừng, không phải đo sản phẩm.
+                #
+                # Bài này từng in "nút huỷ cao 43,8px — dưới khuyến nghị 44px" và
+                # chú thích cũ ngay tại đây kết luận nút "sát khuyến nghị". SAI.
+                # `SECTION.result-card` chạy `result-in` với `scale(0.994448)`, nên
+                # nút cao đúng 44px bị đo thành 44 × 0,994448 = 43,76.
+                #
+                # Tái hiện: cùng một nút, `?mock=danger` ra 43,76 còn trang thật ra
+                # 44,00 — chỉ vì thời điểm đo lệch nhau. Chờ animation xong thì cả
+                # hai đều 44,00; với `prefers-reduced-motion` cũng 44,00.
+                #
+                # `offsetHeight` trả 44 ở cả hai vì nó làm tròn; `getBoundingClientRect`
+                # thì không, và nó nhân cả transform của phần tử CHA. Đó là lý do
+                # `soi-vung-bam.py` báo 26/26 đạt trong khi bài này thấy 43,8: hai
+                # bài đo cùng một nút ở hai thời điểm khác nhau.
+                await pg3.evaluate(
+                    """async () => {
+                        const huuHan = document.getAnimations().filter((a) => {
+                            const t = a.effect && a.effect.getTiming ? a.effect.getTiming() : null;
+                            return !t || t.iterations !== Infinity;
+                        });
+                        await Promise.all(huuHan.map((a) => a.finished.catch(() => {})));
+                    }""",
+                )
                 hop = await huy.first.bounding_box()
                 if not hop:
                     hong.append("mobile: nút huỷ không có vùng bấm")
                 elif hop["height"] < 24:
                     # NGƯỠNG 24 px LÀ WCAG 2.2 (2.5.8 Target Size Minimum), KHÔNG PHẢI 44.
-                    #
-                    # `soi-vung-bam.py` đã chốt quy ước này và giải thích vì sao: gọi
-                    # mọi thứ dưới 44 px là "vi phạm WCAG" là nói sai về tiêu chuẩn.
-                    # 44 px là KHUYẾN NGHỊ cho ngón tay; nút huỷ ở đây cao 43,8 px —
-                    # sát khuyến nghị, đạt chuẩn, và bài này không được báo đỏ vì nó.
+                    # Gọi mọi thứ dưới 44 px là "vi phạm WCAG" là nói sai về tiêu chuẩn;
+                    # `soi-vung-bam.py` đã chốt quy ước này và giải thích vì sao.
                     hong.append(f"mobile: nút huỷ cao {hop['height']:.1f}px, dưới ngưỡng WCAG 24px")
                 elif hop["height"] < 44:
                     print(f"  ⓘ nút huỷ cao {hop['height']:.1f}px — đạt WCAG 24px, dưới khuyến nghị 44px")

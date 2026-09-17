@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-17T12:43:43.090155+00:00",
-  "sourceCommit": "4fb327c80a7875ad49a6ed88b3ccff0ff238f94d",
+  "doLuc": "2026-09-17T13:34:37.972738+00:00",
+  "sourceCommit": "21fde989815210e2ec40d9326c4d2112ce829664",
   "dauVet": {
     "bam": "f4585f12b891c97d",
     "soFile": 35
@@ -22,157 +22,183 @@
       "trang": "ví",
       "chu": "Số liệu",
       "rong": 44,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví",
       "chu": "2EjYM…bCpAF",
       "rong": 150,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví",
       "chu": "Nhận quà tặngGiao dịch giả mạo",
       "rong": 301,
-      "cao": 110
+      "cao": 110,
+      "caoThat": 110.25
     },
     {
       "trang": "ví",
       "chu": "Gửi 10 tokenGiao dịch bình thường",
       "rong": 301,
-      "cao": 110
+      "cao": 110,
+      "caoThat": 110.25
     },
     {
       "trang": "ví",
       "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví",
       "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví",
       "chu": "Giao dịch thành công3y73mnA2N1…WTn",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví",
       "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Số liệu",
       "rong": 44,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "2EjYM…bCpAF",
       "rong": 150,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Nhận quà tặngGiao dịch giả mạo",
       "rong": 301,
-      "cao": 110
+      "cao": 110,
+      "caoThat": 110.25
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Gửi 10 tokenGiao dịch bình thường",
       "rong": 301,
-      "cao": 110
+      "cao": 110,
+      "caoThat": 110.25
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Giao dịch thành công3y73mnA2N1…WTn",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
       "rong": 317,
-      "cao": 56
+      "cao": 56,
+      "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Thu gọn",
-      "rong": 67,
-      "cao": 44
+      "rong": 66,
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Ẩn chi tiết kỹ thuật",
       "rong": 141,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Chặn & huỷ giao dịch",
       "rong": 275,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Vẫn ký — tôi hiểu rủi ro",
       "rong": 275,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "← Ví mẫu",
       "rong": 69,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Xem chi tiết",
-      "rong": 92,
-      "cao": 44
+      "rong": 91,
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Chi tiết kỹ thuật",
-      "rong": 120,
-      "cao": 44
+      "rong": 119,
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Chặn & huỷ giao dịch",
       "rong": 267,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Đã chép xong → chấm",
-      "rong": 166,
-      "cao": 44
+      "rong": 165,
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Sao chép toàn bộ (JSON)",
       "rong": 181,
-      "cao": 44
+      "cao": 44,
+      "caoThat": 44
     }
   ],
   "dat": true
