@@ -152,3 +152,37 @@ test("CU-08 · ví VẮNG MẶT là hợp lệ — không chặn ca cần kiểm
   assert.equal(kiemVi("", tx()).ok, true);
   assert.equal(kiemVi("   ", tx()).ok, true);
 });
+
+test("QA · base64 hợp lệ giải ra transaction RỖNG RUỘT phải bị từ chối", () => {
+  /*
+   * BUG THẬT, tìm ra bằng fuzz — không phải ca giả định.
+   *
+   * `"A".repeat(100)` là base64 hợp lệ, giải ra **75 byte toàn số 0**, và
+   * `VersionedTransaction.deserialize` CHẤP NHẬN nó: 0 chữ ký, 0 account, 0 lệnh,
+   * blockhash toàn số 1.
+   *
+   * Hậu quả đã đo trước khi sửa:
+   *   · Inspector nhận nó, gửi tới RPC, hiện "Cần xem kỹ — đọc hiểu 0/0 lệnh"
+   *   · CLI in cùng câu đó rồi **SẬP**: `exit=127` kèm assertion failure của libuv
+   *
+   * Trình bày một buffer toàn số 0 như một giao dịch là nói sai, và nó còn tiêu một
+   * lượt RPC cho thứ Solana sẽ từ chối với "Transaction failed to sanitize".
+   */
+  for (const n of [100, 140, 200]) {
+    const r = docTx("A".repeat(n));
+    assert.equal(r.ok, false, `${n} ký tự "A" được nhận làm giao dịch hợp lệ`);
+    if (!r.ok) assert.equal(r.loi, "tx_rong");
+  }
+});
+
+test("QA · giao dịch THẬT vẫn qua — đối chứng cho bài trên", () => {
+  /*
+   * Bài trên cũng xanh nếu `docTx` bị làm hỏng thành "luôn từ chối". Đây là bài
+   * duy nhất phân biệt "chặn đúng rác" với "chặn tất".
+   */
+  const r = docTx(b64(tx()));
+  assert.equal(r.ok, true, "giao dịch thật bị từ chối — sửa quá tay");
+  if (r.ok) {
+    assert.ok(r.nguoiKy.length > 0, "giao dịch thật phải có người ký");
+  }
+});

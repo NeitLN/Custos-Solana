@@ -128,11 +128,36 @@ export function giaiTx(tho: string): { ok: true; tx: VersionedTransaction; soByt
   if (byte.length > GIOI_HAN_BYTE) {
     return { ok: false, câu: `giao dịch ${byte.length} byte, vượt giới hạn ${GIOI_HAN_BYTE} của Solana` };
   }
+  let tx: VersionedTransaction;
   try {
-    return { ok: true, tx: VersionedTransaction.deserialize(byte), soByte: byte.length };
+    tx = VersionedTransaction.deserialize(byte);
   } catch {
     return { ok: false, câu: "giải mã được base64 nhưng đây không phải giao dịch Solana đọc được" };
   }
+
+  /*
+   * GIẢI MÃ ĐƯỢC KHÔNG CÓ NGHĨA LÀ MỘT GIAO DỊCH THẬT — cùng lỗi với `soiTx.ts`.
+   *
+   * ĐÃ TÁI HIỆN: `--tx $(node -e "process.stdout.write('A'.repeat(100))")` cho
+   * `exit=127` kèm assertion failure của libuv — tiến trình SẬP, không thoát sạch.
+   * Trước khi sập nó còn in `"Cần xem kỹ — đọc hiểu 0/0 lệnh"`, tức là trình bày
+   * một buffer toàn số 0 như một giao dịch.
+   *
+   * 75 byte 0 giải ra thành transaction có 0 chữ ký, 0 account, 0 lệnh.
+   */
+  if (
+    tx.message.header.numRequiredSignatures === 0 ||
+    tx.message.staticAccountKeys.length === 0
+  ) {
+    return {
+      ok: false,
+      câu:
+        "không phải giao dịch thật: không có người ký nào và không chạm tài khoản nào " +
+        "(base64 hợp lệ vẫn giải ra được dữ liệu rỗng)",
+    };
+  }
+
+  return { ok: true, tx, soByte: byte.length };
 }
 
 export async function chay(argv: string[]): Promise<number> {
