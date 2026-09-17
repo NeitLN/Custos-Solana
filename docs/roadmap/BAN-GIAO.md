@@ -4,7 +4,60 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — cập nhật 17/09/2026 (sau merge giao diện)
+## Hiện trạng — cập nhật 18/09/2026 (roadmap UPDATE CUSTOS)
+
+**749 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
+`nop-bai --strict` **11/13**. Đang thực thi [`UPDATE-CUSTOS.md`](../../UPDATE-CUSTOS.md);
+trạng thái từng thẻ ở bảng CU của [TIEN-DO.md](TIEN-DO.md).
+
+**Đã xong:** CU-00 (baseline). **PARTIAL:** CU-01, CU-02, CU-03.
+
+**Bốn lỗ hổng bảo mật thật, tất cả tái hiện trước khi sửa:**
+
+1. **TOCTOU trong ví** — đọc `tx.message.serialize()` SAU khi `inspect()` await xong.
+   Tái hiện: thay `serialize` trong cửa sổ await ⇒ neo ghi đúng bản tráo, và
+   `khopNeo` lúc ký trả KHỚP (so bản tráo với chính nó). Sửa: chụp bytes ngay khi
+   tx sinh ra, neo bằng bytes đã chụp, so bytes cuối lượt.
+2. **`quaCu()` sống vô hạn** — `msToiDa` NaN/Infinity, và `kiemLuc` ở tương lai
+   (tuổi âm không bao giờ > hạn). Cùng loại dữ liệu xấu với `Date.parse` NaN ngay
+   trên, chỗ kia fail-safe còn chỗ này fail-open.
+3. **Signer đồng bộ trong consumer tham chiếu** — ví từ chối ⇒ `daKy: true`; signer
+   treo ⇒ `daKy: true`; double-click ⇒ signer chạy 2 lần; reject muộn ⇒ **sập tiến
+   trình**. Sửa theo [ADR-0003](../adr/0003-signer-bat-dong-bo-va-phien-ky.md): async,
+   **ba kết cục** (`da_ky`/`tu_choi`/`chua_ro`), khoá phiên đồng bộ trước await.
+4. **Ngữ cảnh RPC nén thành một bit** — `simulationOk` không phân biệt được mô phỏng
+   chạy trên blockhash nào. Thêm `Facts.nguCanh`.
+
+**Hai lần tôi tự sai, và cách bắt được:**
+
+- **Giả thuyết lifetime bị phép đo bác bỏ.** Lần đo đầu: blockhash tươi ⇒
+  `replacementBlockhash` giống gốc; slot −300 ⇒ khác. Trông như phép đo lifetime hoàn
+  hảo, suýt xây tính năng cảnh báo lên trên. Đếm lại **8 lượt blockhash tươi: 6 giống,
+  2 khác** — cùng điều kiện, hai kết quả. Nếu tin lượt đầu, Custos báo "blockhash hết
+  hạn" cho 2/8 giao dịch bình thường. **Một con số không lặp lại được thì không phải
+  một con số.**
+- **Một dòng code thừa kèm chú thích nói sai.** Tôi thêm `p.catch(() => {})` và giải
+  thích "không có nó thì sập". Đột biến: xoá đi **không bài nào đỏ**. `Promise.race`
+  đăng ký handler lên cả hai nhánh, và người gọi `await` trong try/catch cũng là
+  handler. Lỗi thật là **không await gì cả**. Bỏ dòng thừa, sửa guard canh *tính chất*
+  thay vì *cách làm*.
+
+**Bẫy cần nhớ cho phiên sau:**
+- Guard đọc mã phải **tách chú thích trước khi tìm** — bài "phiên đã tiêu" khớp phải
+  chính câu văn nói rằng không chỗ nào gọi `daTieu.delete`.
+- Chèn nhánh vào giữa `conDung()` và hai `setState` làm `c03Race` đỏ, và nó **đỏ
+  đúng**. Phép kiểm mới phải đặt trước `conDung()`.
+- Thứ tự đúng: sửa → commit → đo → commit biên bản → sinh release notes.
+
+**Đo được cho CU-05:** `bangChung` mới có ở **2/14 luật**; `diff.ts:136` còn giữ
+`detail.includes` làm đường lui cho 12 luật kia.
+
+**Thẻ tiếp theo đủ phụ thuộc:** CU-04 (evidence graph) — cần CU-02+CU-03, cả hai đã
+có phần dùng được.
+
+---
+
+## Hiện trạng — 17/09/2026 (sau merge giao diện)
 
 **726 pass, 0 fail.** HEAD `516f744`, **cây sạch**, **34 commit chưa push**.
 Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**; `nop-bai --strict` **11/13**, hai
