@@ -1,15 +1,13 @@
 {
-  "doLuc": "2026-09-16T20:02:02.250598+00:00",
-  "sourceCommit": "f8ee7abeec89a465fe9eb2c9880700d831d8ae9a",
+  "doLuc": "2026-09-17T12:35:19.571961+00:00",
+  "sourceCommit": "d0ec08a5c573fb08b85dff5068e9cdebe7c5d77d",
   "dauVet": {
-    "bam": "7c7e5a447dc94d1c",
+    "bam": "f4585f12b891c97d",
     "soFile": 35
   },
   "soKiem": 16,
   "soDat": 16,
-  "ghiNhan": [
-    "chữ dùng px cố định: font-size gốc 16px→32px nhưng chữ giữ nguyên 12.5px. Phóng to trình duyệt vẫn hoạt động (xem hai ca reflow ở trên), nên đây KHÔNG phải vi phạm 1.4.4; cái mất là thiết lập cỡ chữ mặc định của trình duyệt không có tác dụng. Chuyển px→rem là việc riêng."
-  ],
+  "ghiNhan": [],
   "kiem": [
     {
       "ten": "Tab đi được, không bị bẫy focus",
@@ -59,7 +57,7 @@
     {
       "ten": "320px · reflow AA · không tràn ngang",
       "dat": true,
-      "chiTiet": "tràn 0px"
+      "chiTiet": "0px"
     },
     {
       "ten": "320px · reflow AA · CTA chặn vẫn hiện",
@@ -69,7 +67,7 @@
     {
       "ten": "640px · tương đương zoom 200% · không tràn ngang",
       "dat": true,
-      "chiTiet": "tràn 0px"
+      "chiTiet": "-15px — chỗ chừa thanh cuộn, KHÔNG phải tràn"
     },
     {
       "ten": "640px · tương đương zoom 200% · CTA chặn vẫn hiện",
@@ -84,12 +82,12 @@
     {
       "ten": "chữ dài gấp mười không làm tràn ngang",
       "dat": true,
-      "chiTiet": "tràn 0px"
+      "chiTiet": "-15px — chỗ chừa thanh cuộn, KHÔNG phải tràn"
     },
     {
       "ten": "CTA giữ nguyên kích thước sau khi chữ dài ra",
       "dat": true,
-      "chiTiet": "[{'w': 275, 'h': 44}, {'w': 275, 'h': 44}]"
+      "chiTiet": "[{'w': 260, 'h': 44}, {'w': 260, 'h': 44}]"
     }
   ],
   "dat": true

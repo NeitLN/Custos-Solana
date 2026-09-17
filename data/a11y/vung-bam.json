@@ -1,8 +1,8 @@
 {
-  "doLuc": "2026-09-16T20:01:28.681750+00:00",
-  "sourceCommit": "f8ee7abeec89a465fe9eb2c9880700d831d8ae9a",
+  "doLuc": "2026-09-17T12:31:55.223610+00:00",
+  "sourceCommit": "d0ec08a5c573fb08b85dff5068e9cdebe7c5d77d",
   "dauVet": {
-    "bam": "7c7e5a447dc94d1c",
+    "bam": "f4585f12b891c97d",
     "soFile": 35
   },
   "khung": {
@@ -27,8 +27,8 @@
     {
       "trang": "ví",
       "chu": "2EjYM…bCpAF",
-      "rong": 114,
-      "cao": 47
+      "rong": 150,
+      "cao": 44
     },
     {
       "trang": "ví",
@@ -75,8 +75,8 @@
     {
       "trang": "ví · có kết quả",
       "chu": "2EjYM…bCpAF",
-      "rong": 114,
-      "cao": 47
+      "rong": 150,
+      "cao": 44
     },
     {
       "trang": "ví · có kết quả",
@@ -117,13 +117,13 @@
     {
       "trang": "ví · có kết quả",
       "chu": "Thu gọn",
-      "rong": 54,
+      "rong": 67,
       "cao": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Ẩn chi tiết kỹ thuật",
-      "rong": 112,
+      "rong": 141,
       "cao": 44
     },
     {
@@ -147,13 +147,13 @@
     {
       "trang": "phỏng vấn",
       "chu": "Xem chi tiết",
-      "rong": 73,
+      "rong": 92,
       "cao": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Chi tiết kỹ thuật",
-      "rong": 95,
+      "rong": 120,
       "cao": 44
     },
     {

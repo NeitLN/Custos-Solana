@@ -40,6 +40,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import dauvet
+from tran_ngang import do_tran, ghi_chu, khong_tran
 from playwright.async_api import async_playwright
 
 GOC = Path(__file__).resolve().parents[2]
@@ -159,10 +160,8 @@ async def nhom_b(b) -> None:
         ctx = await b.new_context(viewport={"width": w, "height": 812})
         pg = await ctx.new_page()
         await den_ket_qua(pg)
-        tran = await pg.evaluate(
-            "() => document.documentElement.scrollWidth - document.documentElement.clientWidth"
-        )
-        ck(f"{ten} · không tràn ngang", tran <= 0, f"tràn {tran}px")
+        tran = await do_tran(pg)
+        ck(f"{ten} · không tràn ngang", khong_tran(tran), ghi_chu(tran))
         thay = await pg.locator("button:has-text('Chặn & huỷ giao dịch')").first.is_visible()
         ck(f"{ten} · CTA chặn vẫn hiện", thay)
         if w == 640:
@@ -209,10 +208,8 @@ async def nhom_c(b) -> None:
     )
     ck("nhét được chữ dài vào thẻ kết quả", xong)
     await pg.wait_for_timeout(300)
-    tran = await pg.evaluate(
-        "() => document.documentElement.scrollWidth - document.documentElement.clientWidth"
-    )
-    ck("chữ dài gấp mười không làm tràn ngang", tran <= 0, f"tràn {tran}px")
+    tran = await do_tran(pg)
+    ck("chữ dài gấp mười không làm tràn ngang", khong_tran(tran), ghi_chu(tran))
 
     # CTA phải còn TRONG luồng, không bị đẩy ra ngoài hay chồng lên nhau.
     hop = await pg.evaluate(
