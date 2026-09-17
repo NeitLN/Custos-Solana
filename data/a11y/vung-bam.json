@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-17T14:55:54.572583+00:00",
-  "sourceCommit": "8ed5ec9a7f7ab75cdd21c3734c3883ebb4fbb548",
+  "doLuc": "2026-09-17T18:37:17.415182+00:00",
+  "sourceCommit": "8425ff2c4472fac00e6e91a4888be20c3956eda2",
   "dauVet": {
-    "bam": "a0bebacc376d521c",
-    "soFile": 35
+    "bam": "4171de61874a9d2b",
+    "soFile": 38
   },
   "khung": {
     "rong": 375,
