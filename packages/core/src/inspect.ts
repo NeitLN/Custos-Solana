@@ -5,6 +5,7 @@ import { danhGia } from "./l2/evaluate.ts";
 import { dungBangChenhLech } from "./diff.ts";
 import type { Facts } from "./facts.ts";
 import { dungChiMuc } from "./bang-chung.ts";
+import { chiTietCoverage } from "./l1/coverage.ts";
 
 /**
  * Hàm diễn giải của L3.
@@ -141,6 +142,17 @@ export async function inspect(
         nguon: {
           tang: "L1" as const,
           coverage: facts.coverage,
+          /*
+           * CU-07 — coverage theo NĂNG LỰC, không chỉ một phân số.
+           *
+           * `coverage.analyzed` gộp hai điều kiện khác nhau (`program đã xác minh`
+           * và `decode được`), nên `67 %` không cho biết phần còn lại thiếu vì lý
+           * do gì. Đo trên corpus: 58/106 lệnh là "chương trình quen nhưng chưa
+           * đọc hiểu lệnh" — nhóm lớn nhất, và rất khác với "chương trình lạ".
+           *
+           * `coverage` cũ giữ nguyên bên cạnh: đây là mở rộng, không phải thay thế.
+           */
+          chiTiet: chiTietCoverage(facts.instructions),
           simulationOk: facts.simulationOk,
         },
       }
