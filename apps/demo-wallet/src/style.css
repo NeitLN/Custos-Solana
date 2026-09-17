@@ -156,6 +156,47 @@ button {
   background: #a97508;
 }
 
+.wallet-header {
+  position: relative;
+  min-height: 72px;
+  padding: 12px 14px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 197, 222, 0.7);
+  border-radius: 20px;
+  background:
+    radial-gradient(22rem 8rem at 8% -45%, rgba(94, 122, 225, 0.14), transparent 70%),
+    linear-gradient(118deg, rgba(255, 255, 255, 0.95), rgba(248, 251, 255, 0.88));
+  box-shadow:
+    0 1px 2px rgba(26, 36, 61, 0.045),
+    0 12px 32px rgba(57, 75, 124, 0.075);
+  backdrop-filter: blur(16px);
+}
+
+.wallet-header::after {
+  position: absolute;
+  top: 0;
+  right: 18px;
+  left: 18px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.96), transparent);
+  pointer-events: none;
+}
+
+.wallet-brand,
+.wallet-header__actions {
+  position: relative;
+  z-index: 1;
+}
+
+.wallet-brand__title {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.wallet-brand__subtitle {
+  letter-spacing: 0.005em;
+}
+
 .brand-mark {
   overflow: hidden;
 }
@@ -167,6 +208,7 @@ button {
   object-fit: contain;
   transform: scale(1.55);
   transform-origin: center;
+  filter: drop-shadow(0 2px 2px rgba(22, 45, 40, 0.16));
 }
 
 .network-pill,
@@ -177,10 +219,53 @@ button {
   backdrop-filter: blur(10px);
 }
 
+.network-pill {
+  letter-spacing: 0.08em;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.network-dot {
+  position: relative;
+}
+
+.network-dot::after {
+  position: absolute;
+  inset: -4px;
+  content: "";
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0;
+}
+
 .icon-link:hover {
   border-color: var(--ui-border-strong);
   background: #fff;
   box-shadow: 0 5px 16px rgba(43, 59, 99, 0.09);
+}
+
+@media (hover: hover) {
+  .network-pill:hover {
+    border-color: rgba(87, 165, 130, 0.48);
+    background: rgba(247, 255, 251, 0.98);
+    box-shadow: 0 5px 16px rgba(43, 96, 72, 0.09);
+  }
+}
+
+@media (max-width: 359px) {
+  .wallet-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .wallet-header__actions {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid rgba(191, 201, 222, 0.5);
+  }
 }
 
 .glass-card,
@@ -624,6 +709,14 @@ button {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .brand-mark {
+    animation: brand-float 4.8s ease-in-out infinite;
+  }
+
+  .network-dot::after {
+    animation: network-ping 2.6s ease-out infinite;
+  }
+
   .hien {
     animation: content-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
@@ -654,6 +747,30 @@ button {
 
   .coverage-fill {
     animation: coverage-grow 620ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
+  }
+}
+
+@keyframes brand-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes network-ping {
+  0% {
+    opacity: 0.38;
+    transform: scale(0.72);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
   }
 }
 

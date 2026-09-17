@@ -448,8 +448,8 @@ export default function App() {
       )}
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
-        <header className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <header className="wallet-header flex items-center justify-between gap-4">
+          <div className="wallet-brand flex min-w-0 items-center gap-3">
             <div className="brand-mark grid h-11 w-11 shrink-0 place-items-center" aria-hidden="true">
               <img
                 className="brand-dino"
@@ -457,8 +457,8 @@ export default function App() {
                 alt=""
               />
             </div>
-            <div>
-              <h1 className="text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
+            <div className="wallet-brand__copy min-w-0">
+              <h1 className="wallet-brand__title text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
                 Custos Wallet
               </h1>
               {/* CUSTOS KHÔNG BÁN VÍ. Custos bán SDK cho ví.
@@ -475,15 +475,15 @@ export default function App() {
                   Bỏ luôn "· Devnet" ở đuôi: ở 375px nó rớt xuống một dòng riêng chỉ
                   để nói lại điều mà banner trên đầu và chip bên cạnh đã nói. Ba lần
                   cùng một chữ không làm ai tin hơn, chỉ làm dòng bị gãy. */}
-              <p className="mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
+              <p className="wallet-brand__subtitle mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
                 Ví mẫu tích hợp Custos SDK
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="wallet-header__actions flex items-center gap-2 sm:gap-3">
             <div className="network-pill flex items-center gap-2 rounded-full px-3 py-2 text-[11px] font-semibold text-thuong">
-              <span className="h-1.5 w-1.5 rounded-full bg-thuong shadow-[0_0_12px_currentColor]" />
+              <span className="network-dot h-1.5 w-1.5 rounded-full bg-thuong shadow-[0_0_12px_currentColor]" />
               DEVNET
             </div>
             <a
