@@ -4,7 +4,50 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — cập nhật 18/09/2026 (roadmap UPDATE CUSTOS)
+## Hiện trạng — cập nhật 18/09/2026 (lát cắt A, qua CU-07)
+
+**775 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
+`nop-bai --strict` **11/13**. 19 commit chưa push.
+
+**CU-00 DONE · CU-05 DONE · CU-01/02/03/04/06/07 PARTIAL.** Còn CU-08 (Inspector)
+và CU-09 (UI bấm từ cảnh báo tới dữ kiện) để đóng lát cắt A.
+
+**Con số đáng nhớ, tất cả đo được:**
+
+| | |
+|---|---|
+| Luật khai `bangChung` | **2/14 → 13/14** (luật 14 là ngoại lệ có lý do) |
+| Bằng chứng treo lơ lửng | **0** trên 38 fixture — và phép kiểm đỏ được |
+| Hit đi qua đường lui dò chuỗi | **1/75** (luật 14, và nó không nhắc địa chỉ nào) |
+| Dòng bảng có số thô | **48/56** |
+| Coverage tách nhóm | 36 hiểu · **58 quen-chưa-đọc** · 12 chương trình lạ |
+
+**Ba lần tôi tự sai trong phiên này, và cách bắt được:**
+
+1. **Giả thuyết lifetime** — `replacementBlockhash` khác gốc trông như đo được
+   blockhash hết hạn. Đếm 8 lượt blockhash tươi: **6 giống, 2 khác**. Cùng điều
+   kiện, hai kết quả. Nếu tin lượt đo đầu, Custos báo "hết hạn" cho 2/8 giao dịch
+   bình thường.
+2. **Một dòng code thừa** — `p.catch(() => {})` kèm chú thích nói sai nguyên nhân.
+   Đột biến: xoá đi không bài nào đỏ.
+3. **Guard chỉ đỏ với một thứ tự đầu vào** — bài `chamTaiSan` thử lệnh chạm ở cuối,
+   nên đột biến `ix.cham` (chỉ lấy lệnh cuối) lọt. Thêm ca lệnh chạm ở đầu.
+
+**Bẫy kỹ thuật cần nhớ:**
+- **Heredoc ghi byte NUL thật** vào source ⇒ file thành binary với Git, `grep` mù.
+  Dùng Write tool cho mọi chuỗi có escape.
+- `VERIFIED_PROGRAMS` là **Map**, không phải Set.
+- Guard đọc mã phải **tách chú thích trước khi tìm**.
+- Guard gắn cứng con số (`2/14`) phải đổi sang **đếm từ mã** — gắn cứng thì mỗi lần
+  đổi lại sửa tay hai nơi, quên một nơi là đỏ vì lý do sai.
+- Thứ tự: sửa → commit → đo → commit biên bản → sinh release notes.
+
+**Thẻ tiếp theo đủ phụ thuộc:** CU-08 (Inspector) — cần CU-02/03/06/07, cả bốn đã có
+phần dùng được.
+
+---
+
+## Lịch sử — 18/09/2026 (CU-00…CU-03)
 
 **749 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
 `nop-bai --strict` **11/13**. Đang thực thi [`UPDATE-CUSTOS.md`](../../UPDATE-CUSTOS.md);
