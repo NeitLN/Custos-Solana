@@ -57,7 +57,7 @@
     {
       "id": "R03-neg",
       "luat": 3,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R03-neg.json",
@@ -142,7 +142,7 @@
     {
       "id": "R09-neg",
       "luat": 9,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R09-neg.json",
@@ -176,7 +176,7 @@
     {
       "id": "R06-neg",
       "luat": 6,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R06-neg.json",
@@ -210,7 +210,7 @@
     {
       "id": "R11-neg",
       "luat": 11,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R11-neg.json",
@@ -434,7 +434,7 @@
     {
       "id": "R05-neg",
       "luat": 5,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R05-neg.json",
@@ -471,7 +471,7 @@
     {
       "id": "R07-neg",
       "luat": 7,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R07-neg.json",
@@ -505,7 +505,7 @@
     {
       "id": "R10-neg",
       "luat": 10,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "facts": "facts/R10-neg.json",

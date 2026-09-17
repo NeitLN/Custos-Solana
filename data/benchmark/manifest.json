@@ -1,9 +1,9 @@
 {
   "phienBan": 1,
-  "sinhLuc": "2026-09-17T13:23:42.144Z",
+  "sinhLuc": "2026-09-17T20:28:40.640Z",
   "nguon": "data/seed/index.json",
   "thuLuc": "2026-08-21T00:24:40.946Z",
-  "bamNguon": "c3a3c0f63974d8daacc0089d880cf3b160004cb9",
+  "bamNguon": "4596b4b3e13edb4576341b18c0f0d32efac58909",
   "soMau": 38,
   "soBoQua": 0,
   "boQua": [],
@@ -119,7 +119,7 @@
     {
       "id": "R03-neg",
       "luat": 3,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -284,7 +284,7 @@
     {
       "id": "R09-neg",
       "luat": 9,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -350,7 +350,7 @@
     {
       "id": "R06-neg",
       "luat": 6,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -416,7 +416,7 @@
     {
       "id": "R11-neg",
       "luat": 11,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -822,7 +822,7 @@
     {
       "id": "R05-neg",
       "luat": 5,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -891,7 +891,7 @@
     {
       "id": "R07-neg",
       "luat": 7,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
@@ -957,7 +957,7 @@
     {
       "id": "R10-neg",
       "luat": 10,
-      "cuc": "duong",
+      "cuc": "am",
       "nguonGoc": "synthetic-devnet",
       "nguon": "tự dựng trên devnet",
       "nhan": "development",
