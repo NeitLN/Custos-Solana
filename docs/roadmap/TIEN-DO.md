@@ -8,10 +8,17 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 | [ROADMAP-TECHNICAL-CUSTOS.md](../../ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |
 
-**Cập nhật 17/09/2026:** HEAD `ec7d7b5`, **cây làm việc sạch**, 22 commit chưa push.
-**722 test pass, 0 fail.** Cổng `kiem-san-pham`: **11 đạt · 0 hỏng · 0 chưa rõ** — lần
-đầu không còn ô nào ở trạng thái "chưa đo được". `nop-bai --strict`: **11/13**, hai ô
-còn lại là `[ngoài]` (4 câu chưa hỏi BTC) và `[người]` (chưa tạo tag).
+**Cập nhật 17/09/2026 (sau merge giao diện):** HEAD `516f744`, **cây làm việc sạch**,
+**34 commit chưa push**. **726 test pass, 0 fail.** Cổng `kiem-san-pham`:
+**11 đạt · 0 hỏng · 0 chưa rõ**. `nop-bai --strict`: **11/13**, hai ô còn lại là
+`[ngoài]` (4 câu chưa hỏi BTC) và `[người]` (chưa tạo tag).
+
+Đã pull 3 commit giao diện của Duy Anh; merge sạch. 8/8 probe trình duyệt chạy lại trên
+cây sạch, 10/10 biên bản a11y khớp dấu vết `f4585f12`. Lượt merge này lộ ra một phép đo
+**đỏ vì lý do sai** (`scrollbar-gutter` làm `scrollWidth − clientWidth` thành âm, và
+probe gọi đó là tràn ngang) và một **hồi quy thật** mà axe không thấy (vùng bấm tụt
+47px → 38px, vẫn trên ngưỡng cứng WCAG nhưng dưới mốc 44px của dự án). Chi tiết và cách
+chứng minh nằm ở [BAN-GIAO.md](BAN-GIAO.md).
 Nền tảng: [báo cáo Codex 16/09](../review/technical/codex-20260916/BAO-CAO.md).
 
 **Đổi track:** được BTC cho phép theo thông tin chủ dự án; chưa xác nhận biểu mẫu đã đổi hoặc cách áp mục contract. TB-H01/H02 còn WAIT_INPUT.

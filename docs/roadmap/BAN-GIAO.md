@@ -4,11 +4,49 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — cập nhật 17/09/2026
+## Hiện trạng — cập nhật 17/09/2026 (sau merge giao diện)
 
-**722 pass, 0 fail.** HEAD `ec7d7b5`, **cây sạch**, 22 commit chưa push.
+**726 pass, 0 fail.** HEAD `516f744`, **cây sạch**, **34 commit chưa push**.
 Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**; `nop-bai --strict` **11/13**, hai
 ô còn lại đều không phải việc của máy: 4 câu chưa hỏi BTC, và chưa tạo tag.
+
+**Đã pull 3 commit giao diện của Duy Anh** (`7493f07`, `2251d8f`, `27230a3` — 277 dòng
+CSS, `App.tsx` +15/−15). Merge tự động sạch, thay đổi hai bên còn nguyên. Nhưng đó là
+lần đầu người khác đụng vào bề mặt được đo, và nó lộ ra hai thứ:
+
+**1 · Phép đo tràn ngang ĐỎ VÌ LÝ DO SAI.** 6 phép kiểm FAIL cùng lúc, cả bốn trang,
+cả 375px lẫn 1440px, tất cả cùng đúng `-15px`. Con số giống hệt nhau ở mọi trang là
+dấu hiệu không có gì tràn thật. Nguyên nhân: `scrollbar-gutter: stable` chừa chỗ thanh
+cuộn bằng cách trừ vào `clientWidth`, `scrollWidth` không đổi — hiệu số thành **ÂM**, và
+`soi-trinh-duyet.py` hỏi `tran == 0` nên gọi đó là tràn. Chứng minh bằng `add_style_tag`
+tắt đúng một dòng CSS: cả bốn trang từ −15px về 0px.
+
+Hai hướng sửa KHÔNG tương đương — bỏ `scrollbar-gutter` là làm sản phẩm xấu đi để phép
+đo xanh. CSS của Duy Anh đúng; **phép đo của tôi sai**. Repo vốn đã có hai chuẩn cho
+cùng một thứ: `soi-ban-phim-va-phong-to.py` hỏi `tran <= 0` cho đúng từ đầu. File chặt
+hơn lại là file sai. Gom 4 chỗ gọi về `scripts/kiem-trinh-duyet/tran_ngang.py`, đột
+biến xác nhận vẫn đỏ được kể cả tràn **1px**.
+
+**2 · Một hồi quy thật, do probe bắt được:** `.address-pill { min-height: 34px }` cho
+ra nút 150×38 — nút sao chép địa chỉ ví tụt từ **47px xuống 38px**. Trên ngưỡng cứng
+WCAG 2.2 AA (24px) nên **axe vẫn xanh**, nhưng dưới mốc 44px dự án tự đặt. Nâng lên
+44px → `soi-vung-bam` 26/26. Đây đúng là lý do bài này phải tách khỏi axe.
+
+**3 · `toTien.ts` nói sai phạm vi.** Cổng in *"từ đó tới HEAD chỉ tài liệu đổi"* trong
+khi ba commit vừa sửa CSS. Kết luận đúng (`laMa` cố ý không tính mã giao diện, vì lượt
+live đo SDK gọi Devnet), nhưng câu chữ khai **mạnh hơn** thứ đã kiểm. Cùng họ với lỗi
+`moHinhThat` và `BENCHMARK.md`. Sửa thành *"không đổi file nào trong phạm vi"*, kèm
+`BAO-CAO-KIEM-CHUNG.md` vốn neo vào câu cũ.
+
+**Bài học lặp lại lần nữa: test xanh không có nghĩa bằng chứng còn hiệu lực.** 726 test
+xanh ngay sau merge, trong khi vùng bấm đã sập 9px. Không một test đơn vị nào chạm tới
+được — chỉ trình duyệt thật mới thấy.
+
+**Và: đo trên cây bẩn thì biên bản ghi sai SHA.** Lượt đầu đo khi CSS đã sửa nhưng chưa
+commit, nên 10 biên bản ghi `sourceCommit` của bản CHƯA sửa. Dấu vết nội dung vẫn khớp
+nên nội dung không sai, nhưng cổng báo CHƯA RÕ. Chạy lại cả 8 probe trên cây sạch, kết
+quả y hệt — xác nhận dấu vết nói đúng. **Thứ tự đúng: sửa → commit → đo → commit biên
+bản → sinh release notes.**
 
 **Một lỗi trong chính công cụ đo, đã sửa.** `git()` ở `kiem-san-pham.ts` và `toTien.ts`
 gọi `.trim()` trên toàn bộ output `git status --porcelain`, ăn mất khoảng trắng đầu
