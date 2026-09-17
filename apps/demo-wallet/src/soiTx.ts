@@ -26,6 +26,8 @@ export type LoiDauVao =
   | "khong_phai_base64"
   | "qua_lon"
   | "khong_giai_ma_duoc"
+  /** Giải mã được nhưng rỗng ruột: 0 người ký hoặc 0 account. */
+  | "tx_rong"
   | "vi_khong_hop_le"
   | "vi_khong_o_trong_tx";
 
@@ -42,6 +44,9 @@ const CAU: Record<LoiDauVao, string> = {
   khong_giai_ma_duoc:
     "Giải mã được base64 nhưng đây không phải một giao dịch Solana đọc được. " +
     "Có thể là định dạng khác, hoặc dữ liệu đã hỏng.",
+  tx_rong:
+    "Đây không phải giao dịch thật: nó không có người ký nào và không chạm tài khoản nào. " +
+    "Một chuỗi base64 hợp lệ vẫn có thể giải ra thành dữ liệu rỗng.",
   vi_khong_hop_le: "Địa chỉ ví không phải base58 hợp lệ.",
   vi_khong_o_trong_tx:
     "Địa chỉ ví này không xuất hiện trong giao dịch. Custos sẽ không biết đang bảo vệ ai.",
@@ -104,6 +109,26 @@ export function docTx(thoChuoi: string): KetQuaDoc {
 
   const soKy = tx.message.header.numRequiredSignatures;
   const nguoiKy = tx.message.staticAccountKeys.slice(0, soKy).map((k) => k.toBase58());
+
+  /*
+   * GIẢI MÃ ĐƯỢC KHÔNG CÓ NGHĨA LÀ MỘT GIAO DỊCH THẬT.
+   *
+   * ĐÃ TÁI HIỆN: `"A".repeat(100)` là base64 hợp lệ, giải ra **75 byte toàn số 0**,
+   * và `VersionedTransaction.deserialize` CHẤP NHẬN nó — trả về một transaction có
+   * 0 chữ ký, 0 account, 0 lệnh, blockhash toàn số 1.
+   *
+   * Không có phép kiểm này thì rác đó đi thẳng tới `inspect()`, Custos gửi nó tới
+   * RPC, Solana từ chối với *"Transaction failed to sanitize"*, và người dùng nhận
+   * một thẻ kết quả *"Cần xem kỹ — đọc hiểu 0/0 lệnh"* cho một thứ không phải giao
+   * dịch. Trình bày rác như một giao dịch là nói sai, và nó còn tiêu một lượt RPC.
+   *
+   * Hai điều kiện, vì chúng bắt hai loại rác khác nhau:
+   *   · `numRequiredSignatures === 0` — không ai ký thì không có giao dịch nào để ký
+   *   · `staticAccountKeys.length === 0` — không chạm account nào thì không làm gì cả
+   */
+  if (soKy === 0 || tx.message.staticAccountKeys.length === 0) {
+    return { ok: false, loi: "tx_rong", câu: CAU.tx_rong };
+  }
 
   return { ok: true, tx, soByte: byte.length, daKy, nguoiKy };
 }

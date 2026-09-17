@@ -4,6 +4,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import {
+  Keypair, SystemProgram, TransactionMessage, VersionedTransaction,
+} from "@solana/web3.js";
 import { docDoi, giaiTx } from "../src/cli.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
@@ -153,4 +156,58 @@ test("CU-10 · mã thoát của `--help` và của nhánh lỗi KHÔNG trùng nh
    * Bài này chốt rằng hai nhánh phân biệt được.
    */
   assert.notEqual(chayCLI("--help").ma, chayCLI("--tx", "rác!!!").ma);
+});
+
+test("QA · CLI KHÔNG SẬP với base64 giải ra transaction rỗng ruột", () => {
+  /*
+   * BUG THẬT, tìm ra bằng fuzz.
+   *
+   * Trước khi sửa: `--tx AAAA…` (100 ký tự "A") in `"Cần xem kỹ — đọc hiểu 0/0 lệnh"`
+   * rồi **SẬP** với `exit=127` kèm assertion failure của libuv:
+   *
+   *     Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c
+   *
+   * `"A".repeat(100)` giải ra 75 byte toàn số 0, và `VersionedTransaction.deserialize`
+   * chấp nhận nó: 0 chữ ký, 0 account, 0 lệnh. Custos gửi rác đó tới RPC, Solana từ
+   * chối với "Transaction failed to sanitize", và tiến trình không thoát sạch.
+   *
+   * Bài này spawn tiến trình THẬT — một hàm trả đúng giá trị mà tiến trình vẫn sập
+   * thì mọi bài gọi hàm đều xanh.
+   */
+  const r = chayCLI("--tx", "A".repeat(100));
+  assert.equal(r.ma, 3, `mong đợi exit 3 (lỗi đầu vào), nhận ${r.ma}`);
+  assert.equal(r.out, "", "stdout phải TRỐNG — không được in kết quả cho một thứ không phải giao dịch");
+  assert.match(r.err, /không phải giao dịch thật/);
+});
+
+test("QA · `giaiTx` từ chối tx rỗng ruột nhưng GIỮ tx thật — đối chứng", () => {
+  const rong = giaiTx("A".repeat(100));
+  assert.equal(rong.ok, false);
+  if (!rong.ok) assert.match(rong.câu, /không có người ký nào/);
+
+  /*
+   * ĐỐI CHỨNG: bài trên cũng xanh nếu `giaiTx` bị làm thành "luôn từ chối".
+   *
+   * Dựng một giao dịch THẬT bằng `import` — bản đầu của tôi dùng `require()` trong
+   * file ESM và bài đỏ ngay. Đỏ đúng.
+   */
+  const vi = Keypair.generate();
+  const that = giaiTx(
+    Buffer.from(
+      new VersionedTransaction(
+        new TransactionMessage({
+          payerKey: vi.publicKey,
+          recentBlockhash: "11111111111111111111111111111111",
+          instructions: [
+            SystemProgram.transfer({
+              fromPubkey: vi.publicKey,
+              toPubkey: Keypair.generate().publicKey,
+              lamports: 1,
+            }),
+          ],
+        }).compileToV0Message(),
+      ).serialize(),
+    ).toString("base64"),
+  );
+  assert.equal(that.ok, true, "giao dịch thật bị từ chối — sửa quá tay");
 });
