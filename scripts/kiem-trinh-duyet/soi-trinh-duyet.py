@@ -326,6 +326,50 @@ async def main() -> None:
         await ctx.close()
 
         # ── E · giảm chuyển động ────────────────────────────────────────────
+        print("\nE2 · TRACE — bấm từ cảnh báo tới dữ kiện (CU-09)")
+        """
+        Ví demo là nơi DUY NHẤT kiểm được trace có dữ liệu thật.
+
+        Inspector chạy giao dịch từ ví trống nên L2 không bắn luật nào, và `Trace`
+        tự ẩn — đúng thiết kế, nhưng không kiểm được gì. Kịch bản "quà tặng" của ví
+        demo thì luôn sinh cảnh báo.
+        """
+        ctxT = await b.new_context(viewport={"width": 1280, "height": 900})
+        pgT = await ctxT.new_page()
+        try:
+            await pgT.goto(VI, wait_until="networkidle")
+            await pgT.wait_for_timeout(800)
+            await pgT.get_by_role("button", name="Nhận quà tặng").first.click()
+            await pgT.wait_for_selector(".result-card", timeout=45000)
+            await pgT.get_by_role("button", name="Chi tiết kỹ thuật").click()
+            await pgT.wait_for_timeout(400)
+            manT = await pgT.locator("body").inner_text()
+            ck("khối trace hiện ra", "Vì sao Custos nói vậy" in manT)
+
+            nutT = pgT.locator("[aria-label='Dữ kiện của từng cảnh báo'] button")
+            soT = await nutT.count()
+            ck("có cảnh báo bấm được", soT > 0, f"{soT} cảnh báo")
+            if soT > 0:
+                await nutT.first.click()
+                await pgT.wait_for_timeout(400)
+                m2 = await pgT.locator("body").inner_text()
+                ck(
+                    "bấm ⇒ hiện NGUỒN của dữ kiện, không chỉ khoá",
+                    any(x in m2 for x in ["đã đo", "suy ra", "không đọc được", "chưa hỗ trợ"]),
+                )
+                ck("aria-expanded đổi khi mở", await nutT.first.get_attribute("aria-expanded") == "true")
+                # Bàn phím phải đóng lại được — nghiệm thu thẻ đòi "dùng bàn phím hoàn toàn".
+                await nutT.first.focus()
+                await pgT.keyboard.press("Enter")
+                await pgT.wait_for_timeout(300)
+                ck(
+                    "đóng được bằng bàn phím",
+                    await nutT.first.get_attribute("aria-expanded") == "false",
+                )
+        except Exception as e:
+            ck("khối trace hiện ra", False, str(e)[:70])
+        await ctxT.close()
+
         print("\nE · prefers-reduced-motion")
         ctx = await b.new_context(viewport={"width": 1440, "height": 900}, reduced_motion="reduce")
         pg = await ctx.new_page()

@@ -167,7 +167,52 @@ async def main() -> None:
             except Exception as e:
                 ck("thẻ kết quả hiện ra", False, str(e)[:60])
 
-        print("\nE · đổi đầu vào làm kết quả cũ mất hiệu lực")
+        print("\nE · TRACE — bấm từ cảnh báo tới dữ kiện (CU-09)")
+        if b64That:
+            try:
+                await pg.get_by_role("button", name="Chi tiết kỹ thuật").click()
+                await pg.wait_for_timeout(400)
+                man = await pg.locator("body").inner_text()
+
+                nut = pg.locator("[aria-label='Dữ kiện của từng cảnh báo'] button")
+                sl = await nut.count()
+                if sl == 0:
+                    # KHÔNG CÓ CẢNH BÁO THÌ KHÔNG CÓ TRACE, và đó là đúng.
+                    #
+                    # `Trace` trả `null` khi `canhBao` rỗng — cố ý: một khung rỗng
+                    # trông như đã kiểm mà không thấy gì, trong khi sự thật là không
+                    # có gì để kiểm.
+                    #
+                    # Giao dịch bài này dựng đi từ một ví trống nên L2 không bắn luật
+                    # nào. Bản đầu của probe đòi "khối trace hiện ra" vô điều kiện và
+                    # FAIL — kỳ vọng của probe sai, không phải sản phẩm sai.
+                    ck("không có cảnh báo ⇒ trace tự ẩn, không hiện khung rỗng",
+                       "Vì sao Custos nói vậy" not in man, "0 cảnh báo")
+                else:
+                    ck("khối trace hiện ra khi CÓ cảnh báo", "Vì sao Custos nói vậy" in man)
+                    await nut.first.click()
+                    await pg.wait_for_timeout(400)
+                    m2 = await pg.locator("body").inner_text()
+                    ck(
+                        "bấm cảnh báo ⇒ hiện NGUỒN của dữ kiện",
+                        any(x in m2 for x in ["đã đo", "suy ra", "không đọc được", "chưa hỗ trợ"]),
+                    )
+                    ck(
+                        "aria-expanded đổi khi mở",
+                        await nut.first.get_attribute("aria-expanded") == "true",
+                    )
+                    # Bàn phím: nút phải focus và kích hoạt được bằng Enter.
+                    await nut.first.focus()
+                    await pg.keyboard.press("Enter")
+                    await pg.wait_for_timeout(300)
+                    ck(
+                        "đóng được bằng bàn phím",
+                        await nut.first.get_attribute("aria-expanded") == "false",
+                    )
+            except Exception as e:
+                ck("khối trace hiện ra", False, str(e)[:60])
+
+        print("\nF · đổi đầu vào làm kết quả cũ mất hiệu lực")
         await pg.fill("#tx-b64", "rác")
         await pg.wait_for_timeout(300)
         man = await pg.locator("body").inner_text()

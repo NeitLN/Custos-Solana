@@ -1,12 +1,12 @@
 {
   "the": "CU-08",
-  "doLuc": "2026-09-17T18:44:33.746293+00:00",
-  "sourceCommit": "bcdff13f8dde7f76136d26d11add9105d96db9fe",
+  "doLuc": "2026-09-17T18:55:28.874812+00:00",
+  "sourceCommit": "91867d229717d0c3855a78bb6a42b13d838a0746",
   "dauVet": {
-    "bam": "4171de61874a9d2b",
-    "soFile": 38
+    "bam": "db8b316cddb3cd83",
+    "soFile": 39
   },
-  "soMuc": 19,
+  "soMuc": 20,
   "soHong": 0,
   "muc": [
     {
@@ -93,6 +93,11 @@
       "ten": "có gọi RPC ở đường thành công",
       "dat": true,
       "ghiChu": "3 lời gọi"
+    },
+    {
+      "ten": "không có cảnh báo ⇒ trace tự ẩn, không hiện khung rỗng",
+      "dat": true,
+      "ghiChu": "0 cảnh báo"
     },
     {
       "ten": "đổi đầu vào ⇒ bỏ kết quả cũ",

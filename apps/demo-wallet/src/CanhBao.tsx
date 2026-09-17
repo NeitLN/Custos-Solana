@@ -1,3 +1,4 @@
+import { Trace } from "./Trace.tsx";
 import type { InspectResult } from "@custos-solana/types";
 import { chiLaThongTin } from "@custos-solana/core";
 import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
@@ -422,6 +423,16 @@ export function CanhBao({
                   </div>
                 </dl>
               )}
+              {/*
+                TRACE — CU-09, đặt SAU bối cảnh và TRƯỚC bảng kỹ thuật.
+
+                Thứ tự có chủ ý: bối cảnh trả lời *"số này đến từ đâu"*, trace trả
+                lời *"vì sao có cảnh báo này"*, bảng kỹ thuật là dữ liệu thô. Đi từ
+                câu hỏi lớn tới chi tiết.
+
+                Vắng `chanDoan` thì component tự trả `null` — không hiện khung rỗng.
+              */}
+              <Trace ketQua={ketQua} />
               <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
                 {chiTietKyThuat(ketQua).map((d, i) => (
                   <div key={i} className="flex flex-wrap gap-x-2">

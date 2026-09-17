@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-17T18:42:27.930026+00:00",
-  "sourceCommit": "bcdff13f8dde7f76136d26d11add9105d96db9fe",
+  "doLuc": "2026-09-17T18:54:19.235269+00:00",
+  "sourceCommit": "91867d229717d0c3855a78bb6a42b13d838a0746",
   "dauVet": {
-    "bam": "4171de61874a9d2b",
-    "soFile": 38
+    "bam": "db8b316cddb3cd83",
+    "soFile": 39
   },
   "boCongCu": {
     "chromium": "149.0.7827.55",
@@ -22,8 +22,8 @@
       "cao": 900
     }
   ],
-  "soKiem": 40,
-  "soDat": 40,
+  "soKiem": 45,
+  "soDat": 45,
   "soHong": 0,
   "viPham": [],
   "kiem": [
@@ -174,6 +174,31 @@
     },
     {
       "ten": "thử lại gọi lại RPC và đi tiếp được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "khối trace hiện ra",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có cảnh báo bấm được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bấm ⇒ hiện NGUỒN của dữ kiện, không chỉ khoá",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "aria-expanded đổi khi mở",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "đóng được bằng bàn phím",
       "dat": true,
       "chiTiet": "đạt"
     },

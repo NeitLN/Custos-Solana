@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-17T18:42:36.753130+00:00",
-  "sourceCommit": "bcdff13f8dde7f76136d26d11add9105d96db9fe",
+  "doLuc": "2026-09-17T18:54:38.338092+00:00",
+  "sourceCommit": "91867d229717d0c3855a78bb6a42b13d838a0746",
   "dauVet": {
-    "bam": "4171de61874a9d2b",
-    "soFile": 38
+    "bam": "db8b316cddb3cd83",
+    "soFile": 39
   },
   "khung": {
     "rong": 375,
@@ -14,7 +14,7 @@
     "khuyenNghi": 44,
     "wcag22aa": 24
   },
-  "soMuc": 26,
+  "soMuc": 27,
   "soViPham": 0,
   "soCanSua": 0,
   "muc": [
@@ -143,6 +143,13 @@
       "rong": 141,
       "cao": 44,
       "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "SPL_SET_AUTHORITY__ACCOUNT_OWNERlu",
+      "rong": 275,
+      "cao": 52,
+      "caoThat": 52.38
     },
     {
       "trang": "ví · có kết quả",
