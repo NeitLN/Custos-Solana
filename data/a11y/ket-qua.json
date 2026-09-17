@@ -1,6 +1,6 @@
 {
-  "doLuc": "2026-09-17T12:43:33.432490+00:00",
-  "sourceCommit": "4fb327c80a7875ad49a6ed88b3ccff0ff238f94d",
+  "doLuc": "2026-09-17T13:35:49.054061+00:00",
+  "sourceCommit": "21fde989815210e2ec40d9326c4d2112ce829664",
   "dauVet": {
     "bam": "f4585f12b891c97d",
     "soFile": 35
@@ -148,7 +148,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "thẻ lỗi hiện ra (9.4s)",
+      "ten": "thẻ lỗi hiện ra (9.1s)",
       "dat": true,
       "chiTiet": "đạt"
     },
