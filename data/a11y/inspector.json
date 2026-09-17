@@ -1,12 +1,12 @@
 {
   "the": "CU-08",
-  "doLuc": "2026-09-17T19:01:20.936551+00:00",
-  "sourceCommit": "563b7a2b89ca86955a9400a9532c4d80f486c0b9",
+  "doLuc": "2026-09-17T19:28:59.045503+00:00",
+  "sourceCommit": "a94867ab3ebd4d56e273535f8b1960a47751d6c3",
   "dauVet": {
-    "bam": "db8b316cddb3cd83",
+    "bam": "a59b0a1bc3235e32",
     "soFile": 39
   },
-  "soMuc": 20,
+  "soMuc": 26,
   "soHong": 0,
   "muc": [
     {
@@ -98,6 +98,36 @@
       "ten": "không có cảnh báo ⇒ trace tự ẩn, không hiện khung rỗng",
       "dat": true,
       "ghiChu": "0 cảnh báo"
+    },
+    {
+      "ten": "đang kiểm ⇒ nút Huỷ hiện ra",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "bấm Huỷ ⇒ báo đã huỷ",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "huỷ KHÔNG bị báo thành lỗi RPC",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "nhật ký ghi rõ request đã được cắt",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "kết quả về MUỘN không ghi đè trạng thái huỷ",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "0 lỗi console ở nhánh huỷ",
+      "dat": true,
+      "ghiChu": "[]"
     },
     {
       "ten": "đổi đầu vào ⇒ bỏ kết quả cũ",

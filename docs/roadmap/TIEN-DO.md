@@ -127,7 +127,7 @@ acceptance**; bảng này giữ **trạng thái**. Không lập bảng phần tr
 | CU-19 | Adapter ví và signer bất đồng bộ | CU-02,03,18 | TODO | |
 | CU-20 | So sánh hai transaction/kết quả | CU-06,08,11 | TODO | |
 | CU-21 | Batch review có giới hạn đúng | CU-08,18,20 | TODO | |
-| CU-22 | Abort, retry và cache đúng ngữ cảnh | CU-02,03 | TODO | Có thể bắt đầu sau CU-03, không chờ CU-21. |
+| CU-22 | Abort, retry và cache đúng ngữ cảnh | CU-02,03 | **PARTIAL** | `coHan()` tự khai *"chỉ ngừng CHỜ"* — mỗi lượt quá hạn để lại request vẫn chạy. **Đo trước khi xây:** `Connection` nhận `fetch` tuỳ chỉnh (có) · web3.js tự truyền signal (**không**) · tự gắn signal thì abort **cắt được thật** (AbortError). `huy.ts` gắn AbortSignal cho mọi request cùng Connection; signal người gọi được **kết hợp** qua `AbortSignal.any`, không ghi đè; `soRequest()` đếm được; `laHuy()` tách huỷ khỏi lỗi. **Lỗi do chép theo trí nhớ:** regex viết *"The operation was aborted"* nhưng Node 24 ném *"This"* — test đỏ ngay. Nối vào Inspector: nút Huỷ cắt thật. Đột biến **5/5 đỏ** gồm M3 "luôn abort". `soi-inspector` nhóm F **6/6** với RPC làm chậm 8s: kết quả về muộn không ghi đè trạng thái huỷ. Tổng probe **26/26**. 791 pass. **Còn lại:** retry bounded, cache theo cluster/program, deadline bao cả orchestration. |
 | CU-23 | Đo hiệu năng gắn với chức năng mới | CU-09,12,22 | TODO | |
 | CU-24 | Corpus mở rộng và kiểm đối kháng | CU-04 | TODO | Mở sớm ngay khi CU-04 xong. |
 | CU-25 | Contract tests, package, tài liệu tích hợp | CU-10,11,18,19,21,22 | TODO | |

@@ -212,7 +212,53 @@ async def main() -> None:
             except Exception as e:
                 ck("khối trace hiện ra", False, str(e)[:60])
 
-        print("\nF · đổi đầu vào làm kết quả cũ mất hiệu lực")
+        print("\nF · HUỶ cắt thật request, không chỉ ngừng chờ (CU-22)")
+        if b64That:
+            ctxH = await b.new_context(viewport={"width": 1280, "height": 900})
+            pgH = await ctxH.new_page()
+            bugH: list[str] = []
+            pgH.on("console", lambda m: bugH.append(m.text) if m.type == "error" else None)
+
+            # Làm RPC chậm để kịp bấm Huỷ giữa chừng. Không có bước này thì lượt
+            # kiểm xong trước khi probe kịp bấm, và bài đo nhầm đường thành công.
+            async def cham(route):
+                await asyncio.sleep(8)
+                await route.continue_()
+
+            await pgH.route("**/api.devnet.solana.com/**", cham)
+            try:
+                await pgH.goto(TRANG, wait_until="networkidle")
+                await pgH.wait_for_timeout(400)
+                await pgH.fill("#tx-b64", b64That)
+                await pgH.get_by_role("button", name="Kiểm giao dịch").click()
+                await pgH.wait_for_timeout(700)
+                mH = await pgH.locator("body").inner_text()
+                ck("đang kiểm ⇒ nút Huỷ hiện ra", "Huỷ" in mH and "Đang kiểm" in mH)
+
+                await pgH.get_by_role("button", name="Huỷ", exact=True).click()
+                await pgH.wait_for_timeout(600)
+                m2 = await pgH.locator("body").inner_text()
+                ck("bấm Huỷ ⇒ báo đã huỷ", "Đã huỷ" in m2)
+                # HUỶ KHÔNG PHẢI LỖI: hiện "không kiểm được" cho một thao tác người
+                # dùng chủ động huỷ là nói sai, và làm họ nghĩ sản phẩm hỏng.
+                ck("huỷ KHÔNG bị báo thành lỗi RPC", "Không kiểm được giao dịch này" not in m2)
+
+                # Nhật ký nằm trong <details> đóng — phải mở mới đọc được nội dung.
+                await pgH.locator("summary", has_text="Nhật ký kỹ thuật").click()
+                await pgH.wait_for_timeout(300)
+                mNK = await pgH.locator("body").inner_text()
+                ck("nhật ký ghi rõ request đã được cắt", "đã được cắt" in mNK)
+
+                # Chờ qua thời điểm RPC lẽ ra trả về: kết quả muộn không được ghi đè.
+                await pgH.wait_for_timeout(9000)
+                m3 = await pgH.locator("body").inner_text()
+                ck("kết quả về MUỘN không ghi đè trạng thái huỷ", "Đã huỷ" in m3)
+                ck("0 lỗi console ở nhánh huỷ", len(bugH) == 0, str(bugH[:1]))
+            except Exception as e:
+                ck("nhánh huỷ chạy được", False, str(e)[:70])
+            await ctxH.close()
+
+        print("\nG · đổi đầu vào làm kết quả cũ mất hiệu lực")
         await pg.fill("#tx-b64", "rác")
         await pg.wait_for_timeout(300)
         man = await pg.locator("body").inner_text()
