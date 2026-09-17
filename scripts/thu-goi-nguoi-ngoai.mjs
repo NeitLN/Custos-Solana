@@ -22,8 +22,8 @@
  * Bài kiểm không đọc `package.json` để đoán xem gói có đúng không — nó IMPORT
  * rồi CHẠY. Đọc manifest là thứ đã tưởng là đủ hồi 0.1.0.
  */
-import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -342,6 +342,39 @@ try {
   if (!raDK.includes("DOI-KHANG-OK")) {
     throw new Error("bài đối kháng trên gói đã đóng không báo OK");
   }
+
+  /*
+   * CLI — CU-10, và nó phải được kiểm TRÊN TARBALL, không trên source.
+   *
+   * Bước đóng gói ghi đè `exports`, `files` và giữ `bin`. Nó đã từng làm RƠI subpath
+   * `@custos-solana/ai/anthropic` — người cài từ npm gặp ERR_PACKAGE_PATH_NOT_EXPORTED
+   * trong khi cả hai file `package.json` đọc bằng mắt đều "đúng". Cùng cơ chế ấy có
+   * thể làm rơi `dist/cli.js` hoặc `bin`, và không bài nào khác thấy.
+   *
+   * Ba điều kiểm, mỗi điều là một cách hỏng riêng:
+   *   1. `bin` được npm cài ra `node_modules/.bin`
+   *   2. `dist/cli.js` chạy được bằng Node TRẦN — không cờ bóc kiểu
+   *   3. mã thoát phân loại đúng: 0 cho `--help`, 3 cho đầu vào sai
+   */
+  console.log("\n6/6 · CLI trong gói đã đóng");
+  const binCLI = join(duAn, "node_modules", ".bin", "custos-soi");
+  const jsCLI = join(duAn, "node_modules", "@custos-solana", "core", "dist", "cli.js");
+  if (!existsSync(jsCLI)) throw new Error("tarball KHÔNG chứa dist/cli.js — bước dàn làm rơi CLI");
+  if (!existsSync(binCLI) && !existsSync(binCLI + ".cmd")) {
+    throw new Error("npm không cài `bin` — khai `bin` trong package.json đã bị bước dàn bỏ");
+  }
+  console.log("      bin và dist/cli.js đều có trong gói đã cài");
+
+  // Chạy bằng Node TRẦN. Cờ bóc kiểu ở đây sẽ giấu mất đúng lỗi cần bắt.
+  const help = spawnSync(process.execPath, [jsCLI, "--help"], { encoding: "utf8" });
+  if (help.status !== 0) throw new Error(`CLI --help thoát ${help.status}, mong đợi 0`);
+  if (!/KHÔNG có nghĩa "ký được"/.test(help.stdout ?? "")) {
+    throw new Error("--help không bác bỏ cách đọc exit 0 thành quyền ký");
+  }
+  const xau = spawnSync(process.execPath, [jsCLI, "--tx", "rác!!!"], { encoding: "utf8" });
+  if (xau.status !== 3) throw new Error(`CLI đầu vào sai thoát ${xau.status}, mong đợi 3`);
+  if ((xau.stdout ?? "") !== "") throw new Error("nhánh lỗi làm bẩn stdout — `| jq` sẽ vỡ");
+  console.log("      chạy bằng Node trần: --help → 0 · đầu vào sai → 3 · stdout sạch");
 
   console.log("\n✓ Gói dùng được từ ngoài: import bằng JS thuần, không cần cờ bóc kiểu.");
 } catch (e) {
