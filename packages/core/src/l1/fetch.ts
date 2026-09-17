@@ -5,7 +5,7 @@ import {
   PublicKey,
   AddressLookupTableAccount,
 } from "@solana/web3.js";
-import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact } from "../facts.ts";
+import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact, NguCanhMoPhong } from "../facts.ts";
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
 import { decodeInstruction, VI_TRI_AUTHORITY } from "./decode.ts";
 import { VERIFIED_PROGRAMS } from "../constants.ts";
@@ -178,6 +178,23 @@ export async function extractFacts(
   // 3. trạng thái SAU
   let simOk = true;
   let simErr: string | null = null;
+  /*
+   * NGỮ CẢNH LƯỢT MÔ PHỎNG — CU-03.
+   *
+   * Khởi tạo bằng `null` hết, không bằng giá trị rỗng có vẻ hợp lệ. Nếu RPC không
+   * khai trường nào thì trường đó ở lại `null`, và người đọc phân biệt được
+   * "không thay blockhash" với "không biết có thay hay không".
+   */
+  const blockhashGoc = msg.recentBlockhash ?? null;
+  let nguCanh: NguCanhMoPhong = {
+    slot: null,
+    apiVersion: null,
+    blockhashThayThe: null,
+    hanBlockhashThayThe: null,
+    blockhashGoc,
+    chayTrenBlockhashGoc: null,
+    computeDaTieu: null,
+  };
   // Mô phỏng chạy được KHÔNG có nghĩa là ta nhận được trạng thái account. RPC có
   // thể trả `accounts: null` kèm `err: null`. Phải tách hai chuyện đó ra, nếu
   // không thì "không đo được" bị đọc thành "số dư về 0".
@@ -201,6 +218,37 @@ export async function extractFacts(
       },
     });
     const v = sim.value;
+    /*
+     * GHI NGỮ CẢNH TRƯỚC KHI XÉT LỖI.
+     *
+     * Đặt sau nhánh `if (v.err)` thì một lượt mô phỏng hỏng sẽ không có slot lẫn
+     * apiVersion — mà đó đúng là lúc người đọc cần biết nhất lượt đo diễn ra ở
+     * đâu. Ghi ngay, rồi mới phân loại kết quả.
+     *
+     * Đọc phòng thủ bằng `?? null`: bản web3.js đang ghim có `replacementBlockhash`
+     * (đo trên Devnet thật, apiVersion 4.3.0-rc.0), nhưng một provider khác có thể
+     * không trả — và thiếu trường phải thành `null`, không thành `undefined` lọt
+     * vào bằng chứng.
+     */
+    const rbh = (v as { replacementBlockhash?: { blockhash?: string; lastValidBlockHeight?: number } })
+      .replacementBlockhash;
+    const bhDung = rbh?.blockhash ?? null;
+    nguCanh = {
+      slot: sim.context?.slot ?? null,
+      apiVersion: (sim.context as { apiVersion?: string } | undefined)?.apiVersion ?? null,
+      blockhashThayThe: bhDung,
+      hanBlockhashThayThe: rbh?.lastValidBlockHeight ?? null,
+      blockhashGoc,
+      /*
+       * So được thì so; thiếu một vế thì `null`, KHÔNG phải `true`.
+       *
+       * `null` ở đây nghĩa "không đủ dữ liệu để nói", và fail-safe của dự án cấm
+       * biến điều đó thành kết luận có lợi.
+       */
+      chayTrenBlockhashGoc:
+        bhDung !== null && blockhashGoc !== null ? bhDung === blockhashGoc : null,
+      computeDaTieu: v.unitsConsumed ?? null,
+    };
     if (v.err) {
       simOk = false;
       simErr = typeof v.err === "string" ? v.err : JSON.stringify(v.err);
@@ -545,6 +593,7 @@ export async function extractFacts(
     tuoiViNhan,
     simulationOk: simOk,
     simulationError: simErr,
+    nguCanh,
     accounts,
     tokenAccounts,
     mints,

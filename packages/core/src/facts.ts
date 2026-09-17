@@ -68,6 +68,86 @@ export type AccountFact = {
   lamportsAfter: bigint;
 };
 
+/**
+ * NGỮ CẢNH CỦA MỘT LƯỢT MÔ PHỎNG — CU-03, mục 4.4 của `UPDATE-CUSTOS.md`.
+ *
+ * ## Vì sao `simulationOk: boolean` là không đủ
+ *
+ * Custos gọi `simulateTransaction` với `replaceRecentBlockhash: true` — bắt buộc,
+ * vì `sigVerify: false` và giao dịch chưa ký. Hệ quả là **RPC thay blockhash khác
+ * vào trước khi chạy thử**.
+ *
+ * Nên một lượt mô phỏng PASS không chứng minh message gốc còn gửi được: nó chứng
+ * minh *một message giống hệt nhưng mang blockhash khác* chạy được. Nếu blockhash
+ * gốc đã hết hạn, giao dịch thật sẽ bị từ chối — trong khi Custos vừa báo bình
+ * thường.
+ *
+ * Đo trên Devnet thật (`api.devnet.solana.com`, apiVersion 4.3.0-rc.0): RPC **có**
+ * trả `value.replacementBlockhash` gồm `blockhash` và `lastValidBlockHeight`, và
+ * `context.slot`. Cả hai đang bị `extractFacts` vứt đi.
+ *
+ * ## Điều loại này KHÔNG khẳng định
+ *
+ * - `slot` **không** biến nhiều lời gọi RPC thành một snapshot chung. Mỗi lời gọi
+ *   có slot riêng; ghi lại slot của lượt mô phỏng không có nghĩa `getMultipleAccounts`
+ *   trước đó đọc cùng một trạng thái.
+ * - `apiVersion` là **RPC tự khai**. Nó giúp tái lập, không phải bằng chứng.
+ * - Không trường nào ở đây chứng minh RPC nói thật. Xem `THREAT-MODEL.md`.
+ */
+export type NguCanhMoPhong = {
+  /** Slot mà RPC khai lúc trả kết quả mô phỏng. `null` khi không đọc được. */
+  slot: number | null;
+  /** Phiên bản RPC tự khai — để tái lập, KHÔNG phải bằng chứng. */
+  apiVersion: string | null;
+  /**
+   * Blockhash mà RPC dùng để chạy thử, do chính RPC khai.
+   *
+   * `null` ⇒ RPC không khai. Khi đó **không được kết luận là không thay** —
+   * thiếu dữ liệu là thiếu dữ liệu.
+   */
+  blockhashThayThe: string | null;
+  /** `lastValidBlockHeight` của blockhash RPC dùng — không phải của blockhash gốc. */
+  hanBlockhashThayThe: number | null;
+  /**
+   * Blockhash trong message GỐC, để đối chiếu.
+   *
+   * Đọc từ chính transaction, không từ RPC.
+   */
+  blockhashGoc: string | null;
+  /**
+   * Mô phỏng có chạy trên ĐÚNG blockhash của message gốc không?
+   *
+   * ## Một giả thuyết đã bị chính phép đo bác bỏ — ghi lại để không ai thử lại
+   *
+   * Lần đo đầu trên Devnet cho: blockhash tươi ⇒ `replacementBlockhash` **giống hệt**
+   * gốc; blockhash slot −300 ⇒ **khác** gốc. Nhìn như một phép đo lifetime hoàn hảo,
+   * và tôi đã suýt xây tính năng "cảnh báo blockhash hết hạn" lên trên nó.
+   *
+   * Lặp lại thì bác bỏ. Đếm trên 8 lượt, **mỗi lượt lấy blockhash mới ngay trước
+   * khi mô phỏng**: `replacementBlockhash` giống gốc **6 lần**, khác gốc **2 lần**.
+   * Cùng một điều kiện, hai kết quả — nên nó phụ thuộc thời điểm RPC xử lý, không
+   * phụ thuộc việc blockhash còn hiệu lực hay không. Cũng không phụ thuộc options:
+   * `accounts` và `innerInstructions` cho cùng kết quả.
+   *
+   * Nên trường này **KHÔNG đo được lifetime**. Nó chỉ nói đúng một điều:
+   *
+   *   `false` ⇒ RPC đã dùng một hash khác để chạy thử. Điều này XẢY RA HẦU HẾT
+   *             mọi lượt, kể cả khi blockhash gốc còn tươi nguyên. Nó KHÔNG có
+   *             nghĩa blockhash gốc hết hạn.
+   *   `true`  ⇒ RPC tình cờ dùng đúng hash gốc. Hiếm.
+   *   `null`  ⇒ không đủ dữ liệu để so.
+   *
+   * Giá trị thật của nó: nói ra rằng **kết quả mô phỏng mô tả một message khác
+   * với message sẽ được ký** — đúng điều mục 4.4 đòi ghi lại. Nó là ngữ cảnh để
+   * trình bày trung thực, KHÔNG phải tín hiệu rủi ro.
+   *
+   * KHÔNG dùng để nâng verdict, và có bài đối chứng canh điều đó.
+   */
+  chayTrenBlockhashGoc: boolean | null;
+  /** Compute unit đã tiêu, nếu RPC trả. */
+  computeDaTieu: number | null;
+};
+
 export type Facts = {
   /**
    * Địa chỉ Custos đang BẢO VỆ.
@@ -98,6 +178,18 @@ export type Facts = {
   phiChinhXac: boolean;
   simulationOk: boolean;
   simulationError: string | null;
+  /**
+   * Ngữ cảnh của lượt mô phỏng — CU-03.
+   *
+   * TUỲ CHỌN để không phá hợp đồng: `Facts` cũ dựng bằng tay trong fixture và test
+   * vẫn hợp lệ, và mọi chỗ đọc đều phải chịu được `undefined`.
+   *
+   * Vì sao cần: trước CU-03, toàn bộ ngữ cảnh RPC được nén thành **một bit**
+   * (`simulationOk`). Một lượt mô phỏng thành công và một lượt mô phỏng thành công
+   * TRÊN BLOCKHASH KHÁC trông y hệt nhau — trong khi chúng nói hai điều rất khác
+   * nhau về việc message gốc có còn gửi được không.
+   */
+  nguCanh?: NguCanhMoPhong;
   accounts: AccountFact[];
   tokenAccounts: TokenAccountFact[];
   mints: MintFact[];
