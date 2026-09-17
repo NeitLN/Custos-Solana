@@ -134,7 +134,18 @@ type Facts = {
 - `analyzed` = số instruction có `programId` nằm trong danh sách đã xác minh **và** `decoded != null`
 - `unverifiedPrograms` = số program ID **khác nhau** không nằm trong danh sách xác minh
 
-**Danh sách program đã xác minh — bản thi giữ ngắn:** System, SPL Token, Token-2022, Associated Token Account, Orca Whirlpool, SPL Memo. Ngắn là tốt: nó làm coverage phản ánh đúng sự thật rằng đội mới decode được chừng đó.
+**Danh sách program đã xác minh:** xem [`docs/MA-TRAN-NANG-LUC.md`](docs/MA-TRAN-NANG-LUC.md) — **sinh từ registry**, không gõ tay ở đây.
+
+> **Dòng này từng nói sai theo CẢ HAI hướng.** Nó liệt kê 6 program và có *SPL Memo*;
+> registry thật có **13 program** và **không có Memo**. Thiếu 7 cái có thật, thừa 1
+> cái không có. Không ai cố ý viết sai — danh sách được gõ tay lúc registry còn 6
+> program, rồi registry lớn lên mà không ai quay lại sửa.
+>
+> Cùng hình dạng lỗi repo đã gặp với số test ở sáu tài liệu, và cách sửa đã biết:
+> một nguồn, sinh ra. Có guard đối chiếu ba bề mặt (docs, ma trận, registry).
+
+Và **đọc được tên lệnh ≠ hiểu được hậu quả**: 377 lệnh đọc được tên, 8 lệnh hiểu được
+hậu quả. Khoảng cách đó là phần Custos chưa hiểu, và nó là phần lớn.
 
 ---
 
