@@ -54,6 +54,32 @@ const QUY_TAC: Array<{ tim: RegExp; thay: string }> = [
   { tim: /<!--[\s\S]*?-->/g, thay: "" },
   // Dấu `<` hoặc `>` còn lại lẻ loi: không phải thẻ, nhưng cũng không có lý do ở đây.
   { tim: /[<>]/g, thay: "" },
+  /*
+   * ĐƯỜNG DẪN HỆ THỐNG — che phần thư mục, giữ tên tệp.
+   *
+   * ĐÃ TÁI HIỆN: lỗi Node mang nguyên đường dẫn vào nhật ký, và nhật ký này hiển
+   * thị trên trang công khai:
+   *
+   *   ENOENT: no such file or directory, open 'C:\Users\<tên>\.config\solana\id.json'
+   *   Cannot find module '/home/<tên>/duan/secret.json'
+   *
+   * Cả hai lộ TÊN NGƯỜI DÙNG hệ điều hành. Quy tắc URL ở trên không bắt được vì
+   * đây không phải URL — `file:///…` thì bắt được, `C:\…` và `/home/…` thì không.
+   *
+   * Giữ tên tệp cuối vì nó là thông tin chẩn đoán thật ("thiếu id.json" khác hẳn
+   * "thiếu config.toml"); bỏ phần thư mục vì đó là chỗ tên người dùng nằm.
+   */
+  /*
+   * Lớp ký tự CHO PHÉP dấu cách trong tên thư mục.
+   *
+   * Bản đầu dùng `[^\s\\/…]` và dừng ngay ở `Viet Tien` — tên người dùng Windows
+   * thường CÓ dấu cách, nên quy tắc chỉ che được nửa đường dẫn và vẫn lộ tên.
+   *
+   * Dừng ở dấu nháy, ngoặc hoặc hai dấu cách liên tiếp: đó là ranh giới thật của
+   * một đường dẫn trong câu lỗi, còn một dấu cách đơn thì vẫn nằm trong tên thư mục.
+   */
+  { tim: /\b[A-Za-z]:[\\/](?:[^\\/'"()]*?[\\/])*([^\\/'"()\s]+)/g, thay: "…/$1" },
+  { tim: /\/(?:home|Users|root|var|tmp|opt|etc)\/(?:[^\s/'"]+\/)*([^\s/'"]+)/g, thay: "…/$1" },
   // Ký tự điều khiển và Bidi — xuống dòng chèn câu giả, U+202E đảo chiều hiển thị.
   { tim: /[\u0000-\u0008\u000b-\u001f​-‏‪-‮]/g, thay: "" },
 ];

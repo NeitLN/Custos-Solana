@@ -86,3 +86,59 @@ test("App.tsx lọc TẠI CHỖ GHI, không ở chỗ hiển thị", () => {
   const app = readFileSync(fileURLToPath(new URL("../src/App.tsx", import.meta.url)), "utf8");
   assert.match(app, /setNhatKy\(\(n\) => \[\.\.\.n, locDongNhatKy\(s\)\]\)/);
 });
+
+/* ── QA · đường dẫn hệ thống lộ TÊN NGƯỜI DÙNG ─────────────────────────────── */
+
+test("QA · đường dẫn Windows và POSIX bị che, KHÔNG lộ tên người dùng", () => {
+  /*
+   * BUG THẬT, tìm ra khi fuzz bộ lọc nhật ký.
+   *
+   * Lỗi Node mang nguyên đường dẫn, và nhật ký này hiển thị trên trang công khai:
+   *
+   *   ENOENT: no such file or directory, open 'C:{BS}Users{BS}<tên>{BS}.config{BS}solana{BS}id.json'
+   *   Cannot find module '/home/<tên>/duan/secret.json'
+   *
+   * Quy tắc URL có sẵn không bắt được: `file:///…` thì bắt, `C:{BS}…` và `/home/…`
+   * thì không — chúng không phải URL.
+   *
+   * Dựng backslash bằng `String.fromCharCode(92)`: escape trong chuỗi test dễ bị
+   * công cụ nuốt, và bản đầu của bài này đã đo nhầm vì đúng lý do đó.
+   */
+  const BS = String.fromCharCode(92);
+  const ca: Array<[string, string]> = [
+    ["ENOENT Windows", `ENOENT: no such file or directory, open 'C:${BS}Users${BS}Viet Tien${BS}.config${BS}solana${BS}id.json'`],
+    ["stack Windows", `at Object.x (C:${BS}Users${BS}Viet Tien${BS}duan${BS}x.ts:12:3)`],
+    ["module POSIX", "Cannot find module '/home/nguoidung/duan/secret.json'"],
+    ["Users macOS", "at /Users/vietttien/Projects/custos/src/x.ts:12"],
+    ["tmp", "ghi vao /tmp/nguoi-dung-abc/ket-qua.json"],
+  ];
+  for (const [ten, s] of ca) {
+    const r = locDongNhatKy(s);
+    assert.ok(
+      !/Viet Tien|nguoidung|vietttien|nguoi-dung-abc/.test(r),
+      `${ten}: còn lộ tên người dùng — "${r}"`,
+    );
+  }
+});
+
+test("QA · che đường dẫn nhưng GIỮ tên tệp và thông tin chẩn đoán", () => {
+  /*
+   * ĐỐI CHỨNG. Bài trên cũng xanh nếu bộ lọc xoá sạch mọi thứ — và một nhật ký
+   * trống thì vô dụng.
+   *
+   * Tên tệp cuối là thông tin thật: "thiếu id.json" khác hẳn "thiếu config.toml".
+   */
+  const BS = String.fromCharCode(92);
+  assert.match(
+    locDongNhatKy(`ENOENT: open 'C:${BS}Users${BS}Ai Do${BS}.config${BS}id.json'`),
+    /id\.json/,
+    "che cả tên tệp thì nhật ký mất giá trị chẩn đoán",
+  );
+  for (const s of [
+    "Custos khong ket noi duoc toi api.devnet.solana.com",
+    "failed to simulate transaction: AccountNotFound",
+    "doc hieu 2/3 lenh",
+  ]) {
+    assert.equal(locDongNhatKy(s), s, `câu chẩn đoán bình thường bị đổi: "${s}"`);
+  }
+});
