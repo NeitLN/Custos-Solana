@@ -81,7 +81,7 @@ số nào gõ tay.
 | Bằng chứng | Số |
 |---|---|
 | Luật L2, mỗi luật có ca dương **và** ca đối chứng | **14** |
-| Test tự động, offline | **763** |
+| Test tự động, offline | **775** |
 | Mẫu đã gắn nhãn | **38** |
 | Xử lý đặc thù Solana | CPI/inner instruction · ALT · Token-2022 (Permanent Delegate, Transfer Hook) · nhiều signer, phân biệt người dùng với fee payer |
 | Phân tầng tin cậy | 8 rủi ro có cơ chế hoặc khai là giới hạn — [`THREAT-MODEL.md`](../bao-mat/THREAT-MODEL.md) |
