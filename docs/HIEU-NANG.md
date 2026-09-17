@@ -30,14 +30,22 @@ của máy chạy, không bóp băng thông.
 
 ### Tải trang
 
+Số dưới đây lấy từ `data/hieu-nang/do-tre.json` của phiên **17/09**.
+
 | | Nguội | Ấm |
 |---|---|---|
-| First Contentful Paint | **116 ms** | 92 ms |
-| DOMContentLoaded | 60 ms | 42 ms |
-| JS qua dây | **173 KB** (3 tệp) | 0 KB — cache |
-| JS sau giải nén | **557 KB** | 557 KB |
+| First Contentful Paint | **104 ms** | 100 ms |
+| DOMContentLoaded | 42 ms | 36 ms |
+| JS qua dây | **178 KB** (3 tệp) | 0 KB — cache |
+| JS sau giải nén | **575 KB** | 575 KB |
 
 *Nguội* = context trình duyệt mới, chưa cache gì. *Ấm* = tải lại trong cùng context.
+
+Cả hai đều **sau một lượt làm nóng bị bỏ đi**. Lần vẽ đầu tiên của một tiến trình
+Chromium tốn thêm ~2,3 s để khởi tạo GPU/compositor, và chi phí đó thuộc về máy chạy
+bài đo chứ không thuộc về sản phẩm — đo được: cùng một tiến trình, lượt đầu 2364 ms
+rồi ba lượt sau 104 · 100 · 104 ms. Không bỏ lượt đó thì con số "nguội" nhảy
+104 → 2404 ms giữa hai phiên mà mã không đổi một dòng.
 
 557 KB sau giải nén là con số đáng nhìn: phần lớn nằm ở **một chunk 345 KB** —
 `@solana/web3.js`. Đó là thứ tối ưu được, khác với độ trễ RPC vốn nằm ngoài tay đội.
@@ -47,25 +55,29 @@ của máy chạy, không bóp băng thông.
 Đo tới lúc **phần tử xuất hiện**, không phải tới lúc promise resolve: người dùng tin
 vào thứ họ nhìn thấy.
 
-**Đo lại 15/09/2026 — 30 lượt.** Bảng dưới là lượt mới nhất; hai cột sau giữ lại để
+**Đo lại 17/09/2026 — 30 lượt.** Bảng dưới là lượt mới nhất; ba cột sau giữ lại để
 thấy con số này dao động thế nào giữa các phiên đo.
 
-| | 30 lượt · **15/09** | 30 lượt · 14/09 | 5 lượt · 08/09 |
-|---|---|---|---|
-| Lượt hoàn tất | **30/30**, 0 hỏng | 30/30, 0 hỏng | 5/5 |
-| Trung vị (cả 30 lượt) | **1351 ms** | 1596 ms | ~850 ms *(bỏ lượt đầu)* |
-| Trung vị bỏ lượt đầu | 1351 ms | 1351 ms | ~850 ms |
-| Lượt đầu | 838 ms | 2352 ms | 1348 ms |
-| Thấp nhất | 838 ms | 834 ms | 837 ms |
-| **Percentile 95 quan sát** | **5359 ms** | 3874 ms | chưa đo được với n=5 |
-| Cao nhất | **8896 ms** | 3877 ms | 3352 ms |
-| Dao động (max/min) | **10,6×** | 4,6× | 4,0× |
-| Lượt gọi RPC mỗi lần kiểm | **7** (trung vị), cao nhất **17** | 7, cao nhất 11 | 7, cao nhất 10 |
+| | 30 lượt · **17/09** | 30 lượt · 15/09 | 30 lượt · 14/09 | 5 lượt · 08/09 |
+|---|---|---|---|---|
+| Lượt hoàn tất | **30/30**, 0 hỏng | 30/30, 0 hỏng | 30/30, 0 hỏng | 5/5 |
+| Trung vị (cả 30 lượt) | **1916 ms** | 1351 ms | 1596 ms | ~850 ms *(bỏ lượt đầu)* |
+| Trung vị bỏ lượt đầu | 1926 ms | 1351 ms | 1351 ms | ~850 ms |
+| Lượt đầu | 1398 ms | 838 ms | 2352 ms | 1348 ms |
+| Thấp nhất | 866 ms | 838 ms | 834 ms | 837 ms |
+| **Percentile 95 quan sát** | **3959 ms** | 5359 ms | 3874 ms | chưa đo được với n=5 |
+| Cao nhất | **5487 ms** | 8896 ms | 3877 ms | 3352 ms |
+| Dao động (max/min) | **6,3×** | 10,6× | 4,6× | 4,0× |
+| Lượt gọi RPC mỗi lần kiểm | **8** (trung vị), cao nhất **11** | 7, cao nhất 17 | 7, cao nhất 11 | 7, cao nhất 10 |
 
-**Ba phiên đo, ba con số đuôi khác hẳn nhau — và đó mới là phát hiện.** Trung vị khá
-ổn định (1351 ở cả hai phiên n=30), nhưng phần đuôi thì không: cao nhất nhảy từ 3877
-lên **8896 ms**, dao động từ 4,6× lên **10,6×**. Cùng một bản mã, cùng một máy. Thứ
-đổi là **RPC công cộng**, và nó nằm ngoài tay đội.
+**Bốn phiên đo, bốn con số đuôi khác hẳn nhau — và đó mới là phát hiện.** Cao nhất đi
+3352 → 3877 → 8896 → 5487 ms; dao động 4,0× → 4,6× → 10,6× → 6,3×. Cùng một bản mã,
+cùng một máy. Thứ đổi là **RPC công cộng**, và nó nằm ngoài tay đội.
+
+Phiên 17/09 có trung vị cao hơn hẳn (1916 so với 1351), và số RPC giải thích được:
+trung vị **8 lượt RPC** thay vì 7, với 11 lượt cuối phiên đều gọi 10–11 lượt RPC.
+Nhiều retry hơn thì chậm hơn — cùng cơ chế mục 3 mô tả, chỉ khác là lần này nó chạm
+vào cả phần giữa của phân bố chứ không riêng phần đuôi.
 
 Hệ quả cho cách nói: **trung vị là con số dùng được; đuôi thì không hứa được.** Một
 tài liệu công bố "p95 quan sát 3874 ms" như một thuộc tính của sản phẩm là đang mô tả
@@ -99,16 +111,20 @@ hình dạng, và điểm ngoại lai rơi vào **vị trí khác nhau mỗi l�
 cộng trả lỗi rồi client thử lại, không phải khởi động nguội.
 
 **Đo lại trên n=30 thì kết luận đó có số, không còn là đọc bằng mắt.** Tách 30 lượt
-của phiên 15/09 theo số RPC của chính lượt đó:
+theo số RPC của chính lượt đó — phiên **17/09**, mốc tách là trung vị RPC (8):
 
 | Nhóm | Số lượt | Trung vị |
 |---|---|---|
-| **7 lượt RPC** — không retry | 19 | **852 ms** |
-| **>7 lượt RPC** — có retry | 11 | **2875 ms** |
+| **dưới mốc RPC** — không retry | 17 | **1406 ms** |
+| **từ mốc RPC trở lên** — có retry | 13 | **2984 ms** |
 
-Chênh **3,4×**, và hệ số tương quan Pearson giữa thời gian với số lượt RPC là
-**r = 0,84**. Lượt chậm nhất cả phiên — 8896 ms — cũng là lượt gọi **17** lượt RPC,
-gấp 2,4 lần mức thường.
+Chênh **2,1×**. Phiên 15/09 cho cùng hình dạng với biên độ lớn hơn — 19 lượt ở
+**852 ms** so với 11 lượt ở **2875 ms**, chênh **3,4×**, tương quan Pearson giữa thời
+gian và số lượt RPC là **r = 0,84**, và lượt chậm nhất phiên đó (8896 ms) cũng là lượt
+gọi **17** lượt RPC.
+
+Hai phiên khác biên độ nhưng cùng kết luận: **thời gian đi theo số lượt RPC, không đi
+theo thứ tự lượt bấm.** Đó là điều cần chứng minh.
 
 Phép tách này nay nằm trong `scripts/tao-so-lieu.ts` (`tachTheoRetry`), nên mỗi lượt
 đo sau đều tự có con số ấy thay vì phải kể lại chuyện cũ.

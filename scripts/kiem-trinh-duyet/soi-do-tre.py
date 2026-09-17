@@ -92,20 +92,51 @@ NGUONG_BAM_KET_QUA_MS = 5000
 
 
 async def do_tai_trang(ctx, nhan: str) -> dict:
+    """Đo tải trang. FCP đợi bằng PerformanceObserver, không đợi bằng đồng hồ.
+
+    ĐÃ HỎNG THEO ĐÚNG KIỂU NÓ ĐỊNH CHẶN. Bản trước chờ cứng 400 ms rồi hỏi
+    `getEntriesByType("paint")`. Trên lượt tải đầu tiên của một trình duyệt vừa
+    khởi động, FCP rơi vào khoảng 2,5 s — sau mốc 400 ms — nên entry chưa tồn tại
+    và `fcp` ghi `null`.
+
+    Tệ hơn: guard cảnh báo ở cuối file viết `if ket[...]["fcp"] and ... > NGUONG`.
+    `None` là falsy, nên khi phép đo THẤT BẠI thì guard bị bỏ qua hoàn toàn và
+    `canhBao` ra rỗng. Bài đo im lặng đúng lúc đáng nói nhất.
+
+    Cùng hình dạng với lỗi đã ghi ở `docs/HIEU-NANG.md` mục 4: guard hỏi
+    `byteJsQuaDay == 0` trong khi máy chủ trả 859 byte. Hỏi sai câu thì không bao
+    giờ đỏ.
+
+    Đo lại 3 lượt cho thấy sản phẩm KHÔNG hồi quy: lượt 1 = 2496 ms (trình duyệt
+    vừa khởi động), lượt 2 và 3 = 100 và 104 ms — khớp con số 116 ms đang công bố.
+    Nên `null` ở đây chưa bao giờ là số đo, nó là phép đo hỏng.
+    """
     pg = await ctx.new_page()
     await pg.goto(TRANG, wait_until="load")
     await pg.wait_for_timeout(400)
     t = await pg.evaluate(
-        """() => {
+        """async () => {
             const n = performance.getEntriesByType("navigation")[0];
-            const paint = performance.getEntriesByType("paint");
-            const fcp = paint.find((p) => p.name === "first-contentful-paint");
+            // `buffered: true` lấy cả entry đã phát trước khi observer gắn vào, nên
+            // không có cửa sổ đua. Hạn 10 s là để không treo mãi nếu trang không
+            // bao giờ vẽ được gì — trường hợp đó `fcp` vẫn là null, và guard ở cuối
+            // file nay BÁO thay vì bỏ qua.
+            const fcp = await new Promise((res) => {
+                const e = performance.getEntriesByName("first-contentful-paint")[0];
+                if (e) return res(Math.round(e.startTime));
+                const ob = new PerformanceObserver((ds, o) => {
+                    for (const x of ds.getEntries())
+                        if (x.name === "first-contentful-paint") { o.disconnect(); res(Math.round(x.startTime)); }
+                });
+                ob.observe({ type: "paint", buffered: true });
+                setTimeout(() => { ob.disconnect(); res(null); }, 10000);
+            });
             const js = performance.getEntriesByType("resource")
                 .filter((r) => r.name.endsWith(".js"));
             return {
                 domContentLoaded: Math.round(n.domContentLoadedEventEnd),
                 load: Math.round(n.loadEventEnd),
-                fcp: fcp ? Math.round(fcp.startTime) : null,
+                fcp,
                 soTepJs: js.length,
                 // `transferSize` là byte đi qua dây (đã nén). 0 nghĩa là lấy từ cache.
                 byteJsQuaDay: js.reduce((s, r) => s + (r.transferSize || 0), 0),
@@ -244,6 +275,41 @@ async def main() -> None:
             "banDung": "production (`vite build` + `vite preview`), KHÔNG phải dev server",
         }
 
+        # LƯỢT LÀM NÓNG — bỏ đi, không ghi vào bằng chứng.
+        #
+        # "Nguội" ở bài này nghĩa là NGUỘI CACHE: context mới, chưa tải bundle lần
+        # nào. Nó KHÔNG có nghĩa "Chromium vừa khởi động" — chi phí khởi động của
+        # trình duyệt và của hệ điều hành không phải thuộc tính của sản phẩm.
+        #
+        # Đo được, không đoán: lượt tải đầu tiên tuyệt đối cho FCP 2488 ms, ba lượt
+        # sau cho 164 · 112 · 108 ms, kể cả khi mỗi lượt dùng một Chromium mới tinh.
+        # Không bỏ lượt này thì con số "nguội" nhảy 112 -> 2484 ms giữa hai phiên đo
+        # mà sản phẩm không đổi một dòng nào — và một tài liệu công bố 2484 ms như
+        # đặc tính sản phẩm là đang mô tả thời gian khởi động của máy chạy bài đo.
+        # Phải CHỜ NÓ VẼ XONG, không chỉ chờ `load`. Chi phí ~2,3 s nằm ở lần vẽ đầu
+        # tiên của tiến trình Chromium (khởi tạo GPU/compositor), và `load` xảy ra
+        # trước lần vẽ đó. Một lượt làm nóng chỉ chờ `load` rồi đóng context không
+        # tiêu được chi phí ấy — đã thử, con số "nguội" vẫn 2404 ms.
+        #
+        # Bằng chứng: trong cùng một tiến trình, `main()` đo ra 2364 ms, rồi gọi
+        # thẳng `do_tai_trang` ba lần ngay sau đó cho 104 · 100 · 104 ms.
+        ctxNong = await b.new_context(viewport={"width": 1280, "height": 900})
+        pgNong = await ctxNong.new_page()
+        await pgNong.goto(TRANG, wait_until="load")
+        await pgNong.evaluate(
+            """() => new Promise((res) => {
+                const xong = () => performance.getEntriesByName("first-contentful-paint").length > 0;
+                if (xong()) return res();
+                const ob = new PerformanceObserver((ds, o) => {
+                    for (const x of ds.getEntries())
+                        if (x.name === "first-contentful-paint") { o.disconnect(); res(); }
+                });
+                ob.observe({ type: "paint", buffered: true });
+                setTimeout(() => { ob.disconnect(); res(); }, 10000);
+            })""",
+        )
+        await ctxNong.close()
+
         ctx = await b.new_context(viewport={"width": 1280, "height": 900})
         ket["taiTrangNguoi"], pgNguoi = await do_tai_trang(ctx, "nguội — context mới, chưa có cache")
         await kiemDoThat(pgNguoi, ket["taiTrangNguoi"])
@@ -334,8 +400,20 @@ async def main() -> None:
     # KHÔNG in p95: ba mẫu không đỡ nổi một con số p95, và in nó ra chỉ để trông
     # giống một báo cáo hiệu năng thật.
     canh = []
-    if ket["taiTrangNguoi"]["fcp"] and ket["taiTrangNguoi"]["fcp"] > NGUONG_TAI_TRANG_MS:
-        canh.append(f"FCP nguội {ket['taiTrangNguoi']['fcp']} ms > {NGUONG_TAI_TRANG_MS} ms")
+    # KHÔNG ĐO ĐƯỢC PHẢI NÓI RA, KHÔNG ĐƯỢC IM LẶNG.
+    #
+    # Bản trước viết `if fcp and fcp > NGUONG`. `None` là falsy, nên khi FCP không
+    # đo được thì guard bị bỏ qua sạch và `canhBao` ra rỗng — bài đo im lặng đúng
+    # lúc đáng nói nhất, rồi tài liệu tiếp tục công bố con số của lượt đo trước.
+    #
+    # Ba trạng thái, ba câu khác nhau: đo được và đạt · đo được và quá ngưỡng ·
+    # KHÔNG đo được. Gộp trạng thái ba vào trạng thái một là tự bịt mắt.
+    for khoa, ten in (("taiTrangNguoi", "nguội"), ("taiTrangAm", "ấm")):
+        f = ket[khoa]["fcp"]
+        if f is None:
+            canh.append(f"FCP {ten} KHÔNG ĐO ĐƯỢC — không có paint entry sau 10 s")
+        elif ten == "nguội" and f > NGUONG_TAI_TRANG_MS:
+            canh.append(f"FCP nguội {f} ms > {NGUONG_TAI_TRANG_MS} ms")
     # Cảnh báo theo LƯỢT ĐẦU, không theo trung vị. Trung vị của [6926, 836, 839] là
     # 839 — dưới mọi ngưỡng, trong khi người dùng đầu tiên chờ gần bảy giây.
     if ket["bamLanDau"] and ket["bamLanDau"] > NGUONG_BAM_KET_QUA_MS:

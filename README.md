@@ -42,7 +42,7 @@ tay**. Đối chiếu từng mục rubric ở [ADR-0001](docs/adr/0001-doi-huong
 | **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **726** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
 | **25 %** kiến trúc on-chain/off-chain | Ba lớp L1/L2/L3, ranh giới cưỡng chế **bằng kiểu**: chỉ L2 sinh `level`, AI không bao giờ · **không** smart contract, và [nói rõ vì sao](docs/adr/0001-doi-huong-technical-build.md) |
 | **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **620 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
-| **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **112 ms** · bấm→thẻ **n=30**, trung vị **1351 ms**, p95 quan sát **5359 ms** · demo công khai dựng lại mỗi lần push |
+| **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **104 ms** · bấm→thẻ **n=30**, trung vị **1916 ms**, p95 quan sát **3959 ms** · demo công khai dựng lại mỗi lần push |
 
 **Nguyên tắc kiến trúc, nói một câu:** ưu tiên phát hiện qua **thay đổi trạng thái**,
 không qua **đọc instruction**. Kẻ tấn công giấu được instruction — bọc trong CPI, gói

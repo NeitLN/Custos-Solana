@@ -127,7 +127,7 @@ gói cài **từ registry**, kèm 3/3 đối chứng dương.
 | Vùng bấm ≥44 px | **26/26** ở 375 px |
 | Bàn phím · zoom · chữ dài | **16/16** |
 | First Contentful Paint | **116 ms** · 173 KB qua dây |
-| Bấm → thẻ kết quả | **n=30**, 0 lượt hỏng · trung vị **1351 ms** · p95 quan sát **5359 ms** · dải **838–8896 ms** (dao động 10,6×). Số cũ ~850 ms đo trên 4 lượt |
+| Bấm → thẻ kết quả | **n=30**, 0 lượt hỏng · trung vị **1916 ms** · p95 quan sát **3959 ms** · dải **866–5487 ms** (dao động 6,3×). Số cũ ~850 ms đo trên 4 lượt |
 | Demo công khai | hai trang, CI dựng lại mỗi lần push, chặn rò rỉ khoá |
 
 **Chưa có:** video demo dự phòng (BTC **bắt buộc**). Phạm vi mọi số giao diện:
