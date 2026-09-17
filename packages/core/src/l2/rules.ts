@@ -81,6 +81,7 @@ export const luat1: Rule = {
         level: "danger",
         reasonCode: REASON.SET_AUTHORITY_ACCOUNT_OWNER,
         detail: `Tài khoản ${t.address} đổi chủ từ ${t.ownerBefore} sang ${t.ownerAfter}`,
+        bangChung: [{ loai: "tokenAccount" as const, khoa: t.address }],
       });
     }
     return hits;
@@ -104,6 +105,7 @@ export const luat2: Rule = {
         level: "danger",
         reasonCode: REASON.SET_AUTHORITY_CLOSE_OR_FREEZE,
         detail: `Quyền đóng tài khoản ${t.address} được trao cho ${sau}`,
+        bangChung: [{ loai: "tokenAccount" as const, khoa: t.address }],
       });
     }
     return hits;
@@ -133,6 +135,7 @@ export const luat3: Rule = {
         ruleId: 3,
         level: "danger",
         reasonCode: REASON.APPROVE_DELEGATE_LON,
+        bangChung: [{ loai: "tokenAccount" as const, khoa: t.address }],
         detail:
           `${sau} được phép rút ${t.delegatedAmountAfter} từ ${t.address}, ` +
           `trong khi tài khoản chỉ có ${t.amountBefore}`,
@@ -181,6 +184,7 @@ export const luat12: Rule = {
         ruleId: 12,
         level: "danger",
         reasonCode: REASON.SYSTEM_ASSIGN_DOI_OWNER,
+        bangChung: [{ loai: "account" as const, khoa: a.address }],
         detail:
           `Account ${a.address} chuyển từ chương trình ${a.programOwnerBefore} ` +
           `sang ${a.programOwnerAfter}`,
@@ -225,6 +229,7 @@ export const luat4: Rule = {
         level: "warning",
         reasonCode: REASON.TOKEN2022_PERMANENT_DELEGATE,
         detail: `Token ${m.address} có quyền rút vĩnh viễn thuộc ${m.permanentDelegate}`,
+        bangChung: [{ loai: "mint" as const, khoa: m.address }],
       });
 
       // CHÍNH quyền đó ra tay: chuyện khác hẳn. Người giữ token không bấm gì để
@@ -246,6 +251,7 @@ export const luat4: Rule = {
         ruleId: 4,
         level: "danger",
         reasonCode: REASON.PERMANENT_DELEGATE_RA_TAY,
+        bangChung: [{ loai: "mint" as const, khoa: m.address }],
         detail:
           `${m.permanentDelegate} dùng quyền rút vĩnh viễn của token ${m.address} ` +
           `để tự thực hiện lệnh trong giao dịch này`,
@@ -268,6 +274,7 @@ export const luat6: Rule = {
         level: "warning" as const,
         reasonCode: REASON.MINT_AUTHORITY_CHUA_THU_HOI,
         detail: `${m.address} vẫn có thể được tạo thêm bởi ${m.mintAuthority}`,
+        bangChung: [{ loai: "mint" as const, khoa: m.address }],
       }));
   },
 };
@@ -294,6 +301,7 @@ export const luat9: Rule = {
         level: "warning" as const,
         reasonCode: REASON.PROGRAM_CHUA_XAC_MINH,
         detail: `Chương trình ${p} ghi vào tài khoản của bạn, và chúng tôi chưa đọc hiểu được nó`,
+        bangChung: [{ loai: "program" as const, khoa: p }],
       }));
   },
 };
@@ -398,6 +406,7 @@ export const luat8: Rule = {
         level: "warning",
         reasonCode: REASON.VI_NHAN_MOI_TAO,
         detail: `Ví nhận ${nhan} vừa được tạo cách đây ${tuoi.toFixed(1)} giờ`,
+        bangChung: [{ loai: "tokenAccount" as const, khoa: t.address }],
       });
     }
     return hits;
@@ -432,6 +441,7 @@ export const luat5: Rule = {
         ruleId: 5,
         level: "warning" as const,
         reasonCode: REASON.TOKEN2022_TRANSFER_HOOK,
+        bangChung: [{ loai: "mint" as const, khoa: m.address }],
         detail:
           `Mỗi lần chuyển ${m.address} sẽ chạy thêm chương trình ` +
           `${m.transferHookProgramId}, và chúng tôi chưa đọc hiểu được nó`,
@@ -468,6 +478,7 @@ export const luat7: Rule = {
         level: "warning" as const,
         reasonCode: REASON.FREEZE_AUTHORITY_CON_HIEU_LUC,
         detail: `${m.freezeAuthority} có thể đóng băng tài khoản ${m.address} của bạn`,
+        bangChung: [{ loai: "mint" as const, khoa: m.address }],
       }));
   },
 };
@@ -504,6 +515,7 @@ export const luat10: Rule = {
         ruleId: 10,
         level: "warning" as const,
         reasonCode: REASON.ALT_KHONG_GIAI_DUOC,
+        bangChung: [{ loai: "lookupTable" as const, khoa: t.address }],
         detail:
           `Không đọc được bảng tra địa chỉ ${t.address}, nên danh sách tài khoản ` +
           `của giao dịch có thể còn thiếu`,

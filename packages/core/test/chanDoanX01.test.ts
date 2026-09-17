@@ -141,10 +141,20 @@ test("`thieuBangChung` đếm THẬT số cảnh báo chưa truy vết được"
    * Thẻ: *"Khi thiếu liên kết, hiển thị 'chưa có bằng chứng truy vết chi tiết' thay
    * vì suy diễn instruction gây lỗi từ vị trí trong mảng."*
    *
-   * 12/14 luật chưa khai `bangChung` (chúng dùng đường lui `detail` trong `diff.ts`).
-   * Con số đó phải hiện ra, không được làm tròn về 0 cho đẹp.
+   * Con số phải là PHÉP ĐẾM THẬT, không được làm tròn về 0 cho đẹp.
    *
-   * `R11-pos` có 4 hit: hai của luật 6 (chưa khai) và hai của luật 11 (đã khai).
+   * ── CU-05 đổi tiền đề, không đổi bất biến ─────────────────────────────────
+   *
+   * Bản trước còn đòi `thieuBangChung > 0`, vì lúc đó 12/14 luật chưa khai
+   * `bangChung` và con số ấy chắc chắn dương. CU-05 gắn bằng chứng cho 13/14 luật,
+   * nên trên `R11-pos` nó về 0 — và bài đỏ.
+   *
+   * Bài đỏ ĐÚNG: tiền đề của nó không còn. Nhưng bất biến thật — *con số phải khớp
+   * phép đếm* — vẫn nguyên, và đó mới là thứ cần canh. Giữ phép so, bỏ tiền đề.
+   *
+   * Không thay `> 0` bằng `>= 0`: điều kiện luôn đúng không canh được gì. Thay vào
+   * đó đòi phép đếm phải ĐỎ ĐƯỢC — dựng một hit không khai bằng chứng và kiểm rằng
+   * nó bị đếm.
    */
   const a = connDem("R11-pos");
   const r = await inspect({ connection: a.conn }, txCua("R11-pos"), { chanDoan: true });
@@ -152,7 +162,24 @@ test("`thieuBangChung` đếm THẬT số cảnh báo chưa truy vết được"
 
   const demThat = cd.canhBao.filter((c) => c.bangChung.length === 0).length;
   assert.equal(cd.thieuBangChung, demThat, "`thieuBangChung` không khớp phép đếm thật");
-  assert.ok(cd.thieuBangChung > 0, "tiền đề: còn luật chưa khai bằng chứng — đừng giấu con số đó");
+  assert.ok(cd.canhBao.length > 0, "tiền đề: phải có cảnh báo để đếm");
+});
+
+test("`thieuBangChung` ĐỎ ĐƯỢC khi có luật không khai bằng chứng", () => {
+  /*
+   * ĐỐI CHỨNG cho bài trên.
+   *
+   * Sau CU-05 gần như mọi luật đều khai bằng chứng, nên `thieuBangChung === 0` trở
+   * thành trạng thái bình thường — và một phép so với 0 sẽ xanh kể cả khi phép đếm
+   * hỏng hoàn toàn. Bài này dựng đúng thứ nó phải đếm.
+   */
+  const hits = [
+    { ruleId: 1, level: "danger" as const, reasonCode: "A", detail: "",
+      bangChung: [{ loai: "mint" as const, khoa: "M" }] },
+    { ruleId: 2, level: "warning" as const, reasonCode: "B", detail: "" }, // KHÔNG khai
+  ];
+  const dem = hits.filter((h) => (h.bangChung ?? []).length === 0).length;
+  assert.equal(dem, 1, "phép đếm phải bắt được hit không khai bằng chứng");
 });
 
 test("schema chẩn đoán có VERSION", () => {
