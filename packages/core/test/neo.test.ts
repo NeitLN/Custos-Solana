@@ -158,6 +158,48 @@ test("kiemLuc không đọc được ⇒ coi là QUÁ CŨ (fail-safe)", () => {
   assert.equal(quaCu({ ...neoKetQua(msg("x"), AI, "devnet"), kiemLuc: "rác" }), true);
 });
 
+/* ── CU-02 · giới hạn tuổi phải HỮU HẠN và HỢP LỆ ──────────────────────────── */
+
+test("kiemLuc ở TƯƠNG LAI ⇒ quá cũ, không phải tươi vĩnh viễn", () => {
+  /*
+   * ĐÃ TÁI HIỆN trước khi sửa: một neo ghi thời điểm 1 giờ sau cho `quaCu === false`,
+   * và sẽ còn `false` mãi — vì `bayGio - t` âm, mà số âm thì không bao giờ lớn hơn
+   * `msToiDa`. Kết quả kiểm cũ sống vô hạn.
+   *
+   * Xảy ra khi clock máy lệch, khi máy đổi múi giờ giữa chừng, hoặc khi neo đến từ
+   * dữ liệu không đáng tin. Custos không có nguồn thời gian tin cậy nào để đo xem
+   * lệch bao nhiêu là chấp nhận được — nên một neo tự khai tương lai là một neo
+   * không giải thích được, và fail-safe áp dụng.
+   */
+  const tuongLai = {
+    ...neoKetQua(msg("x"), AI, "devnet"),
+    kiemLuc: new Date(Date.now() + 3_600_000).toISOString(),
+  };
+  assert.equal(quaCu(tuongLai), true, "neo khai thời điểm tương lai phải bị coi là quá cũ");
+
+  // Và đúng hiện tại thì vẫn tươi — sửa chiều âm không được làm hỏng chiều dương.
+  assert.equal(quaCu(neoKetQua(msg("x"), AI, "devnet")), false);
+});
+
+test("msToiDa không hữu hạn hoặc âm ⇒ quá cũ, không sống vô hạn", () => {
+  /*
+   * `NaN` và `Infinity` đều cho `bayGio - t > msToiDa === false` ở bản cũ, nên giới
+   * hạn tuổi biến mất hoàn toàn.
+   *
+   * Điểm đáng nói: `Date.parse` trả `NaN` thì hàm này fail-safe đúng (bài trên), còn
+   * `msToiDa` là `NaN` thì lại fail-open — cùng một loại dữ liệu xấu, hai hướng ngược
+   * nhau ở hai dòng cạnh nhau. Bảo vệ được đúng một nửa số ca.
+   */
+  const neo = neoKetQua(msg("x"), AI, "devnet");
+  assert.equal(quaCu(neo, Number.NaN), true, "NaN phải là quá cũ");
+  assert.equal(quaCu(neo, Number.POSITIVE_INFINITY), true, "Infinity không được cho sống vô hạn");
+  assert.equal(quaCu(neo, -1), true, "giới hạn âm phải là quá cũ");
+
+  // Giá trị hợp lệ vẫn hoạt động đúng cả hai chiều.
+  assert.equal(quaCu(neo, 60_000), false);
+  assert.equal(quaCu({ ...neo, kiemLuc: new Date(Date.now() - 90_000).toISOString() }, 60_000), true);
+});
+
 /* ── Đường dây: ví phải THẬT SỰ dùng cổng này ──────────────────────────────── */
 
 test("ví kiểm neo TRƯỚC khi ký, và chặn khi không khớp", () => {
