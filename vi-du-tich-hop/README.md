@@ -32,7 +32,7 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 | | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **10,9 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7,5–15,4 |
+| Cài đặt → kết quả đầu tiên | **9,8 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7,5–15,4 |
 | Dòng mã tích hợp | **30** (`src/tich-hop.js`) |
 | Một lượt `inspect()` | **628 ms** — trung vị 10 lượt trên 8 bản dựng |
 | Cần khoá riêng | **không** — `inspect()` mô phỏng, mô phỏng không đòi chữ ký |

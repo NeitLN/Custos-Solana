@@ -1,8 +1,8 @@
 {
-  "doLuc": "2026-09-17T13:26:08.828022+00:00",
-  "sourceCommit": "21fde989815210e2ec40d9326c4d2112ce829664",
+  "doLuc": "2026-09-17T14:56:49.570760+00:00",
+  "sourceCommit": "8ed5ec9a7f7ab75cdd21c3734c3883ebb4fbb548",
   "dauVet": {
-    "bam": "f4585f12b891c97d",
+    "bam": "a0bebacc376d521c",
     "soFile": 35
   },
   "the": "TB-S02",
@@ -27,7 +27,7 @@
     {
       "ten": "base64 hỏng · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3281 ms"
+      "chiTiet": "3320 ms"
     },
     {
       "ten": "base64 hỏng · không lỗi console",
@@ -52,7 +52,7 @@
     {
       "ten": "rỗng · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3253 ms"
+      "chiTiet": "4676 ms"
     },
     {
       "ten": "rỗng · không lỗi console",
@@ -77,7 +77,7 @@
     {
       "ten": "quá dài — 12.000 ký tự · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3332 ms"
+      "chiTiet": "3248 ms"
     },
     {
       "ten": "quá dài — 12.000 ký tự · không lỗi console",
@@ -102,7 +102,7 @@
     {
       "ten": "HTML trong payload · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3338 ms"
+      "chiTiet": "3265 ms"
     },
     {
       "ten": "HTML trong payload · không lỗi console",
@@ -127,7 +127,7 @@
     {
       "ten": "Bidi · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3254 ms"
+      "chiTiet": "3350 ms"
     },
     {
       "ten": "Bidi · không lỗi console",
@@ -152,7 +152,7 @@
     {
       "ten": "JSON chứ không phải base64 · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3304 ms"
+      "chiTiet": "3298 ms"
     },
     {
       "ten": "JSON chứ không phải base64 · không lỗi console",
@@ -177,7 +177,7 @@
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · xong trong ngân sách",
       "dat": true,
-      "chiTiet": "3296 ms"
+      "chiTiet": "3228 ms"
     },
     {
       "ten": "base64 hợp lệ nhưng không phải giao dịch · không lỗi console",
