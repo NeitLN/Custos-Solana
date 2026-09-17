@@ -31,11 +31,29 @@
   --color-thuong: oklch(0.5 0.125 157);
 }
 
+:root {
+  --ui-surface: rgba(255, 255, 255, 0.96);
+  --ui-surface-soft: rgba(248, 250, 255, 0.94);
+  --ui-border: rgba(191, 201, 222, 0.68);
+  --ui-border-strong: rgba(155, 171, 207, 0.72);
+  --ui-shadow-sm: 0 1px 2px rgba(25, 35, 58, 0.05);
+  --ui-shadow-card:
+    0 1px 2px rgba(25, 35, 58, 0.05),
+    0 12px 30px rgba(45, 61, 101, 0.075),
+    0 30px 70px rgba(71, 91, 148, 0.045);
+  --ui-shadow-hover:
+    0 2px 4px rgba(25, 35, 58, 0.06),
+    0 18px 42px rgba(45, 61, 101, 0.12);
+  --ui-focus: rgba(49, 85, 198, 0.28);
+}
+
 html {
   /* Giao diện là light hoàn toàn. Khai `dark` ở đây làm trình duyệt vẽ thanh cuộn,
      form control gốc và vùng ngoài `.app-shell` theo bảng màu tối — lệch hẳn với
      phần còn lại. Bản trước khai dark rồi phải ghi đè `light` trong `.app-shell`. */
   color-scheme: light;
+  scrollbar-gutter: stable;
+  scrollbar-color: #aeb9d0 #eef1f8;
 }
 
 body {
@@ -45,8 +63,18 @@ body {
   color: var(--color-chu);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-feature-settings: "cv11", "ss01";
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  color: #18213a;
+  background: rgba(119, 145, 235, 0.28);
+}
+
+:where(button, input, textarea, select) {
+  font: inherit;
 }
 
 button,
@@ -143,28 +171,28 @@ button {
 
 .network-pill,
 .icon-link {
-  border: 1px solid #dfe3ea;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 2px rgba(25, 32, 47, 0.04);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-sm);
+  backdrop-filter: blur(10px);
 }
 
 .icon-link:hover {
-  border-color: #c8cfda;
+  border-color: var(--ui-border-strong);
   background: #fff;
+  box-shadow: 0 5px 16px rgba(43, 59, 99, 0.09);
 }
 
 .glass-card,
 .wallet-card,
 .review-card {
-  border: 1px solid #dfe3ea;
-  background: #fff;
-  box-shadow:
-    0 1px 2px rgba(22, 30, 46, 0.04),
-    0 16px 38px rgba(34, 46, 72, 0.07);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .wallet-card {
-  border-top: 4px solid #3155c6;
+  border-top: 4px solid #3f61cf;
 }
 
 .wallet-card__top {
@@ -235,9 +263,9 @@ button {
 .action-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid #e0e4eb;
-  background: #fff;
-  box-shadow: 0 1px 1px rgba(22, 30, 46, 0.025);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-sm);
   transition:
     border-color 170ms ease,
     box-shadow 170ms ease,
@@ -272,7 +300,7 @@ button {
   .action-card:hover {
     z-index: 1;
     border-color: #b9c5ea;
-    box-shadow: 0 8px 22px rgba(38, 58, 112, 0.09);
+    box-shadow: var(--ui-shadow-hover);
     transform: translateY(-2px);
   }
 }
@@ -345,12 +373,12 @@ button {
 }
 
 .review-header {
-  border-color: #e5e8ed;
-  background: #fff;
+  border-color: var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .review-body {
-  background: #fcfcfd;
+  background: var(--ui-surface-soft);
 }
 
 .dapp-request {
@@ -721,7 +749,7 @@ button {
 }
 
 :where(button, a, input, [tabindex]):focus-visible {
-  outline: 3px solid rgba(49, 85, 198, 0.22);
+  outline: 3px solid var(--ui-focus);
   outline-offset: 2px;
   border-radius: 8px;
 }
