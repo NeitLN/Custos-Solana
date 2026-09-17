@@ -210,7 +210,35 @@ test("ví kiểm neo TRƯỚC khi ký, và chặn khi không khớp", () => {
    */
   const s = app();
   assert.match(s, /const neoRef = useRef<NeoKetQua \| null>\(null\)/);
-  assert.match(s, /neoRef\.current = neoKetQua\(tx\.message\.serialize\(\)/, "phải dựng neo từ byte THẬT");
+  /*
+   * CU-02 nới MẪU, không nới ĐIỀU KIỆN — và nới theo hướng chặt hơn.
+   *
+   * Bản trước đòi đúng chuỗi `neoKetQua(tx.message.serialize(`. Ý định là *"neo từ
+   * byte thật, không phải một bản mô tả"*, và ý định đó vẫn giữ nguyên. Nhưng đọc
+   * `tx.message.serialize()` ở CHỖ DỰNG NEO là đọc SAU khi `inspect()` đã await —
+   * và đã tái hiện được rằng một `tx` bị thay `serialize` trong cửa sổ await sẽ
+   * cho một neo ghi đúng bản tráo, rồi `khopNeo` lúc ký trả KHỚP.
+   *
+   * Nên nay đòi ba điều, mỗi điều mạnh hơn điều cũ:
+   *   1. bytes được chụp vào một biến TRƯỚC khi vào `inspect()`
+   *   2. neo dựng từ CHÍNH biến đó, không phải từ một lần serialize mới
+   *   3. có so bytes lúc kết thúc để phát hiện tx đã đổi giữa chừng
+   */
+  assert.match(
+    s,
+    /const byteNay = txNay\.message\.serialize\(\);/,
+    "phải chụp bytes ngay khi tx sinh ra, TRƯỚC mọi await",
+  );
+  assert.match(
+    s,
+    /neoRef\.current = neoKetQua\(byteLucKiem,/,
+    "neo phải dựng từ bytes ĐÃ CHỤP, không phải serialize lại sau await",
+  );
+  assert.match(
+    s,
+    /byteBayGio\.every\(\(b, i\) => b === byteLucKiem\[i\]\)/,
+    "phải so bytes cuối lượt để phát hiện tx đổi giữa chừng",
+  );
   assert.match(s, /khopNeo\(neo, tx\.message\.serialize\(\)/, "phải đối chiếu bằng byte thật");
   assert.match(s, /chặn ký:/, "phải ghi nhật ký khi chặn");
 });

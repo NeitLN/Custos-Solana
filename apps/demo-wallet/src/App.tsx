@@ -400,14 +400,36 @@ export default function App() {
       // MỘT ngân sách cho cả lượt. Nhánh Custos-TẮT bên dưới còn một chặng mô phỏng
       // nữa; nó phải tiêu nốt phần còn lại của 12 giây này, không được cấp 12 giây mới.
       const han = moHan(HAN_MS);
-      const { tx, r } = await coHanChung(
+      const { tx, byteLucKiem, r } = await coHanChung(
         (async () => {
           const { blockhash } = await c.getLatestBlockhash();
           const txNay = dungTx(kich, blockhash);
-          if (!coCustos) return { tx: txNay, r: null };
+          /*
+           * CHỤP BYTES TRƯỚC LẦN AWAIT TIẾP THEO — CU-02, mục 4.3.
+           *
+           * Bản trước đọc `tx.message.serialize()` ở chỗ dựng neo, tức SAU khi
+           * `inspect()` đã await xong. Giữa hai thời điểm đó có một cửa sổ, và một
+           * `tx` do bên ngoài cung cấp là object MUTABLE.
+           *
+           * Đã tái hiện: cho một object có `message.serialize()` trả `[1,2,3,4]`,
+           * gọi hàm đọc-sau-await, rồi thay `serialize` thành `[9,9,9,9]` ngay
+           * trong cửa sổ await. Neo dựng ra ghi `[9,9,9,9]` — tức nó neo đúng cái
+           * giao dịch ĐÃ BỊ TRÁO — và `khopNeo` lúc ký trả KHỚP, vì nó so bản tráo
+           * với chính bản tráo.
+           *
+           * Ví demo này tự dựng `txNay` nên không có dApp nào tráo được. Nhưng đó
+           * là may mắn của kịch bản, không phải bảo vệ của kiến trúc: cùng đoạn mã
+           * này là thứ một ví thật sẽ chép, và ví thật nhận `tx` từ dApp.
+           *
+           * Chụp ở đây thì cửa sổ bằng không: không có `await` nào giữa lúc tạo
+           * `txNay` và lúc đọc bytes của nó.
+           */
+          const byteNay = txNay.message.serialize();
+          if (!coCustos) return { tx: txNay, byteLucKiem: byteNay, r: null };
           ghi("đang chạy thử giao dịch trên devnet…");
           return {
             tx: txNay,
+            byteLucKiem: byteNay,
             r: await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, txNay, {
               locale: "vi",
               // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
@@ -469,16 +491,48 @@ export default function App() {
        * Ghi một cái mà bỏ cái kia — hoặc ghi cả hai từ một lượt đã bị thay thế — là
        * tạo ra đúng tình huống "ký thứ khác với thứ đang đọc".
        */
+      /*
+       * GIAO DỊCH CÓ BỊ ĐỔI TRONG LÚC KIỂM KHÔNG? — CU-02, mục 4.3.
+       *
+       * Phải hỏi TRƯỚC `conDung()`, không phải sau: giữa phép kiểm lượt và hai
+       * `setState` không được có nhánh nào, và `c03Race.test.ts` canh đúng điều đó.
+       * Bản đầu của tôi đặt khối này vào giữa và làm bài ấy đỏ — bài đỏ ĐÚNG.
+       *
+       * `byteLucKiem` chụp ngay khi `txNay` sinh ra, trước mọi `await`. Nếu bytes
+       * hiện tại đã khác, `r` nói về một giao dịch không còn tồn tại.
+       */
+      const byteBayGio = tx.message.serialize();
+      const byteConKhop =
+        byteBayGio.length === byteLucKiem.length &&
+        byteBayGio.every((b, i) => b === byteLucKiem[i]);
+      if (!byteConKhop) {
+        ghi("giao dịch đã đổi trong lúc kiểm — bỏ kết quả, không neo");
+        neoRef.current = null;
+        if (conDung()) {
+          setKetQua(null);
+          setTxCho(null);
+          setLoi(
+            "Giao dịch đã thay đổi trong lúc Custos đang kiểm. Kết quả vừa tính nói về " +
+              "một giao dịch khác với giao dịch hiện tại, nên nó đã bị bỏ. Hãy kiểm lại.",
+          );
+        }
+        return;
+      }
+
       if (!conDung()) return;
       /*
        * Dựng neo CÙNG LÚC với hai `setState` — ba thứ này mô tả cùng một lượt kiểm,
        * nên chúng phải sinh ra cùng nhau hoặc không cái nào cả.
        *
-       * `serializeMessage()` là byte thật sẽ được ký, không phải một bản mô tả: đổi
-       * blockhash cũng đổi byte, và đó là điều cần — mặc định của thẻ C06 là
-       * re-inspect, không phải chuẩn hoá rồi coi như nhau.
+       * Neo bằng `byteLucKiem` — bytes ĐÃ ĐO — chứ không bằng bytes đọc lại sau
+       * await. Đọc lại sau await là tự khớp bản tráo với chính nó: đã tái hiện được
+       * rằng một `tx` bị thay `serialize` trong cửa sổ await sẽ cho một neo ghi
+       * đúng bản tráo, và `khopNeo` lúc ký trả KHỚP.
+       *
+       * Byte thật sẽ được ký, không phải bản mô tả: đổi blockhash cũng đổi byte, và
+       * đó là điều cần — mặc định của thẻ C06 là re-inspect.
        */
-      neoRef.current = neoKetQua(tx.message.serialize(), ht.nanNhan, "devnet");
+      neoRef.current = neoKetQua(byteLucKiem, ht.nanNhan, "devnet");
       setKetQua(r);
       setTxCho(tx);
     } catch (e) {
