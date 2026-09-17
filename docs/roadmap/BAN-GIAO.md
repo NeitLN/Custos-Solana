@@ -4,7 +4,64 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — cập nhật 18/09/2026 (lát cắt A, qua CU-07)
+## Hiện trạng — 18/09/2026 (lát cắt A ĐÃ ĐÓNG, thêm CU-22)
+
+**791 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
+`nop-bai --strict` **11/13**. 32 commit chưa push.
+
+**DONE:** CU-00 · CU-05 · CU-08 · CU-09 (cổng lát cắt A).
+**PARTIAL:** CU-01 · 02 · 03 · 04 · 06 · 07 · 22.
+
+**Lát cắt A chạy được từ đầu đến cuối:** dán tx bất kỳ vào `soi.html` → mô phỏng
+Devnet → hậu quả + coverage theo năng lực → bấm cảnh báo → thấy dữ kiện thật kèm
+nguồn của nó. `soi-inspector.py` **26/26 PASS** trên Chromium thật.
+
+**Con số đo được, không ước lượng:**
+
+| | |
+|---|---|
+| Luật khai `bangChung` | **2/14 → 13/14** |
+| Bằng chứng treo lơ lửng | **0/38 fixture**, phép kiểm đỏ được |
+| Hit qua đường lui dò chuỗi | **1/75** (luật 14, không nhắc địa chỉ nào) |
+| Dòng bảng có số thô | **48/56** |
+| Coverage tách nhóm | 36 hiểu · **58 quen-chưa-đọc** · 12 lạ |
+| Đầu vào sai chạm RPC | **0 lời gọi** (đếm bằng `page.on("request")`) |
+
+**Năm lần tôi tự sai trong phiên, và cách bắt được — phần đáng đọc nhất:**
+
+1. **Giả thuyết lifetime.** `replacementBlockhash` khác gốc trông như đo được
+   blockhash hết hạn. Đếm 8 lượt blockhash tươi: **6 giống, 2 khác**. Nếu tin lượt
+   đo đầu, Custos báo "hết hạn" cho 2/8 giao dịch bình thường.
+2. **Một dòng code thừa** kèm chú thích nói sai nguyên nhân (`p.catch`). Đột biến:
+   xoá đi không bài nào đỏ.
+3. **Guard chỉ đỏ với một thứ tự đầu vào** — `chamTaiSan` thử lệnh chạm ở cuối.
+4. **Heredoc ghi byte NUL thật** vào source ⇒ file thành binary với Git.
+5. **Chép regex theo trí nhớ** — `"The operation was aborted"` trong khi Node 24 ném
+   `"This"`. Test đỏ ngay.
+
+**Hai lần probe sai, không phải sản phẩm sai:**
+- chạy `?mock=` (file mock không có `chanDoan`) rồi kết luận trace hỏng;
+- đòi trace hiện khi 0 cảnh báo, trong khi `Trace` trả `null` là **cố ý**.
+
+**Một guard đỏ vì lý do sai:** `lichThi` khớp `deadline` rồi đọc tỉ lệ `5/5` thành
+ngày. Nới **mẫu** (n/n hai vế bằng nhau là tỉ lệ), **không** nới điều kiện — và
+chứng minh vẫn bắt được `19/09/2026` lẫn `5/9`.
+
+**Bẫy kỹ thuật:**
+- Dùng Write tool cho mọi chuỗi có escape; heredoc và chuỗi Python nuốt chúng.
+- `VERIFIED_PROGRAMS` là **Map**, không phải Set.
+- Guard đọc mã phải **tách chú thích trước khi tìm**.
+- Guard gắn cứng con số phải đổi sang **đếm từ mã**.
+- Nhật ký trong `<details>` đóng: `inner_text` không thấy cho tới khi mở.
+- Thứ tự: sửa → commit → đo → commit biên bản → sinh release notes.
+
+**Thẻ tiếp theo đủ phụ thuộc:** CU-10 (CLI, cần CU-08 ✓) · CU-11 (receipt, cần
+CU-04+08+10) · CU-13 (registry decoder, cần CU-04+07 ✓) · CU-16 (SOL/phí, cần
+CU-03+06 ✓) · CU-24 (corpus, cần CU-04 ✓).
+
+---
+
+## Lịch sử — 18/09/2026 (qua CU-07)
 
 **775 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
 `nop-bai --strict` **11/13**. 19 commit chưa push.
