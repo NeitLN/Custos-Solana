@@ -4,6 +4,7 @@ import { extractFacts } from "./l1/fetch.ts";
 import { danhGia } from "./l2/evaluate.ts";
 import { dungBangChenhLech } from "./diff.ts";
 import type { Facts } from "./facts.ts";
+import { dungChiMuc } from "./bang-chung.ts";
 
 /**
  * Hàm diễn giải của L3.
@@ -87,6 +88,21 @@ export async function inspect(
    * Không có lời gọi mạng nào ở đây, và đó là điều kiểm được: `inspect()` gọi đúng
    * 5 method RPC, tất cả nằm trong `extractFacts`.
    */
+  /*
+   * CHỈ MỤC DỮ KIỆN — CU-04.
+   *
+   * Dựng từ `facts`, tức dữ liệu của CHÍNH lượt này. `dungChiMuc` không nhận
+   * `Connection` và không `await` gì, nên không có đường nào lẫn dữ liệu của một
+   * lượt đo khác vào đây — thẻ cấm đích danh việc ghép trace của trạng thái khác
+   * vào cảnh báo cũ.
+   *
+   * Dựng KỂ CẢ khi `chanDoan` tắt: `bangChungTreo` là một phép kiểm tính toàn vẹn,
+   * không phải dữ liệu hiển thị. Một luật khai dữ kiện không tồn tại là lỗi của
+   * engine, và lỗi đó không được phép chỉ lộ ra khi người gọi bật chẩn đoán.
+   */
+  const chiMuc = dungChiMuc(facts);
+  const treoLo = chiMuc.treoLo(l2.hits);
+
   const chanDoan = options.chanDoan
     ? {
         phienBan: 1 as const,
@@ -94,10 +110,34 @@ export async function inspect(
           ruleId: h.ruleId,
           reasonCode: h.reasonCode,
           level: h.level,
-          bangChung: (h.bangChung ?? []).map((b) => ({ loai: b.loai, khoa: b.khoa })),
+          bangChung: (h.bangChung ?? []).map((b) => {
+            const m = chiMuc.tra(b.loai, b.khoa);
+            return {
+              loai: b.loai,
+              khoa: b.khoa,
+              /*
+               * Nguồn của dữ kiện — CU-04 mục 4.2.
+               *
+               * `missing` khi luật khai một khoá mà `Facts` không có. Trước đây
+               * trường hợp đó im lặng: ID trỏ vào hư không, và người đọc đi kiểm
+               * thì gặp 404. Nay nó tự khai ra.
+               */
+              nguon: m?.nguon ?? ("missing" as const),
+              ...(m?.lyDo ? { lyDo: m.lyDo } : {}),
+              ...(m?.lenh && m.lenh.length > 0 ? { lenh: m.lenh } : {}),
+            };
+          }),
         })),
         // Đếm, không đoán bù — xem chú thích `thieuBangChung` trong types.
         thieuBangChung: l2.hits.filter((h) => (h.bangChung ?? []).length === 0).length,
+        /**
+         * Dữ kiện luật khai mà `Facts` KHÔNG có. Rỗng là điều kiện đúng.
+         *
+         * Khác hẳn `thieuBangChung`: cái đó đếm luật *chưa khai gì*; cái này đếm
+         * luật *khai sai*. Một luật im lặng là chưa hoàn thiện; một luật trỏ vào
+         * dữ kiện không tồn tại là đang nói dối về căn cứ của nó.
+         */
+        bangChungTreo: treoLo,
         nguon: {
           tang: "L1" as const,
           coverage: facts.coverage,

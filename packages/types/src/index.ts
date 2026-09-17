@@ -102,7 +102,31 @@ export type ChanDoan = {
     reasonCode: string;
     level: Level;
     /** Dữ kiện luật đã dựa vào. Rỗng ⇒ luật chưa khai, xem `thieuBangChung`. */
-    bangChung: Array<{ loai: string; khoa: string }>;
+    bangChung: Array<{
+      loai: string;
+      khoa: string;
+      /**
+       * Nguồn của dữ kiện — CU-04, mục 4.2 của `UPDATE-CUSTOS.md`.
+       *
+       * Bốn trạng thái, không phải hai, vì chúng nói bốn câu khác nhau với người
+       * đang quyết định có kiểm lại hay không:
+       *
+       *   `observed`    đọc thẳng từ RPC trong lượt này
+       *   `derived`     suy từ dữ kiện đã đọc (ví dụ hiệu số trước/sau)
+       *   `missing`     lượt này không đọc được — kiểm lại CÓ THỂ ra
+       *   `unsupported` Custos chưa hỗ trợ — kiểm lại cũng KHÔNG ra
+       *
+       * Gộp `missing` vào `unsupported` là nói với người dùng rằng sản phẩm không
+       * hỗ trợ thứ mà thật ra nó chỉ không đọc được lần này.
+       *
+       * Trường TUỲ CHỌN để mã đọc `ChanDoan` bản trước không vỡ.
+       */
+      nguon?: "observed" | "derived" | "missing" | "unsupported";
+      /** Vì sao `missing`/`unsupported`. Vắng mặt với hai trạng thái còn lại. */
+      lyDo?: string;
+      /** Lệnh liên quan. Vắng mặt KHÔNG có nghĩa "không lệnh nào" — xem CU-04. */
+      lenh?: Array<{ index: number; isInner: boolean; parentIndex: number | null }>;
+    }>;
   }>;
   /**
    * Cảnh báo chưa truy vết được tới dữ kiện.
@@ -112,6 +136,18 @@ export type ChanDoan = {
    * không đoán bù.
    */
   thieuBangChung: number;
+  /**
+   * Dữ kiện luật KHAI mà `Facts` không có. Rỗng là điều kiện đúng.
+   *
+   * Khác hẳn `thieuBangChung`, và sự khác nhau đó là điểm chính của CU-04:
+   *
+   *   `thieuBangChung`  luật CHƯA KHAI gì  — chưa hoàn thiện
+   *   `bangChungTreo`   luật KHAI SAI      — đang nói dối về căn cứ của nó
+   *
+   * Một ID trỏ vào hư không tệ hơn không có ID: nó mời người đọc đi kiểm rồi để
+   * họ gặp 404. Trường tuỳ chọn để bản `ChanDoan` cũ không vỡ.
+   */
+  bangChungTreo?: Array<{ ruleId: number; loai: string; khoa: string }>;
   /** Nguồn của từng con số — để người đọc biết dữ kiện đến từ tầng nào. */
   nguon: { tang: "L1"; coverage: Coverage; simulationOk: boolean };
 };
