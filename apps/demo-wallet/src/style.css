@@ -31,11 +31,29 @@
   --color-thuong: oklch(0.5 0.125 157);
 }
 
+:root {
+  --ui-surface: rgba(255, 255, 255, 0.96);
+  --ui-surface-soft: rgba(248, 250, 255, 0.94);
+  --ui-border: rgba(191, 201, 222, 0.68);
+  --ui-border-strong: rgba(155, 171, 207, 0.72);
+  --ui-shadow-sm: 0 1px 2px rgba(25, 35, 58, 0.05);
+  --ui-shadow-card:
+    0 1px 2px rgba(25, 35, 58, 0.05),
+    0 12px 30px rgba(45, 61, 101, 0.075),
+    0 30px 70px rgba(71, 91, 148, 0.045);
+  --ui-shadow-hover:
+    0 2px 4px rgba(25, 35, 58, 0.06),
+    0 18px 42px rgba(45, 61, 101, 0.12);
+  --ui-focus: rgba(49, 85, 198, 0.28);
+}
+
 html {
   /* Giao diện là light hoàn toàn. Khai `dark` ở đây làm trình duyệt vẽ thanh cuộn,
      form control gốc và vùng ngoài `.app-shell` theo bảng màu tối — lệch hẳn với
      phần còn lại. Bản trước khai dark rồi phải ghi đè `light` trong `.app-shell`. */
   color-scheme: light;
+  scrollbar-gutter: stable;
+  scrollbar-color: #aeb9d0 #eef1f8;
 }
 
 body {
@@ -45,8 +63,18 @@ body {
   color: var(--color-chu);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-feature-settings: "cv11", "ss01";
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  color: #18213a;
+  background: rgba(119, 145, 235, 0.28);
+}
+
+:where(button, input, textarea, select) {
+  font: inherit;
 }
 
 button,
@@ -128,6 +156,47 @@ button {
   background: #a97508;
 }
 
+.wallet-header {
+  position: relative;
+  min-height: 72px;
+  padding: 12px 14px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 197, 222, 0.7);
+  border-radius: 20px;
+  background:
+    radial-gradient(22rem 8rem at 8% -45%, rgba(94, 122, 225, 0.14), transparent 70%),
+    linear-gradient(118deg, rgba(255, 255, 255, 0.95), rgba(248, 251, 255, 0.88));
+  box-shadow:
+    0 1px 2px rgba(26, 36, 61, 0.045),
+    0 12px 32px rgba(57, 75, 124, 0.075);
+  backdrop-filter: blur(16px);
+}
+
+.wallet-header::after {
+  position: absolute;
+  top: 0;
+  right: 18px;
+  left: 18px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.96), transparent);
+  pointer-events: none;
+}
+
+.wallet-brand,
+.wallet-header__actions {
+  position: relative;
+  z-index: 1;
+}
+
+.wallet-brand__title {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.wallet-brand__subtitle {
+  letter-spacing: 0.005em;
+}
+
 .brand-mark {
   overflow: hidden;
 }
@@ -139,38 +208,87 @@ button {
   object-fit: contain;
   transform: scale(1.55);
   transform-origin: center;
+  filter: drop-shadow(0 2px 2px rgba(22, 45, 40, 0.16));
 }
 
 .network-pill,
 .icon-link {
-  border: 1px solid #dfe3ea;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 2px rgba(25, 32, 47, 0.04);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-sm);
+  backdrop-filter: blur(10px);
+}
+
+.network-pill {
+  letter-spacing: 0.08em;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.network-dot {
+  position: relative;
+}
+
+.network-dot::after {
+  position: absolute;
+  inset: -4px;
+  content: "";
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0;
 }
 
 .icon-link:hover {
-  border-color: #c8cfda;
+  border-color: var(--ui-border-strong);
   background: #fff;
+  box-shadow: 0 5px 16px rgba(43, 59, 99, 0.09);
+}
+
+@media (hover: hover) {
+  .network-pill:hover {
+    border-color: rgba(87, 165, 130, 0.48);
+    background: rgba(247, 255, 251, 0.98);
+    box-shadow: 0 5px 16px rgba(43, 96, 72, 0.09);
+  }
+}
+
+@media (max-width: 359px) {
+  .wallet-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .wallet-header__actions {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid rgba(191, 201, 222, 0.5);
+  }
 }
 
 .glass-card,
 .wallet-card,
 .review-card {
-  border: 1px solid #dfe3ea;
-  background: #fff;
-  box-shadow:
-    0 1px 2px rgba(22, 30, 46, 0.04),
-    0 16px 38px rgba(34, 46, 72, 0.07);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-card);
 }
 
 .wallet-card {
-  border-top: 4px solid #3155c6;
+  border-top: 4px solid #3f61cf;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .wallet-card__top {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+  background:
+    radial-gradient(24rem 16rem at 100% 100%, rgba(86, 115, 213, 0.075), transparent 72%),
+    linear-gradient(180deg, #fff 0%, #fbfcff 100%);
 }
 
 .wallet-card__top::after {
@@ -189,21 +307,35 @@ button {
 }
 
 .avatar {
-  border: 1px solid #dce3f9;
-  background: #eef2ff;
-  box-shadow: inset 0 0 0 3px #fff;
+  color: #3857bd;
+  border: 1px solid #cfdaf7;
+  background: linear-gradient(145deg, #f5f7ff, #e7edff);
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 255, 255, 0.76),
+    0 5px 14px rgba(56, 87, 189, 0.11);
 }
 
 .address-pill {
+  max-width: 190px;
+  min-height: 34px;
   color: #60697a;
-  border: 1px solid #dfe3ea;
-  background: #f8f9fb;
+  border: 1px solid #d7ddea;
+  background: rgba(248, 250, 253, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .address-pill:hover {
   color: #3155c6;
   border-color: #c7d1f1;
   background: #f4f6ff;
+  box-shadow: 0 5px 14px rgba(49, 85, 198, 0.1);
+  transform: translateY(-1px);
 }
 
 .address-pill.is-copied {
@@ -212,15 +344,54 @@ button {
   background: #effaf5;
 }
 
+.wallet-balance {
+  position: relative;
+  z-index: 1;
+  padding: 17px 18px 16px;
+  overflow: hidden;
+  border: 1px solid rgba(197, 207, 232, 0.78);
+  border-radius: 18px;
+  background: linear-gradient(108deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 255, 0.9));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 8px 22px rgba(50, 70, 125, 0.06);
+}
+
+.wallet-balance::after {
+  position: absolute;
+  top: -38px;
+  right: -22px;
+  width: 126px;
+  height: 126px;
+  content: "";
+  border: 18px solid rgba(70, 99, 198, 0.035);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.wallet-balance__label,
+.wallet-balance__amount,
+.wallet-balance__note {
+  position: relative;
+  z-index: 1;
+}
+
 .token-badge {
-  border: 1px solid #e0e4eb;
-  background: #f5f6f8;
+  color: #425aa8;
+  border: 1px solid #d5def6;
+  background: #f0f3ff;
 }
 
 .balance-number {
-  color: #1c2330;
+  color: #17213a;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.052em;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.balance-unit {
+  padding-bottom: 5px;
+  letter-spacing: 0.01em;
 }
 
 .so {
@@ -228,16 +399,16 @@ button {
 }
 
 .wallet-actions {
-  border-color: #e6e9ef;
-  background: #fafbfc;
+  border-color: rgba(205, 212, 226, 0.78);
+  background: linear-gradient(180deg, rgba(250, 251, 253, 0.98), rgba(247, 249, 252, 0.96));
 }
 
 .action-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid #e0e4eb;
-  background: #fff;
-  box-shadow: 0 1px 1px rgba(22, 30, 46, 0.025);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-sm);
   transition:
     border-color 170ms ease,
     box-shadow 170ms ease,
@@ -256,7 +427,7 @@ button {
 
 .action-card--primary {
   border-color: #cfd8f5;
-  background: #f8f9ff;
+  background: linear-gradient(145deg, #fbfcff, #f1f4ff);
 }
 
 .action-card--primary::before {
@@ -265,20 +436,51 @@ button {
 
 .action-icon {
   border: 1px solid #e2e6ec;
-  background: #f4f6f8;
+  background: linear-gradient(145deg, #f8f9fb, #eef1f5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 170ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.action-icon--gift {
+  border-color: #d5def8;
+  background: linear-gradient(145deg, #f3f6ff, #e7edff);
 }
 
 @media (hover: hover) {
   .action-card:hover {
     z-index: 1;
     border-color: #b9c5ea;
-    box-shadow: 0 8px 22px rgba(38, 58, 112, 0.09);
+    box-shadow: var(--ui-shadow-hover);
     transform: translateY(-2px);
+  }
+
+  .action-card:hover .action-icon {
+    transform: scale(1.06);
   }
 }
 
 .action-card:active {
   transform: translateY(0) scale(0.985);
+}
+
+@media (max-width: 479px) {
+  .wallet-identity {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .address-pill {
+    max-width: 100%;
+  }
+
+  .wallet-balance {
+    padding: 15px 16px;
+  }
+
+  .balance-number {
+    font-size: 44px;
+  }
 }
 
 .protection-switch {
@@ -345,12 +547,12 @@ button {
 }
 
 .review-header {
-  border-color: #e5e8ed;
-  background: #fff;
+  border-color: var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .review-body {
-  background: #fcfcfd;
+  background: var(--ui-surface-soft);
 }
 
 .dapp-request {
@@ -596,6 +798,18 @@ button {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .brand-mark {
+    animation: brand-float 4.8s ease-in-out infinite;
+  }
+
+  .network-dot::after {
+    animation: network-ping 2.6s ease-out infinite;
+  }
+
+  .wallet-balance__amount {
+    animation: balance-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 100ms both;
+  }
+
   .hien {
     animation: content-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
@@ -626,6 +840,37 @@ button {
 
   .coverage-fill {
     animation: coverage-grow 620ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
+  }
+}
+
+@keyframes balance-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.985);
+  }
+}
+
+@keyframes brand-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes network-ping {
+  0% {
+    opacity: 0.38;
+    transform: scale(0.72);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
   }
 }
 
@@ -721,7 +966,7 @@ button {
 }
 
 :where(button, a, input, [tabindex]):focus-visible {
-  outline: 3px solid rgba(49, 85, 198, 0.22);
+  outline: 3px solid var(--ui-focus);
   outline-offset: 2px;
   border-radius: 8px;
 }
