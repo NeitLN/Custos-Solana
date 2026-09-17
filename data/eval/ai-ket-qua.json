@@ -1,10 +1,10 @@
 {
-  "doLuc": "2026-09-17T13:36:00.522Z",
+  "doLuc": "2026-09-17T18:12:50.119Z",
   "soMau": 38,
   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
   "template": {
     "treTrungViMs": 0,
-    "treCaoNhatMs": 1,
+    "treCaoNhatMs": 0,
     "soCaBiaDiaChi": 0,
     "soCaBiaSo": 0
   },
