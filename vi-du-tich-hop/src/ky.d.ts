@@ -37,11 +37,30 @@ export type LyDoKhongKy =
   | "bi_chan"
   | "cho_nguoi_dung"
   | "giao_dich_da_doi"
-  | "ket_qua_qua_cu";
+  | "ket_qua_qua_cu"
+  /** Phiên này đã tiêu chữ ký. Muốn ký lại thì kiểm lại — ADR-0003 mục 2.3. */
+  | "phien_da_dung";
+
+/**
+ * BA KẾT CỤC, KHÔNG PHẢI HAI — ADR-0003 mục 2.2.
+ *
+ * `{ daKy: boolean }` không đủ, vì nó ép hai câu rất khác nhau vào cùng một `false`:
+ * *"ví nói không"* và *"không biết ví đã ký hay chưa"*. Một ví mất kết nối giữa
+ * chừng có thể đã ký rồi; gọi đó là chưa ký rồi ký lại là tạo hai chữ ký cho cùng
+ * một ý định của người dùng.
+ *
+ * `khong_ky` là nhánh Custos/ví từ chối trước khi hỏi — signer chưa từng chạy.
+ */
+export type KetCuc = "da_ky" | "tu_choi" | "chua_ro" | "khong_ky";
+
+/** Vì sao kết cục không rõ ràng. Không được hiểu thành "chưa ký". */
+export type LyDoChuaRo = "het_han_cho_signer" | "signer_tra_ve_tx_khac";
 
 export type KetQuaKy =
-  | { daKy: true; lyDo: "da_kiem_va_dong_y"; chiTiet?: undefined }
-  | { daKy: false; lyDo: LyDoKhongKy; chiTiet?: string };
+  | { daKy: true; ketCuc: "da_ky"; lyDo: "da_kiem_va_dong_y"; chiTiet?: undefined }
+  | { daKy: false; ketCuc: "khong_ky"; lyDo: LyDoKhongKy; chiTiet?: string }
+  | { daKy: false; ketCuc: "tu_choi"; lyDo: "vi_tu_choi"; chiTiet?: string }
+  | { daKy: false; ketCuc: "chua_ro"; lyDo: LyDoChuaRo; chiTiet?: string };
 
 export function kySauKhiKiem(p: {
   quyetDinh: QuyetDinh;
@@ -60,4 +79,6 @@ export function kySauKhiKiem(p: {
   nguoiDungDongY?: boolean;
   /** Tuổi tối đa của kết quả kiểm, tính bằng ms. */
   msToiDa?: number;
-}): KetQuaKy;
+  /** Hạn chờ signer, ms. Hết hạn ⇒ `chua_ro`, KHÔNG phải "ví đã huỷ". */
+  msChoSigner?: number;
+}): Promise<KetQuaKy>;
