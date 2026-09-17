@@ -218,6 +218,19 @@ export function PhongVan() {
         </a>
 
         {/*
+          H1 CỦA TRANG.
+
+          Trang này trước đây bắt đầu thẳng từ h2, tức không có điểm vào cho người
+          duyệt bằng phím tiêu đề của trình đọc màn hình — và không có câu trả lời
+          cho "tôi đang ở trang nào". Ba trang còn lại đều có h1; chỉ trang này sót.
+
+          Chữ trùng với <title> trong phong-van.html, không đặt tên khác.
+        */}
+        <h1 className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.02em] text-chu">
+          Đo mức độ hiểu
+        </h1>
+
+        {/*
           KHO HỎNG — báo, giữ, và cho xuất. Không tự sửa, không tự xoá.
 
           Dữ liệu ở đây là biên bản phỏng vấn người thật, gõ tay, không có bản sao ở
