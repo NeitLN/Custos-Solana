@@ -1,0 +1,109 @@
+{
+  "the": "CU-08",
+  "doLuc": "2026-09-17T18:36:33.667018+00:00",
+  "sourceCommit": "8425ff2c4472fac00e6e91a4888be20c3956eda2",
+  "dauVet": {
+    "bam": "4171de61874a9d2b",
+    "soFile": 38
+  },
+  "soMuc": 19,
+  "soHong": 0,
+  "muc": [
+    {
+      "ten": "trang Inspector dựng được",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "cảnh báo riêng tư hiện TRƯỚC ô nhập",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "KHÔNG có nút Ký ở Inspector",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "không hỏi seed phrase / khoá riêng",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "chuỗi rác · báo lỗi đúng loại",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "chuỗi rác · KHÔNG gọi RPC",
+      "dat": true,
+      "ghiChu": "0 lời gọi"
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải tx · báo lỗi đúng loại",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "base64 hợp lệ nhưng không phải tx · KHÔNG gọi RPC",
+      "dat": true,
+      "ghiChu": "0 lời gọi"
+    },
+    {
+      "ten": "chuỗi quá dài · báo lỗi đúng loại",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "chuỗi quá dài · KHÔNG gọi RPC",
+      "dat": true,
+      "ghiChu": "0 lời gọi"
+    },
+    {
+      "ten": "ví sai · báo lỗi",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "ví sai · KHÔNG gọi RPC",
+      "dat": true,
+      "ghiChu": "0 lời gọi"
+    },
+    {
+      "ten": "thẻ kết quả hiện ra",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "có mức verdict",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "vẫn KHÔNG có nút Ký sau khi có kết quả",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "nói rõ đã mô phỏng trên RPC nào",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "có gọi RPC ở đường thành công",
+      "dat": true,
+      "ghiChu": "3 lời gọi"
+    },
+    {
+      "ten": "đổi đầu vào ⇒ bỏ kết quả cũ",
+      "dat": true,
+      "ghiChu": ""
+    },
+    {
+      "ten": "0 lỗi console suốt lượt",
+      "dat": true,
+      "ghiChu": "[]"
+    }
+  ],
+  "dat": true
+}

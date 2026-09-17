@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-17T14:55:44.215818+00:00",
-  "sourceCommit": "8ed5ec9a7f7ab75cdd21c3734c3883ebb4fbb548",
+  "doLuc": "2026-09-17T18:39:10.834004+00:00",
+  "sourceCommit": "8425ff2c4472fac00e6e91a4888be20c3956eda2",
   "dauVet": {
-    "bam": "a0bebacc376d521c",
-    "soFile": 35
+    "bam": "4171de61874a9d2b",
+    "soFile": 38
   },
   "boCongCu": {
     "chromium": "149.0.7827.55",
@@ -148,7 +148,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "thẻ lỗi hiện ra (9.1s)",
+      "ten": "thẻ lỗi hiện ra (9.4s)",
       "dat": true,
       "chiTiet": "đạt"
     },

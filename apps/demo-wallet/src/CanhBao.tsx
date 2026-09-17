@@ -150,6 +150,22 @@ export function CanhBao({
   return (
     <section
       aria-live="polite"
+      /*
+       * NHÃN RIÊNG, KHÔNG TRÙNG VỚI LỚP BỌC CỦA VÍ DEMO — CU-08.
+       *
+       * Vấn đề: Inspector dùng lại `CanhBao` nhưng không có lớp bọc, nên thẻ kết
+       * quả của nó không có tên với screen reader và probe không neo vào được.
+       *
+       * Bản đầu của tôi đặt luôn `aria-label="Kết quả kiểm tra giao dịch"` ở đây —
+       * và tạo ra HAI phần tử lồng nhau cùng một nhãn, vì `App.tsx` đã có một div
+       * mang đúng chuỗi đó. Div ấy không bỏ được: nó giữ `ref` và `tabIndex` để
+       * nhận focus khi kết quả hiện ra, một chức năng thật.
+       *
+       * Hai phần tử lồng nhau cùng tên là lỗi với screen reader (đọc hai lần) và
+       * với mọi selector (khớp hai nơi). Nên nhãn ở đây phải KHÁC, và nó mô tả
+       * đúng thứ nó là: tấm thẻ verdict, không phải cả vùng kết quả.
+       */
+      aria-label="Thẻ cảnh báo Custos"
       className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}
     >
       {/* PHÁN QUYẾT ĐỨNG ĐẦU. Người dùng đang chuẩn bị ký; thứ họ cần biết trước
