@@ -545,8 +545,8 @@ export default function App() {
           <main className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,0.88fr)_minmax(520px,1.12fr)] lg:gap-5">
             <section className="wallet-card reveal-card overflow-hidden rounded-[20px]">
               <div className="wallet-card__top px-5 pb-5 pt-5 sm:px-6 sm:pt-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex min-w-0 items-center gap-3">
+                <div className="wallet-identity flex items-center justify-between gap-4">
+                  <div className="wallet-profile flex min-w-0 items-center gap-3">
                     <div className="avatar grid h-10 w-10 shrink-0 place-items-center rounded-full text-nhan">
                       <WalletIcon className="h-5 w-5" />
                     </div>
@@ -566,18 +566,18 @@ export default function App() {
                   </button>
                 </div>
 
-                <div className="mt-8">
-                  <div className="flex items-center gap-2 text-[12px] text-chu-mo">
+                <div className="wallet-balance mt-7">
+                  <div className="wallet-balance__label flex items-center gap-2 text-[12px] text-chu-mo">
                     Tổng tài sản thử nghiệm
                     <span className="token-badge rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-chu-nhat">SPL</span>
                   </div>
-                  <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <div className="wallet-balance__amount mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="so balance-number text-[48px] font-semibold leading-none text-chu sm:text-[56px]">
                       {soDuToken ?? "—"}
                     </span>
-                    <span className="text-[16px] font-medium text-chu-nhat">{ht.kyHieu ?? "token"}</span>
+                    <span className="balance-unit text-[16px] font-medium text-chu-nhat">{ht.kyHieu ?? "token"}</span>
                   </div>
-                  <p className="mt-2 text-[12px] text-chu-mo">Token thử nghiệm trên Devnet · không có giá trị quy đổi</p>
+                  <p className="wallet-balance__note mt-2 text-[12px] text-chu-mo">Token thử nghiệm trên Devnet · không có giá trị quy đổi</p>
                 </div>
               </div>
 
@@ -592,7 +592,7 @@ export default function App() {
                     className="action-card action-card--primary group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45"
                   >
                     <div className="flex w-full items-start justify-between gap-3">
-                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-nhan/15 text-nhan"><GiftIcon className="h-5 w-5" /></span>
+                      <span className="action-icon action-icon--gift grid h-9 w-9 place-items-center rounded-xl text-nhan"><GiftIcon className="h-5 w-5" /></span>
                       <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
                     </div>
                     <span>
