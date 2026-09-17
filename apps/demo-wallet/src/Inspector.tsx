@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { Connection } from "@solana/web3.js";
-import { inspect } from "@custos-solana/core";
+import { inspect, ketNoiCoHuy, laHuy, type KetNoiCoHuy } from "@custos-solana/core";
 import type { InspectResult } from "@custos-solana/types";
 import { docTx, kiemVi, GIOI_HAN_BYTE } from "./soiTx.ts";
 import { CanhBao } from "./CanhBao.tsx";
@@ -51,6 +51,17 @@ export function Inspector() {
    * trong khi đang xem giao dịch B" mà sản phẩm này tồn tại để chống.
    */
   const luot = useRef(0);
+  /*
+   * BỘ HUỶ CỦA LƯỢT ĐANG CHẠY — CU-22.
+   *
+   * Trước đây nút Huỷ chỉ tăng `luot` để bỏ kết quả về sau: request HTTP vẫn chạy
+   * tới cùng, và phản hồi muộn vẫn tiêu băng thông của lượt mới. `coHan.ts` đã tự
+   * khai điều đó — *"chỉ ngừng CHỜ"*.
+   *
+   * Nay huỷ cắt thật: `ketNoiCoHuy` gắn `AbortSignal` vào mọi request của
+   * `Connection`. Đo trên Devnet: abort ném `AbortError` và request dừng.
+   */
+  const boHuy = useRef<KetNoiCoHuy | null>(null);
 
   const ghi = useCallback((d: string) => {
     setNhatKy((cu) => [...cu.slice(-40), locDongNhatKy(d)]);
@@ -81,7 +92,12 @@ export function Inspector() {
     ghi(`đọc được giao dịch ${d.soByte} byte, ${d.daKy ? "ĐÃ ký" : "chưa ký"}`);
 
     try {
-      const c = new Connection(rpc.trim() || RPC_MAC_DINH, "confirmed");
+      const k = ketNoiCoHuy();
+      boHuy.current = k;
+      const c = new Connection(rpc.trim() || RPC_MAC_DINH, {
+        commitment: "confirmed",
+        fetch: k.fetch,
+      });
       const r = await inspect(
         { connection: c },
         d.tx,
@@ -92,6 +108,18 @@ export function Inspector() {
       setTt({ pha: "xong", ketQua: r, soByte: d.soByte, daKy: d.daKy });
     } catch (e) {
       if (!conDung()) return;
+      /*
+       * HUỶ KHÔNG PHẢI LỖI.
+       *
+       * Hiển thị "không kiểm được giao dịch" cho một thao tác người dùng chủ động
+       * huỷ là nói sai, và nó làm người dùng nghĩ sản phẩm hỏng. Phân loại trước,
+       * rồi mới nói.
+       */
+      if (laHuy(e)) {
+        ghi("lượt kiểm bị huỷ — request đã được cắt");
+        setTt({ pha: "da-huy" });
+        return;
+      }
       const câu = e instanceof Error ? e.message : String(e);
       ghi(`lỗi: ${câu}`);
       setTt({
@@ -105,8 +133,10 @@ export function Inspector() {
 
   const huy = useCallback(() => {
     luot.current++;
+    // Cắt THẬT, không chỉ bỏ kết quả. `huy()` gọi nhiều lần là vô hại.
+    boHuy.current?.huy();
     setTt({ pha: "da-huy" });
-    ghi("người dùng huỷ lượt kiểm");
+    ghi("người dùng huỷ lượt kiểm — request đã được cắt");
   }, [ghi]);
 
   const doiTep = useCallback(
