@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-17T13:38:13.648Z",
+  "sinhLuc": "2026-09-17T13:58:10.610Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -70,28 +70,28 @@
     "fail": 0
   },
   "hieuNang": {
-    "ngayDo": "2026-09-14T19:15:19.415243+00:00",
+    "ngayDo": "2026-09-17T13:57:56.170164+00:00",
     "soMau": 30,
-    "trungViMs": 1351,
-    "p95QuanSatMs": 5359,
-    "caoNhatMs": 8896,
-    "thapNhatMs": 838,
-    "daoDong": 10.6,
+    "trungViMs": 1916,
+    "p95QuanSatMs": 3959,
+    "caoNhatMs": 5487,
+    "thapNhatMs": 866,
+    "daoDong": 6.3,
     "luotHong": 0,
-    "rpcTrungVi": 7,
-    "rpcCaoNhat": 17,
-    "fcpNguoiMs": 112,
+    "rpcTrungVi": 8,
+    "rpcCaoNhat": 11,
+    "fcpNguoiMs": 104,
     "theoRetry": {
-      "mocRpc": 7,
+      "mocRpc": 8,
       "khongRetry": {
-        "soLuot": 19,
-        "trungVi": 852
+        "soLuot": 17,
+        "trungVi": 1406
       },
       "coRetry": {
-        "soLuot": 11,
-        "trungVi": 2875
+        "soLuot": 13,
+        "trungVi": 2984
       },
-      "tyLeTrungVi": 3.4
+      "tyLeTrungVi": 2.1
     }
   },
   "soLuat": 14,
