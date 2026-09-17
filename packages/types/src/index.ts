@@ -188,7 +188,40 @@ export type ChanDoan = {
    */
   bangChungTreo?: Array<{ ruleId: number; loai: string; khoa: string }>;
   /** Nguồn của từng con số — để người đọc biết dữ kiện đến từ tầng nào. */
-  nguon: { tang: "L1"; coverage: Coverage; simulationOk: boolean };
+  nguon: {
+    tang: "L1";
+    coverage: Coverage;
+    simulationOk: boolean;
+    /**
+     * Coverage theo NĂNG LỰC — CU-07.
+     *
+     * `coverage.analyzed` gộp hai điều kiện khác nhau: *program đã xác minh* và
+     * *lệnh decode được*. Nên một con số như `36/106` không cho biết 70 lệnh còn
+     * lại thiếu vì lý do gì — mà ba lý do đó dẫn tới ba hành động khác nhau của
+     * người dùng.
+     *
+     * Đo trên corpus, 106 lệnh:
+     *
+     *   program quen + decode được    36
+     *   program quen + CHƯA đọc hiểu  58   <- nhóm lớn nhất, cần thêm decoder
+     *   program LẠ                    12   <- người dùng tra được địa chỉ program
+     *
+     * Bốn nhóm cộng lại đúng bằng `total`, và có bài test canh phép cộng đó — để
+     * không ai làm con số đẹp lên bằng cách đổi tên mức decode.
+     *
+     * KHÔNG phải risk score. Mục 11 cấm đích danh việc thêm một phần trăm chưa
+     * hiệu chuẩn, vì nó sẽ bị đọc thành xác suất an toàn.
+     *
+     * Trường tuỳ chọn: `ChanDoan` bản trước không có, và mã cũ bỏ qua được.
+     */
+    chiTiet?: {
+      hieuDuoc: number;
+      quenNhungChuaDoc: number;
+      chuongTrinhLa: number;
+      soChuongTrinhLa: number;
+      danhSachLa: Array<{ programId: string; soLenh: number; chamTaiSan: boolean }>;
+    };
+  };
 };
 
 /**
