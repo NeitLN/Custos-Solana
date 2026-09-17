@@ -86,7 +86,7 @@ if (ketQua.level !== "safe" || ketQua.aiAdvisory) hienCanhBao(ketQua);
 
 Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ thành "ký được".
 
-| Đo trên Devnet, 16/09/2026 — lượt pass gần nhất | |
+| Đo trên Devnet, 17/09/2026 — lượt pass gần nhất | |
 |---|---|
 | Cài đặt → kết quả đầu tiên | **10,9 giây** — trung vị 10 lượt trên 8 bản dựng, dải 7,9–15,4 |
 | Dòng mã tích hợp | **30** |
