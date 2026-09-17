@@ -171,6 +171,22 @@ export function dungBangChenhLech(
         label: `${NHAN.SO_DU}${nhan} sau khi ký`,
         before: dinhDangSo(t.amountBefore, dec),
         after: dinhDangSo(t.amountAfter, dec),
+        /*
+         * SỐ THÔ — CU-06. `before`/`after` là chuỗi đã format theo quy ước tiếng
+         * Việt; một consumer muốn cộng hay so sánh phải parse ngược, và parse
+         * ngược chuỗi hiển thị là cách chắc chắn để một bản sửa định dạng làm
+         * hỏng phép tính của người khác.
+         *
+         * `mint` đi kèm vì `nhan` có thể trùng nhau giữa hai token khác mint —
+         * gộp chúng là đúng lỗi mục 4.2 cấm.
+         */
+        soLieu: {
+          truoc: t.amountBefore.toString(),
+          sau: t.amountAfter.toString(),
+          decimals: dec,
+          mint: t.mint,
+          taiKhoan: t.address,
+        },
         severity:
           t.amountAfter < t.amountBefore &&
           (coBangChung("tokenAccount", t.address) || coHitO(t.address))
@@ -260,6 +276,13 @@ export function dungBangChenhLech(
       before: dinhDangSo(sol.truoc, LAMPORTS_DECIMALS),
       after: dinhDangSo(sol.sau, LAMPORTS_DECIMALS),
       severity: luat13 ? "danger" : "info",
+      /* Không có `mint`: đây là SOL gốc, không phải wSOL. Gắn mint wSOL vào đây
+       * sẽ làm consumer cộng nhầm hai lần — wSOL đã gộp vào chính dòng này. */
+      soLieu: {
+        truoc: sol.truoc.toString(),
+        sau: sol.sau.toString(),
+        decimals: LAMPORTS_DECIMALS,
+      },
     });
   }
 
@@ -272,6 +295,14 @@ export function dungBangChenhLech(
       before: "—",
       after: `${dinhDangSo(datCoc, LAMPORTS_DECIMALS)} SOL`,
       severity: "info",
+      /* `truoc: "0"` chứ không phải chuỗi rỗng: đây là một KHOẢN, không phải một
+       * số dư có trạng thái trước. Cột trái hiển thị "—" vì số 0 giả gây hiểu
+       * nhầm, nhưng về số liệu thì khoản này đi từ 0 lên `datCoc`. */
+      soLieu: {
+        truoc: "0",
+        sau: datCoc.toString(),
+        decimals: LAMPORTS_DECIMALS,
+      },
     });
   }
 
@@ -282,6 +313,11 @@ export function dungBangChenhLech(
       before: "—",
       after: `${dinhDangSo(phi, LAMPORTS_DECIMALS)} SOL`,
       severity: "info",
+      soLieu: {
+        truoc: "0",
+        sau: phi.toString(),
+        decimals: LAMPORTS_DECIMALS,
+      },
     });
   }
 

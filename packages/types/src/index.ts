@@ -44,6 +44,45 @@ export type DiffEntry = {
    */
   truocDayDu?: string;
   sauDayDu?: string;
+  /**
+   * Số liệu THÔ của dòng này — CU-06, mục 4.2 của `UPDATE-CUSTOS.md`.
+   *
+   * ## Vì sao cần, khi đã có `before`/`after`
+   *
+   * `before` và `after` là chuỗi ĐÃ FORMAT theo quy ước tiếng Việt: dấu chấm phân
+   * nhóm nghìn, dấu phẩy thập phân. Một consumer muốn cộng, so sánh hay quy đổi
+   * phải **parse ngược** chuỗi đó — và parse ngược một chuỗi hiển thị là cách chắc
+   * chắn nhất để một bản sửa định dạng làm hỏng phép tính của người khác.
+   *
+   * Mục 4.2 nói thẳng: *"Giữ raw amounts, decimals, mint và account; format chỉ ở
+   * UI"* và *"Không gộp hai mint có cùng symbol"*.
+   *
+   * ## Vì sao là chuỗi chứ không phải `bigint`
+   *
+   * `InspectResult` phải `JSON.stringify` được — receipt (CU-11) và replay (CU-12)
+   * đều đi qua JSON, và `bigint` ném `TypeError` ở đó. Chuỗi thập phân giữ đủ độ
+   * chính xác và không mất mát khi tuần tự hoá.
+   *
+   * Trường TUỲ CHỌN: dòng không nói về số lượng (chủ sở hữu, chương trình điều
+   * khiển) thì vắng mặt, và mã cũ bỏ qua được.
+   */
+  soLieu?: {
+    /** Giá trị thô trước, dạng chuỗi thập phân base-unit. */
+    truoc: string;
+    /** Giá trị thô sau, dạng chuỗi thập phân base-unit. */
+    sau: string;
+    /** Số chữ số thập phân của token. SOL là 9. */
+    decimals: number;
+    /**
+     * Mint của token này. Vắng mặt với dòng SOL gốc (không phải wSOL).
+     *
+     * Đây là thứ phân biệt hai token TRÙNG KÝ HIỆU — `kyHieu` không làm được
+     * điều đó, và gộp chúng là đúng lỗi mục 4.2 cấm.
+     */
+    mint?: string;
+    /** Địa chỉ tài khoản mang số dư này, khi dòng nói về một tài khoản cụ thể. */
+    taiKhoan?: string;
+  };
 };
 
 export type Coverage = {
