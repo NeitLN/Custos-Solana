@@ -127,6 +127,30 @@ test("không tài liệu nào đặt cửa/hạn bằng một ngày gõ cứng",
       if (d.includes("THONG-TIN-VONG-HIEN-TAI")) continue;
       if (!CUA.test(d)) continue;
       for (const m of d.matchAll(NGAY)) {
+        /*
+         * `5/5` LÀ TỈ LỆ, KHÔNG PHẢI NGÀY — và bài này đã đỏ vì lý do sai vì nó.
+         *
+         * Dòng trạng thái của CU-22 viết *"đột biến 5/5 đỏ"* cạnh chữ `deadline`
+         * (trong cụm "deadline bao cả orchestration"). `CUA` khớp `deadline`, rồi
+         * `NGAY` khớp `5/5`, `6/6`, `26/26` — ba tỉ lệ test bị báo là ba cái cửa
+         * gõ cứng ngày.
+         *
+         * Hai dấu hiệu tách được, và cả hai đều dựa vào chính cấu tạo của ngày
+         * tháng chứ không dựa vào chữ xung quanh:
+         *
+         *   · `n/n` với hai vế BẰNG NHAU gần như luôn là tỉ lệ. Một cái cửa đặt
+         *     vào ngày 5 tháng 5 thì viết `05/05`, không viết `5/5`.
+         *   · vế thứ hai > 12 thì không phải tháng.
+         *
+         * Không nới bằng cách bỏ chữ `deadline` khỏi `CUA`: đó là nới ĐIỀU KIỆN,
+         * và nó sẽ để lọt đúng loại lỗi bài này sinh ra để bắt.
+         */
+        const [truoc, sau] = m[1]!.split("/");
+        const laTiLe =
+          m[1]!.split("/").length === 2 &&
+          (truoc === sau || Number(sau) > 12) &&
+          !/^0\d/.test(truoc!);
+        if (laTiLe) continue;
         lech.push(`${f}:${i + 1} — cửa gõ cứng ngày ${m[1]}`);
       }
     }
