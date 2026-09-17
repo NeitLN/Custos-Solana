@@ -127,8 +127,25 @@ export function dungBangChenhLech(
    * Vá theo từng luật thì luật thứ ba mắc lại sẽ không ai thấy. Nên đọc `bangChung`
    * — danh sách dữ kiện luật khai là đã dựa vào, dưới dạng ID ổn định.
    *
-   * `detail.includes` giữ lại làm ĐƯỜNG LUI cho 14 chỗ chưa gắn `bangChung`: bỏ hẳn
+   * `detail.includes` giữ lại làm ĐƯỜNG LUI cho luật chưa gắn `bangChung`: bỏ hẳn
    * sẽ làm mọi dòng mất màu ngay, tức đổi một lỗi im lặng thành một lỗi to hơn.
+   *
+   * ── CU-05: đường lui nay KHÔNG luật nội bộ nào còn đi qua ────────────────────
+   *
+   * Đo trên toàn corpus: **75 hit, đúng 1 hit** không khai `bangChung` — luật 14.
+   * Và luật 14 nói về việc *thiếu* thông tin (ví không cho biết địa chỉ nào là của
+   * người dùng), nên nó không nhắc địa chỉ nào; `coHitO(t.address)` không bao giờ
+   * khớp với nó.
+   *
+   * Vẫn GIỮ, không xoá, vì hai lý do:
+   *   · `RuleHit.bangChung` là tuỳ chọn trong public API — một consumer tự viết
+   *     luật riêng vẫn có thể không khai, và khi đó bỏ đường lui làm dòng mất màu
+   *     im lặng;
+   *   · xoá một nhánh đang không chạy là thay đổi không đo được hiệu quả, còn giữ
+   *     thì chi phí đúng bằng một phép so `undefined`.
+   *
+   * Nhưng nó nay là DỰ PHÒNG, không phải đường đang dùng. Ai đọc chỗ này đừng kết
+   * luận rằng engine còn dò chuỗi.
    */
   const coBangChung = (loai: BangChung["loai"], khoa: string) =>
     hits.some((h) => h.bangChung?.some((b) => b.loai === loai && b.khoa === khoa));

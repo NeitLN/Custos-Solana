@@ -99,35 +99,53 @@ test("nghiệm thu trong ADR khớp bài kiểm thật", () => {
   assert.match(g, /assert\.deepEqual\(b\.dem, a\.dem/, "bài kiểm phải so TỪNG method");
 });
 
-test("ADR giữ ranh giới: mới 2/14 luật khai bằng chứng, và nói ra", () => {
+test("ADR tự khai đúng số luật có bằng chứng, và con số khớp mã", () => {
   /*
-   * Áp lực trôi một chiều: "đã có trace đầy đủ" nghe tốt hơn "2/14 luật". Nhưng
+   * Áp lực trôi một chiều: "đã có trace đầy đủ" nghe tốt hơn một phân số. Nhưng
    * `thieuBangChung` đếm ra phần còn lại mỗi lượt chạy, nên giấu nó trong ADR sẽ tạo
    * mâu thuẫn giữa tài liệu và đầu ra.
-   */
-  /*
-   * NEO VÀO MỤC 6, không quét cả trang.
    *
-   * `2/14` xuất hiện hai lần: mục 3 nói *"12/14 luật chưa khai"*, mục 6 nói *"Mới
-   * 2/14"*. Mutation đổi riêng mục 6 thành "14/14" mà bài vẫn xanh vì mục 3 còn
-   * chuỗi khớp. Đây là ô tự khai giới hạn — nó phải đứng được một mình.
+   * NEO VÀO MỤC 6, không quét cả trang: phân số xuất hiện ở hai mục, và mutation đổi
+   * riêng mục 6 vẫn xanh nếu mục 3 còn chuỗi khớp. Đây là ô tự khai giới hạn — nó
+   * phải đứng được một mình.
+   *
+   * ── CU-05 đổi con số, nên bài này thôi gắn cứng ──────────────────────────────
+   *
+   * Bản trước đòi đúng chuỗi `Mới 2/14` và `soKhai === 2`. CU-05 nâng lên 13/14 và
+   * bài đỏ — đỏ ĐÚNG, vì ADR lúc đó còn ghi số cũ.
+   *
+   * Nhưng gắn cứng một con số nghĩa là mỗi lần gắn thêm bằng chứng lại phải sửa tay
+   * ở hai nơi, và lần nào quên thì bài đỏ vì lý do sai. Bất biến thật không phải
+   * "con số bằng 2" mà là **ADR nói đúng thứ mã đang làm**. Nên bài này ĐẾM từ mã
+   * rồi đòi ADR chứa đúng con số đó.
    */
   const s = doc(ADR);
   const i = s.indexOf("## 6 · Điều ADR này KHÔNG làm");
   assert.ok(i > 0, "mất mục 6 — nơi ADR tự khai giới hạn");
   const muc6 = s.slice(i);
 
-  assert.match(muc6, /Mới 2\/14/, "mục 6 không nói rõ mới bao nhiêu luật khai bằng chứng");
+  /*
+   * Đếm LUẬT, không đếm lần xuất hiện của `bangChung: [`.
+   *
+   * Một luật có thể khai ở hai nhánh hit khác nhau — luật 4 làm đúng thế. Đếm chuỗi
+   * sẽ cho 15 trong khi chỉ có 13 luật, và ADR sẽ bị ép ghi một con số vô nghĩa.
+   */
+  const rules = doc("packages/core/src/l2/rules.ts");
+  const khoi = rules.split(/(?=^export const luat\d+: Rule = \{$)/m);
+  const luat = khoi.filter((k) => /^export const luat\d+/.test(k));
+  const soKhai = luat.filter((k) => k.includes("bangChung: [")).length;
+  const tong = luat.length;
+  assert.ok(tong > 0, "không tìm thấy luật nào trong rules.ts");
+
+  assert.ok(
+    muc6.includes(`${soKhai}/${tong}`),
+    `mã có ${soKhai}/${tong} luật khai bằng chứng, mục 6 của ADR không nói con số đó`,
+  );
   assert.match(
     muc6,
     /chưa có bằng chứng truy vết chi tiết/,
     "mục 6 không nêu cách xử lý cảnh báo chưa truy vết được",
   );
-
-  // Và con số 2/14 phải đúng với mã.
-  const rules = doc("packages/core/src/l2/rules.ts");
-  const soKhai = (rules.match(/bangChung: \[/g) ?? []).length;
-  assert.equal(soKhai, 2, `ADR ghi 2/14 nhưng mã có ${soKhai} luật khai bằng chứng`);
 });
 
 test("số test trong ADR-0002 khớp phép đo hiện tại, không phải ảnh chụp cũ", () => {

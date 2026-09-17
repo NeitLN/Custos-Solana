@@ -67,12 +67,17 @@ diagnostics nhạy cảm khỏi phần hiển thị/export mặc định"*. Cons
 | `validateInspectResult` với kết quả **không** có `chanDoan` | `[]` — hợp lệ |
 | `validateInspectResult` với kết quả **có** `chanDoan` | `[]` — hợp lệ |
 | Consumer nào đếm số trường của `InspectResult`? | **không có** — grep toàn repo |
-| 16 chỗ trả `RuleHit` phải sửa? | **không** — `bangChung` tuỳ chọn, 12 luật chưa khai vẫn chạy qua đường lui |
+| 16 chỗ trả `RuleHit` phải sửa? | **không** — `bangChung` tuỳ chọn; luật chưa khai vẫn chạy qua đường lui |
 | Bộ test | **749 pass, 0 fail** |
 
-**Đường lui giữ lại có chủ ý.** 12/14 luật chưa khai `bangChung`; `diff.ts` vẫn dùng
-`detail.includes(...)` cho **riêng** chúng (`h.bangChung === undefined`). Bỏ hẳn đường
-lui sẽ làm mọi dòng mất màu ngay — đổi một lỗi im lặng thành một lỗi to hơn.
+**Đường lui giữ lại có chủ ý.** `diff.ts` vẫn dùng `detail.includes(...)` cho
+**riêng** luật chưa khai (`h.bangChung === undefined`). Bỏ hẳn đường lui sẽ làm mọi
+dòng mất màu ngay — đổi một lỗi im lặng thành một lỗi to hơn.
+
+> **Cập nhật CU-05 (18/09/2026).** Con số đã đổi: **13/14 luật** nay khai `bangChung`.
+> Luật 14 là ngoại lệ có lý do — nó nói về việc *thiếu* thông tin (ví không cho biết
+> địa chỉ nào là của người dùng), nên không có dữ kiện nào để trỏ tới. Đường lui vẫn
+> còn cho đúng luật đó.
 
 ---
 
@@ -123,9 +128,11 @@ lượt · xoá `phienBan` khỏi schema.
 
 - **Không xây trình debugger tổng quát.** Thẻ nói rõ *"Không cần xây trình debugger
   tổng quát"*. Đây là một trường tuỳ chọn mang đúng thứ L2 đã biết.
-- **Không gắn `bangChung` cho cả 14 luật.** Mới 2/14 (luật 11 và 13) — đúng hai luật
-  đã gây lỗi. `chanDoan.thieuBangChung` đếm ra phần còn lại thay vì giấu, và
-  `mucKyThuat` in *"chưa có bằng chứng truy vết chi tiết"* thay vì suy diễn.
+- **Không gắn `bangChung` cho cả 14 luật.** ADR này dừng ở 2/14 (luật 11 và 13) —
+  đúng hai luật đã gây lỗi. **CU-05 nâng lên 13/14**; luật 14 không có dữ kiện để
+  trỏ tới vì nó nói về việc *thiếu* thông tin. `chanDoan.thieuBangChung` đếm ra phần
+  còn lại thay vì giấu, và `mucKyThuat` in *"chưa có bằng chứng truy vết chi tiết"*
+  thay vì suy diễn.
 - **Không đổi `level`.** L2 vẫn là nơi duy nhất sinh verdict. Bật hay tắt chẩn đoán
   không đổi một bit nào của kết luận — có bài kiểm riêng cho điều đó.
 - **Không xuất dữ liệu nhạy cảm ngoài phạm vi.** `chanDoan` chỉ chứa những gì đã có
