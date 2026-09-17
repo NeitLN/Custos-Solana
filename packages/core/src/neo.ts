@@ -226,5 +226,41 @@ export function quaCu(neo: NeoKetQua, msToiDa = 30_000, bayGio = Date.now()): bo
   // Không đọc được thời điểm ⇒ coi là quá cũ. Fail-safe: thiếu dữ liệu không bao giờ
   // được hiểu thành "vẫn còn tươi".
   if (Number.isNaN(t)) return true;
-  return bayGio - t > msToiDa;
+
+  /*
+   * GIỚI HẠN TUỔI PHẢI HỮU HẠN VÀ HỢP LỆ — CU-02, mục 4.3 của UPDATE-CUSTOS.md.
+   *
+   * Ba lỗ hổng đã TÁI HIỆN trước khi sửa, trên chính bản trước của hàm này:
+   *
+   *   quaCu(neo, NaN)       -> false   không bao giờ hết hạn
+   *   quaCu(neo, Infinity)  -> false   sống vô hạn
+   *   kiemLuc = +1 giờ      -> false   clock lệch ⇒ kết quả cũ sống vô hạn
+   *
+   * Hai dòng đầu là cùng một loại dữ liệu xấu với `Date.parse` trả `NaN` ở trên —
+   * mà chỗ kia fail-safe còn chỗ này thì không. Một hàm bảo vệ mà xử lý `NaN` theo
+   * hai hướng ngược nhau ở hai dòng cạnh nhau thì bảo vệ được đúng một nửa số ca.
+   *
+   * `msToiDa` không hữu hạn hoặc âm ⇒ coi là quá cũ. Không tự sửa thành 30 giây:
+   * người gọi truyền vào một giá trị vô nghĩa là một lỗi của họ, và im lặng thay
+   * bằng mặc định sẽ giấu lỗi đó đi.
+   */
+  if (!Number.isFinite(msToiDa) || msToiDa < 0) return true;
+
+  /*
+   * THỜI ĐIỂM TƯƠNG LAI ⇒ QUÁ CŨ.
+   *
+   * `bayGio - t` âm khi neo ghi thời điểm ở tương lai, và số âm thì không bao giờ
+   * lớn hơn `msToiDa` — nên kết quả cũ được coi là tươi mãi mãi. Xảy ra khi clock
+   * máy lệch, khi máy đổi múi giờ giữa chừng, hoặc khi một neo được dựng từ dữ
+   * liệu không đáng tin.
+   *
+   * Không đoán xem lệch bao nhiêu là "chấp nhận được": Custos không có nguồn thời
+   * gian tin cậy nào để so. Một neo tự khai tương lai là một neo không giải thích
+   * được, và fail-safe của dự án nói thẳng — không đủ dữ liệu thì không bao giờ
+   * kết luận có lợi.
+   */
+  const tuoi = bayGio - t;
+  if (tuoi < 0) return true;
+
+  return tuoi > msToiDa;
 }

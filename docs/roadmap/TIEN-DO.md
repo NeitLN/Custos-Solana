@@ -8,10 +8,15 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 | [ROADMAP-TECHNICAL-CUSTOS.md](../../ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [ROADMAP-CLAUDE.md](../../ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |
 
-**Cập nhật 17/09/2026 (sau merge giao diện):** HEAD `516f744`, **cây làm việc sạch**,
-**34 commit chưa push**. **726 test pass, 0 fail.** Cổng `kiem-san-pham`:
-**11 đạt · 0 hỏng · 0 chưa rõ**. `nop-bai --strict`: **11/13**, hai ô còn lại là
-`[ngoài]` (4 câu chưa hỏi BTC) và `[người]` (chưa tạo tag).
+**Cập nhật 17/09/2026 (baseline CU-00):** HEAD `15f28b6`, **cây làm việc sạch**,
+**đã push**. **730 test pass, 0 fail, 0 skipped** — đo lại trong lượt CU-00, không kế
+thừa số cũ. Cổng `kiem-san-pham`: **11 đạt · 0 hỏng · 0 chưa rõ**. `nop-bai --strict`:
+**11/13**, hai ô còn lại là `[ngoài]` (4 câu chưa hỏi BTC — chủ dự án đã quyết bỏ qua)
+và `[người]` (chưa tạo tag).
+
+> Con số 726 ở bản trước của dòng này là snapshot của HEAD `516f744`. Các đoạn bên dưới
+> và trong BAN-GIAO.md còn ghi 726/719 là **lịch sử có nhãn**, cố ý giữ nguyên; chỉ dòng
+> trạng thái hiện hành này mới được cập nhật theo lượt đo mới nhất.
 
 Đã pull 3 commit giao diện của Duy Anh; merge sạch. 8/8 probe trình duyệt chạy lại trên
 cây sạch, 10/10 biên bản a11y khớp dấu vết `f4585f12`. Lượt merge này lộ ra một phép đo
@@ -86,6 +91,54 @@ câu) và thêm **ba neo** `vi-du-tich-hop/README.md` vào `NEO_DONG_BO`.
 **Claim số bảy trôi:** `README.md` dòng 44 (bảng rubric Technical) giữ `inspect()`
 **664 ms** trong khi sáu chỗ khác đã 656 — cùng file với dòng 93 nói 656. Dòng đó
 không có mốc sync. Đã sửa số, thêm mốc và neo.
+
+## Bảng công việc — roadmap UPDATE CUSTOS (CU-)
+
+Nguồn thẻ: [UPDATE-CUSTOS.md](../../UPDATE-CUSTOS.md) — **đang thực hiện**.
+**32 thẻ: 28 bắt buộc (CU-00…CU-27) · 4 có điều kiện (CU-O1…CU-O4).**
+
+Trạng thái theo mục 5 của tài liệu đó: TODO · IN_PROGRESS · VERIFY · DONE · PARTIAL ·
+WAIT_INPUT · DEFERRED_SCOPE · NOT_NEEDED. `UPDATE-CUSTOS.md` giữ **yêu cầu và
+acceptance**; bảng này giữ **trạng thái**. Không lập bảng phần trăm thứ hai ở đó.
+
+Đường mở đầu: `CU-00 → CU-01 → CU-02/CU-03 → CU-04 → CU-05/06/07 → CU-08 → CU-09`.
+
+| Mã | Việc | Phụ thuộc | Trạng thái | Bằng chứng / ghi chú |
+|---|---|---|---|---|
+| CU-00 | Khoá baseline thực tế, dọn mâu thuẫn trạng thái | — | **DONE** | Baseline đo lại trong lượt này, không kế thừa: **730 pass · 0 fail · 0 skipped** tại HEAD `15f28b6`, cây sạch. Manifest: [`baseline.json`](../review/update-custos/). **Mâu thuẫn đã dọn:** dòng trạng thái hiện hành của TIEN-DO.md ghi 726 (snapshot của `516f744`) → sửa thành 730; các đoạn 726/719 còn lại là **lịch sử có nhãn**, cố ý giữ. **Đo được cho CU-05:** `bangChung` mới có ở **2/14 luật** (luật 11, 13) — `diff.ts:136` còn giữ `detail.includes` làm đường lui cho 12 luật kia. Đó là con số thật, không phải ước lượng. |
+| CU-01 | ADR cho API mở rộng và migration | CU-00 | TODO | |
+| CU-02 | Session giữ đúng giao dịch và độ mới | CU-01 | TODO | |
+| CU-03 | Ngữ cảnh RPC, blockhash, độ đầy đủ simulation | CU-01 | TODO | |
+| CU-04 | Evidence graph và provenance thống nhất | CU-02, CU-03 | TODO | |
+| CU-05 | Trace cho tất cả luật đang phát cảnh báo | CU-04 | TODO | 12/14 luật cần phủ; bắt đầu từ luật đổi owner/delegate/outflow. |
+| CU-06 | Bảng hậu quả tài sản và quyền có cấu trúc | CU-04 | TODO | |
+| CU-07 | Coverage theo năng lực | CU-04 | TODO | |
+| CU-08 | Inspector nhận transaction bất kỳ | CU-02,03,06,07 | TODO | |
+| CU-09 | UI bấm từ cảnh báo tới dữ kiện | CU-05,06,07,08 | TODO | **Cổng lát cắt A.** |
+| CU-10 | CLI dùng được ngoài monorepo | CU-08 | TODO | |
+| CU-11 | Export receipt và redaction | CU-04,08,10 | TODO | |
+| CU-12 | Replay offline có nhãn | CU-11 | TODO | |
+| CU-13 | Registry decoder có phạm vi năng lực | CU-04,07 | TODO | |
+| CU-14 | Token-2022 transfer fee và amount thực nhận | CU-03,06,13 | TODO | |
+| CU-15 | Quyền Token-2022 và transfer hook | CU-05,06,13 | TODO | |
+| CU-16 | SOL, phí và vòng đời account | CU-03,06 | TODO | |
+| CU-17 | Capability matrix | CU-07,13,14,15,16 | TODO | |
+| CU-18 | Policy của ví tách khỏi engine | CU-02,07,17 | TODO | |
+| CU-19 | Adapter ví và signer bất đồng bộ | CU-02,03,18 | TODO | |
+| CU-20 | So sánh hai transaction/kết quả | CU-06,08,11 | TODO | |
+| CU-21 | Batch review có giới hạn đúng | CU-08,18,20 | TODO | |
+| CU-22 | Abort, retry và cache đúng ngữ cảnh | CU-02,03 | TODO | Có thể bắt đầu sau CU-03, không chờ CU-21. |
+| CU-23 | Đo hiệu năng gắn với chức năng mới | CU-09,12,22 | TODO | |
+| CU-24 | Corpus mở rộng và kiểm đối kháng | CU-04 | TODO | Mở sớm ngay khi CU-04 xong. |
+| CU-25 | Contract tests, package, tài liệu tích hợp | CU-10,11,18,19,21,22 | TODO | |
+| CU-26 | Hoàn thiện UX và tài liệu sử dụng | CU-09,12,17,20,21 | TODO | |
+| CU-27 | Nghiệm thu bản nâng cấp và demo | CU-00…CU-26 | TODO | |
+| CU-O1 | Hỏi đáp về bằng chứng giao dịch | CU-05,11,12 | DEFERRED_SCOPE | Nhánh có điều kiện — chưa mở. |
+| CU-O2 | Trang rà quyền của một ví, chỉ đọc | CU-15,17,22 | DEFERRED_SCOPE | Nhánh có điều kiện — chưa mở. |
+| CU-O3 | Semantic adapter cho một protocol | CU-13,17,24 | DEFERRED_SCOPE | Nhánh có điều kiện — chưa mở. |
+| CU-O4 | Dịch vụ HTTP cho tích hợp ngoài trình duyệt | CU-10,11,22,25 | DEFERRED_SCOPE | Nhánh có điều kiện — chưa mở. |
+
+---
 
 ## Bảng công việc — roadmap Technical (TB-)
 

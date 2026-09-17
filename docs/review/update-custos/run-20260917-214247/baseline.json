@@ -1,0 +1,51 @@
+{
+  "the": "CU-00",
+  "doLuc": "2026-09-17T14:42:47.534Z",
+  "commit": "15f28b61eff7915be9de165bbe39072f3820a611",
+  "commitNgan": "15f28b6",
+  "dirty": true,
+  "fileBan": [
+    "UPDATE-CUSTOS.md"
+  ],
+  "runtime": {
+    "node": "v24.12.0",
+    "npm": "git version 2.54.0.windows.1"
+  },
+  "lenh": [
+    {
+      "lenh": "npm run check",
+      "exit": 0,
+      "ketQua": "730 pass · 0 fail · 0 skipped"
+    }
+  ],
+  "baseline": {
+    "soTest": 730,
+    "soLuat": 14,
+    "luatCoBangChung": [
+      "luat11",
+      "luat13"
+    ],
+    "luatChuaCoBangChung": [
+      "luat1",
+      "luat2",
+      "luat3",
+      "luat12",
+      "luat4",
+      "luat6",
+      "luat9",
+      "luat8",
+      "luat5",
+      "luat7",
+      "luat10",
+      "luat14"
+    ]
+  },
+  "mauThuanDaPhatHien": [
+    "docs/roadmap/TIEN-DO.md ghi 726 test — HEAD that su co 730",
+    "docs/roadmap/BAN-GIAO.md ghi 726 va 719 o hai cho khac nhau"
+  ],
+  "phamViChuaKiem": [
+    "probe trinh duyet chua chay trong luot baseline nay",
+    "chua chay thu-tich-hop:devnet trong luot nay"
+  ]
+}
