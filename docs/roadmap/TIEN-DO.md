@@ -121,7 +121,7 @@ acceptance**; bảng này giữ **trạng thái**. Không lập bảng phần tr
 | CU-13 | Registry decoder có phạm vi năng lực | CU-04,07 | TODO | |
 | CU-14 | Token-2022 transfer fee và amount thực nhận | CU-03,06,13 | TODO | |
 | CU-15 | Quyền Token-2022 và transfer hook | CU-05,06,13 | TODO | |
-| CU-16 | SOL, phí và vòng đời account | CU-03,06 | TODO | |
+| CU-16 | SOL, phí và vòng đời account | CU-03,06 | **PARTIAL** | `chiTietSol()` tách `roi` thành **phí · đặt cọc · phần còn lại** — ba câu khác nhau: mất thật · **lấy lại được** · chưa biết đi đâu. **Fee payer ≠ ví được bảo vệ:** người trả phí là `nguoiKy[0]`, khác `signer` thì phí **không** tính cho người dùng; không biết ai trả thì **tính vào người dùng** (fail-safe nghiêng phía thận trọng). `nguoiDungTraPhi` có ba giá trị `true/false/null`. `chuaGiaiThich` giữ lại để bất biến `phi + datCoc + conLai = roi` **kiểm được**, chạy trên toàn corpus. `conLai` không gọi là *chuyển đi* — Custos chỉ biết nó rời ví. **Một phép đo suýt dẫn sai:** corpus cho *38/38 chưa giải thích được*, đọc kỹ thì fixture **không có** trường `phiUocTinh` (tạo trước khi trường đó tồn tại). Đột biến **4/4 đỏ**. 808 pass. **Còn lại:** refund khi đóng account, priority fee tách riêng, wrap/unwrap wSOL. |
 | CU-17 | Capability matrix | CU-07,13,14,15,16 | TODO | |
 | CU-18 | Policy của ví tách khỏi engine | CU-02,07,17 | TODO | |
 | CU-19 | Adapter ví và signer bất đồng bộ | CU-02,03,18 | TODO | |

@@ -8,5 +8,6 @@ export { computeCoverage, chiTietCoverage, type ChiTietCoverage } from "./l1/cov
 export { neoKetQua, khopNeo, quaCu, type NeoKetQua, type KetQuaKhop, type LyDoLech, type Cluster } from "./neo.ts";
 export { ketNoiCoHuy, laHuy, type KetNoiCoHuy } from "./huy.ts";
 export { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT, type SolNguoiDung } from "./sol.ts";
+export { chiTietSol, type ChiTietSol } from "./sol-chi-tiet.ts";
 export { VERIFIED_PROGRAMS, REASON, MA_THONG_TIN, chiLaThongTin } from "./constants.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
