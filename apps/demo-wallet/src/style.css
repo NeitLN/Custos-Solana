@@ -317,7 +317,12 @@ button {
 
 .address-pill {
   max-width: 190px;
-  min-height: 34px;
+  /* 44px là ngưỡng vùng bấm của dự án, không phải con số làm tròn: `soi-vung-bam.py`
+     đo và chặn ở đó. `min-height: 34px` cho ra nút 150x38 — trên ngưỡng cứng WCAG 2.2
+     AA (24px) nên axe vẫn xanh, nhưng dưới mốc khuyến nghị, và bộ probe bắt được.
+     Cùng lỗi với `.nut` cao 42px ghi ở đầu `soi-trinh-duyet.py`: thiếu vài px thì
+     không có gì báo, trừ khi có người đo. */
+  min-height: 44px;
   color: #60697a;
   border: 1px solid #d7ddea;
   background: rgba(248, 250, 253, 0.9);

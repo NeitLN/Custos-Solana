@@ -1,8 +1,8 @@
 {
-  "doLuc": "2026-09-16T20:02:20.660856+00:00",
-  "sourceCommit": "f8ee7abeec89a465fe9eb2c9880700d831d8ae9a",
+  "doLuc": "2026-09-17T12:33:21.670883+00:00",
+  "sourceCommit": "d0ec08a5c573fb08b85dff5068e9cdebe7c5d77d",
   "dauVet": {
-    "bam": "7c7e5a447dc94d1c",
+    "bam": "f4585f12b891c97d",
     "soFile": 35
   },
   "khungDaKiem": [
@@ -30,7 +30,7 @@
       "dat": true,
       "top": 9,
       "vh": 720,
-      "scrollY": 1333,
+      "scrollY": 1437,
       "focusTrongKetQua": true
     },
     {
@@ -38,7 +38,7 @@
       "dat": true,
       "top": 9,
       "vh": 812,
-      "scrollY": 1237,
+      "scrollY": 1368,
       "focusTrongKetQua": true
     },
     {
@@ -46,7 +46,7 @@
       "dat": true,
       "top": 133,
       "vh": 1024,
-      "scrollY": 911,
+      "scrollY": 978,
       "focusTrongKetQua": true
     }
   ],

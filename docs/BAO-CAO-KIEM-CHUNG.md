@@ -71,7 +71,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
 | 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `66bf083` | `ket-qua.json` → `lastAttempt` |
-| 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **chỉ tài liệu đổi** | `npm run nop-bai -- --strict` |
+| 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **không file nào trong phạm vi đổi**. Phạm vi của lượt live là `packages/` và `vi-du-tich-hop/`, KHÔNG gồm giao diện: mã giao diện đổi thì bằng chứng a11y hết hiệu lực (dòng riêng), còn lượt live thì không | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | **`ai@0.2.0`** · `core@0.1.1` — khớp source | `npm view @custos-solana/ai version` |
 | 5 | Gói trên registry và gói hiện tại cùng hành vi? | **Có** — 10/10 bẫy bị chặn trên chính gói registry | `npm run thu-goi-registry` |

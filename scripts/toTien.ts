@@ -245,8 +245,25 @@ export function bangChungConHieuLuc(
     dong(git(["diff-tree", "--no-commit-id", "--name-only", "-r", c])).some(dangKe),
   );
 
+  /*
+   * NÓI ĐÚNG THỨ ĐÃ KIỂM, KHÔNG NÓI RỘNG HƠN.
+   *
+   * Câu cũ ở đây là "từ đó tới HEAD chỉ tài liệu đổi". Câu đó SAI ngay lần đầu có
+   * người khác đụng vào giao diện: 17/09/2026, merge mang về ba commit sửa
+   * `apps/demo-wallet/src/style.css`, và cổng vẫn in "chỉ tài liệu đổi". Không
+   * commit nào trong đó là tài liệu.
+   *
+   * Kết luận thì đúng — `laMa` cố ý KHÔNG tính mã trong `apps/`, vì lượt live đo SDK
+   * gọi Devnet chứ không đo giao diện. Sai là ở lời giải thích: nó khai một điều
+   * mạnh hơn ("không có mã nào đổi") thay vì điều đã thật sự kiểm ("không có mã
+   * TRONG PHẠM VI nào đổi"). Người đọc tin câu mạnh hơn.
+   *
+   * Cùng họ với lỗi `moHinhThat` và `BENCHMARK.md`: kết quả đúng, câu chữ mô tả sai
+   * phạm vi. Và `dangKe` có thể là vị từ bất kỳ do người gọi truyền, nên câu cũ còn
+   * sai to hơn ở những chỗ gọi khác.
+   */
   return bun.length === 0
-    ? { con: true, vi: `đo tại ${sha.slice(0, 7)}; từ đó tới HEAD chỉ tài liệu đổi` }
+    ? { con: true, vi: `đo tại ${sha.slice(0, 7)}; từ đó tới HEAD không đổi file nào trong phạm vi` }
     : {
         con: false,
         vi: `${bun.length} commit chạm mã sau lượt đo: ${bun.map((c) => c.slice(0, 7)).join(", ")}`,

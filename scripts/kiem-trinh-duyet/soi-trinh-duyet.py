@@ -37,6 +37,7 @@ import time
 from datetime import datetime, timezone
 
 import dauvet
+from tran_ngang import do_tran, ghi_chu, khong_tran
 from pathlib import Path
 
 try:
@@ -230,10 +231,8 @@ async def main() -> None:
             ck(f"{ten} · bảng hậu quả 500 → 0", "500" in t and "0,0" in t)
             ck(f"{ten} · coverage 2 trên 3", "2 trên 3" in t)
             ck(f"{ten} · 0 lỗi console", not bug, str(bug[:1]))
-            tran = await pg.evaluate(
-                "() => document.documentElement.scrollWidth - document.documentElement.clientWidth"
-            )
-            ck(f"{ten} · không tràn ngang", tran == 0, f"+{tran}px")
+            tran = await do_tran(pg)
+            ck(f"{ten} · không tràn ngang", khong_tran(tran), ghi_chu(tran))
             if ok:
                 await soi_axe(pg, f"ví đang cảnh báo · {ten}")
                 cao = await pg.evaluate(
@@ -357,10 +356,8 @@ async def main() -> None:
                 else:
                     await pg.wait_for_timeout(1500)
                 await soi_axe(pg, f"{ten} · {khung}")
-                tran = await pg.evaluate(
-                    "() => document.documentElement.scrollWidth - document.documentElement.clientWidth"
-                )
-                ck(f"{ten} · {khung} · không tràn ngang", tran == 0, f"+{tran}px")
+                tran = await do_tran(pg)
+                ck(f"{ten} · {khung} · không tràn ngang", khong_tran(tran), ghi_chu(tran))
                 await ctx.close()
 
         await b.close()
