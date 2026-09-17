@@ -4,7 +4,54 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — 18/09/2026 (lát cắt A ĐÃ ĐÓNG, thêm CU-22)
+## Hiện trạng — 18/09/2026 (lát cắt A + CU-10/13/16/17/22/24)
+
+**828 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
+`nop-bai --strict` **11/13**. 49 commit chưa push.
+
+**DONE:** CU-00 · 05 · 08 · 09 · 10.
+**PARTIAL:** CU-01 · 02 · 03 · 04 · 06 · 07 · 13 · 16 · 17 · 22 · 24.
+
+### Ba lỗi THẬT tìm ra trong lượt này, không phải tính năng mới
+
+1. **7 fixture đối chứng gán nhãn NGƯỢC** (CU-24). `R03/05/06/07/09/10/11-neg` ghi
+   `cuc: "duong"` trong khi `kyVong.khongCoMa` nói rõ là đối chứng. **Test vẫn xanh**
+   vì chúng đọc `kyVong`; hậu quả là manifest báo *"7 luật không có ca đối chứng"*
+   trong khi cả 7 đều có. Cách tìm ra: phép đếm của tôi (theo `cuc`) mâu thuẫn với
+   bài `capLuat` đang xanh (theo `kyVong`) — hai điều không thể cùng đúng.
+2. **Lệch claim trong `DAC-TA-CORE.md`** (CU-17). Liệt kê **6 program** đã xác minh
+   và có **SPL Memo**; registry thật **13 program**, **không có Memo** — sai cả hai
+   hướng. Danh sách gõ tay lúc registry còn 6 rồi không ai sửa.
+3. **`Buffer.from(s, "base64")` không bao giờ ném** (CU-10) — nó bỏ ký tự lạ, nên
+   `"rác!!!"` báo nhầm thành *"không phải giao dịch Solana"*.
+
+### Con số đo được
+
+| | |
+|---|---|
+| Lệnh đọc được TÊN / hiểu HẬU QUẢ | **377 / 8** — khoảng cách là phần chưa hiểu |
+| Program đọc tên / hiểu hậu quả | **13 / 2** |
+| Luật có cả hai cực (sau sửa nhãn) | **14/14** |
+| Coverage tách nhóm | 36 hiểu · **58 quen-chưa-đọc** · 12 lạ |
+| Đầu vào sai chạm RPC | **0 lời gọi** |
+
+### Bẫy mới, thêm vào danh sách cũ
+
+- **Guard đọc mã phải tách chú thích** — tôi mắc lại đúng bẫy đã ghi: chú thích kể
+  lại lỗi cũ bằng chính chuỗi bị cấm, guard khớp phải nó.
+- **Không nhận diện thứ gì bằng số lượng** — bản đầu của CU-13 nhận diện SPL Token
+  bằng `soLenh === 44`: đúng hôm nay, sai im lặng khi bảng đổi.
+- **`n/n` trong tài liệu có thể là tỉ lệ, không phải ngày** — guard `lichThi` đỏ vì
+  `deadline` + `5/5`.
+- **Đọc hàm trước khi dựng đầu vào cho nó** — `tinhTienDatCoc` đọc lamports từ
+  `facts.accounts`, không từ `tokenAccounts`.
+
+**Thẻ tiếp theo đủ phụ thuộc:** CU-11 (receipt, cần CU-04+08+10 ✓) · CU-12 (replay,
+cần CU-11) · CU-14/15 (Token-2022, cần CU-13 ✓) · CU-18 (policy, cần CU-02+07+17 ✓).
+
+---
+
+## Lịch sử — 18/09/2026 (lát cắt A đóng, CU-22)
 
 **791 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
 `nop-bai --strict` **11/13**. 32 commit chưa push.
