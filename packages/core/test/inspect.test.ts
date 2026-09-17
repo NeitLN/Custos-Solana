@@ -134,3 +134,111 @@ test("định dạng số theo kiểu Việt Nam", () => {
   assert.equal(dinhDangSo(1_234_567_890n, 6), "1.234,56789");
   assert.equal(dinhDangSo(-5_000n, 9), "−0,000005");
 });
+
+/* ── QA · L3 trả dữ liệu MÉO, không phải L3 ném lỗi ─────────────────────────── */
+
+test("QA · aiAdvisory lạ từ L3 bị ép về null, không lọt ra hợp đồng", async () => {
+  /*
+   * BUG THẬT, tìm ra khi dò ranh giới L2/L3.
+   *
+   * `inspect()` bọc lời gọi L3 trong try/catch, nên một mô hình NÉM LỖI thì an
+   * toàn. Nhưng một mô hình TRẢ VỀ sai hình dạng thì không ném gì cả — ba trường
+   * của L3 được gán thẳng vào kết quả, không qua kiểm tra nào.
+   *
+   * Hậu quả đo được: `CanhBao.tsx:352` so sánh đúng chuỗi
+   * `aiAdvisory === "review_required"`. Một giá trị lạ làm biểu thức đó thành
+   * false, tức banner "cần kiểm tra thủ công" BIẾN MẤT. Đây là fail-OPEN đúng
+   * trên thứ duy nhất L3 được phép cảnh báo.
+   *
+   * `validateInspectResult` đã có sẵn luật này từ trước — nó chỉ chưa bao giờ
+   * được áp lên dữ liệu ĐẾN TỪ L3.
+   */
+  const XAU: unknown[] = ["TUYET_DOI_AN_TOAN", "safe", "", 0, 1, {}, [], true];
+  for (const adv of XAU) {
+    const r = await inspect(
+      {
+        connection: rpc,
+        interpret: (async () => ({
+          explanation: "x",
+          aiAdvisory: adv,
+          detectedPrimaryAction: null,
+        })) as never,
+      },
+      tx(),
+    );
+    assert.equal(r.aiAdvisory, null, `aiAdvisory ${JSON.stringify(adv)} lọt được ra ngoài`);
+    assert.deepEqual(validateInspectResult(r), [], `hợp đồng vỡ với ${JSON.stringify(adv)}`);
+  }
+});
+
+test("QA · aiAdvisory HỢP LỆ vẫn đi qua — đối chứng", async () => {
+  /*
+   * ĐỐI CHỨNG. Bài trên cũng xanh nếu ta ép aiAdvisory = null vô điều kiện, và
+   * như thế thì L3 mất hẳn khả năng yêu cầu kiểm tra thủ công — sửa một lỗ
+   * fail-open bằng cách tạo một lỗ to hơn.
+   */
+  const r = await inspect(
+    {
+      connection: rpc,
+      interpret: async () => ({
+        explanation: "x",
+        aiAdvisory: "review_required" as const,
+        detectedPrimaryAction: null,
+      }),
+    },
+    tx(),
+  );
+  assert.equal(r.aiAdvisory, "review_required", "L3 phải còn quyền yêu cầu kiểm tra thủ công");
+});
+
+test("QA · L3 trả kiểu SAI HẲN không làm vỡ hợp đồng", async () => {
+  /*
+   * Mô hình thật trả chuỗi, số, hoặc object thiếu trường — đều KHÔNG ném lỗi,
+   * nên try/catch không đỡ. Đo trước khi sửa: `explanation` thành `undefined`,
+   * vi phạm "explanation phải là string".
+   */
+  const XAU: unknown[] = ["an toàn", 42, null, undefined, {}, [], 0];
+  for (const ra of XAU) {
+    const r = await inspect(
+      { connection: rpc, interpret: (async () => ra) as never },
+      tx(),
+    );
+    assert.deepEqual(
+      validateInspectResult(r),
+      [],
+      `L3 trả ${JSON.stringify(ra)} làm vỡ hợp đồng`,
+    );
+    assert.equal(r.level, "warning", "verdict của L2 phải nguyên vẹn");
+  }
+});
+
+test("QA · chữ do L3 sinh bị giới hạn độ dài trước khi vào kết quả", async () => {
+  /*
+   * `explanation` và `detectedPrimaryAction.type` được render thẳng vào thẻ cảnh
+   * báo (CanhBao.tsx:220 và :266). React có escape nên KHÔNG phải XSS — đây là
+   * vấn đề bố cục: nửa triệu ký tự đẩy verdict thật ra khỏi màn hình.
+   *
+   * Một mô hình chạy loạn, hoặc một mô hình bị chèn prompt qua metadata token,
+   * đều đi đúng đường này.
+   */
+  const r = await inspect(
+    {
+      connection: rpc,
+      interpret: async () => ({
+        explanation: "X".repeat(500_000),
+        aiAdvisory: null,
+        detectedPrimaryAction: { type: "Y".repeat(500_000) },
+      }),
+    },
+    tx(),
+  );
+  assert.ok(
+    r.explanation.length <= 4_000,
+    `explanation dài ${r.explanation.length} ký tự — không có trần`,
+  );
+  assert.ok(
+    (r.detectedPrimaryAction?.type.length ?? 0) <= 200,
+    `detectedPrimaryAction.type dài ${r.detectedPrimaryAction?.type.length} ký tự`,
+  );
+  assert.equal(r.level, "warning", "verdict của L2 phải nguyên vẹn");
+});

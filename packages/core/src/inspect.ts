@@ -25,6 +25,75 @@ export type Interpreter = (
   aiAdvisory: AiAdvisory;
 }>;
 
+/*
+ * TRẦN ĐỘ DÀI cho chữ do L3 sinh.
+ *
+ * `explanation` hiện trong thẻ cảnh báo (CanhBao.tsx:220), `type` hiện ở dòng
+ * "hành động chính được nhận diện" (CanhBao.tsx:266). React có escape nên đây
+ * KHÔNG phải XSS — đo được là vấn đề bố cục: một mô hình chạy loạn trả nửa triệu
+ * ký tự sẽ đẩy chính cái verdict ra khỏi màn hình.
+ *
+ * 4000 ký tự rộng hơn nhiều lần câu dài nhất trong DAC-TA-L3.md, nên trần này
+ * không cắt vào diễn giải thật.
+ */
+const TRAN_DIEN_GIAI = 4_000;
+const TRAN_TEN_HANH_DONG = 200;
+
+function catBot(v: unknown, tran: number): string {
+  if (typeof v !== "string") return "";
+  if (v.length <= tran) return v;
+  // Dấu … nằm TRONG trần, không cộng thêm: `tran` là trần thật, không phải trần+1.
+  return v.slice(0, tran - 1) + "…";
+}
+
+/**
+ * Lọc dữ liệu L3 trả về trước khi cho vào `InspectResult`.
+ *
+ * VÌ SAO CẦN: ranh giới L2/L3 trước đây chỉ được cưỡng chế bằng KIỂU DỮ LIỆU, và
+ * kiểu thì biến mất lúc chạy. `try/catch` quanh lời gọi chỉ đỡ được mô hình NÉM
+ * LỖI; một mô hình TRẢ VỀ sai hình dạng không ném gì cả, và ba trường của nó được
+ * gán thẳng vào kết quả.
+ *
+ * Đã đo trước khi sửa: L3 trả `aiAdvisory: "TUYET_DOI_AN_TOAN"` thì
+ * `CanhBao.tsx:352` so sánh `=== "review_required"` ra false, và banner *cần
+ * kiểm tra thủ công* BIẾN MẤT. Fail-OPEN đúng trên thứ duy nhất L3 được phép
+ * cảnh báo. L3 trả chuỗi hoặc số thì `explanation` thành `undefined`, vỡ hợp
+ * đồng `InspectResult` mà `validateInspectResult` đã mô tả sẵn từ lâu.
+ *
+ * Luật ở đây CHỈ thu hẹp quyền của L3, không bao giờ mở rộng: giá trị lạ về
+ * `null`, không bao giờ tự dựng thành `"review_required"`. Ngược lại sẽ là AI tự
+ * sinh cảnh báo — đúng thứ DAC-TA-L3.md mục 2 cấm.
+ *
+ * `level`, `diff`, `reasonCodes` và `coverage` không có mặt ở đây vì L3 không hề
+ * chạm tới chúng; chúng được dựng từ `facts` và `l2` bên dưới.
+ */
+function locL3(r: unknown): {
+  detectedPrimaryAction: PrimaryAction | null;
+  explanation: string;
+  aiAdvisory: AiAdvisory;
+} {
+  if (typeof r !== "object" || r === null) {
+    return { detectedPrimaryAction: null, explanation: "", aiAdvisory: null };
+  }
+  const o = r as Record<string, unknown>;
+
+  // Chỉ đúng một chuỗi được chấp nhận. Mọi thứ khác là null.
+  const aiAdvisory: AiAdvisory = o["aiAdvisory"] === "review_required" ? "review_required" : null;
+
+  const act = o["detectedPrimaryAction"];
+  let detectedPrimaryAction: PrimaryAction | null = null;
+  if (typeof act === "object" && act !== null) {
+    const a = act as Record<string, unknown>;
+    if (typeof a["type"] === "string" && a["type"] !== "") {
+      detectedPrimaryAction = { type: catBot(a["type"], TRAN_TEN_HANH_DONG) };
+      if (typeof a["from"] === "string") detectedPrimaryAction.from = catBot(a["from"], TRAN_TEN_HANH_DONG);
+      if (typeof a["to"] === "string") detectedPrimaryAction.to = catBot(a["to"], TRAN_TEN_HANH_DONG);
+    }
+  }
+
+  return { detectedPrimaryAction, explanation: catBot(o["explanation"], TRAN_DIEN_GIAI), aiAdvisory };
+}
+
 export type InspectDeps = {
   connection: Connection;
   /** Tuỳ chọn. Vắng mặt thì sản phẩm vẫn chạy — chỉ mất phần diễn giải. */
@@ -57,9 +126,10 @@ export async function inspect(
   if (deps.interpret) {
     try {
       const r = await deps.interpret(facts, l2.reasonCodes, options.locale ?? "vi", options);
-      detectedPrimaryAction = r.detectedPrimaryAction;
-      explanation = r.explanation;
-      aiAdvisory = r.aiAdvisory;
+      const sach = locL3(r);
+      detectedPrimaryAction = sach.detectedPrimaryAction;
+      explanation = sach.explanation;
+      aiAdvisory = sach.aiAdvisory;
     } catch {
       // L3 hỏng không được làm sập lượt kiểm tra. Verdict của L2 giữ nguyên.
       detectedPrimaryAction = null;
