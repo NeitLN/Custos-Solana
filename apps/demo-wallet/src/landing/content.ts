@@ -47,24 +47,25 @@ export const VI = {
   },
 
   hero: {
-    eyebrow: "Solana · Phân tích giao dịch trước ký",
-    h1: "Trước khi ký, nhìn rõ điều sẽ thay đổi.",
-    moTa: "Custos mô phỏng giao dịch Solana, chỉ ra thay đổi về tài sản và quyền kiểm soát, rồi đưa bạn đến dữ kiện đứng sau cảnh báo.",
-    ghiChu: "Bản thử nghiệm trên Devnet. Không dùng tài sản thật.",
-    khung: {
-      tieuDe: "Custos / Trước khi ký",
+    kicker: "Kiểm tra giao dịch Solana trước ký",
+    h1: "Hiểu điều bạn sắp ký.",
+    moTa: "Xem thay đổi tài sản và quyền kiểm soát trong giao dịch Solana, cùng dữ kiện đứng sau mỗi cảnh báo.",
+    ctaPhu: "Xem tình huống A/B",
+    ghiChu: "Bản thử nghiệm Devnet · Không dùng tài sản thật",
+    phieu: {
+      tieuDe: "Phân tích giao dịch",
       nhanMau: "Kết quả mẫu đã lưu",
       mang: "Devnet",
       hanhDong: "Chuyển 10 token",
+      nhomTaiSan: "Tài sản",
+      nhomQuyen: "Quyền kiểm soát",
       nhanSoDu: "Số dư token",
       nhanQuyen: "Chủ tài khoản token",
-      quyenThayDoi: "Quyền thay đổi",
       chuBan: "Bạn",
       diaChiKhac: "địa chỉ khác",
-      xemTinhHuong: "Xem tình huống này",
+      cauCanhBao: "Có thao tác đổi chủ trong transaction mẫu.",
+      xemDoiChieu: "Xem đối chiếu và bằng chứng",
       caption: "Minh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.",
-      chipTransfer: "Transfer",
-      chipSetAuthority: "SetAuthority",
     },
   },
 
@@ -75,10 +76,27 @@ export const VI = {
     { manh: "Bằng chứng", phu: "Xem dữ kiện và giới hạn" },
   ],
 
+  pipeline: {
+    h2: "Cách Custos kiểm một giao dịch.",
+    moTa: "Ba bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.",
+    buoc: [
+      {
+        tieuDe: "Nhận transaction chưa ký",
+        moTa: "Ví hoặc dApp đưa giao dịch vào trước bước ký. Custos không cần khóa riêng.",
+      },
+      {
+        tieuDe: "Mô phỏng và phân tích",
+        moTa: "Chạy mô phỏng trên mạng, đọc thay đổi tài khoản, rồi áp bộ luật phát hiện.",
+      },
+      {
+        tieuDe: "Trả kết quả kèm dữ kiện",
+        moTa: "Kết quả đi cùng dữ kiện liên quan và phạm vi đã đọc hiểu được.",
+      },
+    ],
+    ghiChu: "Ví hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.",
+  },
+
   giaTri: {
-    h2: "Xem giao dịch ở cả số dư lẫn quyền.",
-    moDau:
-      "Một giao dịch có thể chuyển đúng số token bạn thấy, đồng thời thay đổi cách tài khoản được kiểm soát. Custos giúp làm rõ những thay đổi đó trong phạm vi dữ liệu đã phân tích.",
     the: [
       {
         tieuDe: "Xem hậu quả",
@@ -93,26 +111,17 @@ export const VI = {
         moTa: "Đi từ cảnh báo tới dữ kiện liên quan và mở thêm chi tiết khi cần kiểm sâu.",
       },
     ],
-    soDo: [
-      "Transaction chưa ký",
-      "Mô phỏng và đọc dữ liệu",
-      "Luật phát hiện",
-      "Kết quả kèm bằng chứng",
-    ],
-    soDoGhiChu:
-      "Ví hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.",
   },
 
   ab: {
     h2: "Cùng chuyển 10 token. Khác quyền kiểm soát.",
     moTa: "Hai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.",
-    nhanNguon: "Kết quả mẫu · Devnet · mô phỏng độc lập",
-    chonA: "A · Chỉ chuyển token",
+    nhanNguon: "Kết quả mẫu đã lưu · hai simulation độc lập",
+    chonA: "A · Chỉ chuyển",
     chonB: "B · Chuyển và đổi chủ",
-    tenA: "Chỉ chuyển token",
-    tenB: "Chuyển và đổi chủ",
-    nhomNhan: "Chọn tình huống để xem",
-    vungKetQua: "Kết quả của tình huống đã chọn",
+    cotTruong: "Mục so sánh",
+    moTaBang: "Đối chiếu hai tình huống mẫu A và B theo từng mục.",
+    dongDoiChieu: "A và B đều còn 490 token sau mô phỏng; chỉ B có thao tác đổi chủ tài khoản.",
     hang: {
       tokenChuyen: "Token chuyển",
       soDuSau: "Số dư sau mô phỏng",
@@ -126,8 +135,10 @@ export const VI = {
       ketLuanA: "Không phát hiện nguy hiểm trong phần đã đọc",
       ketLuanB: "Phát hiện thay đổi quyền kiểm soát",
     },
-    nutBangChung: "Vì sao cảnh báo?",
-    dongBangChung: "Đóng bằng chứng",
+    moBangChungB: "Xem dữ kiện của ca B",
+    dongBangChungB: "Đóng dữ kiện ca B",
+    moBangChungA: "Xem dữ kiện của ca A",
+    dongBangChungA: "Đóng dữ kiện ca A",
     bangChung: {
       tieuDe: "Dữ kiện đứng sau cảnh báo",
       dieuThayDoi: "Điều thay đổi",
@@ -135,7 +146,10 @@ export const VI = {
       truoc: "Trước",
       sau: "Sau",
       nguon: "Nguồn",
-      luat: "Luật",
+      nguonGiaTri: "Kết quả mô phỏng mẫu trên Devnet",
+      luat: "Mã luật",
+      kiemSau: "Xem chi tiết kỹ thuật",
+      diaChiDayDu: "Địa chỉ đầy đủ",
       gioiHan: "Giới hạn",
       gioiHanND:
         "Đây là hai lượt mô phỏng độc lập. Chúng không chứng minh cùng một ảnh chụp trạng thái, và không có giao dịch nào được gửi lên mạng.",
@@ -152,19 +166,6 @@ export const VI = {
     ketLuan: "Số tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.",
   },
 
-  batDau: {
-    h2: "Tự xem một giao dịch thay đổi điều gì.",
-    buoc: [
-      { tieuDe: "Chọn tình huống", moTa: "Mở demo Custos và chọn giao dịch thử nghiệm." },
-      { tieuDe: "Xem hậu quả", moTa: "Đọc thay đổi tài sản, quyền và phạm vi phân tích." },
-      {
-        tieuDe: "Mở bằng chứng",
-        moTa: "Xem dữ kiện liên quan hoặc chuyển sang Inspector để kiểm sâu hơn.",
-      },
-    ],
-    nut: "Bắt đầu với demo",
-    ghiChu: "Dùng tình huống thử nghiệm, không nhập seed phrase hoặc khóa riêng.",
-  },
 
   devs: {
     h2: "Đưa phần kiểm tra vào trước bước ký.",
@@ -214,6 +215,7 @@ export const VI = {
 
   faq: {
     h2: "Câu hỏi thường gặp",
+    moTa: "Phạm vi, giới hạn và cách đọc kết quả của Custos.",
     muc: [
       {
         hoi: "Custos có phải một ví mới không?",
@@ -326,24 +328,25 @@ export const EN: NoiDung = {
   },
 
   hero: {
-    eyebrow: "Solana · Transaction analysis before signing",
-    h1: "Before you sign, see what changes.",
-    moTa: "Custos simulates Solana transactions, surfaces changes to assets and account control, and lets you inspect the evidence behind a warning.",
-    ghiChu: "Devnet prototype. Do not use real assets.",
-    khung: {
-      tieuDe: "Custos / Before signing",
+    kicker: "Solana transaction checks before signing",
+    h1: "Understand what you’re about to sign.",
+    moTa: "Review changes to assets and account control in a Solana transaction, with evidence behind each warning.",
+    ctaPhu: "Explore the A/B example",
+    ghiChu: "Devnet prototype · Do not use real assets",
+    phieu: {
+      tieuDe: "Transaction analysis",
       nhanMau: "Recorded sample",
       mang: "Devnet",
       hanhDong: "Transfer 10 tokens",
+      nhomTaiSan: "Assets",
+      nhomQuyen: "Account control",
       nhanSoDu: "Token balance",
       nhanQuyen: "Token account owner",
-      quyenThayDoi: "Control changes",
       chuBan: "You",
       diaChiKhac: "another address",
-      xemTinhHuong: "See this scenario",
+      cauCanhBao: "The sample transaction changes the account owner.",
+      xemDoiChieu: "See the comparison and evidence",
       caption: "Based on a recorded Devnet simulation. No transaction was broadcast.",
-      chipTransfer: "Transfer",
-      chipSetAuthority: "SetAuthority",
     },
   },
 
@@ -354,10 +357,27 @@ export const EN: NoiDung = {
     { manh: "Evidence", phu: "See the data and limits" },
   ],
 
+  pipeline: {
+    h2: "How Custos checks a transaction.",
+    moTa: "These three steps are the real path of a check, not an illustrative diagram.",
+    buoc: [
+      {
+        tieuDe: "Receive an unsigned transaction",
+        moTa: "A wallet or dApp passes the transaction in before signing. Custos never needs a private key.",
+      },
+      {
+        tieuDe: "Simulate and analyze",
+        moTa: "Run the simulation, read account changes, then apply the detection rules.",
+      },
+      {
+        tieuDe: "Return the result with evidence",
+        moTa: "The result comes with the relevant data and the scope that was analyzed.",
+      },
+    ],
+    ghiChu: "The wallet or dApp that integrates Custos decides how to use the result in its signing flow.",
+  },
+
   giaTri: {
-    h2: "Look at balances and account control.",
-    moDau:
-      "A transaction can transfer the amount you expect while also changing who controls an account. Custos surfaces these changes within the scope of the data it analyzes.",
     the: [
       {
         tieuDe: "See the effects",
@@ -372,26 +392,17 @@ export const EN: NoiDung = {
         moTa: "Follow a warning to the relevant data and open technical details when needed.",
       },
     ],
-    soDo: [
-      "Unsigned transaction",
-      "Simulate and read data",
-      "Detection rules",
-      "Result with evidence",
-    ],
-    soDoGhiChu:
-      "The wallet or dApp that integrates Custos decides how to use the result in its signing flow.",
   },
 
   ab: {
     h2: "Same 10-token transfer. Different account control.",
     moTa: "Both recorded examples leave 490 tokens after simulation. One also transfers control of the token account to another address.",
-    nhanNguon: "Recorded sample · Devnet · independent simulations",
+    nhanNguon: "Recorded sample · two independent simulations",
     chonA: "A · Transfer only",
     chonB: "B · Transfer and change owner",
-    tenA: "Transfer only",
-    tenB: "Transfer and change owner",
-    nhomNhan: "Choose a scenario to view",
-    vungKetQua: "Result for the selected scenario",
+    cotTruong: "Compared field",
+    moTaBang: "Comparison of recorded scenarios A and B, field by field.",
+    dongDoiChieu: "Both A and B leave 490 tokens after simulation; only B changes the account owner.",
     hang: {
       tokenChuyen: "Tokens transferred",
       soDuSau: "Balance after simulation",
@@ -405,8 +416,10 @@ export const EN: NoiDung = {
       ketLuanA: "No danger detected in the analyzed scope",
       ketLuanB: "Account control changes detected",
     },
-    nutBangChung: "Why this warning?",
-    dongBangChung: "Close the evidence",
+    moBangChungB: "View the data for scenario B",
+    dongBangChungB: "Close the data for scenario B",
+    moBangChungA: "View the data for scenario A",
+    dongBangChungA: "Close the data for scenario A",
     bangChung: {
       tieuDe: "The data behind the warning",
       dieuThayDoi: "What changed",
@@ -414,7 +427,10 @@ export const EN: NoiDung = {
       truoc: "Before",
       sau: "After",
       nguon: "Source",
-      luat: "Rule",
+      nguonGiaTri: "Recorded Devnet simulation",
+      luat: "Rule code",
+      kiemSau: "Show technical details",
+      diaChiDayDu: "Full address",
       gioiHan: "Limits",
       gioiHanND:
         "These are two independent simulations. They do not prove a shared state snapshot, and no transaction was broadcast.",
@@ -431,22 +447,6 @@ export const EN: NoiDung = {
     ketLuan: "The amount is part of the story. Account control matters too.",
   },
 
-  batDau: {
-    h2: "Explore what a transaction changes.",
-    buoc: [
-      { tieuDe: "Choose a scenario", moTa: "Open the demo and select a test transaction." },
-      {
-        tieuDe: "Review the effects",
-        moTa: "Check changes to assets, permissions, and analysis coverage.",
-      },
-      {
-        tieuDe: "Open the evidence",
-        moTa: "Inspect the relevant data or continue in the Inspector.",
-      },
-    ],
-    nut: "Start with the demo",
-    ghiChu: "Use test scenarios. Do not enter a seed phrase or private key.",
-  },
 
   devs: {
     h2: "Add inspection before signing.",
@@ -496,6 +496,7 @@ export const EN: NoiDung = {
 
   faq: {
     h2: "Frequently asked questions",
+    moTa: "Scope, limits, and how to read a Custos result.",
     muc: [
       {
         hoi: "Is Custos a new wallet?",

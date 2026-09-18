@@ -1,0 +1,67 @@
+{
+  "colors": {
+    "bg": "F5F8F7",
+    "surface": "FFFFFF",
+    "text": "142C2A",
+    "muted": "526865",
+    "brand": "146C60",
+    "hover": "10584F",
+    "mint": "D9F0E5",
+    "dark": "123A35",
+    "darkMuted": "B9D3CC",
+    "line": "D6E3DF",
+    "danger": "B4233C",
+    "dangerBg": "FFF1F3",
+    "warning": "8A5200",
+    "warningBg": "FFF4DC",
+    "info": "285EA8"
+  },
+  "pairs": [
+    {
+      "text": "text",
+      "background": "bg",
+      "ratio": 13.81
+    },
+    {
+      "text": "muted",
+      "background": "bg",
+      "ratio": 5.57
+    },
+    {
+      "text": "surface",
+      "background": "brand",
+      "ratio": 6.28
+    },
+    {
+      "text": "brand",
+      "background": "mint",
+      "ratio": 5.25
+    },
+    {
+      "text": "surface",
+      "background": "dark",
+      "ratio": 12.48
+    },
+    {
+      "text": "darkMuted",
+      "background": "dark",
+      "ratio": 7.88
+    },
+    {
+      "text": "danger",
+      "background": "dangerBg",
+      "ratio": 5.89
+    },
+    {
+      "text": "warning",
+      "background": "warningBg",
+      "ratio": 5.85
+    },
+    {
+      "text": "info",
+      "background": "surface",
+      "ratio": 6.45
+    }
+  ],
+  "note": "Flat opaque colors only; proposed, not implemented UI."
+}

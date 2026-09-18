@@ -263,7 +263,21 @@ test("WEB-06 · HTML entry có metadata và no-JS fallback có link THẬT", () 
 
   assert.match(html, /<title>Custos — Hiểu giao dịch Solana trước khi ký<\/title>/);
   assert.match(html, /name="description"/, "thiếu meta description");
-  assert.match(html, /name="theme-color" content="#17132A"/, "thiếu theme-color theo navbar tối");
+  /*
+   * `theme-color` phải khớp NAVBAR THẬT, và navbar đã đổi.
+   *
+   * Bản trước ghim `#17132A` (navbar tím đậm). Sau khi đổi sang hệ xanh ngọc nền
+   * sáng, navbar là `--custos-surface` = trắng, nên giá trị cũ sẽ tô thanh trạng
+   * thái trình duyệt bằng một màu không còn tồn tại trên trang.
+   *
+   * Mục 7 của `DIEU-CHINH-UI-CUSTOS.md` liệt đích danh việc sửa test này.
+   */
+  assert.match(
+    html,
+    /name="theme-color" content="#FFFFFF"/,
+    "theme-color không khớp navbar sáng hiện tại",
+  );
+  assert.ok(!html.includes("#17132A"), "còn sót màu tím của hướng thiết kế cũ");
   assert.match(html, /<noscript>/, "thiếu fallback no-JS");
   assert.match(html, /github\.com\/NeitLN\/Custos-Solana/, "fallback thiếu link repo thật");
 
@@ -277,4 +291,70 @@ test("WEB-06 · HTML entry có metadata và no-JS fallback có link THẬT", () 
   const sach = html.replace(/<!--[\s\S]*?-->/g, "");
   assert.ok(!/rel="canonical"/.test(sach), "có canonical khi URL chuẩn chưa xác nhận");
   assert.ok(!/property="og:url"/.test(sach), "có og:url khi URL production chưa xác nhận");
+});
+
+/* ── UIR · hệ màu mới không lẫn màu của hướng cũ ──────────────────────────── */
+
+test("UIR-01 · không còn màu/tên token của hướng thiết kế cũ", () => {
+  /*
+   * `DIEU-CHINH-UI-CUSTOS.md` mục 7: *"Không giữ `--landing-lilac`,
+   * `--landing-lime` làm tên lâu dài rồi gán màu teal; tên token phải phản ánh
+   * vai trò."* Và mục 0: *"Không chỉ đổi `lilac` thành xanh rồi giữ nguyên toàn
+   * bộ cấu trúc."*
+   *
+   * Bài này canh cả hai: màu hex cũ KHÔNG còn, và tên token theo màu cũng không.
+   */
+  /*
+   * BỎ CHÚ THÍCH TRƯỚC KHI TÌM.
+   *
+   * Bản đầu quét văn bản thô và đỏ với `--landing-lilac` — chuỗi đó nằm trong
+   * chính CHÚ THÍCH của `brand-tokens.css`, đoạn giải thích vì sao KHÔNG dùng
+   * tên đó nữa. Đây là lần thứ tư tôi mắc đúng bẫy "guard khớp phải chú thích
+   * của chính nó" đã ghi trong `BAN-GIAO-CHO-CODEX.md`.
+   */
+  const boChuThich = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "");
+  const css = boChuThich(readFileSync(GOC + "apps/demo-wallet/src/landing/landing.css", "utf8"));
+  const tokens = boChuThich(
+    readFileSync(GOC + "apps/demo-wallet/src/landing/brand-tokens.css", "utf8"),
+  );
+
+  for (const cu of ["#17132A", "#B9A3F3", "#D5F45B", "#F6F2E8", "#211E2E"]) {
+    assert.ok(
+      !css.toUpperCase().includes(cu) && !tokens.toUpperCase().includes(cu),
+      `còn màu của hướng cũ: ${cu}`,
+    );
+  }
+  for (const ten of ["--landing-lilac", "--landing-lime", "--landing-night", "--landing-paper"]) {
+    assert.ok(!css.includes(ten) && !tokens.includes(ten), `còn token theo màu cũ: ${ten}`);
+  }
+
+  // Và hard shadow đặc trưng của mẫu cũ cũng phải biến mất.
+  for (const bong of ["7px 7px 0", "4px 4px 0", "3px 3px 0"]) {
+    assert.ok(!css.includes(bong), `còn hard shadow của mẫu cũ: ${bong}`);
+  }
+});
+
+test("UIR-01 · token màu tách riêng, chỉ chứa BIẾN", () => {
+  /*
+   * Mục 6: *"Ưu tiên thêm `brand-tokens.css` **chỉ chứa biến màu**."* Lý do là
+   * ví và Inspector phải import được bảng màu mà không kéo theo layout của
+   * landing — nếu file này mang rule layout thì import nó là nhận side effect.
+   */
+  const tokens = readFileSync(GOC + "apps/demo-wallet/src/landing/brand-tokens.css", "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // Chỉ được có đúng một khối `:root`, không selector nào khác.
+  const selector = [...tokens.matchAll(/^\s*([^@\s/][^{]*)\{/gm)].map((m) => m[1]!.trim());
+  assert.deepEqual(selector, [":root"], `token file có selector ngoài :root: ${selector.join(", ")}`);
+
+  for (const cam of ["display:", "padding:", "margin:", "grid-template", "position:"]) {
+    assert.ok(!tokens.includes(cam), `brand-tokens.css có thuộc tính layout: ${cam}`);
+  }
+
+  // Mọi token đều mang tiền tố vai trò `--custos-`.
+  const bien = [...tokens.matchAll(/--([a-z-]+):/g)].map((m) => m[1]!);
+  assert.ok(bien.length >= 12, `chỉ có ${bien.length} token`);
+  for (const b of bien) {
+    assert.ok(b.startsWith("custos-"), `token không theo tiền tố vai trò: --${b}`);
+  }
 });

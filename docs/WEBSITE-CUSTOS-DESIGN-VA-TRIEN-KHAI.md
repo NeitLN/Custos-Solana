@@ -1,5 +1,7 @@
 # Custos — đặc tả website giới thiệu, thiết kế và triển khai cho Claude
 
+> **Cập nhật yêu cầu thiết kế:** chủ dự án đã yêu cầu bỏ hướng UI của nhóm tham chiếu. Khi triển khai tiếp, đọc [DIEU-CHINH-UI-CUSTOS.md](DIEU-CHINH-UI-CUSTOS.md) trước. Tài liệu mới thay thế art direction, bảng màu, hero, card/button/shadow và nhịp bố cục bên dưới. Giữ các yêu cầu chức năng, nguồn dữ liệu, VI/EN và route còn phù hợp; không dùng prompt cuối file này để dựng lại hướng tím–lilac–lime cũ.
+
 Ngày soạn: 18/09/2026. Baseline đã đọc: commit `c14eeb0`. Đây là **đặc tả cần triển khai**, không phải báo cáo website đã hoàn thành. Không đặt mốc thời gian; nghiệm thu theo đầu ra.
 
 ## 0. Đọc trước khi thực hiện

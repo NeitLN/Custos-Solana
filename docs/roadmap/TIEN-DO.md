@@ -134,6 +134,24 @@ acceptance**; bảng này giữ **trạng thái**. Không lập bảng phần tr
 | CU-26 | Hoàn thiện UX và tài liệu sử dụng | CU-09,12,17,20,21 | **PARTIAL** | **Nút *Xuất biên lai* trên Inspector**, chỉ chế độ `chiaSe` vì `inspect()` không trả `Facts` ra ngoài — nói thẳng điều đó thay vì xuất một file trông đầy đủ mà rỗng ruột. Tải bằng Blob + object URL, **không gửi đi đâu**. Kiểm trên Chromium thật **19/19**, gồm tải file thật rồi đọc nội dung: `cheDo: chiaSe` · KHÔNG kèm `facts` · tự khai `khongReplayDuoc` · hash 64 ký tự · `level: danger` đến từ L2 · 4 câu ranh giới · **không lộ đường dẫn máy, không lộ api-key** · vùng bấm 44px · 375px không tràn ngang · 0 lỗi console. Chữ giải thích nói rõ ba điều: không chạy lại được · đã che thông tin đăng nhập · **hash không phải chữ ký**. `soi-inspector` và `soi-trinh-duyet` (axe) chạy lại sau khi đổi UI: **TẤT CẢ PASS**, không vi phạm mới. Dùng lại hệ CSS sẵn có, không redesign. 953 pass. **Còn lại:** nạp biên lai để replay trong UI, màn so sánh A/B và màn lô — **thuộc vai B**, và phạm vi này được chọn có chủ ý để không sửa chéo sát hạn nộp.  |
 | CU-27 | Nghiệm thu bản nâng cấp và demo | CU-00…CU-26 | **PARTIAL** | [`docs/NGHIEM-THU-CU-27.md`](../NGHIEM-THU-CU-27.md) — **bốn nhóm kết luận tách riêng**, vì trộn chúng là cách một dự án tự khen mình. Chạy lại toàn bộ ma trận trên bản ứng viên tại HEAD `11380bf`: 953 test · tích hợp tất định 14/14 · gói 7/7 kèm 10/10 bẫy · **live Devnet PASS** · đối kháng AI `soSai: 0` · ranh giới L2/L3 13/13 · axe 0 vi phạm · Inspector Chromium PASS · cổng sản phẩm **10 đạt · 0 chưa rõ**. Số liệu lấy từ nguồn sinh, không gõ tay trên deck. **Nói thẳng phần yếu:** ô bằng chứng người dùng vẫn TRỐNG (0 phỏng vấn người mua · 0 bên thứ ba tích hợp · usability vòng 2 chưa chạy · eval mô hình thật `BLOCKED_BY_SECRET`), và thẻ dặn đúng điều này — **không nâng điểm vì hoàn thành nhiều thẻ**. Probe tự động chứng minh giao diện *chạy được*, không chứng minh người thật *hiểu được*. Mục 6 ghi lại bốn lỗi chỉ lộ ra khi đo, cả bốn đều từng có test xanh bao quanh. **Còn lại:** release tag và 4 câu hỏi BTC — `TB-H01`/`TB-H02`, chỉ chủ dự án làm được.  |
 
+## Điều chỉnh UI — nhận diện xanh ngọc (UIR-00 → UIR-05)
+
+Theo `docs/DIEU-CHINH-UI-CUSTOS.md`. Tài liệu này **thay phần art direction** của
+đặc tả website trước; provenance, VI/EN, route và accessibility vẫn giữ.
+
+| Gói | Trạng thái | Bằng chứng |
+|---|---|---|
+| UIR-00 | **DONE** | Regression mới `soi-layout-landing.py` **đỏ 8/30 trước khi sửa**: 320px VI tràn 38px · **320px EN 55px** · **360px EN 15px** (hai ca sau tài liệu chưa ghi) · chip đè title 6,25px · mép container `[0, 124, 334]` |
+| UIR-01 | **DONE** | `brand-tokens.css` chỉ chứa biến, tên theo VAI TRÒ. Bỏ hard shadow/backplate/chip/dải lime. Contrast đo thật 15/16 đạt; token control border đầu tiên **2,17:1 — không đạt**, đổi sang `#6E8F88` được 3,53:1 |
+| UIR-02 | **DONE** | A/B thành bảng hai cột đồng thời; evidence có nút riêng từng ca và hiện tên ca. Mobile hai tóm tắt + dòng đối chiếu cố định. Reset list sửa bằng `:where()`, không vá một dải |
+| UIR-03 | **DONE** | Developer nền xanh đậm; FAQ hai cột; `theme-color` trắng; social preview dựng lại. Test ghim `#17132A` đã sửa, thêm 2 guard chống màu cũ quay lại |
+| UIR-04 | **PARTIAL** | `--color-nhan` → teal sau khi phân loại 13 nơi dùng (đều brand/action). `--color-thuong` **GIỮ NGUYÊN** vì là semantic verdict. Đã mở idle/danger/safe/Inspector, 0 pageerror. **Chưa mở** trạng thái thiếu coverage và lỗi RPC |
+| UIR-05 | **DONE** | Build + preview `/Custos-Solana/`; probe **77/77** và **30/30**; `soi-trinh-duyet`/`soi-inspector`/`soi-vung-bam` PASS; 968 test. Bàn giao: [`ui-teal-20260919`](../review/ui-teal-20260919/BAO-CAO.md) |
+
+**Bốn lỗi của chính lượt này, đã ghi trong bàn giao:** guard overlap bỏ sót chip vì
+lọc nhầm · CTA 46px thay vì 48px · guard màu cũ khớp phải chú thích của chính nó
+(lần thứ tư) · social preview trỏ cổng server đã tắt.
+
 ## Website giới thiệu (WEB-00 → WEB-07)
 
 Thực thi theo `docs/WEBSITE-CUSTOS-DESIGN-VA-TRIEN-KHAI.md`. Đây là **trang giới

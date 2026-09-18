@@ -25,7 +25,24 @@
 
   /* Màu trạng thái. `thuong` cũng phải đậm hơn bản trước (L 0.57 -> 0.5) vì nó
      được dùng làm MÀU CHỮ cho nhãn mạng, không chỉ làm nền. */
-  --color-nhan: oklch(0.54 0.19 267);
+
+  /*
+   * `nhan` = màu THƯƠNG HIỆU/hành động, nay là xanh ngọc của Custos.
+   *
+   * UIR-04. Trước khi đổi, đã tìm TOÀN BỘ nơi dùng và phân loại như mục 6 của
+   * `DIEU-CHINH-UI-CUSTOS.md` yêu cầu: 13 chỗ, tất cả là brand/action/selection
+   * (avatar, icon hành động, viền mục đang chọn, nút chính) — KHÔNG chỗ nào
+   * mang nghĩa verdict.
+   *
+   * `oklch(0.479 0.081 181.1)` là `#146C60` chuyển sang convention của file này.
+   * Giữ oklch thay vì hex để không tạo hai cách viết màu trong cùng một bảng.
+   *
+   * `--color-thuong` NGAY BÊN DƯỚI KHÔNG đổi: nó là semantic của verdict
+   * `safe`/"Bình thường". Đổi nó sang teal sẽ làm "giao dịch an toàn" trùng màu
+   * thương hiệu — đúng điều mục 3 cấm: *"Brand xanh dùng cho hành động, không có
+   * nghĩa giao dịch an toàn."*
+   */
+  --color-nhan: oklch(0.479 0.081 181.1);
   --color-canh: oklch(0.72 0.14 76);
   --color-nguy: oklch(0.59 0.21 22);
   --color-thuong: oklch(0.5 0.125 157);

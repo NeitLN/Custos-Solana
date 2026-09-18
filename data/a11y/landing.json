@@ -91,12 +91,12 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "có nút A và B",
+      "ten": "có bảng đối chiếu A/B",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "mặc định chọn B",
+      "ten": "bảng hiện CẢ hai ca cùng lúc",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -111,72 +111,62 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "A: vẫn hiện số dư 490",
+      "ten": "B: phát hiện đổi quyền",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "A: aria-pressed đúng",
+      "ten": "cả hai cùng số dư 490",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "B: có đổi chủ",
+      "ten": "badge nguồn hiện trong phần A/B",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "B: cùng số dư 490",
+      "ten": "có nút dữ kiện ca B",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "badge nguồn còn thấy sau khi đổi A/B",
+      "ten": "bằng chứng B: hiện TÊN ca",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "có nút mở bằng chứng",
+      "ten": "bằng chứng B: mã luật",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "bằng chứng: địa chỉ ĐẦY ĐỦ",
+      "ten": "bằng chứng B: địa chỉ ĐẦY ĐỦ",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "bằng chứng: mã luật",
+      "ten": "bằng chứng B: commit nguồn",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "bằng chứng: commit nguồn",
+      "ten": "bằng chứng B: nói rõ 2 lượt độc lập",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "bằng chứng: nói rõ 2 lượt độc lập",
+      "ten": "bằng chứng B: nói rõ không đủ replay",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "bằng chứng: nói rõ không đủ replay",
+      "ten": "bằng chứng A: nói rõ không có mã cảnh báo",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "badge nguồn còn thấy khi mở bằng chứng",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "A: panel nói rõ không có mã cảnh báo",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "A: KHÔNG bịa owner trước/sau",
+      "ten": "bằng chứng A: KHÔNG bịa owner trước/sau",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -251,7 +241,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "đổi ngôn ngữ giữ nguyên ca đang chọn",
+      "ten": "EN: bảng A/B giữ đủ hai cột",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -277,6 +267,11 @@
     },
     {
       "ten": "storage bị chặn ⇒ 0 pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile 320: không tràn ngang",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -321,7 +316,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "mobile có nút menu có TÊN",
+      "ten": "mobile có nút menu có TÊN accessible",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -342,6 +337,21 @@
     },
     {
       "ten": "Escape trả focus về nút mở",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile: VI/EN nằm trong menu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile: đổi được sang EN từ menu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile EN: vẫn không tràn ngang",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -376,11 +386,11 @@
       "chiTiet": "đạt"
     }
   ],
-  "soKiem": 75,
+  "soKiem": 77,
   "loi": [],
   "viPham": [],
   "dauVet": {
-    "bam": "b613d6eeb3d34398",
-    "soFile": 60
+    "bam": "d0a9a1cdf4a76f43",
+    "soFile": 61
   }
 }

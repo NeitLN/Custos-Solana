@@ -1,0 +1,260 @@
+{
+  "kiem": [
+    {
+      "ten": "320px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "320px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "320px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "320px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "360px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "360px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "360px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "360px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "390px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "390px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "390px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "390px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "768px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "768px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "768px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "768px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1024px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1024px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1024px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1024px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1440px VI: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1440px VI: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1440px EN: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1440px EN: không che bằng overflow-x hidden",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "390px: không có phần tử absolute đè chữ trong hero",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "320px: không có phần tử absolute đè chữ trong hero",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "desktop: không có phần tử absolute đè chữ trong hero",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "desktop 1440: mọi .lg-shell cùng mép nội dung (±1px)",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile 390: mọi .lg-shell cùng mép nội dung (±1px)",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile 390: gutter >= 16px",
+      "dat": true,
+      "chiTiet": "đạt"
+    }
+  ],
+  "soKiem": 30,
+  "loi": [],
+  "do": {
+    "tranNgang": {
+      "320-vi": 0,
+      "320-en": 0,
+      "360-vi": 0,
+      "360-en": 0,
+      "390-vi": 0,
+      "390-en": 0,
+      "768-vi": 0,
+      "768-en": 0,
+      "1024-vi": 0,
+      "1024-en": 0,
+      "1440-vi": 0,
+      "1440-en": 0
+    },
+    "mep-1440": [
+      {
+        "ten": "lg-shell.lg-header__in",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell.lg-hero__grid",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell.lg-dev",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell.lg-faq",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell.lg-cta__in",
+        "mep": 152
+      },
+      {
+        "ten": "lg-shell.lg-footer__in",
+        "mep": 152
+      }
+    ],
+    "mep-390": [
+      {
+        "ten": "lg-shell.lg-header__in",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell.lg-hero__grid",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell.lg-dev",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell.lg-faq",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell.lg-cta__in",
+        "mep": 20
+      },
+      {
+        "ten": "lg-shell.lg-footer__in",
+        "mep": 20
+      }
+    ]
+  },
+  "dauVet": {
+    "bam": "d0a9a1cdf4a76f43",
+    "soFile": 61
+  }
+}

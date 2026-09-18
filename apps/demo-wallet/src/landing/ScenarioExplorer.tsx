@@ -1,245 +1,257 @@
-import { useId, useState } from "react";
+import { useState } from "react";
 import type { NoiDung, Ngon } from "./content.ts";
 import { LINK } from "./links.ts";
 import { FIXTURE, dinhDangToken, layCa, type CaMau } from "./sample.ts";
 
 /**
- * A/B — phần trung tâm của trang.
+ * A/B — đối chiếu ĐỒNG THỜI, đặt ngay sau hero.
  *
- * ## Vì sao hai button `aria-pressed` chứ không phải tab pattern
+ * ## UI-05 — vì sao đổi từ "chọn một ca" sang bảng hai cột
  *
- * Mục 7.3 cho chọn: *"nếu không cần độ phức tạp, dùng hai button với
- * `aria-pressed` và một vùng kết quả có heading rõ"*. Tab pattern đầy đủ đòi quản
- * lý roving tabindex và mũi tên trái/phải — thêm mã, thêm chỗ sai, mà ở đây chỉ có
- * hai lựa chọn. Hai button là thứ ít sai nhất và người dùng bàn phím đi qua bằng
- * Tab như mọi nút khác.
+ * Bản trước hiển thị một ca tại một thời điểm, nên người xem phải **nhớ** ca vừa
+ * rồi để thấy "cùng 490, khác quyền" — chính là điểm nhớ của cả trang. Cột
+ * selector bên trái cũng bỏ trống phần lớn chiều cao khi evidence mở.
  *
- * ## Không giả lập gọi RPC
+ * Nay desktop dùng `<table>` semantic: hàng "Thao tác đổi chủ" đặt cạnh nhau nên
+ * khác biệt đọc được trong một lần nhìn, không cần thao tác nào.
  *
- * Đổi A/B cập nhật TRỰC TIẾP. Không spinner, không delay (mục 7.3) — dữ liệu đã
- * nằm trong bundle, và một spinner ở đây sẽ là diễn kịch cho người xem tin rằng
- * trang đang chạy engine.
+ * ## Mobile KHÔNG ép bảng vào scroll ngang
+ *
+ * Mục 5 cấm: *"Không ép bảng desktop rộng vào mobile, không che cột B và không
+ * dùng vuốt ngang làm thao tác bắt buộc."* Mobile hiện hai tóm tắt xếp dọc, kèm
+ * **một dòng đối chiếu luôn thấy** lấy từ fixture.
+ *
+ * ## Điều KHÔNG đổi
+ *
+ * Ca A vẫn ghi "Không có thao tác đổi chủ trong transaction mẫu" — kết luận về
+ * CẤU TRÚC transaction, không phải phép đo owner. Không bịa before/after cho A.
  */
 export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
-  const [chon, setChon] = useState<"a" | "b">("b");
-  const [moBangChung, setMoBangChung] = useState(false);
-  const vungId = useId();
+  /* `null` = chưa mở evidence. Khác với "đang mở ca A". */
+  const [caBangChung, setCaBangChung] = useState<"a" | "b" | null>(null);
 
-  const ca = layCa(chon);
+  const a = layCa("a");
+  const b = layCa("b");
 
   return (
-    <section className="lg-section lg-cream" id="trai-nghiem">
+    <section className="lg-section lg-surface lg-vien-tren" id="trai-nghiem">
       <div className="lg-shell">
         <div className="lg-ab__dau">
           <h2 className="lg-h2">{t.ab.h2}</h2>
           <p className="lg-lead lg-prose lg-muted lg-ab__mota">{t.ab.moTa}</p>
-        </div>
-
-        <div className="lg-panel lg-ab">
-          {/*
-            Badge nguồn nằm TRONG panel và luôn hiển thị.
-
-            Mục 7.3: *"Badge `Kết quả mẫu đã lưu` luôn còn thấy khi đổi A/B hoặc
-            mở bằng chứng."* Đặt nó ngoài panel thì cuộn xuống đọc kết quả là mất
-            nhãn — và người xem đang đọc một con số không còn biết nó từ đâu.
-          */}
           <p className="lg-ab__nguon">
-            <span className="lg-pill lg-pill--mau">{t.ab.nhanNguon}</span>
+            <span className="lg-badge lg-badge--mau">{t.ab.nhanNguon}</span>
           </p>
-
-          <div className="lg-ab__than">
-            <div className="lg-ab__chon" role="group" aria-label={t.ab.nhomNhan}>
-              <button
-                type="button"
-                className="lg-ab__nut"
-                aria-pressed={chon === "a"}
-                onClick={() => {
-                  setChon("a");
-                  setMoBangChung(false);
-                }}
-              >
-                {t.ab.chonA}
-              </button>
-              <button
-                type="button"
-                className="lg-ab__nut"
-                aria-pressed={chon === "b"}
-                onClick={() => {
-                  setChon("b");
-                  setMoBangChung(false);
-                }}
-              >
-                {t.ab.chonB}
-              </button>
-            </div>
-
-            <div className="lg-ab__ketqua" id={vungId}>
-              <h3 className="lg-h3 lg-ab__tenca">
-                {chon === "a" ? t.ab.tenA : t.ab.tenB}
-              </h3>
-              <BangKetQua t={t} ngon={ngon} ca={ca} />
-
-              <div className="lg-ab__hanhdong">
-                <button
-                  type="button"
-                  className="lg-btn lg-btn--lime"
-                  aria-expanded={moBangChung}
-                  onClick={() => setMoBangChung((v) => !v)}
-                >
-                  {moBangChung ? t.ab.dongBangChung : t.ab.nutBangChung}
-                </button>
-              </div>
-
-              {moBangChung && <BangChung t={t} ca={ca} />}
-            </div>
-          </div>
         </div>
 
-        <div className="lg-ab__cuoi">
-          <p className="lg-ab__ketluan">{t.ab.ketLuan}</p>
-          <div className="lg-ab__cta">
-            <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
-              {t.ab.cta}
-              <span aria-hidden="true">→</span>
-            </a>
-            <p className="lg-caption lg-muted">{t.ab.ctaGhiChu}</p>
-          </div>
+        {/* ── Desktop: bảng hai cột ───────────────────────────────────────── */}
+        <div className="lg-ab__bang">
+          <table className="lg-bang">
+            <caption className="lg-sr">{t.ab.moTaBang}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{t.ab.cotTruong}</th>
+                <th scope="col">{t.ab.chonA}</th>
+                <th scope="col">{t.ab.chonB}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{t.ab.hang.tokenChuyen}</th>
+                <td>{t.ab.giaTri.tokenChuyen}</td>
+                <td>{t.ab.giaTri.tokenChuyen}</td>
+              </tr>
+              <tr>
+                <th scope="row">{t.ab.hang.soDuSau}</th>
+                <td>{dinhDangToken(a.soDu.sau, a.soDu.decimals, ngon)}</td>
+                <td>{dinhDangToken(b.soDu.sau, b.soDu.decimals, ngon)}</td>
+              </tr>
+              {/* Hàng quyền — trọng tâm của bảng. */}
+              <tr className="lg-hang-quyen">
+                <th scope="row">{t.ab.hang.doiChu}</th>
+                <td className="lg-o-thuong">{t.ab.giaTri.khongCoDoiChu}</td>
+                <td className="lg-o-nguy">
+                  <span className="lg-icon-nguy" aria-hidden="true">
+                    !
+                  </span>
+                  {t.ab.giaTri.coDoiChu}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">{t.ab.hang.ketLuan}</th>
+                <td className="lg-ketluan--safe">{t.ab.giaTri.ketLuanA}</td>
+                <td className="lg-ketluan--danger">{t.ab.giaTri.ketLuanB}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── Mobile: hai tóm tắt + dòng đối chiếu cố định ────────────────── */}
+        <div className="lg-ab__tomtat">
+          <TomTat t={t} ngon={ngon} ca={a} ten={t.ab.chonA} />
+          <TomTat t={t} ngon={ngon} ca={b} ten={t.ab.chonB} />
+          <p className="lg-ab__doichieu">{t.ab.dongDoiChieu}</p>
+        </div>
+
+        <div className="lg-ab__hanhdong">
+          {/*
+            Hai nút evidence RIÊNG cho từng ca.
+            Mục 5: *"Evidence chọn ca nào phải hiện tên ca đó."* Một nút chung
+            sẽ lại buộc người xem nhớ ca đang chọn — đúng vấn đề UI-05.
+          */}
+          <button
+            type="button"
+            className="lg-btn lg-btn--outline"
+            aria-expanded={caBangChung === "b"}
+            onClick={() => setCaBangChung((v) => (v === "b" ? null : "b"))}
+          >
+            {caBangChung === "b" ? t.ab.dongBangChungB : t.ab.moBangChungB}
+          </button>
+          <button
+            type="button"
+            className="lg-btn lg-btn--outline"
+            aria-expanded={caBangChung === "a"}
+            onClick={() => setCaBangChung((v) => (v === "a" ? null : "a"))}
+          >
+            {caBangChung === "a" ? t.ab.dongBangChungA : t.ab.moBangChungA}
+          </button>
+        </div>
+
+        {caBangChung && (
+          <BangChung
+            t={t}
+            ca={caBangChung === "a" ? a : b}
+            tenCa={caBangChung === "a" ? t.ab.chonA : t.ab.chonB}
+          />
+        )}
+
+        <div className="lg-ab__hanhdong">
+          <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
+            {t.ab.cta}
+          </a>
+          <p className="lg-caption lg-muted">{t.ab.ctaGhiChu}</p>
         </div>
       </div>
     </section>
   );
 }
 
-/** Bảng bốn hàng. Hàng quyền đổi hình dạng theo ca, không chỉ đổi màu. */
-function BangKetQua({ t, ngon, ca }: { t: NoiDung; ngon: Ngon; ca: CaMau }) {
-  const soDuSau = dinhDangToken(ca.soDu.sau, ca.soDu.decimals, ngon);
+/** Tóm tắt một ca cho mobile. Cùng dữ liệu với bảng desktop. */
+function TomTat({
+  t,
+  ngon,
+  ca,
+  ten,
+}: {
+  t: NoiDung;
+  ngon: Ngon;
+  ca: CaMau;
+  ten: string;
+}) {
   const coDoiChu = ca.doiChu !== null;
-
   return (
-    <dl className="lg-bang">
-      <div className="lg-bang__hang">
-        <dt>{t.ab.hang.tokenChuyen}</dt>
-        <dd>{t.ab.giaTri.tokenChuyen}</dd>
-      </div>
-
-      <div className="lg-bang__hang">
-        <dt>{t.ab.hang.soDuSau}</dt>
-        <dd>
-          <strong>{soDuSau}</strong>
-        </dd>
-      </div>
-
-      {/*
-        HÀNG QUYỀN.
-
-        Ca A ghi "Không có trong transaction mẫu" — đây là kết luận về CẤU TRÚC
-        transaction, không phải phép đo owner trước/sau. Mục 6.5 cấm đích danh việc
-        suy owner của A từ chỗ thiếu `diff`, nên ở đây không có cặp trước→sau nào
-        cho A.
-      */}
-      <div className={`lg-bang__hang${coDoiChu ? " lg-bang__hang--nguy" : ""}`}>
-        <dt>
-          {coDoiChu && (
-            <span className="lg-canhbao-icon" aria-hidden="true">
-              !
-            </span>
-          )}
-          {t.ab.hang.doiChu}
-        </dt>
-        <dd>
-          {coDoiChu ? (
-            <>
-              <strong>{t.ab.giaTri.coDoiChu}</strong>
-              <span className="lg-bang__doi">
-                {ca.doiChu!.truoc}
-                <span aria-hidden="true"> → </span>
-                <span className="lg-mono">{ca.doiChu!.sau}</span>
-              </span>
-            </>
-          ) : (
-            t.ab.giaTri.khongCoDoiChu
-          )}
-        </dd>
-      </div>
-
-      <div className="lg-bang__hang">
-        <dt>{t.ab.hang.ketLuan}</dt>
-        <dd>
-          <span className={`lg-ketluan lg-ketluan--${ca.level}`}>
-            {ca.level === "danger" ? t.ab.giaTri.ketLuanB : t.ab.giaTri.ketLuanA}
-          </span>
-        </dd>
-      </div>
-    </dl>
+    <section className={`lg-tt${coDoiChu ? " lg-tt--nguy" : ""}`}>
+      <h3 className="lg-tt__ten">{ten}</h3>
+      <dl>
+        <div className="lg-tt__hang">
+          <dt>{t.ab.hang.tokenChuyen}</dt>
+          <dd>{t.ab.giaTri.tokenChuyen}</dd>
+        </div>
+        <div className="lg-tt__hang">
+          <dt>{t.ab.hang.soDuSau}</dt>
+          <dd>{dinhDangToken(ca.soDu.sau, ca.soDu.decimals, ngon)}</dd>
+        </div>
+        <div className="lg-tt__hang">
+          <dt>{t.ab.hang.doiChu}</dt>
+          <dd className={coDoiChu ? "lg-ketluan--danger" : "lg-muted"}>
+            {coDoiChu ? t.ab.giaTri.coDoiChu : t.ab.giaTri.khongCoDoiChu}
+          </dd>
+        </div>
+      </dl>
+    </section>
   );
 }
 
 /**
- * Panel bằng chứng — mở inline, không modal (mục 7.3).
+ * Panel bằng chứng — mở dưới bảng, full width, nội dung ≤760px.
  *
  * Ca A KHÔNG có cảnh báo nào, nên panel của A nói đúng điều đó thay vì để trống
- * hoặc bịa một dữ kiện. Đây là chỗ dễ trượt nhất: một panel rỗng trông như lỗi,
- * và người viết sẽ bị cám dỗ điền vào một dòng nghe hợp lý.
+ * hoặc bịa một dữ kiện. Raw address / commit / ISO nằm trong `<details>` "kiểm
+ * sâu" (mục 5), còn phần mặc định hiện thời điểm dễ đọc theo locale.
  */
-function BangChung({ t, ca }: { t: NoiDung; ca: CaMau }) {
+function BangChung({ t, ca, tenCa }: { t: NoiDung; ca: CaMau; tenCa: string }) {
   const g = t.ab.bangChung;
 
   return (
     <div className="lg-bc">
-      <h4 className="lg-bc__tieude">{g.tieuDe}</h4>
+      <div className="lg-bc__trong">
+        <h3 className="lg-bc__tieude">{g.tieuDe}</h3>
+        {/* Tên ca hiện ngay — không để người đọc đoán đang xem ca nào. */}
+        <p className="lg-bc__ca">{tenCa}</p>
 
-      {ca.doiChu === null ? (
-        <p className="lg-bc__trong">{g.khongCoCanhBao}</p>
-      ) : (
-        <dl className="lg-bc__ds">
-          <div className="lg-bc__hang">
-            <dt>{g.dieuThayDoi}</dt>
-            <dd>{g.dieuThayDoiGiaTri}</dd>
-          </div>
-          <div className="lg-bc__hang">
-            <dt>{g.truoc}</dt>
-            <dd>{ca.doiChu.truoc}</dd>
-          </div>
-          <div className="lg-bc__hang">
-            <dt>{g.sau}</dt>
-            {/*
-              Địa chỉ ĐẦY ĐỦ, không rút gọn.
+        {ca.doiChu === null ? (
+          <p className="lg-bc__khongco">{g.khongCoCanhBao}</p>
+        ) : (
+          <dl className="lg-bc__ds">
+            <div className="lg-bc__hang">
+              <dt>{g.dieuThayDoi}</dt>
+              <dd>{g.dieuThayDoiGiaTri}</dd>
+            </div>
+            <div className="lg-bc__hang">
+              <dt>{g.truoc}</dt>
+              <dd>{ca.doiChu.truoc}</dd>
+            </div>
+            <div className="lg-bc__hang">
+              <dt>{g.sau}</dt>
+              <dd>{ca.doiChu.sau}</dd>
+            </div>
+            <div className="lg-bc__hang">
+              <dt>{g.nguon}</dt>
+              <dd>{g.nguonGiaTri}</dd>
+            </div>
+          </dl>
+        )}
 
-              Rút gọn ở đây là tái tạo đúng lỗ hổng vanity address: hai địa chỉ
-              khác nhau có thể trùng 4 ký tự đầu và 4 ký tự cuối. `lg-diachi` cho
-              phép ngắt dòng để không tràn ngang trên mobile.
-            */}
-            <dd className="lg-mono lg-diachi">{ca.doiChu.sauDayDu}</dd>
+        {/*
+          Kiểm sâu: địa chỉ đầy đủ, mã luật, ISO timestamp, commit.
+          Mục 5 đặt chúng ở đây để phần mặc định đọc được, nhưng KHÔNG bỏ chúng —
+          địa chỉ đầy đủ là thứ chống vanity address.
+        */}
+        <details className="lg-bc__sau">
+          <summary>{g.kiemSau}</summary>
+          <div className="lg-bc__nguon">
+            {ca.doiChu !== null && (
+              <>
+                <p className="lg-caption">
+                  <strong>{g.diaChiDayDu}:</strong>{" "}
+                  <span className="lg-mono lg-diachi">{ca.doiChu.sauDayDu}</span>
+                </p>
+                <p className="lg-caption">
+                  <strong>{g.luat}:</strong>{" "}
+                  <span className="lg-mono">{ca.reasonCodes.join(", ")}</span>
+                </p>
+              </>
+            )}
+            <p className="lg-caption">
+              <strong>{g.doLuc}:</strong>{" "}
+              <time dateTime={FIXTURE.nguonGoc.doLuc}>{FIXTURE.nguonGoc.doLuc}</time>
+            </p>
+            <p className="lg-caption">
+              <strong>{g.commitNguon}:</strong>{" "}
+              <span className="lg-mono">{FIXTURE.nguonGoc.sourceCommit.slice(0, 12)}</span>
+            </p>
+            <p className="lg-caption lg-bc__gioihan">
+              <strong>{g.gioiHan}:</strong> {g.gioiHanND}
+            </p>
+            <p className="lg-caption lg-bc__gioihan">{g.khongDuReplay}</p>
+            <p>
+              <a className="lg-link" href={LINK.nguonMau} target="_blank" rel="noreferrer noopener">
+                {g.moArtifact}
+                <span className="lg-sr"> ({t.chung.moTabMoi})</span>
+              </a>
+            </p>
           </div>
-          <div className="lg-bc__hang">
-            <dt>{g.luat}</dt>
-            <dd className="lg-mono">{ca.reasonCodes.join(", ")}</dd>
-          </div>
-        </dl>
-      )}
-
-      <div className="lg-bc__nguon">
-        <p className="lg-caption">
-          <strong>{g.doLuc}:</strong>{" "}
-          <time dateTime={FIXTURE.nguonGoc.doLuc}>{FIXTURE.nguonGoc.doLuc}</time>
-        </p>
-        <p className="lg-caption">
-          <strong>{g.commitNguon}:</strong>{" "}
-          <span className="lg-mono">{FIXTURE.nguonGoc.sourceCommit.slice(0, 12)}</span>
-        </p>
-        <p className="lg-caption lg-bc__gioihan">
-          <strong>{g.gioiHan}:</strong> {g.gioiHanND}
-        </p>
-        <p className="lg-caption lg-bc__gioihan">{g.khongDuReplay}</p>
-        <a
-          className="lg-link"
-          href={LINK.nguonMau}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {g.moArtifact}
-          <span className="lg-sr"> ({t.chung.moTabMoi})</span>
-        </a>
+        </details>
       </div>
     </div>
   );

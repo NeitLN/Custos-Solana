@@ -1,0 +1,390 @@
+{
+  "desktopBefore": {
+    ".lg-hero .lg-shell": {
+      "x": 100,
+      "y": 163,
+      "width": 1240,
+      "height": 461.296875,
+      "right": 1340,
+      "bottom": 624.296875,
+      "marginLeft": "100px",
+      "marginRight": "100px",
+      "paddingLeft": "24px",
+      "position": "static"
+    },
+    ".lg-dai__ds": {
+      "x": 0,
+      "y": 752.296875,
+      "width": 1240,
+      "height": 41.15625,
+      "right": 1240,
+      "bottom": 793.453125,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-chip--transfer": {
+      "x": 730,
+      "y": 182.4375,
+      "width": 88.59375,
+      "height": 38.625,
+      "right": 818.59375,
+      "bottom": 221.0625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-chip--auth": {
+      "x": 1214.109375,
+      "y": 498.21875,
+      "width": 117.890625,
+      "height": 38.625,
+      "right": 1332,
+      "bottom": 536.84375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-preview__dau": {
+      "x": 774,
+      "y": 224.4375,
+      "width": 516,
+      "height": 42.5,
+      "right": 1290,
+      "bottom": 266.9375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__ten": {
+      "x": 774,
+      "y": 226.8125,
+      "width": 152.625,
+      "height": 24.75,
+      "right": 926.625,
+      "bottom": 251.5625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__mang": {
+      "x": 1218.5625,
+      "y": 224.4375,
+      "width": 71.4375,
+      "height": 29.5,
+      "right": 1290,
+      "bottom": 253.9375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "12px",
+      "position": "static"
+    }
+  },
+  "desktopAfterBrowserOnlyMarginTest": {
+    ".lg-hero .lg-shell": {
+      "x": 100,
+      "y": 163,
+      "width": 1240,
+      "height": 461.296875,
+      "right": 1340,
+      "bottom": 624.296875,
+      "marginLeft": "100px",
+      "marginRight": "100px",
+      "paddingLeft": "24px",
+      "position": "static"
+    },
+    ".lg-dai__ds": {
+      "x": 100,
+      "y": 752.296875,
+      "width": 1240,
+      "height": 41.15625,
+      "right": 1340,
+      "bottom": 793.453125,
+      "marginLeft": "100px",
+      "marginRight": "100px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-chip--transfer": {
+      "x": 730,
+      "y": 182.4375,
+      "width": 88.59375,
+      "height": 38.625,
+      "right": 818.59375,
+      "bottom": 221.0625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-chip--auth": {
+      "x": 1214.109375,
+      "y": 498.21875,
+      "width": 117.890625,
+      "height": 38.625,
+      "right": 1332,
+      "bottom": 536.84375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-preview__dau": {
+      "x": 774,
+      "y": 224.4375,
+      "width": 516,
+      "height": 42.5,
+      "right": 1290,
+      "bottom": 266.9375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__ten": {
+      "x": 774,
+      "y": 226.8125,
+      "width": 152.625,
+      "height": 24.75,
+      "right": 926.625,
+      "bottom": 251.5625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__mang": {
+      "x": 1218.5625,
+      "y": 224.4375,
+      "width": 71.4375,
+      "height": 29.5,
+      "right": 1290,
+      "bottom": 253.9375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "12px",
+      "position": "static"
+    }
+  },
+  "mobile320Rects": {
+    ".lg-hero .lg-shell": {
+      "x": 0,
+      "y": 121,
+      "width": 320,
+      "height": 952.875,
+      "right": 320,
+      "bottom": 1073.875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "16px",
+      "position": "static"
+    },
+    ".lg-dai__ds": {
+      "x": 0,
+      "y": 1169.875,
+      "width": 320,
+      "height": 116.53125,
+      "right": 320,
+      "bottom": 1286.40625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-chip--transfer": {
+      "x": 16,
+      "y": 608.921875,
+      "width": 88.59375,
+      "height": 38.625,
+      "right": 104.59375,
+      "bottom": 647.546875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-chip--auth": {
+      "x": 186.109375,
+      "y": 608.921875,
+      "width": 117.890625,
+      "height": 38.625,
+      "right": 304,
+      "bottom": 647.546875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-preview__dau": {
+      "x": 34,
+      "y": 638.921875,
+      "width": 252,
+      "height": 42.5,
+      "right": 286,
+      "bottom": 681.421875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__ten": {
+      "x": 34,
+      "y": 641.296875,
+      "width": 152.625,
+      "height": 24.75,
+      "right": 186.625,
+      "bottom": 666.046875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__mang": {
+      "x": 214.5625,
+      "y": 638.921875,
+      "width": 71.4375,
+      "height": 29.5,
+      "right": 286,
+      "bottom": 668.421875,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "12px",
+      "position": "static"
+    }
+  },
+  "overflow": [
+    {
+      "tag": "A",
+      "cls": "lg-skip",
+      "text": "Bỏ qua, tới nội dung chính",
+      "x": -9999,
+      "width": 200.546875,
+      "right": -9798.453125,
+      "whiteSpace": "normal",
+      "minWidth": "0px"
+    },
+    {
+      "tag": "DIV",
+      "cls": "lg-header__phai",
+      "text": "VITiếng ViệtENEnglishMở demo Custos→Mở menu",
+      "x": 161.640625,
+      "width": 196.734375,
+      "right": 358.375,
+      "whiteSpace": "normal",
+      "minWidth": "auto"
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "lg-menu-nut",
+      "text": "Mở menu",
+      "x": 263.640625,
+      "width": 94.734375,
+      "right": 358.375,
+      "whiteSpace": "normal",
+      "minWidth": "auto"
+    },
+    {
+      "tag": "CODE",
+      "cls": "",
+      "text": "import { inspect } from \"@custos-solana/core\";\n\nconst ketQua = await inspect({ connection }, tx, {\n ",
+      "x": 36,
+      "width": 436,
+      "right": 472,
+      "whiteSpace": "pre",
+      "minWidth": "0px"
+    }
+  ],
+  "beforeWidth": 358,
+  "afterBrowserOnlyHideHeaderLanguageWidth": 320,
+  "mobile390Rects": {
+    ".lg-hero .lg-shell": {
+      "x": 0,
+      "y": 121,
+      "width": 390,
+      "height": 830.28125,
+      "right": 390,
+      "bottom": 951.28125,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "16px",
+      "position": "static"
+    },
+    ".lg-dai__ds": {
+      "x": 0,
+      "y": 1047.28125,
+      "width": 390,
+      "height": 98.3125,
+      "right": 390,
+      "bottom": 1145.59375,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-chip--transfer": {
+      "x": 16,
+      "y": 519.890625,
+      "width": 88.59375,
+      "height": 38.625,
+      "right": 104.59375,
+      "bottom": 558.515625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-chip--auth": {
+      "x": 256.109375,
+      "y": 519.890625,
+      "width": 117.890625,
+      "height": 38.625,
+      "right": 374,
+      "bottom": 558.515625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "13px",
+      "position": "absolute"
+    },
+    ".lg-preview__dau": {
+      "x": 34,
+      "y": 549.890625,
+      "width": 322,
+      "height": 42.5,
+      "right": 356,
+      "bottom": 592.390625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__ten": {
+      "x": 34,
+      "y": 552.265625,
+      "width": 152.625,
+      "height": 24.75,
+      "right": 186.625,
+      "bottom": 577.015625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "0px",
+      "position": "static"
+    },
+    ".lg-preview__mang": {
+      "x": 284.5625,
+      "y": 549.890625,
+      "width": 71.4375,
+      "height": 29.5,
+      "right": 356,
+      "bottom": 579.390625,
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "paddingLeft": "12px",
+      "position": "static"
+    }
+  }
+}
