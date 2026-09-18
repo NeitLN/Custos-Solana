@@ -24,4 +24,8 @@ export {
   danhGiaPolicy, PROFILE_MAC_DINH, PHIEN_BAN_POLICY,
   type QuyetDinh, type MaPolicy, type ProfileVi, type BoiCanhPolicy, type KetQuaPolicy,
 } from "./policy.ts";
+export {
+  soSanhCauTruc, soSanhQuanSat,
+  type LoaiSoSanh, type DongKhac, type KetQuaSoSanh,
+} from "./so-sanh.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
