@@ -28,4 +28,8 @@ export {
   soSanhCauTruc, soSanhQuanSat,
   type LoaiSoSanh, type DongKhac, type KetQuaSoSanh,
 } from "./so-sanh.ts";
+export {
+  xetLo, chuKyLo, GIOI_HAN,
+  type VaoLo, type KetQuaLo, type PhanTuLo, type TrangThaiPhanTu,
+} from "./batch.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
