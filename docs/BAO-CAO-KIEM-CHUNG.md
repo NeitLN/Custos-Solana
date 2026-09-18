@@ -11,7 +11,7 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
   sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `ea4d3e3`, cây làm việc sạch — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `7292cee`, cây làm việc sạch — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -42,10 +42,10 @@ API, hay ví có tiền.
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
 | Bẫy đối kháng AI bị chặn | **13/13** · 3/3 đối chứng qua | `npm run eval-ai` |
 | Bẫy chặn được **trên gói đã đóng** | **10/10** | `npm run thu-goi` |
-| Tích hợp từ ngoài monorepo | **8,9 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
-| — dải đo | **7,1–11,8 giây**, trung vị 10 lượt trên 10 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
+| Tích hợp từ ngoài monorepo | **7,9 giây** tới kết quả đầu | `npm run thu-tich-hop:devnet` |
+| — dải đo | **6,9–11,2 giây**, trung vị 10 lượt trên 10 bản dựng | `data/tich-hop/ket-qua.json` → `lichSuPass` |
 | — dòng mã tích hợp | **30** | `vi-du-tich-hop/src/tich-hop.js` |
-| — một lượt `inspect()` | **596 ms** | cùng file |
+| — một lượt `inspect()` | **607 ms** | cùng file |
 | Phỏng vấn người dùng **thật** | **20** — 13 đúng · 5 một phần · 2 sai | `data/seed/` + `docs/BIEN-BAN-PHONG-VAN.md` |
 | Phỏng vấn **người mua** | **0** | — |
 | Bên thứ ba tích hợp | **0** | `data/tich-hop/ket-qua.json` → `doiTac: null` |
@@ -70,7 +70,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
-| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `ea4d3e3` | `ket-qua.json` → `lastAttempt` |
+| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `7292cee` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **không file nào trong phạm vi đổi**. Phạm vi của lượt live là `packages/` và `vi-du-tich-hop/`, KHÔNG gồm giao diện: mã giao diện đổi thì bằng chứng a11y hết hiệu lực (dòng riêng), còn lượt live thì không | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | **`ai@0.2.0`** · `core@0.1.1` — khớp source | `npm view @custos-solana/ai version` |
