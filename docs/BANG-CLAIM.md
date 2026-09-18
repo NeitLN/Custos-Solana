@@ -43,7 +43,7 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Số | Nguồn | Phạm vi | Trạng thái |
 |---|---|---|---|---|
-| Test tự động | **924** | `npm run check` | offline, không mạng | ✅ hiện hành |
+| Test tự động | **934** | `npm run check` | offline, không mạng | ✅ hiện hành |
 | Luật L2 | **14** | `data/seed/index.json` | mỗi luật có ca dương và ca đối chứng | ✅ |
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
 | Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định** — tách hẳn khỏi lượt live, xem ba dòng cuối bảng dưới | ✅ |

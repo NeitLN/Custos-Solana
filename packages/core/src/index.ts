@@ -32,4 +32,8 @@ export {
   xetLo, chuKyLo, GIOI_HAN,
   type VaoLo, type KetQuaLo, type PhanTuLo, type TrangThaiPhanTu,
 } from "./batch.ts";
+export {
+  tinhPhiChuyen, chiTietPhi, cauHinhHieuLuc,
+  type CauHinhPhi, type ChiTietPhi,
+} from "./phi-token.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
