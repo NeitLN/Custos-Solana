@@ -1,9 +1,9 @@
 {
   "the": "CU-08",
-  "doLuc": "2026-09-17T19:35:57.695690+00:00",
-  "sourceCommit": "9b24a390cc148b9d1d8abd39877da9cf305b926b",
+  "doLuc": "2026-09-18T12:38:40.321676+00:00",
+  "sourceCommit": "f75ba8385a97e98790718f23546f85e94134077e",
   "dauVet": {
-    "bam": "a59b0a1bc3235e32",
+    "bam": "d34aa3a666ef5e0f",
     "soFile": 39
   },
   "soMuc": 26,
