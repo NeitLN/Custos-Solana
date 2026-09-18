@@ -23,7 +23,7 @@
  * rồi CHẠY. Đọc manifest là thứ đã tưởng là đủ hồi 0.1.0.
  */
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync, statSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -31,6 +31,10 @@ const win = process.platform === "win32";
 const npm = win ? "npm.cmd" : "npm";
 const GOC = resolve(import.meta.dirname, "..");
 const XUONG_DONG = String.fromCharCode(10);
+const TEP_JS = new RegExp("\\.(js|mjs|cjs)$");
+const LA_CLI = new RegExp("^cli\\.js$");
+const BOC7_TIEU_DE = "\n7/7 · API mới và ranh giới trình duyệt";
+
 
 // Trên Windows phải shell:true để chạy được `.cmd`, mà shell thì tách theo dấu cách.
 // Phải bọc ngoặc kép CẢ LỆNH lẫn tham số: `process.execPath` là
@@ -375,6 +379,135 @@ try {
   if (xau.status !== 3) throw new Error(`CLI đầu vào sai thoát ${xau.status}, mong đợi 3`);
   if ((xau.stdout ?? "") !== "") throw new Error("nhánh lỗi làm bẩn stdout — `| jq` sẽ vỡ");
   console.log("      chạy bằng Node trần: --help → 0 · đầu vào sai → 3 · stdout sạch");
+
+  /*
+   * ── 7/7 · API MỚI VÀ RANH GIỚI TRÌNH DUYỆT (CU-25) ────────────────────────
+   *
+   * Hai thứ bước 1–6 không bắt được:
+   *
+   *   a) API mới của CU-11/12/14/18/20/21 có thật sự XUẤT ra ngoài gói không,
+   *      hay chỉ tồn tại bên trong monorepo.
+   *   b) Gói có kéo module RIÊNG CỦA NODE vào đường import chung không.
+   *
+   * (b) là lỗi ĐÃ XẢY RA trong chính dự án này: bản đầu của `receipt.ts` dùng
+   * `node:crypto`, Vite externalize nó, và cả hai trang TRẮNG. 854 test vẫn xanh
+   * suốt lúc đó vì test chạy trên Node — chỉ đo trên trình duyệt mới thấy. Nay
+   * canh ngay trên tarball, bằng cách đọc mọi file dist.
+   */
+  console.log(BOC7_TIEU_DE);
+
+  const KIEM_API = `import assert from "node:assert/strict";
+import {
+  dungReceipt, docReceipt, receiptRaJson, factsTuReceipt,
+  chayLaiTuJson, danhGiaPolicy, PROFILE_MAC_DINH,
+  soSanhCauTruc, soSanhQuanSat, xetLo, chuKyLo,
+  tinhPhiChuyen, chiTietPhi, tomTatQuyen,
+} from "@custos-solana/core";
+
+const kq = {
+  level: "danger", aiAdvisory: null, detectedPrimaryAction: null, diff: [],
+  reasonCodes: ["R01"], coverage: { analyzed: 1, total: 2, unverifiedPrograms: 1 },
+  explanation: "thu tu ngoai monorepo",
+};
+
+// CU-11 . bien lai di ra roi quay lai
+const bl = dungReceipt(kq, "chiaSe");
+const doc = docReceipt(receiptRaJson(bl));
+assert.ok(doc.ok && doc.toanVen, "bien lai khong round-trip duoc ngoai monorepo");
+assert.equal(factsTuReceipt(bl), null, "ban chia se lai replay duoc");
+
+// CU-12 . ban chia se bi TU CHOI replay
+const rp = chayLaiTuJson(receiptRaJson(bl));
+assert.equal(rp.ok, false, "ban chia se khong bi tu choi replay");
+
+// CU-18 . danger KHONG BAO GIO thanh allow
+const pol = danhGiaPolicy({ level: "danger", coverage: kq.coverage, phienConDung: true }, PROFILE_MAC_DINH);
+assert.equal(pol.quyetDinh, "block", "policy noi ket luan engine");
+
+// CU-14 . vi du chinh thuc: 200 token, 150 bps, cap 10 -> 3
+assert.equal(tinhPhiChuyen(200n, { diemCoBan: 150, phiToiDa: 10n, epoch: 1 }), 3n, "phi sai");
+assert.equal(chiTietPhi(200n, null).nguon, "khongBiet", "thieu config ma khong khai");
+
+// CU-21 . mot tx danger => ca lo khong xanh
+const lo = xetLo([
+  { cluster: "devnet", soByte: 100, ketQua: kq },
+  { cluster: "devnet", soByte: 100, ketQua: { ...kq, level: "safe", reasonCodes: [] } },
+]);
+assert.ok(lo.ok && lo.tongKet === "nguy_hiem", "lo co tx nguy hiem ma khong bao");
+assert.equal(typeof chuKyLo([]), "string");
+
+// CU-20 va CU-15 goi duoc
+assert.equal(typeof soSanhCauTruc, "function");
+assert.equal(typeof soSanhQuanSat, "function");
+assert.equal(typeof tomTatQuyen, "function");
+
+console.log("API-MOI-OK");
+`;
+
+  writeFileSync(join(duAn, "kiem-api.mjs"), KIEM_API);
+  /*
+   * `chay()` trả THẲNG chuỗi stdout và tự NÉM khi lệnh thoát khác 0 — không phải
+   * object `{stdout, stderr}`.
+   *
+   * Bản đầu của tôi đọc `raAPI.stdout` và in ra `undefinedundefined`: lỗi có thật
+   * nhưng thông báo rỗng, tức không chẩn đoán được gì. Bắt lại để in đúng chỗ hỏng.
+   */
+  let raAPI;
+  try {
+    raAPI = chay(process.execPath, ["kiem-api.mjs"], duAn);
+  } catch (e) {
+    throw new Error(
+      "API mới không dùng được từ ngoài gói:" + XUONG_DONG +
+        String(e.stdout ?? "") + String(e.stderr ?? "") + (e.message ?? ""),
+    );
+  }
+  if (!/API-MOI-OK/.test(raAPI)) {
+    throw new Error("kiem-api.mjs chạy xong nhưng không in API-MOI-OK:" + XUONG_DONG + raAPI);
+  }
+  console.log("      CU-11/12/14/18/20/21 gọi được từ ngoài, giữ đúng bất biến");
+
+  /*
+   * Quét MỌI file dist tìm import module riêng của Node.
+   *
+   * Đọc trên tarball đã cài chứ không trên source: bước dàn có thể thêm shim, và
+   * thứ người dùng thật sự nạp là nội dung dist.
+   *
+   * `cli.js` được miễn — nó chỉ chạy trên Node và không vào bundle trình duyệt.
+   */
+  const distDir = join(duAn, "node_modules", "@custos-solana", "core", "dist");
+  const CAM_NODE = ["node:crypto", "node:fs", "node:path", "node:os", "node:child_process"];
+  const dinhNode = [];
+  const duyetDist = (thuMuc) => {
+    for (const ten of readdirSync(thuMuc)) {
+      const duong = join(thuMuc, ten);
+      if (statSync(duong).isDirectory()) {
+        duyetDist(duong);
+      } else if (TEP_JS.test(ten) && !LA_CLI.test(ten)) {
+        /*
+         * BỎ CHÚ THÍCH TRƯỚC KHI TÌM.
+         *
+         * Bản đầu quét văn bản thô và báo `neo.js`, `receipt.js`, `sha256.js` đều
+         * kéo `node:crypto` — cả ba chỉ NHẮC tên đó trong chú thích kể lại đúng
+         * lỗi này. Guard đỏ vì lý do sai là guard vô dụng: người đọc sẽ đi sửa
+         * một thứ không hỏng, hoặc tệ hơn, tắt guard đi.
+         *
+         * Đây là bẫy đã ghi trong `BAN-GIAO-CHO-CODEX.md`, và tôi vừa mắc lại.
+         */
+        const noi = readFileSync(duong, "utf8")
+          .replace(/\/\*[\s\S]*?\*\//g, "")
+          .replace(/\/\/[^\n]*/g, "");
+        for (const c of CAM_NODE) if (noi.includes(c)) dinhNode.push(ten + " -> " + c);
+      }
+    }
+  };
+  duyetDist(distDir);
+  if (dinhNode.length > 0) {
+    throw new Error(
+      "dist kéo module riêng của Node vào đường import chung — bundle trình duyệt sẽ vỡ:" +
+        XUONG_DONG + dinhNode.join(XUONG_DONG),
+    );
+  }
+  console.log("      " + CAM_NODE.length + " module Node-only: 0 file dist nào chạm (trừ cli.js, đúng chỗ)");
 
   console.log("\n✓ Gói dùng được từ ngoài: import bằng JS thuần, không cần cờ bóc kiểu.");
 } catch (e) {

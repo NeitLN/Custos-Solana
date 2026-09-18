@@ -200,3 +200,93 @@ test("README dạy fail-closed, không chỉ dạy lời gọi trần", () => {
   assert.match(README, /khong_kiem_duoc/, "README phải phân biệt chặn-vì-hỏng với chặn-vì-phát-hiện");
   assert.match(README, /quá hạn sau/, "README phải chỉ cách đặt hạn cho `inspect()`");
 });
+
+/* ── CU-25 · mục API mới trong README phải chạy thật ────────────────────────── */
+
+test("CU-25 · ví dụ biên lai trong README chạy được và giữ đúng bất biến", async () => {
+  /*
+   * Tài liệu tích hợp là thứ bên ngoài đọc để quyết định có dùng sản phẩm không.
+   * Một đoạn mã sai trong đó tệ hơn không có tài liệu.
+   *
+   * Bài này chạy đúng những gì README hứa, không chạy một phiên bản gần giống.
+   */
+  const { dungReceipt, receiptRaJson, docReceipt } = await import("../src/receipt.ts");
+  const { chayLaiTuJson } = await import("../src/replay.ts");
+
+  const ketQua = {
+    level: "warning" as const,
+    aiAdvisory: null,
+    detectedPrimaryAction: null,
+    diff: [],
+    reasonCodes: ["R01"],
+    coverage: { analyzed: 1, total: 2, unverifiedPrograms: 1 },
+    explanation: "",
+  };
+
+  const bienLai = dungReceipt(ketQua, "chiaSe");
+  const json = receiptRaJson(bienLai);
+  const doc = docReceipt(json);
+  assert.ok(doc.ok, "README hứa `docReceipt` đọc lại được");
+  assert.equal(doc.toanVen, true, "biên lai chưa sửa mà báo đã sửa");
+
+  // README nói bản `chiaSe` BỊ TỪ CHỐI chạy lại.
+  const r = chayLaiTuJson(json);
+  assert.equal(r.ok, false, "README nói bản chia sẻ không chạy lại được, nhưng nó chạy");
+
+  // Và nói biên lai không chứa raw tx / chữ ký.
+  for (const cam of ["rawTx", "signature", "secretKey"]) {
+    assert.ok(!json.includes(`"${cam}"`), `README hứa không có ${cam}, nhưng biên lai có`);
+  }
+});
+
+test("CU-25 · ví dụ policy trong README giữ đúng điều README hứa", async () => {
+  /*
+   * README viết: *"`level: danger` không có đường nào thành `allow`, kể cả với
+   * profile lỏng nhất"*. Đó là một khẳng định kiểm được — nên kiểm.
+   */
+  const { danhGiaPolicy, PROFILE_MAC_DINH } = await import("../src/policy.ts");
+
+  const qd = danhGiaPolicy(
+    { level: "danger", coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 }, phienConDung: true },
+    PROFILE_MAC_DINH,
+  );
+  assert.equal(qd.quyetDinh, "block", "README hứa danger không bao giờ thành allow");
+
+  // Và profile mặc định KHÔNG chặn giao dịch sạch — đối chứng.
+  const sach = danhGiaPolicy(
+    { level: "safe", coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 }, phienConDung: true },
+    PROFILE_MAC_DINH,
+  );
+  assert.equal(sach.quyetDinh, "allow", "profile mặc định chặn cả giao dịch sạch");
+});
+
+test("CU-25 · ví dụ lô trong README: một phần tử hỏng ⇒ không có badge xanh", async () => {
+  const { xetLo } = await import("../src/batch.ts");
+  const kq = {
+    level: "safe" as const,
+    aiAdvisory: null,
+    detectedPrimaryAction: null,
+    diff: [],
+    reasonCodes: [],
+    coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 },
+    explanation: "",
+  };
+
+  const lo = xetLo([
+    { cluster: "devnet", soByte: 100, ketQua: kq },
+    { cluster: "devnet", soByte: 100, ketQua: null },
+  ]);
+  assert.ok(lo.ok);
+  assert.equal(lo.tongKet, "khong_ket_luan_duoc", "README hứa một phần tử hỏng đủ làm cả lô không kết luận được");
+});
+
+test("CU-25 · README khai ĐÚNG những gì biên lai KHÔNG làm", () => {
+  /*
+   * Ba câu phủ định trong README là phần dễ trôi nhất: chúng đúng lúc viết, và
+   * không có gì nhắc khi sản phẩm đổi. Bài này neo chúng vào chính mã nguồn.
+   */
+  assert.match(README, /không phải chữ ký/i, "README bỏ mất câu `hash` không phải chữ ký");
+  assert.match(README, /không phải ẩn danh/i, "README bỏ mất câu che dữ liệu không phải ẩn danh");
+  assert.match(README, /chỉ được thận trọng hơn|không bao giờ nới/i, "README bỏ mất ranh giới của policy");
+  assert.match(README, /độc lập/i, "README bỏ mất câu mô phỏng độc lập của lô");
+});

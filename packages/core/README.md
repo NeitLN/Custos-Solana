@@ -358,6 +358,85 @@ Nói thẳng để bên tích hợp tự quyết định:
 
 ---
 
+## Biên lai, chạy lại, và quy tắc của ví
+
+Bốn nhóm hàm dưới đây là tuỳ chọn — `inspect()` không cần chúng. Chúng dành cho ví
+muốn xuất bằng chứng, kiểm lại một lượt cũ, hoặc áp quy tắc riêng.
+
+### Xuất biên lai
+
+```ts
+import { dungReceipt, receiptRaJson, docReceipt } from "@custos-solana/core";
+
+// `chiaSe` — đưa cho người khác. KHÔNG mang Facts, nên KHÔNG chạy lại được.
+const bienLai = dungReceipt(ketQua, "chiaSe");
+const json = receiptRaJson(bienLai);
+
+// Đọc lại, và biết nó có bị sửa hay không.
+const doc = docReceipt(json);
+if (doc.ok && !doc.toanVen) console.warn("biên lai đã bị sửa kể từ lúc xuất");
+```
+
+Ba điều biên lai **không** làm, và nó tự ghi vào chính mình:
+
+- `hash` chứng minh **nội dung không đổi kể từ lúc xuất**. Nó không phải chữ ký,
+  không chứng minh ai xuất, và không chứng minh RPC đã nói thật.
+- Che dữ liệu **không phải ẩn danh**. Địa chỉ ví là dữ liệu công khai trên chuỗi.
+- Không có raw transaction và không có chữ ký, ở mọi chế độ. Không có cờ để bật.
+
+Chế độ `rieng` mang theo `Facts` nên chạy lại được — nhưng `Facts` chứa toàn bộ
+trạng thái tài khoản đã đọc, nên đừng gửi nó cho người lạ.
+
+### Chạy lại một lượt cũ, không cần mạng
+
+```ts
+import { chayLaiTuJson } from "@custos-solana/core";
+
+const r = chayLaiTuJson(json);
+if (!r.ok) {
+  // Bản `chiaSe` bị TỪ CHỐI ở đây, thay vì bịa Facts rỗng rồi chạy.
+  console.log("không chạy lại được:", r.loi);
+} else if (r.engineDaDoi) {
+  // Hai verdict khác nhau nghĩa là ENGINE đã đổi, KHÔNG phải dữ liệu sai.
+  console.log("lúc xuất:", r.nguyenVan.level, "· engine hôm nay:", r.chayLai.level);
+}
+```
+
+### Quy tắc của ví — tách khỏi engine
+
+```ts
+import { danhGiaPolicy, PROFILE_MAC_DINH } from "@custos-solana/core";
+
+const qd = danhGiaPolicy(
+  { level: ketQua.level, coverage: ketQua.coverage, phienConDung: true },
+  PROFILE_MAC_DINH,
+);
+// qd.quyetDinh: "allow" | "review" | "block"
+```
+
+**Policy chỉ được thận trọng hơn engine, không bao giờ nới.** `level: "danger"`
+không có đường nào thành `allow`, kể cả với profile lỏng nhất. Nếu ví nới được kết
+luận engine thì kẻ tấn công chỉ cần làm ví nạp một profile dễ dãi.
+
+Profile là **tham số riêng**, không đọc từ giao dịch: một dApp không được tự khai
+quy tắc của ví bạn.
+
+### Kiểm nhiều giao dịch một lượt
+
+```ts
+import { xetLo } from "@custos-solana/core";
+
+const lo = xetLo(danhSach); // mỗi phần tử: { cluster, soByte, ketQua }
+// lo.tongKet là mức NẶNG NHẤT, và MỘT phần tử chưa kiểm được đủ làm cả lô
+// thành "khong_ket_luan_duoc". Không có badge xanh tổng.
+```
+
+Mỗi giao dịch được mô phỏng **độc lập** trên trạng thái hiện tại — không phải trên
+trạng thái sau khi giao dịch trước đã chạy. Đừng cộng các mức thay đổi độc lập rồi
+gọi đó là số dư cuối của cả chuỗi.
+
+---
+
 ## Hàm bậc thấp — chỉ cần khi bạn tự dựng đường ống
 
 `inspect()` đã trả sẵn `diff` và `coverage`, nên **hầu hết bên tích hợp không cần
@@ -381,7 +460,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 949 test, chạy offline
+npx npm@11.6.2 run check     # 953 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
