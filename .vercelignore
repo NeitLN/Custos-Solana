@@ -1,0 +1,45 @@
+# Thứ KHÔNG cần upload lên Vercel để dựng bản web.
+#
+# ĐO ĐƯỢC, KHÔNG PHỎNG ĐOÁN: repo là 234 MB, và lượt deploy đầu treo hơn 20 phút ở
+# trạng thái `Initializing` mà KHÔNG in nổi một dòng log build nào — nó chưa từng
+# bắt đầu build, nó đang đẩy file qua mạng.
+#
+#   docs/         205 MB   ← thủ phạm chính: .mp4, .webm, .zip, .pptx, .pdf
+#   node_modules  159 MB   ← Vercel tự cài lại bằng installCommand
+#
+# `vite build` chỉ đọc `apps/`, `packages/`, `scripts/` và cấu hình ở gốc. Mọi thứ
+# dưới đây không tham gia vào bản dựng, nên gửi chúng đi chỉ tốn thời gian.
+
+# Vercel chạy `npm install` trong container — gửi node_modules lên là vô nghĩa,
+# và còn nguy hiểm: binary biên dịch cho Windows không chạy trên Linux của runner.
+node_modules
+
+# Hồ sơ dự thi, video, deck, biên bản. Nặng nhất repo và build không đụng tới.
+docs
+
+# Ảnh chụp và gói review sinh ra từ script, không phải nguồn.
+.thu-pages
+site
+ban-trinh-dien
+goi-sdk
+
+# ⚠️ `data/` KHÔNG được loại, dù trông như thứ chỉ dùng để kiểm thử.
+#
+# `apps/demo-wallet/src/nguon.ts` import THẬT từ đó:
+#     import("../../../data/mocks/mock-danger.json")
+# Loại nó đi thì `vite build` hỏng vì không giải được import — và hỏng trên
+# runner chứ không hỏng ở máy dev, tức phát hiện muộn nhất có thể.
+#
+# Bản nháp đầu của file này có `data` trong danh sách. Đã kiểm bằng grep trước khi
+# deploy nên bắt được. Cả thư mục chỉ 1,1 MB, không đáng đánh đổi.
+
+# Bytecode Python của bộ kiểm trình duyệt.
+__pycache__
+
+# Bản dựng cũ trên máy dev. Vercel dựng lại từ nguồn.
+apps/demo-wallet/dist
+apps/trang-tan-cong/dist
+
+# Biến môi trường cục bộ. `.env.local` chứa VERCEL_OIDC_TOKEN do `vercel link` tạo.
+.env
+.env.*

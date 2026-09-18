@@ -57,3 +57,18 @@ goi-sdk/
 # (`scripts/kiem-trinh-duyet/dauvet.py`). Không phải nguồn, và commit vào thì
 # mỗi phiên bản Python lại ghi đè một bản khác.
 __pycache__/
+
+# Liên kết Vercel của MÁY này — `.vercel/project.json` chứa projectId và orgId.
+# Không phải khoá bí mật, nhưng nó là cấu hình cục bộ: mỗi người deploy có thể
+# link tới project khác nhau, và commit nó vào thì người sau bị kéo về project
+# của người trước mà không biết. Vercel tự sinh lại khi chạy `vercel link`.
+.vercel/
+
+.vercel
+.env*
+
+# Gói pitch kỹ thuật — 123 MB video, .pptx và .zip sinh ra từ script.
+# KHÔNG commit: nó lớn gấp 8 lần cả phần còn lại của repo, và mỗi lần render lại
+# là một bản nhị phân mới nằm vĩnh viễn trong lịch sử git.
+# Bản nộp cho BTC nằm ở `docs/nop-bai/` (deck + video demo), đã có test canh.
+/docs/pitch-technical/

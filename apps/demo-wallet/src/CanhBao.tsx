@@ -97,6 +97,7 @@ export function CanhBao({
   onKy,
   choPhepKy = true,
   boiCanh,
+  nguonChu,
 }: {
   ketQua: InspectResult;
   onHuy: () => void;
@@ -105,6 +106,14 @@ export function CanhBao({
   choPhepKy?: boolean;
   /** Bối cảnh lượt kiểm. Vắng mặt ⇒ khối dữ kiện không hiện, không bịa. */
   boiCanh?: BoiCanh;
+  /**
+   * Câu chữ này do ĐÂU viết ra. Vắng mặt ⇒ không hiện nhãn, không đoán.
+   *
+   * Nhãn này nói về CHIỀU DIỄN GIẢI, tách khỏi chiều phân tích. Một kết quả mô
+   * phỏng thật với câu chữ tất định vẫn là kết quả thật — gộp hai chiều làm một
+   * nhãn "live" là nói quá về sản phẩm.
+   */
+  nguonChu?: "moHinh" | "tatDinh" | "moHinhLoi" | "chuaCauHinh";
 }) {
   const { analyzed, total, unverifiedPrograms } = ketQua.coverage;
 
@@ -216,9 +225,29 @@ export function CanhBao({
                 </button>
                 {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
                 {moRong && (
-                  <p className="mo-ra text-[13.5px] leading-relaxed text-slate-700">
-                    {ketQua.explanation}
-                  </p>
+                  <>
+                    <p className="mo-ra text-[13.5px] leading-relaxed text-slate-700">
+                      {ketQua.explanation}
+                    </p>
+                    {/*
+                      NGUỒN CỦA CÂU CHỮ — đặt ngay dưới câu, không đặt ở chân trang.
+                      Người đọc phải biết ai viết câu họ vừa đọc, tại chỗ họ đọc nó.
+
+                      Cả bốn nhãn đều nói về CÂU CHỮ, không nhãn nào nói về verdict.
+                      `level` do L2 sinh trong mọi trường hợp.
+                    */}
+                    {nguonChu && (
+                      <p className="mt-1.5 text-[11.5px] leading-relaxed text-slate-500">
+                        {nguonChu === "moHinh"
+                          ? "Câu trên do mô hình ngôn ngữ viết, đã qua bộ soi đầu ra. Mức cảnh báo vẫn do engine luật quyết."
+                          : nguonChu === "moHinhLoi"
+                            ? "Mô hình không trả lời được nên câu trên là câu tất định. Mức cảnh báo không đổi."
+                            : nguonChu === "chuaCauHinh"
+                              ? "Bản này chưa cấu hình mô hình ngôn ngữ nên câu trên là câu tất định. Mức cảnh báo không đổi."
+                              : "Câu trên do lõi xác định viết, không gọi mô hình ngôn ngữ."}
+                      </p>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -362,13 +391,11 @@ export function CanhBao({
                 chen vào giữa "giới hạn" và "hành động", đúng chỗ họ cần ít chữ nhất.
                 Nó xuống mục kỹ thuật.
 
-                Còn lại một mệnh đề ngắn: bản demo này chạy lớp tất định. Câu đó phải
-                ở lại vì nó là câu chống hiểu nhầm "chữ bạn đang đọc do mô hình sinh
-                ra" — giấu sau một cú bấm thì thành kém trung thực. */}
+                Nguồn câu chữ được ghi cạnh phần diễn giải theo từng lượt.
+                Không gắn nhãn tất định cố định khi có thể gọi mô hình thật. */}
             <p className="mt-1 text-[12px] leading-relaxed text-slate-600">
               Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
-              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm. Bản demo này chạy
-              lớp giải thích tất định.
+              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm.
             </p>
           </div>
         )}
@@ -445,11 +472,10 @@ export function CanhBao({
                   trị để đối chiếu. Cùng khung xám nhưng khác kiểu chữ để mắt biết
                   ngay dòng nào là dữ liệu, dòng nào là lời giải thích. */}
               <p className="mo-ra mt-2 rounded-xl bg-slate-50 p-3 text-[11.5px] leading-relaxed text-slate-600">
-                Đây là ví mẫu tích hợp Custos SDK, không phải sản phẩm ví. Bản demo công
-                khai chạy lớp giải thích tất định: không gọi mô hình, không cần khoá API.
-                Lớp AI là tuỳ chọn để bên tích hợp tự cắm mô hình của họ, và kể cả khi
-                cắm, nó cũng chỉ được phép đề nghị kiểm tra thủ công — không tạo và không
-                sửa mức cảnh báo.
+                Đây là ví mẫu tích hợp Custos SDK, không phải sản phẩm ví. Nguồn câu
+                giải thích được ghi ở phần nội dung phía trên: câu tất định hoặc mô hình
+                ngôn ngữ khi đã cấu hình. Lớp AI là tuỳ chọn và chỉ được phép đề nghị
+                kiểm tra thủ công — không tạo và không sửa mức cảnh báo.
               </p>
             </>
           )}

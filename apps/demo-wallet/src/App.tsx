@@ -3,8 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect, neoKetQua, khopNeo, quaCu, type NeoKetQua } from "@custos-solana/core";
-import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
-import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
+import { dienGiaiKhongAI, boiThoiHan, dienGiaiBangMoHinh } from "@custos-solana/ai";
+import { KICH_BAN, timKichBan, type KichBan } from "./kichBan.ts";
+import { dungGoiQuaServer, coAiKhong } from "./goiAiQuaServer.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { HauQua } from "./HauQua.tsx";
@@ -27,7 +28,29 @@ import {
   WalletIcon,
 } from "./Icons.tsx";
 
-type Kich = "tanCong" | "lanhTinh";
+/**
+ * Kịch bản được nhận diện bằng ID CHUỖI từ sổ đăng ký, không còn là union hai nhánh.
+ *
+ * Bản trước là `type Kich = "tanCong" | "lanhTinh"` với một biểu thức ba ngôi trong
+ * `dungTx`. Thêm kịch bản vào hình dạng đó phải sửa bốn chỗ rời nhau, và quên một
+ * chỗ thì nút hiện ra nhưng bấm vào chạy nhầm giao dịch. Xem `kichBan.ts`.
+ */
+type Kich = string;
+
+/**
+ * HAI CHIỀU TRẠNG THÁI TRỰC GIAO — brief mục 5.
+ *
+ * Chúng KHÔNG được trộn làm một. "Phân tích chạy trên Devnet" và "câu chữ do mô
+ * hình viết" là hai câu hỏi khác nhau, và người xem có quyền biết riêng từng câu:
+ * một giao dịch mô phỏng thật với lời giải thích tất định vẫn là kết quả thật.
+ *
+ * Gộp hai chiều thành một nhãn "live" là cách nhanh nhất để nói quá về sản phẩm.
+ */
+type ChieuDienGiai =
+  | "moHinh"      // mô hình vừa được gọi thật
+  | "tatDinh"     // đường tất định — không gọi mô hình
+  | "moHinhLoi"   // đã gọi nhưng hỏng, đã lui về tất định
+  | "chuaCauHinh"; // server chưa có khoá
 
 export default function App() {
   const [cheDo, setCheDo] = useState<CheDo | null>(null);
@@ -94,7 +117,64 @@ export default function App() {
   }, [ketQua]);
   // Nhịp 1 của kịch bản demo, dựng lại KHÔNG cần khoá ký — xem HauQua.tsx.
   const [hauQua, setHauQua] = useState<InspectResult | null>(null);
-  const [kichCuoi, setKichCuoi] = useState<Kich>("tanCong");
+  const [kichCuoi, setKichCuoi] = useState<Kich>("tan-cong-day-du");
+
+  /**
+   * AI có sẵn sàng không — hỏi server MỘT LẦN lúc mở trang, không tốn lượt gọi mô hình.
+   *
+   * `null` nghĩa là chưa biết. Giao diện phải phân biệt "chưa hỏi xong" với "đã hỏi
+   * và không có" — hiện nhãn "không có AI" trong lúc còn đang hỏi là nói sai.
+   */
+  const [coAi, setCoAi] = useState<boolean | null>(null);
+  /** Chiều diễn giải của LƯỢT GẦN NHẤT. Ghi lại thứ đã xảy ra, không phải dự định. */
+  const [chieuDienGiai, setChieuDienGiai] = useState<ChieuDienGiai>("tatDinh");
+  /** Người dùng có muốn dùng mô hình không. Tắt được để so hai đường cạnh nhau. */
+  const [muonDungAi, setMuonDungAi] = useState(true);
+
+  useEffect(() => {
+    let huy = false;
+    void coAiKhong().then((v) => {
+      if (!huy) setCoAi(v);
+    });
+    return () => {
+      huy = true;
+    };
+  }, []);
+
+  /**
+   * Chọn Interpreter cho một lượt kiểm.
+   *
+   * RANH GIỚI KHÔNG ĐỔI: cả hai nhánh đều trả về một `Interpreter`, và kiểu đó
+   * KHÔNG có trường `level`. Dù đi đường mô hình hay đường tất định, L3 không chạm
+   * được vào verdict — đó là bảo đảm của kiểu, không phải của kỷ luật lập trình.
+   *
+   * `boiThoiHan` bọc cả hai: mô hình chậm thì rơi về tất định, người dùng vẫn đọc được.
+   */
+  const dungInterpreter = useCallback(() => {
+    if (!muonDungAi || coAi !== true) {
+      setChieuDienGiai("tatDinh");
+      return boiThoiHan(dienGiaiKhongAI);
+    }
+    // Đặt trước là "đã gọi mô hình"; nhánh lỗi bên dưới sửa lại nếu không phải vậy.
+    setChieuDienGiai("moHinh");
+    const goi = dungGoiQuaServer({
+      ghiNhanDung: () => {
+        /* usage thật do server chuyển tiếp — chưa gắn vào giao diện ở bản này */
+      },
+    });
+    return boiThoiHan(
+      dienGiaiBangMoHinh(async (loiNhac) => {
+        try {
+          return await goi(loiNhac);
+        } catch (e) {
+          // Phân biệt "chưa cấu hình" với "gọi hỏng": hai câu khác nhau với người xem.
+          setChieuDienGiai(e instanceof Error && e.name === "ChuaCauHinhAI" ? "chuaCauHinh" : "moHinhLoi");
+          throw e;
+        }
+      }),
+      8_000,
+    );
+  }, [muonDungAi, coAi]);
   const [txCho, setTxCho] = useState<VersionedTransaction | null>(null);
   const [dangChay, setDangChay] = useState(false);
   const [nhatKy, setNhatKy] = useState<string[]>([]);
@@ -252,7 +332,7 @@ export default function App() {
           inspect(
             {
               connection: new Connection(chonRpc(htNay), "confirmed"),
-              interpret: boiThoiHan(dienGiaiKhongAI),
+              interpret: dungInterpreter(),
             },
             yc.tx,
             {
@@ -296,27 +376,18 @@ export default function App() {
     void doSoDu();
   }, [doSoDu]);
 
+  /**
+   * Dựng giao dịch cho một kịch bản, tra từ sổ đăng ký.
+   *
+   * ID không có trong sổ thì NÉM, không im lặng rơi về kịch bản mặc định. Rơi về
+   * mặc định nghĩa là người dùng bấm một nút và nhận về giao dịch của nút khác —
+   * đúng loại sai lệch mà sản phẩm này tồn tại để chống.
+   */
   function dungTx(kich: Kich, blockhash: string): VersionedTransaction {
     if (!ht) throw new Error("chưa có hiện trường");
-    const chung = {
-      nanNhan: new PublicKey(ht.nanNhan),
-      mint: new PublicKey(ht.mint),
-      blockhash,
-      taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
-    };
-    return kich === "tanCong"
-      ? dungGiaoDichTanCong({
-          ...chung,
-          keTanCong: new PublicKey(ht.keTanCong),
-          taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-          soLuong: BigInt(ht.soLuong),
-        })
-      : dungGiaoDichLanhTinh({
-          ...chung,
-          banBe: new PublicKey(ht.banBe),
-          taiKhoanDich: new PublicKey(ht.taiKhoanBanBe),
-          soLuong: 10n * 10n ** BigInt(ht.decimals),
-        });
+    const kb = timKichBan(kich);
+    if (!kb) throw new Error(`không có kịch bản "${kich}"`);
+    return kb.dungTx(ht, blockhash);
   }
 
   async function bam(kich: Kich, epBatCustos = false) {
@@ -431,7 +502,7 @@ export default function App() {
           return {
             tx: txNay,
             byteLucKiem: byteNay,
-            r: await inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, txNay, {
+            r: await inspect({ connection: c, interpret: dungInterpreter() }, txNay, {
               locale: "vi",
               // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
               nguoiDung: ht.nanNhan,
@@ -471,7 +542,7 @@ export default function App() {
         // `inspect()` và hiện trạng thái sau, dán nhãn rõ là kết quả mô phỏng.
         ghi("Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng");
         const rTat = await coHanChung(
-          inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
+          inspect({ connection: c, interpret: dungInterpreter() }, tx, {
             locale: "vi",
             nguoiDung: ht.nanNhan,
             ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
@@ -885,35 +956,53 @@ export default function App() {
                 <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
                   <span className="demo-section-number">01</span> Chọn một giao dịch để thử
                 </h2>
+                {/*
+                  PHÒNG KỊCH BẢN — duyệt từ sổ đăng ký, không gõ tay từng nút.
+                  Thêm một bản ghi vào `kichBan.ts` là nút hiện ra ở đây, và nó chạy
+                  đúng hàm dựng của bản ghi đó. Không còn khoảng cách giữa nhãn và
+                  giao dịch thật sự chạy.
+                */}
                 <div className="grid gap-2.5 sm:grid-cols-2">
-                  <button
-                    onClick={() => void bam("tanCong")}
-                    disabled={dangChay}
-                    className="action-card action-card--primary group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    <div className="flex w-full items-start justify-between gap-3">
-                      <span className="action-icon action-icon--gift grid h-9 w-9 place-items-center rounded-xl text-nhan"><GiftIcon className="h-5 w-5" /></span>
-                      <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                    <span>
-                      <span className="block text-[14px] font-semibold text-chu">Nhận quà tặng</span>
-                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Tình huống giả mạo</span>
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => void bam("lanhTinh")}
-                    disabled={dangChay}
-                    className="action-card group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45"
-                  >
-                    <div className="flex w-full items-start justify-between gap-3">
-                      <span className="action-icon grid h-9 w-9 place-items-center rounded-xl text-chu-nhat"><SendIcon className="h-5 w-5" /></span>
-                      <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                    <span>
-                      <span className="block text-[14px] font-semibold text-chu">Gửi 10 token</span>
-                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Tình huống đối chiếu</span>
-                    </span>
-                  </button>
+                  {KICH_BAN.map((kb: KichBan) => {
+                    const laDoiChung = kb.nhom === "doiChung";
+                    const laThieu = kb.nhom === "thieuDuLieu";
+                    return (
+                      <button
+                        key={kb.id}
+                        onClick={() => void bam(kb.id)}
+                        disabled={dangChay}
+                        title={kb.tienDieuKien}
+                        className={`action-card group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45${
+                          laDoiChung || laThieu ? "" : " action-card--primary"
+                        }`}
+                      >
+                        <div className="flex w-full items-start justify-between gap-3">
+                          <span
+                            className={`action-icon grid h-9 w-9 place-items-center rounded-xl ${
+                              laDoiChung || laThieu ? "text-chu-nhat" : "action-icon--gift text-nhan"
+                            }`}
+                          >
+                            {laDoiChung || laThieu ? (
+                              <SendIcon className="h-5 w-5" />
+                            ) : (
+                              <GiftIcon className="h-5 w-5" />
+                            )}
+                          </span>
+                          <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
+                        </div>
+                        <span>
+                          <span className="block text-[14px] font-semibold text-chu">{kb.tieuDe}</span>
+                          <span className="mt-0.5 block text-[11.5px] text-chu-mo">
+                            {laDoiChung
+                              ? "Đối chứng — engine phải im"
+                              : laThieu
+                                ? "Dữ liệu khuyết — fail-safe"
+                                : kb.loiMoi}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <label className={`protection-switch mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-4 ${batCustos ? "is-on" : "is-off"}`}>
@@ -1133,6 +1222,7 @@ export default function App() {
                   >
                     <CanhBao
                       ketQua={ketQua}
+                      nguonChu={chieuDienGiai}
                       /*
                        * BỐI CẢNH LƯỢT KIỂM — thẻ TB-X02.
                        *
