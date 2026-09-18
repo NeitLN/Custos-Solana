@@ -205,3 +205,43 @@ python scripts/kiem-trinh-duyet/soi-do-tre.py
 
 Bài đo **dừng ngay** nếu trang không dựng được, thay vì ghi số của một trang trắng
 vào bằng chứng.
+
+## Module mới (CU-11/12/14/15/18/20/21) — phần TẤT ĐỊNH
+
+Sinh bằng `npm run do-hieu-nang`. Chạy lại cho số mới; đừng sửa tay bảng dưới.
+
+**Phạm vi:** không chạm mạng. Đây là chi phí của chính các phép tính, KHÔNG phải
+độ trễ người dùng cảm nhận — lượt thật có RPC mất khoảng 600 ms, đo ở
+`npm run thu-tich-hop:devnet`.
+
+```
+CU-23 · hiệu năng module tất định · 200 lượt, bỏ 5 lượt đầu
+Node v24.12.0 · win32
+Fixture: R01-pos — 1 lệnh, 1 token account
+
+phép đo                                cold   trung vị        p95
+─────────────────────────────────────────────────────────────────
+L2 · danhGia(facts)                0.047 ms   0.004 ms   0.013 ms
+CU-11 · dựng biên lai rieng        0.371 ms   0.087 ms   0.222 ms
+CU-11 · đọc + kiểm toàn vẹn        0.244 ms   0.050 ms   0.081 ms
+CU-12 · chạy lại từ biên lai      10.009 ms   0.105 ms   0.173 ms
+CU-14 · tính phí chuyển            0.119 ms   0.000 ms   0.000 ms
+CU-15 · tóm tắt quyền              0.139 ms   0.000 ms   0.001 ms
+CU-18 · quyết định policy          0.103 ms   0.000 ms   0.001 ms
+CU-20 · so sánh cấu trúc           0.170 ms   0.001 ms   0.006 ms
+CU-21 · xét lô 20 giao dịch        0.305 ms   0.033 ms   0.047 ms
+
+Cỡ mẫu warm: n=195 cho mỗi phép đo.
+
+Đây là phần TẤT ĐỊNH, không chạm mạng. Độ trễ đầu-cuối có RPC đo ở
+`npm run thu-tich-hop:devnet`, và độ trễ trình duyệt ở `docs/HIEU-NANG.md`.
+```
+
+**Vì sao `cold` của CU-12 cao gấp ~85 lần trung vị:** đã đo từng lượt — lượt 0
+mất 10,4 ms, lượt 1 đã về 0,46 ms và ổn định từ đó. Đó là hình dạng của JIT
+warm-up, không phải chi phí tăng dần hay rò rỉ. Cột `cold` giữ lại đúng để không
+ai trộn nó vào trung vị.
+
+**Vì sao một số dòng ghi p95 mà một số có thể ghi `—`:** với n < 20, phân vị 95
+rơi đúng vào phần tử lớn nhất, nên in nó ra dưới tên *p95* là trình bày cực trị
+của mẫu nhỏ như một thống kê. Script từ chối làm vậy.

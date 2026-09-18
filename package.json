@@ -45,7 +45,8 @@
     "probe-neo": "node --experimental-strip-types scripts/ky-thuat/probe-neo-c06.ts",
     "probe-timer": "node --experimental-strip-types scripts/ky-thuat/probe-timer-c05.ts",
     "doi-khang": "npm run fuzz-s02 && npm run probe-race && npm run probe-gui && npm run probe-neo && npm run probe-timer",
-    "ma-tran-nang-luc": "node --experimental-strip-types scripts/tao-ma-tran-nang-luc.ts"
+    "ma-tran-nang-luc": "node --experimental-strip-types scripts/tao-ma-tran-nang-luc.ts",
+    "do-hieu-nang": "node --experimental-strip-types scripts/ky-thuat/do-hieu-nang-cu23.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
