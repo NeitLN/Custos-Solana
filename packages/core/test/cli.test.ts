@@ -211,3 +211,46 @@ test("QA · `giaiTx` từ chối tx rỗng ruột nhưng GIỮ tx thật — đ�
   );
   assert.equal(that.ok, true, "giao dịch thật bị từ chối — sửa quá tay");
 });
+
+/* ── CU-11 · biên lai xuất từ CLI ───────────────────────────────────────────── */
+
+test("CU-11 · `--receipt rieng` bị từ chối và NÓI RÕ vì sao, không xuất bản rỗng", () => {
+  /*
+   * CLI chỉ xuất được `chiaSe`, và đó là ràng buộc THẬT: `inspect()` không trả
+   * `Facts` ra ngoài, vì hợp đồng `InspectResult` đã đóng băng và không được nới
+   * chỉ để tiện cho CLI.
+   *
+   * Điều bài này canh là cách CLI xử sự với ràng buộc đó: nói thẳng, exit 3 (lỗi
+   * đầu vào — sửa lệnh), stdout SẠCH. Im lặng xuất một biên lai `rieng` rỗng ruột
+   * trông như đầy đủ mới là hành vi nguy hiểm.
+   */
+  const TX = readFileSync(
+    fileURLToPath(new URL("../../../data/seed/tx/R01-pos.base64", import.meta.url)),
+    "utf8",
+  ).trim();
+
+  const r = chayCLI("--receipt", "rieng", "--tx", TX);
+  assert.equal(r.ma, 3, "phải là lỗi đầu vào (3), không phải verdict");
+  assert.equal(r.out, "", "stdout phải sạch khi từ chối");
+  assert.match(r.err, /Facts/, "không nói rõ thiếu gì");
+  assert.match(r.err, /chiaSe/, "không chỉ đường đi tiếp");
+});
+
+test("CU-11 · `--receipt` với giá trị lạ bị từ chối", () => {
+  const TX = readFileSync(
+    fileURLToPath(new URL("../../../data/seed/tx/R01-pos.base64", import.meta.url)),
+    "utf8",
+  ).trim();
+  const r = chayCLI("--receipt", "cong-khai", "--tx", TX);
+  assert.equal(r.ma, 3);
+  assert.equal(r.out, "");
+});
+
+test("CU-11 · `--help` nhắc tới `--receipt`", () => {
+  /*
+   * Một cờ không có trong `--help` là một cờ không tồn tại với người dùng.
+   */
+  const r = chayCLI("--help");
+  assert.equal(r.ma, 0);
+  assert.match(r.out, /--receipt/, "`--help` không nhắc tới --receipt");
+});
