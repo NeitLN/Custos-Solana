@@ -1,6 +1,9 @@
 import { useCallback, useRef, useState } from "react";
 import { Connection } from "@solana/web3.js";
-import { inspect, ketNoiCoHuy, laHuy, type KetNoiCoHuy } from "@custos-solana/core";
+import {
+  inspect, ketNoiCoHuy, laHuy, dungReceipt, receiptRaJson,
+  type KetNoiCoHuy,
+} from "@custos-solana/core";
 import type { InspectResult } from "@custos-solana/types";
 import { docTx, kiemVi, GIOI_HAN_BYTE } from "./soiTx.ts";
 import { CanhBao } from "./CanhBao.tsx";
@@ -308,6 +311,43 @@ export function Inspector() {
               Đọc {tt.soByte} byte · mô phỏng trên {rpc.trim() || RPC_MAC_DINH} ·
               Custos không ký và không gửi gì.
             </p>
+
+            {/*
+              CU-26 · XUẤT BIÊN LAI.
+
+              Chỉ chế độ `chiaSe`: Inspector không giữ `Facts` (inspect() không trả
+              nó ra ngoài), nên không có gì để replay. Nút nói thẳng điều đó thay vì
+              xuất một file trông đầy đủ mà rỗng ruột.
+
+              Tải bằng Blob + object URL, không gửi đi đâu — cùng cách trang phỏng
+              vấn đã dùng để cứu dữ liệu. Không có mạng trong đường này.
+            */}
+            <div className="mt-4 border-t border-slate-200/80 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  const bl = dungReceipt(tt.ketQua, "chiaSe");
+                  const b = new Blob([receiptRaJson(bl)], { type: "application/json" });
+                  const u = URL.createObjectURL(b);
+                  const a = document.createElement("a");
+                  a.href = u;
+                  a.download = `custos-bien-lai-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.json`;
+                  a.click();
+                  URL.revokeObjectURL(u);
+                  ghi("Đã xuất biên lai bản chia sẻ (không kèm Facts, không chạy lại được)");
+                }}
+                className="min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu hover:bg-slate-50"
+              >
+                Xuất biên lai
+              </button>
+              <p className="mt-2 text-[12px] leading-relaxed text-chu-mo">
+                Bản <strong>chia sẻ</strong>: mang kết quả và mã lý do, đã che đường dẫn
+                máy và thông tin đăng nhập RPC. <strong>Không</strong> kèm dữ liệu tài
+                khoản nên <strong>không chạy lại được</strong> — đó là chủ ý, không phải
+                thiếu sót. Mã băm trong biên lai chỉ cho biết nội dung có bị sửa hay
+                không; nó <strong>không phải chữ ký</strong> và không chứng minh ai xuất.
+              </p>
+            </div>
           </>
         )}
       </div>

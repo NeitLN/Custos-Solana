@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `653f223a570bf3c1c7ae65d4351b371cf592d13f`
+**Commit:** `f75ba8385a97e98790718f23546f85e94134077e`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
