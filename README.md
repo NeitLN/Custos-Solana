@@ -1,6 +1,54 @@
+<div align="center">
+
+<img src="docs/nop-bai/logo/custos-logo-nen-xanh.png" width="88" alt="">
+
 # Custos
 
-> Custos phát hiện những hậu quả **không thuộc về hành động chính** của một giao dịch Solana, và giải thích bằng tiếng Việt trước khi người dùng ký.
+**SDK giúp ví Solana đọc hậu quả của giao dịch trước khi người dùng ký — và nói ra phần chưa đọc được.**
+
+UniHackfest 2026 · AI × Web3
+
+[**Dùng thử**](https://custos-solana.vercel.app) · [Mục lục tài liệu](docs/README.md) · [14 luật](packages/core/src/l2/rules.ts) · [9 kịch bản](apps/demo-wallet/src/kichBan.ts)
+
+</div>
+
+---
+
+## Ba phút để nắm bài
+
+**Vấn đề.** Một giao dịch Solana gây nhiều hậu quả cùng lúc, và không phải hậu quả nào cũng hiện ra ở số dư. Ca thật nhóm dựng trên Devnet: trang web hứa tặng token, nhưng giao dịch làm **ba** việc — chuyển token đi, **đổi chủ tài khoản token**, và gọi một chương trình chưa đọc hiểu được. Việc thứ hai không rút tiền ngay, nên **số dư trước và sau y hệt nhau**. Nhìn chênh lệch số dư thì ca này trông bình thường — nhưng sau khi ký, người dùng mất quyền kiểm soát vĩnh viễn.
+
+**Cách làm.** Custos đọc **chênh lệch trạng thái**, không đọc tên lệnh. Kẻ tấn công giấu được instruction — qua CPI, qua chương trình riêng, qua ALT — nhưng không giấu được hậu quả.
+
+```
+Giao dịch chưa ký ─► L1 mô phỏng RPC ─► Facts
+                                          │
+                          ┌───────────────┴───────────────┐
+                          ▼                               ▼
+                   L2 · 14 luật                      L3 · AI
+                   sinh `level`                      chỉ viết chữ
+                   ◄── CHỈ tầng này                  (nét đứt: không
+                       ra phán quyết                  nối vào L2)
+                          └───────────────┬───────────────┘
+                                          ▼
+                                   Ví hiển thị, rồi áp chính sách
+```
+
+Kiểu dữ liệu trả về của L3 **không có trường `level`** — ranh giới do trình biên dịch giữ, không dựa vào kỷ luật lập trình.
+
+**Ba điều đáng xem nhất:**
+
+| | Vì sao đáng xem |
+|---|---|
+| **Cặp đối chứng** — cùng lệnh `Approve`, cùng người nhận, chỉ khác hạn mức: 1010 > số dư ⇒ **Nguy hiểm**; 250 ≤ số dư ⇒ **Bình thường**, engine im | Thiếu ca âm tính thì *"bắt đúng"* và *"gắn cờ mọi thứ"* trông giống hệt nhau |
+| **AI bị chiếm hoàn toàn vẫn không hạ được mức** — 13/13 ca đối kháng bị chặn | Mô hình có thể bị tiêm chỉ thị qua tên token hoặc memo |
+| **Thiếu dữ liệu ⇒ Vàng, không bao giờ Xanh** | Fail-safe: không đủ dữ liệu thì không được nói an toàn |
+
+**Chạy thử:** `npx npm@11.6.2 ci` rồi `npm run mo-phong-kichban` — mô phỏng 9 kịch bản trên Devnet thật, không cần khoá API.
+
+---
+
+> Phần dưới là tài liệu đầy đủ: bằng chứng theo từng mục rubric, số đo, giới hạn.
 
 Transaction-intelligence SDK cho ví và dApp Solana.
 Dự thi **UniHackfest 2026**, chủ đề AI × Web3.
@@ -39,7 +87,7 @@ tay**. Đối chiếu từng mục rubric ở [ADR-0001](docs/adr/0001-doi-huong
 
 | Mục rubric Technical | Bằng chứng |
 |---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **968** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
+| **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **1004** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
 | **25 %** kiến trúc on-chain/off-chain | Ba lớp L1/L2/L3, ranh giới cưỡng chế **bằng kiểu**: chỉ L2 sinh `level`, AI không bao giờ · **không** smart contract, và [nói rõ vì sao](docs/adr/0001-doi-huong-technical-build.md) |
 | **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **617 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **104 ms** · bấm→thẻ **n=30**, trung vị **1916 ms**, p95 quan sát **3959 ms** · demo công khai dựng lại mỗi lần push |
@@ -155,7 +203,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 | Thứ | Số |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **968**, chạy trong `npm run check` |
+| Test | **1004**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 | Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
 | Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
@@ -167,7 +215,7 @@ dịch thô) đều có test đối kháng — xem [packages/core/README.md](pac
 
 | Bằng chứng | Trả lời được | Không trả lời được |
 |---|---|---|
-| **968 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
+| **1004 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
 | **38 mẫu** đã gắn nhãn | luật bật đúng ca, im đúng ca đối chứng | tỉ lệ đúng/sai trên traffic thật |
 | **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
 | **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
@@ -224,7 +272,7 @@ nhưng đội không giả vờ là đã hiểu chúng.
 Mẫu ngẫu nhiên không bảo đảm cả 20 giao dịch đều lành tính. **Không có Đỏ nghĩa là
 không cờ nào bật**, không phải bằng chứng cả 20 cái đều sạch.
 
-Chi tiết cách đo: [SEED-DATASET.md](SEED-DATASET.md) mục 0b.
+Chi tiết cách đo: [docs/SEED-DATASET.md](docs/SEED-DATASET.md) mục 0b.
 Giới hạn của SDK khi tích hợp: [packages/core/README.md](packages/core/README.md).
 
 ## Ranh giới đã khoá
@@ -268,7 +316,7 @@ Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nv
 ```bash
 nvm use                  # đọc .nvmrc → 24.12.0
 npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 968 test
+npx npm@11.6.2 run check # typecheck + 1004 test
 npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
 npm run vi         # ví mẫu        → localhost:5188
 npm run tan-cong   # trang lừa đảo → localhost:5189
@@ -282,14 +330,14 @@ Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví d
 
 - **[docs/BAO-CAO-KIEM-CHUNG.md](docs/BAO-CAO-KIEM-CHUNG.md)** — **dành cho người chấm**: mỗi con số kèm lệnh tự kiểm, và danh sách những gì bản này KHÔNG chứng minh
 - **[docs/BAO-CAO-TONG.md](docs/BAO-CAO-TONG.md)** — **đọc trước nếu cần nắm nhanh**: đã làm gì, còn thiếu gì, và những lỗi đã suýt lọt
-- **[CUSTOS.md](CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
-- **[NGHIEN-CUU-21-08.md](NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
-- **[SEED-DATASET.md](SEED-DATASET.md)** — quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và **vì sao chưa được gọi kết quả trên tập âm là tỉ lệ false positive**
+- **[docs/CUSTOS.md](docs/CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
+- **[docs/NGHIEN-CUU-21-08.md](docs/NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
+- **[docs/SEED-DATASET.md](docs/SEED-DATASET.md)** — quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và **vì sao chưa được gọi kết quả trên tập âm là tỉ lệ false positive**
 - **[docs/PHIEU-PHONG-VAN.md](docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
 - **[docs/bao-mat/](docs/bao-mat/)** — audit bảo mật, roadmap khắc phục, báo cáo, đánh giá mô hình
-- **[PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
-- **[DAC-TA-CORE.md](DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 14 luật, lịch làm của vai A
-- **[DAC-TA-L3.md](DAC-TA-L3.md)** — đặc tả L3 và chữ tiếng Việt: từ vựng, câu mẫu dự phòng, prompt
+- **[docs/PITCH-VA-PHAN-BIEN.md](docs/PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
+- **[docs/DAC-TA-CORE.md](docs/DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 14 luật, lịch làm của vai A
+- **[docs/DAC-TA-L3.md](docs/DAC-TA-L3.md)** — đặc tả L3 và chữ tiếng Việt: từ vựng, câu mẫu dự phòng, prompt
 - **[packages/core/README.md](packages/core/README.md)** — **tài liệu tích hợp SDK** dành cho ví và dApp
 - **[CLAUDE.md](CLAUDE.md)** — bối cảnh cho Claude Code, và các quyết định thiết kế đã khoá
 - **[docs/cuoc-thi/](docs/cuoc-thi/)** — thể lệ và lịch chính thức của Ban Tổ chức
@@ -307,7 +355,7 @@ belong to the transaction's stated main action**, and explains them in Vietnames
   transaction it actually understood, and the UI shows it.
 - **Fail closed.** Timeout, RPC failure, or missing data becomes a warning — never "safe".
 
-Measured, not estimated: **968 tests**, **38 labelled samples**, **14 rules**, average
+Measured, not estimated: **1004 tests**, **38 labelled samples**, **14 rules**, average
 **82 % coverage** on 9 replayable public transactions stored offline. Runtime and demo
 are **Devnet-only**.
 

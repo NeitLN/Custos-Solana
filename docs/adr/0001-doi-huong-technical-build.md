@@ -2,7 +2,7 @@
 
 **Trạng thái:** đã quyết cho **hướng phát triển**; **đăng ký BTC chưa xác nhận cập nhật**
 **Ngày:** 13/09/2026 · **Vai:** Lead, Judge/Docs
-**Việc TB-G02 của [`ROADMAP-TECHNICAL-CUSTOS.md`](../../ROADMAP-TECHNICAL-CUSTOS.md)**
+**Việc TB-G02 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md)**
 
 ---
 
@@ -69,7 +69,7 @@ Kẻ tấn công giấu được instruction — bọc trong CPI, gói trong pro
 chỉ vào ALT. Nhưng **không giấu được hậu quả**: quyền sở hữu đổi chủ thì trạng thái
 sau mô phỏng khác trước, bất kể instruction nào gây ra. Đây là bài học từ ca Coinspect
 (mô phỏng bỏ lọt vì đọc instruction, không đối chiếu trạng thái) —
-[`DAC-TA-CORE.md`](../../DAC-TA-CORE.md) mục 1.
+[`docs/DAC-TA-CORE.md`](../DAC-TA-CORE.md) mục 1.
 
 ## 4 · Bằng chứng theo từng mục rubric — số đo được, không hứa
 
@@ -81,13 +81,13 @@ số nào gõ tay.
 | Bằng chứng | Số |
 |---|---|
 | Luật L2, mỗi luật có ca dương **và** ca đối chứng | **14** |
-| Test tự động, offline | **968** |
+| Test tự động, offline | **1004** |
 | Mẫu đã gắn nhãn | **38** |
 | Xử lý đặc thù Solana | CPI/inner instruction · ALT · Token-2022 (Permanent Delegate, Transfer Hook) · nhiều signer, phân biệt người dùng với fee payer |
 | Phân tầng tin cậy | 8 rủi ro có cơ chế hoặc khai là giới hạn — [`THREAT-MODEL.md`](../bao-mat/THREAT-MODEL.md) |
 
 **Không hứa tỷ lệ phát hiện.** Chưa có ground truth cho cohort nên **chưa đo được**
-tỉ lệ báo nhầm — `SEED-DATASET.md` mục 0b3/0b4.
+tỉ lệ báo nhầm — `docs/SEED-DATASET.md` mục 0b3/0b4.
 
 ### 25 % · Kiến trúc on-chain/off-chain
 
@@ -135,7 +135,7 @@ gói cài **từ registry**, kèm 3/3 đối chứng dương.
 
 ## 5 · Điều ADR này KHÔNG làm
 
-1. **Không chấm lại điểm cũ.** `CUSTOS.md` mục 13 giữ **6,95** và mục đó cấm tự nâng
+1. **Không chấm lại điểm cũ.** `docs/CUSTOS.md` mục 13 giữ **6,95** và mục đó cấm tự nâng
    điểm cho khớp tin mới. Review 12/09 tạm chấm **7,4/10** theo rubric Technical —
    đó là **một ảnh chụp riêng, của một người chấm khác, theo một rubric khác**, không
    thay điểm cũ và không phải điểm BTC.
@@ -156,5 +156,5 @@ gói cài **từ registry**, kèm 3/3 đối chứng dương.
 | `README.md` | Thêm hướng phát triển Technical **cạnh** track đăng ký; đưa bảng bằng chứng kỹ thuật lên trước phần "Ai mua" |
 | `CLAUDE.md` | Ghi cả hai: track đăng ký (BTC) và hướng phát triển (đội) |
 | `docs/nop-bai/README.md` | Ghi rõ form 24/08 nộp theo track cũ, và trạng thái cập nhật chưa xác nhận |
-| `PITCH-VA-PHAN-BIEN.md` | **Chưa đổi ở thẻ này** — thuộc TB-D02, phụ thuộc TB-X03 |
-| `CUSTOS.md` · thể lệ · `THONG-TIN-VONG-HIEN-TAI.md` | **Không đổi** (mục 5) |
+| `docs/PITCH-VA-PHAN-BIEN.md` | **Chưa đổi ở thẻ này** — thuộc TB-D02, phụ thuộc TB-X03 |
+| `docs/CUSTOS.md` · thể lệ · `THONG-TIN-VONG-HIEN-TAI.md` | **Không đổi** (mục 5) |

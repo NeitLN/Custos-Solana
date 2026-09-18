@@ -29,7 +29,7 @@ import { nhanDien } from "./nhanDien.ts";
  *  thì `inspect()` dùng lõi xác định, và người dùng vẫn đọc được đầy đủ. */
 export type GoiMoHinh = (loiNhac: { system: string; user: string }) => Promise<string>;
 
-/** Đúng khung ở DAC-TA-L3.md mục 3.1. Sửa ở đây thì sửa cả tài liệu. */
+/** Đúng khung ở docs/DAC-TA-L3.md mục 3.1. Sửa ở đây thì sửa cả tài liệu. */
 export const SYSTEM_PROMPT = `Bạn viết lời giải thích tiếng Việt cho người Việt mới dùng crypto,
 về hậu quả của một giao dịch Solana mà họ SẮP KÝ.
 
@@ -109,7 +109,7 @@ const GIOI_HAN_CHU = 600;
 
 /** Dữ kiện gửi cho mô hình — DANH SÁCH TRẮNG, không phải cắt bớt.
  *
- *  L3 không bao giờ nhận giao dịch thô (DAC-TA-L3.md mục 2). Dựng bằng danh
+ *  L3 không bao giờ nhận giao dịch thô (docs/DAC-TA-L3.md mục 2). Dựng bằng danh
  *  sách trắng nghĩa là khi `Facts` mọc thêm trường mới, trường đó KHÔNG tự động
  *  chảy sang mô hình — phải có người quyết định thêm vào. */
 function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<string, string>) {
@@ -131,7 +131,7 @@ function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<st
         // Gửi số ĐÃ CHIA DECIMALS, không gửi đơn vị thô. Bản trước gửi
         // amountBefore.toString() nguyên văn — mô hình đọc lại "500000000" thay
         // vì "500" khi decimals=6, lệch đúng 10^decimals lần. Phát hiện được
-        // ngay lượt gọi thật đầu tiên với Haiku. Đúng loại lỗi CUSTOS.md quyết
+        // ngay lượt gọi thật đầu tiên với Haiku. Đúng loại lỗi docs/CUSTOS.md quyết
         // định 7 cảnh báo: hiển thị sai độ lớn trong sản phẩm bảo mật là nguy hiểm.
         truoc: dinhDangSo(t.amountBefore, decimalsCua(t.mint)),
         sau: dinhDangSo(t.amountAfter, decimalsCua(t.mint)),

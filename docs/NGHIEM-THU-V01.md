@@ -1,6 +1,6 @@
 # Nghiệm thu sản phẩm — ma trận V01 chạy trên bản cuối
 
-**Việc V01 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).** Chạy **11/09/2026**.
+**Việc V01 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).** Chạy **11/09/2026**.
 
 > **V01 KHÔNG đóng toàn diện, và đó là kết luận đúng chứ không phải thiếu sót.**
 > Roadmap nói rõ: *"Nếu S02/D03 chờ, báo nghiệm thu có phần còn mở, không ghi V01

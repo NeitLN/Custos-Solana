@@ -159,7 +159,7 @@ test("CU-14 · config theo epoch: bản mới chỉ hiệu lực TỪ epoch củ
 test("CU-14 · phí token KHÔNG sinh verdict và KHÔNG có mã lý do", () => {
   /*
    * Transfer fee là năng lực hợp lệ của giao thức. Gắn cờ vì một token có thu phí
-   * là cách nhanh nhất tạo false positive — CUSTOS.md mục 06.
+   * là cách nhanh nhất tạo false positive — docs/CUSTOS.md mục 06.
    *
    * Kiểm bằng cách đọc chính kiểu trả về: không có `level`, không có `reasonCodes`.
    */

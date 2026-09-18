@@ -78,13 +78,13 @@ Con số công bố: **ĐÚNG / TỔNG** và **VẪN KÝ / TỔNG**. "MỘT PH�
 
 ## 3 · Nhắn ví/dApp hỏi định giá
 
-`CUSTOS.md` mục 08 tự nhận định giá là **giả thuyết chưa validate**. Đây là 25 % rubric.
+`docs/CUSTOS.md` mục 08 tự nhận định giá là **giả thuyết chưa validate**. Đây là 25 % rubric.
 
 ### Nhắn cho ai
 
 | Ưu tiên | Đối tượng | Vì sao |
 |---|---|---|
-| **1** | **Privy** (privy.io) | Nền tảng ví nhúng, **có hỗ trợ Solana**, đúng nhóm khách hàng ③ trong `CUSTOS.md` mục 02 |
+| **1** | **Privy** (privy.io) | Nền tảng ví nhúng, **có hỗ trợ Solana**, đúng nhóm khách hàng ③ trong `docs/CUSTOS.md` mục 02 |
 | 2 | Ví/dApp Solana có người dùng Việt | Khách hàng nhóm ① và ② |
 | 3 | Cộng đồng Superteam Vietnam | Nơi tập trung dev Solana Việt |
 
@@ -221,7 +221,7 @@ mới điền được.** Đó là lý do việc #2 phải xong trước 31/08.
 
 ### Tập 5 lần, có người đóng vai giám khảo
 
-`PITCH-VA-PHAN-BIEN.md` có sẵn **9 câu hỏi khó kèm câu trả lời**. Bắt một bạn đọc
+`docs/PITCH-VA-PHAN-BIEN.md` có sẵn **9 câu hỏi khó kèm câu trả lời**. Bắt một bạn đọc
 câu hỏi, người pitch trả lời trong 20 giây.
 
 Bốn câu chắc chắn bị hỏi:

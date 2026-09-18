@@ -1,5 +1,5 @@
 /** Đầu ra của L1. Đây là thứ DUY NHẤT mà L2 và L3 được nhìn thấy —
- *  L3 không bao giờ nhận giao dịch thô. Xem DAC-TA-CORE.md mục 2.4 và 5.1. */
+ *  L3 không bao giờ nhận giao dịch thô. Xem docs/DAC-TA-CORE.md mục 2.4 và 5.1. */
 
 export type TokenAccountFact = {
   address: string;
@@ -69,7 +69,7 @@ export type AccountFact = {
 };
 
 /**
- * NGỮ CẢNH CỦA MỘT LƯỢT MÔ PHỎNG — CU-03, mục 4.4 của `UPDATE-CUSTOS.md`.
+ * NGỮ CẢNH CỦA MỘT LƯỢT MÔ PHỎNG — CU-03, mục 4.4 của `docs/roadmap/UPDATE-CUSTOS.md`.
  *
  * ## Vì sao `simulationOk: boolean` là không đủ
  *
@@ -198,7 +198,7 @@ export type Facts = {
    *
    *  Đây là dữ liệu LÀM GIÀU, không phải dữ liệu đo. Tra cứu thất bại thì luật
    *  liên quan không kích hoạt — và KHÔNG được đẩy verdict lên warning vì lý do
-   *  đó. Xem DAC-TA-CORE.md mục 3.3: fail-safe áp cho đường decode, không áp
+   *  đó. Xem docs/DAC-TA-CORE.md mục 3.3: fail-safe áp cho đường decode, không áp
    *  cho đường làm giàu. Áp nhầm thì mọi giao dịch ra Vàng. */
   tuoiViNhan: Record<string, number | null>;
   instructions: InstructionFact[];

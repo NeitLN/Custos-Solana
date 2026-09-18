@@ -2,7 +2,7 @@ import type { InspectResult } from "@custos-solana/types";
 import { NHAN, chiLaThongTin } from "@custos-solana/core";
 
 /**
- * MỨC 1 — NGẮN. `DAC-TA-L3.md` mục 6.
+ * MỨC 1 — NGẮN. `docs/DAC-TA-L3.md` mục 6.
  *
  * Đây là câu duy nhất phần lớn người dùng sẽ đọc. Ai đang vội bấm nút thì không
  * đọc hết một đoạn văn, và mục 7 của cùng tài liệu đo mức độ hiểu **bằng chính

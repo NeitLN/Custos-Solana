@@ -12,7 +12,7 @@ import { dungHienTruongGia } from "../../../scripts/hienTruongGia.ts";
  * Trạng thái tài khoản ở đây là buffer SPL THẬT, dựng đúng như những gì giao dịch
  * tấn công sẽ tạo ra trên chuỗi. Nhưng nó vẫn là fixture, không phải devnet.
  *
- * Theo SEED-DATASET.md mục 0, mẫu loại này là `synthetic` — hợp lệ để kiểm thử
+ * Theo docs/SEED-DATASET.md mục 0, mẫu loại này là `synthetic` — hợp lệ để kiểm thử
  * luật, và KHÔNG được tính vào tỉ lệ báo nhầm công bố trên sân khấu.
  */
 
@@ -76,7 +76,7 @@ test("ĐẦU-CUỐI — lời giải thích nêu hậu quả bằng tiếng Vi�
 });
 
 test("TRUNG THỰC — chỉ đổi chủ mà KHÔNG chuyển tiền thì số dư KHÔNG được hiện 500 → 0", async () => {
-  // Đây là chốt chặn cho quyết định 7 của CUSTOS.md. Nếu ai đó sau này bỏ lệnh
+  // Đây là chốt chặn cho quyết định 7 của docs/CUSTOS.md. Nếu ai đó sau này bỏ lệnh
   // Transfer khỏi giao dịch demo, test này đỏ ngay thay vì để demo nói dối trên sân khấu.
   const r = await inspect(
     { connection: rpcGia({ doiChu: true, chuyenTien: false }), interpret: dienGiaiKhongAI },

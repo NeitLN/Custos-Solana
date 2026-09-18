@@ -106,7 +106,7 @@ Form đã nộp 24/08. Slide đã có.
 phải quay lại. Nhưng cần chốt trước **một quyết định duy nhất còn mở**, vì nó đổi đúng
 cái con số đọc trong video:
 
-> `CUSTOS.md` mục 07 — giao dịch tấn công demo hiện có **3 lệnh**, coverage **2/3**.
+> `docs/CUSTOS.md` mục 07 — giao dịch tấn công demo hiện có **3 lệnh**, coverage **2/3**.
 > Thiết kế gốc mô tả nó nằm giữa các lệnh swap hợp lệ, tức khoảng 10–11 lệnh.
 > Chưa dựng phần swap đó.
 

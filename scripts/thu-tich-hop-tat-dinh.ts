@@ -128,7 +128,7 @@ async function main() {
   //
   // Đây là bất biến quan trọng nhất của kiến trúc: `level` do L2 sinh ra, và lớp mô
   // hình ngôn ngữ không được chạm vào. Nếu AI hỏng mà verdict đổi, nghĩa là AI đang
-  // ở trên đường quyết định — đúng thứ `CUSTOS.md` khoá lại.
+  // ở trên đường quyết định — đúng thứ `docs/CUSTOS.md` khoá lại.
   const aiHong = () => {
     throw new Error("mô hình ngôn ngữ không phản hồi");
   };

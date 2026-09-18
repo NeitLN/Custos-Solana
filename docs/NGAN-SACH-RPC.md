@@ -1,6 +1,6 @@
 # Ngân sách RPC, thời hạn và huỷ chờ
 
-**Việc TB-C05 của [`ROADMAP-TECHNICAL-CUSTOS.md`](../ROADMAP-TECHNICAL-CUSTOS.md).**
+**Việc TB-C05 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](roadmap/ROADMAP-TECHNICAL-CUSTOS.md).**
 Soạn 12/09/2026.
 
 Thẻ yêu cầu *"kiểm các deadline hiện có TRƯỚC khi thêm"*. Đã kiểm, và kết luận là

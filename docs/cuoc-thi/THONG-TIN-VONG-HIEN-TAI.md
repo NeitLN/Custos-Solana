@@ -33,7 +33,7 @@ Lấy từ `Thể lệ UniHackfest 2026.md` (BTC cập nhật 21/07/2026):
 | Trình bày | tiếng Việt; slide được dùng thuật ngữ tiếng Anh |
 | Chấm | 0–10 mỗi tiêu chí × trọng số; ≥3 giám khảo; ≥5 giám khảo thì loại điểm cao nhất và thấp nhất |
 
-**Định dạng 4+2+1 trong `PITCH-VA-PHAN-BIEN.md` khớp Vòng Loại Online Toàn Quốc**,
+**Định dạng 4+2+1 trong `docs/PITCH-VA-PHAN-BIEN.md` khớp Vòng Loại Online Toàn Quốc**,
 không phải định dạng riêng của vòng trường. Nếu 19/09 là vòng khác thì phải kiểm lại
 thời lượng trước khi tập pitch — tập sai thời lượng là mất điểm không cứu được.
 

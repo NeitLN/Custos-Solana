@@ -10,7 +10,7 @@
  *   synthetic-devnet — đội tự dựng để kích hoạt từng luật. Hợp lệ để kiểm thử
  *                      luật, KHÔNG được tính vào tỉ lệ báo nhầm.
  *
- * Xem SEED-DATASET.md mục 0.
+ * Xem docs/SEED-DATASET.md mục 0.
  */
 import {
   Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionMessage,
@@ -259,7 +259,7 @@ async function thuDevnet() {
   );
 
   // ── Luật 12 · SystemProgram.assign ─────────────────────────────
-  // Vector đã từng qua mặt mô phỏng của Blowfish (NGHIEN-CUU-21-08.md mục 2).
+  // Vector đã từng qua mặt mô phỏng của Blowfish (docs/NGHIEN-CUU-21-08.md mục 2).
   // Tạo một account thường rồi giao nó cho chương trình khác điều khiển.
   const nanNhanAcc = Keypair.generate();
   await guiCoThuLai(

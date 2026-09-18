@@ -78,7 +78,7 @@ export const NHAN = {
 /**
  * Bảng chênh lệch — đây là DỮ LIỆU ĐO ĐƯỢC, không phải diễn giải.
  *
- * Nguyên tắc trung thực (CUSTOS.md quyết định 7): bảng này chỉ hiển thị đúng
+ * Nguyên tắc trung thực (docs/CUSTOS.md quyết định 7): bảng này chỉ hiển thị đúng
  * những gì giao dịch làm. Nếu hiện số dư 500 → 0 thì giao dịch phải thật sự
  * có chuyển tiền, chứ không phải chỉ đổi quyền.
  */

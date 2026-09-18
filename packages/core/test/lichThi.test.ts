@@ -13,7 +13,7 @@ const NGUON = "docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md";
  * LỊCH THI CHỈ ĐƯỢC GHI Ở MỘT NƠI.
  *
  * Hạn đổi từ 05/09 sang 19/09, và lúc đó có SÁU file đang nói ngày cũ: README,
- * CLAUDE.md, CUSTOS.md, PITCH, ROADMAP-DEVNET, VIEC-CUA-BAN. Mỗi file là một bản
+ * CLAUDE.md, docs/CUSTOS.md, PITCH, ROADMAP-DEVNET, VIEC-CUA-BAN. Mỗi file là một bản
  * sao của cùng một sự thật, nên đổi một lần là phải sửa sáu chỗ — và bỏ sót chỗ nào
  * thì chỗ đó nói với người đọc rằng dự án đã hết hạn.
  *
@@ -74,7 +74,7 @@ test("tài liệu đang dùng không nói một hạn khác với nguồn", () =
   const ngayKhac = /(\d{2}\/\d{2}\/20\d{2})/g;
   const lech: string[] = [];
 
-  for (const f of ["README.md", "CLAUDE.md", "CUSTOS.md", "PITCH-VA-PHAN-BIEN.md"]) {
+  for (const f of ["README.md", "CLAUDE.md", "docs/CUSTOS.md", "docs/PITCH-VA-PHAN-BIEN.md"]) {
     for (const [i, d] of doc(f).split("\n").entries()) {
       if (!/hạn tiếp theo|hạn cứng|hạn nộp|giờ thi|vòng loại|chung kết/i.test(d)) continue;
       for (const m of d.matchAll(ngayKhac)) {

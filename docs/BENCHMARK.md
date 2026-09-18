@@ -1,6 +1,6 @@
 # Benchmark phát hiện — và phạm vi không kiểm được
 
-**Việc D02 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).**
+**Việc D02 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).**
 
 Trang này trả lời một câu hỏi mà bảng số liệu không trả lời được:
 
@@ -9,7 +9,7 @@ Trang này trả lời một câu hỏi mà bảng số liệu không trả lờ
 Câu trả lời trung thực là: **chưa đo được, và trang này giải thích vì sao — cùng với
 những thứ đã đo được thay cho nó.**
 
-Đọc kèm [`SEED-DATASET.md`](../SEED-DATASET.md) (quy cách từng mẫu) và
+Đọc kèm [`docs/SEED-DATASET.md`](docs/SEED-DATASET.md) (quy cách từng mẫu) và
 [`BANG-CLAIM.md`](BANG-CLAIM.md) (mọi claim → nguồn → phạm vi).
 
 ---
@@ -360,7 +360,7 @@ bộ không đạt điều kiện đó, và lịch sử git nói thẳng:
 
 | | commit | thời điểm |
 |---|---|---|
-| `DAC-TA-CORE.md` | `63959f3` | 21/08 **21:55:31** |
+| `docs/DAC-TA-CORE.md` | `63959f3` | 21/08 **21:55:31** |
 | engine L2 | `42c33d0` | 21/08 **21:57:03** |
 
 **92 giây**, cùng người, cùng phiên. Dùng nó làm nguồn kỳ vọng rồi gọi là độc lập sẽ

@@ -21,7 +21,7 @@ export type KetQuaL2 = {
  *
  * Fail-safe: không hiểu hết giao dịch thì tối thiểu là `warning`, không bao giờ `safe`.
  *
- * Lưu ý phân biệt (DAC-TA-CORE.md mục 3.3): fail-safe áp cho ĐƯỜNG DECODE
+ * Lưu ý phân biệt (docs/DAC-TA-CORE.md mục 3.3): fail-safe áp cho ĐƯỜNG DECODE
  * (mô phỏng hỏng, instruction không đọc được), KHÔNG áp cho đường làm giàu
  * dữ liệu như tra tuổi ví. Nếu áp cho cả hai thì mọi giao dịch sẽ ra Vàng và
  * người dùng học được cách bỏ qua cảnh báo.

@@ -55,7 +55,7 @@ async function getManyAccounts(conn: Connection, keys: PublicKey[]) {
 /**
  * L1 — bóc tách.
  *
- * THỨ TỰ NÀY KHÔNG ĐẢO ĐƯỢC (xem DAC-TA-CORE.md mục 2.1):
+ * THỨ TỰ NÀY KHÔNG ĐẢO ĐƯỢC (xem docs/DAC-TA-CORE.md mục 2.1):
  *   1. giải ALT            -> mới biết đủ danh sách account
  *   2. getMultipleAccounts -> trạng thái TRƯỚC
  *   3. simulateTransaction -> trạng thái SAU

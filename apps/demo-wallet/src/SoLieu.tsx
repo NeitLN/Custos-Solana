@@ -421,7 +421,7 @@ export function SoLieu() {
           Sinh lúc {new Date(d.sinhLuc).toLocaleString("vi-VN")} bởi{" "}
           <code className="font-mono text-[13px] text-chu-nhat">scripts/tao-so-lieu.ts</code>. Cách đo
           của từng con số nằm trong{" "}
-          <code className="font-mono text-[13px] text-chu-nhat">SEED-DATASET.md</code> và{" "}
+          <code className="font-mono text-[13px] text-chu-nhat">docs/SEED-DATASET.md</code> và{" "}
           <code className="font-mono text-[13px] text-chu-nhat">docs/DON-VI-KINH-TE.md</code>.
         </p>
         </div>

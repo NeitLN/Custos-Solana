@@ -19,7 +19,7 @@
  * có bản sao logic nào có thể lệch khỏi production.
  *
  * KHÔNG đo "người dùng có hiểu không" — đó là việc của 12 cuộc phỏng vấn người
- * thật (DAC-TA-L3.md mục 7), không phải việc của mô hình.
+ * thật (docs/DAC-TA-L3.md mục 7), không phải việc của mô hình.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { danhGia } from "../packages/core/src/l2/evaluate.ts";

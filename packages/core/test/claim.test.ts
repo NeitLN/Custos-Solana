@@ -98,8 +98,8 @@ test("README hướng dẫn chạy cũng nói đúng số test", boQuaKhiDo, () 
 
 test("PITCH không giữ số test cũ", boQuaKhiDo, () => {
   assert.ok(
-    soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /Unit\/integration/).includes(SO_TEST),
-    `PITCH-VA-PHAN-BIEN.md nói số test khác so-lieu.json (${SO_TEST}).`,
+    soTrenDong(doc("docs/PITCH-VA-PHAN-BIEN.md"), /Unit\/integration/).includes(SO_TEST),
+    `docs/PITCH-VA-PHAN-BIEN.md nói số test khác so-lieu.json (${SO_TEST}).`,
   );
 });
 
@@ -126,7 +126,7 @@ test("tiêu đề Q&A về số test cũng theo lần đo hiện tại", boQuaKh
   // trên không phủ tới, và nó đã trôi thật (đề "256 test" khi thật là 283). Mỗi lần
   // một con số rò ra một chỗ mới, guard phải đi theo tới đó.
   assert.ok(
-    soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /^### \d+\. ".* test chứng minh/).includes(SO_TEST),
+    soTrenDong(doc("docs/PITCH-VA-PHAN-BIEN.md"), /^### \d+\. ".* test chứng minh/).includes(SO_TEST),
     `PITCH câu "N test chứng minh Custos chính xác chứ?" nói số khác so-lieu.json (${SO_TEST}).`,
   );
 });
@@ -174,7 +174,7 @@ const CUM_CAM = [
  * QUÉT MỌI LẦN XUẤT HIỆN, KHÔNG PHẢI LẦN ĐẦU TIÊN.
  *
  * Bản trước dùng `.find()` — lấy đúng dòng khớp đầu tiên rồi thôi. Hậu quả đo được:
- * `PITCH-VA-PHAN-BIEN.md` có "285 test" ở tiêu đề (dòng 293) nên bài kiểm xanh,
+ * `docs/PITCH-VA-PHAN-BIEN.md` có "285 test" ở tiêu đề (dòng 293) nên bài kiểm xanh,
  * trong khi dòng 306 — một CÂU KỊCH BẢN SÂN KHẤU — vẫn ghi "256 test". Và
  * `CLAUDE.md` thì chưa từng nằm trong danh sách canh, nên "256 test" ở đó sống
  * qua ba vòng dọn dẹp.
@@ -184,9 +184,9 @@ const CUM_CAM = [
 const TAI_LIEU_HIEN_HANH = [
   "README.md",
   "CLAUDE.md",
-  "CUSTOS.md",
-  "PITCH-VA-PHAN-BIEN.md",
-  "SEED-DATASET.md",
+  "docs/CUSTOS.md",
+  "docs/PITCH-VA-PHAN-BIEN.md",
+  "docs/SEED-DATASET.md",
   // Trang số liệu CÔNG KHAI liên kết thẳng tới file này, nên nó là bề mặt public.
   "docs/DON-VI-KINH-TE.md",
   "packages/core/README.md",
@@ -256,10 +256,10 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["README.md", /^\| Mẫu trong bộ dữ liệu \|/],
   ["README.md", /^`npm audit` ngày/],
   ["CLAUDE.md", /^hiện trường devnet thật ·/],
-  ["PITCH-VA-PHAN-BIEN.md", /Unit\/integration \(\d+\)/],
-  ["PITCH-VA-PHAN-BIEN.md", /^### \d+\. ".* test chứng minh/],
-  ["PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
-  ["PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
+  ["docs/PITCH-VA-PHAN-BIEN.md", /Unit\/integration \(\d+\)/],
+  ["docs/PITCH-VA-PHAN-BIEN.md", /^### \d+\. ".* test chứng minh/],
+  ["docs/PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
+  ["docs/PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
   ["README.md", /^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn/],
   ["README.md", /^\| \*\*30 %\*\* độ khó và chiều sâu \|/],
   // Dòng 25 % nhắc lại `inspect()` và đã trôi một lần: sáu chỗ ghi 656 ms trong khi
@@ -270,8 +270,8 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["docs/adr/0001-doi-huong-technical-build.md", /^\| Một lượt `inspect\(\)` \|/],
   ["docs/BAO-CAO-KIEM-CHUNG.md", /^\| Bẫy đối kháng AI bị chặn \|/],
   ["docs/BAO-CAO-TONG.md", /^\| Bẫy đối kháng AI bị chặn \|/],
-  ["SEED-DATASET.md", /^> hiện tại có \*\*\d+ mẫu\*\*/],
-  ["SEED-DATASET.md", /^> \*"\d+ luật, \d+ mẫu kiểm thử/],
+  ["docs/SEED-DATASET.md", /^> hiện tại có \*\*\d+ mẫu\*\*/],
+  ["docs/SEED-DATASET.md", /^> \*"\d+ luật, \d+ mẫu kiểm thử/],
   ["packages/core/README.md", /Coverage chưa đủ trên DeFi/],
   ["packages/core/README.md", /^npx npm@[\d.]+ run check /],
   /*
@@ -318,10 +318,10 @@ test("số phỏng vấn trong PITCH khớp dữ liệu đã thu", boQuaKhiDo, (
   // `data/seed/phong-van.json`.
   const pv = SO_LIEU.phongVan;
   if (!pv) return; // chưa đi hỏi thì không có gì để canh — trạng thái hợp lệ
-  const so = soTrenDong(doc("PITCH-VA-PHAN-BIEN.md"), /^\*\*Rồi — \d+ người/);
+  const so = soTrenDong(doc("docs/PITCH-VA-PHAN-BIEN.md"), /^\*\*Rồi — \d+ người/);
   assert.ok(so.includes(pv.n), `PITCH nói ${so.join("/")} người, dữ liệu có ${pv.n}`);
 
-  const than = doc("PITCH-VA-PHAN-BIEN.md");
+  const than = doc("docs/PITCH-VA-PHAN-BIEN.md");
   for (const [ten, cum] of [
     ["hiểu đúng", `${pv.hieu.dung}/${pv.n} nêu được hậu quả`],
     ["vẫn ký", `${pv.quyetDinh.ky}/${pv.n} vẫn ký`],
@@ -352,10 +352,10 @@ const BE_MAT_PUBLIC = [
   "README.md",
   "packages/core/README.md",
   "packages/ai/README.md",
-  "PITCH-VA-PHAN-BIEN.md",
-  "CUSTOS.md",
+  "docs/PITCH-VA-PHAN-BIEN.md",
+  "docs/CUSTOS.md",
   "CLAUDE.md",
-  "SEED-DATASET.md",
+  "docs/SEED-DATASET.md",
   "apps/demo-wallet/src/App.tsx",
   "apps/demo-wallet/src/CanhBao.tsx",
   "apps/demo-wallet/src/SoLieu.tsx",

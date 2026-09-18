@@ -26,7 +26,7 @@ import { VERIFIED_PROGRAMS } from "../constants.ts";
  * đọc được tên cả 77 lệnh và **không hiểu hậu quả của lệnh nào**.
  *
  * Nói "đã hỗ trợ Jupiter" dựa trên con số 18 lệnh là nói quá, và mục 11 của
- * `UPDATE-CUSTOS.md` cấm đích danh *"decoder hàng loạt dựa vào tên protocol nổi
+ * `docs/roadmap/UPDATE-CUSTOS.md` cấm đích danh *"decoder hàng loạt dựa vào tên protocol nổi
  * tiếng nhưng không có dữ liệu xác định gap"*.
  *
  * ## Ba mức, không phải hai

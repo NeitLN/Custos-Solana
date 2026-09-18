@@ -6,7 +6,7 @@ Dự thi **UniHackfest 2026**, chủ đề **AI × Web3**.
 
 **Track đăng ký:** Best Product & Business (form nộp 24/08).
 **Hướng phát triển từ 12/09:** **Best Technical Build** — đang thực thi
-`ROADMAP-TECHNICAL-CUSTOS.md`. Hai dòng này cố ý khác nhau: BTC cho phép đổi track,
+`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`. Hai dòng này cố ý khác nhau: BTC cho phép đổi track,
 nhưng chưa có bằng chứng biểu mẫu đã cập nhật. Xem
 [ADR-0001](docs/adr/0001-doi-huong-technical-build.md) và TB-H01.
 **Hạn tiếp theo: 19/09/2026** — giờ và tên vòng CHƯA xác nhận.
@@ -18,12 +18,12 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 
 | File | Vai trò |
 |---|---|
-| `CUSTOS.md` | **Nguồn quyết định duy nhất về sản phẩm.** Đã qua 5 vòng phản biện giám khảo (8,2 → 9,0/10). Phạm vi đã khoá |
-| `NGHIEN-CUU-21-08.md` | Khử rủi ro trước build: đường đi giao dịch devnet đã tra cứu, bẫy Web3.js v2, và bản sửa tuyên bố về đối thủ |
-| `SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và vì sao KHÔNG được gọi kết quả trên tập âm là tỉ lệ false positive |
-| `PITCH-VA-PHAN-BIEN.md` | Cấu trúc 4 phút, 9 câu hỏi khó có sẵn câu trả lời, danh sách câu không được nói |
-| `DAC-TA-CORE.md` | Đặc tả kỹ thuật: trình tự L1, ranh giới L2/L3, luật theo nguồn dữ liệu (đặc tả 12, đã thực thi **14**), lịch làm của vai A |
-| `DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
+| `docs/CUSTOS.md` | **Nguồn quyết định duy nhất về sản phẩm.** Đã qua 5 vòng phản biện giám khảo (8,2 → 9,0/10). Phạm vi đã khoá |
+| `docs/NGHIEN-CUU-21-08.md` | Khử rủi ro trước build: đường đi giao dịch devnet đã tra cứu, bẫy Web3.js v2, và bản sửa tuyên bố về đối thủ |
+| `docs/SEED-DATASET.md` | Quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và vì sao KHÔNG được gọi kết quả trên tập âm là tỉ lệ false positive |
+| `docs/PITCH-VA-PHAN-BIEN.md` | Cấu trúc 4 phút, 9 câu hỏi khó có sẵn câu trả lời, danh sách câu không được nói |
+| `docs/DAC-TA-CORE.md` | Đặc tả kỹ thuật: trình tự L1, ranh giới L2/L3, luật theo nguồn dữ liệu (đặc tả 12, đã thực thi **14**), lịch làm của vai A |
+| `docs/DAC-TA-L3.md` | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, câu mẫu dự phòng, prompt, cách đo mức độ hiểu |
 | `packages/core/README.md` | **Tài liệu tích hợp SDK** — thứ bên ngoài đọc để quyết định có dùng không. Ví dụ trong đó có test chạy thật (`readme.test.ts`) |
 | `docs/BENCHMARK.md` | **Vì sao chưa có confusion matrix**, ba corpus và ba phạm vi, tập giữ lại, và số đo suy giảm cohort |
 | `docs/NGHIEM-THU-V01.md` | **Ma trận nghiệm thu 10 bề mặt** chạy trên bản cuối, phạm vi Chromium, và 4 nhánh còn mở |
@@ -35,7 +35,7 @@ mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được ch�
 | `docs/adr/0001-doi-huong-technical-build.md` | **Vì sao đổi hướng sang Technical Build**, rubric 30/25/25/20 nguyên văn, bằng chứng theo từng mục — và năm điều ADR đó KHÔNG làm |
 | `docs/bao-mat/THREAT-MODEL.md` | **Ai nói dối được với Custos, qua đường nào** — 8 rủi ro kèm cơ chế đã đọc trong code; phân biệt decode/xác minh/đo được/kết luận; 6 điều SDK KHÔNG kiểm soát |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
-| `ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
+| `docs/roadmap/ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
 | `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |
 | `docs/BAN-GIAO-CHO-CODEX.md` | **Việc còn mở và việc KHÔNG làm được** — viết cho một agent khác không có ngữ cảnh phiên: cái gì chặn và vì sao, thẻ nào ai làm được, và **năm bài học về guard đỏ vì lý do sai** |
 
@@ -50,7 +50,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 38 mẫu dữ liệu · 968 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 38 mẫu dữ liệu · 1004 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
@@ -72,7 +72,7 @@ chạm tài sản người ký đọc
 hiểu được 65 % (13/20).
 
 Cohort cũ (21/08) giữ trong repo để đối chiếu, **không so sánh trực tiếp** với cohort mới —
-hai mẻ mẫu khác nhau. Xem `SEED-DATASET.md` mục 0b5.
+hai mẻ mẫu khác nhau. Xem `docs/SEED-DATASET.md` mục 0b5.
 
 Ba chữ, ba nghĩa khác nhau — dùng lẫn là nói sai về chính mình:
 
@@ -84,7 +84,7 @@ Ba chữ, ba nghĩa khác nhau — dùng lẫn là nói sai về chính mình:
 
 Nói *"0 giao dịch bị gắn cờ"* là SAI: 7 giao dịch đã bị gắn cờ. Con số 0 là số
 **cáo buộc**. Và không được gọi nó là *"báo nhầm"*: chưa kiểm chứng từng giao dịch
-trong cohort là lành nên chưa có ground truth. Xem `SEED-DATASET.md` mục 0b3 và 0b4, và
+trong cohort là lành nên chưa có ground truth. Xem `docs/SEED-DATASET.md` mục 0b3 và 0b4, và
 `docs/review/UPDATE-REPORT.md` mục 4 về việc cohort đang rụng mẫu.
 
 ## Quyết định thiết kế đã khoá — không tự ý đảo lại

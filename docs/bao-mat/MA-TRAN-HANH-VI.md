@@ -1,6 +1,6 @@
 # Ma trận hành vi Solana — cái gì đã kiểm, cái gì chưa
 
-**Việc TB-B03.** Ma trận gốc ở mục 16 của [`ROADMAP-TECHNICAL-CUSTOS.md`](../../ROADMAP-TECHNICAL-CUSTOS.md).
+**Việc TB-B03.** Ma trận gốc ở mục 16 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md).
 
 Trang này trả lời một câu hỏi hẹp hơn bảng số liệu:
 

@@ -51,7 +51,7 @@ Không dùng số lượng trang, luật hay test làm mục tiêu sản phẩm.
 
 | Trách nhiệm | Nguồn hiện có |
 |---|---|
-| Quyết định sản phẩm, bất biến | `CLAUDE.md`, `CUSTOS.md`, `DAC-TA-CORE.md`, `DAC-TA-L3.md` |
+| Quyết định sản phẩm, bất biến | `CLAUDE.md`, `docs/CUSTOS.md`, `docs/DAC-TA-CORE.md`, `docs/DAC-TA-L3.md` |
 | Hợp đồng SDK | `packages/types/src/index.ts`, `packages/types/src/validate.ts`, `packages/core/src/index.ts` |
 | Orchestration | `packages/core/src/inspect.ts` |
 | Dữ kiện và serialization | `packages/core/src/facts.ts`, `facts-io.ts`, `l1/fetch.ts`, `l1/parse.ts` |
@@ -617,9 +617,9 @@ Nếu mã đang dirty, vẫn chạy và giữ artifact với dirty flag/content 
 ## 12. Chỉ dẫn khởi động để dán cho Claude
 
 ```text
-Đọc UPDATE-CUSTOS.md và triển khai bản nâng cấp Custos theo tài liệu này.
+Đọc docs/roadmap/UPDATE-CUSTOS.md và triển khai bản nâng cấp Custos theo tài liệu này.
 
-Đọc CLAUDE.md, CUSTOS.md, roadmap Technical cũ, docs/roadmap/TIEN-DO.md và
+Đọc CLAUDE.md, docs/CUSTOS.md, roadmap Technical cũ, docs/roadmap/TIEN-DO.md và
 BAN-GIAO.md trước. Đối chiếu HEAD/code/artifact hiện tại; không kế thừa số test,
 DNS blocker hoặc trạng thái cây bẩn từ phiên cũ khi chưa kiểm.
 
@@ -629,7 +629,7 @@ viết kế hoạch con. Không dựng lại những gì đã có và không red
 
 Tiếp tục các thẻ CU bắt buộc theo phụ thuộc, không theo mốc thời gian. Mỗi thẻ
 có code, test meaningful, UI/consumer thật nếu áp dụng, tài liệu và evidence.
-Lưu trạng thái CU trong TIEN-DO.md; UPDATE-CUSTOS.md là yêu cầu, không phải
+Lưu trạng thái CU trong TIEN-DO.md; docs/roadmap/UPDATE-CUSTOS.md là yêu cầu, không phải
 bảng hoàn thành thứ hai. Cập nhật BAN-GIAO.md để phiên sau tiếp tục chính xác.
 
 Giữ L2 độc quyền verdict, AI chỉ diễn giải, SDK không giữ khóa/ký/gửi, receipt

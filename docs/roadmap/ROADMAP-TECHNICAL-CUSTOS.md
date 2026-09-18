@@ -37,11 +37,11 @@ Buyer interview, usability vòng 2, partner pilot, TAM/SAM/SOM và xác nhận w
 
 | Nguồn hiện có | Dùng để |
 |---|---|
-| [CLAUDE.md](CLAUDE.md), [CUSTOS.md](CUSTOS.md) | Quy tắc repo và quyết định sản phẩm; kiểm tra phần trạng thái đã cũ |
-| [Đặc tả Core](DAC-TA-CORE.md), [đặc tả L3](DAC-TA-L3.md) | Hợp đồng dữ liệu, ranh giới trách nhiệm |
+| [CLAUDE.md](CLAUDE.md), [docs/CUSTOS.md](docs/CUSTOS.md) | Quy tắc repo và quyết định sản phẩm; kiểm tra phần trạng thái đã cũ |
+| [Đặc tả Core](docs/DAC-TA-CORE.md), [đặc tả L3](docs/DAC-TA-L3.md) | Hợp đồng dữ liệu, ranh giới trách nhiệm |
 | [Review Technical 12/09](docs/review/DANH-GIA-TECHNICAL-12-09-2026.md) | T01–T04, baseline, giới hạn kết luận |
-| [Roadmap trước](ROADMAP-CLAUDE.md), [tiến độ](docs/roadmap/TIEN-DO.md), [bàn giao](docs/roadmap/BAN-GIAO.md) | Kế thừa việc đã làm; không thực hiện lại chỉ vì đổi track |
-| [Benchmark](docs/BENCHMARK.md), [seed dataset](SEED-DATASET.md) | Corpus, provenance, hạn chế ground truth |
+| [Roadmap trước](docs/roadmap/ROADMAP-CLAUDE.md), [tiến độ](docs/roadmap/TIEN-DO.md), [bàn giao](docs/roadmap/BAN-GIAO.md) | Kế thừa việc đã làm; không thực hiện lại chỉ vì đổi track |
+| [Benchmark](docs/BENCHMARK.md), [seed dataset](docs/SEED-DATASET.md) | Corpus, provenance, hạn chế ground truth |
 | [Hiệu năng](docs/HIEU-NANG.md), [phụ thuộc](docs/PHU-THUOC.md) | Phép đo cũ và rủi ro chưa loại bỏ |
 | [Decoder tiếp theo](docs/DECODER-TIEP-THEO.md) | Đường IDL đã có, tránh đề xuất lại thứ đã làm |
 | [Thể lệ](docs/cuoc-thi/Thể%20lệ%20UniHackfest%202026.md) | Rubric thực tế của track |
@@ -70,7 +70,7 @@ Người thực thi tự phối hợp các vai trong phạm vi được giao; kh
 Chủ dự án có thể gửi nguyên đoạn sau khi muốn **bắt đầu triển khai**, thay vì chỉ đọc kế hoạch:
 
 ```text
-Hãy thực hiện ROADMAP-TECHNICAL-CUSTOS.md cho Custos.
+Hãy thực hiện docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md cho Custos.
 Bạn phối hợp các vai Lead, Solana, Security, QA, UX, SDK/Perf và Judge/Docs.
 Đọc CLAUDE.md, nguồn sản phẩm và sổ tiến độ; bắt đầu từ G00 rồi làm các thẻ
 bắt buộc theo phụ thuộc. Tôi giao phạm vi sửa code nội bộ, UI, test, script,
@@ -374,7 +374,7 @@ Hủy promise chờ không tự hủy request mạng. Khi transport hỗ trợ A
 
 **Vai:** QA, Solana. **Ưu tiên:** P1. **Phụ thuộc:** G01, C04. **Loại:** bắt buộc.
 
-**Đọc/sửa:** `SEED-DATASET.md`, `docs/BENCHMARK.md`, `data/seed/`; tạo manifest có version cho benchmark Technical.
+**Đọc/sửa:** `docs/SEED-DATASET.md`, `docs/BENCHMARK.md`, `data/seed/`; tạo manifest có version cho benchmark Technical.
 
 **Các bước:** định nghĩa từng mẫu có ID, nguồn, cluster/slot nếu biết, raw tx, trạng thái account/ALT, response RPC hoặc Facts, expected property, nguồn của kỳ vọng, hash, giới hạn và nhãn development/held-out. Phân ba tầng: L2 trên Facts đóng băng; L1→L2 trên RPC replay; runtime thật trên Devnet hoặc VM được kiểm riêng. Giữ provenance của dữ liệu tổng hợp khác dữ liệu chain.
 
@@ -580,7 +580,7 @@ Thực hiện từng thay đổi có giả thuyết và so cùng benchmark. Nế
 
 **Vai:** Judge/Docs, Solana, UX. **Ưu tiên:** P2. **Phụ thuộc:** D01, X03, I02. **Loại:** bắt buộc.
 
-**Đọc/sửa:** `PITCH-VA-PHAN-BIEN.md`, script sinh deck, `docs/nop-bai/`.
+**Đọc/sửa:** `docs/PITCH-VA-PHAN-BIEN.md`, script sinh deck, `docs/nop-bai/`.
 
 **Các bước:** kể theo thứ tự vấn đề khi ký → ca khó → pipeline → ranh giới tin cậy → bằng chứng B06 → kết quả/giới hạn → cách tích hợp. Dùng thời lượng được xác nhận ở nguồn BTC khi dựng kịch bản; roadmap không tự tạo lịch thi.
 
@@ -872,7 +872,7 @@ Việc kế tiếp cụ thể:
 ### Mẫu bàn giao cuối phiên
 
 ```text
-Roadmap đang thực hiện: ROADMAP-TECHNICAL-CUSTOS.md
+Roadmap đang thực hiện: docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md
 HEAD và working tree; thay đổi của người dùng cần giữ:
 Quyền đã có; quyền/hành động ngoài chưa có nếu liên quan:
 Thẻ đã nghiệm thu, kèm artifact:

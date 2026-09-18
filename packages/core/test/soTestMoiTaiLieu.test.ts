@@ -73,7 +73,7 @@ function kemChuTest(so: number): RegExp {
  * NGUYÊN NHÂN GỐC không phải con số sai, mà là `scripts/dong-bo-so-tai-lieu.mjs`
  * giữ một **danh sách file gõ tay**. Tài liệu không nằm trong danh sách thì số của
  * nó không bao giờ được sinh lại, và không có gì báo động. Đúng hình dạng lỗi
- * CU-17 đã gặp: `DAC-TA-CORE.md` liệt 6 program khi registry thật có 13.
+ * CU-17 đã gặp: `docs/DAC-TA-CORE.md` liệt 6 program khi registry thật có 13.
  *
  * Nên bài này KHÔNG kiểm một danh sách khai báo — nó **quét mọi file .md trong
  * repo**. Thêm tài liệu mới mang số test cũ thì đỏ, kể cả khi không ai khai báo gì.

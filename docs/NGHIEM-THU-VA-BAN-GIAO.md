@@ -1,6 +1,6 @@
 # Nghiệm thu và bàn giao — bốn nhóm kết luận, không gộp làm một
 
-**Việc V02 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).** Lập ngày **09/09/2026**.
+**Việc V02 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).** Lập ngày **09/09/2026**.
 
 Trang này tách bốn thứ mà một bảng "tiến độ" gộp lại sẽ nói sai:
 
@@ -146,11 +146,11 @@ Trước khi tạo tag: `npm run nop-bai -- --strict`.
 
 ## 6 · Chấm lại theo rubric — và một ranh giới phải giữ
 
-> ⚠️ **Đây KHÔNG phải bản chấm lại điểm 6,95 của `CUSTOS.md` mục 13.**
+> ⚠️ **Đây KHÔNG phải bản chấm lại điểm 6,95 của `docs/CUSTOS.md` mục 13.**
 >
 > Mục đó nói rõ: *"Điểm 6,95 KHÔNG được chấm lại ở đây. Chấm lại cần cùng rubric và
 > cùng người chấm; tự nâng điểm cho khớp tin mới là đúng thứ mục này sinh ra để
-> chống."* Ranh giới đó **giữ nguyên** — con số 6,95 trong `CUSTOS.md` không bị sửa.
+> chống."* Ranh giới đó **giữ nguyên** — con số 6,95 trong `docs/CUSTOS.md` không bị sửa.
 >
 > Bảng dưới đây là **ảnh chụp mới, ngày mới, người chấm là Claude** — một bên tự
 > chấm. Nó ghi *lý do trừ điểm nào còn đúng và lý do nào đã hết hiệu lực*, chứ không

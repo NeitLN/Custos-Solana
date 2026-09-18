@@ -16,7 +16,7 @@ Ghi đúng như vậy thay vì suy ra từ lượt trước.
 | npm | 11.6.2 |
 | OS | Windows 11 Home Single Language 10.0.26200.0 |
 | AGENTS.md | **không có** trong repo này (chỉ `CLAUDE.md`) |
-| Working tree lúc bắt đầu | sạch, trừ hai file chưa commit của chủ dự án: `ROADMAP-TECHNICAL-CUSTOS.md` và `docs/review/DANH-GIA-TECHNICAL-12-09-2026.md` — **giữ nguyên, không đụng** |
+| Working tree lúc bắt đầu | sạch, trừ hai file chưa commit của chủ dự án: `docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md` và `docs/review/DANH-GIA-TECHNICAL-12-09-2026.md` — **giữ nguyên, không đụng** |
 
 ## 2 · T01–T04 còn đúng hay đã được sửa
 

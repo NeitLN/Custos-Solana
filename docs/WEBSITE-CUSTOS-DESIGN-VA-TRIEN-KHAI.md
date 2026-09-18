@@ -26,7 +26,7 @@ Xây thêm website giới thiệu Custos, lấy cảm hứng từ các ảnh N.E
 1. `AGENTS.md` trong phạm vi sửa nếu có.
 2. Tài liệu này: thiết kế và hành vi website.
 3. [Demo khác biệt](DEMO-KHAC-BIET-CUSTOS.md): contract các tính năng DW, đặc biệt live A/B, session và signer stub.
-4. [Roadmap cập nhật](../UPDATE-CUSTOS.md): acceptance CU khi phải chạm core/consumer.
+4. [Roadmap cập nhật](roadmap/UPDATE-CUSTOS.md): acceptance CU khi phải chạm core/consumer.
 5. [Tiến độ](roadmap/TIEN-DO.md) và [bàn giao](roadmap/BAN-GIAO.md): trạng thái thực tế.
 6. `apps/demo-wallet/vite.config.ts`, `.github/workflows/deploy.yml`, `scripts/dong-goi-ban-trinh-dien.mjs`: cách dựng và phân phối hiện hành.
 

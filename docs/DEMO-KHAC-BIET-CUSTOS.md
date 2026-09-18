@@ -1,13 +1,13 @@
 # Custos — roadmap triển khai demo khác biệt dành cho Claude
 
-Đánh giá và đề xuất ngày 18/09/2026, dựa trên HEAD `dd7e776`, code hiện tại và một lượt xem trình duyệt local. Đây là kế hoạch tập trung vào trình diễn giá trị, không thay `UPDATE-CUSTOS.md` và không đánh dấu tính năng đề xuất là đã hoàn thành.
+Đánh giá và đề xuất ngày 18/09/2026, dựa trên HEAD `dd7e776`, code hiện tại và một lượt xem trình duyệt local. Đây là kế hoạch tập trung vào trình diễn giá trị, không thay `docs/roadmap/UPDATE-CUSTOS.md` và không đánh dấu tính năng đề xuất là đã hoàn thành.
 
 ## 0. Chỉ dẫn cho Claude khi bắt đầu
 
 **Nhiệm vụ:** triển khai các lát cắt trong tài liệu này thành chức năng có thể chạy và kiểm chứng. Không dừng ở việc viết thêm kế hoạch. Không đặt mốc ngày/tuần; chuyển bước khi đạt điều kiện nghiệm thu.
 
 - Đọc mục 1–10 để hiểu sản phẩm, mục 12–16 để thực hiện và bàn giao. Mục 11 có prompt khởi động.
-- Đọc `AGENTS.md` nếu có trong phạm vi sửa; `UPDATE-CUSTOS.md`, `docs/roadmap/TIEN-DO.md` và bàn giao hiện hành trước khi sửa code. Đối chiếu HEAD thực tế: các trạng thái trong tài liệu này là ảnh chụp tại thời điểm đánh giá, có thể đã thay đổi.
+- Đọc `AGENTS.md` nếu có trong phạm vi sửa; `docs/roadmap/UPDATE-CUSTOS.md`, `docs/roadmap/TIEN-DO.md` và bàn giao hiện hành trước khi sửa code. Đối chiếu HEAD thực tế: các trạng thái trong tài liệu này là ảnh chụp tại thời điểm đánh giá, có thể đã thay đổi.
 - Làm lần lượt bốn vai: người thiết kế sản phẩm xác định điều cần chứng minh; kỹ sư triển khai; QA thử cả đối chứng và lỗi; người phản biện kiểm lời trình bày có vượt bằng chứng không. Không bắt buộc tạo nhiều agent.
 - Tự quyết các chi tiết triển khai có thể đảo ngược theo kiến trúc repo. Chỉ hỏi khi thiếu quyết định sản phẩm chặn công việc, đồng thời tiếp tục phần độc lập.
 - Phạm vi chính: A/B có tương tác → evidence dễ xem → thử thay message bằng signer giả lập → đường kiểm sâu bằng CLI. Receipt/replay là phần mở rộng kế tiếp, thực hiện sau khi phạm vi chính đạt nghiệm thu.
@@ -56,7 +56,7 @@ Lịch sử giao dịch chiếm phần lớn cột trái; đó chưa phải bằ
 
 ### 3.3. Pitch đang nói ít hơn khả năng mới của code
 
-Sổ CU ghi CU-05, CU-08, CU-09, CU-10 đã hoàn thành ở phạm vi khai báo. `PITCH-VA-PHAN-BIEN.md` vẫn có câu trace chỉ phủ 2/14 luật. Cần đối chiếu và cập nhật lời nói theo mã hiện tại.
+Sổ CU ghi CU-05, CU-08, CU-09, CU-10 đã hoàn thành ở phạm vi khai báo. `docs/PITCH-VA-PHAN-BIEN.md` vẫn có câu trace chỉ phủ 2/14 luật. Cần đối chiếu và cập nhật lời nói theo mã hiện tại.
 
 Phải phân biệt **luật có khai evidence reference** với **mọi cảnh báo đã truy được tới instruction gây tác động**. Không sửa một con số cũ thành một lời hứa quá rộng khác.
 
@@ -251,7 +251,7 @@ Theo dõi subtask trong sổ `docs/roadmap/TIEN-DO.md` dưới thẻ CU tương 
 
 ```text
 Đọc toàn bộ docs/DEMO-KHAC-BIET-CUSTOS.md, đặc biệt mục 0 và 12–16,
-UPDATE-CUSTOS.md và sổ tiến độ hiện hành. Thực hiện DW-00 đến DW-06 theo
+docs/roadmap/UPDATE-CUSTOS.md và sổ tiến độ hiện hành. Thực hiện DW-00 đến DW-06 theo
 phụ thuộc; sau khi phạm vi chính đạt nghiệm thu, tiếp tục DW-07 receipt/replay.
 Đây là yêu cầu triển khai, không chỉ lập thêm kế hoạch. Không đặt mốc thời gian.
 Triển khai lát cắt demo đối chiếu hai giao dịch cùng số tiền nhưng khác quyền,
@@ -371,7 +371,7 @@ Blockaid hoặc tăng bao nhiêu phần trăm cơ hội giải khi chưa có ph�
 - Kiểm 1440×900 và 390×844; bổ sung khung trình chiếu thực tế nếu nhóm cung cấp. Không tràn ngang toàn trang; raw code có vùng cuộn riêng.
 - Kiểm keyboard, focus khi mở/đóng details, loading/error announcement và reduced-motion; không dùng màu làm tín hiệu duy nhất.
 - Chạy ma trận mục 14, chụp bằng chứng trước/sau ở những trạng thái quan trọng. Ghi console/page errors và xử lý lỗi thuộc thay đổi này.
-- Cập nhật `PITCH-VA-PHAN-BIEN.md` và nguồn kịch bản demo theo chức năng đã đạt. Giữ tuyên bố trace/coverage đúng scope; không chỉnh số liệu thị trường để lấp thiếu phỏng vấn.
+- Cập nhật `docs/PITCH-VA-PHAN-BIEN.md` và nguồn kịch bản demo theo chức năng đã đạt. Giữ tuyên bố trace/coverage đúng scope; không chỉnh số liệu thị trường để lấp thiếu phỏng vấn.
 - Viết hướng dẫn mở demo, reset UI, tình huống dự phòng và cách nói khi RPC lỗi. Chuyển sang dữ liệu dự phòng phải đổi nhãn rõ; không giữ chữ live.
 
 **Đạt khi:** người mới mở được demo theo hướng dẫn, hoàn thành luồng A/B → evidence → mismatch → Inspector/CLI; báo cáo nêu đúng phần đã thử và phần chưa xác minh. Không đợi receipt/replay để nghiệm thu lát cắt chính.
@@ -380,7 +380,7 @@ Blockaid hoặc tăng bao nhiêu phần trăm cơ hội giải khi chưa có ph�
 
 **Công việc:**
 
-- Thực hiện contract đầy đủ của CU-11/CU-12 trong `UPDATE-CUSTOS.md`; không coi hướng dẫn ngắn này thay acceptance gốc.
+- Thực hiện contract đầy đủ của CU-11/CU-12 trong `docs/roadmap/UPDATE-CUSTOS.md`; không coi hướng dẫn ngắn này thay acceptance gốc.
 - Receipt mang schema version, engine/rule version, input identity, Facts cần thiết, provenance và coverage/limitations. Chỉ lưu dữ liệu phục vụ kiểm lại theo cơ chế redaction.
 - Export/import phải validate cấu trúc, version, kích thước và giới hạn parser. Receipt sai/thiếu bị từ chối hoặc đánh dấu không replay được; không crash UI.
 - Replay chạy phần phân tích tất định trên snapshot đã lưu; không gọi RPC âm thầm. Hiển thị kết luận lúc tạo receipt và kết luận replay hiện tại tách biệt.

@@ -8,11 +8,11 @@
  *   1. `level` chỉ do L2 (engine luật) sinh ra. AI không tạo và không sửa.
  *   2. Hàm diễn giải của L3 (`interpret`) KHÔNG có `level` trong kiểu trả về.
  *
- * Xem CLAUDE.md và DAC-TA-CORE.md.
+ * Xem CLAUDE.md và docs/DAC-TA-CORE.md.
  */
 
 /** Verdict chính thức. Nhãn hiển thị tiếng Việt: Bình thường / Cần xem kỹ / Nguy hiểm.
- *  Không bao giờ hiển thị chữ "an toàn" — xem DAC-TA-L3.md mục 4. */
+ *  Không bao giờ hiển thị chữ "an toàn" — xem docs/DAC-TA-L3.md mục 4. */
 export type Level = "safe" | "warning" | "danger";
 
 /** Tín hiệu riêng của L3. Không làm thay đổi `level`.
@@ -45,7 +45,7 @@ export type DiffEntry = {
   truocDayDu?: string;
   sauDayDu?: string;
   /**
-   * Số liệu THÔ của dòng này — CU-06, mục 4.2 của `UPDATE-CUSTOS.md`.
+   * Số liệu THÔ của dòng này — CU-06, mục 4.2 của `docs/roadmap/UPDATE-CUSTOS.md`.
    *
    * ## Vì sao cần, khi đã có `before`/`after`
    *
@@ -145,7 +145,7 @@ export type ChanDoan = {
       loai: string;
       khoa: string;
       /**
-       * Nguồn của dữ kiện — CU-04, mục 4.2 của `UPDATE-CUSTOS.md`.
+       * Nguồn của dữ kiện — CU-04, mục 4.2 của `docs/roadmap/UPDATE-CUSTOS.md`.
        *
        * Bốn trạng thái, không phải hai, vì chúng nói bốn câu khác nhau với người
        * đang quyết định có kiểm lại hay không:
@@ -227,7 +227,7 @@ export type ChanDoan = {
 /**
  * Ngữ cảnh do ví/dApp cung cấp. KHÔNG ĐÁNG TIN TUYỆT ĐỐI.
  *
- * Quy tắc bất đối xứng (CUSTOS.md mục 03):
+ * Quy tắc bất đối xứng (docs/CUSTOS.md mục 03):
  *   - lệch với detectedPrimaryAction  ⇒ nâng nghi ngờ (aiAdvisory)
  *   - khớp                            ⇒ KHÔNG giảm verdict, KHÔNG tắt cảnh báo nào
  * Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại.

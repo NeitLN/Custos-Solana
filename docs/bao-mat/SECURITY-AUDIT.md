@@ -195,7 +195,7 @@ Affected:      packages/core/src/facts.ts   InstructionFact.decoded chỉ có { 
                packages/core/src/l2/rules.ts  luật 4 luôn Vàng
 ```
 
-Đã ghi sẵn là giới hạn đã biết trong `rules.ts` và `SEED-DATASET.md` mục 0c. Hành vi
+Đã ghi sẵn là giới hạn đã biết trong `rules.ts` và `docs/SEED-DATASET.md` mục 0c. Hành vi
 hiện tại **đúng theo chính sách**: giữ Vàng thay vì đoán. Không phải lỗi, là việc chưa làm.
 
 Dữ liệu cần thì có sẵn: lệnh tầng ngoài có `accountKeyIndexes`, lệnh CPI có mảng
@@ -214,7 +214,7 @@ Status:        CONFIRMED — đo lại trên checkout hiện tại
 Cohort 20 giao dịch: coverage **53 %**, lệnh chạm tài sản người ký **21 %** (26/122).
 
 Con số 21 % thấp hơn mức chung, nghĩa là phần chưa đọc hiểu tập trung đúng vào phần
-đang di chuyển tài sản. Đã ghi trong `SEED-DATASET.md` mục 0b4.
+đang di chuyển tài sản. Đã ghi trong `docs/SEED-DATASET.md` mục 0b4.
 
 ---
 
@@ -226,7 +226,7 @@ Severity:      Low
 Status:        CONFIRMED
 ```
 
-`DAC-TA-L3.md` mục 6 đặc tả ba mức. Hiện chỉ có một mức, xấp xỉ mức "Đầy đủ". Không có
+`docs/DAC-TA-L3.md` mục 6 đặc tả ba mức. Hiện chỉ có một mức, xấp xỉ mức "Đầy đủ". Không có
 mã nào liên quan tới mức diễn đạt trong `packages/ai/src/`.
 
 Đặc tả ghi *"thiếu thời gian thì cắt mức 3 trước, không cắt mức 2"* — mức đang có đúng

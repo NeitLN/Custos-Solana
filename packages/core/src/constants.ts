@@ -4,7 +4,7 @@
  *  SPL Memo từng nằm trong danh sách này và đó là sai: ta không decode Memo,
  *  nên gọi nó là "đã xác minh" sẽ thổi phồng coverage một cách giả tạo.
  *  Danh sách ngắn làm `coverage` phản ánh đúng sự thật là đội mới decode được chừng đó.
- *  Xem DAC-TA-CORE.md mục 2.4. */
+ *  Xem docs/DAC-TA-CORE.md mục 2.4. */
 import { BANG_IDL } from "./l1/bang-idl.ts";
 
 export const VERIFIED_PROGRAMS = new Map<string, string>([

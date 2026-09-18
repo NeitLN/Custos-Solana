@@ -9,9 +9,9 @@ Tài liệu này là **kế hoạch triển khai**, không phải bằng chứng
 Prompt có thể dùng nguyên văn:
 
 ```text
-Thực hiện ROADMAP-CLAUDE.md cho dự án Custos.
+Thực hiện docs/roadmap/ROADMAP-CLAUDE.md cho dự án Custos.
 
-Đọc CLAUDE.md, ROADMAP-CLAUDE.md, docs/roadmap/TIEN-DO.md và
+Đọc CLAUDE.md, docs/roadmap/ROADMAP-CLAUDE.md, docs/roadmap/TIEN-DO.md và
 docs/roadmap/BAN-GIAO.md. Bắt đầu từ việc khả dụng đầu tiên chưa hoàn tất.
 Tôi giao bạn phạm vi A/B/C/D cần thiết cho các công việc trong roadmap này;
 được sửa các file liên quan trong repo, giữ nguyên thay đổi đang có của tôi.
@@ -34,7 +34,7 @@ Tài liệu đi kèm:
 - [TIEN-DO.md](docs/roadmap/TIEN-DO.md): trạng thái duy nhất của từng mã công việc.
 - [BAN-GIAO.md](docs/roadmap/BAN-GIAO.md): việc đang làm, kết quả gần nhất, trở ngại và bước kế tiếp.
 - [Báo cáo đánh giá nguồn](docs/review/DANH-GIA-08-09-2026.md): lỗi F01–F11 và bằng chứng ban đầu.
-- [CUSTOS.md](CUSTOS.md), [DAC-TA-CORE.md](DAC-TA-CORE.md), [DAC-TA-L3.md](DAC-TA-L3.md): ràng buộc sản phẩm và kiến trúc.
+- [docs/CUSTOS.md](docs/CUSTOS.md), [docs/DAC-TA-CORE.md](docs/DAC-TA-CORE.md), [docs/DAC-TA-L3.md](docs/DAC-TA-L3.md): ràng buộc sản phẩm và kiến trúc.
 
 ## 2. Nguyên tắc điều hành
 
@@ -319,7 +319,7 @@ Sơ đồ chỉ chỉ ra các nhánh lớn; phụ thuộc cụ thể trong từn
 
 **Vai:** D/C/A. **Phụ thuộc:** R02.
 
-**File:** README gốc, `CLAUDE.md`, `PITCH-VA-PHAN-BIEN.md`, `docs/nop-bai/README.md`, `docs/AI-EVALUATION.md`, `scripts/tao-deck.cjs`, script đồng bộ và trang số liệu.
+**File:** README gốc, `CLAUDE.md`, `docs/PITCH-VA-PHAN-BIEN.md`, `docs/nop-bai/README.md`, `docs/AI-EVALUATION.md`, `scripts/tao-deck.cjs`, script đồng bộ và trang số liệu.
 
 **Thực hiện:** Lập bảng claim → artifact/nguồn → phạm vi → trạng thái hiện hành. Sửa 29/30 dòng, 6/6 vs 13/13, version registry, từ “trần cứng” 400 token và các câu về đối thủ. Phân biệt thử AI lịch sử với eval hiện tại. Tài liệu lịch sử giữ nguyên hoặc đánh dấu rõ, không viết lại lịch sử thành kết quả mới.
 
@@ -329,7 +329,7 @@ Sơ đồ chỉ chỉ ra các nhánh lớn; phụ thuộc cụ thể trong từn
 
 **Vai:** A/D. **Phụ thuộc:** R02.
 
-**File:** `SEED-DATASET.md`, `data/seed/`, script cohort/coverage, báo cáo benchmark mới khi cần.
+**File:** `docs/SEED-DATASET.md`, `data/seed/`, script cohort/coverage, báo cáo benchmark mới khi cần.
 
 **Thực hiện:**
 1. Kiểm nguồn và nhãn của từng mẫu, tách synthetic/lịch sử, dương/âm/không đủ dữ liệu.
@@ -431,7 +431,7 @@ Khi chờ H: ghi câu hỏi thiếu **một lần**, kèm tài liệu đã chu�
 
 **Vai:** D/C. **Phụ thuộc:** D01, B04, U06.
 
-**File:** `PITCH-VA-PHAN-BIEN.md`, `scripts/tao-deck.cjs`, `docs/nop-bai/CUSTOS-PITCH.pptx`, README nộp bài.
+**File:** `docs/PITCH-VA-PHAN-BIEN.md`, `scripts/tao-deck.cjs`, `docs/nop-bai/CUSTOS-PITCH.pptx`, README nộp bài.
 
 **Thực hiện:** Rút phần chính thành vấn đề → demo → khác biệt có thể bảo vệ → khách hàng → mô hình → bằng chứng/giới hạn → đề nghị cụ thể. Có bản nói linh hoạt theo thời lượng được xác nhận, không tự lấy lịch vòng khác. Gỡ so sánh ví bằng dữ liệu thô thiếu căn cứ và câu thương vụ đối thủ chứng minh khách hàng Custos. Chuyển chi tiết kỹ thuật xuống phụ lục; giữ nói đúng vai trò AI.
 

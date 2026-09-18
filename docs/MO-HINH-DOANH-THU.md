@@ -1,6 +1,6 @@
 # Mô hình doanh thu — ai trả, trả cho gì, và điều kiện nó sai
 
-**Việc B04 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).**
+**Việc B04 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).**
 
 > **Trang này là GIẢ THUYẾT, không phải mô hình đã kiểm chứng.**
 > **0 cuộc trò chuyện với người mua.** Mỗi con số dưới đây có nhãn nguồn hoặc nhãn

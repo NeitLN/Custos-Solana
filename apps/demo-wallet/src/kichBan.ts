@@ -136,7 +136,7 @@ export const KICH_BAN: KichBan[] = [
       maMongDoi: ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"],
       ghiChu:
         "Số dư KHÔNG đổi — chỉ quyền kiểm soát đổi. Bảng chênh lệch phải phản ánh " +
-        "đúng vậy; hiện 500 → 0 ở đây là dàn dựng (CUSTOS.md quyết định 7).",
+        "đúng vậy; hiện 500 → 0 ở đây là dàn dựng (docs/CUSTOS.md quyết định 7).",
     },
     dungTx: (ht, bh) =>
       dungGiaoDichDoiChu({
@@ -327,7 +327,7 @@ export const KICH_BAN: KichBan[] = [
      * bao giờ Xanh). Lỗi ở kịch bản, vì nó giả định số cấu hình bằng số dư đang có.
      *
      * Chuyển một nửa thì lệnh `Transfer` còn chạy được kể cả sau nhiều lượt diễn,
-     * nên bảng chênh lệch vẫn hiện số dư giảm THẬT — đúng quyết định 7 của CUSTOS.md.
+     * nên bảng chênh lệch vẫn hiện số dư giảm THẬT — đúng quyết định 7 của docs/CUSTOS.md.
      */
     dungTx: (ht, bh) =>
       dungGiaoDichTanCong({

@@ -64,7 +64,7 @@ mà phần lớn là do mẫu, không do code. Vì vậy phần đóng góp củ
 | Lệnh chạm tài sản | 39 % | 35 % |
 
 Tức decoder IDL đóng góp **+2 điểm**, không phải +5 như so chéo hai cohort gợi ý.
-Đây đúng cái bẫy đã ghi ở `SEED-DATASET.md` mục 0b3, và lần này tránh được.
+Đây đúng cái bẫy đã ghi ở `docs/SEED-DATASET.md` mục 0b3, và lần này tránh được.
 
 ### Báo nhầm
 
@@ -109,7 +109,7 @@ mặc định ở `giaiDongBangFacts`.
 | `packages/ai/src/anthropic.ts` | adapter Anthropic — file duy nhất biết tên nhà cung cấp |
 | `packages/ai/src/mucNgan.ts` | mức diễn đạt Ngắn |
 
-**Tài liệu**: `CUSTOS.md`, `README.md`, `CLAUDE.md`, `packages/core/README.md`,
+**Tài liệu**: `docs/CUSTOS.md`, `README.md`, `CLAUDE.md`, `packages/core/README.md`,
 `docs/bao-mat/*`.
 
 ---
@@ -168,7 +168,7 @@ bố IDL trên chuỗi thì không có cách nào đọc hiểu mà không phỏ
 ### 6. F5 mới xong một phần
 
 - **F5**: mức **Ngắn** đã cài và là mặc định trên màn cảnh báo; mức **Đầy đủ** nằm
-  sau nút "Xem chi tiết". Mức **Kỹ thuật** chưa làm — đặc tả `DAC-TA-L3.md` mục 6
+  sau nút "Xem chi tiết". Mức **Kỹ thuật** chưa làm — đặc tả `docs/DAC-TA-L3.md` mục 6
   ghi rõ nếu thiếu thời gian thì cắt mức 3 trước.
 - **F6** live-model: **đã chạy thật** với `claude-haiku-4-5-20251001` ngày 22/08.
   12/12 mẫu mô hình trả lời được, 0 lượt rơi về câu mẫu cứng, 0 lượt phá bất đối

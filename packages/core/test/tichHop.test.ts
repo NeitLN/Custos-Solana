@@ -90,7 +90,7 @@ test("không mô tả tích hợp tự dựng như là bên thứ ba đã dùng"
   if (coDoiTac) return; // có đối tác thật rồi thì câu đó không còn là claim sai
 
   const pham: string[] = [];
-  for (const f of ["README.md", "CLAUDE.md", "CUSTOS.md", "PITCH-VA-PHAN-BIEN.md", "packages/core/README.md"]) {
+  for (const f of ["README.md", "CLAUDE.md", "docs/CUSTOS.md", "docs/PITCH-VA-PHAN-BIEN.md", "packages/core/README.md"]) {
     for (const [i, d] of doc(f).split("\n").entries()) {
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_GIA_TRACTION) {
@@ -180,7 +180,7 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
  * đồng vừa sai về bài đo, vừa chỉ người ta tới bản có lỗ hổng.
  */
 test("pitch không nói bài đo cài SDK từ registry npm", boQuaKhiDo, () => {
-  const s = doc("PITCH-VA-PHAN-BIEN.md");
+  const s = doc("docs/PITCH-VA-PHAN-BIEN.md");
   const xau = [...s.matchAll(/^.*cài SDK từ npm.*$/gm)].map((m) => m[0].slice(0, 90));
   assert.deepEqual(
     xau,
@@ -198,7 +198,7 @@ test("số tích hợp trong pitch khớp file đo", boQuaKhiDo, () => {
   const cb = docSoCongBo();
   if (!cb) return;
   const giay = cb.giay;
-  const s = doc("PITCH-VA-PHAN-BIEN.md");
+  const s = doc("docs/PITCH-VA-PHAN-BIEN.md");
   const thay = [...s.matchAll(/([\d,]+) giây từ `npm install`/g)].map((m) => m[1]!);
   assert.deepEqual(
     thay.filter((x) => x !== giay),

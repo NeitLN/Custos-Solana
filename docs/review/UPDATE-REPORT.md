@@ -47,7 +47,7 @@ code** — chúng cần khoá API, người thật, và một quyết định c�
 | **R4-03** | Hợp đồng công khai lệch tài liệu | thiếu `truocDayDu`/`sauDayDu` | đã bổ sung kèm lý do bảo mật | README khớp `types/src/index.ts` | **PASS** (kéo lên từ P1) |
 | **R4-04** | README còn "10/11" | còn | đã đổi thành "2 trên 3" | `grep -c "10/11"` = 0 | **PASS** (kéo lên từ P1) |
 | R6-01 | 8 lỗ hổng phụ thuộc (3 high) | — | — | `npm audit` 25/08 | **KNOWN LIMITATION** |
-| R1-02 | `DAC-TA-CORE.md` ghi 12 luật | — | ghi rõ "đặc tả 12, đã thực thi 14" | `CLAUDE.md` | **PASS** |
+| R1-02 | `docs/DAC-TA-CORE.md` ghi 12 luật | — | ghi rõ "đặc tả 12, đã thực thi 14" | `CLAUDE.md` | **PASS** |
 | R11-01 | Không có gì để gửi khi ví hỏi xem SDK | — | **đã tháo chặn** bởi R4-01 | — | **UNBLOCKED** |
 | R12-01 | Thiếu câu trả lời về Blockaid | — | — | — | **TODO** (P1, vai D) |
 

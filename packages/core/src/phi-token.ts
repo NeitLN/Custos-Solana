@@ -36,7 +36,7 @@
  *
  * Transfer fee là năng lực hợp lệ của giao thức, có ca dùng chính đáng. File này
  * **không** sinh `level` và không có mã lý do nào — nó chỉ tính số. Gắn cờ vì một
- * token có thu phí là cách nhanh nhất tạo false positive (CUSTOS.md mục 06).
+ * token có thu phí là cách nhanh nhất tạo false positive (docs/CUSTOS.md mục 06).
  */
 
 const MOT_PHAN_VAN = 10_000n; // ONE_IN_BASIS_POINTS

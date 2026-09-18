@@ -14,7 +14,7 @@ import type { Facts, InstructionFact } from "./facts.ts";
  * Đây là ranh giới quan trọng nhất của thẻ: **state drift KHÔNG tự chứng minh dApp
  * tráo giao dịch**. Số dư một tài khoản đổi giữa hai lần mô phỏng là chuyện bình
  * thường trên chuỗi đang chạy. Gọi đó là "dApp tráo giao dịch" là buộc tội một
- * hành vi cụ thể dựa trên bằng chứng không nói điều đó — đúng thứ `CUSTOS.md` mục
+ * hành vi cụ thể dựa trên bằng chứng không nói điều đó — đúng thứ `docs/CUSTOS.md` mục
  * 06 cấm.
  *
  * Nên `KetQuaSoSanh.loai` luôn có mặt, và câu tiếng Việt của mỗi loại khác nhau.

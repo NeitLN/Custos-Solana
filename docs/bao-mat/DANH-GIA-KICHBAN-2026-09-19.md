@@ -60,7 +60,7 @@ Ba lý do, và không lý do nào là "để sau cho nhanh":
 1. **Đây có thể là hành vi đúng.** Một delegate mới là việc người dùng nên biết,
    kể cả khi hạn mức hợp lệ. L3 khuyên *xem kỹ*; nó không kết luận nguy hiểm. Bất
    đối xứng giữa "khuyên xem" và "kết tội" là thiết kế đã khoá, không phải lỗi.
-2. **`nhanDien.ts` thuộc vai C.** CUSTOS.md: không sửa chéo thư mục người khác.
+2. **`nhanDien.ts` thuộc vai C.** docs/CUSTOS.md: không sửa chéo thư mục người khác.
 3. **Sửa mà không có ca kiểm riêng là mở một lỗ khác.** Nếu L3 im khi hạn mức bằng
    số dư, nó sẽ im cả khi delegate là ví lạ trong một giao dịch mà L2 chưa phủ.
 

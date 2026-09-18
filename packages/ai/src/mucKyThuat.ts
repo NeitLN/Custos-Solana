@@ -1,7 +1,7 @@
 import type { InspectResult } from "@custos-solana/types";
 
 /**
- * MỨC 3 — KỸ THUẬT. `DAC-TA-L3.md` mục 6.
+ * MỨC 3 — KỸ THUẬT. `docs/DAC-TA-L3.md` mục 6.
  *
  * Đặc tả ghi rõ mức này *"chỉ để trấn an người có kinh nghiệm"*, và nếu thiếu
  * thời gian thì cắt nó trước. Nên nó làm cuối cùng, và cố ý làm mỏng.

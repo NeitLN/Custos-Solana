@@ -65,7 +65,7 @@ test("hồ sơ nộp bài ghi form 24/08 thuộc track CŨ", () => {
 
 test("ADR KHÔNG chấm lại 6,95 và không tự đặt một tổng mới", () => {
   /*
-   * `CUSTOS.md` mục 13 cấm bằng đúng chữ: *"tự nâng điểm cho khớp tin mới là đúng
+   * `docs/CUSTOS.md` mục 13 cấm bằng đúng chữ: *"tự nâng điểm cho khớp tin mới là đúng
    * thứ mục này sinh ra để chống"*. Một ADR đổi track là đúng lúc con số đó bị cám
    * dỗ nhiều nhất — rubric mới, bằng chứng mới, rất tiện để viết một tổng mới.
    *
@@ -73,7 +73,7 @@ test("ADR KHÔNG chấm lại 6,95 và không tự đặt một tổng mới", (
    * chụp riêng, người chấm khác, rubric khác.
    */
   const s = doc(ADR);
-  assert.match(doc("CUSTOS.md"), /6,95/, "con số cũ phải còn nguyên trong CUSTOS.md");
+  assert.match(doc("docs/CUSTOS.md"), /6,95/, "con số cũ phải còn nguyên trong docs/CUSTOS.md");
   assert.match(s, /KHÔNG chấm lại|không chấm lại/i);
   assert.doesNotMatch(
     s,

@@ -1,6 +1,6 @@
 # Hiệu năng — đo ở chỗ người dùng đứng
 
-**Việc D03 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).**
+**Việc D03 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).**
 
 Repo đã có số đo độ trễ, nhưng chúng đo **Node gọi thư viện**. Người dùng không sống
 ở đó: họ mở một trang, bấm một cái nút, và chờ một tấm thẻ hiện ra.

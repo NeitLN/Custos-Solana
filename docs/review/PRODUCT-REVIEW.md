@@ -45,7 +45,7 @@ Nguồn quyết định cho từng loại thông tin, và chỗ đang lệch:
 | Số test | `npm run test` | **242** | `README.md:27,84` → 188 · `CLAUDE.md:29` → 188 · `packages/core/README.md:240` → **138** · `docs/bao-mat/REMEDIATION-REPORT.md:200` → 188 |
 | Coverage | `data/seed/cohort-ket-qua.json` | **77 %** (12 mẫu đo được / 20 cohort) | `README.md:89` → 46 % · `CLAUDE.md:34,40` → 46 % |
 | Chạm tài sản | cùng file | **28/38 = 74 %** | `CLAUDE.md:41` → 21 % |
-| Số luật | `packages/core/src/l2/rules.ts` | **14** | `CLAUDE.md:18` (mô tả `DAC-TA-CORE.md`) → 12 luật |
+| Số luật | `packages/core/src/l2/rules.ts` | **14** | `CLAUDE.md:18` (mô tả `docs/DAC-TA-CORE.md`) → 12 luật |
 | Deck | `docs/nop-bai/CUSTOS-PITCH.pptx` | **đã có** | `CLAUDE.md:33` → *"Chưa có: deck"* |
 | Chạy mô hình thật | `docs/bao-mat/DANH-GIA-claude-haiku-4-5-20251001-2026-08-22.md` | **đã chạy** | `CLAUDE.md:36` → *"chưa chạy với mô hình thật lần nào"* |
 | Số liệu công khai | `apps/demo-wallet/public/so-lieu.json` (sinh tự động, CI dựng lại mỗi lần deploy) | 242 · 14 · 77 % · 28/38 | — |
@@ -158,7 +158,7 @@ không phát hiện ra lỗ hổng.
 | IDL Anchor | ✅ đọc **on-chain**, script `scripts/lay-idl-onchain.ts` → `l1/bang-idl.ts` (7 chương trình) |
 | Discriminator | ✅ tính `sha256("global:<tên>")[0..8]`, không đoán |
 | Mọi chương trình đã xác minh đều có decoder | ✅ có test cưỡng chế (`SO_LENH_DOC_DUOC`) |
-| Đo coverage cùng cohort trước–sau | ✅ kỷ luật ghi ở `SEED-DATASET.md` §0b3 |
+| Đo coverage cùng cohort trước–sau | ✅ kỷ luật ghi ở `docs/SEED-DATASET.md` §0b3 |
 
 **Không tìm thấy discriminator hay semantics nào đoán mò.** Đây là phần mạnh nhất của repo.
 
@@ -254,7 +254,7 @@ ID:        R4-04      Severity: Low       Status: CONFIRMED
 Affected:  packages/core/README.md:49  — ví dụ "đã đọc hiểu 10/11 lệnh"
 ```
 
-`10/11` đã bị gỡ khỏi `CUSTOS.md` và `PITCH-VA-PHAN-BIEN.md` ngày 23/08 vì giao dịch demo
+`10/11` đã bị gỡ khỏi `docs/CUSTOS.md` và `docs/PITCH-VA-PHAN-BIEN.md` ngày 23/08 vì giao dịch demo
 thật ra là **2/3**. `packages/core/README.md` còn sót.
 
 ---
@@ -313,7 +313,7 @@ giám khảo có thể hỏi và đội chưa có câu trả lời. Phần lớn
 |---|---|
 | Cohort cố định, tái sử dụng | ✅ `data/seed/cohort-audit.json`, 20 chữ ký |
 | Đếm và báo mẫu rụng | ✅ — hiện **8/20 rụng**, trang số liệu nói rõ |
-| Không đổi mẫu số giữa hai lần đo | ✅ — kỷ luật ghi ở `SEED-DATASET.md` §0b3 |
+| Không đổi mẫu số giữa hai lần đo | ✅ — kỷ luật ghi ở `docs/SEED-DATASET.md` §0b3 |
 | Tách mainnet khỏi synthetic | ✅ — con số báo nhầm chỉ đo trên mainnet |
 | Số liệu công khai sinh tự động | ✅ — `tao-so-lieu.ts`, CI dựng lại mỗi lần deploy |
 | Ground truth cho mẫu mainnet | ❌ **không có** |
@@ -396,11 +396,11 @@ của sản phẩm và nó được cưỡng chế đúng chỗ — ở kiểu d
 
 | Hạng mục | Trạng thái |
 |---|---|
-| Người dùng cuối / người trả tiền tách bạch | ✅ `CUSTOS.md` mục 02 |
+| Người dùng cuối / người trả tiền tách bạch | ✅ `docs/CUSTOS.md` mục 02 |
 | Chi phí biên đo được | ✅ 6,5 lượt RPC trung vị + trần 400 token |
 | Neo giá công khai | ✅ Helius/QuickNode $49, có link, ghi rõ **không phải validation** |
 | Trình tự GTM | ✅ ba giai đoạn |
-| Trả lời build-vs-buy | ✅ `PITCH-VA-PHAN-BIEN.md` mục 4b câu 10 |
+| Trả lời build-vs-buy | ✅ `docs/PITCH-VA-PHAN-BIEN.md` mục 4b câu 10 |
 | **Outreach** | ❌ **0/10–15** |
 | **Phản hồi thật** | ❌ **0/3–5** |
 | **Bên đồng ý xem SDK / pilot** | ❌ **0** |
@@ -457,7 +457,7 @@ một vấn đề đóng gói, không phải bởi thiếu thời gian đi hỏi
 | R7-01 | 7 | Medium | "Cáo buộc sai" ngụ ý ground truth chưa có | S | **P0** | A/D |
 | R4-03 | 4 | Medium | Bên tích hợp bỏ lỡ lớp chống địa chỉ giả mạo | S | P1 | A |
 | R6-01 | 6 | Medium | 3 lỗ hổng high trong cây phụ thuộc | M | P1 | A |
-| R1-02 | 1 | Medium | `DAC-TA-CORE.md` ghi 12 luật, thật 14 | S | P1 | A |
+| R1-02 | 1 | Medium | `docs/DAC-TA-CORE.md` ghi 12 luật, thật 14 | S | P1 | A |
 | R4-04 | 4 | Low | README còn "10/11" | XS | P1 | A |
 | R11-01 | 11 | High (ô KD) | Không có gì để gửi khi ví hỏi xem SDK | — | phụ thuộc R4-01 | D |
 | R12-01 | 12 | Low | Thiếu câu trả lời về Blockaid | XS | P1 | D |

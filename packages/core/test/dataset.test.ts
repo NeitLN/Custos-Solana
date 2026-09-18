@@ -71,7 +71,7 @@ test("SANITY trên giao dịch công khai — KHÔNG phải tỉ lệ báo nhầ
   //
   // Tên test lọt vào ảnh chụp output rồi lên slide, nên tên sai là số sai.
   // Mẫu tự dựng KHÔNG được vào mẫu số. Đội tự tạo đầu vào rồi tự đo đầu ra thì
-  // con số không nói lên điều gì. Xem SEED-DATASET.md mục 0.
+  // con số không nói lên điều gì. Xem docs/SEED-DATASET.md mục 0.
   const that = hoSo.mau.filter((m) => m.nguonGoc === "real-mainnet");
   assert.ok(that.length >= 10, `cần ít nhất 10 mẫu mainnet, đang có ${that.length}`);
 

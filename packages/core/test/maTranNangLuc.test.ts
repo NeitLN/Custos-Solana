@@ -18,7 +18,7 @@ const MA_TRAN = "docs/MA-TRAN-NANG-LUC.md";
  *
  * ## Vì sao, đo được
  *
- * `DAC-TA-CORE.md` từng liệt kê **6 program** đã xác minh và có **SPL Memo**.
+ * `docs/DAC-TA-CORE.md` từng liệt kê **6 program** đã xác minh và có **SPL Memo**.
  * Registry thật có **13 program** và **không có Memo** — sai theo cả hai hướng cùng
  * lúc: thiếu 7 cái có thật, thừa 1 cái không có.
  *
@@ -65,7 +65,7 @@ test("CU-17 · MỌI program trong registry có mặt trong ma trận", () => {
 
 test("CU-17 · ma trận KHÔNG liệt kê program ngoài registry", () => {
   /*
-   * Chiều ngược lại, và là chiều `DAC-TA-CORE.md` đã sai: nó có *SPL Memo* trong
+   * Chiều ngược lại, và là chiều `docs/DAC-TA-CORE.md` đã sai: nó có *SPL Memo* trong
    * khi registry không có. Thừa một dòng là hứa một năng lực không tồn tại.
    */
   const s = doc(MA_TRAN);
@@ -87,14 +87,14 @@ test("CU-17 · ma trận tự khai là TỆP SINH RA, không sửa tay", () => {
   assert.match(s, /tao-ma-tran-nang-luc\.ts/, "phải nói rõ lệnh sinh lại");
 });
 
-test("CU-17 · `DAC-TA-CORE.md` KHÔNG còn gõ tay danh sách program", () => {
+test("CU-17 · `docs/DAC-TA-CORE.md` KHÔNG còn gõ tay danh sách program", () => {
   /*
    * Đây là nguồn của lệch claim. Nó phải TRỎ về ma trận, không chép lại.
    *
    * Và nó không được nhắc SPL Memo như một program đã xác minh — Memo không có
    * trong registry, và câu cũ hứa một năng lực không tồn tại.
    */
-  const s = doc("DAC-TA-CORE.md");
+  const s = doc("docs/DAC-TA-CORE.md");
   const i = s.indexOf("Danh sách program đã xác minh");
   assert.ok(i > 0, "mất mục danh sách program");
   const khoi = s.slice(i, i + 900);

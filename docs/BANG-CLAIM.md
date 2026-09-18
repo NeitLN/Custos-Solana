@@ -1,6 +1,6 @@
 # Bảng claim — mỗi con số nói được nó đo cái gì, ở đâu, và chưa đo cái gì
 
-**Việc D01 của [`ROADMAP-CLAUDE.md`](../ROADMAP-CLAUDE.md).** Tiêu chí nghiệm thu:
+**Việc D01 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).** Tiêu chí nghiệm thu:
 *"người chỉ đọc một trong README/deck/trang số liệu vẫn hiểu cùng tình trạng; mọi mẫu
 số và phiên bản rõ."*
 
@@ -29,7 +29,7 @@ Không phải vì chúng sai, mà vì tiếng Việt cho phép đọc chúng r�
 | **13/13 + 3/3** | chặn hết đầu ra xấu **và** cho đầu ra tốt đi qua | ~~"13/13"~~ một mình — bộ chắn vứt sạch cũng cho 13/13 |
 | **lớp AI** | một lớp diễn giải **tuỳ chọn**, đã đo là chưa thêm được gì đo được | ~~"AI giúp người dùng hiểu hơn"~~ — chưa đo; trên thước nêu-coverage nó **ngang** câu mẫu (13–14/16 so 14/16), không hơn |
 
-Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`SEED-DATASET.md`](../SEED-DATASET.md)
+Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`docs/SEED-DATASET.md`](docs/SEED-DATASET.md)
 mục 0b3 và 0b4.
 
 ---
@@ -43,7 +43,7 @@ bằng chứng, chỉ là một con số.
 
 | Claim | Số | Nguồn | Phạm vi | Trạng thái |
 |---|---|---|---|---|
-| Test tự động | **968** | `npm run check` | offline, không mạng | ✅ hiện hành |
+| Test tự động | **1004** | `npm run check` | offline, không mạng | ✅ hiện hành |
 | Luật L2 | **14** | `data/seed/index.json` | mỗi luật có ca dương và ca đối chứng | ✅ |
 | Mẫu đã gắn nhãn | **38** | `data/seed/` | gồm cả `synthetic-devnet` — **không** dùng làm tỉ lệ báo nhầm | ✅ |
 | Bẫy đối kháng AI | **13/13** | `npm run eval-ai` | đường **tất định** — tách hẳn khỏi lượt live, xem ba dòng cuối bảng dưới | ✅ |
@@ -138,14 +138,14 @@ thừa nhận ví lớn đã có mô phỏng và cảnh báo. Tự mâu thuẫn 
 |---|---|---|---|
 | `README.md:38` · `PITCH:114` · `vi-du-tich-hop/README.md:47` | 29 dòng | **30** | dòng có hai số đo, generator chỉ neo số giây |
 | `README.md:130` | 6/6 bẫy | **13/13** | số của một lượt đo cũ, không nằm trong đường đồng bộ |
-| `CLAUDE.md:37` · `SEED-DATASET.md:6,30` | 33 mẫu | **38** | `CLAUDE.md` chỉ neo số test; `SEED-DATASET.md` chưa từng nằm trong đường đồng bộ |
+| `CLAUDE.md:37` · `docs/SEED-DATASET.md:6,30` | 33 mẫu | **38** | `CLAUDE.md` chỉ neo số test; `docs/SEED-DATASET.md` chưa từng nằm trong đường đồng bộ |
 
 **Cả ba cùng một hình dạng: một dòng mang nhiều con số, và chỉ một con số được neo.**
 Guard cũ vẫn xanh vì nó canh đúng con số đã neo. Cách sửa không phải là sửa tay ba
 chỗ — mà là thêm chúng vào `dong-bo-so-tai-lieu.mjs` **và** vào danh sách mốc trong
 `packages/core/test/claim.test.ts`, để lần lệch sau không im lặng.
 
-> Con số **25 mẫu** trong `SEED-DATASET.md` **không** đồng bộ: nó là mục tiêu kế hoạch
+> Con số **25 mẫu** trong `docs/SEED-DATASET.md` **không** đồng bộ: nó là mục tiêu kế hoạch
 > ban đầu và chính đoạn đó nói rõ như vậy. Đồng bộ nó lên 38 là viết lại lịch sử.
 
 ---

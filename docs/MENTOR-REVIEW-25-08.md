@@ -85,7 +85,7 @@ Hầu hết đội hackathon **không có cơ chế nào để phát hiện ra l
 đẹp, không đo trên lưu lượng thật, và không bao giờ biết sản phẩm mình kêu oan. Các em **có**
 cơ chế đó, và nó hoạt động — 10 ngày trước hạn.
 
-Nhưng đọc `PITCH-VA-PHAN-BIEN.md` thì không thấy câu chuyện này ở đâu cả.
+Nhưng đọc `docs/PITCH-VA-PHAN-BIEN.md` thì không thấy câu chuyện này ở đâu cả.
 
 **Đề xuất — đưa nó vào bài nói, thay cho một câu số liệu khô:**
 
@@ -144,7 +144,7 @@ dùng, không phát token, không cần vốn lớn. Nên câu trả lời có s
 > chứ không phải gọi vốn. Bọn em cần ba thứ trước khi nộp: một ví thật tích hợp, số liệu trên
 > lưu lượng thật, và audit. Cái thứ hai bọn em đã có."*
 
-Nên thêm vào `CUSTOS.md` mục 08. **Một đoạn, không phải một chương** — đừng để nó thành cái cớ
+Nên thêm vào `docs/CUSTOS.md` mục 08. **Một đoạn, không phải một chương** — đừng để nó thành cái cớ
 viết thêm 200 dòng nữa.
 
 ---
@@ -200,7 +200,7 @@ Tiết kiệm được 2 giờ của vai B, và tháo chặn video ngay hôm nay
 | ~~2~~ | ~~Nhắn 10 ví/dApp~~ — bỏ cùng lý do | — | — | — |
 | 3 | Chốt A cho giao dịch demo → **quay video** | B + 2 người | 2 giờ | *bắt buộc* |
 | 4 | Đưa **chuyện tự bắt lỗi wSOL** vào pitch | 1 người | 30 phút | **+0,3** |
-| 5 | Thêm đoạn **Solana grant** vào `CUSTOS.md` §08 | 1 người | 20 phút | **+0,2** |
+| 5 | Thêm đoạn **Solana grant** vào `docs/CUSTOS.md` §08 | 1 người | 20 phút | **+0,2** |
 | 6 | RPC key riêng · tập pitch 5 lượt · tag release | — | — | *chống sập* |
 
 Mục 1 và 2 cộng lại **+0,9** — nhiều hơn toàn bộ hai ngày kỹ thuật vừa rồi gấp đôi. Và chúng

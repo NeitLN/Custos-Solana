@@ -235,7 +235,7 @@ thayDong("CLAUDE.md", [
 ]);
 
 /*
- * SEED-DATASET.md hoàn toàn nằm ngoài vòng đồng bộ cho tới giờ.
+ * docs/SEED-DATASET.md hoàn toàn nằm ngoài vòng đồng bộ cho tới giờ.
  *
  * Hai dòng dưới đây đều là claim HIỆN HÀNH, không phải số lịch sử: một dòng tự nói
  * "dataset hiện tại có N mẫu", dòng kia là câu soạn sẵn ĐỂ NÓI TRÊN SÂN KHẤU. Cái
@@ -245,7 +245,7 @@ thayDong("CLAUDE.md", [
  * Con số "25 mẫu" ở cùng khu vực KHÔNG đụng tới: nó là mục tiêu kế hoạch ban đầu và
  * chính đoạn đó nói rõ như vậy. Đồng bộ nó lên 38 là viết lại lịch sử.
  */
-thayDong("SEED-DATASET.md", [
+thayDong("docs/SEED-DATASET.md", [
   [/^> hiện tại có \*\*\d+ mẫu\*\*/, (d) => d.replace(/\*\*\d+ mẫu\*\*/, `**${S.soMau} mẫu**`)],
   [/^> \*"\d+ luật, \d+ mẫu kiểm thử/, (d) =>
     d.replace(/\d+ luật, \d+ mẫu kiểm thử/, `${S.soLuat} luật, ${S.soMau} mẫu kiểm thử`)],
@@ -255,7 +255,7 @@ thayDong("SEED-DATASET.md", [
 // canh, nên nó tụt lại 9/3-high trong khi audit đã cho 11/5. Một câu khẳng định có
 // guard mà thật ra không có guard là dạng sai tệ nhất: nó tắt luôn sự nghi ngờ.
 const LH = JSON.parse(readFileSync("data/seed/lo-hong.json", "utf8"));
-thayDong("PITCH-VA-PHAN-BIEN.md", [
+thayDong("docs/PITCH-VA-PHAN-BIEN.md", [
   [/^`npm audit` cho \d+ lỗ hổng/, (d) =>
     d.replace(/\d+ lỗ hổng \(\d+ high, \d+ moderate\)/, `${LH.tong} lỗ hổng (${LH.theoMucDo.high} high, ${LH.theoMucDo.moderate} moderate)`)],
   [/Unit\/integration \(\d+\)/, (d) => d.replace(/Unit\/integration \(\d+\)/, `Unit/integration (${S.test.pass})`)],
@@ -276,7 +276,7 @@ thayDong("PITCH-VA-PHAN-BIEN.md", [
  * đó trong README: không ai kịp tra lại khi đang nghe.
  */
 if (GIAY) {
-  thayDong("PITCH-VA-PHAN-BIEN.md", [
+  thayDong("docs/PITCH-VA-PHAN-BIEN.md", [
     [
       /^\| \*\*2:00–2:30\*\*/,
       (d) =>

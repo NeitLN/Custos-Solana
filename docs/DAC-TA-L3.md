@@ -35,7 +35,7 @@ Người ta đọc con số trước tiên. Đặt nó ở đầu câu.
 | Là năng lực, chưa xảy ra | "Người phát hành **có quyền** đóng băng tài khoản này" |
 | Không xác định được | "Chúng tôi **không biết** chương trình này làm gì" |
 
-Câu *"chúng tôi không biết"* là câu **bắt buộc phải có** trong từ vựng của sản phẩm. Nó là trục khác biệt (xem `PITCH-VA-PHAN-BIEN.md` mục 0), không phải điểm yếu.
+Câu *"chúng tôi không biết"* là câu **bắt buộc phải có** trong từ vựng của sản phẩm. Nó là trục khác biệt (xem `docs/PITCH-VA-PHAN-BIEN.md` mục 0), không phải điểm yếu.
 
 ### 1.4 Không doạ, không kêu gọi
 
@@ -55,7 +55,7 @@ function interpret(facts: Facts, reasonCodes: string[], locale: "vi"): {
 }
 ```
 
-**`level` không có trong kiểu trả về.** Ranh giới được cưỡng chế bằng kiểu dữ liệu chứ không bằng lời dặn — xem `DAC-TA-CORE.md` mục 5.
+**`level` không có trong kiểu trả về.** Ranh giới được cưỡng chế bằng kiểu dữ liệu chứ không bằng lời dặn — xem `docs/DAC-TA-CORE.md` mục 5.
 
 **L3 không bao giờ nhận giao dịch thô.** Chỉ `Facts` và `reasonCodes`. Mô hình không suy diễn được về thứ nó không được nhìn.
 
@@ -165,7 +165,7 @@ Câu này là trục khác biệt. Nó phải cố định, chính xác, và do 
 
 ## 6 · Ba mức diễn đạt
 
-Tính năng "điều chỉnh theo trình độ người dùng" trong `CUSTOS.md` mục 04.
+Tính năng "điều chỉnh theo trình độ người dùng" trong `docs/CUSTOS.md` mục 04.
 
 **Ví dụ trên cùng một giao dịch** — swap kèm hai hành động lạ:
 
@@ -203,7 +203,7 @@ Tính năng "điều chỉnh theo trình độ người dùng" trong `CUSTOS.md`
 **Con số công bố:**
 > *"12 người được xem màn cảnh báo, không giải thích gì thêm. X người nói đúng chuyện gì sẽ xảy ra."*
 
-Nếu X thấp thì **sửa câu chữ, rồi đo lại** — đó chính là vòng lặp tạo ra dữ liệu ở `CUSTOS.md` mục 09. Và nếu đến ngày 5/9 X vẫn thấp thì **đọc đúng số đó**. Một con số thật kèm câu "chúng tôi đang sửa" đáng tin hơn một con số đẹp không ai kiểm chứng được.
+Nếu X thấp thì **sửa câu chữ, rồi đo lại** — đó chính là vòng lặp tạo ra dữ liệu ở `docs/CUSTOS.md` mục 09. Và nếu đến ngày 5/9 X vẫn thấp thì **đọc đúng số đó**. Một con số thật kèm câu "chúng tôi đang sửa" đáng tin hơn một con số đẹp không ai kiểm chứng được.
 
 ---
 

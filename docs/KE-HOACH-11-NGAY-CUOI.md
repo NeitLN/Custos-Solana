@@ -52,7 +52,7 @@ Ba cách hiểu, ba cái giá rất khác nhau:
 
 | Cách hiểu | Giá | Hệ quả |
 |---|---|---|
-| Custos **trở thành** một cái ví | Nhiều tháng · phải giữ khoá riêng người dùng | **Đổi chỗ đứng từ "bán cho ví" sang "cạnh tranh với ví"** — mà ví chính là khách hàng trả tiền (`CUSTOS.md` mục 02). Và một lớp bảo mật tự ôm khoá riêng là tự tạo bề mặt tấn công lớn nhất |
+| Custos **trở thành** một cái ví | Nhiều tháng · phải giữ khoá riêng người dùng | **Đổi chỗ đứng từ "bán cho ví" sang "cạnh tranh với ví"** — mà ví chính là khách hàng trả tiền (`docs/CUSTOS.md` mục 02). Và một lớp bảo mật tự ôm khoá riêng là tự tạo bề mặt tấn công lớn nhất |
 | Custos **được tích hợp vào** ví thật | Cần ví đồng ý | Đúng đích cuối, không phải chuyện 11 ngày. Nay đã có tarball để gửi khi họ hỏi |
 | Custos **chạy trên giao dịch mainnet thật**, bấm được | Vài giờ | ✅ Khả thi ngay |
 
@@ -109,7 +109,7 @@ Mọi thứ khác chạy song song được.
 
 ## 2 · Nút thắt 1 — quyết định giao dịch demo *(vai B, quyết hôm nay)*
 
-Giao dịch tấn công hiện có **3 lệnh**, coverage **2/3**. `CUSTOS.md` mục 07 mô tả nó nằm
+Giao dịch tấn công hiện có **3 lệnh**, coverage **2/3**. `docs/CUSTOS.md` mục 07 mô tả nó nằm
 giữa các lệnh swap hợp lệ — phần đó **chưa bao giờ được dựng**.
 
 | Chọn | Video nói | Việc phải làm | Rủi ro |
@@ -138,7 +138,7 @@ Cohort cũ không bắt được vì trong 12 mẫu sống sót của nó **khô
 wSOL nào**. Một bộ mẫu cố định lâu ngày không chỉ teo đi — nó teo **lệch**.
 
 Đã vá, đã kiểm loại trừ "mẫu rụng nên hết cáo buộc" bằng cách chạy thẳng đúng giao dịch
-đó. Chi tiết: `SEED-DATASET.md` mục 0b5.
+đó. Chi tiết: `docs/SEED-DATASET.md` mục 0b5.
 
 > **Vẫn phải neo lại lần nữa quanh 02/09.** Mẫu tụt 12 → 9 chỉ trong vài phút giữa hai
 > lượt đo. Số công bố trên sân khấu phải là số đo **cùng tuần với buổi thi**.
@@ -162,7 +162,7 @@ giao dịch"* là câu không nói được trên sân khấu.
 |---|---|
 | ✅ Neo cohort mới bằng giao dịch **gần đây**, chạy lại, và **ghi rõ trong tài liệu là đã neo lại ngày nào, vì sao** | |
 | ✅ Giữ kết quả cohort cũ trong repo để đối chiếu | |
-| ❌ Lặng lẽ đổi mẫu số rồi công bố con số mới như thể cùng phép đo | Đây đúng là thứ `SEED-DATASET.md` §0b3 sinh ra để chặn |
+| ❌ Lặng lẽ đổi mẫu số rồi công bố con số mới như thể cùng phép đo | Đây đúng là thứ `docs/SEED-DATASET.md` §0b3 sinh ra để chặn |
 
 **Cách chạy:**
 
@@ -175,7 +175,7 @@ node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public
 ```
 
 **Acceptance:** ≥9 mẫu đo được · `cảnh báo KHÔNG có mã lý do = 0` · trang số liệu và
-slide 9 khớp nhau · có một đoạn trong `SEED-DATASET.md` ghi lý do neo lại.
+slide 9 khớp nhau · có một đoạn trong `docs/SEED-DATASET.md` ghi lý do neo lại.
 
 </details>
 
@@ -236,12 +236,12 @@ Cắt theo thứ tự này, cắt từ dưới lên:
 
 | Bạn làm xong | Tôi làm tiếp |
 |---|---|
-| Quyết A/B giao dịch demo | Nếu B: dựng lệnh swap thật + test, đo lại coverage demo, cập nhật `CUSTOS.md` mục 07 và kịch bản video |
+| Quyết A/B giao dịch demo | Nếu B: dựng lệnh swap thật + test, đo lại coverage demo, cập nhật `docs/CUSTOS.md` mục 07 và kịch bản video |
 | Neo lại cohort | Sinh lại số liệu, sinh lại deck, soi hình học + tương phản, cập nhật `README` |
 | Có `ANTHROPIC_API_KEY` trong môi trường | Chạy đo token, lấp ô cuối `DON-VI-KINH-TE.md`, tính biên gộp |
 | Có RPC key | Viết script đo latency p50/p95, ghi vào `so-lieu.json` |
 | Gửi JSON phỏng vấn | Xếp biên bản, chạy bộ kiểm, nêu chỗ chấm lệch |
-| Gửi phản hồi ví/dApp | Cập nhật `CUSTOS.md` mục 08 từ "giả thuyết" sang "có dữ liệu" |
+| Gửi phản hồi ví/dApp | Cập nhật `docs/CUSTOS.md` mục 08 từ "giả thuyết" sang "có dữ liệu" |
 
 ---
 

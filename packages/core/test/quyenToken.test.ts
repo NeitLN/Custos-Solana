@@ -28,7 +28,7 @@ test("CU-15 · quyền CÓ SẴN không bị trình bày là MỚI CẤP", () =>
    *   "Giao dịch này vừa trao permanent delegate" — tố cáo một hành vi
    *
    * Trộn chúng là buộc tội sai, và là cách nhanh nhất tạo false positive vì
-   * Token-2022 extension là năng lực hợp lệ (CUSTOS.md mục 06).
+   * Token-2022 extension là năng lực hợp lệ (docs/CUSTOS.md mục 06).
    */
   const f = banSao(factsThat());
   f.mints[0]!.permanentDelegate = "DelegateCoSanTuTruoc111111111111111111111111";

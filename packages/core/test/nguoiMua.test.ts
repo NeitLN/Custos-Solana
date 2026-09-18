@@ -45,7 +45,7 @@ test("không công bố người mua / pilot khi chưa hỏi ai", () => {
   if (soNguoiMua() > 0) return; // có dữ liệu thật rồi thì đây không còn là claim sai
 
   const pham: string[] = [];
-  for (const f of ["README.md", "CLAUDE.md", "CUSTOS.md", "PITCH-VA-PHAN-BIEN.md"]) {
+  for (const f of ["README.md", "CLAUDE.md", "docs/CUSTOS.md", "docs/PITCH-VA-PHAN-BIEN.md"]) {
     for (const [i, d] of doc(f).split("\n").entries()) {
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_TRACTION) {
