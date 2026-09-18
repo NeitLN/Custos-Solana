@@ -41,7 +41,7 @@ tay**. Đối chiếu từng mục rubric ở [ADR-0001](docs/adr/0001-doi-huong
 |---|---|
 | **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **953** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
 | **25 %** kiến trúc on-chain/off-chain | Ba lớp L1/L2/L3, ranh giới cưỡng chế **bằng kiểu**: chỉ L2 sinh `level`, AI không bao giờ · **không** smart contract, và [nói rõ vì sao](docs/adr/0001-doi-huong-technical-build.md) |
-| **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **613 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
+| **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **617 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **104 ms** · bấm→thẻ **n=30**, trung vị **1916 ms**, p95 quan sát **3959 ms** · demo công khai dựng lại mỗi lần push |
 
 **Nguyên tắc kiến trúc, nói một câu:** ưu tiên phát hiện qua **thay đổi trạng thái**,
@@ -64,7 +64,7 @@ Chúng tôi không tuyên bố là giải pháp duy nhất.
 
 | Câu hỏi | Trả lời hôm nay |
 |---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,8 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
+| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,6 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
 | Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
 | Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
 | Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
@@ -88,9 +88,9 @@ Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ th�
 
 | Đo trên Devnet, 18/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7,8 giây** — trung vị 10 lượt trên 10 bản dựng, dải 6,9–13,1 |
+| Cài đặt → kết quả đầu tiên | **7,6 giây** — trung vị 10 lượt trên 10 bản dựng, dải 6,9–13,1 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **613 ms** — trung vị 10 lượt trên 10 bản dựng |
+| Một lượt kiểm tra | **617 ms** — trung vị 10 lượt trên 10 bản dựng |
 | Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
 dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
