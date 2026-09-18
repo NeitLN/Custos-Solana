@@ -20,4 +20,8 @@ export {
   chayLaiTuJson, chayLaiTuReceipt,
   type KetQuaReplay, type NhanReplay,
 } from "./replay.ts";
+export {
+  danhGiaPolicy, PROFILE_MAC_DINH, PHIEN_BAN_POLICY,
+  type QuyetDinh, type MaPolicy, type ProfileVi, type BoiCanhPolicy, type KetQuaPolicy,
+} from "./policy.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";

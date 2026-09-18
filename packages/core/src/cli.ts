@@ -2,6 +2,7 @@
 import { Connection, VersionedTransaction, PublicKey } from "@solana/web3.js";
 import { inspect } from "./inspect.ts";
 import { dungReceipt, receiptRaJson, type CheDoReceipt } from "./receipt.ts";
+import { danhGiaPolicy, PROFILE_MAC_DINH, type ProfileVi } from "./policy.ts";
 import { ketNoiCoHuy, laHuy } from "./huy.ts";
 
 /**
@@ -66,6 +67,8 @@ Tuỳ chọn:
                    mà trong giao dịch được tài trợ phí đó không phải bạn.
   --rpc <url>      mặc định ${RPC_MAC_DINH}
   --han <ms>       hạn cho cả lượt, mặc định 20000
+  --policy <ten>   quy tắc ví: mac-dinh | chat. Quyết định allow/review/block
+                   KHÔNG bao giờ nới kết luận engine, chỉ có thể chặt hơn.
 
 Mã thoát — phân loại của ENGINE, KHÔNG phải quyền ký:
   0  safe     engine không tìm thấy vấn đề TRONG PHẠM VI đã kiểm
@@ -79,7 +82,7 @@ Mã thoát — phân loại của ENGINE, KHÔNG phải quyền ký:
 CLI này không nhận khoá riêng, không ký và không gửi gì.
 Mô phỏng gửi nội dung giao dịch tới RPC đã chọn.`;
 
-type Doi = { tx?: string; vi?: string; rpc?: string; han?: string; json?: boolean; help?: boolean; receipt?: string };
+type Doi = { tx?: string; vi?: string; rpc?: string; han?: string; json?: boolean; help?: boolean; receipt?: string; policy?: string };
 
 export function docDoi(argv: string[]): Doi {
   const d: Doi = {};
@@ -92,6 +95,7 @@ export function docDoi(argv: string[]): Doi {
     else if (a === "--rpc") d.rpc = argv[++i];
     else if (a === "--han") d.han = argv[++i];
     else if (a === "--receipt") d.receipt = argv[++i];
+    else if (a === "--policy") d.policy = argv[++i];
   }
   return d;
 }
@@ -163,6 +167,20 @@ export function giaiTx(tho: string): { ok: true; tx: VersionedTransaction; soByt
   return { ok: true, tx, soByte: byte.length };
 }
 
+/**
+ * Profile ví theo tên. `null` nghĩa tên không hợp lệ.
+ *
+ * KHÔNG lui về mặc định khi tên lạ: `--policy chatt` (gõ nhầm) mà im lặng chạy
+ * profile lỏng là đúng kiểu lỗi mà người dùng không bao giờ phát hiện.
+ */
+function profileTuTen(ten: string): ProfileVi | null {
+  if (ten === "mac-dinh") return PROFILE_MAC_DINH;
+  if (ten === "chat") {
+    return { ten: "chặt", warningLaBlock: true, nguongCoverage: 0.8, programLaLaReview: true };
+  }
+  return null;
+}
+
 export async function chay(argv: string[]): Promise<number> {
   const d = docDoi(argv);
   if (d.help || argv.length === 0) {
@@ -186,6 +204,11 @@ export async function chay(argv: string[]): Promise<number> {
       process.stderr.write("lỗi đầu vào: --vi không phải địa chỉ base58 hợp lệ\n");
       return MA.loiInput;
     }
+  }
+
+  if (d.policy !== undefined && profileTuTen(d.policy) === null) {
+    process.stderr.write("lỗi đầu vào: --policy chỉ nhận `mac-dinh` hoặc `chat`\n");
+    return MA.loiInput;
   }
 
   const han = Number(d.han ?? 20_000);
@@ -234,16 +257,31 @@ export async function chay(argv: string[]): Promise<number> {
        * BA TRƯỜNG TÁCH RIÊNG — thẻ đòi đích danh.
        *
        * `engineLevel` là phán quyết của L2. `inspectionStatus` nói lượt kiểm có
-       * hoàn tất không. `policyDecision` là `null` cho tới khi CU-18 bật policy —
-       * để `null` chứ không bịa một giá trị, vì một consumer đọc `"allow"` sẽ hiểu
-       * là đã có ai đó cho phép.
+       * hoàn tất không. `policyDecision` là quyết định của VÍ (CU-18) — một chủ
+       * thể khác, trả lời một câu hỏi khác.
+       *
+       * Vắng `--policy` thì trường này vẫn `null`, và đó KHÔNG phải `allow`: không
+       * ai đưa ra quyết định nào cả. Một consumer đọc `"allow"` sẽ hiểu là đã có
+       * người cho phép, nên không được bịa giá trị đó khi không có profile.
        */
+      const policy = d.policy === undefined ? null : danhGiaPolicy(
+        {
+          level: r.level,
+          coverage: r.coverage,
+          // CLI không giữ phiên qua nhiều lượt, nên không biết — và không biết
+          // KHÔNG được đọc thành còn tốt.
+          phienConDung: null,
+        },
+        // Không `null` được ở đây: tên profile đã được validate và từ chối ở trên.
+        profileTuTen(d.policy) ?? PROFILE_MAC_DINH,
+      );
+
       process.stdout.write(
         JSON.stringify(
           {
             engineLevel: r.level,
             inspectionStatus: "hoan_tat",
-            policyDecision: null,
+            policyDecision: policy,
             reasonCodes: r.reasonCodes,
             coverage: r.coverage,
             diff: r.diff,

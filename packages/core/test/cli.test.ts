@@ -254,3 +254,68 @@ test("CU-11 · `--help` nhắc tới `--receipt`", () => {
   assert.equal(r.ma, 0);
   assert.match(r.out, /--receipt/, "`--help` không nhắc tới --receipt");
 });
+
+/* ── CU-18 · policy của ví qua CLI ──────────────────────────────────────────── */
+
+function txThat(): string {
+  return readFileSync(
+    fileURLToPath(new URL("../../../data/seed/tx/R01-pos.base64", import.meta.url)),
+    "utf8",
+  ).trim();
+}
+
+test("CU-18 · vắng `--policy` ⇒ policyDecision là `null`, KHÔNG phải allow", () => {
+  /*
+   * `null` và `"allow"` nói hai điều khác hẳn nhau: *không ai quyết định* và *đã
+   * có người cho phép*. Một consumer đọc `"allow"` khi thật ra chưa ai xét là
+   * đúng kiểu lỗi mà lớp bảo vệ này sinh ra để tránh.
+   */
+  const r = chayCLI("--json", "--tx", txThat());
+  assert.ok(r.out.length > 0, "không có stdout");
+  const j = JSON.parse(r.out) as { policyDecision: unknown };
+  assert.equal(j.policyDecision, null);
+});
+
+test("CU-18 · `--policy chat` trên giao dịch danger ⇒ block, nói rõ AI quyết định", () => {
+  const r = chayCLI("--json", "--policy", "chat", "--tx", txThat());
+  const j = JSON.parse(r.out) as {
+    engineLevel: string;
+    policyDecision: { quyetDinh: string; profile: string; maLyDo: string[]; cau: string };
+  };
+  assert.equal(j.engineLevel, "danger", "fixture không còn là danger — đổi ca kiểm");
+  assert.equal(j.policyDecision.quyetDinh, "block", "engine danger mà policy không block");
+  assert.match(j.policyDecision.cau, /Ví/, "câu không nói ai quyết định");
+  assert.ok(
+    j.policyDecision.maLyDo.every((m) => m.startsWith("POLICY__")),
+    "mã policy lẫn vào không gian tên engine",
+  );
+  assert.equal(r.ma, 2, "exit code phải theo ENGINE, không theo policy");
+});
+
+test("CU-18 · exit code KHÔNG đổi theo policy — nó là phân loại engine", () => {
+  /*
+   * Ranh giới dễ trượt nhất của thẻ: policy `block` KHÔNG được biến exit code
+   * thành một mã khác. Exit code nói *engine thấy gì*; policy nói *ví cho phép
+   * gì*. Trộn chúng là làm hỏng hợp đồng CU-10 mà không ai để ý.
+   */
+  const a = chayCLI("--json", "--tx", txThat());
+  const b = chayCLI("--json", "--policy", "chat", "--tx", txThat());
+  assert.equal(a.ma, b.ma, "policy làm đổi exit code");
+});
+
+test("CU-18 · tên profile gõ nhầm bị TỪ CHỐI, không im lặng lui về mặc định", () => {
+  /*
+   * `--policy chatt` mà im lặng chạy profile lỏng hơn là đúng kiểu lỗi người dùng
+   * không bao giờ phát hiện — họ tin mình đang được bảo vệ chặt.
+   */
+  const r = chayCLI("--json", "--policy", "chatt", "--tx", txThat());
+  assert.equal(r.ma, 3, "tên profile lạ phải là lỗi đầu vào");
+  assert.equal(r.out, "", "stdout phải sạch khi từ chối");
+  assert.match(r.err, /mac-dinh|chat/, "không chỉ ra tên hợp lệ");
+});
+
+test("CU-18 · `--help` nhắc `--policy` và nói policy KHÔNG nới kết luận engine", () => {
+  const r = chayCLI("--help");
+  assert.match(r.out, /--policy/, "`--help` không nhắc --policy");
+  assert.match(r.out, /chỉ có thể chặt hơn|KHÔNG bao giờ nới/, "không nói rõ ranh giới của policy");
+});
