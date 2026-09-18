@@ -1,0 +1,386 @@
+{
+  "kiem": [
+    {
+      "ten": "0 lỗi console/pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "KHÔNG gọi RPC/AI khi mở trang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "đúng MỘT h1",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "h1 đúng nội dung",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có <header>",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có <nav>",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có <main>",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có <footer>",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có nhãn 'Kết quả mẫu đã lưu'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có nhãn Devnet riêng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không tự xưng 'live'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có tuyên bố '100%'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có tuyên bố 'bảo mật tuyệt đối'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có tuyên bố 'được audit'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có tuyên bố 'đối tác'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có tuyên bố 'người dùng tin'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có câu giới hạn",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · landing VI desktop",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có nút A và B",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mặc định chọn B",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: không có thao tác đổi chủ",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: kết luận đúng phạm vi",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: vẫn hiện số dư 490",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: aria-pressed đúng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "B: có đổi chủ",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "B: cùng số dư 490",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "badge nguồn còn thấy sau khi đổi A/B",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có nút mở bằng chứng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bằng chứng: địa chỉ ĐẦY ĐỦ",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bằng chứng: mã luật",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bằng chứng: commit nguồn",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bằng chứng: nói rõ 2 lượt độc lập",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "bằng chứng: nói rõ không đủ replay",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "badge nguồn còn thấy khi mở bằng chứng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: panel nói rõ không có mã cảnh báo",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "A: KHÔNG bịa owner trước/sau",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có href='#' rỗng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "không có link 'sắp ra mắt'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "CTA dùng BASE_URL production",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có link tới ví mẫu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có link tới Inspector",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "có link tới số liệu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: h1 đã dịch",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: A/B đã dịch",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: FAQ đã dịch",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: giữ nguyên lực câu giới hạn",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: KHÔNG nói 'fully secure'",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: lang đã đổi",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: title đã đổi",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "EN: URL mang ?lang=en",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "đổi ngôn ngữ giữ nguyên ca đang chọn",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "axe · landing EN desktop",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "quay lại VI",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "query sai ⇒ về VI",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "storage bị chặn ⇒ trang vẫn dựng",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "storage bị chặn ⇒ 0 pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile 390: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile 360: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "tablet: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "laptop: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "rộng: không tràn ngang",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "1440×900: hàng quyền nằm trong màn hình đầu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "Tab đầu tiên tới skip link",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "CTA chính cao >= 48px",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "mobile có nút menu có TÊN",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "menu đóng ⇒ aria-expanded=false",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "menu mở ⇒ aria-expanded=true",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "Escape đóng menu",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "Escape trả focus về nút mở",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "ví mẫu vẫn dựng được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "ví mẫu: 0 pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "Inspector vẫn dựng được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "Inspector: 0 pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "số liệu vẫn dựng được",
+      "dat": true,
+      "chiTiet": "đạt"
+    },
+    {
+      "ten": "số liệu: 0 pageerror",
+      "dat": true,
+      "chiTiet": "đạt"
+    }
+  ],
+  "soKiem": 75,
+  "loi": [],
+  "viPham": [],
+  "dauVet": {
+    "bam": "b613d6eeb3d34398",
+    "soFile": 60
+  }
+}

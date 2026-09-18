@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="%BASE_URL%custos-dino-favicon.png" />
+    <meta name="theme-color" content="#17132A" />
+    <title>Custos — Hiểu giao dịch Solana trước khi ký</title>
+    <meta
+      name="description"
+      content="Khám phá Custos: mô phỏng giao dịch Solana, xem thay đổi tài sản và quyền kiểm soát, rồi kiểm tra dữ kiện đứng sau cảnh báo. Bản demo trên Devnet."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Custos — Hiểu giao dịch Solana trước khi ký" />
+    <meta
+      property="og:description"
+      content="Mô phỏng giao dịch Solana, xem thay đổi tài sản và quyền kiểm soát, rồi kiểm tra dữ kiện đứng sau cảnh báo. Bản demo trên Devnet."
+    />
+    <meta property="og:image" content="%BASE_URL%landing/social-preview-vi.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      KHÔNG đặt og:url và canonical ở đây.
+
+      Đặc tả mục 13 nói rõ: canonical chỉ đặt sau khi xác định URL chuẩn, và
+      không để canonical của ví mẫu cho landing. URL production hiện chưa được
+      xác nhận đã deploy, nên một og:url tuyệt đối ở đây sẽ là URL tự bịa.
+    -->
+  </head>
+  <body>
+    <div id="root">
+      <!--
+        NỘI DUNG TỐI THIỂU KHI JAVASCRIPT KHÔNG CHẠY.
+
+        Đặc tả mục 13 đòi no-JS fallback có tên, mô tả và link demo/docs THẬT.
+        React sẽ thay toàn bộ nút này khi mount, nên screen reader không đọc
+        trùng hai bản.
+
+        Link ở đây là đường dẫn tương đối, không phải %BASE_URL%: khi mở file
+        này ở production `/Custos-Solana/gioi-thieu.html`, `./` đã trỏ đúng
+        thư mục chứa nó.
+      -->
+      <noscript>
+        <h1>Custos — hiểu giao dịch Solana trước khi ký</h1>
+        <p>
+          Custos mô phỏng giao dịch Solana, chỉ ra thay đổi về tài sản và quyền kiểm
+          soát, rồi đưa bạn đến dữ kiện đứng sau cảnh báo. Bản thử nghiệm trên Devnet;
+          không dùng tài sản thật.
+        </p>
+        <p>Trang giới thiệu cần JavaScript để hiển thị đầy đủ. Các đường đi vẫn mở được:</p>
+        <ul>
+          <li><a href="./">Mở ví mẫu Custos</a></li>
+          <li><a href="./soi.html">Mở Inspector — kiểm một giao dịch bất kỳ</a></li>
+          <li><a href="./so-lieu.html">Xem số liệu và cách đo</a></li>
+          <li>
+            <a href="https://github.com/NeitLN/Custos-Solana">Mã nguồn và tài liệu tích hợp trên GitHub</a>
+          </li>
+        </ul>
+      </noscript>
+    </div>
+    <script type="module" src="/src/landing.tsx"></script>
+  </body>
+</html>
