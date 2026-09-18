@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-18T13:41:30.738079+00:00",
-  "sourceCommit": "c14eeb0a93f004a5a6216cb96dd007f0c4302fb9",
+  "doLuc": "2026-09-18T14:29:49.343447+00:00",
+  "sourceCommit": "b6d66b1b909d1bb9083c903a658cc498689f89f3",
   "dauVet": {
-    "bam": "b613d6eeb3d34398",
-    "soFile": 60
+    "bam": "d527b0c149a4efad",
+    "soFile": 61
   },
   "boCongCu": {
     "chromium": "149.0.7827.55",

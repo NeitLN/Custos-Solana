@@ -1,0 +1,431 @@
+{
+  "base": "http://localhost:5198/Custos-Solana/",
+  "sourceCommit": "b6d66b1",
+  "views": [
+    {
+      "name": "desktop-hero",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 5326
+      }
+    },
+    {
+      "name": "desktop-full",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 5326
+      }
+    },
+    {
+      "name": "desktop-evidence",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 5765
+      }
+    },
+    {
+      "name": "desktop-en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=en",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 5338
+      }
+    },
+    {
+      "name": "mobile-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 7897
+      }
+    },
+    {
+      "name": "mobile-full",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 7897
+      }
+    },
+    {
+      "name": "mobile-menu",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 8222
+      }
+    },
+    {
+      "name": "mobile-320",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 320,
+        "scrollWidth": 358,
+        "height": 8517
+      }
+    },
+    {
+      "name": "mobile-768",
+      "viewport": {
+        "width": 768,
+        "height": 844
+      },
+      "url": "http://localhost:5198/Custos-Solana/gioi-thieu.html?lang=vi",
+      "dimensions": {
+        "width": 768,
+        "scrollWidth": 768,
+        "height": 6281
+      }
+    },
+    {
+      "name": "wallet-idle",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/?khongkhoa=1",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1425,
+        "height": 1096
+      }
+    },
+    {
+      "name": "inspector-idle",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "url": "http://localhost:5198/Custos-Solana/soi.html",
+      "dimensions": {
+        "width": 1440,
+        "scrollWidth": 1425,
+        "height": 900
+      }
+    }
+  ],
+  "interactions": {
+    "A": "Cùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChỉ chuyển token\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\nThao tác đổi chủ tài khoản\nKhông có trong transaction mẫu\nKết luận lượt mẫu\nKhông phát hiện nguy hiểm trong phần đã đọc\nVì sao cảnh báo?\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.",
+    "B_evidence": "Cùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChuyển và đổi chủ\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\n!\nThao tác đổi chủ tài khoản\nCó\nBạn → CRZa…picz\nKết luận lượt mẫu\nPhát hiện thay đổi quyền kiểm soát\nĐóng bằng chứng\nDữ kiện đứng sau cảnh báo\nĐiều thay đổi\nChủ sở hữu token account\nTrước\nBạn\nSau\nCRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz\nLuật\nSPL_SET_AUTHORITY__ACCOUNT_OWNER\n\nĐo lúc: 2026-09-17T21:39:12.650Z\n\nCommit nguồn: dd7e776b0370\n\nGiới hạn: Đây là hai lượt mô phỏng độc lập. Chúng không chứng minh cùng một ảnh chụp trạng thái, và không có giao dịch nào được gửi lên mạng.\n\nDữ liệu hiển thị ở đây đã được rút gọn để công bố. Nó không đủ để chạy lại engine.\n\nMở dữ liệu nguồn\n(mở trong tab mới)\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.",
+    "faqOpen": true,
+    "englishLang": "en",
+    "escapeMenuClosed": true
+  },
+  "body": "Bỏ qua, tới nội dung chính\nCustos\nSolana transaction insights\nCách hoạt động\nTrải nghiệm\nCho nhà phát triển\nFAQ\nVI\nTiếng Việt\nEN\nEnglish\nMở demo Custos\n→\n\nSOLANA · PHÂN TÍCH GIAO DỊCH TRƯỚC KÝ\n\nTrước khi ký, nhìn rõ điều sẽ thay đổi.\n\nCustos mô phỏng giao dịch Solana, chỉ ra thay đổi về tài sản và quyền kiểm soát, rồi đưa bạn đến dữ kiện đứng sau cảnh báo.\n\nMở demo Custos\n→\nXem cách hoạt động\n\nBản thử nghiệm trên Devnet. Không dùng tài sản thật.\n\nCustos / Trước khi ký\nDevnet\n\nKết quả mẫu đã lưu\n\nChuyển 10 token\n\nSố dư token\n500,0\n→\n490,0\n!\nChủ tài khoản token\nBạn\n→\nđịa chỉ khác\nQuyền thay đổi\nXem tình huống này →\nTransfer\nSetAuthority\n\nMinh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.\n\nNguồn dữ liệu: Hai lượt mô phỏng ĐỘC LẬP trên Solana Devnet, giao dịch chưa ký.\n\nSolana Devnet\nMôi trường thử nghiệm\nSDK\nDành cho ví và dApp\nInspector\nKiểm tra transaction\nBằng chứng\nXem dữ kiện và giới hạn\nXem giao dịch ở cả số dư lẫn quyền.\n\nMột giao dịch có thể chuyển đúng số token bạn thấy, đồng thời thay đổi cách tài khoản được kiểm soát. Custos giúp làm rõ những thay đổi đó trong phạm vi dữ liệu đã phân tích.\n\n01\nXem hậu quả\n\nĐối chiếu trạng thái trước và sau mô phỏng để thấy thay đổi về tài sản, phí và quyền.\n\n02\nHiểu cảnh báo\n\nĐọc hành vi đáng chú ý bằng ngôn ngữ rõ ràng, cùng phạm vi Custos đã kiểm được.\n\n03\nKiểm bằng chứng\n\nĐi từ cảnh báo tới dữ kiện liên quan và mở thêm chi tiết khi cần kiểm sâu.\n\nTransaction chưa ký\n→\nMô phỏng và đọc dữ liệu\n→\nLuật phát hiện\n→\nKết quả kèm bằng chứng\n\nVí hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.\n\nCùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChuyển và đổi chủ\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\n!\nThao tác đổi chủ tài khoản\nCó\nBạn → CRZa…picz\nKết luận lượt mẫu\nPhát hiện thay đổi quyền kiểm soát\nVì sao cảnh báo?\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.\n\nTự xem một giao dịch thay đổi điều gì.\n1\nChọn tình huống\n\nMở demo Custos và chọn giao dịch thử nghiệm.\n\n2\nXem hậu quả\n\nĐọc thay đổi tài sản, quyền và phạm vi phân tích.\n\n3\nMở bằng chứng\n\nXem dữ kiện liên quan hoặc chuyển sang Inspector để kiểm sâu hơn.\n\nBắt đầu với demo\n→\n\nDùng tình huống thử nghiệm, không nhập seed phrase hoặc khóa riêng.\n\nĐưa phần kiểm tra vào trước bước ký.\n\nTích hợp Custos vào ví hoặc dApp để phân tích transaction chưa ký, hiển thị cảnh báo và cho người dùng xem dữ kiện liên quan.\n\nỨng dụng tạo transaction\n→\nCustos inspect\n→\nUI hiển thị kết quả\nConsumer kiểm phiên/consent\n→\nsigner của ví\n\nSDK cung cấp kết quả phân tích. Consumer chịu trách nhiệm gắn kết quả với đúng transaction và xử lý điều kiện ký.\n\nĐọc hướng dẫn SDK\n(mở trong tab mới)\nMở Inspector\nXem hướng dẫn CLI\n(mở trong tab mới)\nVí dụ phân tích một giao dịch\nimport { inspect } from \"@custos-solana/core\";\n\nconst ketQua = await inspect({ connection }, tx, {\n  locale: \"vi\",\n  nguoiDung: viNguoiDung.toBase58(),\n});\n\n// Chú thích ngắn để dòng không tràn ngang trên màn hình hẹp.\nketQua.level;        // \"safe\" | \"warning\" | \"danger\"\nketQua.reasonCodes;  // [\"SPL_SET_AUTHORITY__ACCOUNT_OWNER\"]\nketQua.coverage;     // phần đã đọc hiểu được\nketQua.diff;         // thay đổi để hiển thị\n\nVí dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói công khai trên npm là 0.1.1 và chưa có mọi thay đổi trong mã nguồn.\n\nCó dữ kiện để xem, có giới hạn để biết.\n\nBạn có thể mở mã nguồn, xem cách đo và kiểm tra các tình huống đã ghi nhận. Kết quả cần được đọc cùng phạm vi hỗ trợ và điều kiện mô phỏng.\n\nMã nguồn và hướng dẫn ↗\n(mở trong tab mới)\n\nToàn bộ mã nguồn, tài liệu tích hợp SDK và consumer tham chiếu.\n\nSố liệu kèm cách đo ↗\n\nCác con số của dự án, kèm lệnh và điều kiện đã dùng để đo.\n\nPhạm vi hỗ trợ ↗\n(mở trong tab mới)\n\nChương trình nào Custos đọc hiểu được, và đọc tới mức nào.\n\nTình huống minh họa ↗\n(mở trong tab mới)\n\nArtifact gốc của hai tình huống A/B trên trang này.\n\nCustos không bảo đảm một giao dịch an toàn tuyệt đối. Dữ liệu thiếu, chương trình chưa hỗ trợ và thay đổi trạng thái mạng có thể giới hạn kết quả. Bản demo dùng Solana Devnet.\n\nCâu hỏi thường gặp\nCustos có phải một ví mới không?\nTôi có cần nhập seed phrase hoặc dùng tài sản thật để thử không?\nKết quả “không phát hiện nguy hiểm” có nghĩa là an toàn tuyệt đối không?\nAI có quyết định giao dịch nguy hiểm không?\nTôi có thể thử transaction khác không?\nWebsite đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?\nCustos có tự chặn mọi ví ký giao dịch nguy hiểm không?\nTôi bắt đầu tích hợp từ đâu?\nXem giao dịch bằng một góc nhìn khác.\n\nBắt đầu từ một tình huống mẫu, rồi mở dữ kiện đứng sau cảnh báo.\n\nMở demo Custos\n→\nĐọc tài liệu tích hợp\n(mở trong tab mới)\nCustos\n\nPhân tích giao dịch Solana trước khi ký.\n\nDemo ví mẫu\nInspector\nTài liệu SDK\n(mở trong tab mới)\nGitHub\n(mở trong tab mới)\nSố liệu\n\nBản thử nghiệm trên Solana Devnet.",
+  "fonts": [
+    {
+      "family": "Manrope",
+      "status": "loaded",
+      "weight": "800"
+    },
+    {
+      "family": "Manrope",
+      "status": "loaded",
+      "weight": "800"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "400"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "400"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "600"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "600"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "700"
+    },
+    {
+      "family": "Be Vietnam Pro",
+      "status": "loaded",
+      "weight": "700"
+    }
+  ],
+  "heroBoxes": {
+    "h1": {
+      "x": 124,
+      "y": 182.5,
+      "width": 568,
+      "height": 250.546875
+    },
+    ".lg-hero__nut": {
+      "x": 124,
+      "y": 532.046875,
+      "width": 568,
+      "height": 48
+    },
+    ".lg-preview": {
+      "x": 748,
+      "y": 198.4375,
+      "width": 568,
+      "height": 349.90625
+    },
+    ".lg-preview__hang--nguy": {
+      "x": 774,
+      "y": 425.796875,
+      "width": 516,
+      "height": 55.5
+    }
+  },
+  "landingErrors": [],
+  "landingFailedRequests": [],
+  "fontResponses": [
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/manrope-800-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-400-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-600-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-vietnamese.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://localhost:5198/Custos-Solana/landing/fonts/be-vietnam-pro-700-latin.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    }
+  ],
+  "allPageErrors": [],
+  "allFailedRequests": []
+}

@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { NOI_DUNG, type Ngon } from "./content.ts";
 import { SiteHeader } from "./SiteHeader.tsx";
-import { Hero } from "./Hero.tsx";
+import { Hero, HangThongTin } from "./Hero.tsx";
 import { ScenarioExplorer } from "./ScenarioExplorer.tsx";
 import {
   CtaCuoi,
-  DaiThongTin,
   DeveloperSection,
   FAQ,
-  GettingStarted,
+  PipelineSection,
   ProofSection,
   SiteFooter,
-  ValueSection,
 } from "./Sections.tsx";
 
 const KHOA_LUU = "custos-landing-ngon";
@@ -86,12 +84,21 @@ export function LandingPage() {
 
       <SiteHeader t={t} ngon={ngon} doiNgon={doiNgon} />
 
+      {/*
+        THỨ TỰ MỚI (mục 5 của `DIEU-CHINH-UI-CUSTOS.md`).
+
+        A/B đứng NGAY SAU hero — nó là phần tương tác chủ lực, và bản trước đặt
+        nó sau ba thẻ giá trị nên người xem phải cuộn qua phần giải thích trùng ý
+        mới tới được điểm nhớ.
+
+        Section "bắt đầu" nền lilac đã bỏ; ba bước gộp vào `PipelineSection` theo
+        đúng pipeline thật.
+      */}
       <main id="noi-dung">
         <Hero t={t} ngon={ngon} />
-        <DaiThongTin t={t} />
-        <ValueSection t={t} />
+        <HangThongTin t={t} />
         <ScenarioExplorer t={t} ngon={ngon} />
-        <GettingStarted t={t} />
+        <PipelineSection t={t} />
         <DeveloperSection t={t} />
         <ProofSection t={t} />
         <FAQ t={t} />

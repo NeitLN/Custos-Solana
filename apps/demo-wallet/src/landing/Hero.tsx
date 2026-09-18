@@ -1,16 +1,25 @@
 import type { NoiDung, Ngon } from "./content.ts";
 import { LINK } from "./links.ts";
-import { FIXTURE, dinhDangToken, layCa } from "./sample.ts";
+import { dinhDangToken, layCa } from "./sample.ts";
 
 /**
- * Hero hai cột: chữ bên trái, khung giao dịch bên phải.
+ * Hero SÁNG — nền `bg`, phiếu phân tích bên phải.
  *
- * Khung bên phải là **DOM/CSS**, không phải ảnh render (mục 6.2). Lý do rất thực
- * tế: một ảnh chứa chữ sẽ mờ trên màn hình retina, không đổi được theo ngôn ngữ,
- * và screen reader không đọc được. Đây lại đúng là chỗ mang thông điệp chính.
+ * ## Ba thứ đã bỏ so với bản trước
  *
- * Số trong khung lấy từ CÙNG fixture với phần A/B bên dưới, nên hai nơi không bao
- * giờ lệch nhau (WEB-03).
+ *   1. **Chip instruction absolute** (UI-03). Đã tái hiện ở 390px: chip
+ *      `519,89–558,52` giao với tiêu đề khung `552,27–577,02`, che mất chữ. Sửa
+ *      không phải là thêm padding để né một vật trang trí — mà là bỏ hẳn nó.
+ *      Thành phần giao dịch giờ nằm trong hàng "Thành phần" thuộc flow thường.
+ *   2. **Backplate nghiêng 3 độ** — chi tiết đặc trưng của mẫu cũ, và cũng là
+ *      thứ từng đè lên caption.
+ *   3. **Hard shadow** `7px 7px 0`. Phiếu dùng border 1px.
+ *
+ * ## Phiếu chia hai nhóm có nghĩa
+ *
+ * `TÀI SẢN` và `QUYỀN KIỂM SOÁT` là hai nhóm tách bạch (mục 5) — đó chính là
+ * điều sản phẩm muốn người đọc phân biệt. Số lấy từ cùng fixture với phần A/B
+ * bên dưới, nên hai nơi không bao giờ lệch nhau.
  */
 export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
   const caB = layCa("b");
@@ -18,115 +27,113 @@ export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
   const soDuSau = dinhDangToken(caB.soDu.sau, caB.soDu.decimals, ngon);
 
   return (
-    <section className="lg-hero lg-dark" id="dau-trang">
+    <section className="lg-hero" id="dau-trang">
       <div className="lg-shell lg-hero__grid">
-        <div className="lg-hero__chu">
-          <p className="lg-eyebrow lg-hero__eyebrow">{t.hero.eyebrow}</p>
+        <div>
+          <p className="lg-kicker">{t.hero.kicker}</p>
           <h1 className="lg-h1 lg-hero__h1">{t.hero.h1}</h1>
-          <p className="lg-lead lg-prose lg-muted-dark lg-hero__mota">{t.hero.moTa}</p>
+          <p className="lg-lead lg-prose lg-muted lg-hero__mota">{t.hero.moTa}</p>
 
           <div className="lg-hero__nut">
             <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
               {t.chung.moDemo}
-              <span aria-hidden="true">→</span>
             </a>
-            <a className="lg-btn lg-btn--ghost" href="#cach-hoat-dong">
-              {t.chung.xemCachHoatDong}
+            {/* CTA phụ dạng text link (mục 5), không phải nút thứ hai. */}
+            <a className="lg-lien-cta" href="#trai-nghiem">
+              {t.hero.ctaPhu}
+              <span aria-hidden="true">→</span>
             </a>
           </div>
 
-          <p className="lg-caption lg-muted-dark lg-hero__ghichu">
-            <span className="lg-cham" aria-hidden="true" />
-            {t.hero.ghiChu}
-          </p>
+          <p className="lg-caption lg-hero__ghichu">{t.hero.ghiChu}</p>
         </div>
 
-        <div className="lg-hero__khung">
-          {/*
-            Tấm nền nghiêng 3 độ (mục 3). Nội dung đọc được vẫn THẲNG — nghiêng cả
-            khung sẽ làm một bảng dữ liệu khó đọc, và đây là bảng người xem cần đọc.
-            `aria-hidden` vì nó thuần trang trí.
-          */}
-          <div className="lg-hero__nen" aria-hidden="true" />
-
-          <article className="lg-panel lg-preview">
-            <header className="lg-preview__dau">
-              <span className="lg-preview__ten">{t.hero.khung.tieuDe}</span>
-              <span className="lg-pill lg-preview__mang">{t.hero.khung.mang}</span>
-            </header>
-
+        <article className="lg-panel lg-phieu">
+          <header className="lg-phieu__dau">
+            <span className="lg-phieu__ten">{t.hero.phieu.tieuDe}</span>
             {/*
-              Nhãn "kết quả mẫu" TÁCH khỏi nhãn mạng.
-
-              Mục 6.2 nói rõ: chỉ riêng chữ "Devnet" không đủ phân biệt live với
-              mẫu. Một người đọc "Devnet" hoàn toàn có thể nghĩ trang đang chạy
-              thật trên Devnet.
+              Hai nhãn TÁCH BIỆT: nguồn dữ liệu và mạng.
+              Chỉ riêng chữ "Devnet" không phân biệt được mẫu với live — một
+              người đọc hoàn toàn có thể nghĩ trang đang chạy thật trên Devnet.
             */}
-            <p className="lg-preview__nhanmau">
-              <span className="lg-pill lg-pill--mau">{t.hero.khung.nhanMau}</span>
-            </p>
+            <span className="lg-badge lg-badge--mau">{t.hero.phieu.nhanMau}</span>
+          </header>
 
-            <p className="lg-preview__hanhdong">{t.hero.khung.hanhDong}</p>
+          <p className="lg-phieu__hanhdong">
+            <strong>{t.hero.phieu.hanhDong}</strong>
+            <span className="lg-badge">{t.hero.phieu.mang}</span>
+          </p>
 
-            <dl className="lg-preview__ds">
-              <div className="lg-preview__hang">
-                <dt>{t.hero.khung.nhanSoDu}</dt>
+          <div className="lg-phieu__nhom">
+            <p className="lg-phieu__nhan-nhom">{t.hero.phieu.nhomTaiSan}</p>
+            <dl>
+              <div className="lg-phieu__hang">
+                <dt>{t.hero.phieu.nhanSoDu}</dt>
                 <dd>
-                  <span className="lg-preview__truoc">{soDuTruoc}</span>
-                  <span aria-hidden="true" className="lg-preview__mui">
+                  <span className="lg-phieu__truoc lg-so">{soDuTruoc}</span>
+                  <span className="lg-phieu__mui" aria-hidden="true">
                     →
                   </span>
-                  <strong>{soDuSau}</strong>
-                </dd>
-              </div>
-
-              {/*
-                Hàng QUYỀN — điểm nhớ của cả trang.
-
-                Không dựa riêng vào màu đỏ (mục 12.1): có icon, có nhãn chữ
-                "Quyền thay đổi", và nền riêng. Tắt màu vẫn đọc được nghĩa.
-              */}
-              <div className="lg-preview__hang lg-preview__hang--nguy">
-                <dt>
-                  <span className="lg-canhbao-icon" aria-hidden="true">
-                    !
-                  </span>
-                  {t.hero.khung.nhanQuyen}
-                </dt>
-                <dd>
-                  <span className="lg-preview__truoc">{t.hero.khung.chuBan}</span>
-                  <span aria-hidden="true" className="lg-preview__mui">
-                    →
-                  </span>
-                  <strong>{t.hero.khung.diaChiKhac}</strong>
-                  <span className="lg-pill lg-pill--nguy">{t.hero.khung.quyenThayDoi}</span>
+                  <span className="lg-so">{soDuSau}</span>
                 </dd>
               </div>
             </dl>
+          </div>
 
-            <a className="lg-link lg-preview__lien" href="#trai-nghiem">
-              {t.hero.khung.xemTinhHuong} →
-            </a>
-          </article>
+          <div className="lg-phieu__nhom">
+            <p className="lg-phieu__nhan-nhom">{t.hero.phieu.nhomQuyen}</p>
+            <dl>
+              {/* Hàng quyền: nền đỏ nhạt + icon + câu mô tả — không chỉ màu. */}
+              <div className="lg-phieu__hang lg-phieu__hang--nguy">
+                <dt>
+                  <span className="lg-icon-nguy" aria-hidden="true">
+                    !
+                  </span>
+                  {t.hero.phieu.nhanQuyen}
+                </dt>
+                <dd>
+                  <span className="lg-phieu__truoc">{t.hero.phieu.chuBan}</span>
+                  <span className="lg-phieu__mui" aria-hidden="true">
+                    →
+                  </span>
+                  <strong>{t.hero.phieu.diaChiKhac}</strong>
+                </dd>
+              </div>
+            </dl>
+            <p className="lg-phieu__canhbao">{t.hero.phieu.cauCanhBao}</p>
+          </div>
 
-          {/*
-            Hai chip instruction — LABEL, không phải button (mục 7.2).
+          <a className="lg-link lg-phieu__lien" href="#trai-nghiem">
+            {t.hero.phieu.xemDoiChieu} <span aria-hidden="true">→</span>
+          </a>
 
-            Chúng không bấm được, nên không được mang hình dạng nút. Cho chúng
-            viền và bóng giống nút sẽ là mời người dùng bấm vào một thứ không phản
-            hồi.
-          */}
-          <span className="lg-chip lg-chip--transfer">{t.hero.khung.chipTransfer}</span>
-          <span className="lg-chip lg-chip--auth">{t.hero.khung.chipSetAuthority}</span>
-
-          <p className="lg-caption lg-muted-dark lg-preview__caption">{t.hero.khung.caption}</p>
-        </div>
+          <p className="lg-caption lg-phieu__caption">{t.hero.phieu.caption}</p>
+        </article>
       </div>
+    </section>
+  );
+}
 
-      <p className="lg-sr" aria-live="off">
-        {/* Nguồn dữ liệu khung hero, đọc được bằng screen reader nhưng không chiếm chỗ. */}
-        {t.chung.nguonDuLieu}: {FIXTURE.nguonGoc.moTa}
-      </p>
+/**
+ * Hàng thông tin dưới hero — thay dải lime toàn chiều ngang (mục 5).
+ *
+ * Nằm TRONG `.lg-shell` nên nó cùng mép nội dung với hero. Đây là chỗ lỗi UI-04
+ * từng xảy ra: trước kia `<ul class="lg-shell">` bị reset list ăn mất
+ * `margin`/`padding`, làm chữ chạm mép màn hình.
+ */
+export function HangThongTin({ t }: { t: NoiDung }) {
+  return (
+    <section className="lg-thongtin lg-vien-tren">
+      <div className="lg-shell">
+        <ul className="lg-thongtin__ds">
+          {t.dai.map((o) => (
+            <li key={o.manh} className="lg-thongtin__o">
+              <strong>{o.manh}</strong>
+              <span>{o.phu}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

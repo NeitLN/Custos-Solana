@@ -1,3 +1,5 @@
+@import "./brand-tokens.css";
+
 /*
  * LANDING CUSTOS — stylesheet CÔ LẬP.
  *
@@ -118,68 +120,64 @@
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/*
+ * ══ LANDING CUSTOS — hệ xanh ngọc trên nền sáng ══════════════════════════════
+ *
+ * Thay hoàn toàn hướng tím–lilac–lime của bản trước, theo
+ * `docs/DIEU-CHINH-UI-CUSTOS.md`. Bốn thứ bị bỏ hẳn vì chúng là đặc trưng của
+ * mẫu tham chiếu, không phải của Custos:
+ *
+ *   hard shadow `7px 7px 0`  ·  backplate nghiêng  ·  chip absolute  ·  dải lime
+ *
+ * Token màu nằm ở `brand-tokens.css` (chỉ biến, không layout) để ví và Inspector
+ * import được cùng bảng màu mà không kéo theo layout của landing.
+ *
+ * Mọi rule dưới đây nằm trong `.custos-landing`, trừ ba ngoại lệ có chú thích ở
+ * cuối file.
+ */
+
 .custos-landing {
-  /* ── Màu (mục 4.1). Hex là mốc thiết kế chính xác. ───────────────────── */
-  --landing-night: #17132a;
-  --landing-paper: #f6f2e8;
-  --landing-ink: #211e2e;
-  --landing-lilac: #b9a3f3;
-  --landing-lime: #d5f45b;
-  --landing-muted: #635d71;
-  --landing-night-muted: #c9c2d9;
-  --landing-surface: #ffffff;
-  --landing-success-ink: #0c6d61;
-  --landing-danger-ink: #a12b42;
-  --landing-danger-surface: #fff0f2;
-  --landing-soft-line: #d9d2e0;
+  /* Khoảng cách (mục 4) */
+  --lg-s1: 4px;
+  --lg-s2: 8px;
+  --lg-s3: 12px;
+  --lg-s4: 16px;
+  --lg-s5: 24px;
+  --lg-s6: 32px;
+  --lg-s7: 48px;
+  --lg-s8: 64px;
 
-  /* ── Khoảng cách (mục 4.3) ────────────────────────────────────────────── */
-  --landing-s1: 4px;
-  --landing-s2: 8px;
-  --landing-s3: 12px;
-  --landing-s4: 16px;
-  --landing-s5: 24px;
-  --landing-s6: 32px;
-  --landing-s7: 48px;
-  --landing-s8: 64px;
-  --landing-s9: 96px;
-  --landing-s10: 128px;
+  --lg-container: 1200px;
+  --lg-gutter: 32px;
+  --lg-nav-h: 72px;
 
-  --landing-container: 1240px;
-  --landing-gutter: 24px;
-  --landing-nav-h: 78px;
+  --lg-font-display: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --lg-font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --lg-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  /*
-   * Hard shadow — bóng LỆCH và ĐẶC, không blur.
-   *
-   * Đây là chi tiết làm nên cảm giác "viền rõ, bóng cứng" của mẫu. Dùng blur ở
-   * đây sẽ ra một landing mềm giống mọi template khác.
-   */
-  --landing-shadow-panel: 7px 7px 0 var(--landing-ink);
-  --landing-shadow-card: 4px 4px 0 var(--landing-ink);
-
-  --landing-font-display: "Manrope", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --landing-font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --landing-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
-
-  background: var(--landing-paper);
-  color: var(--landing-ink);
-  font-family: var(--landing-font-body);
+  background: var(--custos-bg);
+  color: var(--custos-text);
+  font-family: var(--lg-font-body);
   font-size: 17px;
-  line-height: 1.65;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 @media (max-width: 1024px) {
   .custos-landing {
-    --landing-gutter: 20px;
+    --lg-gutter: 24px;
   }
 }
 @media (max-width: 640px) {
   .custos-landing {
-    --landing-gutter: 16px;
-    --landing-nav-h: 64px;
+    --lg-gutter: 20px;
+    --lg-nav-h: 64px;
     font-size: 16px;
+  }
+}
+@media (max-width: 380px) {
+  .custos-landing {
+    --lg-gutter: 16px;
   }
 }
 
@@ -194,7 +192,7 @@
 .custos-landing h1,
 .custos-landing h2,
 .custos-landing h3 {
-  font-family: var(--landing-font-display);
+  font-family: var(--lg-font-display);
   font-weight: 800;
   margin: 0;
   text-wrap: balance;
@@ -204,13 +202,25 @@
   margin: 0;
 }
 
-/* Đoạn văn giải thích: 55–65 ký tự mỗi dòng (mục 4.2). */
 .custos-landing .lg-prose {
   max-width: 62ch;
 }
 
-.custos-landing ul,
-.custos-landing ol {
+/*
+ * RESET LIST — chỉ áp cho list, KHÔNG áp cho container.
+ *
+ * LỖI UI-04, đã tái hiện và đo: reset cũ là
+ * `.custos-landing ul, .custos-landing ol { margin: 0; padding: 0 }` với
+ * specificity (0,2,0), cao hơn `.lg-shell` (0,1,0). Mọi `<ul class="lg-shell">`
+ * mất cả `margin: 0 auto` lẫn `padding-inline`, nên dải thông tin có `x = 0` và
+ * chữ chạm mép màn hình — đo được `[0, 124, 334]` là ba mép khác nhau trên cùng
+ * một trang.
+ *
+ * Sửa tận gốc: `.lg-shell` không bao giờ là `<ul>` nữa (xem `Sections.tsx`), và
+ * reset dùng `:where()` để có specificity 0 — nó thua mọi class, kể cả class
+ * đơn. Cách này còn đúng cho mọi list sau này, không chỉ vá một dải.
+ */
+.custos-landing :where(ul, ol) {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -218,103 +228,107 @@
 
 .lg-shell {
   width: 100%;
-  max-width: var(--landing-container);
-  margin: 0 auto;
-  padding-inline: var(--landing-gutter);
+  max-width: var(--lg-container);
+  margin-inline: auto;
+  padding-inline: var(--lg-gutter);
 }
 
 .lg-section {
-  padding-block: 100px;
+  padding-block: 80px;
 }
 .lg-section--tight {
-  padding-block: 72px;
+  padding-block: 56px;
 }
 @media (max-width: 1024px) {
   .lg-section {
-    padding-block: 72px;
+    padding-block: 64px;
   }
   .lg-section--tight {
-    padding-block: 56px;
+    padding-block: 48px;
   }
 }
 @media (max-width: 640px) {
   .lg-section {
-    padding-block: 56px;
+    padding-block: 48px;
   }
   .lg-section--tight {
-    padding-block: 44px;
+    padding-block: 40px;
   }
 }
 
 .lg-dark {
-  background: var(--landing-night);
-  color: var(--landing-paper);
+  background: var(--custos-dark);
+  color: #ffffff;
 }
-.lg-cream {
-  background: var(--landing-paper);
-  color: var(--landing-ink);
-}
-.lg-lilac {
-  background: #ece5fb;
-  color: var(--landing-ink);
+.lg-surface {
+  background: var(--custos-surface);
 }
 
-/*
- * `scroll-margin-top` lớn hơn navbar (mục 5): mở link có hash thì tiêu đề không
- * bị navbar sticky che mất.
- */
+/* Divider nhẹ thay cho việc đổi nền mỗi section (mục 2, UI-06). */
+.lg-vien-tren {
+  border-top: 1px solid var(--custos-border);
+}
+
 .custos-landing [id] {
-  scroll-margin-top: calc(var(--landing-nav-h) + 24px);
+  scroll-margin-top: calc(var(--lg-nav-h) + 20px);
 }
 
-/* ── Chữ ─────────────────────────────────────────────────────────────────── */
+/* ── Chữ (mục 4) ─────────────────────────────────────────────────────────── */
 
 .lg-h1 {
-  font-size: clamp(2.375rem, 1.35rem + 4.4vw, 4.5rem);
-  line-height: 1.16;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
 }
 .lg-h2 {
-  font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.875rem);
+  font-size: clamp(1.625rem, 1.2rem + 1.9vw, 2.5rem);
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
 .lg-h3 {
-  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem);
+  font-size: clamp(1.3125rem, 1.2rem + 0.45vw, 1.5rem);
   line-height: 1.3;
-  letter-spacing: -0.01em;
 }
 
-.lg-eyebrow {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+/*
+ * Dòng nhỏ sentence case thay eyebrow in hoa (mục 4).
+ * Không `text-transform: uppercase`, không letter-spacing rộng.
+ */
+.lg-kicker {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--custos-brand);
   line-height: 1.5;
 }
 
 .lg-lead {
-  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
-  line-height: 1.65;
+  font-size: clamp(1.0625rem, 1rem + 0.28vw, 1.1875rem);
+  line-height: 1.62;
 }
 
 .lg-muted {
-  color: var(--landing-muted);
+  color: var(--custos-muted);
 }
 .lg-dark .lg-muted,
 .lg-muted-dark {
-  color: var(--landing-night-muted);
+  color: var(--custos-on-dark-muted);
 }
 
 .lg-caption {
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .lg-mono {
-  font-family: var(--landing-font-mono);
-  font-size: 13px;
-  line-height: 1.6;
+  font-family: var(--lg-font-mono);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* Số liệu: `tabular-nums` để hai cột A/B thẳng hàng khi đối chiếu (mục 4). */
+.lg-so {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 /* ── Nút ─────────────────────────────────────────────────────────────────── */
@@ -323,224 +337,164 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  /*
+   * 48px, KHÔNG phải 46px.
+   *
+   * Đã đo và đỏ: bản đầu tôi đặt 46px cho "gọn hơn", nhưng ngưỡng vùng bấm là
+   * 48px cho nút chính (và 44px cho target nói chung). Hai pixel đó không đổi
+   * thị giác gì đáng kể và làm hỏng một tiêu chí đã công bố.
+   */
   min-height: 48px;
-  padding: 0 23px;
-  border-radius: 11px;
-  border: 2px solid var(--landing-ink);
-  font-family: var(--landing-font-body);
-  font-size: 16px;
-  font-weight: 700;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: var(--lg-font-body);
+  font-size: 15.5px;
+  font-weight: 600;
   line-height: 1.3;
   text-decoration: none;
   cursor: pointer;
-  background: var(--landing-surface);
-  color: var(--landing-ink);
-  box-shadow: var(--landing-shadow-card);
+  background: var(--custos-surface);
+  color: var(--custos-text);
   transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    background-color 140ms ease;
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
 }
 
+/* CTA chính: nền brand, chữ trắng — đo được 6,28:1. */
 .lg-btn--primary {
-  background: var(--landing-lilac);
+  background: var(--custos-brand);
+  color: #ffffff;
+  border-color: var(--custos-brand);
 }
-.lg-btn--lime {
-  background: var(--landing-lime);
-}
-
-/*
- * Nút trên nền tối vẫn giữ viền `ink`.
- *
- * Viền sáng sẽ làm mất cảm giác "outline cứng" của mẫu; thay vào đó nền nút
- * sáng tự tách khỏi nền tím đậm.
- */
-.lg-dark .lg-btn {
-  box-shadow: 5px 5px 0 #000000;
-}
-
-.lg-btn--ghost {
+.lg-btn--outline {
   background: transparent;
-  box-shadow: none;
-  border-color: var(--landing-ink);
+  border-color: var(--custos-control-border);
+  color: var(--custos-text);
 }
-.lg-dark .lg-btn--ghost {
-  border-color: var(--landing-night-muted);
-  color: var(--landing-paper);
-  box-shadow: none;
+.lg-dark .lg-btn--outline {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
 }
 
 @media (hover: hover) {
-  .lg-btn:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 5px 5px 0 var(--landing-ink);
+  .lg-btn--primary:hover {
+    background: var(--custos-brand-hover);
+    border-color: var(--custos-brand-hover);
   }
-  .lg-dark .lg-btn:hover {
-    box-shadow: 6px 6px 0 #000000;
+  .lg-btn--outline:hover {
+    border-color: var(--custos-brand);
+    color: var(--custos-brand);
   }
-  .lg-btn--ghost:hover {
-    background: rgba(33, 30, 46, 0.06);
-    box-shadow: none;
-    transform: none;
+  .lg-dark .lg-btn--outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    color: #ffffff;
   }
-  .lg-dark .lg-btn--ghost:hover {
-    background: rgba(246, 242, 232, 0.1);
-  }
-}
-
-/* Active dịch 2px và giảm shadow — "cảm giác nhấn thật" (mục 4.3). */
-.lg-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--landing-ink);
-}
-.lg-dark .lg-btn:active {
-  box-shadow: 1px 1px 0 #000000;
 }
 
 /*
- * FOCUS RING VÒNG KÉP.
+ * Không `transform` khi nhấn.
  *
- * Mục 4.1 đòi focus nhìn rõ trên CẢ nền sáng lẫn nền tối. Một vòng đơn màu ink
- * biến mất trên nền tím đậm; một vòng đơn màu sáng biến mất trên nền kem. Vòng
- * kép (trong tối + ngoài sáng) nhìn được trên mọi nền của trang này.
+ * Nút dịch 2px kèm bóng cứng là chi tiết đặc trưng của mẫu cũ (mục 4: *"bỏ nút
+ * dày như sticker"*). Phản hồi nhấn ở đây đến từ đổi màu nền.
+ */
+.lg-btn:active {
+  background: var(--custos-brand-hover);
+}
+.lg-btn--outline:active {
+  background: var(--custos-brand-soft);
+}
+
+/* Link dạng text làm CTA phụ (mục 5). */
+.lg-lien-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--custos-brand);
+  font-weight: 600;
+  font-size: 15.5px;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.lg-lien-cta:hover {
+  color: var(--custos-brand-hover);
+}
+
+/*
+ * FOCUS — brand trên nền sáng, trắng trên nền tối.
+ *
+ * Mục 6: *"Focus ring: brand trên light, màu sáng đủ contrast trên dark. Không
+ * xóa outline khi chưa có thay thế."*
  */
 .custos-landing :focus-visible {
-  outline: 3px solid var(--landing-ink);
+  outline: 3px solid var(--custos-brand);
   outline-offset: 2px;
-  box-shadow: 0 0 0 6px var(--landing-lime);
   border-radius: 6px;
 }
 .lg-dark :focus-visible {
-  outline-color: var(--landing-paper);
-  box-shadow: 0 0 0 6px rgba(213, 244, 91, 0.9);
+  outline-color: #ffffff;
 }
 
-/* ── Thẻ và panel ────────────────────────────────────────────────────────── */
-
-.lg-card {
-  background: var(--landing-surface);
-  border: 2px solid var(--landing-ink);
-  border-radius: 15px;
-  box-shadow: var(--landing-shadow-card);
-  padding: var(--landing-s5);
-}
+/* ── Panel và thẻ ────────────────────────────────────────────────────────── */
 
 /*
- * `color` PHẢI khai tường minh ở đây.
+ * Border 1px, KHÔNG hard shadow.
  *
- * LỖI ĐÃ ĐO, nhìn thấy trên ảnh chụp 1440x900: panel nằm trong `.lg-dark` (hero)
- * nên nó KẾ THỪA `color: var(--landing-paper)` — chữ kem trên nền trắng, gần như
- * không đọc được. Nền panel là `surface` chứ không phải nền tối, nên nó phải tự
- * đặt lại màu chữ thay vì nhận từ section bao ngoài.
- *
- * Cùng lý do với `.lg-card`: nó cũng có thể nằm trong section tối.
+ * Mục 4: *"Bỏ `7px 7px 0`, `4px 4px 0`, backplate nghiêng."* Panel dữ liệu dùng
+ * border; không biến mọi thẻ thành vật nổi.
  */
-.lg-panel,
-.lg-card {
-  color: var(--landing-ink);
-}
-
 .lg-panel {
-  background: var(--landing-surface);
-  border: 2px solid var(--landing-ink);
-  border-radius: 16px;
-  box-shadow: var(--landing-shadow-panel);
+  background: var(--custos-surface);
+  border: 1px solid var(--custos-border);
+  border-radius: 14px;
+}
+.lg-card {
+  background: var(--custos-surface);
+  border: 1px solid var(--custos-border);
+  border-radius: 14px;
+  padding: var(--lg-s5);
+  color: var(--custos-text);
 }
 
-.lg-pill {
+.lg-badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  border: 1.5px solid currentColor;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 12.5px;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
+  font-weight: 600;
+  line-height: 1.45;
+  background: #eef2f1;
+  color: var(--custos-muted);
+  border: 1px solid var(--custos-border);
+}
+/* Nhãn nguồn mẫu: neutral xám–xanh, KHÔNG pulse-dot online (mục 3). */
+.lg-badge--mau {
+  background: #eaf0ef;
+  color: #3d5450;
+  border-color: #cddad7;
+}
+.lg-badge--nguy {
+  background: var(--custos-danger-bg);
+  color: var(--custos-danger);
+  border-color: #f3ccd4;
 }
 
 .lg-link {
-  color: inherit;
+  color: var(--custos-brand);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-thickness: 1.5px;
 }
 .lg-link:hover {
-  text-decoration-thickness: 2.5px;
+  color: var(--custos-brand-hover);
 }
 
-/* ── Skip link ───────────────────────────────────────────────────────────── */
-
-.lg-skip {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 100;
-}
-.lg-skip:focus {
-  left: var(--landing-gutter);
-  top: 10px;
-  padding: 12px 18px;
-  background: var(--landing-lime);
-  color: var(--landing-ink);
-  border: 2px solid var(--landing-ink);
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-/* ── Ba ngoại lệ ngoài `.custos-landing` ─────────────────────────────────── */
-
-/*
- * Ba rule dưới đây KHÔNG nằm dưới `.custos-landing` vì chúng phải áp lên
- * `html`/`body` — và điều đó chỉ an toàn vì file này chỉ được import bởi
- * `landing.tsx`, entry riêng của `gioi-thieu.html`. Ví và Inspector không bao
- * giờ nạp nó. Mục 11.3 cho phép global rule trong CSS entry landing với đúng
- * điều kiện này.
- */
-html:has(.custos-landing) {
-  background: var(--landing-night, #17132a);
-}
-
-body:has(.custos-landing) {
-  margin: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html:has(.custos-landing) {
-    scroll-behavior: auto;
-  }
-}
-html:has(.custos-landing) {
-  scroll-behavior: smooth;
-}
-
-/*
- * REDUCED MOTION (mục 7.5).
- *
- * Bỏ translate/reveal và chuyển trạng thái ngay, nhưng GIỮ NGUYÊN nội dung và
- * chức năng. Không dùng `animation: none` lên mọi thứ rồi để một phần tử mắc kẹt
- * ở `opacity: 0` — đó là cách làm mất nội dung thay vì tắt chuyển động.
- */
-@media (prefers-reduced-motion: reduce) {
-  .custos-landing *,
-  .custos-landing *::before,
-  .custos-landing *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .custos-landing .lg-reveal {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-/* ══ Tiện ích ═════════════════════════════════════════════════════════════ */
-
-/* Chữ chỉ dành cho screen reader. */
 .lg-sr {
   position: absolute;
   width: 1px;
@@ -553,51 +507,39 @@ html:has(.custos-landing) {
   border: 0;
 }
 
-.lg-cham {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: var(--landing-lime);
-  vertical-align: middle;
-  flex: none;
+.lg-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.lg-skip:focus {
+  left: var(--lg-gutter);
+  top: 10px;
+  padding: 12px 18px;
+  background: var(--custos-brand);
+  color: #ffffff;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
-/*
- * Icon cảnh báo — hình tròn có dấu `!`.
- *
- * Mục 12.1: cảnh báo phải có icon + tên + mô tả, không dựa RIÊNG vào màu. Đây là
- * phần "icon"; phần "tên" là nhãn chữ đi kèm trong từng component.
- */
-.lg-canhbao-icon {
+/* Icon cảnh báo: icon + chữ, không dựa riêng vào màu (mục 4). */
+.lg-icon-nguy {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
+  flex: none;
   margin-right: 8px;
   border-radius: 50%;
-  background: var(--landing-danger-ink);
+  background: var(--custos-danger);
   color: #ffffff;
   font-size: 12px;
   font-weight: 800;
   line-height: 1;
-  flex: none;
 }
 
-.lg-pill--mau {
-  background: var(--landing-ink);
-  color: var(--landing-paper);
-  border-color: var(--landing-ink);
-}
-.lg-pill--nguy {
-  background: var(--landing-danger-surface);
-  color: var(--landing-danger-ink);
-  border-color: currentColor;
-}
-
-/* Địa chỉ đầy đủ: ngắt được để không tràn ngang trên mobile. */
 .lg-diachi {
   word-break: break-all;
   overflow-wrap: anywhere;
@@ -609,21 +551,19 @@ html:has(.custos-landing) {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: var(--landing-night);
-  color: var(--landing-paper);
-  /* Viền trong suốt giữ CHỖ sẵn: khi cuộn chỉ đổi màu, không đổi chiều cao. */
+  background: var(--custos-surface);
   border-bottom: 1px solid transparent;
   transition: border-color 140ms ease;
 }
 .lg-header--cuon {
-  border-bottom-color: rgba(246, 242, 232, 0.16);
+  border-bottom-color: var(--custos-border);
 }
 
 .lg-header__in {
-  min-height: var(--landing-nav-h);
+  min-height: var(--lg-nav-h);
   display: flex;
   align-items: center;
-  gap: var(--landing-s5);
+  gap: var(--lg-s5);
 }
 
 .lg-brand {
@@ -632,27 +572,33 @@ html:has(.custos-landing) {
   gap: 10px;
   color: inherit;
   text-decoration: none;
-  flex: none;
+  /* `min-width: 0` cho phép brand CO LẠI thay vì đẩy header tràn ngang. */
+  min-width: 0;
 }
 .lg-brand__dino {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
+  flex: none;
 }
 .lg-brand__chu {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  min-width: 0;
 }
 .lg-brand__chu strong {
-  font-family: var(--landing-font-display);
-  font-size: 20px;
+  font-family: var(--lg-font-display);
+  font-size: 19px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 .lg-brand__phu {
   font-size: 11.5px;
-  color: var(--landing-night-muted);
+  color: var(--custos-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lg-nav {
@@ -660,68 +606,106 @@ html:has(.custos-landing) {
 }
 .lg-nav__ds {
   display: flex;
-  gap: var(--landing-s5);
+  gap: var(--lg-s5);
 }
 .lg-nav__lien {
-  color: var(--landing-paper);
+  color: var(--custos-text);
   text-decoration: none;
-  font-size: 15.5px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   padding: 6px 2px;
   border-bottom: 2px solid transparent;
 }
 .lg-nav__lien:hover {
-  border-bottom-color: var(--landing-lime);
+  color: var(--custos-brand);
+  border-bottom-color: var(--custos-brand);
 }
 
 .lg-header__phai {
   display: flex;
   align-items: center;
-  gap: var(--landing-s3);
+  gap: var(--lg-s3);
   flex: none;
 }
 
 .lg-ngon {
   display: inline-flex;
-  border: 1.5px solid rgba(246, 242, 232, 0.4);
-  border-radius: 999px;
+  border: 1px solid var(--custos-control-border);
+  border-radius: 8px;
   overflow: hidden;
 }
 .lg-ngon__nut {
   min-height: 36px;
-  min-width: 44px;
-  padding: 0 12px;
+  min-width: 42px;
+  padding: 0 10px;
   border: 0;
   background: transparent;
-  color: var(--landing-night-muted);
+  color: var(--custos-muted);
   font-family: inherit;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 .lg-ngon__nut[aria-pressed="true"] {
-  background: var(--landing-paper);
-  color: var(--landing-ink);
+  background: var(--custos-brand-soft);
+  color: var(--custos-brand);
 }
 
+/*
+ * NÚT MENU DẠNG ICON — 44×44px.
+ *
+ * LỖI UI-02, đã đo: ở 320px, ba cụm (brand + VI/EN + nút chữ "Mở menu") cộng
+ * gap và gutter cho `scrollWidth = 358`, tràn 38px. Bản EN còn tệ hơn: **55px**,
+ * vì "Open menu" dài hơn "Mở menu" — tài liệu chỉ ghi 320px VI, đo lại thấy cả
+ * 360px EN cũng tràn 15px.
+ *
+ * Sửa theo mục 2: ở ≤640px header chỉ còn brand và một nút icon; VI/EN chuyển
+ * vào trong menu. Tên accessible vẫn đầy đủ theo locale qua `.lg-sr`, nên không
+ * mất chức năng — chỉ mất chiều rộng cố định của chữ.
+ */
 .lg-menu-nut {
   display: none;
-  min-height: 44px;
-  padding: 0 14px;
-  border: 1.5px solid rgba(246, 242, 232, 0.4);
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--custos-control-border);
   border-radius: 10px;
   background: transparent;
-  color: var(--landing-paper);
-  font-family: inherit;
-  font-size: 14.5px;
-  font-weight: 700;
+  color: var(--custos-text);
   cursor: pointer;
+  flex: none;
+}
+.lg-menu-nut__vach {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  position: relative;
+}
+.lg-menu-nut__vach::before,
+.lg-menu-nut__vach::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.lg-menu-nut__vach::before {
+  top: -6px;
+}
+.lg-menu-nut__vach::after {
+  top: 6px;
 }
 
 .lg-menu {
-  background: var(--landing-night);
-  border-top: 1px solid rgba(246, 242, 232, 0.16);
-  padding-block: var(--landing-s4);
+  background: var(--custos-surface);
+  border-top: 1px solid var(--custos-border);
+  padding-block: var(--lg-s4);
 }
 .lg-menu__ds {
   display: flex;
@@ -730,32 +714,47 @@ html:has(.custos-landing) {
 }
 .lg-menu__lien {
   display: block;
-  padding: 14px 4px;
-  color: var(--landing-paper);
+  padding: 13px 2px;
+  color: var(--custos-text);
   text-decoration: none;
-  font-size: 17px;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(246, 242, 232, 0.12);
+  font-size: 16.5px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--custos-border);
 }
 .lg-menu__lien--cta {
-  color: var(--landing-lime);
+  color: var(--custos-brand);
+  font-weight: 700;
   border-bottom: 0;
 }
+/* VI/EN trong menu mobile — vẫn truy cập được, chỉ đổi chỗ (UI-02). */
+.lg-menu__ngon {
+  display: flex;
+  align-items: center;
+  gap: var(--lg-s3);
+  padding: 14px 2px 4px;
+}
+.lg-menu__ngon-nhan {
+  font-size: 14px;
+  color: var(--custos-muted);
+}
 
-@media (max-width: 1080px) {
+@media (max-width: 1024px) {
   .lg-nav,
   .lg-header__cta {
     display: none;
   }
   .lg-menu-nut {
     display: inline-flex;
-    align-items: center;
   }
   .lg-header__phai {
     margin-left: auto;
   }
 }
-@media (max-width: 420px) {
+@media (max-width: 640px) {
+  /* VI/EN rời header, vào menu. */
+  .lg-header__phai > .lg-ngon {
+    display: none;
+  }
   .lg-brand__phu {
     display: none;
   }
@@ -764,614 +763,487 @@ html:has(.custos-landing) {
 /* ══ Hero ═════════════════════════════════════════════════════════════════ */
 
 .lg-hero {
-  padding-block: 84px 104px;
-  position: relative;
-  overflow: hidden;
+  padding-block: 64px 72px;
+  background: var(--custos-bg);
 }
 .lg-hero__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 56px;
-  align-items: center;
-}
-.lg-hero__eyebrow {
-  color: var(--landing-lime);
-  margin-bottom: var(--landing-s4);
+  /*
+   * ĐO ĐƯỢC rồi chỉnh, không lấy tỷ lệ trong đặc tả làm số tuyệt đối.
+   *
+   * `5fr 7fr` + gap 56px cho cột trái đúng **450px** ở 1440, và H1 64px vỡ
+   * thành ba dòng rời rạc ("Hiểu điều / bạn sắp ký."). Mục 5 nói "khoảng 5/7",
+   * nên 0,88fr là điều chỉnh trong hướng đó chứ không phải đi ngược nó.
+   *
+   * `align-items: start` thay cho `center`: phiếu cao hơn cột trái 118px, và
+   * căn giữa đẩy chữ xuống tạo khoảng trống lớn phía trên.
+   */
+  grid-template-columns: 0.88fr 1fr;
+  gap: 48px;
+  align-items: start;
 }
 .lg-hero__h1 {
-  margin-bottom: var(--landing-s5);
+  margin-block: var(--lg-s3) var(--lg-s5);
 }
 .lg-hero__mota {
-  margin-bottom: var(--landing-s6);
+  margin-bottom: var(--lg-s5);
 }
 .lg-hero__nut {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--landing-s3);
-  margin-bottom: var(--landing-s5);
+  align-items: center;
+  gap: var(--lg-s4);
+  margin-bottom: var(--lg-s4);
 }
 .lg-hero__ghichu {
-  display: flex;
-  align-items: center;
+  color: var(--custos-muted);
 }
 
-.lg-hero__khung {
-  position: relative;
-  /* Giữ mọi z-index của hero trong một ngữ cảnh riêng, không rò ra header. */
-  isolation: isolate;
-}
+/* ── Phiếu phân tích (mục 5) ─────────────────────────────────────────────── */
 
-/* Tấm nền nghiêng 3 độ — trang trí, nội dung bên trên vẫn thẳng (mục 3). */
-.lg-hero__nen {
-  position: absolute;
-  /*
-   * `z-index: 0` và khối cha `isolation: isolate`.
-   *
-   * LỖI ĐÃ ĐO lần hai: cho caption `z-index: 2` vẫn chưa đủ, vì tấm nền là anh em
-   * cùng cấp ĐỨNG SAU trong DOM và cả hai đều nằm ở lớp auto — thứ tự nguồn quyết
-   * định, và tấm nền thắng. Đặt tấm nền hẳn xuống lớp 0 mới là thứ sửa được.
-   */
-  z-index: 0;
-  /*
-   * `bottom` DƯƠNG: tấm nền dừng TRƯỚC khi hết panel, không kéo xuống dưới.
-   *
-   * LỖI ĐÃ ĐO (lần ba, và lần này đo thay vì đoán). Hai lần trước tôi sửa
-   * `z-index` — nhưng số đo cho thấy z-index đã đúng: caption `z:2`, nền `z:0`.
-   * Vấn đề thật là HÌNH HỌC: nền chạy từ 186px tới 609px, caption nằm ở
-   * 532–572px, nên chữ xám rơi trọn lên nền tím đặc. Một phần tử ở lớp dưới vẫn
-   * làm chữ không đọc được nếu nó nằm đúng sau chữ.
-   *
-   * Thu nền lại còn phần bên phải/dưới panel là đủ để giữ hiệu ứng lệch.
-   */
-  inset: 24px -14px 64px 32px;
-  background: var(--landing-lilac);
-  border: 2px solid var(--landing-ink);
-  border-radius: 18px;
-  transform: rotate(3deg);
+.lg-phieu {
+  padding: var(--lg-s5);
 }
-
-.lg-preview {
-  position: relative;
-  z-index: 2;
-  padding: var(--landing-s5);
-}
-.lg-preview__dau {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--landing-s3);
-  padding-bottom: var(--landing-s3);
-  border-bottom: 1px solid var(--landing-soft-line);
-}
-.lg-preview__ten {
-  font-family: var(--landing-font-display);
-  font-weight: 800;
-  font-size: 15px;
-}
-.lg-preview__mang {
-  background: var(--landing-lime);
-  border-color: var(--landing-ink);
-  color: var(--landing-ink);
-}
-.lg-preview__nhanmau {
-  margin-top: var(--landing-s3);
-}
-.lg-preview__hanhdong {
-  font-family: var(--landing-font-display);
-  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-top: var(--landing-s3);
-}
-.lg-preview__ds {
-  margin: var(--landing-s4) 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--landing-s2);
-}
-.lg-preview__hang {
+.lg-phieu__dau {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
-  padding: 12px 14px;
-  border-radius: 11px;
-  background: #faf8f3;
-  border: 1px solid var(--landing-soft-line);
+  gap: var(--lg-s3);
 }
-.lg-preview__hang dt {
+.lg-phieu__ten {
+  font-family: var(--lg-font-display);
+  font-size: 15px;
+  font-weight: 800;
+}
+.lg-phieu__hanhdong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--lg-s3);
+  margin-top: var(--lg-s2);
+  padding-bottom: var(--lg-s4);
+  border-bottom: 1px solid var(--custos-border);
+}
+.lg-phieu__hanhdong strong {
+  font-family: var(--lg-font-display);
+  font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Nhóm TÀI SẢN / QUYỀN KIỂM SOÁT — nhãn nhóm nhỏ, chữ thường. */
+.lg-phieu__nhom {
+  margin-top: var(--lg-s4);
+}
+.lg-phieu__nhan-nhom {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--custos-muted);
+  margin-bottom: var(--lg-s2);
+}
+.lg-phieu__hang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lg-s2);
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--custos-border);
+  background: var(--custos-surface);
+}
+.lg-phieu__hang dt {
+  font-size: 14.5px;
+  color: var(--custos-muted);
   display: flex;
   align-items: center;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--landing-muted);
 }
-.lg-preview__hang dd {
+.lg-phieu__hang dd {
   margin: 0;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px;
   font-size: 15.5px;
 }
-.lg-preview__hang--nguy {
-  background: var(--landing-danger-surface);
-  border-color: var(--landing-danger-ink);
+.lg-phieu__hang--nguy {
+  background: var(--custos-danger-bg);
+  border-color: #f0c3cc;
 }
-.lg-preview__hang--nguy dt,
-.lg-preview__hang--nguy dd strong {
-  color: var(--landing-danger-ink);
+.lg-phieu__hang--nguy dt {
+  color: var(--custos-danger);
 }
-.lg-preview__truoc,
-.lg-preview__mui {
-  color: var(--landing-muted);
+.lg-phieu__truoc,
+.lg-phieu__mui {
+  color: var(--custos-muted);
 }
-.lg-preview__lien {
+/* Câu mô tả hậu quả, đi kèm hàng quyền — icon + chữ, không chỉ màu. */
+.lg-phieu__canhbao {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: var(--lg-s2);
+  font-size: 14px;
+  color: var(--custos-danger);
+}
+.lg-phieu__lien {
   display: inline-block;
-  margin-top: var(--landing-s4);
-  font-size: 14.5px;
+  margin-top: var(--lg-s5);
+  font-size: 15px;
 }
-/*
- * Caption nằm NGOÀI panel và có `position: relative`.
- *
- * LỖI ĐÃ ĐO: không có `position`, nó xếp sau panel trong luồng thường nhưng tấm
- * nền nghiêng (`position: absolute`, `z-index` mặc định) phủ lên trên, cắt mất
- * hai dòng chữ. Nâng nó lên một lớp là đủ — không cần đổi `z-index` của tấm nền,
- * vì tấm nền còn phải nằm dưới chính panel.
- */
-.lg-preview__caption {
-  position: relative;
-  z-index: 2;
-  margin-top: var(--landing-s5);
-  max-width: 46ch;
-}
-
-/* Chip instruction — LABEL, không phải nút (mục 7.2). */
-.lg-chip {
-  position: absolute;
-  display: inline-block;
-  padding: 7px 13px;
-  border-radius: 9px;
-  border: 2px solid var(--landing-ink);
-  background: var(--landing-paper);
-  color: var(--landing-ink);
-  font-family: var(--landing-font-mono);
-  font-size: 12.5px;
-  font-weight: 600;
-  box-shadow: 3px 3px 0 var(--landing-ink);
-  /* Trên panel, dưới header sticky. */
-  z-index: 3;
-}
-.lg-chip--transfer {
-  top: -16px;
-  left: -18px;
-}
-.lg-chip--auth {
-  bottom: 52px;
-  right: -16px;
-  background: var(--landing-lime);
+.lg-phieu__caption {
+  margin-top: var(--lg-s4);
+  color: var(--custos-muted);
 }
 
 @media (max-width: 960px) {
   .lg-hero {
-    padding-block: 56px 72px;
+    padding-block: 40px 56px;
   }
   .lg-hero__grid {
     grid-template-columns: 1fr;
-    gap: 44px;
-  }
-  /* Mobile bỏ tấm nền nghiêng (mục 3). */
-  .lg-hero__nen {
-    display: none;
-  }
-  .lg-chip--transfer {
-    top: -12px;
-    left: 0;
-  }
-  .lg-chip--auth {
-    right: 0;
-    bottom: 44px;
+    gap: 36px;
   }
 }
 @media (max-width: 520px) {
-  .lg-chip--auth {
-    bottom: auto;
-    top: -12px;
-    right: 0;
+  .lg-phieu {
+    padding: var(--lg-s4);
   }
-  .lg-preview {
-    padding: var(--landing-s4);
-  }
-  .lg-preview__hang {
+  .lg-phieu__hang {
     flex-direction: column;
     align-items: flex-start;
   }
 }
 
-/* ══ Dải thông tin ════════════════════════════════════════════════════════ */
+/* ══ Hàng thông tin dưới hero (thay dải lime) ═════════════════════════════ */
 
-.lg-dai {
-  background: var(--landing-lime);
-  color: var(--landing-ink);
-  border-block: 2px solid var(--landing-ink);
-  padding-block: 22px;
+.lg-thongtin {
+  padding-block: var(--lg-s5);
 }
-.lg-dai__ds {
+.lg-thongtin__ds {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--landing-s5);
+  gap: var(--lg-s5);
 }
-.lg-dai__o {
+.lg-thongtin__o {
   display: flex;
   flex-direction: column;
-  line-height: 1.35;
+  gap: 2px;
+  line-height: 1.4;
 }
-.lg-dai__o strong {
-  font-family: var(--landing-font-display);
-  font-size: 17px;
-  font-weight: 800;
-}
-.lg-dai__o span {
-  font-size: 13.5px;
-  color: #44405a;
-}
-@media (max-width: 760px) {
-  .lg-dai__ds {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--landing-s4);
-  }
-}
-
-/* ══ Ba giá trị ═══════════════════════════════════════════════════════════ */
-
-.lg-gt__modau {
-  margin-top: var(--landing-s4);
-}
-.lg-gt__ds {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--landing-s5);
-  margin-top: var(--landing-s7);
-}
-.lg-gt__the {
-  display: flex;
-  flex-direction: column;
-  gap: var(--landing-s2);
-}
-.lg-gt__so {
-  font-family: var(--landing-font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--landing-muted);
-}
-@media (max-width: 900px) {
-  .lg-gt__ds {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Sơ đồ luồng — đổi nhịp so với lưới ba thẻ. */
-.lg-sodo {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--landing-s3);
-  margin-top: var(--landing-s7);
-  padding: var(--landing-s5);
-  border: 2px dashed var(--landing-soft-line);
-  border-radius: 16px;
-}
-.lg-sodo__buoc {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--landing-s3);
-}
-.lg-sodo__chu {
-  display: inline-block;
-  padding: 9px 15px;
-  border-radius: 10px;
-  background: var(--landing-surface);
-  border: 2px solid var(--landing-ink);
-  font-size: 14.5px;
-  font-weight: 600;
-}
-.lg-sodo__mui {
-  color: var(--landing-muted);
-  font-size: 18px;
-}
-.lg-sodo__ghichu {
-  margin-top: var(--landing-s3);
-}
-
-/* ══ A/B ══════════════════════════════════════════════════════════════════ */
-
-.lg-ab__dau {
-  margin-bottom: var(--landing-s6);
-}
-.lg-ab__mota {
-  margin-top: var(--landing-s4);
-}
-.lg-ab {
-  padding: var(--landing-s5);
-}
-.lg-ab__nguon {
-  margin-bottom: var(--landing-s4);
-}
-.lg-ab__than {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: var(--landing-s6);
-  align-items: start;
-}
-.lg-ab__chon {
-  display: flex;
-  flex-direction: column;
-  gap: var(--landing-s3);
-}
-.lg-ab__nut {
-  min-height: 56px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: 2px solid var(--landing-ink);
-  background: var(--landing-surface);
-  color: var(--landing-ink);
-  font-family: inherit;
+.lg-thongtin__o strong {
   font-size: 15.5px;
   font-weight: 700;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background-color 160ms ease,
-    box-shadow 160ms ease;
 }
-/*
- * Trạng thái đang chọn KHÔNG chỉ dựa vào màu: nút được chọn có nền đậm, chữ đảo
- * màu và một bóng cứng. `aria-pressed` mang thông tin cho screen reader.
- */
-.lg-ab__nut[aria-pressed="true"] {
-  background: var(--landing-ink);
-  color: var(--landing-paper);
-  box-shadow: var(--landing-shadow-card);
+.lg-thongtin__o span {
+  font-size: 13.5px;
+  color: var(--custos-muted);
 }
-@media (hover: hover) {
-  .lg-ab__nut:hover {
-    background: #f1ecfd;
-  }
-  .lg-ab__nut[aria-pressed="true"]:hover {
-    background: var(--landing-ink);
+@media (max-width: 760px) {
+  .lg-thongtin__ds {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--lg-s4);
   }
 }
 
-.lg-ab__ketqua {
-  min-width: 0;
+/* ══ A/B — bảng đối chiếu đồng thời (UI-05) ═══════════════════════════════ */
+
+.lg-ab__dau {
+  margin-bottom: var(--lg-s5);
 }
-.lg-ab__tenca {
-  margin-bottom: var(--landing-s4);
+.lg-ab__mota {
+  margin-top: var(--lg-s3);
+}
+.lg-ab__nguon {
+  margin-top: var(--lg-s3);
 }
 
 .lg-bang {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--landing-s2);
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
 }
-.lg-bang__hang {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: #faf8f3;
-  border: 1px solid var(--landing-soft-line);
+.lg-bang caption {
+  text-align: left;
+  padding-bottom: var(--lg-s3);
+  color: var(--custos-muted);
+  font-size: 14px;
 }
-.lg-bang__hang dt {
-  display: flex;
-  align-items: center;
+.lg-bang th,
+.lg-bang td {
+  padding: 15px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--custos-border);
+  vertical-align: top;
+}
+.lg-bang thead th {
+  font-family: var(--lg-font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--custos-text);
+  border-bottom: 2px solid var(--custos-text);
+}
+.lg-bang thead th:first-child {
+  font-family: var(--lg-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--custos-muted);
+}
+.lg-bang tbody th {
   font-size: 15px;
   font-weight: 600;
-  color: var(--landing-muted);
+  color: var(--custos-muted);
+  width: 30%;
 }
-.lg-bang__hang dd {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+.lg-bang td {
   font-size: 16px;
-  text-align: right;
 }
-.lg-bang__hang--nguy {
-  background: var(--landing-danger-surface);
-  border-color: var(--landing-danger-ink);
-}
-.lg-bang__hang--nguy dt {
-  color: var(--landing-danger-ink);
-}
-.lg-bang__doi {
-  font-size: 14px;
-  color: var(--landing-danger-ink);
+.lg-bang tr:last-child th,
+.lg-bang tr:last-child td {
+  border-bottom: 0;
 }
 
-.lg-ketluan {
+/* Hàng quyền — trọng tâm của cả bảng (mục 5). */
+.lg-bang tr.lg-hang-quyen th {
+  color: var(--custos-text);
   font-weight: 700;
 }
+.lg-bang td.lg-o-nguy {
+  background: var(--custos-danger-bg);
+  color: var(--custos-danger);
+  font-weight: 600;
+}
+.lg-bang td.lg-o-thuong {
+  color: var(--custos-muted);
+}
+
 .lg-ketluan--safe {
-  color: var(--landing-success-ink);
+  color: var(--custos-muted);
 }
 .lg-ketluan--danger {
-  color: var(--landing-danger-ink);
+  color: var(--custos-danger);
+  font-weight: 600;
+}
+
+/* Tóm tắt A/B trên mobile — hai thẻ xếp dọc (mục 5). */
+.lg-ab__tomtat {
+  display: none;
+}
+.lg-tt {
+  border: 1px solid var(--custos-border);
+  border-radius: 12px;
+  padding: var(--lg-s4);
+  background: var(--custos-surface);
+}
+.lg-tt + .lg-tt {
+  margin-top: var(--lg-s3);
+}
+.lg-tt--nguy {
+  border-color: #f0c3cc;
+}
+.lg-tt__ten {
+  font-family: var(--lg-font-display);
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: var(--lg-s2);
+}
+.lg-tt__hang {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--lg-s3);
+  padding: 7px 0;
+  font-size: 15px;
+  border-top: 1px solid var(--custos-border);
+}
+.lg-tt__hang dt {
+  color: var(--custos-muted);
+}
+.lg-tt__hang dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* Dòng đối chiếu LUÔN thấy — mục 5 đòi, để không phải nhớ ca trước. */
+.lg-ab__doichieu {
+  margin-top: var(--lg-s4);
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--custos-brand-soft);
+  color: #0f4f46;
+  font-size: 14.5px;
+  line-height: 1.55;
 }
 
 .lg-ab__hanhdong {
-  margin-top: var(--landing-s5);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lg-s3);
+  margin-top: var(--lg-s5);
 }
 
-/* Panel bằng chứng mở inline. */
+/* Evidence: full width dưới bảng, nội dung ≤760px (mục 5). */
 .lg-bc {
-  margin-top: var(--landing-s4);
-  padding: var(--landing-s5);
-  border: 2px solid var(--landing-ink);
-  border-radius: 14px;
-  background: #fbfaf7;
+  margin-top: var(--lg-s4);
+  padding: var(--lg-s5);
+  border: 1px solid var(--custos-border);
+  border-radius: 12px;
+  background: var(--custos-bg);
+}
+.lg-bc__trong {
+  max-width: 760px;
 }
 .lg-bc__tieude {
-  font-family: var(--landing-font-display);
+  font-family: var(--lg-font-display);
   font-size: 17px;
   font-weight: 800;
-  margin: 0 0 var(--landing-s4);
+  margin: 0 0 var(--lg-s2);
+}
+.lg-bc__ca {
+  font-size: 14px;
+  color: var(--custos-muted);
+  margin-bottom: var(--lg-s4);
 }
 .lg-bc__ds {
   margin: 0;
   display: grid;
-  gap: var(--landing-s3);
+  gap: var(--lg-s3);
 }
 .lg-bc__hang {
   display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: var(--landing-s3);
+  grid-template-columns: 150px 1fr;
+  gap: var(--lg-s4);
   align-items: start;
 }
 .lg-bc__hang dt {
   font-size: 14px;
-  font-weight: 700;
-  color: var(--landing-muted);
+  font-weight: 600;
+  color: var(--custos-muted);
 }
 .lg-bc__hang dd {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 15px;
   min-width: 0;
 }
-.lg-bc__trong {
+.lg-bc__khongco {
   font-size: 15px;
-  color: var(--landing-muted);
+  color: var(--custos-muted);
+  max-width: 760px;
+}
+/* Raw address/commit/ISO nằm trong phần kiểm sâu (mục 5). */
+.lg-bc__sau {
+  margin-top: var(--lg-s4);
+  border-top: 1px solid var(--custos-border);
+  padding-top: var(--lg-s4);
+}
+.lg-bc__sau summary {
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--custos-brand);
+  padding: 6px 0;
 }
 .lg-bc__nguon {
-  margin-top: var(--landing-s5);
-  padding-top: var(--landing-s4);
-  border-top: 1px solid var(--landing-soft-line);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: var(--landing-muted);
+  margin-top: var(--lg-s3);
+  color: var(--custos-muted);
+  max-width: 760px;
 }
 .lg-bc__gioihan {
   max-width: 68ch;
 }
 
-.lg-ab__cuoi {
-  margin-top: var(--landing-s6);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--landing-s5);
-}
-.lg-ab__ketluan {
-  font-family: var(--landing-font-display);
-  font-size: clamp(1.125rem, 1rem + 0.8vw, 1.5rem);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  max-width: 34ch;
-}
-.lg-ab__cta {
-  display: flex;
-  flex-direction: column;
-  gap: var(--landing-s2);
-  align-items: flex-start;
-}
-
-@media (max-width: 900px) {
-  .lg-ab__than {
-    grid-template-columns: 1fr;
-    gap: var(--landing-s5);
+@media (max-width: 860px) {
+  /* Mobile: bảng ẩn, hai tóm tắt hiện — KHÔNG scroll ngang (mục 5). */
+  .lg-ab__bang {
+    display: none;
   }
-  .lg-ab__chon {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .lg-ab__tomtat {
+    display: block;
   }
-  .lg-ab__nut {
-    flex: 1 1 200px;
-  }
-}
-@media (max-width: 560px) {
-  .lg-ab {
-    padding: var(--landing-s4);
-  }
-  .lg-bang__hang,
   .lg-bc__hang {
     grid-template-columns: 1fr;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .lg-bang__hang dd {
-    text-align: left;
+    gap: 2px;
   }
 }
 
-/* ══ Ba bước ══════════════════════════════════════════════════════════════ */
+/* ══ Pipeline và ba giá trị ═══════════════════════════════════════════════ */
 
-.lg-buoc__ds {
+.lg-pipeline {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--landing-s5);
-  margin-top: var(--landing-s6);
+  gap: var(--lg-s5);
+  margin-top: var(--lg-s6);
+  counter-reset: buoc;
 }
 .lg-buoc {
-  display: flex;
-  gap: var(--landing-s4);
-  align-items: flex-start;
+  padding-top: var(--lg-s4);
+  border-top: 2px solid var(--custos-text);
 }
 .lg-buoc__so {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--landing-ink);
-  color: var(--landing-paper);
-  font-family: var(--landing-font-display);
-  font-size: 17px;
+  font-family: var(--lg-font-display);
+  font-size: 13px;
   font-weight: 800;
+  color: var(--custos-brand);
+  letter-spacing: 0.04em;
 }
 .lg-buoc h3 {
-  margin-bottom: 6px;
+  margin-block: var(--lg-s2) 6px;
 }
-.lg-buoc__cuoi {
-  margin-top: var(--landing-s6);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--landing-s4);
+
+/* Ba giá trị rút thành hàng mô tả nhẹ, KHÔNG đánh số (mục 5). */
+.lg-giatri {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--lg-s5);
+  margin-top: var(--lg-s7);
+  padding-top: var(--lg-s5);
+  border-top: 1px solid var(--custos-border);
 }
-@media (max-width: 900px) {
-  .lg-buoc__ds {
+.lg-giatri__o h3 {
+  font-family: var(--lg-font-body);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.lg-giatri__o p {
+  font-size: 15px;
+  color: var(--custos-muted);
+}
+.lg-pipeline__ghichu {
+  margin-top: var(--lg-s5);
+  color: var(--custos-muted);
+}
+@media (max-width: 860px) {
+  .lg-pipeline,
+  .lg-giatri {
     grid-template-columns: 1fr;
+    gap: var(--lg-s4);
   }
 }
 
-/* ══ Nhà phát triển ═══════════════════════════════════════════════════════ */
+/* ══ Developer ════════════════════════════════════════════════════════════ */
 
 .lg-dev {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--landing-s8);
+  gap: var(--lg-s8);
   align-items: start;
 }
 .lg-dev__mota {
-  margin-top: var(--landing-s4);
+  margin-top: var(--lg-s4);
 }
 .lg-dev__sodo {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: var(--landing-s5);
+  margin-top: var(--lg-s5);
   font-size: 14.5px;
-  color: var(--landing-paper);
 }
 .lg-dev__sodo li {
   display: inline-flex;
@@ -1379,96 +1251,99 @@ html:has(.custos-landing) {
   gap: 6px;
 }
 .lg-dev__sodo span:first-child {
-  padding: 7px 13px;
-  border: 1.5px solid rgba(246, 242, 232, 0.35);
-  border-radius: 9px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
 }
 .lg-dev__sodo--nhanh {
-  margin-top: var(--landing-s3);
-  padding-left: var(--landing-s5);
-  border-left: 2px solid rgba(246, 242, 232, 0.25);
+  margin-top: var(--lg-s3);
+  padding-left: var(--lg-s5);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
 }
 .lg-dev__ghichu {
-  margin-top: var(--landing-s4);
+  margin-top: var(--lg-s4);
   max-width: 60ch;
 }
 .lg-dev__lien {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--landing-s3);
-  margin-top: var(--landing-s6);
+  gap: var(--lg-s3);
+  margin-top: var(--lg-s6);
 }
 
 .lg-code {
   margin: 0;
-  border: 2px solid var(--landing-lilac);
-  border-radius: 14px;
-  background: #100d1f;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  background: #0d2b27;
   overflow: hidden;
 }
 .lg-code__dau {
-  padding: 12px 18px;
-  border-bottom: 1px solid rgba(246, 242, 232, 0.16);
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 13.5px;
-  font-weight: 700;
-  color: var(--landing-lime);
+  font-weight: 600;
+  color: var(--custos-on-dark-muted);
 }
 .lg-code__pre {
   margin: 0;
-  padding: 18px;
+  padding: 16px;
   overflow-x: auto;
-  font-family: var(--landing-font-mono);
+  font-family: var(--lg-font-mono);
   font-size: 13px;
   line-height: 1.7;
-  color: #e6e1f5;
+  color: #e3efec;
 }
 .lg-code__ghichu {
-  padding: 12px 18px 16px;
-  color: var(--landing-night-muted);
-  border-top: 1px solid rgba(246, 242, 232, 0.16);
+  padding: 12px 16px 14px;
+  color: var(--custos-on-dark-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 @media (max-width: 960px) {
   .lg-dev {
     grid-template-columns: 1fr;
-    gap: var(--landing-s6);
+    gap: var(--lg-s6);
   }
 }
 
-/* ══ Bằng chứng ═══════════════════════════════════════════════════════════ */
+/* ══ Bằng chứng, FAQ, CTA, footer ═════════════════════════════════════════ */
 
 .lg-bcs__mota {
-  margin-top: var(--landing-s4);
+  margin-top: var(--lg-s3);
 }
 .lg-bcs__ds {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--landing-s5);
-  margin-top: var(--landing-s6);
+  gap: var(--lg-s5);
+  margin-top: var(--lg-s6);
 }
 .lg-bcs__muc {
-  padding-top: var(--landing-s4);
-  border-top: 2px solid var(--landing-ink);
+  padding-top: var(--lg-s4);
+  border-top: 1px solid var(--custos-border);
 }
 .lg-bcs__lien {
   display: inline-block;
-  font-family: var(--landing-font-display);
-  font-size: 19px;
+  font-family: var(--lg-font-display);
+  font-size: 17.5px;
   font-weight: 800;
-  color: var(--landing-ink);
+  color: var(--custos-text);
   text-decoration: none;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .lg-bcs__lien:hover {
+  color: var(--custos-brand);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* Giới hạn: một đoạn nền neutral, KHÔNG banner cảnh báo khổng lồ (mục 5). */
 .lg-gioihan {
-  margin-top: var(--landing-s7);
-  padding: var(--landing-s5);
-  border-left: 4px solid var(--landing-ink);
-  background: #efe9dc;
-  border-radius: 0 12px 12px 0;
+  margin-top: var(--lg-s6);
+  padding: var(--lg-s5);
+  border: 1px solid var(--custos-border);
+  border-radius: 12px;
+  background: var(--custos-surface);
   font-size: 15.5px;
+  color: var(--custos-muted);
 }
 @media (max-width: 760px) {
   .lg-bcs__ds {
@@ -1476,21 +1351,24 @@ html:has(.custos-landing) {
   }
 }
 
-/* ══ FAQ ══════════════════════════════════════════════════════════════════ */
-
+/* FAQ: heading trái, accordion phải trên desktop (mục 5). */
 .lg-faq {
-  max-width: 820px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: var(--lg-s8);
+  align-items: start;
 }
-.lg-faq__ds {
-  margin-top: var(--landing-s5);
+.lg-faq__mota {
+  margin-top: var(--lg-s3);
+  color: var(--custos-muted);
 }
 .lg-faq__muc {
-  border-bottom: 1px solid var(--landing-soft-line);
+  border-bottom: 1px solid var(--custos-border);
 }
 .lg-faq__hoi {
-  padding: 18px 40px 18px 0;
-  font-family: var(--landing-font-display);
-  font-size: 17.5px;
+  padding: 16px 36px 16px 0;
+  font-family: var(--lg-font-display);
+  font-size: 16.5px;
   font-weight: 800;
   cursor: pointer;
   position: relative;
@@ -1505,75 +1383,113 @@ html:has(.custos-landing) {
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--landing-muted);
+  font-size: 20px;
+  color: var(--custos-brand);
 }
 .lg-faq__muc[open] .lg-faq__hoi::after {
   content: "−";
 }
 .lg-faq__dap {
-  padding-bottom: 20px;
-  max-width: 70ch;
+  padding-bottom: 18px;
+  max-width: 68ch;
+  color: var(--custos-muted);
 }
-
-/* ══ CTA cuối và footer ═══════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .lg-faq {
+    grid-template-columns: 1fr;
+    gap: var(--lg-s5);
+  }
+}
 
 .lg-cta__in {
-  text-align: center;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--lg-s5);
 }
-.lg-cta__mota {
-  margin-top: var(--landing-s4);
+.lg-cta__chu {
+  max-width: 34ch;
 }
 .lg-cta__nut {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--landing-s3);
-  margin-top: var(--landing-s6);
+  gap: var(--lg-s3);
 }
 
 .lg-footer {
-  padding-block: var(--landing-s7);
+  padding-block: var(--lg-s7);
 }
 .lg-footer__in {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--landing-s5);
+  gap: var(--lg-s5);
 }
 .lg-footer__brand {
   display: flex;
   align-items: center;
-  gap: var(--landing-s3);
+  gap: var(--lg-s3);
 }
 .lg-footer__brand strong {
-  font-family: var(--landing-font-display);
-  font-size: 18px;
+  font-family: var(--lg-font-display);
+  font-size: 17px;
   font-weight: 800;
 }
 .lg-footer__lien {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--landing-s5);
+  gap: var(--lg-s5);
 }
 .lg-footer__lien a {
-  color: var(--landing-paper);
+  color: #ffffff;
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
-  border-bottom: 1px solid rgba(246, 242, 232, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   padding-bottom: 2px;
 }
 .lg-footer__lien a:hover {
-  border-bottom-color: var(--landing-lime);
+  border-bottom-color: #ffffff;
 }
 .lg-footer__ghichu {
   width: 100%;
-  padding-top: var(--landing-s4);
-  border-top: 1px solid rgba(246, 242, 232, 0.16);
+  padding-top: var(--lg-s4);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* ── Ba ngoại lệ ngoài `.custos-landing` ─────────────────────────────────── */
+
+/*
+ * Chỉ áp khi trang CÓ landing. File này chỉ được `landing.tsx` import, nên ví và
+ * Inspector không bao giờ nạp nó.
+ */
+html:has(.custos-landing) {
+  background: var(--custos-bg);
+  scroll-behavior: smooth;
+}
+
+body:has(.custos-landing) {
+  margin: 0;
+}
+
+/*
+ * KHÔNG dùng `overflow-x: hidden` ở html/body.
+ *
+ * Mục 4 cấm đích danh: đó là cách GIẤU lỗi tràn chứ không phải sửa. Guard
+ * `soi-layout-landing.py` kiểm đúng điều này.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.custos-landing) {
+    scroll-behavior: auto;
+  }
+  .custos-landing *,
+  .custos-landing *::before,
+  .custos-landing *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

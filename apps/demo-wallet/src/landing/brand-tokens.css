@@ -1,0 +1,66 @@
+/*
+ * TOKEN MÀU CỦA CUSTOS — chỉ biến, không layout.
+ *
+ * File này tách riêng theo mục 6 của `DIEU-CHINH-UI-CUSTOS.md`: *"Ưu tiên thêm
+ * `brand-tokens.css` **chỉ chứa biến màu**, được các entry cần dùng import;
+ * landing/wallet giữ layout CSS riêng."*
+ *
+ * Vì sao chỉ có biến: nếu file này mang cả rule layout thì import nó vào ví sẽ
+ * kéo theo side effect, và mục 6 cấm đúng điều đó.
+ *
+ * ## Tên token phản ánh VAI TRÒ, không phải màu
+ *
+ * Không còn `--landing-lilac` / `--landing-lime`. Mục 7 nói rõ: *"không giữ
+ * `--landing-lilac`, `--landing-lime` làm tên lâu dài rồi gán màu teal; tên token
+ * phải phản ánh vai trò."* Một token tên theo màu sẽ nói dối ngay lần đổi màu
+ * tiếp theo.
+ *
+ * ## Brand xanh KHÔNG có nghĩa "giao dịch an toàn"
+ *
+ * Mục 3: *"Brand xanh dùng cho hành động, không có nghĩa giao dịch an toàn."*
+ * Verdict dùng token semantic riêng (`--custos-danger`, `--custos-warning`), và
+ * `safe` không được tô nền xanh toàn thẻ.
+ */
+
+:root {
+  /* ── Nền và bề mặt ──────────────────────────────────────────────────── */
+  --custos-bg: #f5f8f7;
+  --custos-surface: #ffffff;
+
+  /* ── Chữ ────────────────────────────────────────────────────────────── */
+  --custos-text: #142c2a;
+  --custos-muted: #526865;
+
+  /* ── Thương hiệu — dùng cho HÀNH ĐỘNG, không phải verdict ───────────── */
+  --custos-brand: #146c60;
+  --custos-brand-hover: #10584f;
+  --custos-brand-soft: #d9f0e5;
+
+  /* ── Nền tối: chỉ developer section và footer ───────────────────────── */
+  --custos-dark: #123a35;
+  --custos-on-dark-muted: #b9d3cc;
+
+  /* Divider — KHÔNG được là tín hiệu duy nhất của bất kỳ trạng thái nào. */
+  --custos-border: #d6e3df;
+
+  /* ── Semantic: giữ nguyên severity, không đổi hue theo find-replace ─── */
+  --custos-danger: #b4233c;
+  --custos-danger-bg: #fff1f3;
+  --custos-warning: #8a5200;
+  --custos-warning-bg: #fff4dc;
+  --custos-info: #285ea8;
+
+  /*
+   * Boundary của input/control.
+   *
+   * Mục 3 nói rõ: *"Border nhạt chỉ phù hợp divider không thiết yếu; input
+   * boundary/focus cần contrast riêng đủ rõ."* `--custos-border` quá nhạt cho
+   * vai trò đó, nên có token riêng thay vì dùng lại.
+   *
+   * ĐÃ ĐO, và giá trị đầu tiên của tôi KHÔNG đạt: `#9DB5B0` chỉ được **2,17:1**
+   * trên trắng, dưới ngưỡng 3:1 cho UI component. `#6E8F88` đo lại được
+   * **3,53:1 trên trắng** và **3,30:1 trên `bg`** — đạt trên cả hai nền mà
+   * control có thể nằm lên.
+   */
+  --custos-control-border: #6e8f88;
+}
