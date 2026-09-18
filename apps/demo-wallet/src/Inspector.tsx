@@ -1,4 +1,6 @@
-import { useCallback, useRef, useState } from "react";
+import { ProductHeader } from "./ProductNavigation.tsx";
+import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Connection } from "@solana/web3.js";
 import {
   inspect, ketNoiCoHuy, laHuy, dungReceipt, receiptRaJson,
@@ -45,6 +47,18 @@ export function Inspector() {
   const [rpc, setRpc] = useState(RPC_MAC_DINH);
   const [tt, setTt] = useState<TrangThai>({ pha: "rong" });
   const [nhatKy, setNhatKy] = useState<string[]>([]);
+  const resultRegion = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (tt.pha === "rong" || tt.pha === "dang-kiem") return;
+    const region = resultRegion.current;
+    if (!region) return;
+    region.focus({ preventScroll: true });
+    const box = region.getBoundingClientRect();
+    if (box.top < 0 || box.bottom > window.innerHeight) {
+      region.scrollIntoView({ block: "start", behavior: "instant" });
+    }
+  }, [tt]);
 
   /*
    * MỖI LƯỢT KIỂM CÓ MỘT SỐ HIỆU, và chỉ lượt mới nhất được ghi kết quả.
@@ -159,13 +173,21 @@ export function Inspector() {
   );
 
   return (
-    <main className="app-shell mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-[22px] font-semibold text-chu">Kiểm một giao dịch bất kỳ</h1>
+    <main className="app-shell inspector-shell mx-auto max-w-3xl px-4 py-8">
+      <ProductHeader active="inspector" label="Inspector" />
+      <header className="inspector-heading">
+      <p className="inspector-eyebrow">Phân tích trước khi ký · Solana Devnet</p>
+      <h1 className="text-[22px] font-semibold text-chu">Đọc giao dịch.<br /><span>Trước khi đặt niềm tin.</span></h1>
       <p className="mt-2 text-[14px] leading-relaxed text-chu-mo">
         Dán chuỗi base64 của một giao dịch <strong>chưa ký</strong>, hoặc chọn tệp. Custos
         mô phỏng nó trên Devnet rồi cho biết nó làm gì với tài sản của bạn.
       </p>
+      </header>
 
+      <div className="inspector-workspace">
+      <section className="inspector-form" aria-label="Dữ liệu giao dịch">
+
+      <div className="tool-panel-heading"><span>01 / DỮ LIỆU ĐẦU VÀO</span><h2>Giao dịch cần kiểm tra</h2></div>
       {/*
         RIÊNG TƯ — nói TRƯỚC khi người dùng dán, không phải sau.
 
@@ -173,7 +195,7 @@ export function Inspector() {
         cấm *"quảng cáo mọi dữ liệu chỉ ở máy khi gọi RPC"*. Đặt câu này sau ô nhập
         là nói sau khi việc đã rồi.
       */}
-      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] leading-relaxed text-amber-900">
+      <div className="inspector-privacy mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] leading-relaxed text-amber-900">
         <strong>Dữ liệu đi đâu:</strong> để mô phỏng, Custos gửi toàn bộ nội dung giao
         dịch tới máy chủ RPC bên dưới. Không có bước nào chạy hoàn toàn trên máy bạn.
         Trang này không lưu lịch sử và không nhận khoá riêng hay seed phrase.
@@ -258,10 +280,18 @@ export function Inspector() {
         )}
       </div>
 
-      <div className="mt-5" aria-live="polite">
+      </section>
+      <section ref={resultRegion} tabIndex={-1} className="inspector-result mt-5" aria-label="Kết quả phân tích" aria-live="polite" aria-busy={tt.pha === "dang-kiem"}>
+        <div className="tool-panel-heading"><span>02 / KẾT QUẢ PHÂN TÍCH</span><h2>Hiểu điều sắp xảy ra</h2></div>
         {tt.pha === "rong" && (
-          <p className="text-[13px] text-chu-mo">Chưa kiểm gì.</p>
+          <div className="inspector-empty">
+            <DemoScanArtwork />
+            <h3>Chờ giao dịch của bạn.</h3>
+            <p>Kết quả sẽ xuất hiện tại đây sau khi mô phỏng. Inspector không có quyền ký hoặc gửi giao dịch.</p>
+            <ul><li>Biến động tài sản</li><li>Quyền kiểm soát tài khoản</li><li>Dữ kiện và phần chưa đọc được</li></ul>
+          </div>
         )}
+        {tt.pha === "dang-kiem" && <div className="inspector-progress" role="status"><span aria-hidden="true" /><h3>Đang mô phỏng giao dịch…</h3><p>Chờ dữ liệu từ RPC. Bạn có thể huỷ lượt kiểm bất cứ lúc nào.</p></div>}
         {tt.pha === "loi-dau-vao" && (
           <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-[13px] text-rose-900">
             {tt.câu}
@@ -350,6 +380,7 @@ export function Inspector() {
             </div>
           </>
         )}
+      </section>
       </div>
 
       {nhatKy.length > 0 && (

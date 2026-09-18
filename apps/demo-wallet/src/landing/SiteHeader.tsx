@@ -57,8 +57,8 @@ export function SiteHeader({
       <div className="lg-shell lg-header__in">
         <a className="lg-brand" href="#dau-trang">
           <img
-            className="lg-brand__dino"
-            src={`${import.meta.env.BASE_URL}landing/custos-dino-128.png`}
+            className="lg-brand__symbol"
+            src={`${import.meta.env.BASE_URL}brand/custos-symbol.svg`}
             alt=""
             width={36}
             height={36}

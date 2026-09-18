@@ -15,6 +15,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { LandingPage } from "./landing/LandingPage.tsx";
 import "./landing/landing.css";
+import "./landing/presentation.css";
+import "./landing/cinematic.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

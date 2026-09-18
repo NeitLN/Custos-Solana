@@ -1,0 +1,75 @@
+[
+  {
+    "name": "landing",
+    "width": 1440,
+    "dimensions": {
+      "client": 1440,
+      "scroll": 1440
+    },
+    "fonts": [
+      "Manrope",
+      "Manrope",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro"
+    ],
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "width": 390,
+    "dimensions": {
+      "client": 390,
+      "scroll": 390
+    },
+    "fonts": [
+      "Manrope",
+      "Manrope",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro"
+    ],
+    "errors": []
+  },
+  {
+    "name": "narrow-en",
+    "width": 320,
+    "dimensions": {
+      "client": 320,
+      "scroll": 320
+    },
+    "fonts": [
+      "Manrope",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro",
+      "Be Vietnam Pro"
+    ],
+    "errors": []
+  },
+  {
+    "name": "wallet",
+    "width": 1440,
+    "dimensions": {
+      "client": 1440,
+      "scroll": 1425
+    },
+    "fonts": [],
+    "errors": []
+  },
+  {
+    "name": "inspector",
+    "width": 1440,
+    "dimensions": {
+      "client": 1440,
+      "scroll": 1425
+    },
+    "fonts": [],
+    "errors": []
+  }
+]

@@ -4,6 +4,7 @@ import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
 import { conDungDuoc, layBlockhash } from "./blockhash.ts";
 import { LoiQuaHan } from "../../../scripts/coHan.ts";
 import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
+import { RewardArtwork } from "./RewardArtwork.tsx";
 
 /**
  * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
@@ -19,20 +20,11 @@ import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
  * không hề là airdrop. Đây là để minh hoạ quy tắc bất đối xứng: ngữ cảnh do
  * dApp cung cấp không bao giờ được làm sản phẩm dễ dãi hơn.
  *
- * ─────────────────────────────────────────────────────────────────────────
- * VIỆC CỦA TRANG NÀY LÀ LỪA ĐƯỢC. Đó là lý do nó tồn tại.
- *
- * Kịch bản video mở đầu bằng "trang SolBonus, trông hiền lành — nhìn không có
- * gì đáng ngờ". Nếu trang tự khai nó là mô phỏng tấn công thì không còn ai bị
- * lừa, và Custos không còn gì để bắt trên camera.
- *
- * Nên mọi thứ ở đây được dựng theo đúng cách một trang airdrop lừa đảo thật
- * được dựng: đủ điều kiện (cá nhân hoá), đếm ngược (gấp gáp), số ví đã nhận
- * (bằng chứng xã hội), huy hiệu kiểm toán (tín nhiệm giả). Nhận ra chúng trên
- * màn hình chính là bài học của demo.
- *
- * NGOẠI LỆ DUY NHẤT: băng đỏ trên cùng nói thật, và không bao giờ được gỡ.
- * ───────────────────────────────────────────────────────────────────────── */
+ * Giao diện giữ hình thức một trang nhận thưởng, cùng nhãn demo rõ ràng.
+ * Số thưởng, đồng hồ và tuyên bố kiểm toán là đạo cụ hư cấu; phần giải thích
+ * và FAQ đối chiếu lời hứa trên giao diện với hành vi giao dịch trong ví.
+ * Băng cảnh báo luôn hiển thị. Không ký hay gửi giao dịch từ trang này.
+ */
 
 type HienTruong = {
   rpc: string; mint: string; kyHieu?: string; decimals: number;
@@ -249,8 +241,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Băng duy nhất nói thật trên cả trang. */}
+    <div className="attack-page min-h-screen">
+      {/* Nhãn mô phỏng tĩnh, đọc được đầy đủ trên màn hình hẹp. */}
       <div className="bang-that" role="status">
         <div className="bang-that__track">
           <span className="bang-that__message">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
@@ -264,46 +256,45 @@ export default function App() {
         </div>
       </div>
 
-      <header className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-6">
+      <header className="attack-header mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-6">
         <div className="flex items-center gap-2.5">
-          <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden" aria-hidden="true">
-            <img
-              className="h-full w-full scale-[1.18] object-contain"
-              src={`${import.meta.env.BASE_URL}solbonus-cash.png`}
-              alt=""
-            />
+          <div className="solbonus-mark grid h-10 w-10 shrink-0 place-items-center overflow-hidden" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none"><path d="M6 11h20v7H6zM8 18h16v11H8zM16 11v18M16 11C7 12 5 4 10 3c4-1 6 8 6 8Zm0 0c9 1 11-7 6-8-4-1-6 8-6 8Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>
           </div>
           <div>
             <div className="text-[16px] font-semibold tracking-[-0.02em]">SolBonus</div>
-            <div className="text-[11.5px] text-muc-nhat">Quỹ thưởng cộng đồng Solana</div>
+            <div className="text-[11.5px] text-muc-nhat">Tình huống demo của Custos</div>
           </div>
         </div>
-        <nav className="hidden gap-5 text-[13px] text-muc-nhat sm:flex" aria-label="Điều hướng">
-          <span>Chương trình</span>
-          <span>Điều kiện</span>
-          <span>Hỏi đáp</span>
+        <nav className="attack-nav gap-5 text-[13px] text-muc-nhat sm:flex" aria-label="Điều hướng">
+          <a href="#nhan-thuong">Nhận thưởng <span aria-hidden="true">↗</span></a>
+          <a href="#kich-ban">Về kịch bản</a>
+          <a href="#hoi-dap">Hỏi đáp</a>
         </nav>
       </header>
 
-      <main className="mx-auto max-w-3xl px-5 pb-16 sm:px-6">
-        <div className="vao">
-          <p className="text-[12.5px] font-medium" style={{ color: "var(--color-hieu)" }}>
-            Đợt phân phối quý 3 · đang mở
+      <main className="attack-main mx-auto max-w-3xl px-5 pb-16 sm:px-6">
+        <div className="attack-hero">
+        <div className="attack-story vao">
+          <p className="attack-eyebrow text-[12.5px] font-medium">
+            <span aria-hidden="true" />SolBonus · Community rewards
           </p>
           <h1 className="mt-2 text-[30px] font-semibold leading-[1.15] tracking-[-0.03em] sm:text-[38px]">
-            Ví của bạn đủ điều kiện nhận thưởng
+            Một lời mời.<br /><span>Một phần thưởng.</span><br />Một chữ ký.
           </h1>
           <p className="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-muc-nhat">
-            Chương trình tri ân ví hoạt động sớm trên mạng Solana. Phần thưởng được phân bổ
-            theo lịch sử giao dịch và cần bạn xác nhận một lần để nhận.
+            Một trang tặng thưởng có thể trông rất thuyết phục. Hãy xem điều gì xảy ra khi yêu cầu nhận quà được mở trong ví tích hợp Custos.
           </p>
+          <RewardArtwork />
+          <p className="attack-art-caption"><span aria-hidden="true">↗</span> Lời hứa trên giao diện. Sự thật trong giao dịch.</p>
         </div>
 
-        <div className="the-thuong vao mt-7 overflow-hidden">
-          <div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-7">
+        <section className="the-thuong vao mt-7 overflow-hidden" id="nhan-thuong" aria-labelledby="reward-title">
+          <div className="reward-card-heading"><span>PHIẾU NHẬN THƯỞNG</span><span className="reward-demo-label">DEMO · DEVNET</span></div>
+          <div className="reward-allocation grid gap-5 p-5 sm:p-7">
             <div>
-              <div className="text-[12.5px] text-muc-nhat">Phần thưởng đã phân bổ cho ví này</div>
-              <div className="mt-1.5 flex items-baseline gap-2">
+              <h2 id="reward-title" className="text-[12.5px] text-muc-nhat">“Ví của bạn đủ điều kiện nhận thưởng”</h2>
+              <div className="reward-amount mt-1.5 flex items-baseline gap-2">
                 <span className="text-[42px] font-semibold leading-none tracking-[-0.03em] tabular-nums sm:text-[52px]">
                   1.000
                 </span>
@@ -315,18 +306,18 @@ export default function App() {
                   <span className="truncate font-mono text-[12px] text-muc-nhat" title={ht.nanNhan}>
                     {rutGon(ht.nanNhan)}
                   </span>
-                  <span className="text-[12px] text-muc-nhat">đã xác minh</span>
+                  <span className="text-[12px] text-muc-nhat">ví trong kịch bản</span>
                 </div>
               )}
             </div>
 
-            <div className="sm:text-right">
-              <div className="text-[12px] text-muc-nhat">Đợt nhận đóng sau</div>
-              <div className="mt-1 font-mono text-[24px] font-semibold tabular-nums">{demNguoc}</div>
+            <div className="reward-countdown">
+              <div><span className="reward-clock" aria-hidden="true">◷</span><span>Đợt nhận đóng sau<small>Đồng hồ trong kịch bản</small></span></div>
+              <span className="reward-time font-mono text-[24px] font-semibold tabular-nums" aria-label={`Đếm ngược ${demNguoc}`}>{demNguoc}</span>
             </div>
           </div>
 
-          <div className="border-t border-vien-nhat p-5 sm:p-7">
+          <div className="reward-action border-t border-vien-nhat p-5 sm:p-7">
             <button
               onClick={() => void nhanQua()}
               disabled={!ht || dangGui}
@@ -340,8 +331,8 @@ export default function App() {
                     ? "Đang mở ví…"
                     : "Nhận 1.000 SOLB"}
             </button>
-            <p className="mt-2.5 text-center text-[12px] text-muc-nhat">
-              Miễn phí · chỉ cần ký một giao dịch để xác nhận quyền sở hữu ví
+            <p className="reward-action-note mt-2.5 text-center text-[12px] text-muc-nhat">
+              Mở yêu cầu trong ví demo để kiểm tra trước khi ký. SOLB là phần thưởng hư cấu.
             </p>
 
             {/* ĐƯỜNG LUI CHO SÂN KHẤU.
@@ -413,8 +404,13 @@ export default function App() {
               </div>
             )}
           </div>
+          <div className="reward-card-foot"><span aria-hidden="true">↗</span> Phần kiểm tra giao dịch nằm trong ví Custos.</div>
+        </section>
         </div>
 
+        <section className="attack-signals" aria-labelledby="signals-title">
+        <h2 id="signals-title">Những tín hiệu dễ khiến bạn tin tưởng</h2>
+        <p>Chi tiết hư cấu được dùng làm đạo cụ trong tình huống này.</p>
         <ul className="vao mt-6 grid gap-3 text-[13px] text-muc-nhat sm:grid-cols-3">
           {[
             ["12.847", "ví đã nhận thưởng"],
@@ -427,11 +423,13 @@ export default function App() {
             </li>
           ))}
         </ul>
+        </section>
 
         {/* Lời thú nhận, đặt cuối trang — đúng chỗ một trang lừa đảo thật KHÔNG
             bao giờ có. Nó ở đây vì đây là đạo cụ demo, không phải trang lừa thật. */}
-        <div className="mt-10 rounded-xl border border-vien-nhat bg-white p-4 sm:p-5">
-          <h2 className="text-[14px] font-semibold text-muc">Trang này là đạo cụ trong demo Custos</h2>
+        <section id="kich-ban" className="attack-explainer mt-10 rounded-xl border border-vien-nhat bg-white p-4 sm:p-5">
+          <div className="attack-explainer__intro"><p className="attack-eyebrow">Bên dưới lời hứa</p><h2>Giao diện nói “nhận quà”.<br /><span>Giao dịch làm điều khác.</span></h2></div>
+          <div className="attack-explainer__body">
           <p className="mt-1.5 text-[13px] leading-relaxed text-muc-nhat">
             Không có SOLB nào cả. Mọi thứ phía trên — đủ điều kiện, đếm ngược, số ví đã
             nhận, huy hiệu kiểm toán — là những đòn bẩy mà một trang lừa đảo thật dùng để
@@ -443,7 +441,17 @@ export default function App() {
             Đó chính là điểm: bạn không cần nhận ra trang này là giả. Custos đọc giao dịch
             trước khi bạn ký, và nói cho bạn biết nó thật sự làm gì.
           </p>
-        </div>
+          </div>
+        </section>
+        <section id="hoi-dap" className="attack-faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">Hiểu đúng tình huống demo</h2>
+          <div>
+            <details><summary>Có phần thưởng SOLB thật không?</summary><p>Không. Số thưởng, lượt nhận và tuyên bố kiểm toán là chi tiết hư cấu phục vụ minh họa. Toàn bộ kịch bản dùng Solana Devnet.</p></details>
+            <details><summary>Nút nhận thưởng thực hiện điều gì?</summary><p>Nút dựng yêu cầu giao dịch trong kịch bản rồi mở ví demo. Trang này không tự ký hoặc gửi giao dịch lên mạng. Hãy đọc kết quả Custos và dùng thao tác huỷ trong ví.</p></details>
+            <details><summary>Nếu Devnet không phản hồi thì sao?</summary><p>Trang sẽ hiện lỗi, cho phép thử lại hoặc mở dữ liệu mẫu dự phòng có nhãn rõ. Dữ liệu mẫu không phải kết quả mô phỏng trực tiếp.</p></details>
+          </div>
+        </section>
+        <footer className="attack-footer"><span>SolBonus / đạo cụ trình diễn</span><span>Custos · Đọc giao dịch trước khi ký</span></footer>
       </main>
     </div>
   );

@@ -1,0 +1,93 @@
+/* Product pages share a quieter version of the landing's mineral-green identity. */
+@import "./landing/brand-tokens.css";
+
+body:has(.app-shell) { background: #f3f6f3; }
+/* Vite can emit the shared base stylesheet after this multi-entry chunk.
+   Scope to body so these tokens and the canvas do not depend on chunk order. */
+body .app-shell {
+  --color-nen: #f3f6f3;
+  --color-chu: #182f29;
+  --color-chu-nhat: #465e54;
+  --color-chu-mo: #56685f;
+  --color-nhan: #146c60;
+  --color-vien: #d6e1d8;
+  --ui-focus: #146c60;
+  --ui-surface: #fff;
+  --ui-surface-soft: #f7f9f5;
+  --ui-border: #d6e1d8;
+  --ui-border-strong: #8ca69a;
+  --ui-shadow-card: none;
+  --ui-shadow-hover: none;
+  color: #182f29;
+  background: #f3f6f3;
+}
+body .app-shell::before { display: none; }
+.app-shell .scope-bar { background: #e8efe6; color: #365548; border-bottom: 1px solid #d6e1d8; }
+.app-shell .scope-bar__track { width: 100%; animation: none; }
+.app-shell .scope-bar__message { width: 100%; justify-content: center; text-align: center; padding: 8px 16px; font-size: 10px; letter-spacing: .12em; }
+.app-shell .scope-bar__message[aria-hidden="true"] { display: none; }
+.app-shell .wallet-header { background: transparent; border: 0; border-bottom: 1px solid #cfded2; box-shadow: none; border-radius: 0; padding: 12px 0 24px; }
+.app-shell .wallet-header::after { display: none; }
+.app-shell .wallet-brand__title { font-size: 24px; letter-spacing: -.045em; }
+.app-shell .brand-mark { background: transparent; border: 0; box-shadow: none; animation: none; }
+.app-shell .network-pill, .app-shell .icon-link { background: #fff; border: 1px solid #d6e1d8; box-shadow: none; }
+.app-shell .wallet-inspector-link { color: #146c60; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding-inline: 12px; border-radius: 8px; }
+.app-shell .wallet-inspector-link:hover { background: #e4eee5; }
+.app-shell .wallet-card, .app-shell .review-card { border: 1px solid #cddccf; border-radius: 14px; background: #fff; box-shadow: none; }
+.app-shell .wallet-card__top { background: #fff; border-top: 0; }
+.app-shell .wallet-card__top::after, .app-shell .wallet-balance::after { display: none; }
+.app-shell .wallet-balance { background: #eaf2e8; border: 0; border-radius: 10px; padding: 26px 22px; box-shadow: none; }
+.app-shell .wallet-balance .balance-number { font-size: 62px; letter-spacing: -.055em; color: #244b37; }
+.app-shell .wallet-identity .avatar { background: #eef4ed; border: 1px solid #ceded0; box-shadow: none; }
+.app-shell .address-pill { border-color: #d6e1d8; background: #fff; }
+.app-shell .wallet-actions { border-color: #e1e9e0; }
+.app-shell .action-card { border-color: #cddccf; background: #fff; border-radius: 10px; box-shadow: none; }
+.app-shell .action-card--primary { background: #f1f7ef; border-color: #9ab8a4; }
+.app-shell .action-card::before { display: none; }
+.app-shell .action-icon { color: #235c45; background: #e3eee2; border-color: #ceded0; box-shadow: none; }
+.app-shell .action-card:hover { border-color: #59886d; box-shadow: none; }
+.app-shell .empty-review { background: #f7f9f5; }
+.app-shell .empty-review > div { border-color: #d1dfd1; }
+.app-shell .empty-review .text-nhan { color: #146c60; }
+.app-shell .nut-chinh { background: #146c60; color: #fff; border-color: #146c60; box-shadow: none; border-radius: 8px; }
+.app-shell .nut-chinh:hover:not(:disabled) { background: #10584f; box-shadow: none; }
+.app-shell .review-card { min-height: 560px; }
+
+/* Inspector gets a proper tool header, input surface and distinct results region. */
+.app-shell.inspector-shell { width: calc(100% - 48px); max-width: 980px; margin-inline: auto; padding: 28px 0 64px; min-height: 100vh; }
+.inspector-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #cfded2; padding-bottom: 20px; }
+.inspector-nav a { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; color: #146c60; font-size: 13px; }
+.inspector-nav .inspector-brand { font-size: 23px; font-weight: 650; letter-spacing: -.045em; color: #182f29; }
+.inspector-brand span { padding-left: 13px; border-left: 1px solid #bed0c1; font-size: 13px; font-weight: 500; letter-spacing: 0; color: #52675f; }
+.inspector-heading { padding: 36px 0 26px; }
+.inspector-heading .inspector-eyebrow { color: #146c60; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+.inspector-heading h1 { font-size: clamp(26px, 3vw, 35px); line-height: 1.25; letter-spacing: -.035em; }
+.inspector-heading > p:last-child { max-width: 72ch; font-size: 14px; line-height: 1.8; margin-top: 12px; }
+.inspector-form { background: #fff; border: 1px solid #cddccf; border-radius: 14px; padding: 28px; }
+.inspector-form .inspector-privacy { margin-top: 0; background: #f5f7f1; border-color: #d8e2ce; color: #465b40; font-size: 12px; line-height: 1.8; }
+.inspector-form textarea { height: 180px; resize: vertical; background: #fafcf9; border-color: var(--custos-control-border); border-radius: 8px; padding: 16px; font-size: 13px; line-height: 1.8; }
+.inspector-form input:not([type=file]) { background: #fafcf9; border-color: var(--custos-control-border); border-radius: 8px; min-height: 46px; font-size: 12px; padding: 12px; }
+.inspector-form :is(textarea, input)::placeholder { color: #607466; opacity: 1; }
+.inspector-form label { font-size: 13px; }
+.inspector-form .nut { min-height: 46px; }
+.inspector-result { border: 1px solid #d6e1d8; border-radius: 12px; padding: 22px; background: #fff; }
+.inspector-result > p:only-child { text-align: center; padding-block: 12px; color: #56685f; }
+
+@media(max-width: 640px) {
+  .app-shell .wallet-inspector-link { display: none; }
+  .app-shell .wallet-brand__title { font-size: 21px; }
+  .app-shell .wallet-header { padding-bottom: 18px; gap: 12px; }
+  .app-shell .wallet-header__actions { gap: 6px; }
+  .app-shell .network-pill { font-size: 9px; padding: 8px; }
+  .app-shell .wallet-balance { padding: 20px; }
+  .app-shell .wallet-balance .balance-number { font-size: 52px; }
+  .app-shell .review-card { min-height: 0; }
+  .app-shell.inspector-shell { width: calc(100% - 32px); padding-top: 16px; }
+  .inspector-nav { gap: 10px; }
+  .inspector-nav .inspector-brand { gap: 7px; font-size: 20px; }
+  .inspector-brand span { padding-left: 7px; font-size: 11px; }
+  .inspector-nav a { font-size: 12px; }
+  .inspector-heading { padding-block: 26px 22px; }
+  .inspector-form { padding: 18px; }
+  .inspector-result { padding: 16px; }
+}

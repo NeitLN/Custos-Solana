@@ -1,0 +1,140 @@
+{
+  "layouts": [
+    {
+      "name": "soi-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "soi-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "soi-768",
+      "client": 768,
+      "scroll": 753
+    },
+    {
+      "name": "soi-1024",
+      "client": 1024,
+      "scroll": 1009
+    },
+    {
+      "name": "soi-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "so-lieu-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "so-lieu-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "so-lieu-768",
+      "client": 768,
+      "scroll": 753
+    },
+    {
+      "name": "so-lieu-1024",
+      "client": 1024,
+      "scroll": 1009
+    },
+    {
+      "name": "so-lieu-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "phong-van-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "phong-van-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "phong-van-768",
+      "client": 768,
+      "scroll": 753
+    },
+    {
+      "name": "phong-van-1024",
+      "client": 1024,
+      "scroll": 1009
+    },
+    {
+      "name": "phong-van-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "evidence-loading",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "evidence-missing",
+      "client": 390,
+      "scroll": 375
+    }
+  ],
+  "axe": [
+    {
+      "name": "soi-390",
+      "violations": []
+    },
+    {
+      "name": "soi-1440",
+      "violations": []
+    },
+    {
+      "name": "so-lieu-390",
+      "violations": []
+    },
+    {
+      "name": "so-lieu-1440",
+      "violations": []
+    },
+    {
+      "name": "phong-van-390",
+      "violations": []
+    },
+    {
+      "name": "phong-van-1440",
+      "violations": []
+    },
+    {
+      "name": "inspector-invalid",
+      "violations": []
+    },
+    {
+      "name": "inspector-pending",
+      "violations": []
+    },
+    {
+      "name": "evidence-loading",
+      "violations": []
+    },
+    {
+      "name": "evidence-missing",
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "Three tools at five widths; local typeface; single h1; interview error states preserve data and do not substitute fake results",
+    "All evidence index links activate by keyboard and reach real sections",
+    "Inspector empty/invalid inputs never call RPC; file input remains usable",
+    "Unsigned transaction enters visible pending state; cancellation returns to an explicit cancelled state",
+    "Evidence loading and unavailable states retain heading, navigation, and clear recovery copy"
+  ],
+  "assets_failed": []
+}

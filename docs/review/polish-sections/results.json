@@ -1,0 +1,85 @@
+{
+  "checks": [
+    "Canvas moves; pointer tilt responds; pause freezes CSS/JS/canvas; resume restores motion",
+    "Canvas stops drawing when hero is outside viewport",
+    "Live OS reduce-motion changes disable animations and keep content visible",
+    "A/B evidence and keyboard menu remain functional"
+  ],
+  "layouts": [
+    {
+      "width": 320,
+      "lang": "vi",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "width": 320,
+      "lang": "en",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "width": 390,
+      "lang": "vi",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "width": 390,
+      "lang": "en",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "width": 768,
+      "lang": "vi",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "lang": "en",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 1024,
+      "lang": "vi",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "width": 1024,
+      "lang": "en",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "width": 1440,
+      "lang": "vi",
+      "client": 1440,
+      "scroll": 1440
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "client": 1440,
+      "scroll": 1440
+    }
+  ],
+  "axe": [
+    {
+      "name": "desktop-paused",
+      "violations": []
+    },
+    {
+      "name": "mobile-en-menu-reduced",
+      "violations": []
+    },
+    {
+      "name": "vi-evidence-reduced",
+      "violations": []
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,87 @@
+{
+  "pages": [
+    {
+      "name": "landing",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": [
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol.svg",
+          "loaded": true,
+          "width": 38,
+          "height": 38
+        },
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol-light.svg",
+          "loaded": true,
+          "width": 36,
+          "height": 36
+        }
+      ]
+    },
+    {
+      "name": "landing-mobile",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": [
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol.svg",
+          "loaded": true,
+          "width": 38,
+          "height": 38
+        },
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol-light.svg",
+          "loaded": true,
+          "width": 36,
+          "height": 36
+        }
+      ]
+    },
+    {
+      "name": "wallet",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": [
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol.svg",
+          "loaded": true,
+          "width": 44,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "name": "inspector-mobile",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": [
+        {
+          "src": "http://localhost:5198/Custos-Solana/brand/custos-symbol.svg",
+          "loaded": true,
+          "width": 32,
+          "height": 32
+        }
+      ]
+    },
+    {
+      "name": "numbers",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": []
+    },
+    {
+      "name": "interviews",
+      "favicon": [
+        "http://localhost:5198/Custos-Solana/brand/custos-favicon.svg"
+      ],
+      "symbols": []
+    }
+  ],
+  "errors": []
+}

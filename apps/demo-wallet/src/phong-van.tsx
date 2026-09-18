@@ -6,6 +6,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { PhongVan } from "./PhongVan.tsx";
 import "./style.css";
+import "./product-presentation.css";
+import "./tool-design.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

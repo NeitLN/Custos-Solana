@@ -1,3 +1,4 @@
+import { ProductNavigation } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
@@ -5,6 +6,7 @@ import { inspect, neoKetQua, khopNeo, quaCu, type NeoKetQua } from "@custos-sola
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "../../../scripts/tan-cong.ts";
 import { CanhBao } from "./CanhBao.tsx";
+import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, docHienTruongChiTiet, chonRpc, clusterCua, hostCua, type HienTruong } from "./hienTruong.ts";
@@ -20,7 +22,6 @@ import {
   CopyIcon,
   ExternalIcon,
   GiftIcon,
-  ScanIcon,
   SendIcon,
   ShieldIcon,
   WalletIcon,
@@ -703,7 +704,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell min-h-screen bg-nen text-chu">
+    <div className="app-shell demo-shell min-h-screen bg-nen text-chu">
       <div className="scope-bar" role="status">
         <div className="scope-bar__track">
           <span className="scope-bar__message">
@@ -752,15 +753,17 @@ export default function App() {
           <div className="wallet-brand flex min-w-0 items-center gap-3">
             <div className="brand-mark grid h-11 w-11 shrink-0 place-items-center" aria-hidden="true">
               <img
-                className="brand-dino"
-                src={`${import.meta.env.BASE_URL}custos-dino.png`}
+                className="brand-symbol"
+                src={`${import.meta.env.BASE_URL}brand/custos-symbol.svg`}
                 alt=""
+                width={44}
+                height={44}
               />
             </div>
             <div className="wallet-brand__copy min-w-0">
-              <h1 className="wallet-brand__title text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
-                Custos Wallet
-              </h1>
+              <p className="wallet-brand__title text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
+                Custos <span className="demo-brand-label">Demo</span>
+              </p>
               {/* CUSTOS KHÔNG BÁN VÍ. Custos bán SDK cho ví.
                   "Custos Wallet" + "Ví Devnet · kiểm tra giao dịch trước khi ký" đọc
                   trôi chảy thành "Custos là một cái ví" — và đó là hiểu nhầm đắt nhất
@@ -782,30 +785,27 @@ export default function App() {
           </div>
 
           <div className="wallet-header__actions flex items-center gap-2 sm:gap-3">
-            <div className="network-pill flex items-center gap-2 rounded-full px-3 py-2 text-[11px] font-semibold text-thuong">
-              <span className="network-dot h-1.5 w-1.5 rounded-full bg-thuong shadow-[0_0_12px_currentColor]" />
-              DEVNET
-            </div>
-            <a
-              href={`${import.meta.env.BASE_URL}so-lieu.html`}
-              /* Dưới 640px chữ "Số liệu" bị ẩn và icon thì `aria-hidden`, nên link
-                 KHÔNG còn tên nào — trình đọc màn hình chỉ đọc "liên kết". axe-core
-                 bắt được ở khung 375px, không bắt ở khung máy tính: lỗi chỉ tồn tại
-                 ở một cỡ màn hình. Nhãn để đúng chữ đang hiện, để người dùng điều
-                 khiển bằng giọng nói gọi được đúng tên họ nhìn thấy (WCAG 2.5.3). */
-              aria-label="Số liệu"
-              /* Cũng vì chữ bị ẩn dưới 640px: link co lại còn 42x34px, chỉ vừa
-                 đúng cái icon. Nó là mục nhỏ nhất trên header mà lại nằm sát mép
-                 phải màn hình — chỗ ngón cái hay trượt nhất. `min-h`/`min-w` giữ
-                 44px ở mọi cỡ; từ 640px trở lên chữ hiện lại và link tự rộng ra,
-                 nên hai ràng buộc này chỉ có tác dụng ở khung hẹp. */
-              className="icon-link flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-full px-3 py-2 text-[12px] text-chu-nhat transition-colors hover:text-chu"
-            >
-              <span className="hidden sm:inline">Số liệu</span>
-              <ExternalIcon className="h-4 w-4" />
-            </a>
+            <ProductNavigation active="demo" />
           </div>
         </header>
+
+        <section className="demo-intro" aria-labelledby="demo-title">
+          <div>
+            <p className="demo-eyebrow">Không gian trải nghiệm</p>
+            <h1 id="demo-title">Một giao dịch.<br /><span>Nhìn rõ trước khi ký.</span></h1>
+            <p className="demo-intro__description">Chọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.</p>
+          </div>
+          <ol className="demo-steps" aria-label="Các bước trải nghiệm">
+            {["Chọn tình huống", "Custos phân tích", "Đọc kết quả"].map((label, i) => {
+              const current = dangChay ? 1 : ketQua || hauQua ? 2 : 0;
+              return <li key={label} aria-current={i === current ? "step" : undefined}>
+                <span className="demo-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><span>{label}</span>
+              </li>;
+            })}
+          </ol>
+        </section>
+
+        {ht === undefined && <div className="demo-loading" role="status"><span />Đang chuẩn bị môi trường demo…</div>}
 
         {loiCauHinh !== null && (
           <div
@@ -842,7 +842,7 @@ export default function App() {
         )}
 
         {ht && (
-          <main className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,0.88fr)_minmax(520px,1.12fr)] lg:gap-5">
+          <main className="demo-workspace mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,0.88fr)_minmax(520px,1.12fr)] lg:gap-5">
             <section className="wallet-card reveal-card overflow-hidden rounded-[20px]">
               <div className="wallet-card__top px-5 pb-5 pt-5 sm:px-6 sm:pt-6">
                 <div className="wallet-identity flex items-center justify-between gap-4">
@@ -883,7 +883,7 @@ export default function App() {
 
               <div className="wallet-actions border-t px-5 py-5 sm:px-6">
                 <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
-                  Chọn một giao dịch để thử
+                  <span className="demo-section-number">01</span> Chọn một giao dịch để thử
                 </h2>
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   <button
@@ -897,7 +897,7 @@ export default function App() {
                     </div>
                     <span>
                       <span className="block text-[14px] font-semibold text-chu">Nhận quà tặng</span>
-                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Giao dịch giả mạo</span>
+                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Tình huống giả mạo</span>
                     </span>
                   </button>
                   <button
@@ -911,7 +911,7 @@ export default function App() {
                     </div>
                     <span>
                       <span className="block text-[14px] font-semibold text-chu">Gửi 10 token</span>
-                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Giao dịch bình thường</span>
+                      <span className="mt-0.5 block text-[11.5px] text-chu-mo">Tình huống đối chiếu</span>
                     </span>
                   </button>
                 </div>
@@ -948,7 +948,7 @@ export default function App() {
             <section className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
               <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
                 <div>
-                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu">Kiểm tra trước khi ký</h2>
+                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu"><span className="demo-section-number">02</span> Kiểm tra trước khi ký</h2>
                   <p className="mt-0.5 text-[12.5px] text-chu-mo">Mô phỏng giao dịch rồi giải thích hậu quả</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11.5px] font-medium text-nhan">
@@ -977,31 +977,29 @@ export default function App() {
                      Nay nói thẳng ba thứ sẽ thấy, kèm ví dụ thật, và đặt trục khác
                      biệt (phần CHƯA đọc hiểu) ở vị trí cuối — chỗ mắt dừng lại. */
                   <div className="empty-review rounded-2xl px-5 py-7 sm:px-6">
-                    <div className="flex items-start gap-3.5">
-                      <div className="scan-orbit grid h-12 w-12 shrink-0 place-items-center rounded-full">
-                        <ScanIcon className="h-6 w-6 text-nhan" />
-                      </div>
+                    <DemoScanArtwork />
+                    <div className="demo-empty-heading flex items-start gap-3.5">
                       <div>
                         <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-chu">
-                          Chọn một giao dịch ở ví bên cạnh
+                          Giao dịch chưa ký. Quyết định vẫn ở bạn.
                         </h3>
                         <p className="mt-1 text-[13px] leading-relaxed text-chu-mo">
-                          Custos chạy thử nó trên Devnet trước, rồi cho bạn thấy ba điều:
+                          Chọn “Nhận quà tặng” hoặc “Gửi 10 token” để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.
                         </p>
                       </div>
                     </div>
 
-                    <ul className="mt-5 space-y-3">
+                    <ul className="demo-findings mt-5 space-y-3">
                       {[
                         {
                           tieuDe: "Tài sản của bạn thay đổi ra sao",
                           mo: "Số dư và quyền sở hữu, trước và sau khi ký.",
-                          viDu: "500,0 → 0,0",
+                          viDu: "Trước → Sau",
                         },
                         {
                           tieuDe: "Vì sao nguy hiểm, bằng tiếng Việt",
                           mo: "Một câu nói rõ hậu quả, không phải mã lỗi.",
-                          viDu: "“tài khoản sẽ đổi chủ”",
+                          viDu: "Lý do cảnh báo",
                         },
                         {
                           tieuDe: "Phần Custos CHƯA đọc hiểu",
@@ -1010,7 +1008,7 @@ export default function App() {
                           // là bác bỏ cả câu. Nói việc Custos làm, đừng nói việc người khác
                           // không làm.
                           mo: "Custos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.",
-                          viDu: "2 trên 3 lệnh",
+                          viDu: "Phạm vi đã đọc",
                           nhanManh: true,
                         },
                       ].map((m) => (

@@ -1,3 +1,4 @@
+import { ProductHeader } from "./ProductNavigation.tsx";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -79,7 +80,7 @@ const ngay = (iso: string) => new Date(iso).toLocaleDateString("vi-VN");
  */
 function PhepDo({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: string }) {
   return (
-    <div className="grid gap-x-5 gap-y-1 border-t border-vien py-4 sm:grid-cols-[7.5rem_1fr]">
+    <div className="evidence-measure grid gap-x-5 gap-y-1 border-t border-vien py-4 sm:grid-cols-[7.5rem_1fr]">
       <div className="text-[30px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-chu sm:text-right">
         {so}
       </div>
@@ -94,7 +95,7 @@ function PhepDo({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: string
 /** Ghi chú giới hạn — nói ngay cạnh con số, không giấu ở cuối trang. */
 function GioiHan({ tieuDe, children }: { tieuDe: string; children: ReactNode }) {
   return (
-    <p className="mt-4 rounded-xl border border-vien bg-white px-4 py-3.5 text-[14px] leading-relaxed text-chu-nhat">
+    <p className="evidence-limit mt-4 rounded-xl border border-vien bg-white px-4 py-3.5 text-[14px] leading-relaxed text-chu-nhat">
       <span className="font-semibold text-chu">{tieuDe}</span> {children}
     </p>
   );
@@ -110,46 +111,36 @@ export function SoLieu() {
       .catch(() => setD(null));
   }, []);
 
-  if (d === undefined) {
-    return (
-      <div role="status" className="mx-auto max-w-2xl px-5 py-10 text-[15px] text-chu-nhat">
-        Đang tải số liệu…
-      </div>
-    );
-  }
-  if (d === null) {
-    return (
-      <div role="alert" className="mx-auto max-w-2xl px-5 py-10 text-[15px] leading-relaxed text-chu-nhat">
-        <span className="font-semibold text-chu">Chưa sinh số liệu.</span> Chạy{" "}
-        <code className="rounded bg-white px-1.5 py-0.5 font-mono text-[13.5px] text-chu ring-1 ring-vien">
-          node --experimental-strip-types scripts/tao-so-lieu.ts
-        </code>{" "}
-        rồi tải lại trang.
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-2xl px-5 py-8 sm:py-12">
-        {/* Vùng bấm cao 44px — ngón tay và con trỏ đều cần chỗ, kể cả với một liên kết. */}
-        <a
-          href={import.meta.env.BASE_URL}
-          className="lien-ket gap-1.5 text-[14px] text-chu-nhat"
-        >
-          <span aria-hidden="true">←</span> Ví mẫu
-        </a>
-
+    <main className="app-shell evidence-shell">
+      <div className="evidence-container">
+        <ProductHeader active="evidence" label="Bằng chứng" />
+        <header className="evidence-heading">
+          <p className="tool-eyebrow">HỒ SƠ KIỂM CHỨNG / CUSTOS</p>
         <h1 className="mt-2 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-chu sm:text-[30px]">
-          Custos đo được những gì
+          Có số liệu.
+          <span>Có cả giới hạn.</span>
         </h1>
         <p className="mt-3 max-w-[68ch] text-[15px] leading-relaxed text-chu-nhat">
           Mỗi con số dưới đây sinh ra từ một phép đo có file trong repo — không có số nào gõ tay.
           Trang tự cập nhật theo lần đo gần nhất.
         </p>
 
+        {d && <div className="evidence-stamp"><span>Dữ liệu được sinh từ phép đo</span><time dateTime={d.sinhLuc}>Cập nhật {ngay(d.sinhLuc)}</time></div>}
+        </header>
+        {d === undefined && <div className="evidence-status" role="status">Đang tải hồ sơ kiểm chứng…</div>}
+        {d === null && <div className="evidence-status" role="alert"><h2>Chưa tải được số liệu.</h2><p>Hiện chưa có dữ liệu để hiển thị. Hãy thử tải lại trang hoặc quay về ví mẫu.</p><button className="nut nut-chinh" type="button" onClick={() => window.location.reload()}>Tải lại trang</button></div>}
+        {d && <>
+        <nav className="evidence-index" aria-label="Các phần bằng chứng">
+          {d.cohort && <a href="#du-lieu-cong-khai">Dữ liệu công khai</a>}
+          {d.phongVan && <a href="#muc-do-hieu">Mức độ hiểu</a>}
+          {d.tichHop && <a href="#tich-hop">Tích hợp SDK</a>}
+          {d.evalAi && <a href="#danh-gia-ai">Đánh giá AI</a>}
+          <a href="#gioi-han">Chưa đo được</a><a href="#san-pham">Sản phẩm</a>
+        </nav>
+        <div className="evidence-body">
         {d.cohort && (
-          <section className="mt-10">
+          <section className="evidence-section mt-10" id="du-lieu-cong-khai">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
               Kiểm engine trên dữ liệu công khai đã lưu offline
             </h2>
@@ -230,7 +221,7 @@ export function SoLieu() {
         )}
 
         {d.phongVan && (
-          <section className="mt-10">
+          <section className="evidence-section mt-10" id="muc-do-hieu">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
               Người thật có hiểu cảnh báo không
             </h2>
@@ -276,7 +267,7 @@ export function SoLieu() {
         )}
 
         {d.tichHop && (
-          <section className="mt-10">
+          <section className="evidence-section mt-10" id="tich-hop">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
               Một bên ngoài cài SDK này mất bao lâu
             </h2>
@@ -313,7 +304,7 @@ export function SoLieu() {
         )}
 
         {d.evalAi && (
-          <section className="mt-10">
+          <section className="evidence-section mt-10" id="danh-gia-ai">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
               AI có thể làm hỏng gì
             </h2>
@@ -375,12 +366,12 @@ export function SoLieu() {
           </section>
         )}
 
-        <section className="mt-10">
+        <section className="evidence-section mt-10" id="gioi-han">
           <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
             Điều đội CHƯA đo được
           </h2>
           <p className="mt-1 text-[14px] text-chu-mo">
-            ô trống là thứ giám khảo tìm — nói ra trước thì rẻ hơn để bị moi ra
+            Các giới hạn hiện tại, để đọc kết quả trong đúng phạm vi.
           </p>
           <div className="mt-6">
             <PhepDo
@@ -396,7 +387,7 @@ export function SoLieu() {
           </div>
         </section>
 
-        <section className="mt-10">
+        <section className="evidence-section mt-10" id="san-pham">
           <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">Sản phẩm</h2>
           <div className="mt-4">
             <PhepDo
@@ -433,7 +424,9 @@ export function SoLieu() {
           <code className="font-mono text-[13px] text-chu-nhat">SEED-DATASET.md</code> và{" "}
           <code className="font-mono text-[13px] text-chu-nhat">docs/DON-VI-KINH-TE.md</code>.
         </p>
+        </div>
+        </>}
       </div>
-    </div>
+    </main>
   );
 }
