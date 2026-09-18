@@ -1,0 +1,230 @@
+{
+  "measuredAt": "2026-09-17T21:38:47.329Z",
+  "source": "devnet-live-independent-simulations",
+  "broadcast": false,
+  "cases": [
+    {
+      "name": "chi-doi-chu",
+      "unsigned": true,
+      "result": {
+        "level": "danger",
+        "aiAdvisory": null,
+        "detectedPrimaryAction": null,
+        "diff": [
+          {
+            "label": "Chủ sở hữu tài khoản 7KwS…ZL5h",
+            "before": "Bạn",
+            "after": "CRZa…picz",
+            "severity": "danger",
+            "sauDayDu": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz"
+          },
+          {
+            "label": "Phí mạng",
+            "before": "—",
+            "after": "0,000005 SOL",
+            "severity": "info",
+            "soLieu": {
+              "truoc": "0",
+              "sau": "5000",
+              "decimals": 9
+            }
+          }
+        ],
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "coverage": {
+          "analyzed": 1,
+          "total": 1,
+          "unverifiedPrograms": 0
+        },
+        "explanation": "",
+        "chanDoan": {
+          "phienBan": 1,
+          "canhBao": [
+            {
+              "ruleId": 1,
+              "reasonCode": "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+              "level": "danger",
+              "bangChung": [
+                {
+                  "loai": "tokenAccount",
+                  "khoa": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+                  "nguon": "observed"
+                }
+              ]
+            }
+          ],
+          "thieuBangChung": 0,
+          "bangChungTreo": [],
+          "nguon": {
+            "tang": "L1",
+            "coverage": {
+              "analyzed": 1,
+              "total": 1,
+              "unverifiedPrograms": 0
+            },
+            "chiTiet": {
+              "hieuDuoc": 1,
+              "quenNhungChuaDoc": 0,
+              "chuongTrinhLa": 0,
+              "soChuongTrinhLa": 0,
+              "danhSachLa": []
+            },
+            "simulationOk": true
+          }
+        }
+      }
+    },
+    {
+      "name": "gui-10",
+      "unsigned": true,
+      "result": {
+        "level": "safe",
+        "aiAdvisory": null,
+        "detectedPrimaryAction": null,
+        "diff": [
+          {
+            "label": "Số dư 7KwS…ZL5h sau khi ký",
+            "before": "500,0",
+            "after": "499,99999",
+            "soLieu": {
+              "truoc": "500000000",
+              "sau": "499999990",
+              "decimals": 6,
+              "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+              "taiKhoan": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG"
+            },
+            "severity": "info"
+          },
+          {
+            "label": "Phí mạng",
+            "before": "—",
+            "after": "0,000005 SOL",
+            "severity": "info",
+            "soLieu": {
+              "truoc": "0",
+              "sau": "5000",
+              "decimals": 9
+            }
+          }
+        ],
+        "reasonCodes": [],
+        "coverage": {
+          "analyzed": 1,
+          "total": 1,
+          "unverifiedPrograms": 0
+        },
+        "explanation": "",
+        "chanDoan": {
+          "phienBan": 1,
+          "canhBao": [],
+          "thieuBangChung": 0,
+          "bangChungTreo": [],
+          "nguon": {
+            "tang": "L1",
+            "coverage": {
+              "analyzed": 1,
+              "total": 1,
+              "unverifiedPrograms": 0
+            },
+            "chiTiet": {
+              "hieuDuoc": 1,
+              "quenNhungChuaDoc": 0,
+              "chuongTrinhLa": 0,
+              "soChuongTrinhLa": 0,
+              "danhSachLa": []
+            },
+            "simulationOk": true
+          }
+        }
+      }
+    },
+    {
+      "name": "gui-10-va-doi-chu",
+      "unsigned": true,
+      "result": {
+        "level": "danger",
+        "aiAdvisory": null,
+        "detectedPrimaryAction": null,
+        "diff": [
+          {
+            "label": "Số dư 7KwS…ZL5h sau khi ký",
+            "before": "500,0",
+            "after": "499,99999",
+            "soLieu": {
+              "truoc": "500000000",
+              "sau": "499999990",
+              "decimals": 6,
+              "mint": "7KwS96WXzxipXGjNen1faMYpHL3yUwDXfiEXKsLaZL5h",
+              "taiKhoan": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG"
+            },
+            "severity": "danger"
+          },
+          {
+            "label": "Chủ sở hữu tài khoản 7KwS…ZL5h",
+            "before": "Bạn",
+            "after": "CRZa…picz",
+            "severity": "danger",
+            "sauDayDu": "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz"
+          },
+          {
+            "label": "Phí mạng",
+            "before": "—",
+            "after": "0,000005 SOL",
+            "severity": "info",
+            "soLieu": {
+              "truoc": "0",
+              "sau": "5000",
+              "decimals": 9
+            }
+          }
+        ],
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "coverage": {
+          "analyzed": 2,
+          "total": 2,
+          "unverifiedPrograms": 0
+        },
+        "explanation": "",
+        "chanDoan": {
+          "phienBan": 1,
+          "canhBao": [
+            {
+              "ruleId": 1,
+              "reasonCode": "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+              "level": "danger",
+              "bangChung": [
+                {
+                  "loai": "tokenAccount",
+                  "khoa": "FXyM5E57GmgiQvU7kbxf5aL7PzhPDPFYj5mZtgQptVAG",
+                  "nguon": "observed"
+                }
+              ]
+            }
+          ],
+          "thieuBangChung": 0,
+          "bangChungTreo": [],
+          "nguon": {
+            "tang": "L1",
+            "coverage": {
+              "analyzed": 2,
+              "total": 2,
+              "unverifiedPrograms": 0
+            },
+            "chiTiet": {
+              "hieuDuoc": 2,
+              "quenNhungChuaDoc": 0,
+              "chuongTrinhLa": 0,
+              "soChuongTrinhLa": 0,
+              "danhSachLa": []
+            },
+            "simulationOk": true
+          }
+        }
+      }
+    }
+  ]
+}
