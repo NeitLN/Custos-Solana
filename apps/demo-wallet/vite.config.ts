@@ -9,10 +9,21 @@ import { fileURLToPath } from "node:url";
  *   dev   — "/" vì server chạy ở gốc localhost
  *   build — "/Custos-Solana/" vì GitHub Pages phục vụ ở đường dẫn con
  *
- * Không dùng biến môi trường cho việc này: Git Bash trên Windows tự đổi mọi
- * chuỗi trông giống đường dẫn POSIX thành đường dẫn Windows, nên
+ * Không dùng biến môi trường CHỨA ĐƯỜNG DẪN cho việc này: Git Bash trên Windows
+ * tự đổi mọi chuỗi trông giống đường dẫn POSIX thành đường dẫn Windows, nên
  * `CUSTOS_BASE=/Custos-Solana/` biến thành `/Program Files/Git/Custos-Solana/`
  * và trang deploy trắng hoàn toàn. Đã dính lỗi này một lần.
+ *
+ * ## Vercel phục vụ ở GỐC MIỀN, GitHub Pages phục vụ ở thư mục con
+ *
+ * Hai đích deploy, hai `base` khác nhau — và dùng nhầm thì trang TRẮNG, không
+ * phải lỗi nhẹ: mọi thẻ `<script src="/Custos-Solana/assets/…">` trên Vercel đều
+ * 404 vì miền đó không có thư mục `Custos-Solana`.
+ *
+ * Cách chọn: biến `CUSTOS_GOC` là một **cờ boolean** (`"1"`), KHÔNG phải đường
+ * dẫn. Đó là cả điểm của thiết kế này — một chuỗi `"1"` thì Git Bash không có gì
+ * để dịch, nên cái bẫy phía trên không lặp lại. Vercel đặt cờ này trong
+ * `vercel.json`; GitHub Pages không đặt gì và giữ nguyên hành vi cũ.
  */
 export default defineConfig(({ command, isPreview }) => ({
   /*
@@ -31,7 +42,12 @@ export default defineConfig(({ command, isPreview }) => ({
    * Hệ quả thật: `npm run preview` — cách DUY NHẤT xem bản production trước khi
    * deploy — không dùng được, và không ai biết vì nó không báo lỗi.
    */
-  base: command === "build" || isPreview ? "/Custos-Solana/" : "/",
+  base:
+    process.env["CUSTOS_GOC"] === "1"
+      ? "/"
+      : command === "build" || isPreview
+        ? "/Custos-Solana/"
+        : "/",
   plugins: [react(), tailwindcss()],
 
   // ⚠️ BẮT BUỘC — không được xoá.
