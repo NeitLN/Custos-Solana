@@ -1,0 +1,113 @@
+{
+  "layouts": [
+    {
+      "name": "idle-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "idle-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "idle-768",
+      "client": 768,
+      "scroll": 753
+    },
+    {
+      "name": "idle-1024",
+      "client": 1024,
+      "scroll": 1009
+    },
+    {
+      "name": "idle-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "safe-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "safe-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "warning-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "warning-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "danger-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "danger-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "rpc-error",
+      "client": 1440,
+      "scroll": 1425
+    }
+  ],
+  "axe": [
+    {
+      "name": "idle-390",
+      "violations": []
+    },
+    {
+      "name": "idle-1440",
+      "violations": []
+    },
+    {
+      "name": "safe-390",
+      "violations": []
+    },
+    {
+      "name": "safe-1440",
+      "violations": []
+    },
+    {
+      "name": "warning-390",
+      "violations": []
+    },
+    {
+      "name": "warning-1440",
+      "violations": []
+    },
+    {
+      "name": "danger-390",
+      "violations": []
+    },
+    {
+      "name": "danger-1440",
+      "violations": []
+    },
+    {
+      "name": "rpc-error",
+      "violations": []
+    },
+    {
+      "name": "invalid-configuration",
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "Idle state at 5 viewport widths; single h1; RPC unavailable remains explicit",
+    "Explicit mock safe/warning/danger at desktop/mobile; cancel confirms and resets step",
+    "Keyboard toggles protection; RPC failure yields visible error without signing",
+    "Loading, missing configuration and invalid configuration remain distinct"
+  ]
+}

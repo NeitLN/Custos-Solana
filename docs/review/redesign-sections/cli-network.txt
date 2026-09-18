@@ -1,0 +1,26 @@
+✔ CU-10 · `--help` thoát 0 và NÓI RÕ exit 0 không phải quyền ký (343.774ms)
+✔ CU-10 · lỗi ĐẦU VÀO thoát 3, lỗi hạ tầng thoát 4 — hai câu khác nhau (661.1401ms)
+✔ CU-10 · chuỗi rác báo 'không phải base64', KHÔNG báo 'không phải giao dịch' (0.4781ms)
+✔ CU-10 · `--json` in JSON THUẦN ra stdout, chẩn đoán ra stderr (324.1301ms)
+✔ CU-10 · `docDoi` đọc đúng cờ, không nuốt giá trị (0.6825ms)
+✔ CU-10 · CLI KHÔNG nhận khoá riêng và KHÔNG gửi giao dịch (0.4639ms)
+✔ CU-10 · `bin` và subpath `./cli` được khai trong package.json (0.2497ms)
+✔ CU-10 · mã thoát của `--help` và của nhánh lỗi KHÔNG trùng nhau (634.3758ms)
+✔ QA · CLI KHÔNG SẬP với base64 giải ra transaction rỗng ruột (322.4239ms)
+✔ QA · `giaiTx` từ chối tx rỗng ruột nhưng GIỮ tx thật — đối chứng (30.9457ms)
+✔ CU-11 · `--receipt rieng` bị từ chối và NÓI RÕ vì sao, không xuất bản rỗng (861.0442ms)
+✔ CU-11 · `--receipt` với giá trị lạ bị từ chối (704.7771ms)
+✔ CU-11 · `--help` nhắc tới `--receipt` (322.0839ms)
+✔ CU-18 · vắng `--policy` ⇒ policyDecision là `null`, KHÔNG phải allow (753.4727ms)
+✔ CU-18 · `--policy chat` trên giao dịch danger ⇒ block, nói rõ AI quyết định (711.139ms)
+✔ CU-18 · exit code KHÔNG đổi theo policy — nó là phân loại engine (1474.7372ms)
+✔ CU-18 · tên profile gõ nhầm bị TỪ CHỐI, không im lặng lui về mặc định (339.0775ms)
+✔ CU-18 · `--help` nhắc `--policy` và nói policy KHÔNG nới kết luận engine (324.4711ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8197.6422

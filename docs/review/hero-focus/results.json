@@ -1,0 +1,91 @@
+{
+  "layouts": [
+    {
+      "width": 320,
+      "lang": "vi",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "width": 320,
+      "lang": "en",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "width": 390,
+      "lang": "vi",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "width": 390,
+      "lang": "en",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "width": 768,
+      "lang": "vi",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 768,
+      "lang": "en",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "width": 1024,
+      "lang": "vi",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "width": 1024,
+      "lang": "en",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "width": 1440,
+      "lang": "vi",
+      "client": 1440,
+      "scroll": 1440
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "client": 1440,
+      "scroll": 1440
+    }
+  ],
+  "errors": [],
+  "axe": [
+    {
+      "width": 390,
+      "lang": "vi",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "lang": "en",
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "lang": "vi",
+      "violations": []
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "violations": []
+    }
+  ],
+  "checks": [
+    "Vietnamese display font loaded; lens animates and respects pause",
+    "Resource destinations are real links; keyboard activates SDK and evidence anchors"
+  ]
+}

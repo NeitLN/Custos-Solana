@@ -1,0 +1,30 @@
+
+> @custos-solana/demo-wallet@0.0.0 build
+> vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 364 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/so-lieu.html                                0.64 kB │ gzip:   0.38 kB
+dist/phong-van.html                              0.82 kB │ gzip:   0.41 kB
+dist/soi.html                                    0.94 kB │ gzip:   0.43 kB
+dist/index.html                                  1.25 kB │ gzip:   0.55 kB
+dist/gioi-thieu.html                             3.35 kB │ gzip:   1.44 kB
+dist/assets/product-presentation-CQ2FkjsO.css    6.38 kB │ gzip:   1.89 kB
+dist/assets/gioiThieu-BESHAeWF.css              36.31 kB │ gzip:   7.20 kB
+dist/assets/style-Dbh71a_G.css                  44.27 kB │ gzip:  10.22 kB
+dist/assets/product-presentation-s7STTp1_.js     0.63 kB │ gzip:   0.41 kB
+dist/assets/mock-safe-DD7ZMUeT.js                0.68 kB │ gzip:   0.44 kB
+dist/assets/mock-warning-CQdeN89U.js             0.73 kB │ gzip:   0.53 kB
+dist/assets/mock-danger-e_O5uXEj.js              1.00 kB │ gzip:   0.67 kB
+dist/assets/coHan-DH6bT_1I.js                   13.80 kB │ gzip:   5.35 kB
+dist/assets/soi-BqHSC60n.js                     14.09 kB │ gzip:   6.08 kB
+dist/assets/soLieu-BaH5Vkmv.js                  16.37 kB │ gzip:   5.67 kB
+dist/assets/phongVan-Di7kyU_c.js                16.46 kB │ gzip:   5.46 kB
+dist/assets/main-Cwd8sT6L.js                    41.56 kB │ gzip:  13.15 kB
+dist/assets/gioiThieu-CXq10hjJ.js               42.62 kB │ gzip:  12.44 kB
+dist/assets/client-DIywjBaq.js                 193.08 kB │ gzip:  60.58 kB
+dist/assets/CanhBao-Dm6hnaYV.js                348.80 kB │ gzip: 106.14 kB
+✓ built in 1.43s

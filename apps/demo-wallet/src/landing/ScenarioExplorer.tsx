@@ -51,8 +51,8 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
             <thead>
               <tr>
                 <th scope="col">{t.ab.cotTruong}</th>
-                <th scope="col">{t.ab.chonA}</th>
-                <th scope="col">{t.ab.chonB}</th>
+                <th scope="col"><span className="lg-case-marker" aria-hidden="true">A</span>{t.ab.chonA}</th>
+                <th scope="col"><span className="lg-case-marker lg-case-marker--b" aria-hidden="true">B</span>{t.ab.chonB}</th>
               </tr>
             </thead>
             <tbody>
@@ -61,7 +61,7 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
                 <td>{t.ab.giaTri.tokenChuyen}</td>
                 <td>{t.ab.giaTri.tokenChuyen}</td>
               </tr>
-              <tr>
+              <tr className="lg-balance-comparison">
                 <th scope="row">{t.ab.hang.soDuSau}</th>
                 <td>{dinhDangToken(a.soDu.sau, a.soDu.decimals, ngon)}</td>
                 <td>{dinhDangToken(b.soDu.sau, b.soDu.decimals, ngon)}</td>

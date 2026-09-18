@@ -218,14 +218,11 @@ button {
   overflow: hidden;
 }
 
-.brand-dino {
+.brand-symbol {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform: scale(1.55);
-  transform-origin: center;
-  filter: drop-shadow(0 2px 2px rgba(22, 45, 40, 0.16));
 }
 
 .network-pill,

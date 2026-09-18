@@ -1,0 +1,165 @@
+{
+  "layouts": [
+    {
+      "name": "landing-vi-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "landing-en-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "landing-vi-390",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "name": "landing-en-390",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "name": "landing-vi-768",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "name": "landing-en-768",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "name": "landing-vi-1024",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "name": "landing-en-1024",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "name": "landing-vi-1440",
+      "client": 1440,
+      "scroll": 1440
+    },
+    {
+      "name": "landing-en-1440",
+      "client": 1440,
+      "scroll": 1440
+    },
+    {
+      "name": "mobile-open-menu-en",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "inspector-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "inspector-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "inspector-768",
+      "client": 768,
+      "scroll": 753
+    },
+    {
+      "name": "inspector-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "wallet-safe-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "wallet-safe-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "wallet-warning-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "wallet-warning-1440",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "wallet-danger-390",
+      "client": 390,
+      "scroll": 375
+    },
+    {
+      "name": "wallet-danger-1440",
+      "client": 1440,
+      "scroll": 1425
+    }
+  ],
+  "axe": [
+    {
+      "name": "landing-en-desktop",
+      "violations": []
+    },
+    {
+      "name": "landing-vi-evidence-b",
+      "violations": []
+    },
+    {
+      "name": "mobile-open-menu-en",
+      "violations": []
+    },
+    {
+      "name": "inspector-mobile",
+      "violations": []
+    },
+    {
+      "name": "inspector-invalid-input",
+      "violations": []
+    },
+    {
+      "name": "wallet-safe-390",
+      "violations": []
+    },
+    {
+      "name": "wallet-safe-1440",
+      "violations": []
+    },
+    {
+      "name": "wallet-warning-390",
+      "violations": []
+    },
+    {
+      "name": "wallet-warning-1440",
+      "violations": []
+    },
+    {
+      "name": "wallet-danger-390",
+      "violations": []
+    },
+    {
+      "name": "wallet-danger-1440",
+      "violations": []
+    }
+  ],
+  "checks": [
+    "Evidence A/B switches correctly; no owner data from B remains in A",
+    "FAQ opens with native details",
+    "Mobile language selection and Escape focus restoration",
+    "Invalid Inspector input displays error without calling RPC",
+    "Wallet safe/warning/danger mock results render at desktop and mobile sizes",
+    "Reduced-motion retains content and has no running animations"
+  ],
+  "errors": [],
+  "failed_assets": []
+}

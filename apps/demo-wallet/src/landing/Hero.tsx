@@ -1,56 +1,66 @@
+import { Fragment } from "react";
 import type { NoiDung, Ngon } from "./content.ts";
 import { LINK } from "./links.ts";
 import { dinhDangToken, layCa } from "./sample.ts";
+import { DesignIcon } from "./DesignIcon.tsx";
+import { CinematicScene, CINEMA } from "./CinematicScene.tsx";
+import { InspectionLens, ResourceIllustration } from "./InspectionArtwork.tsx";
 
 /**
- * Hero SÁNG — nền `bg`, phiếu phân tích bên phải.
- *
- * ## Ba thứ đã bỏ so với bản trước
- *
- *   1. **Chip instruction absolute** (UI-03). Đã tái hiện ở 390px: chip
- *      `519,89–558,52` giao với tiêu đề khung `552,27–577,02`, che mất chữ. Sửa
- *      không phải là thêm padding để né một vật trang trí — mà là bỏ hẳn nó.
- *      Thành phần giao dịch giờ nằm trong hàng "Thành phần" thuộc flow thường.
- *   2. **Backplate nghiêng 3 độ** — chi tiết đặc trưng của mẫu cũ, và cũng là
- *      thứ từng đè lên caption.
- *   3. **Hard shadow** `7px 7px 0`. Phiếu dùng border 1px.
- *
- * ## Phiếu chia hai nhóm có nghĩa
- *
- * `TÀI SẢN` và `QUYỀN KIỂM SOÁT` là hai nhóm tách bạch (mục 5) — đó chính là
- * điều sản phẩm muốn người đọc phân biệt. Số lấy từ cùng fixture với phần A/B
- * bên dưới, nên hai nơi không bao giờ lệch nhau.
+ * Hero cinematic: nền quỹ đạo trang trí và phiếu phân tích thật ở foreground.
+ * Mọi chữ/số của phiếu nằm trong flow, tách TÀI SẢN và QUYỀN KIỂM SOÁT.
+ * Dữ liệu dùng cùng fixture với A/B; chuyển động không tạo kết quả mô phỏng.
+ * H1 giữ accessible name đầy đủ khi các từ được tách để diễn hoạt.
  */
-export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
+export function Hero({ t, ngon, paused }: { t: NoiDung; ngon: Ngon; paused: boolean }) {
   const caB = layCa("b");
   const soDuTruoc = dinhDangToken(caB.soDu.truoc, caB.soDu.decimals, ngon);
   const soDuSau = dinhDangToken(caB.soDu.sau, caB.soDu.decimals, ngon);
+  const words = (line: string) => line.split(" ").map((word, i) => <Fragment key={i}><span className="cine-word-mask"><span className="cine-word">{word}</span></span>{i < line.split(" ").length - 1 ? " " : ""}</Fragment>);
 
   return (
     <section className="lg-hero" id="dau-trang">
+      <CinematicScene paused={paused} />
       <div className="lg-shell lg-hero__grid">
-        <div>
-          <p className="lg-kicker">{t.hero.kicker}</p>
-          <h1 className="lg-h1 lg-hero__h1">{t.hero.h1}</h1>
+        <div className="lg-hero__story">
+          <p className="lg-kicker">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>{t.hero.kicker}</span>
+          </p>
+          <h1 className="lg-h1 lg-hero__h1" aria-label={t.hero.h1} key={ngon}>
+            <span className="cine-title-line" aria-hidden="true">{words(ngon === "vi" ? "Hiểu điều" : "Understand")}</span>
+            <span className="cine-title-line cine-title-line--decision" aria-hidden="true">
+              <span className="cine-title-prefix">{words(ngon === "vi" ? "bạn" : "what you’re")}</span>{" "}
+              <span className="cine-signature">{words(ngon === "vi" ? "sắp ký." : "about to sign.")}<span className="cine-signature__edge" /></span>
+            </span>
+          </h1>
           <p className="lg-lead lg-prose lg-muted lg-hero__mota">{t.hero.moTa}</p>
 
           <div className="lg-hero__nut">
             <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
               {t.chung.moDemo}
+              <span className="cine-action-arrow"><DesignIcon kind="arrow" /></span>
             </a>
-            {/* CTA phụ dạng text link (mục 5), không phải nút thứ hai. */}
+            <p className="lg-caption lg-hero__ghichu">{t.hero.ghiChu}</p>
+          </div>
+          <div className="cine-preview">
             <a className="lg-lien-cta" href="#trai-nghiem">
-              {t.hero.ctaPhu}
-              <span aria-hidden="true">→</span>
+              <span className="cine-preview__art" aria-hidden="true">
+                <span className="cine-preview__sheet cine-preview__sheet--a"><span>A</span><i /><i /></span>
+                <span className="cine-preview__sheet cine-preview__sheet--b"><span>B</span><i /><i /><b>!</b></span>
+              </span>
+              <span className="cine-preview__copy"><strong>{t.hero.ctaPhu}</strong><span>{t.hero.goiMoAB}</span></span>
+              <span className="cine-preview__arrow" aria-hidden="true"><DesignIcon kind="arrow" /></span>
             </a>
           </div>
-
-          <p className="lg-caption lg-hero__ghichu">{t.hero.ghiChu}</p>
         </div>
 
+        <div className="cine-card-stage"><InspectionLens /><div className="cine-card-halo" aria-hidden="true" />
         <article className="lg-panel lg-phieu">
           <header className="lg-phieu__dau">
-            <span className="lg-phieu__ten">{t.hero.phieu.tieuDe}</span>
+            <span className="lg-phieu__ten"><DesignIcon kind="scan" />{t.hero.phieu.tieuDe}</span>
             {/*
               Hai nhãn TÁCH BIỆT: nguồn dữ liệu và mạng.
               Chỉ riêng chữ "Devnet" không phân biệt được mẫu với live — một
@@ -92,11 +102,11 @@ export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
                   {t.hero.phieu.nhanQuyen}
                 </dt>
                 <dd>
-                  <span className="lg-phieu__truoc">{t.hero.phieu.chuBan}</span>
+                  <span className="lg-owner-node">{t.hero.phieu.chuBan}</span>
                   <span className="lg-phieu__mui" aria-hidden="true">
                     →
                   </span>
-                  <strong>{t.hero.phieu.diaChiKhac}</strong>
+                  <strong className="lg-owner-node lg-owner-node--changed">{t.hero.phieu.diaChiKhac}</strong>
                 </dd>
               </div>
             </dl>
@@ -109,7 +119,9 @@ export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
 
           <p className="lg-caption lg-phieu__caption">{t.hero.phieu.caption}</p>
         </article>
+        </div>
       </div>
+      <div className="lg-shell cine-hero-foot"><a href="#trai-nghiem"><span className="cine-scroll-line" aria-hidden="true" />{CINEMA[ngon].scroll}<span aria-hidden="true">↓</span></a><span aria-hidden="true">CUSTOS / PRE-SIGN INSIGHTS</span></div>
     </section>
   );
 }
@@ -122,14 +134,18 @@ export function Hero({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
  * `margin`/`padding`, làm chữ chạm mép màn hình.
  */
 export function HangThongTin({ t }: { t: NoiDung }) {
+  const destinations = [LINK.viMau, "#nha-phat-trien", LINK.inspector, "#bang-chung"];
   return (
     <section className="lg-thongtin lg-vien-tren">
       <div className="lg-shell">
         <ul className="lg-thongtin__ds">
-          {t.dai.map((o) => (
+          {t.dai.map((o, i) => (
             <li key={o.manh} className="lg-thongtin__o">
-              <strong>{o.manh}</strong>
-              <span>{o.phu}</span>
+              <a className="cine-resource" href={destinations[i]}>
+                <ResourceIllustration index={i} />
+                <span className="cine-resource__copy"><strong>{o.manh}</strong><span>{o.phu}</span></span>
+                <span className="cine-resource__arrow"><DesignIcon kind="arrow" /></span>
+              </a>
             </li>
           ))}
         </ul>

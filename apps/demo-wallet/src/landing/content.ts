@@ -51,6 +51,7 @@ export const VI = {
     h1: "Hiểu điều bạn sắp ký.",
     moTa: "Xem thay đổi tài sản và quyền kiểm soát trong giao dịch Solana, cùng dữ kiện đứng sau mỗi cảnh báo.",
     ctaPhu: "Xem tình huống A/B",
+    goiMoAB: "Cùng số dư. Khác quyền kiểm soát.",
     ghiChu: "Bản thử nghiệm Devnet · Không dùng tài sản thật",
     phieu: {
       tieuDe: "Phân tích giao dịch",
@@ -170,10 +171,16 @@ export const VI = {
   devs: {
     h2: "Đưa phần kiểm tra vào trước bước ký.",
     moTa: "Tích hợp Custos vào ví hoặc dApp để phân tích transaction chưa ký, hiển thị cảnh báo và cho người dùng xem dữ kiện liên quan.",
-    soDo: ["Ứng dụng tạo transaction", "Custos inspect", "UI hiển thị kết quả"],
-    soDoNhanh: ["Consumer kiểm phiên/consent", "signer của ví"],
+    soDo: ["Ứng dụng tạo giao dịch", "Custos phân tích", "Hiển thị kết quả"],
+    soDoNhanh: ["Kiểm tra phiên và sự đồng ý", "Chuyển đến bộ ký của ví"],
+    luongTieuDe: "Từ transaction đến bước ký",
+    luongPhanTich: "Phân tích giao dịch",
+    luongDieuKien: "Điều kiện ký do ví quản lý",
+    luongMoTa: ["Giao dịch chưa ký từ ví hoặc dApp", "Mô phỏng và phân tích thay đổi", "Cảnh báo, dữ kiện và phạm vi đã đọc"],
+    luongNhanhMoTa: ["Gắn kết quả với đúng giao dịch và sự đồng ý", "Áp dụng điều kiện ký của ví"],
+    codeChuThich: ["Đọc kết quả trước khi xử lý bước ký.", "phạm vi đã đọc hiểu", "thay đổi để hiển thị"],
     ghiChu:
-      "SDK cung cấp kết quả phân tích. Consumer chịu trách nhiệm gắn kết quả với đúng transaction và xử lý điều kiện ký.",
+      "SDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.",
     codeTieuDe: "Ví dụ phân tích một giao dịch",
     codeGhiChu:
       "Ví dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói công khai trên npm là 0.1.1 và chưa có mọi thay đổi trong mã nguồn.",
@@ -332,6 +339,7 @@ export const EN: NoiDung = {
     h1: "Understand what you’re about to sign.",
     moTa: "Review changes to assets and account control in a Solana transaction, with evidence behind each warning.",
     ctaPhu: "Explore the A/B example",
+    goiMoAB: "Same balance. Different account control.",
     ghiChu: "Devnet prototype · Do not use real assets",
     phieu: {
       tieuDe: "Transaction analysis",
@@ -451,8 +459,14 @@ export const EN: NoiDung = {
   devs: {
     h2: "Add inspection before signing.",
     moTa: "Integrate Custos into a wallet or dApp to analyze unsigned transactions, display warnings, and expose the relevant evidence.",
-    soDo: ["App builds a transaction", "Custos inspect", "UI shows the result"],
-    soDoNhanh: ["Consumer checks session/consent", "wallet signer"],
+    soDo: ["App builds a transaction", "Custos analyzes it", "Display the result"],
+    soDoNhanh: ["Check session and consent", "Hand off to the wallet signer"],
+    luongTieuDe: "From transaction to signing",
+    luongPhanTich: "Transaction analysis",
+    luongDieuKien: "Signing conditions belong to the wallet",
+    luongMoTa: ["Unsigned transaction from a wallet or dApp", "Simulate and analyze changes", "Warnings, evidence and analyzed coverage"],
+    luongNhanhMoTa: ["Bind the result to the transaction and consent", "Apply the wallet’s signing conditions"],
+    codeChuThich: ["Read the result before handling signing.", "analyzed coverage", "changes to display"],
     ghiChu:
       "The SDK provides analysis. The consumer is responsible for binding it to the correct transaction and enforcing signing conditions.",
     codeTieuDe: "Example: analyzing one transaction",

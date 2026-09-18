@@ -5,6 +5,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { SoLieu } from "./SoLieu.tsx";
 import "./style.css";
+import "./product-presentation.css";
+import "./tool-design.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -1,3 +1,4 @@
+import { ProductHeader } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useState } from "react";
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
@@ -208,15 +209,10 @@ export function PhongVan() {
   const demQD = (q: QuyetDinh) => ban.filter((b) => b.quyetDinh === q).length;
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-xl px-5 py-8">
-        <a
-          href={import.meta.env.BASE_URL}
-          className="lien-ket gap-1.5 text-[14px] text-chu-nhat"
-        >
-          <span aria-hidden="true">←</span> Ví mẫu
-        </a>
-
+    <main className="app-shell interview-shell">
+      <div className="interview-container">
+        <ProductHeader active="interview" label="Nghiên cứu" />
+        <div className="interview-body">
         {/*
           H1 CỦA TRANG.
 
@@ -651,7 +647,8 @@ export function PhongVan() {
             </section>
           </>
         )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

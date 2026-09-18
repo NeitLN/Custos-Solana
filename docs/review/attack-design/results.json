@@ -1,0 +1,63 @@
+{
+  "layouts": [
+    {
+      "name": "ready-320",
+      "client": 320,
+      "scroll": 320
+    },
+    {
+      "name": "ready-390",
+      "client": 390,
+      "scroll": 390
+    },
+    {
+      "name": "ready-768",
+      "client": 768,
+      "scroll": 768
+    },
+    {
+      "name": "ready-1024",
+      "client": 1024,
+      "scroll": 1024
+    },
+    {
+      "name": "ready-1440",
+      "client": 1440,
+      "scroll": 1440
+    },
+    {
+      "name": "missing-mobile",
+      "client": 390,
+      "scroll": 390
+    }
+  ],
+  "axe": [
+    {
+      "name": "ready-390",
+      "violations": []
+    },
+    {
+      "name": "ready-1440",
+      "violations": []
+    },
+    {
+      "name": "faq-open",
+      "violations": []
+    },
+    {
+      "name": "rpc-error",
+      "violations": []
+    },
+    {
+      "name": "missing-mobile",
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "Countdown updates; keyboard claim constructs unsigned wallet handoff; noopener and matching fallback URL preserved; no wallet opened",
+    "Navigation anchors and native FAQ work with keyboard",
+    "RPC error offers retry and explicitly labelled mock fallback; missing configuration disables claim"
+  ],
+  "assets_failed": []
+}

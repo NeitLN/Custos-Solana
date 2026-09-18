@@ -1,5 +1,6 @@
 import type { NoiDung } from "./content.ts";
 import { LINK } from "./links.ts";
+import { DesignIcon } from "./DesignIcon.tsx";
 
 /**
  * Các section sau A/B.
@@ -20,8 +21,7 @@ import { LINK } from "./links.ts";
 /**
  * Pipeline ba bước + ba giá trị.
  *
- * Chỉ MỘT section nền tối trên cả trang (developer). Các phần còn lại nối bằng
- * khoảng trắng và divider nhẹ (`lg-vien-tren`), thay vì đổi nền mỗi lần.
+ * Nền sáng tách phần giải thích quy trình khỏi hero và đoạn cinematic nền tối.
  */
 export function PipelineSection({ t }: { t: NoiDung }) {
   return (
@@ -33,7 +33,10 @@ export function PipelineSection({ t }: { t: NoiDung }) {
         <ol className="lg-pipeline">
           {t.pipeline.buoc.map((b, i) => (
             <li key={b.tieuDe} className="lg-buoc">
-              <span className="lg-buoc__so">{String(i + 1).padStart(2, "0")}</span>
+              <div className="lg-step-visual" aria-hidden="true">
+                <DesignIcon kind={i === 0 ? "transaction" : i === 1 ? "scan" : "evidence"} />
+                <span className="lg-buoc__so">{String(i + 1).padStart(2, "0")}</span>
+              </div>
               <h3 className="lg-h3">{b.tieuDe}</h3>
               <p className="lg-muted">{b.moTa}</p>
             </li>
@@ -63,45 +66,55 @@ export function PipelineSection({ t }: { t: NoiDung }) {
  * 5 cấm API tưởng tượng và cấm `if safe then sign()` thiếu coverage/consent, nên
  * ví dụ dừng ở chỗ đọc kết quả.
  */
-const VI_DU_CODE = `import { inspect } from "@custos-solana/core";
-
-const ketQua = await inspect({ connection }, tx, {
-  locale: "vi",
-  nguoiDung: viNguoiDung.toBase58(),
-});
-
-// Chú thích ngắn để dòng không tràn ngang trên màn hình hẹp.
-ketQua.level;        // "safe" | "warning" | "danger"
-ketQua.reasonCodes;  // ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"]
-ketQua.coverage;     // phần đã đọc hiểu được
-ketQua.diff;         // thay đổi để hiển thị`;
-
 export function DeveloperSection({ t }: { t: NoiDung }) {
   return (
     <section className="lg-section lg-dark" id="nha-phat-trien">
       <div className="lg-shell lg-dev">
-        <div>
+        <header className="integration-heading">
           <h2 className="lg-h2">{t.devs.h2}</h2>
           <p className="lg-lead lg-prose lg-muted-dark lg-dev__mota">{t.devs.moTa}</p>
+        </header>
+        <div className="integration-flow" role="group" aria-label={t.devs.luongTieuDe}>
+          <p className="integration-flow__label">{t.devs.luongPhanTich}</p>
+          <ol className="integration-flow__steps">
+            {t.devs.soDo.map((label, i) => <li className={i === 1 ? "integration-flow__step integration-flow__step--custos" : "integration-flow__step"} key={label}>
+              <span className="integration-flow__node" aria-hidden="true">{i === 1 ? <img src={`${import.meta.env.BASE_URL}brand/custos-symbol-light.svg`} width="22" height="22" alt="" /> : <DesignIcon kind={i === 0 ? "transaction" : "evidence"} />}</span>
+              <div><strong>{label}</strong><p>{t.devs.luongMoTa[i]}</p></div>
+              {i === 1 && <span className="integration-flow__api" aria-hidden="true">inspect()</span>}
+            </li>)}
+          </ol>
+          <div className="integration-flow__boundary"><span aria-hidden="true">↓</span><p>{t.devs.luongDieuKien}</p></div>
+          <ol className="integration-flow__steps integration-flow__steps--wallet">
+            {t.devs.soDoNhanh.map((label, i) => <li className="integration-flow__step" key={label}>
+              <span className="integration-flow__node" aria-hidden="true">{i === 0 ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" /><path d="M9 12h6m-3-3v6" /></svg> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3" /></svg>}</span>
+              <div><strong>{label}</strong><p>{t.devs.luongNhanhMoTa[i]}</p></div>
+            </li>)}
+          </ol>
+        </div>
 
-          <ol className="lg-dev__sodo">
-            {t.devs.soDo.map((b, i) => (
-              <li key={b}>
-                <span>{b}</span>
-                {i < t.devs.soDo.length - 1 && <span aria-hidden="true">→</span>}
-              </li>
-            ))}
-          </ol>
-          <ol className="lg-dev__sodo lg-dev__sodo--nhanh">
-            {t.devs.soDoNhanh.map((b, i) => (
-              <li key={b}>
-                <span>{b}</span>
-                {i < t.devs.soDoNhanh.length - 1 && <span aria-hidden="true">→</span>}
-              </li>
-            ))}
-          </ol>
+        <figure className="lg-code">
+          <figcaption className="lg-code__dau">
+            <span className="integration-code-file"><span aria-hidden="true">{`{ }`}</span> inspect-transaction.ts</span>
+            <span className="integration-code-language">TypeScript</span>
+          </figcaption>
+          <pre className="lg-code__pre" tabIndex={0} aria-label={t.devs.codeTieuDe}>
+            <code>
+              <span className="lg-syn-kw">import</span> &#123; <span className="lg-syn-fn">inspect</span> &#125; <span className="lg-syn-kw">from</span> <span className="lg-syn-str">"@custos-solana/core"</span>;{"\n\n"}
+              <span className="lg-syn-kw">const</span> ketQua = <span className="lg-syn-kw">await</span> <span className="lg-syn-fn">inspect</span>(&#123; connection &#125;, tx, &#123;{"\n"}
+              {"  "}locale: <span className="lg-syn-str">"vi"</span>,{"\n"}
+              {"  "}nguoiDung: viNguoiDung.<span className="lg-syn-fn">toBase58</span>(),{"\n"}
+              &#125;);{"\n\n"}
+              <span className="lg-syn-com">// {t.devs.codeChuThich[0]}</span>{"\n"}
+              ketQua.level;        <span className="lg-syn-com">// "safe" | "warning" | "danger"</span>{"\n"}
+              ketQua.reasonCodes;  <span className="lg-syn-com">// ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"]</span>{"\n"}
+              ketQua.coverage;     <span className="lg-syn-com">// {t.devs.codeChuThich[1]}</span>{"\n"}
+              ketQua.diff;         <span className="lg-syn-com">// {t.devs.codeChuThich[2]}</span>
+            </code>
+          </pre>
+          <p className="lg-caption lg-code__ghichu">{t.devs.codeGhiChu}</p>
+        </figure>
+        <div className="integration-notes">
           <p className="lg-caption lg-muted-dark lg-dev__ghichu">{t.devs.ghiChu}</p>
-
           <ul className="lg-dev__lien">
             {t.devs.lien.map((l) => {
               const href = LINK[l.khoa as keyof typeof LINK];
@@ -121,14 +134,6 @@ export function DeveloperSection({ t }: { t: NoiDung }) {
             })}
           </ul>
         </div>
-
-        <figure className="lg-code">
-          <figcaption className="lg-code__dau">{t.devs.codeTieuDe}</figcaption>
-          <pre className="lg-code__pre">
-            <code>{VI_DU_CODE}</code>
-          </pre>
-          <p className="lg-caption lg-code__ghichu">{t.devs.codeGhiChu}</p>
-        </figure>
       </div>
     </section>
   );
@@ -138,9 +143,12 @@ export function DeveloperSection({ t }: { t: NoiDung }) {
 export function ProofSection({ t }: { t: NoiDung }) {
   return (
     <section className="lg-section" id="bang-chung">
-      <div className="lg-shell">
+      <div className="lg-shell lg-proof-layout">
+        <div className="lg-proof-heading">
         <h2 className="lg-h2">{t.bangChung.h2}</h2>
         <p className="lg-lead lg-prose lg-muted lg-bcs__mota">{t.bangChung.moTa}</p>
+        <p className="lg-gioihan lg-prose">{t.bangChung.gioiHan}</p>
+        </div>
 
         <ul className="lg-bcs__ds">
           {t.bangChung.muc.map((m) => {
@@ -163,7 +171,6 @@ export function ProofSection({ t }: { t: NoiDung }) {
           })}
         </ul>
 
-        <p className="lg-gioihan lg-prose">{t.bangChung.gioiHan}</p>
       </div>
     </section>
   );
@@ -225,7 +232,7 @@ export function SiteFooter({ t }: { t: NoiDung }) {
       <div className="lg-shell lg-footer__in">
         <div className="lg-footer__brand">
           <img
-            src={`${import.meta.env.BASE_URL}landing/custos-dino-128.png`}
+            src={`${import.meta.env.BASE_URL}brand/custos-symbol-light.svg`}
             alt=""
             width={36}
             height={36}

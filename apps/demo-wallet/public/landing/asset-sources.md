@@ -30,7 +30,14 @@ dung lượng — mục 12.3 cấm đích danh việc đó.
 
 Tổng: **116.5 KB** (mục tiêu ≤250 KB).
 
-## Mascot
+## Logo hiện tại
+
+Logo chữ C của Custos nằm trong `../brand/`. Biểu tượng được vẽ mới bằng SVG;
+wordmark dùng Manrope 800 đã chuyển thành path. Xem `../brand/README.md` để biết
+biến thể nền sáng/tối, favicon, PNG và cách tái tạo. Header, footer, ví mẫu và
+Inspector hiện dùng logo này. Ảnh chia sẻ mới nằm trong `../brand/`.
+
+## Mascot cũ — giữ làm tài sản lịch sử
 
 `custos-dino.png` và `custos-dino-favicon.png` là tài sản sẵn có của dự án.
 Không vẽ mascot mới.
@@ -43,4 +50,5 @@ Không vẽ mascot mới.
 trong tổng 480,4 KB — tức mascot một mình nặng gấp ba lần toàn bộ font. Mục 12.3
 cấm đích danh việc kéo giãn/thu nhỏ PNG lớn trong trình duyệt.
 
-Sau khi đổi: **9,8 KB** (128×120), giảm 97%. Bản gốc vẫn nguyên cho ví mẫu.
+Sau lần tối ưu cũ: **9,8 KB** (128×120), giảm 97%. Các file cũ vẫn được giữ,
+nhưng ví mẫu và landing hiện đã chuyển sang logo SVG nói trên.
