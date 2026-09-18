@@ -14,6 +14,8 @@ const TRANG: Array<[string, string]> = [
   ["soi.html", "Inspector.tsx"],
   ["so-lieu.html", "SoLieu.tsx"],
   ["phong-van.html", "PhongVan.tsx"],
+  /* Landing: H1 nằm trong `Hero.tsx`, không phải component gốc `LandingPage.tsx`. */
+  ["gioi-thieu.html", "landing/Hero.tsx"],
 ];
 
 test("QA · mỗi trang có đúng một h1, và h1 không rỗng", () => {

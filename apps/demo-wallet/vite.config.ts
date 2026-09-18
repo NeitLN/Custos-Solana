@@ -49,6 +49,7 @@ export default defineConfig(({ command, isPreview }) => ({
         soLieu: fileURLToPath(new URL("so-lieu.html", import.meta.url)),
         phongVan: fileURLToPath(new URL("phong-van.html", import.meta.url)),
         soi: fileURLToPath(new URL("soi.html", import.meta.url)),
+        gioiThieu: fileURLToPath(new URL("gioi-thieu.html", import.meta.url)),
       },
     },
   },
