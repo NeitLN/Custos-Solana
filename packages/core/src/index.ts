@@ -16,4 +16,8 @@ export {
   dungReceipt, docReceipt, receiptRaJson, factsTuReceipt,
   PHIEN_BAN_RECEIPT, type Receipt, type CheDoReceipt, type KetQuaDoc,
 } from "./receipt.ts";
+export {
+  chayLaiTuJson, chayLaiTuReceipt,
+  type KetQuaReplay, type NhanReplay,
+} from "./replay.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
