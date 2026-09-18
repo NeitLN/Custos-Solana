@@ -13,7 +13,7 @@ import { dungGiaoDichTanCong, dungGiaoDichLanhTinh } from "./tan-cong.ts";
  * HIỆN TRƯỜNG GIẢ — trạng thái tài khoản SPL thật, không cần mạng.
  *
  * Buffer ở đây được mã hoá đúng layout SPL, nên `inspect()` chạy qua toàn bộ L1 và
- * L2 y như trên Devnet. Nó vẫn là fixture: theo `SEED-DATASET.md` mục 0, mẫu loại
+ * L2 y như trên Devnet. Nó vẫn là fixture: theo `docs/SEED-DATASET.md` mục 0, mẫu loại
  * này là `synthetic`, hợp lệ để kiểm luật và KHÔNG được tính vào tỉ lệ báo nhầm.
  *
  * Để ở `scripts/` vì hai nơi cần nó và cả hai đều phải thấy CÙNG một hiện trường:

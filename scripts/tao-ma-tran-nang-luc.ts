@@ -13,7 +13,7 @@ import { VERIFIED_PROGRAMS } from "../packages/core/src/constants.ts";
  * Thẻ đòi *"Sinh bảng hỗ trợ từ registry/contract có kiểm, không gõ riêng trong
  * UI/docs/CLI"* và *"UI, CLI và docs cùng nói một phạm vi"*.
  *
- * Lý do không phải gọn gàng. Đo được: `DAC-TA-CORE.md` liệt kê **6 program** đã xác
+ * Lý do không phải gọn gàng. Đo được: `docs/DAC-TA-CORE.md` liệt kê **6 program** đã xác
  * minh và có **SPL Memo** trong danh sách. Registry thật có **13 program** và
  * **không có Memo**. Tài liệu nói sai theo cả hai hướng cùng lúc — thiếu 7 cái có
  * thật, thừa 1 cái không có.

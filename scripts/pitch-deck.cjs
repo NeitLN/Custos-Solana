@@ -42,7 +42,7 @@ function number(s,n,label,desc,x,y,w){text(s,n,x,y,w,.95,60,C.ink,true);text(s,l
  const items=[['TÀI SẢN','Bao nhiêu token\nsẽ đi vào hoặc đi ra?','01'],['QUYỀN HẠN','Ai được rút, quản lý\nhoặc đóng tài khoản?','02'],['PHẦN CHƯA BIẾT','Lệnh nào chưa đọc được?\nMô phỏng có thành công?','03']];
  items.forEach((a,i)=>{const x=.7+i*4.12;box(s,x,3.15,3.9,2.75,i===1?C.dark:C.white);text(s,a[2],x+.25,3.45,.6,.35,15,i===1?C.mint:C.muted);text(s,a[0],x+.25,4.13,3.4,.4,18,i===1?C.mint:C.ink,true);text(s,a[1],x+.25,4.8,3.4,.8,21,i===1?C.white:C.ink);});
  text(s,'Giá trị: giúp người ký hiểu điều sắp xảy ra, kèm dữ kiện và giới hạn.',.75,6.3,11.8,.4,19,C.muted);
- note(s,'Custos là SDK tích hợp vào ví và dApp, không phải một ví mới cần người dùng chuyển sang. Chúng tôi tập trung vào ba điều: tài sản thay đổi thế nào, quyền nào được trao đi, và hệ thống chưa hiểu được phần nào. Sau đây là thao tác thực tế trên bản local nối Devnet; không giao dịch nào được ký hoặc gửi.',20,'CUSTOS.md; packages/core/src/inspect.ts; CanhBao.tsx');
+ note(s,'Custos là SDK tích hợp vào ví và dApp, không phải một ví mới cần người dùng chuyển sang. Chúng tôi tập trung vào ba điều: tài sản thay đổi thế nào, quyền nào được trao đi, và hệ thống chưa hiểu được phần nào. Sau đây là thao tác thực tế trên bản local nối Devnet; không giao dịch nào được ký hoặc gửi.',20,'docs/CUSTOS.md; packages/core/src/inspect.ts; CanhBao.tsx');
 }
 // 03 — demo cue. Native media embedded if available, poster remains useful in PDF.
 {

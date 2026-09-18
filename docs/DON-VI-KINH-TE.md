@@ -319,4 +319,4 @@ nào trong repo, hay vào bản demo công khai** — bản demo cố ý không 
 
 Kết quả ghi vào `data/seed/chi-phi.json` và `data/seed/chi-phi-mo-hinh.json`.
 Cohort cố định, nên đo lại sau khi sửa code là so được trực tiếp — cùng kỷ luật đã
-ghi ở `SEED-DATASET.md` mục 0b3.
+ghi ở `docs/SEED-DATASET.md` mục 0b3.

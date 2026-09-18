@@ -1,6 +1,6 @@
 # Threat model — Custos SDK
 
-**Việc TB-S01 của [`ROADMAP-TECHNICAL-CUSTOS.md`](../../ROADMAP-TECHNICAL-CUSTOS.md).**
+**Việc TB-S01 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md).**
 Soạn 12/09/2026 trên bản mã có T01–T04 đã sửa.
 
 Trang này **không** thay [`SECURITY-AUDIT.md`](SECURITY-AUDIT.md). Audit đó là danh
@@ -190,7 +190,7 @@ Xem [`gui.ts` `docKetQuaXacNhan()`](../../apps/demo-wallet/src/gui.ts).
 2. **Consumer có tuân thủ kết quả** (3.8). Thuộc ví, không thuộc SDK.
 3. **Semantics của chương trình đã decode** (3.5). Đọc được tên ≠ đã kiểm chứng.
 4. **Ground truth cho tỉ lệ báo nhầm.** Chưa kiểm chứng từng giao dịch cohort là
-   lành, nên **chưa đo được** — xem `SEED-DATASET.md` mục 0b3/0b4.
+   lành, nên **chưa đo được** — xem `docs/SEED-DATASET.md` mục 0b3/0b4.
 5. **Trạng thái chuỗi sau thời điểm mô phỏng.** Kết quả là quan sát **tại một trạng
    thái**; nó không bảo đảm lần thực thi sau giống hệt.
 6. **Thiết bị thật, WebKit, Firefox.** Mọi số giao diện đo trên Chromium headless.

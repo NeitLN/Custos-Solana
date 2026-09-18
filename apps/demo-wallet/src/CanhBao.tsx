@@ -7,7 +7,7 @@ import { AlertIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
- *  Xem DAC-TA-L3.md mục 4. */
+ *  Xem docs/DAC-TA-L3.md mục 4. */
 const NHAN = {
   safe: {
     chu: "Bình thường",
@@ -210,7 +210,7 @@ export function CanhBao({
           <div className="space-y-2 px-4 py-4 sm:px-5">
             {/* MỨC 1 — NGẮN. Mặc định, hiện ngay. Đây là câu duy nhất phần lớn
                 người dùng sẽ đọc, và cũng là màn hình dùng để đo mức độ hiểu
-                (DAC-TA-L3.md mục 6 và 7). */}
+                (docs/DAC-TA-L3.md mục 6 và 7). */}
             <p className="text-[16px] font-medium leading-relaxed text-slate-950">{tomTat(ketQua)}</p>
 
             {ketQua.explanation && (

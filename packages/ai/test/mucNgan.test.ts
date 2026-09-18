@@ -7,7 +7,7 @@ import { NHAN } from "@custos-solana/core";
 /**
  * MỨC 1 — NGẮN.
  *
- * `DAC-TA-L3.md` mục 7 đo mức độ hiểu của người dùng **bằng chính màn hình này**:
+ * `docs/DAC-TA-L3.md` mục 7 đo mức độ hiểu của người dùng **bằng chính màn hình này**:
  * chiếu lên, không giải thích gì thêm, hỏi "nếu bạn bấm ký thì chuyện gì xảy ra".
  * Con số đó lên sân khấu. Nên câu ở đây phải nói được hậu quả trong một hơi thở.
  */

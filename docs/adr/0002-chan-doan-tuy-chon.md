@@ -2,7 +2,7 @@
 
 **Trạng thái:** đã quyết và đã thực thi
 **Ngày:** 14/09/2026 · **Vai:** Solana, SDK/Perf, Security
-**Việc TB-X01 của [`ROADMAP-TECHNICAL-CUSTOS.md`](../../ROADMAP-TECHNICAL-CUSTOS.md)**
+**Việc TB-X01 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md)**
 
 ---
 
@@ -68,7 +68,7 @@ diagnostics nhạy cảm khỏi phần hiển thị/export mặc định"*. Cons
 | `validateInspectResult` với kết quả **có** `chanDoan` | `[]` — hợp lệ |
 | Consumer nào đếm số trường của `InspectResult`? | **không có** — grep toàn repo |
 | 16 chỗ trả `RuleHit` phải sửa? | **không** — `bangChung` tuỳ chọn; luật chưa khai vẫn chạy qua đường lui |
-| Bộ test | **968 pass, 0 fail** |
+| Bộ test | **1004 pass, 0 fail** |
 
 **Đường lui giữ lại có chủ ý.** `diff.ts` vẫn dùng `detail.includes(...)` cho
 **riêng** luật chưa khai (`h.bangChung === undefined`). Bỏ hẳn đường lui sẽ làm mọi

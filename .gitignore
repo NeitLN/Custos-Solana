@@ -72,3 +72,14 @@ __pycache__/
 # là một bản nhị phân mới nằm vĩnh viễn trong lịch sử git.
 # Bản nộp cho BTC nằm ở `docs/nop-bai/` (deck + video demo), đã có test canh.
 /docs/pitch-technical/
+
+# Sản phẩm dựng ra từ script, KHÔNG phải nguồn — đều sinh lại được:
+#   ban-trinh-dien/  ← npm run dong-goi-ban-trinh-dien
+#   site/            ← bản dựng tĩnh đem deploy
+#   goi-sdk/         ← npm run publish-sdk
+# Commit chúng vào nghĩa là mỗi lần dựng lại sinh một bản nhị phân mới nằm
+# vĩnh viễn trong lịch sử git, trong khi nguồn của chúng đã có trong repo.
+/ban-trinh-dien/
+/site/
+/goi-sdk/
+/Custos-ban-trinh-dien.zip

@@ -71,7 +71,7 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
     hanhDong = { type: "chuyển SOL" };
   }
   // Nhiều mint ra lẫn vào, hoặc không có dòng tiền nào: KHÔNG đoán. Trả null.
-  // Nói không biết vẫn tốt hơn đoán sai — DAC-TA-L3.md mục 3.1 ràng buộc 4.
+  // Nói không biết vẫn tốt hơn đoán sai — docs/DAC-TA-L3.md mục 3.1 ràng buộc 4.
 
   const lech: HauQuaLech[] = [];
   for (const t of facts.tokenAccounts) {

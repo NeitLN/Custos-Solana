@@ -4,11 +4,11 @@ import { REASON, dinhDangSo, tinhSolNguoiDung } from "@custos-solana/core";
 /**
  * CÂU MẪU CỨNG — bản dự phòng khi mô hình hỏng, quá hạn, hoặc mất mạng.
  *
- * Viết tay TRƯỚC khi động vào prompt (DAC-TA-L3.md mục 8): nó buộc phải nghĩ rõ
+ * Viết tay TRƯỚC khi động vào prompt (docs/DAC-TA-L3.md mục 8): nó buộc phải nghĩ rõ
  * cần nói gì trước khi để mô hình nói hộ, và nó là thứ duy nhất còn chạy khi
  * mọi thứ khác hỏng.
  *
- * Nguyên tắc viết (DAC-TA-L3.md mục 1):
+ * Nguyên tắc viết (docs/DAC-TA-L3.md mục 1):
  *   - gọi tên HẬU QUẢ, không gọi tên cơ chế
  *   - số tiền đứng đầu câu
  *   - chắc thì nói "sẽ", là năng lực thì nói "có quyền", không biết thì nói thẳng

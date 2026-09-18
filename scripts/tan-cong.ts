@@ -26,7 +26,7 @@ export type ThamSoTanCong = {
 /**
  * Dựng giao dịch tấn công cho demo.
  *
- * TRUNG THỰC LÀ RÀNG BUỘC, KHÔNG PHẢI TUỲ CHỌN (CUSTOS.md quyết định 7):
+ * TRUNG THỰC LÀ RÀNG BUỘC, KHÔNG PHẢI TUỲ CHỌN (docs/CUSTOS.md quyết định 7):
  *
  *   `SetAuthority` MỘT MÌNH chỉ lấy quyền kiểm soát, KHÔNG rút tiền.
  *   Nếu bảng chênh lệch hiển thị 500 → 0 thì giao dịch phải THẬT SỰ chứa
@@ -132,7 +132,7 @@ export function dungGiaoDichThuongGiaMatToken(p: ThamSoTanCong): VersionedTransa
  *
  * KHÔNG kèm `Transfer`: đây là khác biệt cố ý với `dungGiaoDichTanCong`. Ở đây số
  * dư KHÔNG đổi, chỉ quyền kiểm soát đổi — và bảng chênh lệch phải phản ánh đúng
- * như vậy. Quyết định 7 của CUSTOS.md: hiện 500 → 0 mà không có Transfer là dàn dựng.
+ * như vậy. Quyết định 7 của docs/CUSTOS.md: hiện 500 → 0 mà không có Transfer là dàn dựng.
  */
 export function dungGiaoDichDoiChu(p: ThamSoTanCong): VersionedTransaction {
   const ataNanNhan = p.taiKhoanNguon ?? getAssociatedTokenAddressSync(p.mint, p.nanNhan);

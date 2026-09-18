@@ -19,7 +19,7 @@ export type YeuCauNgoai = {
  * ⚠️ Trường `khai` là LỜI KHAI CỦA dApp, và dApp có thể nói dối.
  * Nó được chuyển thẳng vào `expectedAction` của `inspect()`, nơi quy tắc bất
  * đối xứng xử lý: lệch thì nâng nghi ngờ, khớp thì KHÔNG giảm verdict và
- * KHÔNG tắt cảnh báo nào. Xem CUSTOS.md mục 03.
+ * KHÔNG tắt cảnh báo nào. Xem docs/CUSTOS.md mục 03.
  */
 /**
  * BA KẾT QUẢ, KHÔNG PHẢI HAI.

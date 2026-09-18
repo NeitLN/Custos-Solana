@@ -228,7 +228,7 @@ export function quaCu(neo: NeoKetQua, msToiDa = 30_000, bayGio = Date.now()): bo
   if (Number.isNaN(t)) return true;
 
   /*
-   * GIỚI HẠN TUỔI PHẢI HỮU HẠN VÀ HỢP LỆ — CU-02, mục 4.3 của UPDATE-CUSTOS.md.
+   * GIỚI HẠN TUỔI PHẢI HỮU HẠN VÀ HỢP LỆ — CU-02, mục 4.3 của docs/roadmap/UPDATE-CUSTOS.md.
    *
    * Ba lỗ hổng đã TÁI HIỆN trước khi sửa, trên chính bản trước của hàm này:
    *

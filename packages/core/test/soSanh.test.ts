@@ -137,7 +137,7 @@ test("CU-20 · quan sát khác nhau KHÔNG bị gọi là dApp tráo giao dịch
    *
    * Số dư đổi giữa hai lần mô phỏng là chuyện bình thường trên chuỗi đang chạy.
    * Gọi đó là "dApp tráo giao dịch" là buộc tội một hành vi cụ thể dựa trên bằng
-   * chứng không nói điều đó — đúng thứ CUSTOS.md mục 06 cấm.
+   * chứng không nói điều đó — đúng thứ docs/CUSTOS.md mục 06 cấm.
    *
    * Custos phân biệt hai khả năng bằng `khopNeo` (so byte), không bằng phép so này.
    */

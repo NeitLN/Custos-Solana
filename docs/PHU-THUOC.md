@@ -161,7 +161,7 @@ toàn bộ kết quả mô phỏng, tức kiểm soát mọi thứ Custos nói.
 - **Quyết định:** chấp nhận rủi ro.
 - **Điều kiện xem lại:** nếu có bản `@solana/web3.js` 1.x vá được chuỗi này mà không
   phải hạ cấp, nâng. Không chuyển sang web3.js v2 chỉ vì lý do này — xem
-  `NGHIEN-CUU-21-08.md` về bẫy phiên bản.
+  `docs/NGHIEN-CUU-21-08.md` về bẫy phiên bản.
 
 ### 3.3 · `image-size` qua `pptxgenjs` — **high**, chỉ ở máy đội
 

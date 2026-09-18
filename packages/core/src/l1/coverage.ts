@@ -7,7 +7,7 @@ import type { InstructionFact } from "../facts.ts";
  * `unverifiedPrograms` = số program ID KHÁC NHAU ngoài danh sách xác minh.
  *
  * Đếm cả inner instruction là có chủ đích: hành vi độc hại thường nằm trong CPI.
- * Xem DAC-TA-CORE.md mục 2.4.
+ * Xem docs/DAC-TA-CORE.md mục 2.4.
  */
 export function computeCoverage(instructions: InstructionFact[]) {
   const unverified = new Set<string>();
@@ -44,7 +44,7 @@ export function computeCoverage(instructions: InstructionFact[]) {
  *
  * ## Điều loại này KHÔNG làm
  *
- * - **Không** sinh risk score 0–100. Mục 11 của `UPDATE-CUSTOS.md` cấm đích danh:
+ * - **Không** sinh risk score 0–100. Mục 11 của `docs/roadmap/UPDATE-CUSTOS.md` cấm đích danh:
  *   một con số phần trăm chưa hiệu chuẩn sẽ được đọc thành xác suất an toàn.
  * - **Không** làm `analyzed` tăng lên bằng cách đổi tên mức decode. Bốn nhóm dưới
  *   đây cộng lại đúng bằng `total`, và có bài test canh phép cộng đó.

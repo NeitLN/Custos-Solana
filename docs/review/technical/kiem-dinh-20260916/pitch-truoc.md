@@ -9,7 +9,7 @@ Rubric: *trình bày và phản biện* chiếm **20%**, *giải pháp và demo*
 
 ## 0 · Trục câu chuyện đã đổi — đọc trước khi tập
 
-Nghiên cứu ngày 21/8 (`NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng Blowfish, **đã cảnh báo `setAuthority` bất thường**, và Blowfish có luật bắt *"deceptive instructions that hide asset transfers"*. Nghĩa là câu chuyện cũ — *"chúng tôi phát hiện được thứ họ không phát hiện"* — **không đứng vững**.
+Nghiên cứu ngày 21/8 (`docs/NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng Blowfish, **đã cảnh báo `setAuthority` bất thường**, và Blowfish có luật bắt *"deceptive instructions that hide asset transfers"*. Nghĩa là câu chuyện cũ — *"chúng tôi phát hiện được thứ họ không phát hiện"* — **không đứng vững**.
 
 **Đừng đánh nhau ở chỗ đối thủ mạnh. Đánh vào đường nối.**
 
@@ -98,14 +98,14 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 coverage **thật sự khuyết**, không phải 11/11. Dòng coverage có chỗ dựa.
 
 **Chưa vá:** giao dịch chỉ có **3 lệnh**, không phải 11. Coverage thật đo được là
-**2/3**. Các lệnh swap mô tả trong `CUSTOS.md` mục 07 chưa được dựng.
+**2/3**. Các lệnh swap mô tả trong `docs/CUSTOS.md` mục 07 chưa được dựng.
 
 > **KHÔNG ĐƯỢC NÓI "10/11" NỮA.** Con số đó đã bị gỡ khỏi toàn bộ tài liệu. Trên sân
 > khấu **đọc đúng con số đang hiện trên màn hình**, dù nó là bao nhiêu. Nói một số
 > mà màn hình chiếu một số khác là đúng cái thể lệ gọi là trình bày sai về dữ liệu —
 > và giám khảo đang nhìn thẳng vào màn hình lúc bạn nói.
 
-Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mất ở `CUSTOS.md` mục 07.
+Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mất ở `docs/CUSTOS.md` mục 07.
 
 ---
 

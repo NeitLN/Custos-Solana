@@ -332,7 +332,7 @@ test("LUẬT 8 KHÔNG kích hoạt — ví nhận đã tồn tại lâu", () => 
 test("LUẬT 8 KHÔNG kích hoạt khi KHÔNG TRA ĐƯỢC tuổi ví", () => {
   // Đây là ranh giới quan trọng nhất của luật này. "Không tra được" là thiếu
   // dữ liệu LÀM GIÀU, không phải thiếu dữ liệu ĐO. Biến nó thành cảnh báo sẽ
-  // làm mọi giao dịch ra Vàng mỗi khi RPC chậm — xem DAC-TA-CORE.md mục 3.3.
+  // làm mọi giao dịch ra Vàng mỗi khi RPC chậm — xem docs/DAC-TA-CORE.md mục 3.3.
   const r = danhGia(nhanTien(null));
   assert.equal(r.level, "safe", "không biết thì im lặng, không được đoán xấu");
 });

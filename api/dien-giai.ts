@@ -11,7 +11,7 @@
  *
  * Nên lớp AI chạy ở đây, và trình duyệt chỉ gửi DỮ KIỆN ĐÃ LỌC rồi nhận lại chữ.
  *
- * ## Ranh giới KHÔNG được vượt (CUSTOS.md quyết định 1)
+ * ## Ranh giới KHÔNG được vượt (docs/CUSTOS.md quyết định 1)
  *
  * Hàm này trả về đúng một chuỗi văn bản thô của mô hình. Nó KHÔNG trả `level`,
  * KHÔNG trả verdict, và KHÔNG được phép sinh ra hai thứ đó. Mọi phép soi đầu ra

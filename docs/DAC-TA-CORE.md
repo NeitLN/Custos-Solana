@@ -14,7 +14,7 @@ Mục tiêu của tài liệu: ngày đầu build, vai A không phải mất n�
 
 Kẻ tấn công giấu được instruction — bọc trong CPI, gói trong program riêng, nén địa chỉ vào ALT. Nhưng **không giấu được hậu quả**: nếu quyền sở hữu tài khoản token đổi chủ, trạng thái tài khoản sau mô phỏng sẽ khác trước, bất kể instruction nào gây ra.
 
-Đây chính là bài học từ ca Coinspect (`NGHIEN-CUU-21-08.md` mục 2): mô phỏng bỏ lọt vì nó đọc instruction, không đối chiếu trạng thái.
+Đây chính là bài học từ ca Coinspect (`docs/NGHIEN-CUU-21-08.md` mục 2): mô phỏng bỏ lọt vì nó đọc instruction, không đối chiếu trạng thái.
 
 Hệ quả cho thiết kế: **L1 phải lấy được trạng thái trước và sau, không chỉ danh sách instruction.**
 
@@ -202,7 +202,7 @@ Fail-safe áp cho **đường decode**, không áp cho **đường làm giàu d�
 
 ## 4 · Bộ kiểm thử
 
-Đầu vào là `data/seed/` do vai D quản (xem `SEED-DATASET.md`). A **đọc, không sửa nhãn**.
+Đầu vào là `data/seed/` do vai D quản (xem `docs/SEED-DATASET.md`). A **đọc, không sửa nhãn**.
 
 ```
 cho mỗi mẫu trong index.json:
@@ -221,7 +221,7 @@ Tỉ lệ báo nhầm = số mẫu âm tính provenance="real-mainnet" bị ra �
                  tổng số mẫu âm tính provenance="real-mainnet"
 ```
 
-Mẫu `synthetic-devnet` **không** vào mẫu số. Lý do ở `SEED-DATASET.md` mục 0.
+Mẫu `synthetic-devnet` **không** vào mẫu số. Lý do ở `docs/SEED-DATASET.md` mục 0.
 
 ---
 

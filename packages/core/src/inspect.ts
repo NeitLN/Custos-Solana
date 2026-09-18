@@ -12,7 +12,7 @@ import { chiTietCoverage } from "./l1/coverage.ts";
  *
  * KHÔNG có `level` trong kiểu trả về — ranh giới được cưỡng chế bằng kiểu dữ liệu
  * chứ không bằng lời dặn. AI không thể chạm vào verdict kể cả khi muốn.
- * Xem DAC-TA-L3.md mục 2.
+ * Xem docs/DAC-TA-L3.md mục 2.
  */
 export type Interpreter = (
   facts: Facts,
@@ -33,7 +33,7 @@ export type Interpreter = (
  * KHÔNG phải XSS — đo được là vấn đề bố cục: một mô hình chạy loạn trả nửa triệu
  * ký tự sẽ đẩy chính cái verdict ra khỏi màn hình.
  *
- * 4000 ký tự rộng hơn nhiều lần câu dài nhất trong DAC-TA-L3.md, nên trần này
+ * 4000 ký tự rộng hơn nhiều lần câu dài nhất trong docs/DAC-TA-L3.md, nên trần này
  * không cắt vào diễn giải thật.
  */
 const TRAN_DIEN_GIAI = 4_000;
@@ -62,7 +62,7 @@ function catBot(v: unknown, tran: number): string {
  *
  * Luật ở đây CHỈ thu hẹp quyền của L3, không bao giờ mở rộng: giá trị lạ về
  * `null`, không bao giờ tự dựng thành `"review_required"`. Ngược lại sẽ là AI tự
- * sinh cảnh báo — đúng thứ DAC-TA-L3.md mục 2 cấm.
+ * sinh cảnh báo — đúng thứ docs/DAC-TA-L3.md mục 2 cấm.
  *
  * `level`, `diff`, `reasonCodes` và `coverage` không có mặt ở đây vì L3 không hề
  * chạm tới chúng; chúng được dựng từ `facts` và `l2` bên dưới.
@@ -138,7 +138,7 @@ export async function inspect(
     }
   }
 
-  // Quy tắc BẤT ĐỐI XỨNG của expectedAction (CUSTOS.md mục 03):
+  // Quy tắc BẤT ĐỐI XỨNG của expectedAction (docs/CUSTOS.md mục 03):
   //   lệch  => nâng nghi ngờ
   //   khớp  => KHÔNG giảm verdict, KHÔNG tắt cảnh báo nào
   // Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại.

@@ -81,7 +81,20 @@ test("deck không mang số test cũ", boQuaKhiDo, () => {
     .map((x) => x.split("</a:t>")[0] ?? "")
     .join("");
 
-  const cu = [...chu.matchAll(/(\d{3})\s*test/g)]
+  /*
+   * LẦN SAI THỨ BA — và nó nằm trong chính guard này, không nằm ở deck.
+   *
+   * `(\d{3})` khớp ĐÚNG ba chữ số. Suốt thời gian bộ kiểm còn dưới 1000 test thì
+   * nó chạy đúng; ngay khi số vượt lên **1004**, regex bắt `004` từ "1004 test",
+   * thấy `004 !== 1004` và báo deck mang số cũ. Deck hoàn toàn đúng.
+   *
+   * Nối `<a:t>` lại còn sinh ra chuỗi dính như `TB-B071004 test`, nên `\d{3,}`
+   * một mình cũng sai: nó đọc ra `071004`.
+   *
+   * Cần cả hai vế: `{3,5}` cho số từ ba tới năm chữ số, và `(?<!\d)` để không
+   * nuốt chữ số của token đứng liền trước.
+   */
+  const cu = [...chu.matchAll(/(?<!\d)(\d{3,5})\s*test/g)]
     .map((m) => m[1]!)
     .filter((n) => Number(n) !== S.test.pass);
 

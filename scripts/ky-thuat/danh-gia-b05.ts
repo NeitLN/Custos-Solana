@@ -22,9 +22,9 @@
  *   nhị phân: một mẫu có thể vừa đúng tính chất A vừa sai tính chất B, và "dương tính"
  *   không có nghĩa xác định. Ép vào bốn ô sẽ sinh ra một con số nghe như accuracy.
  *
- * NGUỒN CỦA TÍNH CHẤT — và vì sao KHÔNG dùng `DAC-TA-CORE.md`:
+ * NGUỒN CỦA TÍNH CHẤT — và vì sao KHÔNG dùng `docs/DAC-TA-CORE.md`:
  *
- *   Thẻ đòi *"expected properties theo đặc tả/nguồn độc lập với verdict"*. `DAC-TA-CORE.md`
+ *   Thẻ đòi *"expected properties theo đặc tả/nguồn độc lập với verdict"*. `docs/DAC-TA-CORE.md`
  *   commit lúc 21:55:31 ngày 21/08; engine L2 commit lúc 21:57:03 **cùng ngày** — cách
  *   nhau 92 giây, cùng người, cùng phiên. Nó KHÔNG độc lập với verdict, và dùng nó rồi
  *   gọi là độc lập sẽ lặp đúng lỗi vòng tròn mà `BENCHMARK.md` mục 1 đã tự cảnh báo.

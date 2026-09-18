@@ -125,7 +125,7 @@ nhận; có sơ đồ kiến trúc khớp implementation; **không** dành phầ
 thu/market-size khi không có bằng chứng; deck và lời nói **không** tuyên bố tính năng
 còn TODO.
 
-**Cảnh báo:** `PITCH-VA-PHAN-BIEN.md` hiện viết cho track *Best Product & Business*
+**Cảnh báo:** `docs/PITCH-VA-PHAN-BIEN.md` hiện viết cho track *Best Product & Business*
 (4 phút, mạch kể thị trường). `claim.test.ts` neo **năm dòng** trong file này
 (`NEO_DONG_BO` dòng 259-261 và hai chỗ số test). Sửa mạch kể mà gãy neo là `npm run
 check` đỏ ngay. Thời lượng: thẻ nói *"dùng thời lượng được xác nhận ở nguồn BTC"* —

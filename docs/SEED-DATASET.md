@@ -11,7 +11,7 @@
 > hiện tại có **38 mẫu** — xem `data/seed/index.json`. Giữ phần kế hoạch lại vì nó
 > giải thích *đi tìm cái gì*, thứ vẫn còn đúng.
 
-`CUSTOS.md` và kế hoạch đã chốt con số **25 mẫu**, nhưng chưa nói **đi tìm cái gì**. Tài liệu này biến "thu thập 25 mẫu" thành một danh sách 25 dòng, mỗi dòng có mô tả cụ thể phải tìm.
+`docs/CUSTOS.md` và kế hoạch đã chốt con số **25 mẫu**, nhưng chưa nói **đi tìm cái gì**. Tài liệu này biến "thu thập 25 mẫu" thành một danh sách 25 dòng, mỗi dòng có mô tả cụ thể phải tìm.
 
 ---
 
@@ -187,7 +187,7 @@ kiểm chứng bằng cách bảo chạy lại.
 
 `scripts/phan-tich-coverage.ts` in ra bảng trên bất cứ lúc nào. Nó cho biết
 decoder tiếp theo nên viết cho chương trình nào — đúng thứ công việc tích luỹ
-đã ghi là moat ở `CUSTOS.md` mục 09.
+đã ghi là moat ở `docs/CUSTOS.md` mục 09.
 
 ---
 
@@ -274,7 +274,7 @@ Gộp hai loại là cách nhanh nhất tạo mệt mỏi cảnh báo: `PROGRAM_
 
 ### Việc còn lại để coverage khá hơn
 
-Viết decoder cho các chương trình DEX phổ biến. Đó là công việc tích luỹ — đúng thứ đã ghi là moat ở `CUSTOS.md` mục 09. **Không được mở rộng danh sách "đã xác minh" cho chương trình đội chưa decode** — làm vậy là thổi phồng coverage.
+Viết decoder cho các chương trình DEX phổ biến. Đó là công việc tích luỹ — đúng thứ đã ghi là moat ở `docs/CUSTOS.md` mục 09. **Không được mở rộng danh sách "đã xác minh" cho chương trình đội chưa decode** — làm vậy là thổi phồng coverage.
 
 ---
 
@@ -365,7 +365,7 @@ Mỗi luật cần **một ca kích hoạt** và **một ca trông giống nhưn
 | `R11-pos` | 11 | Tx có outflow ở tài sản/khối lượng không khớp các leg còn lại | Vàng |
 | `R12-pos` | 12 | Tx dùng `SystemProgram.assign` đổi owner account của người ký | Đỏ |
 
-> `R12-pos` là ca quan trọng nhất trong nhóm này — nó là vector đã từng qua mặt mô phỏng của Blowfish (xem `NGHIEN-CUU-21-08.md` mục 2). Ưu tiên tìm giao dịch **thật** cho ca này.
+> `R12-pos` là ca quan trọng nhất trong nhóm này — nó là vector đã từng qua mặt mô phỏng của Blowfish (xem `docs/NGHIEN-CUU-21-08.md` mục 2). Ưu tiên tìm giao dịch **thật** cho ca này.
 
 ### Nhóm B — 10 ca âm tính (luật **không** được kích hoạt)
 
@@ -390,7 +390,7 @@ Mỗi luật cần **một ca kích hoạt** và **một ca trông giống nhưn
 |---|---|---|
 | `INS-01` | Tx gọi program lạ, không decode được instruction | `warning` + coverage < 1.0, **không bao giờ** `safe` |
 | `INS-02` | Tx mà mô phỏng thất bại hoặc trả lỗi | `warning`, giao diện nói rõ không phân tích được |
-| `INS-03` | Tx phần lớn hiểu được nhưng còn 1 instruction lạ | `warning` + coverage kiểu 10/11, đúng như ảnh dựng ở `CUSTOS.md` mục 03 |
+| `INS-03` | Tx phần lớn hiểu được nhưng còn 1 instruction lạ | `warning` + coverage kiểu 10/11, đúng như ảnh dựng ở `docs/CUSTOS.md` mục 03 |
 
 > Nhóm C là nhóm chứng minh trục khác biệt mới của sản phẩm — *"Custos nói cho bạn biết phần nào nó chưa hiểu"*. Đừng coi nó là nhóm phụ.
 

@@ -1,6 +1,6 @@
 # Bàn giao phiên thực thi Custos
 
-Đọc [roadmap Technical](../../ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** — và
+Đọc [roadmap Technical](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** — và
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
@@ -19,7 +19,7 @@ trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
    vì chúng đọc `kyVong`; hậu quả là manifest báo *"7 luật không có ca đối chứng"*
    trong khi cả 7 đều có. Cách tìm ra: phép đếm của tôi (theo `cuc`) mâu thuẫn với
    bài `capLuat` đang xanh (theo `kyVong`) — hai điều không thể cùng đúng.
-2. **Lệch claim trong `DAC-TA-CORE.md`** (CU-17). Liệt kê **6 program** đã xác minh
+2. **Lệch claim trong `docs/DAC-TA-CORE.md`** (CU-17). Liệt kê **6 program** đã xác minh
    và có **SPL Memo**; registry thật **13 program**, **không có Memo** — sai cả hai
    hướng. Danh sách gõ tay lúc registry còn 6 rồi không ai sửa.
 3. **`Buffer.from(s, "base64")` không bao giờ ném** (CU-10) — nó bỏ ký tự lạ, nên
@@ -154,7 +154,7 @@ phần dùng được.
 ## Lịch sử — 18/09/2026 (CU-00…CU-03)
 
 **749 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
-`nop-bai --strict` **11/13**. Đang thực thi [`UPDATE-CUSTOS.md`](../../UPDATE-CUSTOS.md);
+`nop-bai --strict` **11/13**. Đang thực thi [`docs/roadmap/UPDATE-CUSTOS.md`](../roadmap/UPDATE-CUSTOS.md);
 trạng thái từng thẻ ở bảng CU của [TIEN-DO.md](TIEN-DO.md).
 
 **Đã xong:** CU-00 (baseline). **PARTIAL:** CU-01, CU-02, CU-03.
@@ -344,7 +344,7 @@ gửi lặp. Ba tầng bằng chứng — cơ chế, đường dây, hành vi th
 - **`data/a11y/ket-qua.json` gắn với bản dựng.** Sửa `apps/*/src` là nó cũ; cổng sản phẩm sẽ báo `CU`. Chạy lại `scripts/kiem-trinh-duyet/soi-trinh-duyet.py` với **cả hai** server (5188 và 5189) đang bật.
 - **Hai bài trình duyệt mới ghi đè file thật.** `soi-cau-hinh-hong.py` ghi đè `hien-truong.json` nên nó đòi đường dẫn bản sao và khôi phục trong `finally`. Đừng chạy khi chưa sao lưu.
 - **Đừng gõ `\` vào regex qua heredoc của Bash.** Một tầng shell nuốt mất nó ba lần trong phiên này: hai lần làm script không parse (thấy ngay), một lần biến regex thành thứ không bao giờ khớp (KHÔNG thấy — guard xanh vĩnh viễn). Dựng bằng `String.fromCharCode(92)`, hoặc sửa bằng công cụ Edit.
-- **Thể lệ có BA định dạng pitch khác nhau**, không phải một: Zoom 5+2 · Vòng Loại Toàn Quốc 4+2+1 · Chung kết 5+3 (đèn vàng phút 4). Tôi đã suýt «sửa» bản 4 phút thành sai vì đọc nhầm một dòng — `PITCH-VA-PHAN-BIEN.md` mục 2 nay có bảng cả ba.
+- **Thể lệ có BA định dạng pitch khác nhau**, không phải một: Zoom 5+2 · Vòng Loại Toàn Quốc 4+2+1 · Chung kết 5+3 (đèn vàng phút 4). Tôi đã suýt «sửa» bản 4 phút thành sai vì đọc nhầm một dòng — `docs/PITCH-VA-PHAN-BIEN.md` mục 2 nay có bảng cả ba.
 - **Ngày gõ cứng trong tài liệu hết hiệu lực trong im lặng.** Một mục «cửa quyết định» gắn ngày cụ thể đã trôi qua mà không ai biết. Guard lịch cũ chỉ quét 4 file và vài từ khoá nên không thấy; nay quét MỌI `.md` và tìm ngày đứng cạnh từ chỉ cửa/hạn. Ngày ĐO ĐƯỢC vẫn giữ nguyên — chỉ ngày làm CỬA mới bị chặn.
 - **Đối chứng dương phải khác câu nền, nếu không nó không phân biệt được gì.** Bản cũ gửi vào chính `moc.explanation`: bộ chắn cho đi qua và bộ chắn vứt sạch đều trả về đúng chuỗi đó. Mutation (`explanation: nen.explanation`) cho thấy 10/10 bẫy vẫn xanh trong khi lớp AI đã chết hẳn.
 - **Playwright `has-text` KHÔNG phân biệt hoa thường.** `has-text("HUỶ")` bắt trúng cả nút "Chặn & huỷ giao dịch", nên bài kiểm bấm nhầm nút của người tham gia rồi tưởng người phỏng vấn chưa chấm. Dùng `text-is` cho nhãn ngắn, và thu hẹp theo `details` cho khối vòng 2.

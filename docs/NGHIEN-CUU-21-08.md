@@ -72,7 +72,7 @@ const { poolAddress, instructions, initializationCost, callback: sendTx } =
 
 ---
 
-## 2 · Đối thủ — phải sửa tuyên bố trong `CUSTOS.md`
+## 2 · Đối thủ — phải sửa tuyên bố trong `docs/CUSTOS.md`
 
 Đây là việc thứ tư trong danh sách 48 giờ, và kết quả **không thuận lợi**.
 
@@ -90,11 +90,11 @@ const { poolAddress, instructions, initializationCost, callback: sendTx } =
 > lớp mô phỏng có thể bỏ lọt instruction*, và điều đó không phụ thuộc vào việc
 > công ty nào còn tồn tại. Chỉ có phần "đối thủ là ai" là đã đổi.
 >
-> Xem `CUSTOS.md` mục 10 để biết việc này cắt cả hai chiều thế nào.
+> Xem `docs/CUSTOS.md` mục 10 để biết việc này cắt cả hai chiều thế nào.
 
 ### Phantom và Blowfish đã làm nhiều hơn tài liệu của ta đang mô tả
 
-`CUSTOS.md` mục 10 hiện viết ví lớn *"nói số dư đổi bao nhiêu chứ không nói hậu quả nào không thuộc hành động chính"*. Tra cứu cho thấy điều đó **không chính xác**:
+`docs/CUSTOS.md` mục 10 hiện viết ví lớn *"nói số dư đổi bao nhiêu chứ không nói hậu quả nào không thuộc hành động chính"*. Tra cứu cho thấy điều đó **không chính xác**:
 
 - Phantom dùng transaction preview do **Blowfish** cung cấp, có cảnh báo thời gian thực và diễn giải giao dịch dạng người đọc được
 - Phantom **đã cảnh báo khi giao dịch gọi `setAuthority` một cách bất thường**
@@ -155,7 +155,7 @@ Chi phí thực hiện thấp — cùng dạng với luật 1 và 2 — và nó 
 | Việc | Ai | Khi nào |
 |---|---|---|
 | Chạy checklist spike 7 bước ở mục 1 | B | 22–23/8 |
-| Sửa `CUSTOS.md` mục 10 theo mục 2 | C | trước 23/8 |
+| Sửa `docs/CUSTOS.md` mục 10 theo mục 2 | C | trước 23/8 |
 | Thêm luật 12 (`SystemProgram.assign`) vào bộ luật và vào dataset | A + D | trong tuần |
 | Xác minh năm của bài Coinspect trước khi trích | D | trước 1/9 |
 | Tự mở Phantom trên devnet, ký thử một giao dịch, chụp lại màn cảnh báo của họ | B | trước 1/9 |

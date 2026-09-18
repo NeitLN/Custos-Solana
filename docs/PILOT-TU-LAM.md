@@ -1,6 +1,6 @@
 # Tự thử Custos trong một buổi — không cần hỏi đội Custos
 
-**Việc B02 của [`ROADMAP-THUC-THI.md`](../ROADMAP-THUC-THI.md).** Dành cho một đội ví hoặc
+**Việc B02 của [`docs/roadmap/ROADMAP-THUC-THI.md`](roadmap/ROADMAP-THUC-THI.md).** Dành cho một đội ví hoặc
 dApp muốn tự đánh giá, không phải cho người trong monorepo.
 
 > **Bộ này hoàn tất KHÔNG có nghĩa đã có đối tác dùng.** Tính tới lúc viết,

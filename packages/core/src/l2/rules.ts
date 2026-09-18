@@ -59,7 +59,7 @@ export type Rule = {
  *
  * Cả bốn đều đọc CHÊNH LỆCH TRẠNG THÁI, không đọc instruction — vì kẻ tấn công
  * giấu được instruction (CPI, program riêng, ALT) nhưng không giấu được hậu quả.
- * Xem DAC-TA-CORE.md mục 1.
+ * Xem docs/DAC-TA-CORE.md mục 1.
  *
  * Không có AI ở bất kỳ đâu trong file này.
  */
@@ -117,7 +117,7 @@ export const luat2: Rule = {
  *
  * Ngưỡng là "vượt quá số dư hiện tại", không phải một con số cứng.
  * Cấp quyền rút ĐÚNG BẰNG số tiền của giao dịch là hành vi chuẩn của nhiều dApp
- * và KHÔNG được gắn cờ — đó chính là ca âm tính R03-neg trong SEED-DATASET.md.
+ * và KHÔNG được gắn cờ — đó chính là ca âm tính R03-neg trong docs/SEED-DATASET.md.
  * Cấp quyền rút nhiều hơn số mình đang có thì không có lý do chính đáng nào.
  */
 export const luat3: Rule = {
@@ -149,7 +149,7 @@ export const luat3: Rule = {
  * Luật 12 — account của người ký đổi program sở hữu.
  *
  * Đây là vector `SystemProgram.assign` đã từng qua mặt mô phỏng của Blowfish
- * (xem NGHIEN-CUU-21-08.md mục 2). Nó tác động lên account THƯỜNG chứ không
+ * (xem docs/NGHIEN-CUU-21-08.md mục 2). Nó tác động lên account THƯỜNG chứ không
  * riêng tài khoản token, nên phải đọc từ `facts.accounts`.
  */
 export const luat12: Rule = {
@@ -367,7 +367,7 @@ export const luat11: Rule = {
  * được việc không có dữ liệu: `tuoiViNhan[v] === null` nghĩa là không tra được,
  * và khi đó luật ĐƠN GIẢN LÀ KHÔNG KÍCH HOẠT.
  *
- * Không được biến "không tra được" thành cảnh báo — xem DAC-TA-CORE.md mục 3.3.
+ * Không được biến "không tra được" thành cảnh báo — xem docs/DAC-TA-CORE.md mục 3.3.
  * Áp fail-safe cho đường làm giàu dữ liệu thì mọi giao dịch sẽ ra Vàng.
  *
  * Ngưỡng "phần lớn" chọn theo TỈ LỆ chứ không theo con số tuyệt đối, vì đội

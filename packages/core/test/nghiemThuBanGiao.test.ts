@@ -35,19 +35,19 @@ test("bốn nhóm kết luận KHÔNG bị gộp làm một", () => {
   }
 });
 
-test("KHÔNG chấm lại điểm 6,95 của CUSTOS.md", () => {
+test("KHÔNG chấm lại điểm 6,95 của docs/CUSTOS.md", () => {
   /*
-   * `CUSTOS.md` mục 13 cấm việc này bằng đúng chữ: "tự nâng điểm cho khớp tin mới là
+   * `docs/CUSTOS.md` mục 13 cấm việc này bằng đúng chữ: "tự nâng điểm cho khớp tin mới là
    * đúng thứ mục này sinh ra để chống". V02 lại đòi "chấm lại đúng rubric với căn cứ
    * mới" — hai câu đó chỉ sống chung được nếu bản mới là một ảnh chụp RIÊNG, ghi rõ
    * ngày và người chấm, và KHÔNG đụng vào con số cũ.
    *
    * Bài này canh cả hai vế: trang mới phải tự khai ranh giới, và con số 6,95 phải còn
-   * nguyên trong `CUSTOS.md`.
+   * nguyên trong `docs/CUSTOS.md`.
    */
   const s = doc(TRANG);
   assert.match(s, /KHÔNG phải bản chấm lại điểm 6,95/i, "phải tự khai ranh giới");
-  assert.match(doc("CUSTOS.md"), /6,95/, "con số cũ phải còn nguyên trong CUSTOS.md");
+  assert.match(doc("docs/CUSTOS.md"), /6,95/, "con số cũ phải còn nguyên trong docs/CUSTOS.md");
   assert.doesNotMatch(
     s,
     /điểm mới là \d|nâng lên \d[,.]\d\/10|tổng mới:? \*?\*?\d/i,

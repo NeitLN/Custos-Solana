@@ -16,7 +16,7 @@ import type { Facts, MintFact, TokenAccountFact } from "./facts.ts";
  * delegate cho ai đó"* là hai câu hoàn toàn khác nhau. Câu đầu mô tả một token;
  * câu sau tố cáo một hành vi. Trộn chúng là buộc tội sai — và là cách nhanh nhất
  * tạo false positive, vì Token-2022 extension là năng lực hợp lệ có ca dùng chính
- * đáng (CUSTOS.md mục 06).
+ * đáng (docs/CUSTOS.md mục 06).
  *
  * `TinhTrangQuyen.moiTrongGiaoDich` tách đúng hai câu đó ra.
  *

@@ -2,7 +2,7 @@
 
 **Ngày:** 17/09/2026 · **Trạng thái:** đã quyết, đang thực thi
 **Thẻ:** CU-01 (contract), CU-02 (session), CU-19 (adapter ví)
-**Nguồn yêu cầu:** `UPDATE-CUSTOS.md` mục 4.3
+**Nguồn yêu cầu:** `docs/roadmap/UPDATE-CUSTOS.md` mục 4.3
 
 ---
 

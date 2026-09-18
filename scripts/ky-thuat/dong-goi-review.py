@@ -20,7 +20,7 @@ for p in (ROOT / 'goi-sdk').rglob('*.tgz'):
 for rel in ['docs/nop-bai/CUSTOS-PITCH.pptx', 'docs/nop-bai/RELEASE-NOTES.md',
             'docs/nop-bai/video/CUSTOS-DEMO.mp4', 'docs/nop-bai/video/CUSTOS-DEMO.srt',
             'docs/roadmap/TIEN-DO.md', 'docs/roadmap/BAN-GIAO.md', 'docs/PHU-THUOC.md',
-            'PITCH-VA-PHAN-BIEN.md', 'ROADMAP-TECHNICAL-CUSTOS.md', 'LICENSE']:
+            'docs/PITCH-VA-PHAN-BIEN.md', 'docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md', 'LICENSE']:
     p = ROOT / rel
     if p.is_file(): files[rel] = p
 for p in EVIDENCE.iterdir():

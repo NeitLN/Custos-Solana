@@ -1,6 +1,6 @@
 # Mô hình doanh thu — ai trả, trả cho gì, và điều kiện nó sai
 
-**Việc B04 của [`ROADMAP-THUC-THI.md`](../ROADMAP-THUC-THI.md).**
+**Việc B04 của [`docs/roadmap/ROADMAP-THUC-THI.md`](roadmap/ROADMAP-THUC-THI.md).**
 
 > **Trang này là GIẢ THUYẾT, không phải mô hình đã kiểm chứng.**
 > **0 cuộc trò chuyện với người mua.** Mỗi con số dưới đây có nhãn nguồn hoặc nhãn

@@ -5,7 +5,7 @@
   "commitNgan": "15f28b6",
   "dirty": true,
   "fileBan": [
-    "UPDATE-CUSTOS.md"
+    "docs/roadmap/UPDATE-CUSTOS.md"
   ],
   "runtime": {
     "node": "v24.12.0",

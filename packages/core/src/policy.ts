@@ -9,7 +9,7 @@ import type { Level } from "@custos-solana/types";
  *
  * ## Bất biến quan trọng nhất: policy CHỈ được thận trọng hơn
  *
- * Giống quy tắc bất đối xứng của `expectedAction` (CUSTOS.md mục 03), và vì cùng
+ * Giống quy tắc bất đối xứng của `expectedAction` (docs/CUSTOS.md mục 03), và vì cùng
  * một lý do: nếu policy nới được kết luận của engine thì kẻ tấn công chỉ cần làm
  * ví nạp một profile dễ dãi, và toàn bộ lớp phát hiện trở thành trang trí.
  *

@@ -104,7 +104,7 @@ Rubric: *trình bày và phản biện* chiếm **20%**, *giải pháp và demo*
 
 ## 0 · Trục câu chuyện đã đổi — đọc trước khi tập
 
-Nghiên cứu ngày 21/8 (`NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng Blowfish, **đã cảnh báo `setAuthority` bất thường**, và Blowfish có luật bắt *"deceptive instructions that hide asset transfers"*. Nghĩa là câu chuyện cũ — *"chúng tôi phát hiện được thứ họ không phát hiện"* — **không đứng vững**.
+Nghiên cứu ngày 21/8 (`docs/NGHIEN-CUU-21-08.md`) phát hiện Phantom đã dùng Blowfish, **đã cảnh báo `setAuthority` bất thường**, và Blowfish có luật bắt *"deceptive instructions that hide asset transfers"*. Nghĩa là câu chuyện cũ — *"chúng tôi phát hiện được thứ họ không phát hiện"* — **không đứng vững**.
 
 **Đừng đánh nhau ở chỗ đối thủ mạnh. Đánh vào đường nối.**
 
@@ -193,14 +193,14 @@ Nghĩa là coverage sẽ ra **11/11**, và **dòng "đã phân tích 10/11" sẽ
 coverage **thật sự khuyết**, không phải 11/11. Dòng coverage có chỗ dựa.
 
 **Chưa vá:** giao dịch chỉ có **3 lệnh**, không phải 11. Coverage thật đo được là
-**2/3**. Các lệnh swap mô tả trong `CUSTOS.md` mục 07 chưa được dựng.
+**2/3**. Các lệnh swap mô tả trong `docs/CUSTOS.md` mục 07 chưa được dựng.
 
 > **KHÔNG ĐƯỢC NÓI "10/11" NỮA.** Con số đó đã bị gỡ khỏi toàn bộ tài liệu. Trên sân
 > khấu **đọc đúng con số đang hiện trên màn hình**, dù nó là bao nhiêu. Nói một số
 > mà màn hình chiếu một số khác là đúng cái thể lệ gọi là trình bày sai về dữ liệu —
 > và giám khảo đang nhìn thẳng vào màn hình lúc bạn nói.
 
-Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mất ở `CUSTOS.md` mục 07.
+Vai B quyết có dựng thêm các lệnh swap hay không; bảng được-mất ở `docs/CUSTOS.md` mục 07.
 
 ---
 
@@ -456,20 +456,20 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
-### 14. "968 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "1004 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 968 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 1004 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (968)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (1004)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 968 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1004 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*

@@ -36,7 +36,7 @@ API, hay ví có tiền.
 
 | Số | Giá trị | Kiểm bằng |
 |---|---|---|
-| Test tự động | **968** pass · 0 fail | `npm run check` |
+| Test tự động | **1004** pass · 0 fail | `npm run check` |
 | Luật tất định | **14** | `npm run check` — `capLuat.test.ts` |
 | Mẫu kiểm thử gắn nhãn | **38** | `ls data/seed/facts \| wc -l` |
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
@@ -189,7 +189,7 @@ chạy thật thứ vừa viết, khi đóng vai người ngoài, và khi mở a
 
 Đọc kỹ mục này trước khi tin bất kỳ con số nào ở mục 2.
 
-- **968 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
+- **1004 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
   Bốn loại bằng chứng trong repo trả lời bốn câu hỏi khác nhau và không được gộp.
 - **Cohort công khai lưu offline chưa có ground truth** — nên không có precision,
   recall, hay tỉ lệ báo nhầm. Coverage 82 % là trên **9/20** mẫu còn mô phỏng được.
@@ -241,5 +241,5 @@ npm audit                      # lỗ hổng phụ thuộc
 
 Tài liệu liên quan: [BAO-CAO-TONG.md](BAO-CAO-TONG.md) (tổng quan) ·
 [AI-EVALUATION.md](AI-EVALUATION.md) (bốn lớp neo và cách chúng bị phá) ·
-[../SEED-DATASET.md](../SEED-DATASET.md) (vì sao không được gọi kết quả trên tập âm
+[docs/SEED-DATASET.md](docs/SEED-DATASET.md) (vì sao không được gọi kết quả trên tập âm
 là tỉ lệ false positive).

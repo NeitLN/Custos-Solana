@@ -22,7 +22,7 @@ test("sổ tiến độ liệt kê ĐỦ thẻ TB- của roadmap Technical", () 
    * Cách một sổ trạng thái nói dối rẻ nhất không phải ghi sai trạng thái một thẻ —
    * mà là im lặng về một thẻ. Thẻ vắng mặt không bao giờ bị hỏi tới.
    */
-  const roadmap = doc("ROADMAP-TECHNICAL-CUSTOS.md");
+  const roadmap = doc("docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md");
   const so = doc("docs/roadmap/TIEN-DO.md");
 
   const theRoadmap = [...roadmap.matchAll(/^### (TB-\w+)/gm)].map((m) => m[1]!);
@@ -61,7 +61,7 @@ test("cột phụ thuộc trong sổ KHÔNG bịa mã mà thẻ không có", () 
    * phụ thuộc bịa làm thẻ trông bị chặn trong khi nó mở — hoặc tệ hơn, che mất phụ
    * thuộc thật và làm thẻ trông mở trong khi nó chưa đủ điều kiện.
    */
-  const roadmap = doc("ROADMAP-TECHNICAL-CUSTOS.md");
+  const roadmap = doc("docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md");
   const so = doc("docs/roadmap/TIEN-DO.md");
 
   /** Bung `C01–C06` thành từng mã; bỏ qua chữ mô tả như "nền bắt buộc". */
