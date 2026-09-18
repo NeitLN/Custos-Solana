@@ -32,7 +32,7 @@ checklist cũ.
 **Cổng đầy đủ, chạy một lần cuối trên cùng bản mã:**
 
 ```
-npm run check          → 478 pass · 0 fail
+npm run check          → 840 pass · 0 fail
 npm run kiem-san-pham  → 11 đạt · 0 hỏng · 0 chưa rõ
 ```
 

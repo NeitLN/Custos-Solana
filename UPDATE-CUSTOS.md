@@ -38,7 +38,7 @@ Không dùng số lượng trang, luật hay test làm mục tiêu sản phẩm.
 ### 2.1. Những gì đã quan sát khi lập kế hoạch
 
 - HEAD lúc đọc là `15f28b6`; `git status --short` không có thay đổi. Không cố định SHA này cho các phiên sau.
-- Artifact `apps/demo-wallet/public/so-lieu.json` và commit dựng deck ghi **730** ở số test. Đây là số đọc từ repo, không phải lượt chạy lại toàn bộ test trong phiên soạn tài liệu.
+- Artifact `apps/demo-wallet/public/so-lieu.json` và commit dựng deck ghi **730** ở số test (snapshot lúc lập kế hoạch). Đây là số đọc từ repo, không phải lượt chạy lại toàn bộ test trong phiên soạn tài liệu.
 - Đã có L1/L2/L3, 14 luật, diagnostic tùy chọn, ví mẫu, tarball consumer, neo kết quả, timeout, bộ đối kháng, benchmark/replay và video thật.
 - `rules.ts` hiện khai `bangChung` tại luật 11 và 13. Khoảng trống là phủ liên kết dữ kiện cho các luật còn lại và trình bày chúng rõ hơn; không xây lại trace từ số không.
 - `Facts` có token account, mint, instruction và account facts. Mint đã có permanent delegate và transfer hook program ID; không gọi hai trường này là hoàn toàn chưa hỗ trợ.
@@ -196,7 +196,7 @@ Mỗi thẻ tuân thủ Definition of Done ở mục 9. “Bắt buộc” nghĩ
 **Vai:** Lead, QA. **Phụ thuộc:** không. **Ưu tiên:** nền tảng.
 
 - Đọc HEAD/status, artifact mới nhất và phạm vi source hash. Phân biệt số đo cũ với trạng thái hiện tại.
-- Chạy baseline phù hợp trên repo hiện tại; không dùng số 730 làm quota test.
+- Chạy baseline phù hợp trên repo hiện tại; không dùng số 730 (snapshot cũ) làm quota test.
 - Đối chiếu các câu 726/730, cây sạch/PARTIAL, video đã có/chưa có. Cập nhật phần hiện hành; giữ snapshot lịch sử có nhãn.
 - Thêm bảng CU vào sổ tiến độ. Ghi tình trạng TB còn mở dựa trên evidence, không tự đóng việc BTC/remote CI.
 - Ghi manifest baseline ở `docs/review/update-custos/<run-id>/baseline.json`: commit, dirty flag, hash phạm vi, lệnh/exit, dependency/runtime.

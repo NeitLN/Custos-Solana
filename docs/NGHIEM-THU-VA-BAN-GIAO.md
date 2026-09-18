@@ -24,7 +24,7 @@ cùng dấu vết nội dung (xem [`R02`](roadmap/TIEN-DO.md)).
 
 | Bề mặt | Kết quả | Lệnh |
 |---|---|---|
-| Bộ test | **473 pass · 0 fail** | `npm run check` |
+| Bộ test | **840 pass · 0 fail** | `npm run check` |
 | Cổng sản phẩm | **11 đạt · 0 hỏng · 0 chưa rõ** | `npm run kiem-san-pham` |
 | Gói cài từ ngoài repo | tarball + JS + TypeScript | `npm run thu-goi` |
 | Bẫy đối kháng trên gói | **10/10 chặn · 3/3 đối chứng** | `npm run thu-goi` |
@@ -87,14 +87,14 @@ Chạy `npm run nop-bai`. Đọc từng mục, **không đồng nhất `exit 0` 
 
 | | Mục | Trạng thái |
 |---|---|---|
-| ✓ | Bộ test xanh | 473 pass |
+| ✓ | Bộ test xanh | 840 pass |
 | ✓ | Cây làm việc sạch | |
 | ✓ | Ví dụ tích hợp chạy được | 8/8 kịch bản |
 | ✓ | Deck dựng lại được từ dữ liệu | |
 | ✓ | Ảnh dự phòng máy tính + điện thoại | 8 ảnh |
 | ✓ | Gói AI có bản vá trên registry | 0.2.0 · 10/10 |
 | ✓ | Metadata repo | |
-| ✗ | **Video demo dự phòng** | **thể lệ ghi là BẮT BUỘC** |
+| ✓ | **Video demo dự phòng** | `docs/nop-bai/video/CUSTOS-DEMO.mp4` (3,0 MB) + `.srt` |
 | ✗ | Lịch thi xác nhận đủ | 4 câu chưa hỏi BTC |
 | ✗ | Release tag cố định | chưa có tag |
 

@@ -6,7 +6,7 @@ trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
 ## Hiện trạng — 18/09/2026 (lát cắt A + CU-10/13/16/17/22/24)
 
-**828 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
+**840 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
 `nop-bai --strict` **11/13**. 49 commit chưa push.
 
 **DONE:** CU-00 · 05 · 08 · 09 · 10.
@@ -238,7 +238,7 @@ live đo SDK gọi Devnet), nhưng câu chữ khai **mạnh hơn** thứ đã ki
 `moHinhThat` và `BENCHMARK.md`. Sửa thành *"không đổi file nào trong phạm vi"*, kèm
 `BAO-CAO-KIEM-CHUNG.md` vốn neo vào câu cũ.
 
-**Bài học lặp lại lần nữa: test xanh không có nghĩa bằng chứng còn hiệu lực.** 726 test
+**Bài học lặp lại lần nữa: test xanh không có nghĩa bằng chứng còn hiệu lực.** (snapshot lúc đó) 726 test
 xanh ngay sau merge, trong khi vùng bấm đã sập 9px. Không một test đơn vị nào chạm tới
 được — chỉ trình duyệt thật mới thấy.
 
@@ -284,7 +284,7 @@ của review.
 | **T01** | Xác nhận chứa `err` vẫn báo `thanhCong`; response sai cấu trúc cũng vậy | pha `thatBaiXacNhan` + `docKetQuaXacNhan()` đọc **nội dung** phản hồi | probe 2/5 → 6/7 ca đúng; đột biến 5 bài đỏ |
 | **T02** | Mất phản hồi gửi bị khẳng định là "chưa gửi đi" | `chuKy?` lấy chữ ký **trước** khi gửi; `maBase58` tự viết | 200 mẫu đối chiếu `bs58`/`PublicKey`, 0 lệch |
 | **T03** | `npm run check` ghi đè `data/eval/ai-ket-qua.json` | tách `scripts/eval-ai-so.ts` (module thuần) | hash **không đổi** quanh `check`, exit 0 |
-| **T04** | Bốn phát biểu tài liệu mạnh hơn bằng chứng | tách 1 trường thành 3; bỏ đếm lượt bằng tay; 451→520 | `t04Claim.test.ts` 5 bài, đã kiểm phủ định |
+| **T04** | Bốn phát biểu tài liệu mạnh hơn bằng chứng | tách 1 trường thành 3; bỏ đếm lượt bằng tay; 451→520 (số lịch sử) | `t04Claim.test.ts` 5 bài, đã kiểm phủ định |
 
 **Thêm TB-C03** (không thuộc T01–T04, roadmap yêu cầu): ba khoá `ref` chống race và
 gửi lặp. Ba tầng bằng chứng — cơ chế, đường dây, hành vi thật trên Chromium.
