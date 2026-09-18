@@ -36,4 +36,8 @@ export {
   tinhPhiChuyen, chiTietPhi, cauHinhHieuLuc,
   type CauHinhPhi, type ChiTietPhi,
 } from "./phi-token.ts";
+export {
+  tomTatQuyen, coExtension,
+  type TinhTrangQuyen, type TomTatQuyen, type LoaiQuyen, type NguonDuKien,
+} from "./quyen-token.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
