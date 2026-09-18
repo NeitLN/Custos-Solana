@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Connection, VersionedTransaction, PublicKey } from "@solana/web3.js";
 import { inspect } from "./inspect.ts";
+import { dungReceipt, receiptRaJson, type CheDoReceipt } from "./receipt.ts";
 import { ketNoiCoHuy, laHuy } from "./huy.ts";
 
 /**
@@ -58,6 +59,7 @@ const HUONG_DAN = `custos-soi — kiểm một giao dịch Solana CHƯA KÝ trư
   custos-soi --tx <base64>       kiểm chuỗi base64
   custos-soi --tx -              đọc base64 từ stdin
   custos-soi --tx <b64> --json   in JSON thay vì chữ tiếng Việt
+  custos-soi --tx <b64> --receipt chiaSe   in biên lai JSON (rieng|chiaSe)
 
 Tuỳ chọn:
   --vi <địa chỉ>   ví cần bảo vệ. Bỏ trống ⇒ Custos lui về người TRẢ PHÍ,
@@ -77,7 +79,7 @@ Mã thoát — phân loại của ENGINE, KHÔNG phải quyền ký:
 CLI này không nhận khoá riêng, không ký và không gửi gì.
 Mô phỏng gửi nội dung giao dịch tới RPC đã chọn.`;
 
-type Doi = { tx?: string; vi?: string; rpc?: string; han?: string; json?: boolean; help?: boolean };
+type Doi = { tx?: string; vi?: string; rpc?: string; han?: string; json?: boolean; help?: boolean; receipt?: string };
 
 export function docDoi(argv: string[]): Doi {
   const d: Doi = {};
@@ -89,6 +91,7 @@ export function docDoi(argv: string[]): Doi {
     else if (a === "--vi") d.vi = argv[++i];
     else if (a === "--rpc") d.rpc = argv[++i];
     else if (a === "--han") d.han = argv[++i];
+    else if (a === "--receipt") d.receipt = argv[++i];
   }
   return d;
 }
@@ -200,6 +203,31 @@ export async function chay(argv: string[]): Promise<number> {
       chanDoan: Boolean(d.json),
       ...(d.vi ? { nguoiDung: d.vi } : {}),
     });
+
+    if (d.receipt !== undefined) {
+      /*
+       * BIÊN LAI (CU-11).
+       *
+       * CLI chỉ xuất được chế độ `chiaSe`, và đó là ràng buộc THẬT chứ không phải
+       * chưa làm: `inspect()` không trả `Facts` ra ngoài — hợp đồng `InspectResult`
+       * đã đóng băng và không được nới chỉ để tiện cho CLI. Không có `Facts` thì
+       * không có gì để replay.
+       *
+       * Nói thẳng thay vì im lặng xuất một biên lai `rieng` rỗng ruột trông như
+       * đầy đủ.
+       */
+      if (d.receipt !== "chiaSe") {
+        process.stderr.write(
+          d.receipt === "rieng"
+            ? "lỗi đầu vào: CLI chưa xuất được biên lai chế độ `rieng` — inspect() không trả Facts ra ngoài, nên không có dữ liệu để replay. Dùng --receipt chiaSe\n"
+            : "lỗi đầu vào: --receipt chỉ nhận `chiaSe`\n",
+        );
+        return MA.loiInput;
+      }
+      const bl = dungReceipt(r, "chiaSe" as CheDoReceipt);
+      process.stdout.write(receiptRaJson(bl) + "\n");
+      return MA[r.level];
+    }
 
     if (d.json) {
       /*

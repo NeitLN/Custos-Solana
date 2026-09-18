@@ -11,4 +11,9 @@ export { ketNoiCoHuy, laHuy, type KetNoiCoHuy } from "./huy.ts";
 export { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT, type SolNguoiDung } from "./sol.ts";
 export { chiTietSol, type ChiTietSol } from "./sol-chi-tiet.ts";
 export { VERIFIED_PROGRAMS, REASON, MA_THONG_TIN, chiLaThongTin } from "./constants.ts";
+export { locDongNhatKy } from "./che-nhay-cam.ts";
+export {
+  dungReceipt, docReceipt, receiptRaJson, factsTuReceipt,
+  PHIEN_BAN_RECEIPT, type Receipt, type CheDoReceipt, type KetQuaDoc,
+} from "./receipt.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";

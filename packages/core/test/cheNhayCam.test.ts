@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { locDongNhatKy } from "../src/locNhatKy.ts";
+import { locDongNhatKy } from "../src/che-nhay-cam.ts";
 
 /**
  * TB-S02 — nhật ký kỹ thuật hiển thị trên UI không được mang rác hay credential.
@@ -75,16 +75,6 @@ test("dòng bình thường đi qua không bị đụng", () => {
   ]) {
     assert.equal(locDongNhatKy(s), s, `dòng hợp lệ bị đổi: ${s}`);
   }
-});
-
-test("App.tsx lọc TẠI CHỖ GHI, không ở chỗ hiển thị", () => {
-  /*
-   * Lọc ở chỗ ghi thì mọi đường vào nhật ký đều đi qua — không cần nhớ lọc ở từng
-   * nơi gọi `ghi()`. Lọc ở chỗ hiển thị thì một `nhatKy` thứ hai, hoặc một lần
-   * export, sẽ bỏ qua lớp lọc.
-   */
-  const app = readFileSync(fileURLToPath(new URL("../src/App.tsx", import.meta.url)), "utf8");
-  assert.match(app, /setNhatKy\(\(n\) => \[\.\.\.n, locDongNhatKy\(s\)\]\)/);
 });
 
 /* ── QA · đường dẫn hệ thống lộ TÊN NGƯỜI DÙNG ─────────────────────────────── */

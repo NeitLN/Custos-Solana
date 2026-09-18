@@ -38,7 +38,7 @@ Cột **Bằng chứng** ghi nơi bài kiểm nằm. Cột **Tầng** dùng đú
 | 11 | Mô phỏng lỗi | R09-pos, R10-pos | R09-neg | `chay-replay.ts`, `l1.test.ts` | l1-replay |
 | 12 | Unknown program | R09-pos | R09-neg | `l2.test.ts` | l1-replay |
 | 13 | IDL | có | có | `bangChungTichHop.test.ts` | offline |
-| 14 | Metadata / symbol giả dạng | có | có | `locNhatKy.test.ts`, `l1.test.ts` | offline |
+| 14 | Metadata / symbol giả dạng | có | có | `cheNhayCam.test.ts`, `l1.test.ts` | offline |
 | 15 | L3 | có | có | `boiThoiHanC05.test.ts`, `moHinh.test.ts` | offline |
 | 16 | Handoff | có | có | `yeuCauNgoai.test.ts` (7 bài) | offline |
 | 17 | Gửi / xác nhận | có | có | `gui.test.ts` (18), `c03Race.test.ts` (8) | offline |
