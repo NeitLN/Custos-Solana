@@ -134,13 +134,8 @@ if (TH) {
   const giay = String(TH.giayDenKetQuaDau).replace(".", ",");
   thayDong("README.md", [
     [/^\| Cài đặt → kết quả đầu tiên \|/, (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${giay} giây**`)],
-    // MỘT DÒNG, HAI SỐ ĐO, MỘT CÁI ĐƯỢC NEO. Dòng "SDK cài được từ ngoài repo chưa?"
-    // đồng bộ số giây nhưng không đồng bộ số dòng mã, nên nó đứng ở 29 trong khi
-    // phép đo đã cho 30 — và `packages/core/README.md` với `BAO-CAO-TONG.md` thì
-    // ghi 30. Cùng một sự thật, hai con số, tuỳ người đọc mở file nào.
-    [/giây từ `npm install`/, (d) =>
-      d.replace(/[\d,]+ giây từ/, `${giay} giây từ`).replace(/\d+ dòng mã/, `${TH.dongMa} dòng mã`)],
-    [/^\| Một lượt kiểm tra \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — trung vị 5 lượt `)],
+    // README chỉ giữ bảng tích hợp; câu hỏi cũ lặp số đã được bỏ.
+    [/^\| Một lượt kiểm tra \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — trung vị ${CUM_LUOT} `)],
     [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
   ]);
 }
@@ -331,7 +326,7 @@ if (TH?.dongMa) {
  */
 thayDong("README.md", [
   [/^\| \*\*30 %\*\* độ khó và chiều sâu \|/, (d) =>
-    d.replace(/\*\*\d+\*\* test offline/, `**${S.test.pass}** test offline`)
+    d.replace(/\*\*\d+\*\* test(?: offline)?/, `**${S.test.pass}** test`)
      .replace(/\*\*\d+\*\* luật L2/, `**${S.soLuat}** luật L2`)],
 ]);
 
