@@ -1,367 +1,261 @@
 <div align="center">
 
-<img src="docs/nop-bai/logo/custos-logo-nen-xanh.png" width="88" alt="">
+<img src="docs/nop-bai/logo/custos-logo-nen-xanh.png" width="88" alt="Logo Custos">
 
 # Custos
 
-**SDK giúp ví Solana đọc hậu quả của giao dịch trước khi người dùng ký — và nói ra phần chưa đọc được.**
+### Hiểu điều bạn sắp ký.
 
-UniHackfest 2026 · AI × Web3
+SDK phân tích giao dịch trước khi ký cho ví và dApp Solana.<br>
+**Thấy thay đổi tài sản. Hiểu quyền được trao. Kiểm tra bằng chứng.**
 
-[**Dùng thử**](https://custos-solana.vercel.app) · [Mục lục tài liệu](docs/README.md) · [14 luật](packages/core/src/l2/rules.ts) · [9 kịch bản](apps/demo-wallet/src/kichBan.ts)
+[![CI](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml/badge.svg)](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-163E32)](LICENSE)
+![Network: Solana Devnet](https://img.shields.io/badge/Solana-Devnet-C5DE97)
+![Track: Best Technical Build](https://img.shields.io/badge/UniHackfest_2026-Best_Technical_Build-163E32)
+
+[**Mở demo**](https://neitln.github.io/Custos-Solana/) · [**Xem video**](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [**Tích hợp SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
 
 </div>
 
 ---
 
-## Ba phút để nắm bài
+## Số dư chưa đổi. Quyền kiểm soát có thể đã khác.
 
-**Vấn đề.** Một giao dịch Solana gây nhiều hậu quả cùng lúc, và không phải hậu quả nào cũng hiện ra ở số dư. Ca thật nhóm dựng trên Devnet: trang web hứa tặng token, nhưng giao dịch làm **ba** việc — chuyển token đi, **đổi chủ tài khoản token**, và gọi một chương trình chưa đọc hiểu được. Việc thứ hai không rút tiền ngay, nên **số dư trước và sau y hệt nhau**. Nhìn chênh lệch số dư thì ca này trông bình thường — nhưng sau khi ký, người dùng mất quyền kiểm soát vĩnh viễn.
+Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Trong ca đổi chủ nhóm dựng trên Devnet, tài khoản vẫn có **490 token**, nhưng mô phỏng cho thấy quyền chủ tài khoản sẽ chuyển sang địa chỉ khác nếu giao dịch được thực thi.
 
-**Cách làm.** Custos đọc **chênh lệch trạng thái**, không đọc tên lệnh. Kẻ tấn công giấu được instruction — qua CPI, qua chương trình riêng, qua ALT — nhưng không giấu được hậu quả.
+**Custos đưa những thay đổi đó đến trước bước ký.** Ví hoặc dApp gọi SDK; người dùng nhận được thay đổi tài sản, thay đổi quyền, lý do cảnh báo và phạm vi đã phân tích. Dữ kiện có thể mở để kiểm tra thêm.
 
+<p align="center">
+  <a href="https://neitln.github.io/Custos-Solana/">
+    <img src="docs/readme/transaction-review.png" width="100%" alt="Custos trên Devnet: số dư 490 token, cảnh báo đổi chủ tài khoản và bảng quyền trước–sau">
+  </a>
+  <br>
+  <em>Ảnh từ buổi demo local kết nối Devnet. Chỉ mô phỏng; không ký hoặc gửi giao dịch trong buổi quay.</em>
+</p>
+
+> **Bản thử nghiệm Devnet.** Kết quả mô phỏng phụ thuộc dữ kiện, trạng thái chain và phạm vi hỗ trợ. Không có cờ đỏ không phải bảo đảm an toàn.
+
+## Khám phá sản phẩm
+
+| Bạn muốn… | Mở tại đây |
+|---|---|
+| Hiểu sản phẩm trước khi thử | [Website giới thiệu](https://neitln.github.io/Custos-Solana/gioi-thieu.html) |
+| Chạy tình huống và đọc kết quả | [Ví demo](https://neitln.github.io/Custos-Solana/) |
+| Xem luồng yêu cầu từ một dApp giả lập | [Trang tấn công minh họa](https://neitln.github.io/Custos-Solana/tan-cong/) |
+| Kiểm tra transaction | [Inspector](https://neitln.github.io/Custos-Solana/soi.html) |
+| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://neitln.github.io/Custos-Solana/so-lieu.html) |
+| Xem bản ghi không phụ thuộc RPC | [Video demo](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
+
+**Luồng nên thử:** đổi chủ tài khoản → mở dữ kiện trước/sau → cấp quyền vượt số dư → so với ca đối chứng. Danh sách đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
+
+| Tình huống | Điều cần quan sát |
+|---|---|
+| Đổi chủ tài khoản token | Quyền thay đổi dù token chưa rời tài khoản |
+| Approve 1.010 token, số dư 490 | Luật vượt số dư kích hoạt |
+| Approve 250 token, số dư 490 | Ca đối chứng không kích hoạt luật vượt số dư; vẫn cần xét ý định người ký |
+| Thiếu dữ kiện hoặc RPC lỗi | Hiển thị trạng thái không kiểm tra đủ; bên tích hợp không được tự chuyển sang ký |
+
+Bản công khai không nhúng khóa ký. Tình trạng AI phụ thuộc cấu hình backend của từng bản triển khai: lượt AI thật trong bản ghi local không đồng nghĩa mọi demo public đều đã bật AI. Giao diện phân biệt nguồn diễn giải; khi không dùng mô hình, có câu tất định dự phòng.
+
+## Custos làm gì?
+
+- **Phân tích hậu quả:** đọc thay đổi số dư, owner, delegate và các dữ kiện hỗ trợ từ mô phỏng.
+- **Cảnh báo có lý do:** engine luật trả mức cảnh báo, mã lý do và bằng chứng liên quan.
+- **Nói rõ phần chưa hiểu:** trả coverage và giới hạn phân tích để người dùng biết phạm vi kết quả.
+- **Diễn giải bằng tiếng Việt:** dùng câu tất định hoặc mô hình ngôn ngữ tùy chọn qua adapter.
+- **Tích hợp trước bước ký:** SDK phục vụ đội ví/dApp; người hưởng lợi là người ký giao dịch.
+
+## Kiến trúc: quan sát → đánh giá → diễn giải
+
+```mermaid
+flowchart LR
+    TX["Giao dịch chưa ký"] --> L1["L1 · Mô phỏng và đọc trạng thái"]
+    RPC["Solana Devnet RPC"] --> L1
+    L1 --> F["Facts · thay đổi và phạm vi"]
+    F --> L2["L2 · Engine luật"]
+    L2 --> V["Verdict · reason codes · evidence"]
+    F --> L3["L3 · Diễn giải"]
+    L2 --> L3
+    AI["Mô hình tùy chọn"] -.-> L3
+    V --> UI["Giao diện review"]
+    L3 --> UI
+    UI --> C["Ứng dụng tích hợp · chính sách và consent"]
+    C --> S["Signer của ví"]
 ```
-Giao dịch chưa ký ─► L1 mô phỏng RPC ─► Facts
-                                          │
-                          ┌───────────────┴───────────────┐
-                          ▼                               ▼
-                   L2 · 14 luật                      L3 · AI
-                   sinh `level`                      chỉ viết chữ
-                   ◄── CHỈ tầng này                  (nét đứt: không
-                       ra phán quyết                  nối vào L2)
-                          └───────────────┬───────────────┘
-                                          ▼
-                                   Ví hiển thị, rồi áp chính sách
+
+| Thành phần | Trách nhiệm |
+|---|---|
+| [Core / L1](packages/core/src/l1/) | Mô phỏng qua RPC, bóc tách dữ kiện trong phạm vi hỗ trợ |
+| [Core / L2](packages/core/src/l2/) | Áp luật để sinh `level`, lý do và bằng chứng |
+| [AI / L3](packages/ai/) | Diễn giải facts; có câu tất định khi không dùng mô hình |
+| [Ứng dụng tích hợp](vi-du-tich-hop/) | Hiển thị, áp chính sách, lấy xác nhận và kiểm nội dung trước khi gọi signer |
+
+**AI không tạo hoặc sửa `level`.** Ranh giới được thể hiện trong hợp đồng dữ liệu, cách ghép kết quả và các kiểm tra đầu ra; không chỉ dựa vào prompt. Phần diễn giải vẫn có thể sai và cần được đánh giá riêng.
+
+**Vì sao Solana?** Custos cần hiểu account, instruction và quyền SPL Token mà giao dịch tác động tới. Solana cung cấp trạng thái và môi trường thực thi; Custos dùng RPC simulation để quan sát trước khi broadcast. Phân tích chạy off-chain, hiện không có smart contract Custos riêng.
+
+## Chạy tại máy
+
+Dùng **Node 24.12.x** và **npm 11.6.2** theo [.nvmrc](.nvmrc) và [package.json](package.json). Trên Windows, có thể chọn Node bằng trình quản lý phiên bản bạn đang dùng; `nvm use 24.12.0` nếu dùng nvm-windows.
+
+```bash
+git clone https://github.com/NeitLN/Custos-Solana.git
+cd Custos-Solana
+npx npm@11.6.2 ci
+npx npm@11.6.2 run check # typecheck + 1004 test
+npm run vi
 ```
 
-Kiểu dữ liệu trả về của L3 **không có trường `level`** — ranh giới do trình biên dịch giữ, không dựa vào kỷ luật lập trình.
+Mở **http://localhost:5188**. Trong terminal thứ hai, chạy trang dApp minh họa:
 
-**Ba điều đáng xem nhất:**
+```bash
+npm run tan-cong
+```
 
-| | Vì sao đáng xem |
-|---|---|
-| **Cặp đối chứng** — cùng lệnh `Approve`, cùng người nhận, chỉ khác hạn mức: 1010 > số dư ⇒ **Nguy hiểm**; 250 ≤ số dư ⇒ **Bình thường**, engine im | Thiếu ca âm tính thì *"bắt đúng"* và *"gắn cờ mọi thứ"* trông giống hệt nhau |
-| **AI bị chiếm hoàn toàn vẫn không hạ được mức** — 13/13 ca đối kháng bị chặn | Mô hình có thể bị tiêm chỉ thị qua tên token hoặc memo |
-| **Thiếu dữ liệu ⇒ Vàng, không bao giờ Xanh** | Fail-safe: không đủ dữ liệu thì không được nói an toàn |
+Mở **http://localhost:5189**. Địa chỉ hiện trường Devnet có sẵn trong [hien-truong.json](apps/demo-wallet/public/hien-truong.json); không cần khóa API mô hình để chạy luồng diễn giải tất định.
 
-**Chạy thử:** `npx npm@11.6.2 ci` rồi `npm run mo-phong-kichban` — mô phỏng 9 kịch bản trên Devnet thật, không cần khoá API.
+| Lệnh | Mục đích | Cần mạng? |
+|---|---|---|
+| `npm run check` | Typecheck và bộ test | Có với một số ca CLI gọi RPC; các ca còn lại chạy cục bộ |
+| `npm run replay-rpc` | Kiểm L1 bằng phản hồi RPC đã lưu | Không |
+| `npm run doi-khang` | Các probe đối kháng | Không |
+| `npm run thu-tich-hop:deterministic` | Kiểm consumer với fixture | Không |
+| `npm run mo-phong-kichban` | Mô phỏng các kịch bản trên Devnet | Có, RPC |
+| `npm run thu-tich-hop:devnet` | Kiểm lượt tích hợp live | Có, RPC |
+| `npm run thu-goi` | Đóng gói và cài SDK từ ngoài monorepo | Có, npm registry |
 
----
+RPC công cộng có thể chậm hoặc giới hạn yêu cầu. Một lượt live lỗi mạng không tự chứng minh engine phát hiện sai; kiểm nguyên nhân và đối chiếu với replay offline.
 
-> Phần dưới là tài liệu đầy đủ: bằng chứng theo từng mục rubric, số đo, giới hạn.
+## Tích hợp SDK
 
-Transaction-intelligence SDK cho ví và dApp Solana.
-Dự thi **UniHackfest 2026**, chủ đề AI × Web3.
-Hạn tiếp theo **19/09/2026** — xem `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`.
-
-| | |
-|---|---|
-| **Track đăng ký** (form nộp 24/08) | Best Product & Business |
-| **Hướng phát triển** từ 12/09 | **Best Technical Build** |
-
-Hai dòng đó **cố ý khác nhau**. Chủ dự án cho biết BTC cho phép đổi track; được phép
-đổi không đồng nghĩa biểu mẫu đã cập nhật, và repo không tự khai một trạng thái đăng
-ký chưa kiểm chứng được. Lý do và bằng chứng theo từng mục rubric:
-[ADR-0001](docs/adr/0001-doi-huong-technical-build.md).
-
-## Demo chạy được
-
-| Link | Là gì |
-|---|---|
-| **https://neitln.github.io/Custos-Solana/** | Ví mẫu — bấm một nút để xem Custos chặn giao dịch thật trên devnet |
-| **https://neitln.github.io/Custos-Solana/tan-cong/** | Trang "airdrop" giả — đẩy giao dịch sang ví, đúng cách một vụ lừa đảo thật diễn ra |
-
-CI dựng lại hai trang này mỗi lần push vào `main`, sau khi chạy hết bộ test.
-
-**Bản công khai cố ý không nhúng khoá ký.** Người xem chạy được toàn bộ phần phân
-tích — mô phỏng giao dịch không cần chữ ký — nhưng không ký được. Vậy nên không ai
-phá được hiện trường devnet trước buổi thi, và không có khoá riêng nào nằm trong
-một trang web công khai. `scripts/soi-ro-ri-khoa.mjs` chặn deploy nếu có khoá lọt vào bundle.
-
-## Ai mua — và điều đó đã chứng minh tới đâu
-
-## Bằng chứng kỹ thuật — số đo được, không phải lời hứa
-
-Mọi con số sinh từ `npm run so-lieu` hoặc artifact trong repo; **không con số nào gõ
-tay**. Đối chiếu từng mục rubric ở [ADR-0001](docs/adr/0001-doi-huong-technical-build.md).
-
-| Mục rubric Technical | Bằng chứng |
-|---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2, mỗi luật có ca dương **và** ca đối chứng · **1004** test offline · CPI/inner instruction, ALT, legacy, nhiều signer · Token-2022 **2/26 extension** đọc được · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) 19 họ ca · [threat model](docs/bao-mat/THREAT-MODEL.md) 8 rủi ro |
-| **25 %** kiến trúc on-chain/off-chain | Ba lớp L1/L2/L3, ranh giới cưỡng chế **bằng kiểu**: chỉ L2 sinh `level`, AI không bao giờ · **không** smart contract, và [nói rõ vì sao](docs/adr/0001-doi-huong-technical-build.md) |
-| **25 %** Solana stack · hiệu năng | **7** chương trình đọc hiểu qua IDL **công bố trên chuỗi**, 245 mã lệnh · coverage **82 %** · **6,5** lượt RPC/lượt kiểm · `inspect()` **617 ms** · [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
-| **20 %** demo và trình bày | axe **0/40** vi phạm · vùng bấm **26/26** · FCP **104 ms** · bấm→thẻ **n=30**, trung vị **1916 ms**, p95 quan sát **3959 ms** · demo công khai dựng lại mỗi lần push |
-
-**Nguyên tắc kiến trúc, nói một câu:** ưu tiên phát hiện qua **thay đổi trạng thái**,
-không qua **đọc instruction**. Kẻ tấn công giấu được instruction — bọc trong CPI, gói
-trong program riêng, nén địa chỉ vào ALT — nhưng không giấu được hậu quả.
-
-**Chưa đo được:** tỉ lệ báo nhầm (chưa có ground truth) · thiết bị thật, WebKit,
-Firefox (mọi số giao diện đo trên Chromium headless) · video demo dự phòng.
-
-**Người mua là ví và dApp, không phải người dùng cuối.** Người dùng cuối là người
-thụ hưởng: họ không cài SDK, không trả tiền.
-
-> **ICP:** ví embedded, consumer dApp hoặc ví nhỏ phục vụ người dùng Việt Nam / Đông
-> Nam Á, có luồng ký giao dịch nhưng chưa có đội transaction-security riêng.
-
-**Vì sao lúc này:** Phantom đã mua đứt Blowfish năm 2024 và đóng dịch vụ bán rời của
-nó — ví lớn nhất Solana đã trả tiền để chứng minh loại sản phẩm này có giá trị. Cái
-còn thiếu là một lớp **mã nguồn mở, tất định, tiếng Việt** mà một đội nhỏ tự cắm được.
-Chúng tôi không tuyên bố là giải pháp duy nhất.
-
-| Câu hỏi | Trả lời hôm nay |
-|---|---|
-| SDK cài được từ ngoài repo chưa? | **Rồi** — 7,6 giây từ `npm install` tới kết quả đầu tiên, 30 dòng mã tích hợp |
-| Người dùng có hiểu cảnh báo không? | **13/20** nêu được hậu quả — nhưng đo trên bản giao diện ngày 29–30/08, đã thiết kế lại sau đó |
-| Đã hỏi người quyết định tích hợp chưa? | **Chưa ai.** Bộ câu hỏi ở [docs/PHONG-VAN-NGUOI-MUA.md](docs/PHONG-VAN-NGUOI-MUA.md) |
-| Có ví hoặc dApp bên thứ ba nào đang dùng không? | **Chưa có.** Ví dụ tích hợp là do chính đội dựng |
-| Thị trường có đủ lớn không? | Mô hình bottom-up ở [docs/QUY-MO-THI-TRUONG.md](docs/QUY-MO-THI-TRUONG.md) — **7/8 biến là giả định**, và nó cho thấy ràng buộc là *năng lực tiếp cận*, không phải quy mô |
-
-Hai dòng cuối là hai ô trống lớn nhất của bài, và chúng tôi nói ra trước khi bị hỏi.
-Ví dụ tích hợp đo được **ma sát tích hợp**; nó không đo được nhu cầu thị trường.
-
-## Tích hợp mất bao lâu
+Bắt đầu từ [hướng dẫn Core](packages/core/README.md) và [consumer mẫu](vi-du-tich-hop/). Đoạn dưới minh họa lời gọi phân tích, **không phải luồng ký hoàn chỉnh**:
 
 ```ts
-const ketQua = await inspect({ connection, interpret }, tx, {
-  locale: "vi",
-  nguoiDung: viNguoiDung.toBase58(),   // lấy từ VÍ, không từ dApp
-  expectedAction: { type: "transfer", from: "SOL" },
-});
-if (ketQua.level !== "safe" || ketQua.aiAdvisory) hienCanhBao(ketQua);
+import { inspect } from "@custos-solana/core";
+import { boiThoiHan, dienGiaiKhongAI } from "@custos-solana/ai";
+
+// connection: kết nối Devnet; transaction: giao dịch chưa ký.
+// Lấy địa chỉ người dùng từ ví, không tin giá trị dApp tự khai.
+const result = await inspect(
+  { connection, interpret: boiThoiHan(dienGiaiKhongAI) },
+  transaction,
+  { locale: "vi", nguoiDung: walletPublicKey.toBase58() },
+);
 ```
 
-Nếu `inspect()` ném lỗi hoặc quá hạn: **CHẶN**, không bao giờ thành "ký được".
+Trước khi nối với signer, ứng dụng phải xử lý timeout/lỗi, mức cảnh báo, `aiAdvisory`, coverage và việc giao dịch có thay đổi sau khi kiểm hay không. Không tự động ký chỉ vì `result.level === "safe"`. Xem [hợp đồng ký trong consumer](vi-du-tich-hop/src/ky.js) và [threat model](docs/bao-mat/THREAT-MODEL.md).
+
+## Bằng chứng kỹ thuật
+
+Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng hay độ chính xác trên mọi giao dịch. Nguồn: [so-lieu.json](apps/demo-wallet/public/so-lieu.json), [báo cáo kiểm chứng](docs/BAO-CAO-KIEM-CHUNG.md) và [quy cách dataset](docs/SEED-DATASET.md).
+
+| Phạm vi | Kết quả đã lưu |
+|---|---|
+| Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
+| Test | **1004**, chạy trong `npm run check` |
+| Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
+
+<details>
+<summary><strong>Đọc sâu: bằng chứng, hiệu năng và phạm vi từng phép đo</strong></summary>
+
+| Bằng chứng | Chứng minh trong phạm vi nào? | Chưa chứng minh |
+|---|---|---|
+| **1004 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
+| **38 mẫu** đã gắn nhãn | Ca kích hoạt và đối chứng của luật | Khả năng khái quát sang tập độc lập |
+| **Cohort công khai lưu offline** | Hành vi trên response đã lưu | Precision/recall; cohort chưa có ground truth |
+| **Ví dụ tích hợp** | Consumer do nhóm dựng dùng SDK ngoài monorepo | Adoption hoặc nhu cầu bên thứ ba |
+| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | Bộ guard qua các ca đối kháng đã lưu; có đánh giá với mô hình thật | Mọi câu diễn giải đều đúng hoặc dễ hiểu hơn template |
+
+Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-build.md); trọng số là cách tài liệu đó tổ chức bằng chứng, không phải điểm BGK đã chấm.
+
+| Nhóm tiêu chí | Bằng chứng và nguồn |
+|---|---|
+| **30 %** độ khó và chiều sâu | **14** luật L2 · **1004** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
+| **25 %** Solana stack · hiệu năng | `inspect()` **617 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
+| **20 %** demo và trình bày | FCP **104 ms** · bấm→thẻ **n=30**, trung vị **1916 ms**, p95 quan sát **3959 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
+
+Số giao diện được đo trên Chromium headless; không suy rộng sang thiết bị thật hoặc mọi trình duyệt.
 
 | Đo trên Devnet, 18/09/2026 — lượt pass gần nhất | |
 |---|---|
 | Cài đặt → kết quả đầu tiên | **7,6 giây** — trung vị 10 lượt trên 10 bản dựng, dải 6,9–13,1 |
 | Dòng mã tích hợp | **30** |
 | Một lượt kiểm tra | **617 ms** — trung vị 10 lượt trên 10 bản dựng |
-| Cần khoá riêng hoặc khoá API | **không** — mô phỏng không đòi chữ ký |
 
-dApp mẫu chạy được: [vi-du-tich-hop/](vi-du-tich-hop/) · đo lại bằng `npm run thu-tich-hop:devnet`.
+Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
 
-**Hai lệnh, hai câu hỏi khác nhau — đừng đọc lẫn:**
+Measured, not estimated: **1004 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
-| Lệnh | Hỏi gì | Chạy trên | Ngưỡng |
-|---|---|---|---|
-| `thu-tich-hop:deterministic` | Custos xử **đúng** chưa? | fixture, không mạng | **100 %**, nằm trong CI |
-| `thu-tich-hop:devnet` | Kết nối thật còn **sống** không? | RPC Devnet công cộng | 10/10 lượt gần nhất hoàn tất |
+</details>
 
-Tách vì một lượt live đỏ **không** có nghĩa là phát hiện sai — RPC công cộng chậm là
-cả ba check của kịch bản lành tính cùng đỏ trong khi sản phẩm fail-closed hoàn toàn
-đúng. Gộp hai câu hỏi vào một lệnh là cách nhanh nhất để tự ghi một lỗi mạng thành
-lỗi bảo mật của chính mình.
+## Giới hạn hiện tại
 
-### CI ba tầng — và chỉ một tầng được chặn deploy
+- **Devnet-only:** runtime/demo hiện dành cho thử nghiệm; không tuyên bố sẵn sàng bảo vệ tài sản mainnet.
+- **Phạm vi đọc hiểu chưa đầy đủ:** decoder và Token-2022 còn giới hạn. Coverage là phạm vi phân tích, không phải xác suất giao dịch an toàn.
+- **Mô phỏng có giới hạn:** chỉ phản ánh dữ kiện quan sát được; trạng thái chain có thể thay đổi trước khi gửi giao dịch.
+- **Tích hợp quyết định hiệu lực:** SDK không thể cưỡng chế một consumer cố ý bỏ qua kết quả hoặc ký nội dung khác.
+- **AI là tùy chọn:** có đường tất định dự phòng; chưa có dữ liệu được nhóm xác nhận để kết luận AI cải thiện mức hiểu của người dùng.
+- **Chưa có validation thị trường được xác nhận:** README không sử dụng số phỏng vấn trong tài liệu lịch sử làm traction. Chưa có bên thứ ba tích hợp được xác nhận.
 
-Cùng nguyên tắc đó áp cho cả workflow. Ba tầng đỏ vì ba loại lý do khác nhau, nên
-chúng không dùng chung một cổng:
+### Phụ thuộc và an toàn
 
-| Tầng | Gồm | Khi nào chạy | Đỏ nghĩa là |
-|---|---|---|---|
-| **Tất định** | `check` · `replay-rpc` · `doi-khang` · `thu-tich-hop:deterministic` · chặn rò rỉ khoá | mỗi lần push `main` | **sản phẩm sai** — chặn deploy |
-| **Browser** | axe · vùng bấm · bối cảnh cảnh báo, trên Chromium ghim | chạy tay | có thể do trình duyệt tải hỏng |
-| **Live Devnet** | `thu-tich-hop:devnet` | chạy tay | có thể do RPC công cộng chậm |
+`npm audit` ngày 13/09/2026: **5 lỗ hổng — 5 high · 0 moderate** trong snapshot đã lưu.
 
-Hai tầng sau lưu bằng chứng **kể cả khi đỏ** (`if: always()`) — artifact chỉ còn khi
-xanh là artifact mất đúng lúc cần nhất. Không tầng nào dùng secret, và không tầng nào
-chạm mainnet: mô phỏng không cần chữ ký. Cấu trúc này có bài kiểm riêng
-(`packages/core/test/ciBaTang.test.ts`), vì một file CI hỏng chỉ lộ ra lúc push.
+Xem [artifact kiểm phụ thuộc](data/seed/lo-hong.json) để biết gói và thời điểm đo; đây không phải kết quả audit mới. Chạy `node scripts/do-lo-hong.mjs` để cập nhật phép đo. Xem [tài liệu bảo mật](docs/bao-mat/) để hiểu các giới hạn trước khi tích hợp. Không đưa khóa ký hoặc khóa API vào frontend, ảnh chụp hay issue công khai.
 
-## Sản phẩm làm gì
+## Bước tiếp theo
 
-Ví hoặc dApp gọi một hàm trước khi cho người dùng ký:
+- Đánh giá trên tập giao dịch độc lập có nhãn; đo riêng ca bỏ sót và cảnh báo không cần thiết.
+- Củng cố endpoint, xử lý lỗi và khả năng quan sát khi chạy live.
+- Mở rộng khả năng phân tích theo các ca còn thiếu bằng chứng.
+- Tìm đội ví/dApp thử tích hợp và kiểm chứng cách người ký hiểu cảnh báo.
 
-```ts
-const result = await custos.inspect(transaction, { locale: "vi" });
-if (result.level !== "safe" || result.aiAdvisory) showWarning(result);
-```
+Đây là kế hoạch phát triển, chưa phải cam kết pilot hoặc partnership.
 
-Custos mô phỏng giao dịch, đối chiếu với một engine luật xác định, rồi trả về hậu quả đo được kèm giải thích tiếng Việt — cùng con số cho biết đã phân tích được bao nhiêu phần của giao dịch.
-
-**Ba lớp:**
-
-| Lớp | Việc | Loại |
-|---|---|---|
-| L1 | Mô phỏng và bóc tách thay đổi số dư, quyền sở hữu, delegate | Xác định |
-| L2 | Engine luật ra verdict Đỏ / Vàng / Xanh kèm mã lý do | Xác định |
-| L3 | Nhận diện hành động chính, chỉ ra hậu quả lệch khỏi nó, diễn giải tiếng Việt | Lõi xác định + mô hình ngôn ngữ tuỳ chọn |
-
-AI không tạo và không sửa verdict. Nó chỉ có thể yêu cầu người dùng kiểm tra thủ công.
-
-Mô hình ngôn ngữ là **tuỳ chọn và do bên tích hợp tự cắm** — Custos không nhúng
-SDK của nhà cung cấp nào và không giữ khoá API nào. Không cắm gì thì sản phẩm
-vẫn chạy đầy đủ bằng lõi xác định. Bốn ràng buộc lên mô hình (không chạm
-`level`, không xác nhận an toàn, không hạ được mức nghi ngờ, không nhận giao
-dịch thô) đều có test đối kháng — xem [packages/core/README.md](packages/core/README.md).
-
-## Tình trạng thật — đo được, không ước lượng
-
-| Thứ | Số |
-|---|---|
-| Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **1004**, chạy trong `npm run check` |
-| Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
-| Giao dịch **bị cáo buộc** (luật buộc tội) trên 9 giao dịch SPL công khai lưu offline | **0** |
-| Coverage trung bình trên cohort công khai lưu offline | **82 %** · cohort **neo lại 25/08** |
-
-> Số cập nhật theo lần đo gần nhất tại **[/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html)** — mỗi con số kèm cách đo và ngày đo.
-> *"Bị cáo buộc"* chứ không phải *"báo nhầm"*: chúng tôi chưa gán nhãn ground truth cho cohort, nên đây KHÔNG phải precision/recall hay tỉ lệ false positive. Cohort là dữ liệu lưu **offline** để kiểm engine — demo chạy hoàn toàn trên **Devnet**.
-
-### Bốn loại bằng chứng, và điều mỗi loại KHÔNG chứng minh
-
-| Bằng chứng | Trả lời được | Không trả lời được |
-|---|---|---|
-| **1004 test** tự động | code giữ đúng bất biến đã khoá | độ chính xác ngoài đời thật |
-| **38 mẫu** đã gắn nhãn | luật bật đúng ca, im đúng ca đối chứng | tỉ lệ đúng/sai trên traffic thật |
-| **Cohort công khai lưu offline** | engine xử lý giao dịch thật ra sao | precision/recall — cohort chưa có ground truth |
-| **20 phỏng vấn người dùng** | người thật có hiểu cảnh báo không | ai chịu trả tiền |
-| **Ví dụ tích hợp** | SDK dùng được từ ngoài, mất bao lâu | có bên thứ ba nào chọn dùng |
-| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | mô hình không bịa được địa chỉ hay số tiền; lớp AI **đã** chạy với mô hình thật | lợi ích của lớp AI — trên thước nêu phần chưa đọc hiểu, nó **ngang** câu mẫu, không hơn |
-
-Trang [/so-lieu.html](https://neitln.github.io/Custos-Solana/so-lieu.html) hiện từng con
-số kèm cách đo, ngày đo, **và mục "điều đội chưa đo được"**.
-
-### Phụ thuộc có lỗ hổng đã biết
-
-`npm audit` ngày 13/09/2026: **5 lỗ hổng — 5 high · 0 moderate**. Chia hai nhóm,
-vì hai nhóm này có hậu quả khác hẳn nhau:
-
-| Nhóm | Lỗ hổng | Có vào sản phẩm không |
-|---|---|---|
-| Nhánh `@solana/web3.js` v1 | `bigint-buffer`, `jayson`, `stream-json`, `uuid` | **CÓ** — nằm trong đường chạy của SDK |
-| Công cụ dựng deck | `pptxgenjs` → `image-size` (2 high) | **KHÔNG** — devDependency, chỉ chạy khi sinh file .pptx |
-
-Con số tăng từ 9 lên 11 là do **đội tự thêm** `pptxgenjs` ngày 05/09, sau khi phát
-hiện deck không dựng lại được từ bản clone sạch. Đổi hai lỗ hổng dev lấy một
-artifact tái tạo được là đánh đổi có chủ ý — và nói ra ở đây thay vì để con số tự
-tăng không ai giải thích.
-
-> Con số này đo bằng `node scripts/do-lo-hong.mjs` và lưu ở `data/seed/lo-hong.json`
-> kèm ngày đo. Có test canh: README lệch với file đo là bộ test đỏ. Nó TĂNG theo
-> thời gian khi có CVE mới — đọc số cũ trên sân khấu là nói sai về chính mình.
-
-Dứt điểm cần lên web3.js v2 — breaking change lớn, và đội chọn **không** làm trước hạn thi.
-Nói ra ở đây thay vì im lặng: một sản phẩm bảo mật giấu cây phụ thuộc của chính nó thì
-không đáng tin hơn cái nó đang cảnh báo.
-
-**Coverage 82 % là con số thật và chúng tôi nói ra.** Custos vẫn chưa có decoder
-cho các chương trình DEX, nên hơn một nửa một giao dịch DeFi là thứ nó chưa đọc
-hiểu. Sản phẩm hiển thị đúng điều đó — *"đã đọc hiểu 2 trên 3 lệnh"* — thay vì
-im lặng và để người dùng tưởng là đã kiểm hết.
-
-Con số này từng là **4 %**, rồi 46 %. Nó tăng lên không phải nhờ nới lỏng định nghĩa, mà
-nhờ đọc hiểu thêm những thứ đội thật sự hiểu: lệnh `ComputeBudget`, lệnh gọi
-lồng nhau (CPI), toàn bộ tập lệnh của các chương trình vốn đã trong danh sách
-xác minh, và sáu chương trình Anchor có **IDL công bố ngay trên chuỗi**.
-
-**Coverage dao động mạnh theo mẻ mẫu** — cohort ngày 21/08 cho 53 %, cohort ngày
-22/08 cho 69 %. Nên mọi so sánh trước/sau đều đo trong **một lượt trên cùng
-cohort**, không phải hai lần chạy khác nhau. Riêng phần decoder sinh từ IDL đóng
-góp **+2 điểm** (67 % → 69 %) đo đúng như vậy; so chéo hai cohort thì nó "trông
-như" +5, và con số đó sai.
-
-Phần còn thiếu nằm đúng chỗ khó chịu nhất: lệnh **chạm được tài sản của bạn**
-mới đọc hiểu được **65 % (13/20)**, thấp hơn mức chung. Phần Custos chưa đọc hiểu chính
-là phần đang di chuyển tiền. Bảng chênh lệch vẫn đo được hậu quả của chúng —
-nhưng đội không giả vờ là đã hiểu chúng.
-
-Mẫu ngẫu nhiên không bảo đảm cả 20 giao dịch đều lành tính. **Không có Đỏ nghĩa là
-không cờ nào bật**, không phải bằng chứng cả 20 cái đều sạch.
-
-Chi tiết cách đo: [docs/SEED-DATASET.md](docs/SEED-DATASET.md) mục 0b.
-Giới hạn của SDK khi tích hợp: [packages/core/README.md](packages/core/README.md).
-
-## Ranh giới đã khoá
-
-Bốn điều dưới đây đến từ 5 vòng phản biện, mỗi điều đã sửa một lỗi thật:
-
-1. **AI không tạo và không sửa `level`.** Nó chỉ có trường riêng `aiAdvisory`, và
-   giá trị mạnh nhất nó nói được là *"cần kiểm tra thủ công"* — không bao giờ là
-   *"an toàn"*, cũng không bao giờ là *"nguy hiểm"*.
-2. **Ngữ cảnh do dApp cung cấp chỉ làm Custos thận trọng hơn, không bao giờ dễ dãi hơn.**
-   dApp khai đúng hành động không làm giảm verdict và không tắt cảnh báo nào —
-   một dApp độc hại thừa sức khai đúng để trông vô hại.
-3. **Không đủ dữ liệu ⇒ cảnh báo, không bao giờ là an toàn.**
-4. **Token-2022 Permanent Delegate, Transfer Hook, Address Lookup Table đều là
-   năng lực hợp lệ của giao thức.** Chỉ gắn cờ khi có hành vi cụ thể trong chính
-   giao dịch đang xét. Gắn Đỏ cho sự tồn tại của một tính năng là cách nhanh nhất
-   tạo cảnh báo sai.
-
-Custos **không có smart contract và không ghi gì lên chain** — nó là lớp đọc và mô phỏng.
-
-## Chạy thử tại máy
-
-**Cần Node 24.12.x và npm 11.6.2 — đúng bản này.** Không phải "npm 11 nào cũng được":
-đo được, `npm@11.9.0` chạy `npm ci` là **hỏng**, vì nó dựng cây phụ thuộc khác cho
-peerOptional native của `ws`:
+## Bản đồ repository
 
 ```text
-npm error code EUSAGE
-npm error Missing: bufferutil@4.1.0 from lock file
-npm error Missing: utf-8-validate@6.0.6 from lock file
+apps/
+  demo-wallet/       Ví mẫu, Inspector, website và trang số liệu
+  trang-tan-cong/    dApp minh họa các tình huống đánh lừa người ký
+packages/
+  core/             Mô phỏng, facts, engine luật và API inspect
+  ai/               Diễn giải tất định, adapter mô hình và kiểm đầu ra
+  types/            Hợp đồng dữ liệu dùng chung
+vi-du-tich-hop/     Consumer kiểm tích hợp ngoài monorepo
+scripts/           Kiểm thử, replay, benchmark và đóng gói
+data/              Dataset và bằng chứng kỹ thuật
+docs/              Đặc tả, threat model, báo cáo và tài liệu pitch
 ```
 
-Đội **không** regenerate lockfile trước hạn thi để chiều bản npm mới — đó là thay đổi
-cả cây phụ thuộc vào phút chót. Thay vào đó khai đúng bản đã kiểm chứng, và
-`engine-strict=true` trong `.npmrc` sẽ dừng ngay với thông báo nói rõ bản cần, thay vì
-để bạn lạc vào một lỗi `EUSAGE` không nói gì về nguyên nhân.
+## Tài liệu theo nhu cầu
 
-Node cũng vậy: mọi script chạy `--experimental-strip-types`, cờ không tồn tại trước
-Node 22.6, và bộ công cụ đội chạy cùng CI ghim là **24.12.0** (`.nvmrc`).
+| Người đọc | Bắt đầu từ |
+|---|---|
+| Ban giám khảo | [Báo cáo kiểm chứng](docs/BAO-CAO-KIEM-CHUNG.md) · [Bộ nộp bài](docs/nop-bai/README.md) |
+| Đội ví/dApp | [Tích hợp Core](packages/core/README.md) · [Consumer mẫu](vi-du-tich-hop/README.md) |
+| Người review kỹ thuật | [Đặc tả Core](docs/DAC-TA-CORE.md) · [Threat model](docs/bao-mat/THREAT-MODEL.md) · [Ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| Người đóng góp | [Mục lục tài liệu](docs/README.md) · [Issues](https://github.com/NeitLN/Custos-Solana/issues) |
 
-```bash
-nvm use                  # đọc .nvmrc → 24.12.0
-npx npm@11.6.2 ci        # dùng ĐÚNG bản npm đã kiểm chứng, và `ci` chứ không `install`
-npx npm@11.6.2 run check # typecheck + 1004 test
-npm run thu-goi    # gói SDK có dùng được từ ngoài repo không
-npm run vi         # ví mẫu        → localhost:5188
-npm run tan-cong   # trang lừa đảo → localhost:5189
-```
+Khi báo lỗi, kèm bước tái hiện, commit, kịch bản, môi trường và kết quả mong đợi/thực tế. Không đính kèm khóa, token truy cập hoặc dữ liệu ví riêng tư.
 
-Hiện trường devnet (mint, tài khoản token, ví nạn nhân) đã dựng sẵn trong
-`apps/demo-wallet/public/hien-truong.json` — chỉ chứa địa chỉ công khai.
-Muốn dựng lại của riêng bạn: `npm run hien-truong` (cần một ví devnet có SOL).
+<details>
+<summary>Bối cảnh cuộc thi và lịch sử track</summary>
 
-## Tài liệu
+Custos phát triển cho **UniHackfest 2026 · Best Technical Build**, theo lựa chọn đã được chủ dự án xác nhận. Track đăng ký trên form lịch sử ngày 24/08 là **Best Product & Business**; giữ thông tin này để người đọc phân biệt hồ sơ cũ với hướng trình bày hiện tại. Xem [ADR đổi hướng](docs/adr/0001-doi-huong-technical-build.md) và [thông tin vòng thi](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md) để đối chiếu hồ sơ, không suy tình trạng cập nhật biểu mẫu từ README.
 
-- **[docs/BAO-CAO-KIEM-CHUNG.md](docs/BAO-CAO-KIEM-CHUNG.md)** — **dành cho người chấm**: mỗi con số kèm lệnh tự kiểm, và danh sách những gì bản này KHÔNG chứng minh
-- **[docs/BAO-CAO-TONG.md](docs/BAO-CAO-TONG.md)** — **đọc trước nếu cần nắm nhanh**: đã làm gì, còn thiếu gì, và những lỗi đã suýt lọt
-- **[docs/CUSTOS.md](docs/CUSTOS.md)** — mô tả sản phẩm đầy đủ. Nguồn quyết định duy nhất
-- **[docs/NGHIEN-CUU-21-08.md](docs/NGHIEN-CUU-21-08.md)** — khử rủi ro trước build: giao dịch devnet, bẫy phiên bản SDK, kiểm chứng đối thủ
-- **[docs/SEED-DATASET.md](docs/SEED-DATASET.md)** — quy cách bộ kiểm thử: định dạng JSON, nguồn gốc từng mẫu, và **vì sao chưa được gọi kết quả trên tập âm là tỉ lệ false positive**
-- **[docs/PHIEU-PHONG-VAN.md](docs/PHIEU-PHONG-VAN.md)** — kịch bản đo mức độ hiểu của người dùng thật
-- **[docs/bao-mat/](docs/bao-mat/)** — audit bảo mật, roadmap khắc phục, báo cáo, đánh giá mô hình
-- **[docs/PITCH-VA-PHAN-BIEN.md](docs/PITCH-VA-PHAN-BIEN.md)** — pitch 4 phút và 9 câu phản biện
-- **[docs/DAC-TA-CORE.md](docs/DAC-TA-CORE.md)** — đặc tả kỹ thuật Custos Core: L1/L2/L3, 14 luật, lịch làm của vai A
-- **[docs/DAC-TA-L3.md](docs/DAC-TA-L3.md)** — đặc tả L3 và chữ tiếng Việt: từ vựng, câu mẫu dự phòng, prompt
-- **[packages/core/README.md](packages/core/README.md)** — **tài liệu tích hợp SDK** dành cho ví và dApp
-- **[CLAUDE.md](CLAUDE.md)** — bối cảnh cho Claude Code, và các quyết định thiết kế đã khoá
-- **[docs/cuoc-thi/](docs/cuoc-thi/)** — thể lệ và lịch chính thức của Ban Tổ chức
+</details>
 
-## In English — 60 seconds
+## English overview
 
-**Custos** is an open-source transaction-intelligence SDK for Solana wallets and dApps.
-It simulates a transaction before the user signs, detects consequences that **do not
-belong to the transaction's stated main action**, and explains them in Vietnamese.
+**Custos is a pre-signing transaction-intelligence SDK for Solana wallets and dApps.** It simulates transactions, surfaces asset and permission changes, and returns rule-based findings with supporting evidence and analysis coverage.
 
-- A **deterministic rule engine** produces the verdict. The language model only writes
-  the explanation — it can never create, raise, or lower a verdict, and it never
-  receives the raw transaction.
-- **Coverage is part of the contract.** Custos always returns how much of the
-  transaction it actually understood, and the UI shows it.
-- **Fail closed.** Timeout, RPC failure, or missing data becomes a warning — never "safe".
+The deterministic engine owns the verdict. An optional language model explains structured facts; a deterministic explanation path remains available. The integrating application handles policy, consent and signing. Current runtime and demo scope is **Solana Devnet**, with no Custos smart contract and no claim of complete threat detection or confirmed third-party adoption.
 
-Measured, not estimated: **1004 tests**, **38 labelled samples**, **14 rules**, average
-**82 % coverage** on 9 replayable public transactions stored offline. Runtime and demo
-are **Devnet-only**.
+**We are building Custos for Solana wallet users so they can understand asset and permission changes before signing.**
 
-**Not yet proven:** no third-party wallet or dApp has integrated it, and no buyer
-interviews have been run. The integration example in `vi-du-tich-hop/` was built by the
-team itself — it measures integration friction, not market demand.
+---
 
-Docs: [packages/core/README.md](packages/core/README.md) · Live demo:
-https://neitln.github.io/Custos-Solana/
+Built by **Team Too Hard** · [MIT License](LICENSE)
