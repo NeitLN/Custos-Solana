@@ -1,0 +1,11 @@
+{
+ "loi": [],
+ "nut": [
+  "Chi tiết kỹ thuật",
+  "Huỷ giao dịch",
+  "Đã chép xong → chấm",
+  "Sao chép toàn bộ (JSON)"
+ ],
+ "verdict": "Chưa đọc hiểu hết",
+ "trich": "Chưa đọc hiểu hết\n\nMột phần giao dịch chưa thể xác minh\n\nPhạm vi còn khuyết\n\nKhông thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.\n\nThay đổi nếu bạn ký\ntrước → sau\nPhần chưa đọc được\n— → 3 tài khoản không đọc được trạng thái sau\n\nĐã đọc hiểu 0 trên 3 lệnh\n\n0%\n\n1 chương trình chưa xác minh. Đây là mức đ"
+}

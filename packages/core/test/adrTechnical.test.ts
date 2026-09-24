@@ -20,22 +20,24 @@ const ADR = "docs/adr/0001-doi-huong-technical-build.md";
 
 /* ── 1 · Hai trạng thái track KHÔNG được gộp ───────────────────────────────── */
 
-test("ADR phân biệt hướng phát triển với đăng ký BTC", () => {
+test("ADR phân biệt hướng phát triển với đăng ký BTC — và ghi NGUỒN khi đã khép", () => {
   /*
-   * Được phép đổi ≠ biểu mẫu đã đổi. Repo không có cách nào kiểm chứng trạng thái
-   * đăng ký, nên nó phải nói "chưa xác nhận" thay vì đoán.
+   * Được phép đổi ≠ biểu mẫu đã đổi. Từ 13/09 tới 25/09 repo không kiểm chứng được
+   * trạng thái đăng ký, nên nó nói "chưa có bằng chứng". Ngày 25/09 chủ dự án xác nhận
+   * đội thi track Technical và đã vào chung kết theo track đó.
+   *
+   * Bất biến KHÔNG đổi: một trạng thái track chỉ được khai kèm nguồn của nó. Trước là
+   * "chưa có bằng chứng"; nay là "chủ dự án xác nhận" — và dòng cũ vẫn phải còn, để
+   * dấu vết quyết định không bị viết đè.
    */
   const s = doc(ADR);
   assert.match(s, /Hướng phát triển/i);
   assert.match(s, /Đăng ký với BTC|Track đăng ký/i);
-  assert.match(
-    s,
-    /chưa có bằng chứng đã cập nhật|chưa xác nhận/i,
-    "phải nói rõ trạng thái đăng ký chưa kiểm chứng được",
-  );
+  assert.match(s, /chưa có bằng chứng đã cập nhật/i, "dòng lịch sử 13/09 phải còn");
+  assert.match(s, /Chủ dự án xác nhận/i, "trạng thái đã khép phải kèm nguồn xác nhận");
 });
 
-test("README và CLAUDE.md ghi CẢ HAI trạng thái, không chỉ một", () => {
+test("README và CLAUDE.md ghi CẢ HAI: track đăng ký ban đầu và track đang thi", () => {
   /*
    * Đây là bài đáng giá nhất nhóm. Ghi mỗi "Best Technical Build" ở README là khai
    * một trạng thái đăng ký không có thật; ghi mỗi track cũ là giấu việc đội đã đổi
@@ -53,12 +55,15 @@ test("README và CLAUDE.md ghi CẢ HAI trạng thái, không chỉ một", () =
   }
 });
 
-test("hồ sơ nộp bài ghi form 24/08 thuộc track CŨ", () => {
+test("hồ sơ nộp bài ghi form 24/08 thuộc track CŨ, và nguồn xác nhận track hiện tại", () => {
   // Ô này từng ghi "✅ đã nộp 24/08" trống trơn. Sau khi đổi hướng, dấu ✅ đó nói
-  // với người đọc rằng đăng ký đã khớp hướng mới — nó không khớp.
+  // với người đọc rằng đăng ký đã khớp hướng mới — lúc đó nó chưa khớp. Từ 25/09 track
+  // Technical đã được chủ dự án xác nhận; hồ sơ phải nêu CẢ track cũ của form lẫn nguồn
+  // xác nhận track mới, không chỉ một bên.
   const s = doc("docs/nop-bai/README.md");
   assert.match(s, /Best Product & Business/);
-  assert.match(s, /chưa xác nhận/i);
+  assert.match(s, /Best Technical Build/);
+  assert.match(s, /chủ dự án xác nhận/i);
 });
 
 /* ── 2 · KHÔNG chấm lại điểm cũ ────────────────────────────────────────────── */

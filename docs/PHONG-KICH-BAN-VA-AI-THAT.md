@@ -128,7 +128,7 @@ gửi gì lên chain**.
 | `cap-quyen-vua-du` ⟵ đối chứng | **safe** | **(không)** |
 | `trao-quyen-dong` | **danger** | `SPL_SET_AUTHORITY__CLOSE_OR_FREEZE` |
 | `chuyen-them-ngoai-hanh-dong` | safe | (không) |
-| `thieu-du-lieu` | warning | `NGUOI_DUNG_KHONG_RO`, `MO_PHONG_HONG`, `TRANG_THAI_DO_KHUYET` |
+| `thieu-du-lieu` | warning | `NGUOI_DUNG_KHONG_RO` ⟵ *đo lại 25/09 sau khi sửa; xem đính chính dưới* |
 | `lanh-tinh` ⟵ đối chứng | safe | (không) |
 | `tan-cong-day-du` | **danger** | `SPL_SET_AUTHORITY__ACCOUNT_OWNER` |
 
@@ -137,9 +137,20 @@ gửi gì lên chain**.
 Cặp `cap-quyen-vuot-so-du` (danger) và `cap-quyen-vua-du` (safe) là bằng chứng
 chạy thật rằng engine phân biệt theo **ngưỡng**, không theo tên instruction.
 
-`thieu-du-lieu` có `MO_PHONG_HONG` là **đúng, không phải lỗi**: giao dịch cần hai
-chữ ký nên không mô phỏng trọn được, và fail-safe đẩy lên Vàng thay vì Xanh. Đó
-chính là điều kịch bản này sinh ra để trưng.
+> **ĐÍNH CHÍNH 25/09 — đoạn cũ ở đây SAI.** Bản 19/09 ghi: *"`thieu-du-lieu` có
+> `MO_PHONG_HONG` là đúng, không phải lỗi: giao dịch cần hai chữ ký nên không mô phỏng
+> trọn được."* Mô phỏng chạy với `sigVerify:false`, không cần chữ ký nào. Nguyên nhân
+> thật (đo lại): người trả phí là ví kẻ tấn công, ví đó **0 SOL**, `simulateTransaction`
+> trả `AccountNotFound`. Cảnh báo Vàng khi ấy đến từ **hiện trường hỏng**, không phải
+> từ luật 14.
+>
+> Tệ hơn: ví luôn khai `nguoiDung: ht.nanNhan`, nên luật 14 **không bao giờ bật trên
+> giao diện**; script Devnet bỏ `nguoiDung` nên script "qua" trong khi UI hiện thứ khác.
+>
+> Đã sửa: người trả phí là ví có SOL, chữ ký thứ hai là người uỷ quyền trên tài khoản
+> của chính họ; ví và script cùng đọc cờ `khongKhaiNguoiDung` trong sổ. Đo lại trên
+> Devnet và trên trình duyệt: chỉ còn `NGUOI_DUNG_KHONG_RO`, mô phỏng đạt. Chi tiết:
+> [`review/national-20260925/FINDINGS.md`](review/national-20260925/FINDINGS.md) mục F-03.
 
 ### 3.4 · Kiểm trên trình duyệt
 
@@ -197,8 +208,10 @@ Hai kịch bản giả định hai con số đó bằng nhau:
 **Cả hai đều KHÔNG phải lỗi engine.** Luật 3 đúng khi gắn cờ 500 > 490; fail-safe
 đúng khi đẩy lên Vàng lúc mô phỏng hỏng. Lỗi nằm ở **giả định của kịch bản**.
 
-Đã sửa bằng cách dùng **một nửa** số cấu hình, để ca âm tính còn đúng kể cả khi
-hiện trường trôi tiếp. Test `kichBan.test.ts` nay canh quan hệ `≤ soDu / 2n`.
+Bản 19/09 sửa bằng cách dùng **một nửa số cấu hình** — tức vẫn tin một con số đã
+trôi, và chỉ vá được sổ kịch bản; trang tấn công và màn phỏng vấn vẫn hỏng (rà soát
+25/09, P0). **Nay số lượng tính từ số dư đọc trên chuỗi lúc chạy** qua
+`scripts/hienTruongSong.ts`, dùng chung cho cả ba luồng.
 
 ### 4.4 · Bảng đối chiếu tự cho điểm mình quá cao
 
@@ -238,7 +251,6 @@ viết thay vì mô hình. Điều này đúng với ràng buộc "không nhúng
    không đo phần bóc tách. (Phần bóc tách đã được đo riêng bằng mô phỏng Devnet
    thật ở mục 3.3 — nhưng hai lượt đó chưa chạy nối nhau trong một đường.)
 3. **MN-10** — danh sách trắng cần tập phép dẫn xuất khai trước (`total − analyzed`).
-4. **Hiện trường sẽ còn trôi tiếp.** Mỗi lượt diễn nhịp "mất tiền" làm số dư giảm
-   thêm. Cách chữa hiện tại (dùng một nửa) mua thêm biên, **không phải cách chữa
-   tận gốc**. Tận gốc là `dungTx` đọc số dư thật — nhưng nó là hàm đồng bộ, đổi
-   thành bất đồng bộ kéo theo cả đường gọi trong `App.tsx`. Chưa làm.
+4. ~~Hiện trường sẽ còn trôi tiếp~~ — **đã làm 25/09**: `dungTx` nhận số dư sống;
+   hiện trường hỏng (đổi chủ, cạn tiền, mô phỏng thất bại) báo "chưa sẵn sàng" thay vì
+   đưa giao dịch hỏng qua engine.

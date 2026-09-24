@@ -1,0 +1,23 @@
+{
+  "failed_responses": [
+    {
+      "status": 404,
+      "url": "http://localhost:5188/api/dien-giai"
+    },
+    {
+      "status": 404,
+      "url": "http://localhost:5188/api/dien-giai"
+    }
+  ],
+  "console_errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "wallet": {
+    "result_text": "Nguy hiểm\n\nKhông nên ký giao dịch này\n\nRủi ro cao\n\nUSDC-demo trong ví bạn sẽ giảm từ 490,0 xuống 240,0, và tài khoản USDC-demo của bạn sẽ đổi chủ sang CRZa…picz. Sau khi ký, bạn không lấy lại được.\n\nXem chi tiết\nCustos nhận diện\nchuyển token\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC-demo sau khi ký\n490,0 → 240,0\nChủ sở hữu tài khoản USDC-demo\nBạn → CRZa…picz\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 2 trên 3 lệnh\n\n67%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nCustos đề nghị kiểm tra thủ công\n\nMức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm.\n\nChi tiết kỹ thuật\nChặn & huỷ giao dịch\nVẫn ký — tôi hiểu rủi ro"
+  },
+  "handoff": {
+    "target_host": "http://localhost:5188/",
+    "result_text": "Chưa đọc hiểu hết\n\nMột phần giao dịch chưa thể xác minh\n\nPhạm vi còn khuyết\n\nKhông thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.\n\nThay đổi nếu bạn ký\ntrước → sau\nPhần chưa đọc được\n— → 3 tài khoản không đọc được trạng thái sau\n\nĐã đọc hiểu 0 trên 3 lệnh\n\n0%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nChi tiết kỹ thuật\nHuỷ giao dịch\nVẫn ký — tôi đã kiểm tra"
+  }
+}

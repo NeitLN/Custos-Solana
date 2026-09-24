@@ -1,0 +1,22 @@
+{
+ "luc": "2026-09-25T01:15:52",
+ "luot": [
+  {
+   "khung": "desktop",
+   "luot": 1,
+   "loi": [],
+   "transfer_tho": 500000000,
+   "tx_co_set_authority": true,
+   "verdict_nguy_hiem": false,
+   "co_ma_doi_chu": false,
+   "so_du": null,
+   "chenh_khop_transfer": false,
+   "doi_chu_hien": false,
+   "khong_gui_giao_dich": true,
+   "dat": false
+  }
+ ],
+ "ca_loi": [],
+ "chromium": "149.0.7827.55",
+ "dat": false
+}

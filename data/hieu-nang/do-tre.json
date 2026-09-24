@@ -1,26 +1,26 @@
 {
-  "doLuc": "2026-09-17T13:57:56.170164+00:00",
-  "sourceCommit": "707b2d8562876e1414b9e9a1cb819411a60085c9",
+  "doLuc": "2026-09-24T18:59:35.087925+00:00",
+  "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
   "dauVet": {
-    "bam": "f4585f12b891c97d",
-    "soFile": 35
+    "bam": "d39867accab6e5d5",
+    "soFile": 98
   },
   "taiTrangNguoi": {
-    "domContentLoaded": 42,
-    "load": 42,
-    "fcp": 104,
-    "soTepJs": 3,
-    "byteJsQuaDay": 182380,
-    "byteJsGiaiNen": 589086,
+    "domContentLoaded": 43,
+    "load": 43,
+    "fcp": 88,
+    "soTepJs": 6,
+    "byteJsQuaDay": 195541,
+    "byteJsGiaiNen": 618573,
     "nhan": "nguội — context mới, chưa có cache"
   },
   "taiTrangAm": {
-    "domContentLoaded": 36,
-    "load": 37,
-    "fcp": 100,
-    "soTepJs": 3,
-    "byteJsQuaDay": 900,
-    "byteJsGiaiNen": 589086,
+    "domContentLoaded": 40,
+    "load": 40,
+    "fcp": 88,
+    "soTepJs": 6,
+    "byteJsQuaDay": 1800,
+    "byteJsGiaiNen": 618573,
     "nhan": "ấm — cùng context, bundle đã cache"
   },
   "moiTruong": {
@@ -33,124 +33,124 @@
     "rpc": "https://api.devnet.solana.com (mặc định của hiện trường)",
     "banDung": "production (`vite build` + `vite preview`), KHÔNG phải dev server"
   },
-  "bamLanDau": 1398,
+  "bamLanDau": 884,
   "bamCacLuotSau": {
     "soMau": 29,
-    "trungVi": 1926,
-    "p95QuanSat": 3959,
-    "caoNhat": 5487,
-    "thapNhat": 866,
-    "daoDong": 6.3,
+    "trungVi": 893,
+    "p95QuanSat": 6005,
+    "caoNhat": 8579,
+    "thapNhat": 853,
+    "daoDong": 10.1,
     "tatCa": [
-      886,
-      885,
-      5487,
-      1410,
-      2912,
-      1388,
-      1392,
-      1377,
-      1892,
-      1428,
-      1907,
-      1398,
-      1406,
-      1889,
+      869,
+      871,
+      884,
+      8579,
+      881,
+      888,
+      853,
+      882,
+      880,
+      4988,
+      868,
+      1393,
       1906,
-      866,
-      1926,
-      2934,
-      2932,
-      2939,
-      3959,
-      2984,
-      3445,
-      3455,
-      2945,
-      2982,
-      2938,
-      3459,
-      3442
+      1906,
+      1924,
+      1905,
+      6005,
+      882,
+      886,
+      893,
+      1357,
+      885,
+      1388,
+      1896,
+      2432,
+      885,
+      2423,
+      887,
+      1404
     ]
   },
   "bamTatCa": {
     "soMau": 30,
-    "trungVi": 1916,
-    "p95QuanSat": 3959,
-    "caoNhat": 5487,
-    "thapNhat": 866,
-    "daoDong": 6.3,
+    "trungVi": 890,
+    "p95QuanSat": 6005,
+    "caoNhat": 8579,
+    "thapNhat": 853,
+    "daoDong": 10.1,
     "tatCa": [
-      1398,
-      886,
-      885,
-      5487,
-      1410,
-      2912,
-      1388,
-      1392,
-      1377,
-      1892,
-      1428,
-      1907,
-      1398,
-      1406,
-      1889,
+      884,
+      869,
+      871,
+      884,
+      8579,
+      881,
+      888,
+      853,
+      882,
+      880,
+      4988,
+      868,
+      1393,
       1906,
-      866,
-      1926,
-      2934,
-      2932,
-      2939,
-      3959,
-      2984,
-      3445,
-      3455,
-      2945,
-      2982,
-      2938,
-      3459,
-      3442
+      1906,
+      1924,
+      1905,
+      6005,
+      882,
+      886,
+      893,
+      1357,
+      885,
+      1388,
+      1896,
+      2432,
+      885,
+      2423,
+      887,
+      1404
     ]
   },
   "soLuotRpcMoiLuot": {
     "soMau": 30,
-    "trungVi": 8,
-    "p95QuanSat": 11,
-    "caoNhat": 11,
+    "trungVi": 7,
+    "p95QuanSat": 12,
+    "caoNhat": 15,
     "thapNhat": 7,
-    "daoDong": 1.6,
+    "daoDong": 2.1,
     "tatCa": [
       7,
       7,
       7,
-      10,
+      7,
+      15,
       7,
       7,
       7,
       7,
       7,
-      7,
-      7,
-      8,
-      7,
-      7,
-      8,
-      8,
+      12,
       7,
       8,
       9,
-      11,
-      11,
-      11,
-      11,
-      11,
-      11,
-      11,
-      11,
-      10,
-      11,
-      11
+      9,
+      9,
+      9,
+      8,
+      7,
+      7,
+      7,
+      7,
+      7,
+      8,
+      9,
+      9,
+      7,
+      9,
+      7,
+      8
     ]
   },
   "luotHong": [],
@@ -161,7 +161,79 @@
   },
   "tungLuot": [
     {
-      "ms": 1398,
+      "ms": 884,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 869,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 871,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 884,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 8579,
+      "soLuotRpc": 15
+    },
+    {
+      "ms": 881,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 888,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 853,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 882,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 880,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 4988,
+      "soLuotRpc": 12
+    },
+    {
+      "ms": 868,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1393,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 1906,
+      "soLuotRpc": 9
+    },
+    {
+      "ms": 1906,
+      "soLuotRpc": 9
+    },
+    {
+      "ms": 1924,
+      "soLuotRpc": 9
+    },
+    {
+      "ms": 1905,
+      "soLuotRpc": 9
+    },
+    {
+      "ms": 6005,
+      "soLuotRpc": 8
+    },
+    {
+      "ms": 882,
       "soLuotRpc": 7
     },
     {
@@ -169,116 +241,44 @@
       "soLuotRpc": 7
     },
     {
+      "ms": 893,
+      "soLuotRpc": 7
+    },
+    {
+      "ms": 1357,
+      "soLuotRpc": 7
+    },
+    {
       "ms": 885,
       "soLuotRpc": 7
     },
     {
-      "ms": 5487,
-      "soLuotRpc": 10
-    },
-    {
-      "ms": 1410,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 2912,
-      "soLuotRpc": 7
-    },
-    {
       "ms": 1388,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1392,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1377,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1892,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1428,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1907,
       "soLuotRpc": 8
     },
     {
-      "ms": 1398,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1406,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1889,
-      "soLuotRpc": 8
-    },
-    {
-      "ms": 1906,
-      "soLuotRpc": 8
-    },
-    {
-      "ms": 866,
-      "soLuotRpc": 7
-    },
-    {
-      "ms": 1926,
-      "soLuotRpc": 8
-    },
-    {
-      "ms": 2934,
+      "ms": 1896,
       "soLuotRpc": 9
     },
     {
-      "ms": 2932,
-      "soLuotRpc": 11
+      "ms": 2432,
+      "soLuotRpc": 9
     },
     {
-      "ms": 2939,
-      "soLuotRpc": 11
+      "ms": 885,
+      "soLuotRpc": 7
     },
     {
-      "ms": 3959,
-      "soLuotRpc": 11
+      "ms": 2423,
+      "soLuotRpc": 9
     },
     {
-      "ms": 2984,
-      "soLuotRpc": 11
+      "ms": 887,
+      "soLuotRpc": 7
     },
     {
-      "ms": 3445,
-      "soLuotRpc": 11
-    },
-    {
-      "ms": 3455,
-      "soLuotRpc": 11
-    },
-    {
-      "ms": 2945,
-      "soLuotRpc": 11
-    },
-    {
-      "ms": 2982,
-      "soLuotRpc": 11
-    },
-    {
-      "ms": 2938,
-      "soLuotRpc": 10
-    },
-    {
-      "ms": 3459,
-      "soLuotRpc": 11
-    },
-    {
-      "ms": 3442,
-      "soLuotRpc": 11
+      "ms": 1404,
+      "soLuotRpc": 8
     }
   ],
   "canhBao": [],

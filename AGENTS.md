@@ -34,7 +34,7 @@ Việc đang làm: `docs/PROMPT-CLAUDE-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md`, b
 | `docs/adr/0001-doi-huong-technical-build.md` | **Vì sao đổi hướng sang Technical Build**, rubric 30/25/25/20 nguyên văn, bằng chứng theo từng mục — và năm điều ADR đó KHÔNG làm |
 | `docs/bao-mat/THREAT-MODEL.md` | **Ai nói dối được với Custos, qua đường nào** — 8 rủi ro kèm cơ chế đã đọc trong code; phân biệt decode/xác minh/đo được/kết luận; 6 điều SDK KHÔNG kiểm soát |
 | `docs/cuoc-thi/` | Thể lệ và lịch chính thức của BTC |
-| `docs/roadmap/ROADMAP-CLAUDE.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
+| `docs/roadmap/ROADMAP-AGENTS.md` | Roadmap thực thi theo phụ thuộc và tiêu chí nghiệm thu, không theo lịch. Đọc khi được giao hoàn thiện dự án theo roadmap này |
 | `docs/roadmap/TIEN-DO.md` · `docs/roadmap/BAN-GIAO.md` | Trạng thái từng việc và ngữ cảnh tiếp tục qua nhiều phiên. Việc tạo roadmap không đồng nghĩa các thay đổi đã được triển khai |
 | `docs/BAN-GIAO-CHO-CODEX.md` | **Việc còn mở và việc KHÔNG làm được** — viết cho một agent khác không có ngữ cảnh phiên: cái gì chặn và vì sao, thẻ nào ai làm được, và **năm bài học về guard đỏ vì lý do sai** |
 
@@ -61,7 +61,7 @@ bước chặn rò rỉ khoá.
 Deck đã có ở `docs/nop-bai/CUSTOS-PITCH.pptx`.
 
 Lớp mô hình ngôn ngữ đã dựng xong, có test đối kháng, và **đã chạy với mô hình thật**
-một lượt — biên bản ở `docs/bao-mat/DANH-GIA-claude-haiku-4-5-20251001-2026-08-22.md`.
+một lượt — biên bản ở `docs/bao-mat/DANH-GIA-Codex-haiku-4-5-20251001-2026-08-22.md`.
 Chưa đo được số token thật vì cần khoá API; bản demo công khai cố ý không nhúng khoá.
 
 Đo được, không ước lượng — cohort **neo lại 25/08**, 20 giao dịch, **9 mẫu còn mô phỏng
@@ -116,7 +116,7 @@ type InspectResult = {
 
 ## Đội và ranh giới
 
-4 người, vibe code hoàn toàn bằng Claude Code.
+4 người, vibe code hoàn toàn bằng Codex.
 
 | Vai | Sở hữu |
 |---|---|
@@ -129,7 +129,7 @@ Mỗi vai một thư mục. **Không sửa chéo** — muốn đổi thứ của
 
 ## Quy tắc làm việc
 
-- **Không tự chạy `git commit` hoặc `git push`.** Người dùng tự commit và push. Claude chỉ chuẩn bị thay đổi.
+- **Không tự chạy `git commit` hoặc `git push`.** Người dùng tự commit và push. Codex chỉ chuẩn bị thay đổi.
 - **Commit mỗi ngày, mỗi người, từ 22/8.** BTC yêu cầu repo public có lịch sử commit thể hiện quá trình build thật — dồn vào hai commit cuối là tự bắn vào chân.
 - **Seed dataset chính là bộ test.** Một luật chưa có ca nguy hiểm + ca an toàn tương tự thì chưa tính là xong.
 - **Không phóng đại số liệu.** Nếu dataset chỉ có 15 mẫu thì nói 15.

@@ -4,16 +4,16 @@
   "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos.",
   "lastAttempt": {
     "dat": true,
-    "sourceCommit": "9e6cf1921dac6f466f1ae2a21c8d091d50f2fc95",
-    "dirtyWorktree": false,
+    "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+    "dirtyWorktree": true,
     "dauVet": {
-      "bam": "9f278653d2390dd0",
-      "soFile": 163
+      "bam": "98600aed92a587b6",
+      "soFile": 164
     },
     "node": "v24.12.0",
     "npm": "11.6.2",
-    "startedAt": "2026-09-18T12:42:00.204Z",
-    "finishedAt": "2026-09-18T12:42:19.745Z",
+    "startedAt": "2026-09-24T19:58:16.453Z",
+    "finishedAt": "2026-09-24T19:58:36.219Z",
     "exitCode": 0,
     "failureCategory": null,
     "loi": null,
@@ -59,40 +59,40 @@
         "chiTiet": "đạt"
       }
     ],
-    "msCaiDat": 6985,
-    "msChay": 6667,
-    "doLuc": "2026-09-18T12:42:19.377Z",
+    "msCaiDat": 8994,
+    "msChay": 5428,
+    "doLuc": "2026-09-24T19:58:35.940Z",
     "rpc": "https://api.devnet.solana.com",
     "chang": {
-      "blockhash_1": 251,
-      "inspect_1": 248,
-      "blockhash_2": 52
+      "blockhash_1": 152,
+      "inspect_1": 223,
+      "blockhash_2": 41
     },
     "hoTang": null,
-    "msKetQuaDau": 517,
-    "msMotLuotKiem": 649,
+    "msKetQuaDau": 393,
+    "msMotLuotKiem": 578,
     "msLuot": [
-      648,
-      649,
-      649,
-      650,
-      656
+      571,
+      577,
+      578,
+      580,
+      582
     ],
     "dongMaTichHop": 30,
-    "msDenKetQuaDauTien": 7502
+    "msDenKetQuaDauTien": 9387
   },
   "lastSuccessful": {
     "dat": true,
-    "sourceCommit": "9e6cf1921dac6f466f1ae2a21c8d091d50f2fc95",
-    "dirtyWorktree": false,
+    "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+    "dirtyWorktree": true,
     "dauVet": {
-      "bam": "9f278653d2390dd0",
-      "soFile": 163
+      "bam": "98600aed92a587b6",
+      "soFile": 164
     },
     "node": "v24.12.0",
     "npm": "11.6.2",
-    "startedAt": "2026-09-18T12:42:00.204Z",
-    "finishedAt": "2026-09-18T12:42:19.745Z",
+    "startedAt": "2026-09-24T19:58:16.453Z",
+    "finishedAt": "2026-09-24T19:58:36.219Z",
     "exitCode": 0,
     "failureCategory": null,
     "loi": null,
@@ -138,41 +138,29 @@
         "chiTiet": "đạt"
       }
     ],
-    "msCaiDat": 6985,
-    "msChay": 6667,
-    "doLuc": "2026-09-18T12:42:19.377Z",
+    "msCaiDat": 8994,
+    "msChay": 5428,
+    "doLuc": "2026-09-24T19:58:35.940Z",
     "rpc": "https://api.devnet.solana.com",
     "chang": {
-      "blockhash_1": 251,
-      "inspect_1": 248,
-      "blockhash_2": 52
+      "blockhash_1": 152,
+      "inspect_1": 223,
+      "blockhash_2": 41
     },
     "hoTang": null,
-    "msKetQuaDau": 517,
-    "msMotLuotKiem": 649,
+    "msKetQuaDau": 393,
+    "msMotLuotKiem": 578,
     "msLuot": [
-      648,
-      649,
-      649,
-      650,
-      656
+      571,
+      577,
+      578,
+      580,
+      582
     ],
     "dongMaTichHop": 30,
-    "msDenKetQuaDauTien": 7502
+    "msDenKetQuaDauTien": 9387
   },
   "lichSuPass": [
-    {
-      "finishedAt": "2026-09-17T19:50:44.439Z",
-      "sourceCommit": "c13bb56b7c8d32742ecbebbe37895bf0f53ded5c",
-      "msDenKetQuaDauTien": 11181,
-      "msMotLuotKiem": 607
-    },
-    {
-      "finishedAt": "2026-09-17T19:57:23.808Z",
-      "sourceCommit": "3fcfc64dc5d4290743fb901fdd4b5ad1f24a6c1a",
-      "msDenKetQuaDauTien": 7698,
-      "msMotLuotKiem": 556
-    },
     {
       "finishedAt": "2026-09-17T20:20:41.944Z",
       "sourceCommit": "2364082642178503f87d4c856b56dec7441819b5",
@@ -220,6 +208,18 @@
       "sourceCommit": "9e6cf1921dac6f466f1ae2a21c8d091d50f2fc95",
       "msDenKetQuaDauTien": 7502,
       "msMotLuotKiem": 649
+    },
+    {
+      "finishedAt": "2026-09-24T18:06:55.463Z",
+      "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+      "msDenKetQuaDauTien": 6599,
+      "msMotLuotKiem": 648
+    },
+    {
+      "finishedAt": "2026-09-24T19:58:36.219Z",
+      "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+      "msDenKetQuaDauTien": 9387,
+      "msMotLuotKiem": 578
     }
   ]
 }

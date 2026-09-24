@@ -1,8 +1,8 @@
 {
-  "doLuc": "2026-09-24T18:09:37.001187+00:00",
+  "doLuc": "2026-09-24T17:28:50.777120+00:00",
   "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
   "dauVet": {
-    "bam": "d39867accab6e5d5",
+    "bam": "78ffb565082565d0",
     "soFile": 98
   },
   "boCongCu": {
@@ -23,8 +23,8 @@
     }
   ],
   "soKiem": 45,
-  "soDat": 45,
-  "soHong": 0,
+  "soDat": 40,
+  "soHong": 5,
   "viPham": [],
   "kiem": [
     {
@@ -43,9 +43,9 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "điện thoại · bảng hậu quả: số dư còn đúng một nửa",
-      "dat": true,
-      "chiTiet": "đạt"
+      "ten": "điện thoại · bảng hậu quả 500 → 0",
+      "dat": false,
+      "chiTiet": ""
     },
     {
       "ten": "điện thoại · coverage 2 trên 3",
@@ -54,8 +54,8 @@
     },
     {
       "ten": "điện thoại · 0 lỗi console",
-      "dat": true,
-      "chiTiet": "đạt"
+      "dat": false,
+      "chiTiet": "['Failed to load resource: the server responded with a status of 404 (Not Found)']"
     },
     {
       "ten": "điện thoại · không tràn ngang",
@@ -83,9 +83,9 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "máy tính · bảng hậu quả: số dư còn đúng một nửa",
-      "dat": true,
-      "chiTiet": "đạt"
+      "ten": "máy tính · bảng hậu quả 500 → 0",
+      "dat": false,
+      "chiTiet": ""
     },
     {
       "ten": "máy tính · coverage 2 trên 3",
@@ -94,8 +94,8 @@
     },
     {
       "ten": "máy tính · 0 lỗi console",
-      "dat": true,
-      "chiTiet": "đạt"
+      "dat": false,
+      "chiTiet": "['Failed to load resource: the server responded with a status of 404 (Not Found)']"
     },
     {
       "ten": "máy tính · không tràn ngang",
@@ -139,8 +139,8 @@
     },
     {
       "ten": "ví nhận và ra Nguy hiểm",
-      "dat": true,
-      "chiTiet": "đạt"
+      "dat": false,
+      "chiTiet": ""
     },
     {
       "ten": "bắt được lời khai gian",
@@ -253,5 +253,5 @@
       "chiTiet": "đạt"
     }
   ],
-  "dat": true
+  "dat": false
 }

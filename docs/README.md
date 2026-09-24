@@ -69,6 +69,8 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | [PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md) | Cấu trúc pitch, câu hỏi khó — và **danh sách câu không được nói** |
 | [nop-bai/](nop-bai/) | Hồ sơ nộp: deck, video demo, ảnh, logo |
 
+**Đang làm — vòng toàn quốc:** [review/national-20260925/FINDINGS.md](review/national-20260925/FINDINGS.md) bảng finding trước/sau · [MENTOR-28-09.md](review/national-20260925/MENTOR-28-09.md) gói mentor · lịch ở [cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+
 **Lưu trữ** — không cần đọc: [review/](review/) 96 biên bản qua các phiên · [roadmap/](roadmap/) trạng thái từng việc.
 
 ---
