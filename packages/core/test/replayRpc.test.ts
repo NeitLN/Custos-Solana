@@ -258,3 +258,87 @@ test("số mẫu có fixture khớp con số tài liệu công bố", () => {
   const so = readdirSync(join(GOC, FIX)).filter((x) => x.endsWith(".json")).length;
   assert.equal(so, 19, `có ${so} fixture nhưng tài liệu ghi 19 — chạy lại và cập nhật số`);
 });
+
+/* ── Ghép `getMultipleAccountsInfo` theo địa chỉ — sửa hồi quy 25/09 ─────────── */
+
+/**
+ * `fetch.ts` gộp lượt đọc mint và lượt đọc PDA metadata thành một lô (bớt một lời gọi
+ * RPC). Khoá fixture băm theo cả lô nên 12 fixture ghi 21/08 đồng loạt "thiếu", replay
+ * tụt 19/29 → 7/29. Adapter giờ ghép lô mới từ các lô đã ghi, theo địa chỉ.
+ *
+ * Ghép là tra cứu dữ liệu đã ghi, không phải bịa — nhưng CHỈ khi mỗi địa chỉ có một giá
+ * trị duy nhất. Ba bài dưới canh đúng ranh giới đó bằng hành vi, không bằng regex.
+ */
+async function adapterMau(banGhi: Array<{ keys: string[]; ketQua: unknown[] }>) {
+  const { connTuFixture, khoaRequest } = await import("../../../scripts/ky-thuat/replay-rpc.ts");
+  const fx = {
+    phienBan: 1,
+    id: "gia",
+    captureLuc: "2026-08-21T00:00:00Z",
+    nguon: "api.devnet.solana.com",
+    banGhi: banGhi.map((b) => ({
+      method: "getMultipleAccountsInfo" as const,
+      khoa: khoaRequest("getMultipleAccountsInfo", { keys: b.keys }),
+      thamSo: { keys: b.keys },
+      ketQua: b.ketQua,
+    })),
+  };
+  const r = connTuFixture(fx);
+  const conn = r.conn as { getMultipleAccountsInfo: (k: { toBase58(): string }[]) => Promise<unknown[]> };
+  const hoi = (keys: string[]) => conn.getMultipleAccountsInfo(keys.map((k) => ({ toBase58: () => k })));
+  return { ...r, hoi };
+}
+
+test("lô mới ghép được từ hai lô một phần tử — đúng THỨ TỰ hỏi", async () => {
+  const a = await adapterMau([
+    { keys: ["MINT"], ketQua: [{ lamports: 1 }] },
+    { keys: ["PDA"], ketQua: [{ lamports: 2 }] },
+  ]);
+  // Hỏi ngược thứ tự ghi: giá trị phải theo vị trí trong câu hỏi, không theo fixture.
+  assert.deepEqual(await a.hoi(["PDA", "MINT"]), [{ lamports: 2 }, { lamports: 1 }]);
+  assert.equal(a.soLuotGhep(), 1);
+  assert.equal(a.thieuFixture().length, 0);
+});
+
+test("địa chỉ có HAI giá trị khác nhau trong fixture ⇒ ném, không chọn bừa", async () => {
+  const a = await adapterMau([
+    { keys: ["MINT"], ketQua: [{ lamports: 1 }] },
+    { keys: ["MINT", "X"], ketQua: [{ lamports: 9 }, null] },
+    { keys: ["PDA"], ketQua: [null] },
+  ]);
+  await assert.rejects(a.hoi(["MINT", "PDA"]), /thiếu fixture/);
+  assert.equal(a.thieuFixture().length, 1, "request mơ hồ phải vào hộp thiếu fixture");
+  assert.equal(a.soLuotGhep(), 0);
+});
+
+test("địa chỉ chưa từng ghi ⇒ ném, KHÔNG trả `null` (null = account không tồn tại)", async () => {
+  const a = await adapterMau([{ keys: ["MINT"], ketQua: [{ lamports: 1 }] }]);
+  await assert.rejects(a.hoi(["MINT", "PDA"]), /thiếu fixture/);
+  assert.equal(a.thieuFixture().length, 1);
+});
+
+test("mọi fixture hiện có replay ĐỦ qua `extractFacts` hiện tại — không thiếu request nào", async () => {
+  /*
+   * Bài hồi quy trực tiếp: trước khi sửa adapter, 12/19 fixture rơi vào hộp thiếu vì
+   * `fetch.ts` đổi cách chia lô. Đổi cách gọi RPC trong L1 mà làm rụng fixture ⇒ đỏ ở
+   * đây, ngay trong `npm test`, thay vì chờ ai đó chạy `npm run replay-rpc`.
+   */
+  if (!existsSync(join(GOC, FIX))) return;
+  const { VersionedTransaction } = await import("@solana/web3.js");
+  const { extractFacts } = await import("../src/l1/fetch.ts");
+  const { connTuFixture, docFixture } = await import("../../../scripts/ky-thuat/replay-rpc.ts");
+  const mf = JSON.parse(doc("data/benchmark/manifest.json")) as {
+    mau: Array<{ id: string; tep: { giaoDich?: { duong: string } } }>;
+  };
+  const thieu: string[] = [];
+  for (const f of readdirSync(join(GOC, FIX)).filter((x) => x.endsWith(".json"))) {
+    const id = f.slice(0, -5);
+    const tep = mf.mau.find((m) => m.id === id)?.tep.giaoDich?.duong;
+    assert.ok(tep, `${id}: manifest không có giao dịch`);
+    const r = connTuFixture(docFixture(join(GOC, FIX, f)));
+    const tx = VersionedTransaction.deserialize(Buffer.from(doc(`data/seed/${tep}`).trim(), "base64"));
+    await extractFacts(r.conn as never, tx);
+    for (const e of r.thieuFixture()) thieu.push(`${id}: ${e.method}`);
+  }
+  assert.deepEqual(thieu, [], `fixture thiếu request:\n${thieu.join("\n")}`);
+});

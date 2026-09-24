@@ -137,3 +137,72 @@ test("L3 KHÔNG trả về level trong bất kỳ nhánh nào", async () => {
     assert.ok(!("level" in r), "L3 không bao giờ được chạm vào verdict");
   }
 });
+
+/* ── Cấp quyền rút LÀ hành động chính khi giao dịch chỉ làm đúng việc đó (F-13) ── */
+
+/**
+ * Lỗi đã thấy trên ví 25/09, ca "Cấp quyền rút vừa đủ — đối chứng": L2 im đúng như
+ * thiết kế, nhưng L3 vẫn bật "Custos đề nghị kiểm tra thủ công" và viết "Giao dịch cấp
+ * quyền rút cho ví khác". Lý do: hành động chính chỉ suy từ DÒNG TIỀN, Approve không
+ * có dòng tiền ⇒ `hanhDong = null` ⇒ mọi delegate mới đều bị tính là "hậu quả lệch".
+ *
+ * Nhưng một giao dịch CHỈ cấp quyền thì cấp quyền chính là việc nó làm — không lệch
+ * khỏi cái gì cả. Gắn cờ nó là gắn cờ sự tồn tại của Approve, đúng thứ ca đối chứng
+ * sinh ra để bắt (quyết định đã khoá số 6). Hạn mức lớn vẫn do L2 bắt bằng
+ * `SPL_APPROVE_DELEGATE_LON`; L3 chỉ thôi nói sai rằng việc đó "lệch".
+ */
+const capQuyen = (p: Partial<TokenAccountFact> = {}) =>
+  ta({ delegateAfter: LA, delegatedAmountAfter: 245_000_000n, ...p });
+
+test("CHỈ cấp quyền rút ⇒ đó là hành động chính, KHÔNG phải hậu quả lệch", () => {
+  const kq = nhanDien(facts({ tokenAccounts: [capQuyen()] }), { [USDC]: "USDC" });
+  assert.equal(kq.hanhDong?.type, "cấp quyền rút");
+  assert.equal(kq.hanhDong?.from, "USDC");
+  assert.deepEqual(kq.lech, [], "không có gì lệch khỏi một giao dịch chỉ cấp quyền");
+});
+
+test("ca đối chứng Approve — L3 KHÔNG bật đề nghị kiểm tra khi L2 im", async () => {
+  const r = await dienGiaiKhongAI(facts({ tokenAccounts: [capQuyen()] }), [], "vi");
+  assert.equal(r.aiAdvisory, null, "L3 đang gắn cờ mọi Approve — ca đối chứng mất nghĩa");
+  assert.match(r.explanation, /Hành động chính được nhận diện: cấp quyền rút/);
+  assert.doesNotMatch(r.explanation, /không phục vụ/);
+});
+
+test("Approve VƯỢT số dư — câu vẫn nói rõ hạn mức, vì mã L2 không còn bị coi là 'đã nói'", async () => {
+  const r = await dienGiaiKhongAI(
+    facts({ tokenAccounts: [capQuyen({ delegatedAmountAfter: 2_000_000_000n })] }),
+    [REASON.APPROVE_DELEGATE_LON],
+    "vi",
+  );
+  assert.match(r.explanation, /cấp quyền rút/);
+  // Bản cũ bỏ câu mẫu của mã này vì phần "lệch" đã nhắc delegate. Nay không còn lệch
+  // ⇒ câu mẫu PHẢI hiện, không thì người đọc mất đúng con số làm ca này nguy hiểm.
+  assert.match(r.explanation, /sẽ được phép rút 2\.000,0 .* bất cứ lúc nào/);
+});
+
+test("cấp quyền KÈM chuyển tiền ⇒ cấp quyền vẫn là LỆCH khỏi việc chuyển", async () => {
+  const r = await dienGiaiKhongAI(
+    facts({ tokenAccounts: [capQuyen({ amountBefore: 500_000_000n, amountAfter: 490_000_000n })] }),
+    [],
+    "vi",
+  );
+  assert.equal(r.detectedPrimaryAction?.type, "chuyển token");
+  assert.match(r.explanation, /không phục vụ/);
+  assert.equal(r.aiAdvisory, "review_required");
+});
+
+test("cấp quyền KÈM đổi chủ ⇒ không đoán hành động, cả hai vẫn là lệch", () => {
+  const kq = nhanDien(facts({ tokenAccounts: [capQuyen({ ownerAfter: LA })] }));
+  assert.equal(kq.hanhDong, null);
+  assert.deepEqual(kq.lech.map((l) => l.loai).sort(), ["cap_quyen_rut", "doi_chu"]);
+});
+
+test("cấp quyền cho HAI ví khác nhau ⇒ không gom thành một hành động", () => {
+  const kq = nhanDien(
+    facts({
+      tokenAccounts: [capQuyen({ address: "A" }), capQuyen({ address: "B", mint: SOL, delegateAfter: "ViKhac2222222222222222222222222222222222222" })],
+    }),
+  );
+  assert.equal(kq.hanhDong, null);
+  assert.equal(kq.lech.length, 2);
+});

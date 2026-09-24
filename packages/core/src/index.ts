@@ -1,4 +1,4 @@
-export { inspect, type InspectDeps, type Interpreter } from "./inspect.ts";
+export { inspect, cungLoaiHanhDong, type InspectDeps, type Interpreter } from "./inspect.ts";
 export { extractFacts } from "./l1/fetch.ts";
 export { danhGia, caoHon, type KetQuaL2 } from "./l2/evaluate.ts";
 export { LUAT, LUAT_DO, luat1, luat2, luat3, luat4, luat5, luat6, luat7, luat8, luat9, luat10, luat11, luat12, luat13, luat14, type Rule, type RuleHit, type BangChung } from "./l2/rules.ts";

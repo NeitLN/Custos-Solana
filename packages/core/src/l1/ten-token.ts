@@ -107,6 +107,14 @@ export function bocKyHieuToken2022(data: Buffer, mint: PublicKey): string | null
 export async function docKyHieuToken(
   conn: Connection,
   duLieuMint: Map<string, AccountInfo<Buffer> | null>,
+  /**
+   * Dữ liệu PDA metadata ĐÃ ĐỌC SẴN, theo địa chỉ mint. Mint có mặt ở đây thì KHÔNG
+   * gọi RPC nữa — kể cả khi giá trị là `null` (đã hỏi, PDA không tồn tại).
+   *
+   * L1 gộp lượt đọc mint còn thiếu với lượt đọc PDA thành MỘT lời gọi; không có tham
+   * số này thì hàm này lại gọi thêm một lượt riêng cho đúng những PDA vừa đọc xong.
+   */
+  pdaCoSan?: Map<string, AccountInfo<Buffer> | null>,
 ): Promise<Map<string, string>> {
   const ra = new Map<string, string>();
   const conThieu: PublicKey[] = [];
@@ -123,6 +131,21 @@ export async function docKyHieuToken(
     if (trongMint) ra.set(dc, trongMint);
     else conThieu.push(mint);
   }
+
+  // Dùng dữ liệu PDA đã có trước; chỉ những mint chưa được hỏi mới tốn lượt gọi.
+  const conPhaiHoi: PublicKey[] = [];
+  for (const mint of conThieu) {
+    const k = mint.toBase58();
+    if (pdaCoSan?.has(k)) {
+      const a = pdaCoSan.get(k);
+      const ten = a ? bocKyHieuMetaplex(a.data) : null;
+      if (ten) ra.set(k, ten);
+    } else {
+      conPhaiHoi.push(mint);
+    }
+  }
+  conThieu.length = 0;
+  conThieu.push(...conPhaiHoi);
 
   if (conThieu.length === 0) return ra;
 

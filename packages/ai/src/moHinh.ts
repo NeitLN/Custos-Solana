@@ -279,7 +279,7 @@ export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
  *
  * Không neo được thì trả `null` — thà không nói gì còn hơn nói một thứ chưa kiểm.
  */
-const LOAI_HANH_DONG = new Set(["swap", "chuyển token", "nhận token", "chuyển SOL"]);
+const LOAI_HANH_DONG = new Set(["swap", "chuyển token", "nhận token", "chuyển SOL", "cấp quyền rút"]);
 
 /*
  * NÓI VỀ HÀNH VI NẶNG THÌ PHẢI CÓ MÃ LÝ DO ĐỠ.

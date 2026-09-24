@@ -87,3 +87,23 @@ test("NGẮN · phần lớn SOL rời ví ⇒ nói theo đúng quy ước số 
   const c = tomTat(kq({ diff: [d(NHAN.SO_DU_SOL, "5,0", "0,1")] }));
   assert.ok(c.includes("5,0") && c.includes("0,1"), `phải nêu cả trước lẫn sau: ${c}`);
 });
+
+test("NGẮN · cấp quyền rút ⇒ ví đứng đầu, hạn mức đi cùng tên token", () => {
+  /*
+   * Đo 25/09 trên ví: dòng `after` của bảng là "CRZa…picz — tới 981,0", và bản cũ ghép
+   * nguyên chuỗi đó vào câu: "CRZa…picz — tới 981,0 sẽ được quyền rút USDC-demo của
+   * bạn…". Con số treo giữa địa chỉ và động từ, không gắn với token nào. Câu mẫu của
+   * đặc tả L3 (mục 5): "Ví {địa chỉ} sẽ được phép rút {số lượng} {token} của bạn".
+   */
+  const c = tomTat(kq({ diff: [d(`${NHAN.DUOC_PHEP_RUT}USDC-demo`, "không ai", "CRZa…picz — tới 981,0")] }));
+  assert.equal(
+    c,
+    "Ví CRZa…picz sẽ được phép rút tới 981,0 USDC-demo của bạn, bất cứ lúc nào. Sau khi ký, bạn không lấy lại được.",
+  );
+});
+
+test("NGẮN · cấp quyền rút mà bảng không có hạn mức ⇒ không bịa số", () => {
+  const c = tomTat(kq({ diff: [d(`${NHAN.DUOC_PHEP_RUT}USDC-demo`, "không ai", "CRZa…picz")] }));
+  assert.match(c, /^Ví CRZa…picz sẽ được phép rút USDC-demo của bạn, bất cứ lúc nào\./);
+  assert.doesNotMatch(c, /tới/);
+});

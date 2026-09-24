@@ -39,7 +39,12 @@ export function tomTat(ketQua: InspectResult): string {
     } else if (d.label.startsWith(NHAN.CHU_SO_HUU)) {
       cau.push(`tài khoản ${tenTuNhan(d.label, NHAN.CHU_SO_HUU)} của bạn sẽ đổi chủ sang ${d.after}`);
     } else if (d.label.startsWith(NHAN.DUOC_PHEP_RUT)) {
-      cau.push(`${d.after} sẽ được quyền rút ${tenTuNhan(d.label, NHAN.DUOC_PHEP_RUT)} của bạn bất cứ lúc nào`);
+      // `after` của bảng là "CRZa…picz — tới 981,0". Ghép nguyên chuỗi thì con số treo
+      // giữa địa chỉ và động từ, không gắn với token nào. Tách ra để hạn mức đứng cạnh
+      // tên token, như câu mẫu ở docs/DAC-TA-L3.md. Không có hạn mức thì không nói số.
+      const [vi, hanMuc] = d.after.split(" — tới ");
+      const ten = tenTuNhan(d.label, NHAN.DUOC_PHEP_RUT);
+      cau.push(`ví ${vi} sẽ được phép rút ${hanMuc ? `tới ${hanMuc} ` : ""}${ten} của bạn, bất cứ lúc nào`);
     } else if (d.label.startsWith(NHAN.QUYEN_DONG)) {
       cau.push(`${d.after} sẽ được quyền đóng tài khoản ${tenTuNhan(d.label, NHAN.QUYEN_DONG)} của bạn`);
     } else if (d.label.startsWith(NHAN.CHUONG_TRINH)) {
