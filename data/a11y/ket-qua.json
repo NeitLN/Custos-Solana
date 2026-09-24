@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-18T14:29:49.343447+00:00",
-  "sourceCommit": "b6d66b1b909d1bb9083c903a658cc498689f89f3",
+  "doLuc": "2026-09-24T18:09:37.001187+00:00",
+  "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
   "dauVet": {
-    "bam": "d527b0c149a4efad",
-    "soFile": 61
+    "bam": "d39867accab6e5d5",
+    "soFile": 98
   },
   "boCongCu": {
     "chromium": "149.0.7827.55",
@@ -43,7 +43,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "điện thoại · bảng hậu quả 500 → 0",
+      "ten": "điện thoại · bảng hậu quả: số dư còn đúng một nửa",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -83,7 +83,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "máy tính · bảng hậu quả 500 → 0",
+      "ten": "máy tính · bảng hậu quả: số dư còn đúng một nửa",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -148,7 +148,7 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "thẻ lỗi hiện ra (9.4s)",
+      "ten": "thẻ lỗi hiện ra (9.1s)",
       "dat": true,
       "chiTiet": "đạt"
     },

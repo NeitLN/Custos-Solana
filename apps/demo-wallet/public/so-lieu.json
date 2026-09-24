@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-18T23:51:57.921Z",
+  "sinhLuc": "2026-09-24T20:13:01.526Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -16,14 +16,14 @@
     "hieuDungVanKy": 2
   },
   "tichHop": {
-    "giayDenKetQuaDau": 7.6,
-    "giayThapNhat": 6.9,
+    "giayDenKetQuaDau": 7.4,
+    "giayThapNhat": 6.6,
     "giayCaoNhat": 13.1,
     "dongMa": 30,
-    "msMotLuot": 617,
+    "msMotLuot": 628,
     "soLuotDo": 10,
-    "soCommitDo": 10,
-    "ngayPass": "2026-09-18T12:42:19.745Z",
+    "soCommitDo": 9,
+    "ngayPass": "2026-09-24T19:58:36.219Z",
     "doiTac": null,
     "dat": true
   },
@@ -66,32 +66,32 @@
     }
   },
   "test": {
-    "pass": 1004,
+    "pass": 1042,
     "fail": 0
   },
   "hieuNang": {
-    "ngayDo": "2026-09-17T13:57:56.170164+00:00",
+    "ngayDo": "2026-09-24T18:59:35.087925+00:00",
     "soMau": 30,
-    "trungViMs": 1916,
-    "p95QuanSatMs": 3959,
-    "caoNhatMs": 5487,
-    "thapNhatMs": 866,
-    "daoDong": 6.3,
+    "trungViMs": 890,
+    "p95QuanSatMs": 6005,
+    "caoNhatMs": 8579,
+    "thapNhatMs": 853,
+    "daoDong": 10.1,
     "luotHong": 0,
-    "rpcTrungVi": 8,
-    "rpcCaoNhat": 11,
-    "fcpNguoiMs": 104,
+    "rpcTrungVi": 7,
+    "rpcCaoNhat": 15,
+    "fcpNguoiMs": 88,
     "theoRetry": {
-      "mocRpc": 8,
+      "mocRpc": 7,
       "khongRetry": {
         "soLuot": 17,
-        "trungVi": 1406
+        "trungVi": 884
       },
       "coRetry": {
         "soLuot": 13,
-        "trungVi": 2984
+        "trungVi": 1906
       },
-      "tyLeTrungVi": 2.1
+      "tyLeTrungVi": 2.2
     }
   },
   "soLuat": 14,

@@ -4,15 +4,14 @@ Transaction-intelligence SDK cho ví và dApp Solana: phát hiện hậu quả *
 
 Dự thi **UniHackfest 2026**, chủ đề **AI × Web3**.
 
-**Track đăng ký:** Best Product & Business (form nộp 24/08).
-**Hướng phát triển từ 12/09:** **Best Technical Build** — đang thực thi
-`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`. Hai dòng này cố ý khác nhau: BTC cho phép đổi track,
-nhưng chưa có bằng chứng biểu mẫu đã cập nhật. Xem
-[ADR-0001](docs/adr/0001-doi-huong-technical-build.md) và TB-H01.
-**Hạn tiếp theo: 19/09/2026** — giờ và tên vòng CHƯA xác nhận.
+**Track thi: Best Technical Build** — chủ dự án xác nhận 25/09/2026. Track đăng ký ban đầu
+trên form 24/08 là Best Product & Business; đội đổi hướng từ 12/09 và nay đã thuộc track
+Technical. Lịch sử quyết định: [ADR-0001](docs/adr/0001-doi-huong-technical-build.md).
+**Đã đạt giải Nhất vòng cấp trường và đã vào vòng cuối** — chủ dự án cung cấp.
+**Hạn tiếp theo: 10/10/2026** — chung kết toàn quốc. Giờ, địa điểm, hình thức CHƯA xác nhận.
 Lịch nằm ở `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`, không ghi ngày ở chỗ khác.
-Mốc 05/09 tại Văn Lang không còn là mốc hiện tại; hai văn bản BTC trong repo còn
-mâu thuẫn về chung kết (23/09 UEF hay 26/09 SIHUB) — chưa được chọn bừa một cái.
+Việc đang làm: `docs/PROMPT-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md`, bảng finding ở
+`docs/review/national-20260925/FINDINGS.md`.
 
 ## Tài liệu
 
@@ -50,7 +49,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 38 mẫu dữ liệu · 1004 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 38 mẫu dữ liệu · 1042 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 

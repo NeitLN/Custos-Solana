@@ -30,14 +30,16 @@ của máy chạy, không bóp băng thông.
 
 ### Tải trang
 
-Số dưới đây lấy từ `data/hieu-nang/do-tre.json` của phiên **17/09**.
+Số dưới đây lấy từ `data/hieu-nang/do-tre.json` của phiên **25/09** — đo trên cây làm việc
+CHƯA commit (artifact ghi `sourceCommit` là HEAD `0c1b96d`, nhưng mã đã gồm bản sửa hiện trường
+sống và bản gộp lời gọi ở mục 2b).
 
 | | Nguội | Ấm |
 |---|---|---|
-| First Contentful Paint | **104 ms** | 100 ms |
-| DOMContentLoaded | 42 ms | 36 ms |
-| JS qua dây | **178 KB** (3 tệp) | 0 KB — cache |
-| JS sau giải nén | **575 KB** | 575 KB |
+| First Contentful Paint | **88 ms** | 88 ms |
+| DOMContentLoaded | 43 ms | 40 ms |
+| JS qua dây | **191 KB** (6 tệp) | 2 KB — cache |
+| JS sau giải nén | **604 KB** | 604 KB |
 
 *Nguội* = context trình duyệt mới, chưa cache gì. *Ấm* = tải lại trong cùng context.
 
@@ -55,20 +57,41 @@ rồi ba lượt sau 104 · 100 · 104 ms. Không bỏ lượt đó thì con s�
 Đo tới lúc **phần tử xuất hiện**, không phải tới lúc promise resolve: người dùng tin
 vào thứ họ nhìn thấy.
 
-**Đo lại 17/09/2026 — 30 lượt.** Bảng dưới là lượt mới nhất; ba cột sau giữ lại để
+**Đo lại 25/09/2026 — 30 lượt.** Bảng dưới là lượt mới nhất; các cột sau giữ lại để
 thấy con số này dao động thế nào giữa các phiên đo.
 
-| | 30 lượt · **17/09** | 30 lượt · 15/09 | 30 lượt · 14/09 | 5 lượt · 08/09 |
-|---|---|---|---|---|
-| Lượt hoàn tất | **30/30**, 0 hỏng | 30/30, 0 hỏng | 30/30, 0 hỏng | 5/5 |
-| Trung vị (cả 30 lượt) | **1916 ms** | 1351 ms | 1596 ms | ~850 ms *(bỏ lượt đầu)* |
-| Trung vị bỏ lượt đầu | 1926 ms | 1351 ms | 1351 ms | ~850 ms |
-| Lượt đầu | 1398 ms | 838 ms | 2352 ms | 1348 ms |
-| Thấp nhất | 866 ms | 838 ms | 834 ms | 837 ms |
-| **Percentile 95 quan sát** | **3959 ms** | 5359 ms | 3874 ms | chưa đo được với n=5 |
-| Cao nhất | **5487 ms** | 8896 ms | 3877 ms | 3352 ms |
-| Dao động (max/min) | **6,3×** | 10,6× | 4,6× | 4,0× |
-| Lượt gọi RPC mỗi lần kiểm | **8** (trung vị), cao nhất **11** | 7, cao nhất 17 | 7, cao nhất 11 | 7, cao nhất 10 |
+| | 30 lượt · **25/09** | 30 lượt · 17/09 | 30 lượt · 15/09 | 30 lượt · 14/09 | 5 lượt · 08/09 |
+|---|---|---|---|---|---|
+| Lượt hoàn tất | **30/30**, 0 hỏng | 30/30, 0 hỏng | 30/30, 0 hỏng | 30/30, 0 hỏng | 5/5 |
+| Trung vị (cả 30 lượt) | **890 ms** | 1916 ms | 1351 ms | 1596 ms | ~850 ms *(bỏ lượt đầu)* |
+| Trung vị bỏ lượt đầu | 893 ms | 1926 ms | 1351 ms | 1351 ms | ~850 ms |
+| Lượt đầu | 884 ms | 1398 ms | 838 ms | 2352 ms | 1348 ms |
+| Thấp nhất | 853 ms | 866 ms | 838 ms | 834 ms | 837 ms |
+| **Percentile 95 quan sát** | **6005 ms** | 3959 ms | 5359 ms | 3874 ms | chưa đo được với n=5 |
+| Cao nhất | **8579 ms** | 5487 ms | 8896 ms | 3877 ms | 3352 ms |
+| Dao động (max/min) | **10,1×** | 6,3× | 10,6× | 4,6× | 4,0× |
+| Lượt gọi RPC mỗi lần kiểm | **7** (trung vị), cao nhất **15** | 8, cao nhất 11 | 7, cao nhất 17 | 7, cao nhất 11 | 7, cao nhất 10 |
+
+### 2b · Gộp hai lời gọi sau mô phỏng — và điều bản gộp KHÔNG làm được (25/09)
+
+Đếm ở tầng mạng một lần kiểm ca tấn công chuẩn: **8 lời gọi**, trong đó lượt 6 và 7 là hai
+`getMultipleAccounts` một phần tử liền nhau — mint (lệnh `Transfer` thường không mang mint) và
+PDA metadata Metaplex của chính mint đó. Địa chỉ PDA suy từ địa chỉ mint, nên L1 nay đọc cả hai
+trong **một** lời gọi. Đo lại: **7 lời gọi**. Guard: `packages/core/test/nganSachGoiMint.test.ts`
+(đỏ trên `fetch.ts` cũ).
+
+Hai điều phải nói cùng lúc, vì gộp lại là tự khen:
+
+1. **Khi RPC không bị giới hạn tốc độ, độ trễ gần như không đổi**: ~868 ms với 8 lời gọi, ~870–890 ms
+   với 7. Bớt một vòng RTT không lộ ra được trên nền mô phỏng.
+2. **Trung vị 1916/2938 → 890 ms phần lớn KHÔNG do bản gộp.** Cùng ngày 25/09, một lượt đo TRƯỚC khi
+   gộp cho trung vị 2938 ms với trung vị 12 lời gọi — RPC công cộng đang giới hạn tốc độ nặng sau hàng
+   loạt probe chạy liền trước. Lượt sau gộp rơi vào lúc RPC thoáng hơn.
+
+Lợi ích thật: mỗi lần kiểm bớt 1/8 số lời gọi, tức bớt một cơ hội chạm 429 khi nhiều người bấm liên
+tục (ví dụ ở booth). Độ trễ bậc thang ~500 ms mỗi lời gọi thừa (868 → ~1390 → ~1900 → ~2930 ms ứng với
+8 → 9 → 10 → 12 lời gọi) là dấu vết của web3.js chờ 500 ms rồi thử lại sau mỗi 429 — xem mục 3. Cách
+duy nhất gỡ hẳn là một endpoint RPC riêng cho máy trình diễn (`VITE_RPC`, chỉ nạp ở chế độ dev).
 
 **Bốn phiên đo, bốn con số đuôi khác hẳn nhau — và đó mới là phát hiện.** Cao nhất đi
 3352 → 3877 → 8896 → 5487 ms; dao động 4,0× → 4,6× → 10,6× → 6,3×. Cùng một bản mã,

@@ -1,6 +1,6 @@
 # ADR-0001 · Phát triển theo hướng Best Technical Build
 
-**Trạng thái:** đã quyết cho **hướng phát triển**; **đăng ký BTC chưa xác nhận cập nhật**
+**Trạng thái:** **đã khép** — track thi là **Best Technical Build**, chủ dự án xác nhận 25/09/2026 (đội đã vào chung kết theo track này). Phần dưới giữ nguyên như ghi lúc 13/09 để giữ dấu vết.
 **Ngày:** 13/09/2026 · **Vai:** Lead, Judge/Docs
 **Việc TB-G02 của [`docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md`](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md)**
 
@@ -11,7 +11,7 @@
 | | Trạng thái |
 |---|---|
 | **Hướng phát triển** của đội từ 12/09 | **Best Technical Build** — đã quyết, đang thực thi |
-| **Đăng ký với BTC** | **Best Product & Business** — form nộp 24/08, **chưa có bằng chứng đã cập nhật** |
+| **Đăng ký với BTC** | Lúc 13/09: **Best Product & Business** — form nộp 24/08, chưa có bằng chứng đã cập nhật. **Cập nhật 25/09: Best Technical Build — Chủ dự án xác nhận** |
 
 Chủ dự án cho biết BTC **cho phép** đổi track. Được phép đổi **không** đồng nghĩa
 biểu mẫu đã đổi. Trang này ghi đúng khoảng cách đó thay vì tuyên bố đã đổi xong —
@@ -81,7 +81,7 @@ số nào gõ tay.
 | Bằng chứng | Số |
 |---|---|
 | Luật L2, mỗi luật có ca dương **và** ca đối chứng | **14** |
-| Test tự động, offline | **1004** |
+| Test tự động, offline | **1042** |
 | Mẫu đã gắn nhãn | **38** |
 | Xử lý đặc thù Solana | CPI/inner instruction · ALT · Token-2022 (Permanent Delegate, Transfer Hook) · nhiều signer, phân biệt người dùng với fee payer |
 | Phân tầng tin cậy | 8 rủi ro có cơ chế hoặc khai là giới hạn — [`THREAT-MODEL.md`](../bao-mat/THREAT-MODEL.md) |
@@ -113,7 +113,7 @@ nằm giữa người dùng và khoá, và không hứa là có.
 | Coverage trung bình | **82 %** trên 9/20 mẫu còn mô phỏng được |
 | Lượt gọi RPC mỗi lượt kiểm | trung vị **6,5** (dải 4–9) |
 | Cài từ ngoài repo tới kết quả đầu | **11,7 s** · **30** dòng mã tích hợp |
-| Một lượt `inspect()` | **617 ms** |
+| Một lượt `inspect()` | **628 ms** |
 | Ngân sách RPC và thời hạn từng chặng | [`NGAN-SACH-RPC.md`](../NGAN-SACH-RPC.md) |
 
 **Composability đo bằng consumer ngoài repo**, không bằng lời: 10/10 bẫy bị chặn trên
@@ -127,7 +127,7 @@ gói cài **từ registry**, kèm 3/3 đối chứng dương.
 | Vùng bấm ≥44 px | **26/26** ở 375 px |
 | Bàn phím · zoom · chữ dài | **16/16** |
 | First Contentful Paint | **116 ms** · 173 KB qua dây |
-| Bấm → thẻ kết quả | **n=30**, 0 lượt hỏng · trung vị **1916 ms** · p95 quan sát **3959 ms** · dải **866–5487 ms** (dao động 6,3×). Số cũ ~850 ms đo trên 4 lượt |
+| Bấm → thẻ kết quả | **n=30**, 0 lượt hỏng · trung vị **890 ms** · p95 quan sát **6005 ms** · dải **853–8579 ms** (dao động 10,1×). Số cũ ~850 ms đo trên 4 lượt |
 | Demo công khai | hai trang, CI dựng lại mỗi lần push, chặn rò rỉ khoá |
 
 **Chưa có:** video demo dự phòng (BTC **bắt buộc**). Phạm vi mọi số giao diện:

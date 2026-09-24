@@ -1,0 +1,27 @@
+{
+ "luc": "2026-09-25T01:01:11",
+ "ca": [
+  {
+   "ca": "vi · tấn công đầy đủ",
+   "so_du": "490,0 → 245,0",
+   "dat": true
+  },
+  {
+   "ca": "vi · cấp quyền vừa đủ (đối chứng)",
+   "dat": true
+  },
+  {
+   "ca": "vi · không rõ bảo vệ ai",
+   "co_ma_14": true,
+   "co_mo_phong_hong": false,
+   "dat": true
+  },
+  {
+   "ca": "phỏng vấn",
+   "doc_hieu": "Đã đọc hiểu 2 trên 3 lệnh\n",
+   "dat": true
+  }
+ ],
+ "chromium": "149.0.7827.55",
+ "dat": true
+}

@@ -8,7 +8,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
 | **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
 | **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | Có [MP4 khoảng 80 giây](video/CUSTOS-DEMO.mp4), thao tác mô phỏng thật và RPC fault injection có nhãn |
-| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | ⚠️ **đã nộp 24/08 theo track Best Product & Business** — đội chuyển hướng phát triển sang Technical Build từ 12/09, **chưa xác nhận biểu mẫu đã cập nhật**. Xem [ADR-0001](../adr/0001-doi-huong-technical-build.md) và TB-H01 |
+| **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | Form 24/08 nộp theo track Best Product & Business; đội chuyển sang **Best Technical Build** từ 12/09 — **chủ dự án xác nhận 25/09/2026** đội thi track Technical và đã vào chung kết. Xem [ADR-0001](../adr/0001-doi-huong-technical-build.md) và TB-H01 |
 
 ---
 
