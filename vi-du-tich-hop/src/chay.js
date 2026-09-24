@@ -189,11 +189,30 @@ async function main() {
   // Blockhash MỚI: kịch bản này chạy sau kịch bản 1 cộng năm lượt benchmark. Dùng
   // lại blockhash cũ trên mạng chậm là tự tạo một lỗi mô phỏng trông như phát hiện sai.
   const blockhash2 = await layBlockhash(conn, "2");
+  /*
+   * SỐ DƯ SỐNG, KHÔNG PHẢI `HT.soLuong` — rà soát 25/09.
+   *
+   * `HT.soLuong` là số lúc dựng hiện trường (500 000 000); tài khoản thật đã còn
+   * 490 000 000. Chuyển số cấu hình thì mô phỏng trả `insufficient funds`, Custos ra
+   * `warning` + `MO_PHONG_HONG`, và bài này báo "giả danh airdrop KHÔNG bị chặn" —
+   * một FAIL do kịch bản hỏng, không phải do SDK. Cùng gốc lỗi với trang tấn công.
+   *
+   * Ví dụ này chạy NGOÀI monorepo (chỉ có gói đã phát hành), nên không dùng được
+   * `scripts/hienTruongSong.ts`; nó đọc số dư như một dApp thật vẫn làm. Đọc ngay
+   * trước khi dựng — không có độ trễ lấy-sẵn như trang tấn công — nên rút TOÀN BỘ
+   * số dư, đúng câu chuyện "rút sạch" của kịch bản.
+   */
+  const soDuSong = BigInt(
+    (await conn.getTokenAccountBalance(new PublicKey(HT.taiKhoanNanNhan))).value.amount,
+  );
+  if (soDuSong === 0n) {
+    throw new Error("hiện trường chưa sẵn sàng: tài khoản nguồn đã cạn — dựng lại bằng `npm run hien-truong`");
+  }
   const txGia = dungGiaoDichGiaDanhAirdrop({
     nguoiKy,
     keTanCong,
     mint,
-    soLuong: BigInt(HT.soLuong),
+    soLuong: soDuSong,
     blockhash: blockhash2,
     // Tài khoản token lấy từ cấu hình của dApp, KHÔNG suy ra từ ATA — xem dapp.js.
     taiKhoanNguon: new PublicKey(HT.taiKhoanNanNhan),

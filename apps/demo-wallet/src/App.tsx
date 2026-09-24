@@ -17,6 +17,7 @@ import { napVi, kyDuoc } from "./vi.ts";
 import { guiGiaoDich, maBase58, type TrangThaiGui } from "./gui.ts";
 import { locDongNhatKy } from "./locNhatKy.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
+import { docNguonSong, HienTruongChuaSan } from "../../../scripts/hienTruongSong.ts";
 import {
   ArrowIcon,
   CheckIcon,
@@ -133,6 +134,21 @@ export default function App() {
 
   useEffect(() => {
     let huy = false;
+    /*
+     * BẢN BUILD NÀY CÓ MÁY CHỦ AI KHÔNG — biết từ lúc build, không đoán lúc chạy.
+     *
+     * Rà soát 25/09 (P1): Vite dev và GitHub Pages không chạy hàm serverless, nên
+     * lượt dò `/api/dien-giai` luôn ra 404. Không sai kết quả — ví vẫn rơi về câu
+     * tất định — nhưng console bẩn, probe trình duyệt đỏ, và người trình bày dễ
+     * tưởng AI đang chạy trên một bản không hề có máy chủ.
+     *
+     * `VITE_CO_API_AI` là CỜ, không phải khoá: chỉ nói "bản này đi kèm hàm server".
+     * Chỉ `vercel.json` đặt nó. Khoá API vẫn chỉ nằm ở server (`api/dien-giai.ts`).
+     */
+    if (import.meta.env["VITE_CO_API_AI"] !== "1") {
+      setCoAi(false);
+      return;
+    }
     void coAiKhong().then((v) => {
       if (!huy) setCoAi(v);
     });
@@ -266,10 +282,17 @@ export default function App() {
 
   // Con số trong câu lỗi đọc từ chính `LoiQuaHan`, không gõ tay. Gõ tay thì đổi hạn
   // ở một nơi mà câu nói với người dùng vẫn giữ số cũ — vẫn sai, chỉ khó thấy hơn.
+  //
+  // Ba loại lỗi, ba câu khác nhau — gộp lại là nói sai với người trình bày:
+  //   · quá hạn            → Devnet chậm, thử lại có thể được
+  //   · hiện trường hỏng   → phải dựng lại hiện trường, thử lại vô ích
+  //   · không kết nối được → mạng/RPC
   const moTaLoi = (e: unknown) =>
     e instanceof LoiQuaHan
       ? `Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau ${Math.round(e.ms / 1000)} giây.`
-      : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
+      : e instanceof HienTruongChuaSan
+        ? `Hiện trường demo trên Devnet chưa sẵn sàng: ${e.lyDo}. Đây là trạng thái của bản demo, KHÔNG phải kết luận về giao dịch.`
+        : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
 
   // Lọc TẠI CHỖ GHI, không lọc tại chỗ hiển thị: mọi đường vào nhật ký đều đi qua
   // đây, nên không cần nhớ lọc ở từng nơi gọi. Xem `locNhatKy.ts` — lỗi RPC đã đo
@@ -383,11 +406,22 @@ export default function App() {
    * mặc định nghĩa là người dùng bấm một nút và nhận về giao dịch của nút khác —
    * đúng loại sai lệch mà sản phẩm này tồn tại để chống.
    */
-  function dungTx(kich: Kich, blockhash: string): VersionedTransaction {
+  function dungTx(kich: Kich, blockhash: string, soDuNguon: bigint): VersionedTransaction {
     if (!ht) throw new Error("chưa có hiện trường");
     const kb = timKichBan(kich);
     if (!kb) throw new Error(`không có kịch bản "${kich}"`);
-    return kb.dungTx(ht, blockhash);
+    return kb.dungTx(ht, { blockhash, soDuNguon });
+  }
+
+  /**
+   * Ví có khai người dùng cho kịch bản này không. Đọc từ SỔ, không tự quyết ở đây.
+   *
+   * Bản trước luôn khai `ht.nanNhan`, nên luật 14 không bao giờ bật trên giao diện
+   * dù sổ có một kịch bản mang tên "Không rõ đang bảo vệ ai". Xem `khongKhaiNguoiDung`.
+   */
+  function khaiNguoiDung(kich: Kich): { nguoiDung?: string } {
+    if (!ht) return {};
+    return timKichBan(kich)?.khongKhaiNguoiDung ? {} : { nguoiDung: ht.nanNhan };
   }
 
   async function bam(kich: Kich, epBatCustos = false) {
@@ -475,7 +509,16 @@ export default function App() {
       const { tx, byteLucKiem, r } = await coHanChung(
         (async () => {
           const { blockhash } = await c.getLatestBlockhash();
-          const txNay = dungTx(kich, blockhash);
+          /*
+           * SỐ DƯ SỐNG, trong cùng ngân sách thời gian với blockhash. Một lượt RPC.
+           *
+           * Trước đây số lượng lấy từ `hien-truong.json`, và file đó nói 500 000 000
+           * trong khi tài khoản đã còn 490 000 000. Hiện trường hỏng thì
+           * `docNguonSong` ném `HienTruongChuaSan` — thẻ lỗi nói đúng điều đó, thay vì
+           * một thẻ cảnh báo "Chưa đọc hiểu hết" cho một giao dịch không thể chạy.
+           */
+          const { soDu } = await docNguonSong(c, ht);
+          const txNay = dungTx(kich, blockhash, soDu);
           /*
            * CHỤP BYTES TRƯỚC LẦN AWAIT TIẾP THEO — CU-02, mục 4.3.
            *
@@ -504,8 +547,9 @@ export default function App() {
             byteLucKiem: byteNay,
             r: await inspect({ connection: c, interpret: dungInterpreter() }, txNay, {
               locale: "vi",
-              // Ví biết địa chỉ của chính mình, nên nó phải nói ra.
-              nguoiDung: ht.nanNhan,
+              // Ví biết địa chỉ của chính mình, nên nó phải nói ra — trừ đúng kịch bản
+              // minh hoạ việc ví KHÔNG nói ra. Quyết định nằm ở sổ, không ở đây.
+              ...khaiNguoiDung(kich),
               /*
                * BẬT DẤU VẾT — thẻ TB-X02.
                *
@@ -544,7 +588,7 @@ export default function App() {
         const rTat = await coHanChung(
           inspect({ connection: c, interpret: dungInterpreter() }, tx, {
             locale: "vi",
-            nguoiDung: ht.nanNhan,
+            ...khaiNguoiDung(kich),
             ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
           }),
           han,
@@ -956,6 +1000,20 @@ export default function App() {
                 <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
                   <span className="demo-section-number">01</span> Chọn một giao dịch để thử
                 </h2>
+                {/*
+                  CHẾ ĐỘ DIỄN GIẢI, NÓI RA TRƯỚC KHI AI BẤM GÌ.
+                  Nhãn dưới câu giải thích chỉ hiện SAU một lượt kiểm; người trình bày
+                  cần biết từ đầu bản đang mở có gọi mô hình hay không, để không nói
+                  "AI thật" trên một bản không có máy chủ. Nhãn nói về CÂU CHỮ, không
+                  về verdict — mức cảnh báo luôn do engine luật quyết.
+                */}
+                <p className="mb-3 text-[12px] leading-relaxed text-chu-mo" data-che-do-ai={coAi === null ? "dang-kiem" : coAi ? "mo-hinh" : "tat-dinh"}>
+                  {coAi === null
+                    ? "Đang kiểm máy chủ diễn giải…"
+                    : coAi
+                      ? "Diễn giải: mô hình ngôn ngữ qua máy chủ, có đường lui tất định. Mức cảnh báo vẫn do engine luật quyết."
+                      : "Diễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết."}
+                </p>
                 {/*
                   PHÒNG KỊCH BẢN — duyệt từ sổ đăng ký, không gõ tay từng nút.
                   Thêm một bản ghi vào `kichBan.ts` là nút hiện ra ở đây, và nó chạy

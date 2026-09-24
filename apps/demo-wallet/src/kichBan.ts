@@ -1,6 +1,5 @@
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import {
-  dungGiaoDichTanCong,
   dungGiaoDichLanhTinh,
   dungGiaoDichThuongGiaMatToken,
   dungGiaoDichDoiChu,
@@ -10,6 +9,7 @@ import {
   dungGiaoDichChuyenThem,
   dungGiaoDichThieuDuLieu,
 } from "../../../scripts/tan-cong.ts";
+import { dungTxTanCongSong, canSoDu, HienTruongChuaSan } from "../../../scripts/hienTruongSong.ts";
 import type { HienTruong } from "./hienTruong.ts";
 
 /**
@@ -23,9 +23,6 @@ import type { HienTruong } from "./hienTruong.ts";
  * union, `dungTx`, danh sách nút, và nhãn hiển thị. Quên một chỗ thì nút hiện ra
  * mà bấm vào chạy nhầm giao dịch — một lỗi không có gì bắt được.
  *
- * Với bảy nhóm, cách đó không trụ được. Sổ đăng ký làm mỗi kịch bản thành MỘT
- * bản ghi, và giao diện duyệt danh sách thay vì gõ tay từng nhánh.
- *
  * ## Ranh giới quan trọng nhất trong file này
  *
  * `bangChungMongDoi` là **kỳ vọng của người viết kịch bản**, KHÔNG phải kết quả.
@@ -35,9 +32,16 @@ import type { HienTruong } from "./hienTruong.ts";
  *   1. Test đối chiếu: chạy thật rồi so — lệch thì kịch bản hoặc luật đã đổi.
  *   2. Ghi chú cho người trình bày: biết trước nên chờ thấy gì.
  *
- * Nếu bao giờ giao diện vẽ `bangChungMongDoi` cạnh verdict mà không phân biệt
- * rõ, thì demo đang trình bày kỳ vọng như bằng chứng — đúng thứ thể lệ BTC trừ
- * điểm. Có guard đọc mã canh điều này trong `kichBan.test.ts`.
+ * Có guard đọc mã canh điều này trong `kichBan.test.ts`.
+ *
+ * ## Số lượng lấy từ CHUỖI, không từ file cấu hình (rà soát 25/09)
+ *
+ * `dungTx` nhận `soDuNguon` — số dư THẬT của tài khoản nguồn, đọc bằng
+ * `docNguonSong()` ngay trước khi dựng. Bản trước đọc `ht.soLuong` trong
+ * `hien-truong.json` rồi vá bằng "chia đôi", tức vẫn tin một con số đã trôi. Kịch
+ * bản nào cần số dư mà số dư không đủ thì NÉM `HienTruongChuaSan` — giao diện báo
+ * "hiện trường chưa sẵn sàng", không đẩy một giao dịch hỏng qua engine rồi trình bày
+ * kết quả như phân tích thật.
  */
 
 /** Mức hỗ trợ — kịch bản chạy được tới đâu trong môi trường hiện tại. */
@@ -58,6 +62,13 @@ export type NhomRuiRo =
   | "doiChung"
   | "thieuDuLieu";
 
+/** Thứ `dungTx` cần ngoài hiện trường tĩnh: blockhash và số dư sống. */
+export type NguCanhDung = {
+  blockhash: string;
+  /** Số dư THẬT của tài khoản token nguồn, đơn vị thô — từ `docNguonSong()`. */
+  soDuNguon: bigint;
+};
+
 export type KichBan = {
   /** ID ỔN ĐỊNH — dùng trong URL, nhật ký và biên bản. Không đổi khi sửa nhãn. */
   id: string;
@@ -77,27 +88,44 @@ export type KichBan = {
   /** Lời khai của dApp — cố ý GIAN ở các nhóm tấn công. Xem quy tắc bất đối xứng. */
   khai?: { type: string };
   /**
+   * Ví KHÔNG khai `nguoiDung` khi kiểm kịch bản này.
+   *
+   * ⚠️ TRƯỜNG NÀY TỒN TẠI VÌ MỘT LỖI ĐÃ XẢY RA (rà soát 25/09). Ví luôn truyền
+   * `nguoiDung: ht.nanNhan`, nên luật 14 — "không rõ đang bảo vệ ai" — KHÔNG BAO GIỜ
+   * bật trên giao diện. Script mô phỏng Devnet lại bỏ `nguoiDung` cho ca này, nên
+   * script "qua" trong khi giao diện hiện một thứ khác. Hai đường chạy lệch nhau
+   * vì mỗi bên tự quyết.
+   *
+   * Nay cả ví lẫn script đọc CÙNG trường này. Không còn chỗ nào tự quyết.
+   */
+  khongKhaiNguoiDung?: true;
+  /**
    * KỲ VỌNG, KHÔNG PHẢI KẾT QUẢ. Đọc chú thích đầu file trước khi dùng trường này.
    * `maMongDoi` là mã lý do người viết kịch bản chờ thấy; rỗng nghĩa là chờ engine im.
    */
   bangChungMongDoi: { maMongDoi: string[]; ghiChu: string };
-  /** Dựng giao dịch. Ném nếu hiện trường thiếu trường cần thiết. */
-  dungTx: (ht: HienTruong, blockhash: string) => VersionedTransaction;
+  /** Dựng giao dịch. Ném `HienTruongChuaSan` nếu số dư sống không đủ cho kịch bản. */
+  dungTx: (ht: HienTruong, nc: NguCanhDung) => VersionedTransaction;
 };
 
 /** Gom các `new PublicKey` dùng chung, để mỗi kịch bản chỉ viết phần khác nhau. */
-function chung(ht: HienTruong, blockhash: string) {
+function chung(ht: HienTruong, nc: NguCanhDung) {
   return {
     nanNhan: new PublicKey(ht.nanNhan),
     mint: new PublicKey(ht.mint),
-    blockhash,
+    blockhash: nc.blockhash,
     taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
   };
 }
 
-/** Số token nhỏ dùng cho các kịch bản không cần quét sạch số dư. */
-function motIt(ht: HienTruong): bigint {
-  return 10n * 10n ** BigInt(ht.decimals);
+/** Một token nguyên, tính theo đơn vị thô. */
+function motToken(ht: HienTruong): bigint {
+  return 10n ** BigInt(ht.decimals);
+}
+
+/** Mười token — lượng cố định cho các kịch bản không cần quét số dư. */
+function muoiToken(ht: HienTruong): bigint {
+  return 10n * motToken(ht);
 }
 
 export const KICH_BAN: KichBan[] = [
@@ -106,7 +134,7 @@ export const KICH_BAN: KichBan[] = [
     nhom: "thuongGiaMatToken",
     tieuDe: "Nhận thưởng nhưng token rời ví",
     loiMoi: "Nhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
-    tienDieuKien: "Cần tài khoản token của nạn nhân còn số dư.",
+    tienDieuKien: "Tài khoản nguồn còn ít nhất 10 token.",
     hoTro: "devnet",
     khai: { type: "airdrop" },
     bangChungMongDoi: {
@@ -116,13 +144,15 @@ export const KICH_BAN: KichBan[] = [
         "của ví (luật 11 bỏ qua khi chỉ có một mint). Điều đáng nói nằm ở chỗ dApp " +
         "khai 'airdrop' trong khi giao dịch chuyển tiền ĐI — phần lệch do L3 nêu.",
     },
-    dungTx: (ht, bh) =>
-      dungGiaoDichThuongGiaMatToken({
-        ...chung(ht, bh),
+    dungTx: (ht, nc) => {
+      canSoDu(nc.soDuNguon, muoiToken(ht), "kịch bản nhận thưởng");
+      return dungGiaoDichThuongGiaMatToken({
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
         taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-        soLuong: motIt(ht),
-      }),
+        soLuong: muoiToken(ht),
+      });
+    },
   },
   {
     id: "doi-chu-tai-khoan",
@@ -136,11 +166,11 @@ export const KICH_BAN: KichBan[] = [
       maMongDoi: ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"],
       ghiChu:
         "Số dư KHÔNG đổi — chỉ quyền kiểm soát đổi. Bảng chênh lệch phải phản ánh " +
-        "đúng vậy; hiện 500 → 0 ở đây là dàn dựng (docs/CUSTOS.md quyết định 7).",
+        "đúng vậy; hiện số dư giảm ở ca này là dàn dựng (docs/CUSTOS.md quyết định 7).",
     },
-    dungTx: (ht, bh) =>
+    dungTx: (ht, nc) =>
       dungGiaoDichDoiChu({
-        ...chung(ht, bh),
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
         soLuong: 0n,
       }),
@@ -150,7 +180,7 @@ export const KICH_BAN: KichBan[] = [
     nhom: "capQuyen",
     tieuDe: "Cấp quyền rút vượt số dư",
     loiMoi: "Cho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
-    tienDieuKien: "Hạn mức uỷ quyền phải LỚN HƠN số dư hiện có, nếu không luật 3 im.",
+    tienDieuKien: "Hạn mức uỷ quyền phải LỚN HƠN số dư đang có, nếu không luật 3 im.",
     hoTro: "devnet",
     doiChung: "cap-quyen-vua-du",
     khai: { type: "approve" },
@@ -158,12 +188,12 @@ export const KICH_BAN: KichBan[] = [
       maMongDoi: ["SPL_APPROVE_DELEGATE_LON"],
       ghiChu: "Cặp với ca đối chứng bên dưới: cùng instruction, chỉ khác hạn mức.",
     },
-    dungTx: (ht, bh) =>
+    // Hai lần số dư SỐNG cộng một token: luôn vượt, bất kể hiện trường trôi tới đâu.
+    dungTx: (ht, nc) =>
       dungGiaoDichCapQuyenRut({
-        ...chung(ht, bh),
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
-        // Vượt hẳn số dư: nhân đôi rồi cộng thêm, để không phụ thuộc số dư lúc chạy.
-        soLuong: BigInt(ht.soLuong) * 2n + motIt(ht),
+        soLuong: nc.soDuNguon * 2n + motToken(ht),
       }),
   },
   {
@@ -171,8 +201,7 @@ export const KICH_BAN: KichBan[] = [
     nhom: "doiChung",
     tieuDe: "Cấp quyền rút vừa đủ — đối chứng",
     loiMoi: "Cho phép sàn giao dịch khớp đúng khối lượng bạn đặt.",
-    tienDieuKien:
-      "Hạn mức phải KHÔNG VƯỢT số dư THẬT trên chuỗi tại lúc chạy. Engine phải IM.",
+    tienDieuKien: "Hạn mức KHÔNG VƯỢT số dư sống. Engine phải IM.",
     hoTro: "devnet",
     khai: { type: "approve" },
     bangChungMongDoi: {
@@ -182,29 +211,21 @@ export const KICH_BAN: KichBan[] = [
         "biệt được 'bắt đúng Approve xấu' với 'gắn cờ mọi Approve'.",
     },
     /*
-     * ⚠️ DÙNG MỘT NỬA, KHÔNG DÙNG `ht.soLuong` NGUYÊN.
+     * MỘT NỬA SỐ DƯ SỐNG — nằm dưới ngưỡng của luật 3 với biên rộng.
      *
-     * Bản đầu cấp đúng `BigInt(ht.soLuong)` và nó SAI — phát hiện khi mô phỏng
-     * thật trên Devnet, không phải khi đọc lại mã:
-     *
-     *   ht.soLuong (cấu hình)     = 500 000 000
-     *   số dư THẬT trên chuỗi     = 490 000 000   ← hiện trường đã trôi
-     *
-     * 500 000 000 > 490 000 000 nên luật 3 kích hoạt, và ca ĐỐI CHỨNG trả về
-     * `danger`. Engine đúng; kịch bản sai. Lỗi nằm ở giả định "số trong file cấu
-     * hình bằng số dư đang có" — một giả định hỏng dần sau mỗi lần diễn.
-     *
-     * `dungTx` là hàm ĐỒNG BỘ nên không đọc được số dư tại chỗ. Lấy một nửa thì
-     * ca âm còn đúng kể cả khi hiện trường đã trôi khá nhiều, mà vẫn là con số
-     * hợp lệ để cấp quyền. Test `kichBan.test.ts` canh quan hệ ≤ này.
+     * Bản trước lấy `ht.soLuong` (500 000 000) từ file cấu hình trong khi số dư thật
+     * là 490 000 000: ca ĐỐI CHỨNG vượt số dư và tự trả `danger`. Rồi được vá thành
+     * "một nửa số cấu hình" — tức vẫn tin một con số đã trôi. Nay tính từ chuỗi.
      */
-    dungTx: (ht, bh) =>
-      dungGiaoDichCapQuyenVuaDu({
-        ...chung(ht, bh),
+    dungTx: (ht, nc) => {
+      if (nc.soDuNguon < 2n) throw new HienTruongChuaSan("tài khoản nguồn cạn — ca đối chứng cần hạn mức dương");
+      return dungGiaoDichCapQuyenVuaDu({
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
         soLuong: 0n,
-        soDu: BigInt(ht.soLuong) / 2n,
-      }),
+        soDu: nc.soDuNguon / 2n,
+      });
+    },
   },
   {
     id: "trao-quyen-dong",
@@ -220,9 +241,9 @@ export const KICH_BAN: KichBan[] = [
         "Hậu quả nhỏ hơn đổi chủ — bên kia đóng được tài khoản và lấy lamport đặt " +
         "cọc. Vẫn là quyền người dùng không định trao.",
     },
-    dungTx: (ht, bh) =>
+    dungTx: (ht, nc) =>
       dungGiaoDichTraoQuyenDong({
-        ...chung(ht, bh),
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
         soLuong: 0n,
       }),
@@ -232,7 +253,7 @@ export const KICH_BAN: KichBan[] = [
     nhom: "chuyenThem",
     tieuDe: "Chuyển thêm ngoài hành động chính",
     loiMoi: "Gửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
-    tienDieuKien: "Cần cả ví bạn bè và ví kẻ tấn công trong hiện trường.",
+    tienDieuKien: "Tài khoản nguồn còn ít nhất 20 token; cần cả ví bạn bè và ví kẻ tấn công.",
     hoTro: "devnet",
     khai: { type: "transfer" },
     bangChungMongDoi: {
@@ -242,40 +263,46 @@ export const KICH_BAN: KichBan[] = [
         "Đây là nhóm cho thấy vì sao phải đọc chênh lệch trạng thái thay vì đọc " +
         "lệnh đầu tiên — tổng rời ví là tổng của cả hai lệnh.",
     },
-    dungTx: (ht, bh) =>
-      dungGiaoDichChuyenThem({
-        ...chung(ht, bh),
+    dungTx: (ht, nc) => {
+      canSoDu(nc.soDuNguon, 2n * muoiToken(ht), "kịch bản chuyển thêm");
+      return dungGiaoDichChuyenThem({
+        ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
         taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
         banBe: new PublicKey(ht.banBe),
         taiKhoanBanBe: new PublicKey(ht.taiKhoanBanBe),
-        soLuong: motIt(ht),
-        soLuongThem: motIt(ht),
-      }),
+        soLuong: muoiToken(ht),
+        soLuongThem: muoiToken(ht),
+      });
+    },
   },
   {
     id: "thieu-du-lieu",
     nhom: "thieuDuLieu",
     tieuDe: "Không rõ đang bảo vệ ai",
-    loiMoi: "Giao dịch được tài trợ phí — bạn không phải trả gì.",
+    loiMoi: "Ký chung giao dịch với một ví khác để nhận thưởng.",
     tienDieuKien:
-      "Cần NHIỀU HƠN MỘT chữ ký và ví KHÔNG khai `nguoiDung`. Người trả phí khác " +
-      "chủ tài khoản token là cách dựng ra điều đó.",
+      "Giao dịch cần HAI chữ ký và ví KHÔNG khai `nguoiDung`. Người trả phí phải có SOL " +
+      "trên Devnet, nếu không mô phỏng hỏng trước khi luật nào kịp chạy.",
     hoTro: "devnet",
+    khongKhaiNguoiDung: true,
     bangChungMongDoi: {
       maMongDoi: ["NGUOI_DUNG_KHONG_RO"],
       ghiChu:
-        "Nhóm THIẾU DỮ LIỆU, không phải nhóm tấn công. Đây là bằng chứng của " +
-        "fail-safe: thiếu thông tin ⇒ Vàng, không bao giờ Xanh. Một demo chỉ " +
-        "khoe ca Đỏ không chứng minh được điều đó.",
+        "Nhóm THIẾU DỮ LIỆU, không phải nhóm tấn công. Custos phân tích theo người trả " +
+        "phí, nên lệnh uỷ quyền trên tài khoản của NGƯỜI KHÁC không luật nào thấy — và " +
+        "luật 14 phải nói ra 'tôi không chắc đang bảo vệ ai'. Thiếu thông tin ⇒ Vàng.",
     },
-    dungTx: (ht, bh) =>
+    dungTx: (ht, nc) =>
       dungGiaoDichThieuDuLieu({
-        ...chung(ht, bh),
-        nguoiTraPhi: new PublicKey(ht.keTanCong),
-        banBe: new PublicKey(ht.banBe),
-        taiKhoanDich: new PublicKey(ht.taiKhoanBanBe),
-        soLuong: motIt(ht),
+        // Người trả phí phải CÓ SOL — bản trước dùng ví kẻ tấn công (0 SOL) và
+        // mô phỏng trả `AccountNotFound`. Xem chú thích trong `tan-cong.ts`.
+        nguoiTraPhi: new PublicKey(ht.nanNhan),
+        chuKhac: new PublicKey(ht.banBe),
+        taiKhoanChuKhac: new PublicKey(ht.taiKhoanBanBe),
+        uyQuyenCho: new PublicKey(ht.keTanCong),
+        soLuong: motToken(ht),
+        blockhash: nc.blockhash,
       }),
   },
   {
@@ -283,27 +310,28 @@ export const KICH_BAN: KichBan[] = [
     nhom: "doiChung",
     tieuDe: "Giao dịch lành tính — đối chứng",
     loiMoi: "Gửi 10 token cho bạn bè.",
-    tienDieuKien: "Cần ví bạn bè trong hiện trường.",
+    tienDieuKien: "Tài khoản nguồn còn ít nhất 10 token; cần ví bạn bè trong hiện trường.",
     hoTro: "devnet",
     bangChungMongDoi: {
       maMongDoi: [],
       ghiChu: "Ca âm tính gốc của dự án. Engine phải cho Xanh hoặc Vàng-thông-tin.",
     },
-    dungTx: (ht, bh) =>
-      dungGiaoDichLanhTinh({
-        ...chung(ht, bh),
+    dungTx: (ht, nc) => {
+      canSoDu(nc.soDuNguon, muoiToken(ht), "kịch bản gửi bạn bè");
+      return dungGiaoDichLanhTinh({
+        ...chung(ht, nc),
         banBe: new PublicKey(ht.banBe),
         taiKhoanDich: new PublicKey(ht.taiKhoanBanBe),
-        soLuong: motIt(ht),
-      }),
+        soLuong: muoiToken(ht),
+      });
+    },
   },
   {
     id: "tan-cong-day-du",
     nhom: "doiChu",
     tieuDe: "Tấn công đầy đủ — chuyển tiền và đổi chủ",
     loiMoi: "Nhận quà tặng — ký để nhận.",
-    tienDieuKien:
-      "Cần tài khoản nạn nhân còn số dư THẬT ≥ số chuyển, và ví kẻ tấn công.",
+    tienDieuKien: "Tài khoản nguồn còn số dư và vẫn thuộc nạn nhân; cần ví kẻ tấn công.",
     hoTro: "devnet",
     khai: { type: "airdrop" },
     bangChungMongDoi: {
@@ -313,29 +341,13 @@ export const KICH_BAN: KichBan[] = [
         "lệch hiện số dư giảm là TRUNG THỰC.",
     },
     /*
-     * ⚠️ CHUYỂN MỘT NỬA, KHÔNG CHUYỂN `ht.soLuong` NGUYÊN — cùng gốc lỗi với
-     * `cap-quyen-vua-du`, và ca này đã HỎNG THẬT trên Devnet trước khi sửa:
+     * CÙNG MỘT HÀM với trang tấn công và màn phỏng vấn — `dungTxTanCongSong`.
      *
-     *   InstructionError[1] = Custom(1)   "Error: insufficient funds"
-     *
-     * Vì `ht.soLuong` = 500 000 000 còn số dư thật chỉ còn 490 000 000. Mô phỏng
-     * hỏng ⇒ engine trả `MO_PHONG_HONG` + `TRANG_THAI_DO_KHUYET` và KHÔNG thấy
-     * được `SPL_SET_AUTHORITY__ACCOUNT_OWNER` — tức kịch bản tấn công chủ lực của
-     * demo mất luôn mã lý do quan trọng nhất của nó.
-     *
-     * Đây KHÔNG phải lỗi engine: fail-safe chạy đúng (mô phỏng hỏng ⇒ Vàng, không
-     * bao giờ Xanh). Lỗi ở kịch bản, vì nó giả định số cấu hình bằng số dư đang có.
-     *
-     * Chuyển một nửa thì lệnh `Transfer` còn chạy được kể cả sau nhiều lượt diễn,
-     * nên bảng chênh lệch vẫn hiện số dư giảm THẬT — đúng quyết định 7 của docs/CUSTOS.md.
+     * Trước đây ba nơi tự dựng ca này, mỗi nơi tự chọn số lượng. Bản vá "chia đôi"
+     * chỉ tới được sổ này; trang tấn công vẫn chuyển 500 000 000 từ tài khoản còn
+     * 490 000 000 và ví nhận một giao dịch hỏng. Một hàm thì một chỗ để đúng.
      */
-    dungTx: (ht, bh) =>
-      dungGiaoDichTanCong({
-        ...chung(ht, bh),
-        keTanCong: new PublicKey(ht.keTanCong),
-        taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-        soLuong: BigInt(ht.soLuong) / 2n,
-      }),
+    dungTx: (ht, nc) => dungTxTanCongSong(ht, nc.blockhash, nc.soDuNguon),
   },
 ];
 

@@ -1,10 +1,10 @@
 import { ProductHeader } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useState } from "react";
-import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { Connection, VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
-import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
+import { docNguonSong, dungTxTanCongSong } from "../../../scripts/hienTruongSong.ts";
 import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
 import { coHan } from "../../../scripts/coHan.ts";
 import { CanhBao } from "./CanhBao.tsx";
@@ -114,15 +114,20 @@ export function PhongVan() {
   const dung = useCallback(async (ht: HienTruong) => {
     const c = new Connection(chonRpc(ht), "confirmed");
     const { blockhash } = await c.getLatestBlockhash();
-    const tx: VersionedTransaction = dungGiaoDichTanCong({
-      nanNhan: new PublicKey(ht.nanNhan),
-      mint: new PublicKey(ht.mint),
-      blockhash,
-      taiKhoanNguon: new PublicKey(ht.taiKhoanNanNhan),
-      keTanCong: new PublicKey(ht.keTanCong),
-      taiKhoanDich: new PublicKey(ht.taiKhoanKeTanCong),
-      soLuong: BigInt(ht.soLuong),
-    });
+    /*
+     * SỐ DƯ SỐNG — cùng hàm với trang tấn công và sổ kịch bản của ví.
+     *
+     * Đã tái hiện trên trình duyệt ngày 25/09: bản trước dùng `BigInt(ht.soLuong)` =
+     * 500 000 000 trong khi tài khoản còn 490 000 000, mô phỏng hỏng, và màn hình
+     * hiện "Chưa đọc hiểu hết · 0 trên 3 lệnh" cho người tham gia.
+     *
+     * Với màn PHỎNG VẤN thì hậu quả nặng hơn một demo hỏng: phép đo "người dùng có
+     * hiểu cảnh báo không" chạy trên một thẻ KHÔNG CÓ hậu quả nào để hiểu. Mọi câu
+     * trả lời ghi được lúc đó đều vô nghĩa. Hiện trường hỏng thì `docNguonSong` ném,
+     * và buổi phỏng vấn dừng ở thẻ lỗi thay vì âm thầm thu dữ liệu rác.
+     */
+    const { soDu } = await docNguonSong(c, ht);
+    const tx: VersionedTransaction = dungTxTanCongSong(ht, blockhash, soDu);
     return inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
       locale: "vi",
       nguoiDung: ht.nanNhan,

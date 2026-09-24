@@ -264,26 +264,44 @@ export function dungGiaoDichChuyenThem(
  * dùng — nên Custos phải nói "tôi không chắc đang bảo vệ ai" thay vì im lặng phân
  * tích nhầm ví.
  *
- * Dựng bằng cách đặt `payerKey` là một ví khác và để nạn nhân ký với tư cách chủ
- * tài khoản token. Giao dịch cần HAI chữ ký, và đó chính là tiền điều kiện.
- *
  * Nhóm này bắt buộc phải có trong demo vì nó là bằng chứng của fail-safe: thiếu
  * thông tin ⇒ Vàng, không bao giờ Xanh. Một sản phẩm chỉ khoe ca Đỏ thì không
  * chứng minh được điều đó.
+ *
+ * ⚠️ BẢN TRƯỚC MÔ PHỎNG HỎNG, VÀ NÓ ĐƯỢC GIẢI THÍCH SAI (rà soát 25/09).
+ *
+ * Bản trước đặt `payerKey` là ví kẻ tấn công. Ví đó có **0 SOL** — không tồn tại trên
+ * Devnet — nên `simulateTransaction` trả `AccountNotFound` trước khi chạy lệnh nào.
+ * Tài liệu lúc đó ghi "MO_PHONG_HONG là đúng vì giao dịch cần hai chữ ký"; điều đó
+ * SAI: mô phỏng chạy với `sigVerify:false`, không cần chữ ký nào. Cảnh báo Vàng khi
+ * ấy đến từ hiện trường hỏng, không phải từ luật 14.
+ *
+ * Nay người trả phí là ví CÓ SOL (nạn nhân trong hiện trường), và chữ ký thứ hai đến
+ * từ `chuKhac`: người đó uỷ quyền rút trên tài khoản token CỦA HỌ. Giao dịch mô phỏng
+ * được; luật 14 bật vì có hai người ký mà ví không khai ai là người dùng.
+ *
+ * Câu chuyện nó kể mạnh hơn bản cũ: Custos mặc định phân tích theo người trả phí, nên
+ * lệnh uỷ quyền nằm trên tài khoản của NGƯỜI KHÁC — và không luật nào khác thấy nó.
+ * Chính vì thế luật 14 phải lên tiếng: "tôi không chắc đang bảo vệ ai".
  */
-export function dungGiaoDichThieuDuLieu(
-  p: Omit<ThamSoTanCong, "keTanCong"> & { nguoiTraPhi: PublicKey; banBe: PublicKey },
-): VersionedTransaction {
-  const ataNanNhan = p.taiKhoanNguon ?? getAssociatedTokenAddressSync(p.mint, p.nanNhan);
-  const ataBan = p.taiKhoanDich ?? getAssociatedTokenAddressSync(p.mint, p.banBe);
+export function dungGiaoDichThieuDuLieu(p: {
+  /** Người trả phí — phải có SOL trên Devnet, nếu không mô phỏng hỏng từ đầu. */
+  nguoiTraPhi: PublicKey;
+  /** Người ký thứ hai: chủ của tài khoản token bị uỷ quyền. */
+  chuKhac: PublicKey;
+  taiKhoanChuKhac: PublicKey;
+  uyQuyenCho: PublicKey;
+  soLuong: bigint;
+  blockhash: string;
+}): VersionedTransaction {
   return new VersionedTransaction(
     new TransactionMessage({
-      // Người trả phí KHÁC người sở hữu token ⇒ hai chữ ký.
       payerKey: p.nguoiTraPhi,
       recentBlockhash: p.blockhash,
       instructions: [
-        createTransferInstruction(
-          ataNanNhan, ataBan, p.nanNhan, p.soLuong, [], TOKEN_PROGRAM_ID,
+        // `chuKhac` là authority của Approve ⇒ họ phải ký ⇒ giao dịch cần HAI chữ ký.
+        createApproveInstruction(
+          p.taiKhoanChuKhac, p.uyQuyenCho, p.chuKhac, p.soLuong, [], TOKEN_PROGRAM_ID,
         ),
       ],
     }).compileToV0Message(),
