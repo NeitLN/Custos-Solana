@@ -48,7 +48,8 @@
     "ma-tran-nang-luc": "node --experimental-strip-types scripts/tao-ma-tran-nang-luc.ts",
     "do-hieu-nang": "node --experimental-strip-types scripts/ky-thuat/do-hieu-nang-cu23.ts",
     "mo-phong-kichban": "node --experimental-strip-types scripts/ky-thuat/mo-phong-kichban-devnet.ts",
-    "kichban-ai-that": "node --experimental-strip-types scripts/ky-thuat/chay-kichban-that.ts"
+    "kichban-ai-that": "node --experimental-strip-types scripts/ky-thuat/chay-kichban-that.ts",
+    "mau-inspector": "node --experimental-strip-types scripts/ky-thuat/mau-cho-inspector.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

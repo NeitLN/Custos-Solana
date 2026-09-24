@@ -29,6 +29,16 @@ const HT = {
 
 const BLOCKHASH = "11111111111111111111111111111111";
 
+/*
+ * SỐ DƯ SỐNG ≠ SỐ CẤU HÌNH — cố ý, và đây là toàn bộ điểm của bộ kiểm này.
+ *
+ * `HT.soLuong` ghi 500 000 000 (số lúc dựng hiện trường); số dư thật đo trên Devnet
+ * ngày 25/09 là 490 000 000. Đó chính là độ lệch đã làm demo hỏng. Test dùng đúng
+ * cặp số ấy để một kịch bản nào còn đọc `ht.soLuong` sẽ lộ ra.
+ */
+const SO_DU_SONG = 490_000_000n;
+const NC = { blockhash: BLOCKHASH, soDuNguon: SO_DU_SONG };
+
 test("ID kịch bản là duy nhất — trùng ID thì URL trỏ nhầm chỗ", () => {
   const ids = KICH_BAN.map((k) => k.id);
   assert.equal(new Set(ids).size, ids.length, `ID trùng: ${ids.join(", ")}`);
@@ -36,7 +46,7 @@ test("ID kịch bản là duy nhất — trùng ID thì URL trỏ nhầm chỗ",
 
 test("mọi kịch bản dựng được giao dịch thật", () => {
   for (const k of KICH_BAN) {
-    const tx = k.dungTx(HT, BLOCKHASH);
+    const tx = k.dungTx(HT, NC);
     assert.ok(
       tx.message.compiledInstructions.length > 0,
       `${k.id}: dựng ra giao dịch KHÔNG có lệnh nào`,
@@ -90,34 +100,64 @@ test("mọi `doiChung` trỏ tới một ID có thật", () => {
 test("cặp Approve dương/âm nằm hai phía ngưỡng của luật 3", () => {
   /** Data của lệnh Approve trong SPL Token: 1 byte tag (4) + u64 little-endian. */
   const hanMuc = (k: KichBan): bigint => {
-    const tx = k.dungTx(HT, BLOCKHASH);
+    const tx = k.dungTx(HT, NC);
     const data = Buffer.from(tx.message.compiledInstructions[0]!.data);
     assert.equal(data[0], 4, `${k.id}: lệnh đầu không phải Approve`);
     return data.readBigUInt64LE(1);
   };
 
-  const soDu = BigInt(HT.soLuong);
+  // So với số dư SỐNG — ngưỡng của luật 3 là `amountBefore` trên chuỗi, không phải
+  // con số nào trong file cấu hình.
+  const soDu = SO_DU_SONG;
   const xau = hanMuc(timKichBan("cap-quyen-vuot-so-du")!);
   const lanh = hanMuc(timKichBan("cap-quyen-vua-du")!);
 
   assert.ok(xau > soDu, `ca xấu cấp ${xau} ≤ số dư ${soDu} — luật 3 sẽ KHÔNG kích hoạt`);
   assert.ok(lanh <= soDu, `ca đối chứng cấp ${lanh} > số dư ${soDu} — nó đã thành ca xấu`);
+  assert.ok(lanh > 0n, "ca đối chứng cấp hạn mức 0 — không còn là một lệnh uỷ quyền có nghĩa");
+});
 
-  /*
-   * BIÊN AN TOÀN CHO HIỆN TRƯỜNG ĐÃ TRÔI — hồi quy cho một lỗi ĐÃ XẢY RA THẬT.
-   *
-   * `ht.soLuong` là số trong file cấu hình, KHÔNG phải số dư đang có trên chuỗi.
-   * Đo trên Devnet ngày 19/09: cấu hình ghi 500 000 000 nhưng số dư thật là
-   * 490 000 000 — hiện trường đã trôi sau một lượt diễn. Ca đối chứng cấp đúng
-   * 500 000 000 nên VƯỢT số dư thật, luật 3 kích hoạt, và ca âm tính trả `danger`.
-   *
-   * Engine đúng; kịch bản sai. Nên ca đối chứng phải nằm dưới số cấu hình một
-   * khoảng đủ rộng để còn đúng khi hiện trường trôi.
-   */
-  assert.ok(
-    lanh <= soDu / 2n,
-    `ca đối chứng cấp ${lanh}, quá sát số cấu hình ${soDu} — sẽ vượt số dư thật khi hiện trường trôi`,
-  );
+/**
+ * SỐ CẤU HÌNH KHÔNG ĐƯỢC ẢNH HƯỞNG LƯỢNG NÀO — hồi quy cho P0 rà soát 25/09.
+ *
+ * Cách chắc nhất để biết một kịch bản còn đọc `ht.soLuong` hay không: đổi nó thành
+ * một số vô lý rồi xem giao dịch có đổi theo không. Nếu có, kịch bản vẫn tin file
+ * cấu hình, và hiện trường trôi tiếp là demo hỏng lại.
+ */
+test("đổi `ht.soLuong` KHÔNG làm thay đổi byte giao dịch của kịch bản nào", () => {
+  const htLech = { ...HT, soLuong: "999999999999999" };
+  for (const k of KICH_BAN) {
+    const a = Buffer.from(k.dungTx(HT, NC).message.serialize());
+    const b = Buffer.from(k.dungTx(htLech, NC).message.serialize());
+    assert.ok(a.equals(b), `${k.id}: giao dịch đổi theo \`ht.soLuong\` — kịch bản vẫn đọc số cấu hình`);
+  }
+});
+
+/**
+ * Mọi lượng CHUYỂN ĐI phải ≤ số dư sống. Transfer trong SPL Token: tag 3 + u64.
+ * Đây là điều kiện để mô phỏng không trả `insufficient funds` — đúng lỗi đã xảy ra.
+ */
+test("mọi lệnh Transfer dựng ra đều ≤ số dư sống", () => {
+  for (const k of KICH_BAN) {
+    const tx = k.dungTx(HT, NC);
+    const tong = tx.message.compiledInstructions
+      .map((ix) => Buffer.from(ix.data))
+      .filter((d) => d[0] === 3 && d.length === 9)
+      .reduce((s, d) => s + d.readBigUInt64LE(1), 0n);
+    assert.ok(tong <= SO_DU_SONG, `${k.id}: tổng chuyển ${tong} > số dư sống ${SO_DU_SONG}`);
+  }
+});
+
+/** Số dư sống không đủ ⇒ ném `HienTruongChuaSan`, không dựng giao dịch hỏng. */
+test("số dư sống cạn ⇒ kịch bản cần tiền ném HienTruongChuaSan", () => {
+  const can = ["tan-cong-day-du", "lanh-tinh", "chuyen-them-ngoai-hanh-dong", "thuong-gia-mat-token", "cap-quyen-vua-du"];
+  for (const id of can) {
+    assert.throws(
+      () => timKichBan(id)!.dungTx(HT, { blockhash: BLOCKHASH, soDuNguon: 1n }),
+      (e: Error) => e.name === "HienTruongChuaSan",
+      `${id}: số dư 1 đơn vị mà vẫn dựng được giao dịch`,
+    );
+  }
 });
 
 /** Cặp dương/âm vẫn phải là hai giao dịch khác nhau — điều kiện cần, không đủ. */
@@ -125,8 +165,8 @@ test("cặp dương/âm dựng ra hai giao dịch KHÁC NHAU", () => {
   for (const k of KICH_BAN) {
     if (!k.doiChung) continue;
     const doi = timKichBan(k.doiChung)!;
-    const a = Buffer.from(k.dungTx(HT, BLOCKHASH).serialize());
-    const b = Buffer.from(doi.dungTx(HT, BLOCKHASH).serialize());
+    const a = Buffer.from(k.dungTx(HT, NC).serialize());
+    const b = Buffer.from(doi.dungTx(HT, NC).serialize());
     assert.ok(
       !a.equals(b),
       `${k.id} và đối chứng ${doi.id} dựng ra giao dịch giống hệt — đối chứng rỗng`,
@@ -143,17 +183,45 @@ test("cặp dương/âm dựng ra hai giao dịch KHÁC NHAU", () => {
  */
 test("kịch bản thiếu dữ liệu cần nhiều hơn một chữ ký", () => {
   const k = KICH_BAN.find((x) => x.nhom === "thieuDuLieu")!;
-  const tx = k.dungTx(HT, BLOCKHASH);
+  const tx = k.dungTx(HT, NC);
   assert.ok(
     tx.message.header.numRequiredSignatures > 1,
     `chỉ cần ${tx.message.header.numRequiredSignatures} chữ ký — luật 14 sẽ không kích hoạt`,
   );
 });
 
+/**
+ * NGƯỜI TRẢ PHÍ CỦA CA THIẾU DỮ LIỆU PHẢI LÀ VÍ CÓ SOL — lỗi ĐÃ XẢY RA (25/09).
+ *
+ * Bản trước trả phí bằng ví kẻ tấn công, ví đó 0 SOL ⇒ `AccountNotFound` trước khi
+ * luật nào chạy. Trong hiện trường, chỉ nạn nhân có SOL. Test canh không ai đổi lại.
+ */
+test("ca thiếu dữ liệu: người trả phí là ví có SOL trong hiện trường", () => {
+  const k = KICH_BAN.find((x) => x.nhom === "thieuDuLieu")!;
+  const payer = k.dungTx(HT, NC).message.staticAccountKeys[0]!.toBase58();
+  assert.equal(payer, HT.nanNhan, `người trả phí là ${payer}, không phải ví có SOL`);
+});
+
+/**
+ * Chỉ kịch bản thiếu dữ liệu được bỏ `nguoiDung` — và ví đọc cờ này từ sổ.
+ *
+ * Trước đây ví LUÔN khai người dùng, nên luật 14 không bao giờ bật trên giao diện.
+ */
+test("khongKhaiNguoiDung: đúng ca thiếu dữ liệu, và App.tsx đọc nó từ sổ", () => {
+  const coCo = KICH_BAN.filter((k) => k.khongKhaiNguoiDung).map((k) => k.nhom);
+  assert.deepEqual(coCo, ["thieuDuLieu"]);
+  const ma = readFileSync("apps/demo-wallet/src/App.tsx", "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/.*$/gm, "");
+  assert.ok(ma.includes("khongKhaiNguoiDung"), "App.tsx không đọc cờ khongKhaiNguoiDung");
+  assert.ok(!/nguoiDung:\s*ht\.nanNhan,/.test(ma.replace(/\{ nguoiDung: ht\.nanNhan \}/g, "")),
+    "App.tsx còn khai cứng nguoiDung ngoài hàm khaiNguoiDung");
+});
+
 /** Kịch bản đổi chủ phải nhắm vào ATA CỦA NẠN NHÂN, nếu không luật 1 bỏ qua. */
 test("kịch bản đổi chủ nhắm vào tài khoản của người ký", () => {
   const k = timKichBan("doi-chu-tai-khoan")!;
-  const tx = k.dungTx(HT, BLOCKHASH);
+  const tx = k.dungTx(HT, NC);
   const khoa = tx.message.staticAccountKeys.map((x: PublicKey) => x.toBase58());
   assert.ok(
     khoa.includes(HT.taiKhoanNanNhan),

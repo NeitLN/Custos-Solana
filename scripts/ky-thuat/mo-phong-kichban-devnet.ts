@@ -14,6 +14,7 @@ import { Connection } from "@solana/web3.js";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { KICH_BAN } from "../../apps/demo-wallet/src/kichBan.ts";
+import { docNguonSong, HienTruongChuaSan } from "../hienTruongSong.ts";
 
 const ht = JSON.parse(readFileSync("apps/demo-wallet/public/hien-truong.json", "utf8"));
 const rpc: string = ht.rpc ?? "https://api.devnet.solana.com";
@@ -23,16 +24,30 @@ console.log(`RPC: ${rpc}`);
 console.log(`Nạn nhân: ${ht.nanNhan}\n`);
 
 const { blockhash } = await conn.getLatestBlockhash();
+// Số dư SỐNG — cùng nguồn với ví và trang tấn công. Hiện trường hỏng thì dừng ngay:
+// chạy chín kịch bản trên một hiện trường hỏng chỉ ra chín dòng "lệch" vô nghĩa.
+let soDuNguon: bigint;
+try {
+  ({ soDu: soDuNguon } = await docNguonSong(conn, ht));
+} catch (e) {
+  if (e instanceof HienTruongChuaSan) {
+    console.error(`HIỆN TRƯỜNG CHƯA SẴN SÀNG: ${e.lyDo}`);
+    process.exit(2);
+  }
+  throw e;
+}
+console.log(`Số dư sống tài khoản nguồn: ${soDuNguon}`);
 const bang: Array<Record<string, unknown>> = [];
 
 for (const kb of KICH_BAN) {
   let dong: Record<string, unknown> = { id: kb.id };
   try {
-    const tx = kb.dungTx(ht, blockhash);
+    const tx = kb.dungTx(ht, { blockhash, soDuNguon });
     const r = await inspect(
       { connection: conn, interpret: boiThoiHan(dienGiaiKhongAI) },
       tx,
-      { nguoiDung: kb.nhom === "thieuDuLieu" ? undefined : ht.nanNhan },
+      // Cùng cờ với ví — trước đây script tự quyết ở đây và lệch với giao diện.
+      kb.khongKhaiNguoiDung ? {} : { nguoiDung: ht.nanNhan },
     );
     dong = {
       ...dong,

@@ -5,6 +5,7 @@ import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, dienGiaiBangMoHinh, boiThoiHan } from "@custos-solana/ai";
 import { dungGoiAnthropic, MODEL_MAC_DINH } from "@custos-solana/ai/anthropic";
 import { KICH_BAN } from "../apps/demo-wallet/src/kichBan.ts";
+import { docNguonSong } from "./hienTruongSong.ts";
 
 const out = "docs/pitch-technical/evidence";
 mkdirSync(out, { recursive: true });
@@ -27,7 +28,8 @@ try {
     const row: any = { id: kb.id, title: kb.tieuDe, capturedAt: new Date().toISOString(), ai: { called: false } };
     try {
       const { blockhash } = await c.getLatestBlockhash();
-      const tx = kb.dungTx(ht, blockhash);
+      const { soDu: soDuNguon } = await docNguonSong(c, ht);
+      const tx = kb.dungTx(ht, { blockhash, soDuNguon });
       let interpret = dienGiaiKhongAI;
       // One bounded model request, for the key ownership-change scene only.
       if (kb.id === "doi-chu-tai-khoan" && process.env.ANTHROPIC_API_KEY) {
@@ -50,7 +52,7 @@ try {
         };
       }
       row.result = await inspect({ connection: c, interpret }, tx, {
-        nguoiDung: kb.nhom === "thieuDuLieu" ? undefined : ht.nanNhan,
+        ...(kb.khongKhaiNguoiDung ? {} : { nguoiDung: ht.nanNhan }),
         chanDoan: true, locale: "vi",
       });
       row.ms = Date.now() - start;

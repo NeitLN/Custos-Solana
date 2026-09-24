@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { dungGiaoDichTanCong } from "../../../scripts/tan-cong.ts";
-import { conDungDuoc, layBlockhash } from "./blockhash.ts";
-import { LoiQuaHan } from "../../../scripts/coHan.ts";
+import { Connection } from "@solana/web3.js";
+import { chuoiBanGiao, dungTxTanCongSong, kiemSanSangTanCong, type SanSangTanCong } from "../../../scripts/hienTruongSong.ts";
+import { conDungDuoc, layBlockhash, HAN_LAY_BLOCKHASH_MS } from "./blockhash.ts";
+import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
 import { RewardArtwork } from "./RewardArtwork.tsx";
 
@@ -87,7 +87,10 @@ export default function App() {
    */
   // Lưu kèm THỜI ĐIỂM lấy: xem `blockhash.ts` — `setInterval` bị trình duyệt bóp
   // khi tab chạy nền, nên "đã lấy" không đồng nghĩa với "còn dùng được".
-  const blockhashRef = useRef<{ ma: string; luc: number } | null>(null);
+  //
+  // Kèm `sanSang`: kết quả kiểm hiện trường cho CHÍNH blockhash này — số dư sống và
+  // preflight của đúng giao dịch sẽ bàn giao. Xem `hienTruongSong.ts`.
+  const blockhashRef = useRef<{ ma: string; luc: number; sanSang: SanSangTanCong } | null>(null);
   /** URL bàn giao của lần bấm gần nhất — dùng cho đường lui khi ví không tự mở. */
   const [urlLui, setUrlLui] = useState<string | null>(null);
   /*
@@ -126,12 +129,27 @@ export default function App() {
     if (!ht) return;
     let huy = false;
     const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
+    /*
+     * LẤY SẴN CẢ TRẠNG THÁI HIỆN TRƯỜNG, không chỉ blockhash — P0 rà soát 25/09.
+     *
+     * Bản trước chỉ lấy blockhash rồi dựng Transfer theo `ht.soLuong` = 500 000 000
+     * trong `hien-truong.json`. Tài khoản thật còn 490 000 000: mô phỏng trả
+     * `insufficient funds`, và ví hiện "Chưa đọc hiểu hết · 0/3" cho vụ tấn công
+     * chủ lực của buổi demo. Không có gì trên trang này báo điều đó.
+     *
+     * Nay mỗi lượt làm mới đọc số dư sống, dựng đúng giao dịch sẽ bàn giao, và chạy
+     * thử nó. Tất cả xảy ra NỀN, nên lúc bấm vẫn không có `await` nào trước
+     * `window.open` — ràng buộc về popup ở trên vẫn giữ nguyên.
+     */
     const lay = () => {
       conn
         .getLatestBlockhash()
-        .then(({ blockhash }) => {
-          if (!huy) blockhashRef.current = { ma: blockhash, luc: Date.now() };
+        .then(async ({ blockhash }) => {
+          const sanSang = await kiemSanSangTanCong(conn, ht, blockhash);
+          if (!huy) blockhashRef.current = { ma: blockhash, luc: Date.now(), sanSang };
         })
+        // Lỗi MẠNG thì im lặng: lúc bấm còn đường nguội. Hiện trường hỏng KHÔNG đi
+        // vào đây — nó là giá trị `chuaSan`, không phải lỗi.
         .catch(() => {});
     };
     lay();
@@ -151,27 +169,21 @@ export default function App() {
   }, [ht]);
 
   /** Dựng URL bàn giao. Tách ra để cả đường chính lẫn đường lui dùng chung một chỗ. */
-  function dungUrl(blockhash: string): string {
-    const tx = dungGiaoDichTanCong({
-      nanNhan: new PublicKey(ht!.nanNhan),
-      keTanCong: new PublicKey(ht!.keTanCong),
-      mint: new PublicKey(ht!.mint),
-      soLuong: BigInt(ht!.soLuong),
-      blockhash,
-      taiKhoanNguon: new PublicKey(ht!.taiKhoanNanNhan),
-      taiKhoanDich: new PublicKey(ht!.taiKhoanKeTanCong),
-    });
-    const b64 = btoa(String.fromCharCode(...tx.serialize()));
-    // Lời khai gian: trang nói đây là airdrop.
-    const khai = encodeURIComponent(JSON.stringify({ type: "airdrop" }));
-    const kyHieu = ht!.kyHieu
-      ? `&kyhieu=${encodeURIComponent(JSON.stringify({ [ht!.mint]: ht!.kyHieu }))}`
-      : "";
+  function dungUrl(blockhash: string, soDu: bigint): string {
+    // Cùng hàm với ví và màn phỏng vấn. Số lượng tính từ số dư SỐNG, không từ file.
+    const tx = dungTxTanCongSong(ht!, blockhash, soDu);
+    // Lời khai gian: trang nói đây là airdrop. Mã hoá nằm ở module chung để test
+    // hợp đồng hai app chạy đúng mã này — xem `apps/demo-wallet/test/hienTruongSong.test.ts`.
+    const hash = chuoiBanGiao(
+      tx,
+      { type: "airdrop" },
+      ht!.kyHieu ? { [ht!.mint]: ht!.kyHieu } : undefined,
+    );
     // `VI` null nghĩa là không suy ra được ví ở đâu. Ghép chuỗi lúc này sinh ra
     // "null/#tx=…" — một URL trông như thật, mở ra trang 404. Ném ở đây để lỗi
     // hiện ngay chỗ gây ra nó, không phải ở tab vừa mở.
     if (VI === null) throw new Error(KL_VI.loai === "khong" ? KL_VI.lyDo : "chưa biết ví ở đâu");
-    return `${VI}/#tx=${encodeURIComponent(b64)}&khai=${khai}${kyHieu}`;
+    return `${VI}/#${hash}`;
   }
 
   /**
@@ -185,6 +197,11 @@ export default function App() {
    * hay không. Vì vậy lưới an toàn không phải là dò, mà là luôn hiện một đường lui
    * bấm được — người trình bày không bao giờ đứng chết trên sân khấu.
    */
+  /** Thông điệp khi hiện trường hỏng: nói đó là trạng thái của DEMO, không phải của ví. */
+  function chuaSan(lyDo: string): string {
+    return `Hiện trường demo trên Devnet chưa sẵn sàng: ${lyDo}. Trang này không bàn giao giao dịch hỏng sang ví.`;
+  }
+
   function nhanQua() {
     if (!ht || dangGui) return;
     setLoi(null);
@@ -193,8 +210,14 @@ export default function App() {
     // cùng-tab bên dưới — chậm hơn một nhịp, nhưng giao dịch còn sống.
     const bh = blockhashRef.current;
     if (bh && conDungDuoc(bh.luc)) {
+      // Hiện trường hỏng ⇒ KHÔNG bàn giao. Đẩy một giao dịch không chạy được sang ví
+      // là trình bày thất bại mô phỏng như thể đó là phân tích một vụ tấn công.
+      if (bh.sanSang.loai === "chuaSan") {
+        setLoi(chuaSan(bh.sanSang.lyDo));
+        return;
+      }
       try {
-        const url = dungUrl(bh.ma);
+        const url = dungUrl(bh.ma, bh.sanSang.soDu);
         setUrlLui(url);
         window.open(url, "_blank", "noopener");
       } catch (e) {
@@ -220,10 +243,16 @@ export default function App() {
     setDangGui(true);
     const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
     layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
-      .then(({ ma }) => {
+      .then(async ({ ma }) => {
+        // Cùng hạn 9 giây cho chặng kiểm hiện trường: đường nguội không được treo.
+        const sanSang = await coHan(kiemSanSangTanCong(conn, ht, ma), HAN_LAY_BLOCKHASH_MS);
         if (huyRef.current) return;
-        blockhashRef.current = { ma, luc: Date.now() };
-        const url = dungUrl(ma);
+        blockhashRef.current = { ma, luc: Date.now(), sanSang };
+        if (sanSang.loai === "chuaSan") {
+          setLoi(chuaSan(sanSang.lyDo));
+          return;
+        }
+        const url = dungUrl(ma, sanSang.soDu);
         setUrlLui(url);
         window.location.href = url;
       })
@@ -232,7 +261,8 @@ export default function App() {
         setLoi(
           e instanceof LoiQuaHan
             ? "Devnet không trả lời trong 9 giây."
-            : "Không lấy được blockhash từ Devnet.",
+            // Chặng hỏng có thể là blockhash HOẶC đọc hiện trường — nói điều cả hai chung.
+            : "Không kết nối được tới Devnet để chuẩn bị giao dịch.",
         );
       })
       .finally(() => {

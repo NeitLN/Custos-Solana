@@ -24,6 +24,7 @@ Những lỗi bộ này đã tìm ra, mà bộ test đơn vị KHÔNG thấy:
 """
 
 import asyncio
+import re
 import sys
 
 # Console Windows mặc định là cp1252 và chết ngay trên chữ tiếng Việt — mọi nhãn
@@ -228,7 +229,16 @@ async def main() -> None:
             ok = await cho_ket_qua(pg)
             t = await pg.locator("body").inner_text() if ok else ""
             ck(f"{ten} · ra mức Nguy hiểm", "Nguy hiểm" in t)
-            ck(f"{ten} · bảng hậu quả 500 → 0", "500" in t and "0,0" in t)
+            # KIỂM QUAN HỆ, không cố định số (rà soát 25/09). Bản trước đòi "500 → 0" —
+            # tức đỏ khi mọi thứ ĐÚNG và chỉ xanh ngay sau khi dựng lại hiện trường.
+            # Hiện trường nay chuyển MỘT NỬA số dư sống (`chonLuongTanCong`), nên sau
+            # phải bằng một nửa trước. Kiểm liên thông đầy đủ, kể cả khớp với lượng
+            # Transfer giải mã từ giao dịch: `soi-ban-giao-tan-cong.py`.
+            m_sd = re.search(r"Số dư[^\n]*\n?[^\n]*?([\d.]+,\d+)\s*→\s*([\d.]+,\d+)", t)
+            ck(f"{ten} · bảng hậu quả: số dư còn đúng một nửa",
+               bool(m_sd) and abs(float(m_sd.group(2).replace(".", "").replace(",", "."))
+                                  - float(m_sd.group(1).replace(".", "").replace(",", ".")) / 2) < 1e-6,
+               m_sd.group(0).split("\n")[-1] if m_sd else "không thấy dòng số dư")
             ck(f"{ten} · coverage 2 trên 3", "2 trên 3" in t)
             ck(f"{ten} · 0 lỗi console", not bug, str(bug[:1]))
             tran = await do_tran(pg)

@@ -231,9 +231,11 @@ export function SoLieu() {
             </p>
 
             <GioiHan tieuDe="Đo trên bản giao diện LÚC ĐÓ.">
-              Tấm cảnh báo được thiết kế lại sau đợt phỏng vấn (01/09 và 04/09). Nội dung
-              không đổi — vẫn mức <em>Nguy hiểm</em>, vẫn bảng 500 → 0, vẫn dòng đổi chủ
-              tài khoản, vẫn <em>&quot;đã đọc hiểu 2 trên 3 lệnh&quot;</em> — nhưng hình thức thì
+              Tấm cảnh báo được thiết kế lại sau đợt phỏng vấn (01/09 và 04/09). Lúc đó
+              người tham gia thấy mức <em>Nguy hiểm</em>, bảng số dư 500 → 0, dòng đổi chủ
+              tài khoản và <em>&quot;đã đọc hiểu 2 trên 3 lệnh&quot;</em>. Bản đang chạy giữ mức,
+              dòng đổi chủ và độ phủ đó, nhưng số dư khác: hiện trường nay chuyển một nửa số
+              dư đọc từ chuỗi lúc chạy, nên bảng không còn là 500 → 0. Hình thức cũng
               khác. Con số dưới đây <strong className="font-semibold text-chu">không phải</strong> đo
               trên đúng bản đang chạy.
             </GioiHan>
