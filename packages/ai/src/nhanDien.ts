@@ -96,6 +96,40 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
     }
   }
 
+  /*
+   * GIAO DỊCH CHỈ CẤP QUYỀN RÚT ⇒ CẤP QUYỀN LÀ HÀNH ĐỘNG CHÍNH.
+   *
+   * Hành động chính ở trên chỉ suy từ dòng tiền, mà Approve không có dòng tiền. Bản
+   * trước vì thế trả `null` rồi xếp delegate mới vào "lệch" — và ca đối chứng "cấp
+   * quyền rút vừa đủ" (L2 im đúng thiết kế) vẫn hiện "Custos đề nghị kiểm tra thủ
+   * công". L3 đang gắn cờ sự tồn tại của Approve: quyết định đã khoá số 6 cấm đúng
+   * điều đó, và ca đối chứng mất nghĩa.
+   *
+   * Điều kiện hẹp, cố ý: không dòng tiền nào, MỌI hậu quả đều là cấp quyền rút, và
+   * cùng MỘT ví nhận quyền trên cùng MỘT mint. Kèm chuyển tiền, đổi chủ, hay cấp cho
+   * hai ví ⇒ không gom, delegate vẫn là lệch như cũ. Hạn mức lớn vẫn do L2 bắt
+   * (`SPL_APPROVE_DELEGATE_LON`) — L3 chỉ thôi nói sai rằng việc cấp quyền "lệch".
+   */
+  if (hanhDong === null && ra.length === 0 && vao.length === 0 && !solRa && lech.length > 0) {
+    const capQuyen = facts.tokenAccounts.filter(
+      (t) =>
+        t.ownerBefore === facts.signer &&
+        t.delegateAfter &&
+        t.delegateAfter !== t.delegateBefore &&
+        t.delegateAfter !== facts.signer,
+    );
+    const viNhan = new Set(capQuyen.map((t) => t.delegateAfter));
+    const cacMint = new Set(capQuyen.map((t) => t.mint));
+    if (lech.every((l) => l.loai === "cap_quyen_rut") && viNhan.size === 1 && cacMint.size === 1) {
+      hanhDong = {
+        type: "cấp quyền rút",
+        from: tenToken(capQuyen[0]!.mint, kyHieu),
+        to: rutGon(capQuyen[0]!.delegateAfter!),
+      };
+      return { hanhDong, lech: [] };
+    }
+  }
+
   return { hanhDong, lech };
 }
 
@@ -111,6 +145,8 @@ export function moTaHanhDong(h: PrimaryAction | null): string {
       return `nhận ${h.to}`;
     case "chuyển SOL":
       return "chuyển SOL đi";
+    case "cấp quyền rút":
+      return `cấp quyền rút ${h.from} cho ví ${h.to}`;
     default:
       return h.type;
   }

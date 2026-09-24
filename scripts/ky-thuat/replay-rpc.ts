@@ -121,6 +121,8 @@ export function connTuFixture(fx: Fixture): {
   daDung: () => Set<string>;
   /** Request bị thiếu fixture — kể cả khi `extractFacts` đã nuốt exception. */
   thieuFixture: () => ThieuFixture[];
+  /** Số lượt `getMultipleAccountsInfo` ghép theo địa chỉ thay vì khớp nguyên lô. */
+  soLuotGhep: () => number;
 } {
   const bang = new Map(fx.banGhi.map((b) => [b.khoa, b.ketQua]));
   const dung = new Set<string>();
@@ -144,8 +146,53 @@ export function connTuFixture(fx: Fixture): {
    */
   const daThieu: ThieuFixture[] = [];
 
+  /*
+   * GHÉP `getMultipleAccountsInfo` THEO TỪNG ĐỊA CHỈ — khi khoá nguyên lô không có.
+   *
+   * Lỗi đã đo 25/09: `fetch.ts` gộp hai lượt đọc một phần tử (mint, rồi PDA metadata
+   * Metaplex) thành MỘT lượt hai phần tử để bớt một lời gọi RPC. Dữ liệu hỏi y hệt,
+   * chỉ khác cách chia lô — nhưng khoá băm theo cả danh sách nên 12 fixture ghi 21/08
+   * đồng loạt "thiếu": replay tụt 19/29 → 7/29. Capture lại thì phải đọc Devnet HÔM
+   * NAY, tức thay dữ liệu lịch sử bằng dữ liệu khác chỉ để chiều một thay đổi cách gọi.
+   *
+   * Một lượt đọc account là tra cứu thuần theo địa chỉ, nên lô mới ghép được từ các lô
+   * đã ghi — với ĐIỀU KIỆN mỗi địa chỉ có đúng MỘT giá trị trong fixture. Địa chỉ xuất
+   * hiện ở hai lô với dữ liệu khác nhau (account đổi giữa hai lần gọi lúc capture) là
+   * mơ hồ: chọn bừa một bên là bịa dữ liệu, nên vẫn NÉM như thiếu fixture. Địa chỉ không
+   * có trong lô nào cũng ném — `null` nghĩa là "account không tồn tại", không phải
+   * "không ghi".
+   */
+  const theoDiaChi = new Map<string, { json: string; giaTri: unknown; khoa: string }>();
+  const moHo = new Set<string>();
+  for (const b of fx.banGhi) {
+    if (b.method !== "getMultipleAccountsInfo" || !Array.isArray(b.ketQua)) continue;
+    const keys = (b.thamSo as { keys?: string[] } | null)?.keys;
+    if (!Array.isArray(keys) || keys.length !== b.ketQua.length) continue;
+    keys.forEach((dc, i) => {
+      const giaTri = (b.ketQua as unknown[])[i];
+      const json = JSON.stringify(giaTri);
+      const cu = theoDiaChi.get(dc);
+      if (cu && cu.json !== json) moHo.add(dc);
+      else if (!cu) theoDiaChi.set(dc, { json, giaTri, khoa: b.khoa });
+    });
+  }
+  let soLuotGhep = 0;
+  const ghepTheoDiaChi = (keys: string[]): unknown[] | undefined => {
+    if (!keys.every((dc) => theoDiaChi.has(dc) && !moHo.has(dc))) return undefined;
+    soLuotGhep++;
+    return keys.map((dc) => {
+      const x = theoDiaChi.get(dc)!;
+      dung.add(x.khoa);
+      return x.giaTri;
+    });
+  };
+
   const lay = (method: Method, thamSo: unknown): unknown => {
     const k = khoaRequest(method, thamSo);
+    if (!bang.has(k) && method === "getMultipleAccountsInfo") {
+      const ghep = ghepTheoDiaChi((thamSo as { keys: string[] }).keys);
+      if (ghep) return ghep;
+    }
     if (!bang.has(k)) {
       const e = new ThieuFixture(method, k, thamSo);
       daThieu.push(e);
@@ -269,7 +316,7 @@ export function connTuFixture(fx: Fixture): {
       ),
   };
 
-  return { conn, daDung: () => dung, thieuFixture: () => daThieu };
+  return { conn, daDung: () => dung, thieuFixture: () => daThieu, soLuotGhep: () => soLuotGhep };
 }
 
 export function docFixture(duong: string): Fixture {

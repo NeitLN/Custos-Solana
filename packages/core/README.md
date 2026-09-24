@@ -222,6 +222,18 @@ await inspect(deps, tx, {
 
 Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại. **Ngữ cảnh chỉ được làm Custos thận trọng hơn, không bao giờ dễ dãi hơn.**
 
+**Khai bằng chữ nào.** `detectedPrimaryAction.type` là tiếng Việt; lời khai được so theo bảng một chiều:
+
+| dApp khai `type` | Khớp với hành động nhận diện |
+|---|---|
+| `transfer` | `chuyển token` hoặc `chuyển SOL` |
+| `swap` | `swap` |
+| `receive` | `nhận token` |
+| `approve` | `cấp quyền rút` |
+| đúng chữ tiếng Việt ở cột phải | chính chữ đó |
+
+Chữ khác (`airdrop`, `claim`, `cleanup`…) so nguyên văn, nên gần như luôn bị ghi là lệch — cố ý: Custos không đoán hộ dApp. Hàm quyết định là `cungLoaiHanhDong(khai, nhanDien)`, xuất từ `@custos-solana/core`.
+
 ---
 
 ## Vì sao phải hiển thị `coverage`
@@ -460,7 +472,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 1004 test, chạy offline
+npx npm@11.6.2 run check     # 1042 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet

@@ -9,7 +9,7 @@ import type { Facts, InstructionFact, TokenAccountFact, MintFact, AccountFact, N
 import { parseTokenAccount, parseMint, isTokenProgram } from "./parse.ts";
 import { decodeInstruction, VI_TRI_AUTHORITY } from "./decode.ts";
 import { VERIFIED_PROGRAMS } from "../constants.ts";
-import { docKyHieuToken } from "./ten-token.ts";
+import { docKyHieuToken, diaChiMetadata, bocKyHieuToken2022 } from "./ten-token.ts";
 import { giaiBase58 } from "./base58.ts";
 import { computeCoverage } from "./coverage.ts";
 
@@ -414,18 +414,46 @@ export async function extractFacts(
    * vừa cho kết quả xấu hơn.
    */
   const duLieuMintThieu = new Map<string, AccountInfo<Buffer> | null>();
-  if (thieu.length > 0) {
+  /*
+   * MỘT LỜI GỌI CHO CẢ MINT CÒN THIẾU LẪN PDA METADATA — đo 25/09.
+   *
+   * Bản trước đọc hai thứ bằng HAI lượt nối tiếp: mint còn thiếu ở đây, rồi PDA
+   * Metaplex trong `docKyHieuToken`. Đếm ở tầng mạng trên ca tấn công chuẩn: lượt 6 và
+   * lượt 7 đều là `getMultipleAccounts` một phần tử. Nhưng địa chỉ PDA chỉ suy từ ĐỊA
+   * CHỈ mint — không cần dữ liệu mint — nên cả hai biết được cùng lúc.
+   *
+   * Vì sao đáng gộp: trên RPC công cộng, độ trễ bấm → thẻ đi theo bậc ~500 ms, đúng
+   * một lần web3.js chờ rồi thử lại khi gặp 429. Số lượt gọi càng nhiều thì càng hay
+   * chạm giới hạn tốc độ. Bớt một lượt là bớt một cơ hội 429 và một vòng RTT.
+   *
+   * Giữ nguyên điều cũ: mint có metadata Token-2022 ngay trong dữ liệu đã có thì KHÔNG
+   * đọc PDA. Giao dịch chỉ gồm những mint đó thì không có lượt gọi nào ở đây cả.
+   */
+  const canPda = new Set<string>(thieu);
+  for (const m of mints) {
+    const i = allKeys.findIndex((k) => k.toBase58() === m.address);
+    const info = i >= 0 ? before[i] ?? null : null;
+    if (!(info && bocKyHieuToken2022(info.data, new PublicKey(m.address)))) canPda.add(m.address);
+  }
+  const mintCanPda = [...canPda];
+  const pdaCoSan = new Map<string, AccountInfo<Buffer> | null>();
+  if (thieu.length + mintCanPda.length > 0) {
     try {
-      const keys = thieu.map((a) => new PublicKey(a));
+      const keys = [
+        ...thieu.map((a) => new PublicKey(a)),
+        ...mintCanPda.map((a) => diaChiMetadata(new PublicKey(a))),
+      ];
       const info = await getManyAccounts(conn, keys);
       thieu.forEach((addr, i) => {
         duLieuMintThieu.set(addr, info[i] ?? null);
         const m = parseMint(addr, info[i] ?? null);
         if (m) mints.push(m);
       });
+      mintCanPda.forEach((addr, j) => pdaCoSan.set(addr, info[thieu.length + j] ?? null));
     } catch {
       // Không lấy được mint thì `decimals` khuyết. Không làm sập lượt kiểm tra —
-      // bảng chênh lệch vẫn hiện, chỉ kém chính xác về cách hiển thị số.
+      // bảng chênh lệch vẫn hiện, chỉ kém chính xác về cách hiển thị số. PDA thiếu
+      // thì `docKyHieuToken` tự hỏi lại như bản cũ.
     }
   }
 
@@ -446,7 +474,7 @@ export async function extractFacts(
         return [m.address, duLieuMintThieu.get(m.address) ?? null] as const;
       }),
     );
-    const kyHieu = await docKyHieuToken(conn, duLieuMint);
+    const kyHieu = await docKyHieuToken(conn, duLieuMint, pdaCoSan);
     for (const m of mints) m.kyHieu = kyHieu.get(m.address) ?? null;
   } catch {
     // giữ nguyên null

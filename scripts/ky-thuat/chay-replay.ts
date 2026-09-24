@@ -95,10 +95,12 @@ type Ket = {
   chiTiet?: string;
 };
 const ket: Ket[] = [];
+/** Mẫu có lượt `getMultipleAccountsInfo` ghép theo địa chỉ — xem `replay-rpc.ts`. */
+const mauCoGhep = new Set<string>();
 
 /** Chạy `extractFacts` trên một fixture. Trả Facts đã chuẩn hoá, hoặc ném. */
 async function chay(id: string, fx: Fixture, tepTx: string): Promise<string> {
-  const { conn, thieuFixture } = connTuFixture(fx);
+  const { conn, thieuFixture, soLuotGhep } = connTuFixture(fx);
   const raw = readFileSync(join(SEED, tepTx), "utf8").trim();
   const tx = VersionedTransaction.deserialize(Buffer.from(raw, "base64"));
   const f = chuanHoa(await extractFacts(conn as never, tx));
@@ -114,6 +116,7 @@ async function chay(id: string, fx: Fixture, tepTx: string): Promise<string> {
    */
   const thieu = thieuFixture();
   if (thieu.length > 0) throw thieu[0]!;
+  if (soLuotGhep() > 0) mauCoGhep.add(id);
   return f;
 }
 
@@ -329,5 +332,11 @@ console.log(
   "  Replay phát lại response ĐÃ GHI. Nó chứng minh L1 bóc tách đúng, " +
     "KHÔNG phải một lần thực thi SVM mới.",
 );
+if (mauCoGhep.size > 0) {
+  console.log(
+    `  ${mauCoGhep.size} mẫu có lượt đọc account GHÉP theo địa chỉ từ các lô đã ghi (L1 đổi cách chia lô sau lúc capture). ` +
+      "Chỉ ghép khi mỗi địa chỉ có đúng một giá trị trong fixture.",
+  );
+}
 
 process.exit(dem("hong") > 0 ? 1 : 0);

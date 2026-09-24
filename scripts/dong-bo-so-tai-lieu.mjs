@@ -221,7 +221,11 @@ if (S.hieuNang) {
 // CLAUDE.md đứng ngoài mọi vòng dọn dẹp trước vì không ai nghĩ nó là "tài liệu công
 // khai" — nhưng nó là thứ mọi phiên làm việc đọc đầu tiên, nên số cũ ở đây lan ra
 // khắp nơi khác.
-thayDong("CLAUDE.md", [
+//
+// AGENTS.md là bản sao cùng nội dung cho agent khác (Codex). Bỏ nó ra ngoài thì mỗi
+// lượt đồng bộ để lại một con số test cũ đúng ở chỗ agent kia đọc đầu tiên — đã xảy
+// ra 25/09 (F-14).
+for (const tep of ["CLAUDE.md", "AGENTS.md"]) thayDong(tep, [
   // Dòng này mang HAI con số. Bản trước chỉ đồng bộ số test, nên `soMau` ở đây tụt
   // lại 33 trong khi artifact và README đã 38 — đúng một dòng, hai claim, một cái
   // được canh và một cái không.

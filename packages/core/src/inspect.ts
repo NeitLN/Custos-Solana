@@ -94,6 +94,36 @@ function locL3(r: unknown): {
   return { detectedPrimaryAction, explanation: catBot(o["explanation"], TRAN_DIEN_GIAI), aiAdvisory };
 }
 
+/*
+ * TỪ VỰNG CỦA LỜI KHAI — dApp nói tiếng Anh, L3 nói tiếng Việt.
+ *
+ * Bản trước so chuỗi thô `mongDoi.type !== detectedPrimaryAction.type`. L3 thật trả
+ * `"chuyển token"`; dApp khai `"transfer"` (README chỉ đưa ví dụ `"swap"`). Kết quả đo
+ * 25/09: MỌI dApp trung thực khai `transfer` bị ghi `loiKhaiLech` và bật đề nghị kiểm
+ * tra — đúng chiều sai mà quy tắc bất đối xứng cấm. Test cũ không bắt được vì chúng
+ * giả lập L3 trả `"transfer"`, một chuỗi L3 thật không bao giờ trả.
+ *
+ * Bảng dưới CHỈ quyết định "có khớp không". Khớp vẫn không hạ verdict, không tắt cảnh
+ * báo nào — phần đó nằm ở chỗ khác và không đổi. Tên lạ (`airdrop`, `cleanup`,
+ * `upgrade`…) không có trong bảng thì so nguyên văn như cũ, tức gần như luôn lệch:
+ * không biết thì nghi, không đoán hộ dApp.
+ *
+ * `airdrop` cố ý KHÔNG trỏ tới `nhận token`: trang tấn công giả khai đúng chữ đó, và
+ * một airdrop thật hiếm khi cần người nhận ký. Thêm nó vào là nới lỏng.
+ */
+const KHAI_TIENG_ANH: Readonly<Record<string, ReadonlyArray<string>>> = {
+  // `transfer` không nói token hay SOL, nên nhận cả hai. Chiều ngược lại thì không:
+  // khai `chuyển token` mà giao dịch chuyển SOL vẫn là lệch (so nguyên văn).
+  transfer: ["chuyển token", "chuyển SOL"],
+  receive: ["nhận token"],
+  approve: ["cấp quyền rút"],
+};
+
+export function cungLoaiHanhDong(khai: string, nhanDien: string): boolean {
+  if (khai === nhanDien) return true;
+  return Object.hasOwn(KHAI_TIENG_ANH, khai) && KHAI_TIENG_ANH[khai]!.includes(nhanDien);
+}
+
 export type InspectDeps = {
   connection: Connection;
   /** Tuỳ chọn. Vắng mặt thì sản phẩm vẫn chạy — chỉ mất phần diễn giải. */
@@ -144,7 +174,7 @@ export async function inspect(
   // Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại.
   const mongDoi = options.expectedAction;
   let loiKhaiLech: { khai: string; nhanDien: string } | null = null;
-  if (mongDoi && detectedPrimaryAction && mongDoi.type !== detectedPrimaryAction.type) {
+  if (mongDoi && detectedPrimaryAction && !cungLoaiHanhDong(mongDoi.type, detectedPrimaryAction.type)) {
     aiAdvisory = "review_required";
     loiKhaiLech = { khai: mongDoi.type, nhanDien: detectedPrimaryAction.type };
   }

@@ -242,3 +242,65 @@ test("QA · chữ do L3 sinh bị giới hạn độ dài trước khi vào kế
   );
   assert.equal(r.level, "warning", "verdict của L2 phải nguyên vẹn");
 });
+
+/* ── Lời khai của dApp so với từ vựng THẬT của L3 ───────────────────────────── */
+
+/**
+ * Hai bài ở trên giả lập L3 trả `detectedPrimaryAction: { type: "transfer" }`. L3 thật
+ * không bao giờ trả chuỗi đó — nó trả `"chuyển token"`. Nên chưa bài nào kiểm việc so
+ * khớp với đầu ra thật, và phép so chuỗi thô đã tố MỌI dApp trung thực khai `transfer`
+ * là "nói một đằng, làm một nẻo" (đo 25/09). Quy tắc bất đối xứng cấm đúng chiều sai
+ * này: khai khớp không được bị ghi là lệch.
+ *
+ * Các bài dưới chạy `dienGiaiKhongAI` thật trên hiện trường giả, không mock L3.
+ */
+async function kiemVoiLoiKhai(type: string) {
+  const { dienGiaiKhongAI } = await import("../../ai/src/index.ts");
+  const { dungHienTruongGia } = await import("../../../scripts/hienTruongGia.ts");
+  const HT = dungHienTruongGia();
+  return inspect(
+    { connection: HT.rpcGia({ doiChu: false, chuyenTien: true }), interpret: dienGiaiKhongAI },
+    HT.txLanhTinh(),
+    { locale: "vi", expectedAction: { type } },
+  );
+}
+
+test("dApp khai `transfer` cho một lệnh chuyển token ⇒ KHÔNG bị ghi là lệch", async () => {
+  const r = await kiemVoiLoiKhai("transfer");
+  assert.equal(r.detectedPrimaryAction?.type, "chuyển token", "tiền đề: L3 thật dùng từ vựng tiếng Việt");
+  assert.equal((r as { loiKhaiLech?: unknown }).loiKhaiLech, undefined, "khai khớp mà bị tố lệch");
+  assert.equal(r.aiAdvisory, null);
+});
+
+test("khai bằng đúng chữ L3 dùng (`chuyển token`) cũng khớp", async () => {
+  const r = await kiemVoiLoiKhai("chuyển token");
+  assert.equal((r as { loiKhaiLech?: unknown }).loiKhaiLech, undefined);
+});
+
+test("dApp khai `airdrop`/`swap`/`approve` cho một lệnh CHUYỂN tiền đi ⇒ VẪN lệch", async () => {
+  // Chiều quan trọng: sửa từ vựng không được làm mất khả năng bắt lời khai sai.
+  // `airdrop` là đúng lời khai của trang tấn công giả.
+  for (const khai of ["airdrop", "swap", "approve", "cleanup"]) {
+    const r = await kiemVoiLoiKhai(khai);
+    assert.deepEqual(
+      (r as { loiKhaiLech?: unknown }).loiKhaiLech,
+      { khai, nhanDien: "chuyển token" },
+      `khai "${khai}" cho lệnh chuyển tiền đi phải bị ghi là lệch`,
+    );
+    assert.equal(r.aiAdvisory, "review_required");
+  }
+});
+
+test("bảng lời khai là MỘT CHIỀU và không nhận tên lạ", async () => {
+  const { cungLoaiHanhDong } = await import("../src/inspect.ts");
+  assert.equal(cungLoaiHanhDong("transfer", "chuyển SOL"), true);
+  assert.equal(cungLoaiHanhDong("approve", "cấp quyền rút"), true);
+  // Khai tiếng Việt thì so nguyên văn: "chuyển token" không phủ "chuyển SOL".
+  assert.equal(cungLoaiHanhDong("chuyển token", "chuyển SOL"), false);
+  // Chiều ngược: tên L3 không được dùng như một lời khai tiếng Anh.
+  assert.equal(cungLoaiHanhDong("cấp quyền rút", "approve"), false);
+  assert.equal(cungLoaiHanhDong("airdrop", "nhận token"), false, "airdrop là lời khai của trang tấn công");
+  // Khoá kế thừa từ Object.prototype không được lọt thành "khớp".
+  assert.equal(cungLoaiHanhDong("constructor", "chuyển token"), false);
+  assert.equal(cungLoaiHanhDong("__proto__", "chuyển token"), false);
+});
