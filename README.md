@@ -173,16 +173,16 @@ Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-b
 |---|---|
 | **30 %** độ khó và chiều sâu | **14** luật L2 · **1042** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
 | **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
-| **25 %** Solana stack · hiệu năng | `inspect()` **628 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
+| **25 %** Solana stack · hiệu năng | `inspect()` **638 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | FCP **88 ms** · bấm→thẻ **n=30**, trung vị **890 ms**, p95 quan sát **6005 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
 
 Số giao diện được đo trên Chromium headless; không suy rộng sang thiết bị thật hoặc mọi trình duyệt.
 
 | Đo trên Devnet, 24/09/2026 — lượt pass gần nhất | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **7,4 giây** — trung vị 10 lượt trên 9 bản dựng, dải 6,6–13,1 |
+| Cài đặt → kết quả đầu tiên | **8,4 giây** — trung vị 10 lượt trên 9 bản dựng, dải 6,6–13,1 |
 | Dòng mã tích hợp | **30** |
-| Một lượt kiểm tra | **628 ms** — trung vị 10 lượt trên 9 bản dựng |
+| Một lượt kiểm tra | **638 ms** — trung vị 10 lượt trên 9 bản dựng |
 
 Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
 
