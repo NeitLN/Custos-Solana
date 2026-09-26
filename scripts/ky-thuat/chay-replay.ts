@@ -213,17 +213,20 @@ function cacCachDoi(fx: Fixture): Array<{ ban: Fixture; truong: string }> {
    * Bỏ qua nhánh này thì mẫu bị xếp "không nhạy", tức bị tố oan: replay CÓ đọc dữ
    * liệu, chỉ là dữ liệu đó nằm ở chỗ khác.
    */
-  {
+  /*
+   * MỖI bản ghi `__loi` một cách đổi riêng — không dừng ở bản ghi đầu tiên. Đo 26/09 trên
+   * mẫu mainnet `MN-01`: ALT đã bị đóng, nên CẢ `getFeeForMessage` lẫn `simulateTransaction`
+   * đều ném. Bản trước chỉ đổi bản ghi đầu — lỗi phí, thứ không đi vào Facts — rồi dừng, và
+   * bốn mẫu bị xếp "không nhạy". Lại một lần phép kiểm sai, không phải sản phẩm sai.
+   */
+  fx.banGhi.forEach((goc, i) => {
+    const k0 = goc.ketQua as Record<string, unknown> | null;
+    if (!(k0 && typeof k0 === "object" && typeof k0["__loi"] === "string")) return;
     const ban = sao();
-    for (const bg of ban.banGhi) {
-      const k = bg.ketQua as Record<string, unknown> | null;
-      if (k && typeof k === "object" && typeof k["__loi"] === "string") {
-        k["__loi"] = `${k["__loi"]} [đổi thử nghiệm]`;
-        ra.push({ ban, truong: `${bg.method}.__loi` });
-        break;
-      }
-    }
-  }
+    const k = ban.banGhi[i]!.ketQua as Record<string, unknown>;
+    k["__loi"] = `${k["__loi"]} [đổi thử nghiệm]`;
+    ra.push({ ban, truong: `${goc.method}.__loi` });
+  });
 
   return ra;
 }

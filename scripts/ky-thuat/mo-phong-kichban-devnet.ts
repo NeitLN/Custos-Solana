@@ -17,7 +17,10 @@ import { KICH_BAN } from "../../apps/demo-wallet/src/kichBan.ts";
 import { docNguonSong, HienTruongChuaSan } from "../hienTruongSong.ts";
 
 const ht = JSON.parse(readFileSync("apps/demo-wallet/public/hien-truong.json", "utf8"));
-const rpc: string = ht.rpc ?? "https://api.devnet.solana.com";
+// `CUSTOS_RPC` thắng, cùng quy ước với `scripts/vi-devnet.ts`: khi endpoint công cộng
+// treo riêng với máy đang chạy (đo 26/09: `getMultipleAccounts` quá hạn hơn 18 giờ trong
+// khi endpoint Devnet khác trả 0,6 s), vẫn kiểm được mà không sửa hiện trường.
+const rpc: string = process.env["CUSTOS_RPC"] || ht.rpc || "https://api.devnet.solana.com";
 const conn = new Connection(rpc, "confirmed");
 
 console.log(`RPC: ${rpc}`);
