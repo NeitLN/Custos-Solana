@@ -1,5 +1,5 @@
 import type { Level } from "@custos-solana/types";
-import type { Facts } from "../facts.ts";
+import { quyenRutMoRong, type Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
 
@@ -128,7 +128,8 @@ export const luat3: Rule = {
     for (const t of f.tokenAccounts) {
       if (t.ownerBefore !== f.signer) continue;
       const sau = t.delegateAfter;
-      if (sau === null || sau === t.delegateBefore) continue;
+      // Mở rộng = đổi người được uỷ quyền, HOẶC nâng hạn mức của cùng người đó.
+      if (sau === null || !quyenRutMoRong(t)) continue;
       if (sau === f.signer) continue;
       if (t.delegatedAmountAfter <= t.amountBefore) continue;
       hits.push({
@@ -137,7 +138,9 @@ export const luat3: Rule = {
         reasonCode: REASON.APPROVE_DELEGATE_LON,
         bangChung: [{ loai: "tokenAccount" as const, khoa: t.address }],
         detail:
-          `${sau} được phép rút ${t.delegatedAmountAfter} từ ${t.address}, ` +
+          `${sau} được phép rút ${t.delegatedAmountAfter}` +
+          (sau === t.delegateBefore ? ` (trước là ${t.delegatedAmountBefore})` : "") +
+          ` từ ${t.address}, ` +
           `trong khi tài khoản chỉ có ${t.amountBefore}`,
       });
     }

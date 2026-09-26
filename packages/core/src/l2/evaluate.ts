@@ -91,7 +91,10 @@ export function danhGia(facts: Facts, luat: Rule[] = LUAT): KetQuaL2 {
   //
   // Không cần điều kiện "chạm tài sản người ký" như fail-safe 2: ta không biết
   // account đó là gì thì cũng không biết nó có phải của người ký hay không.
-  if ((facts.accountKhongDoDuoc ?? []).length > 0) {
+  //
+  // Mint không đọc được đi chung đường này: đó cũng là dữ liệu đo bị khuyết. Không có
+  // mint thì luật 4–7 không có đầu vào và im — im vì mù, không phải vì sạch (F-08).
+  if ((facts.accountKhongDoDuoc ?? []).length > 0 || (facts.mintKhongDoc ?? []).length > 0) {
     level = caoHon(level, "warning");
     maFailSafe.push(REASON.TRANG_THAI_DO_KHUYET);
   }

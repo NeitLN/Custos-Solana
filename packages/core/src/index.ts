@@ -41,3 +41,4 @@ export {
   type TinhTrangQuyen, type TomTatQuyen, type LoaiQuyen, type NguonDuKien,
 } from "./quyen-token.ts";
 export type { Facts, AccountFact, TokenAccountFact, MintFact, InstructionFact } from "./facts.ts";
+export { quyenRutMoRong } from "./facts.ts";

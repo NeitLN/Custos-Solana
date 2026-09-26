@@ -1,7 +1,7 @@
-import { kyHieuAnToan, dinhDangSo, type Interpreter, type Facts } from "@custos-solana/core";
+import { kyHieuAnToan, dinhDangSo, quyenRutMoRong, type Interpreter, type Facts } from "@custos-solana/core";
 import type { AiAdvisory, PrimaryAction } from "@custos-solana/types";
 import { dienGiaiKhongAI } from "./index.ts";
-import { nhanDien } from "./nhanDien.ts";
+import { nhanDien, type HauQuaLech } from "./nhanDien.ts";
 
 /**
  * LỚP MÔ HÌNH NGÔN NGỮ CỦA L3.
@@ -103,7 +103,33 @@ const CHU_CAM = [
   /bỏ qua (?:kết quả|phần|thông tin|cảnh báo)/i,
   /hoàn toàn bình thường/i,
   /(?:bạn )?nên (?:mua|bán|đầu tư)/i,
+  /*
+   * PHÁN QUYẾT và XÚI KÝ — phản biện 26/09, F-04.
+   *
+   * Danh sách trên chỉ bắt lời trấn an. Ba câu sau đi lọt nguyên văn: "Giao dịch này
+   * nguy hiểm." · "Bạn có thể ký mà không phải kiểm tra thêm." · "Tài sản của bạn
+   * được bảo vệ tuyệt đối." Quyết định đã khoá số 1 cấm AI kết luận CẢ HAI chiều —
+   * mức cảnh báo đã hiện riêng, do L2 quyết. Lời diễn giải chỉ kể hậu quả.
+   */
+  /nguy hiểm/i,
+  /lừa đảo|độc hại|scam|drainer/i,
+  /tuyệt đối|được bảo vệ/i,
+  /(?:có thể|hãy|nên|cứ việc) ký(?!\p{L})/iu,
+  /đừng ký|không (?:nên|được) ký/i,
+  /không (?:phải|cần phải) (?:kiểm tra|xem|lo)/i,
 ];
+
+/**
+ * Chuẩn hoá TRƯỚC khi soi danh sách cấm.
+ *
+ * Không có bước này, "nguy​ hiểm" (chèn ký tự rộng-0) hay "ký" (chữ "ý"
+ * viết bằng dấu tổ hợp rời) đi lọt mọi biểu thức ở trên, dù người đọc thấy y hệt.
+ * NFC gộp dấu tổ hợp; ký tự định dạng vô hình (lớp Unicode Cf) bị bỏ; khoảng trắng
+ * gộp về một dấu cách.
+ */
+function chuanHoaDeSoi(s: string): string {
+  return s.normalize("NFC").replace(/\p{Cf}/gu, "").replace(/\s+/g, " ");
+}
 
 const GIOI_HAN_CHU = 600;
 
@@ -117,7 +143,12 @@ function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<st
   // đặt, nên nó không được đi thẳng vào prompt — đó là bề mặt tấn công chính
   // của mọi sản phẩm đưa dữ liệu on-chain vào mô hình ngôn ngữ.
   const ten = (mint: string) => kyHieuAnToan(mint, kyHieu);
-  const decimalsCua = (mint: string) => facts.mints.find((m) => m.address === mint)?.decimals ?? 0;
+  // Không biết decimals thì nói "đơn vị gốc", cùng cách bảng chênh lệch hiển thị (F-08).
+  // Bản trước lấy `?? 0`: mô hình nhận "500.000.000" cho 500 token và diễn đạt sai độ lớn.
+  const so = (x: bigint, mint: string) => {
+    const m = facts.mints.find((k) => k.address === mint);
+    return m ? dinhDangSo(x, m.decimals) : `${dinhDangSo(x, 0)} đơn vị gốc`;
+  };
 
   return {
     reasonCodes,
@@ -133,10 +164,11 @@ function duLieuChoMoHinh(facts: Facts, reasonCodes: string[], kyHieu?: Record<st
         // vì "500" khi decimals=6, lệch đúng 10^decimals lần. Phát hiện được
         // ngay lượt gọi thật đầu tiên với Haiku. Đúng loại lỗi docs/CUSTOS.md quyết
         // định 7 cảnh báo: hiển thị sai độ lớn trong sản phẩm bảo mật là nguy hiểm.
-        truoc: dinhDangSo(t.amountBefore, decimalsCua(t.mint)),
-        sau: dinhDangSo(t.amountAfter, decimalsCua(t.mint)),
+        truoc: so(t.amountBefore, t.mint),
+        sau: so(t.amountAfter, t.mint),
         doiChu: t.ownerBefore !== t.ownerAfter,
-        delegateMoi: t.delegateAfter !== t.delegateBefore ? t.delegateAfter : null,
+        // Cùng hàm với luật 3: nâng hạn mức của CÙNG người được uỷ quyền cũng là mở rộng (F-01).
+        delegateMoi: quyenRutMoRong(t) ? t.delegateAfter : null,
       })),
     soLenhChuaDocHieu: facts.instructions.filter((ix) => ix.decoded === null).length,
   };
@@ -231,7 +263,8 @@ export function soiDauRa(tho: string, neo?: Set<string>): DauRa | null {
   if (typeof r["explanation"] !== "string") return null;
   const explanation = r["explanation"].trim();
   if (explanation.length === 0 || explanation.length > GIOI_HAN_CHU) return null;
-  if (CHU_CAM.some((re) => re.test(explanation))) return null;
+  const deSoi = chuanHoaDeSoi(explanation);
+  if (CHU_CAM.some((re) => re.test(deSoi))) return null;
 
   // Mô hình không bao giờ nhận được địa chỉ đầy đủ, nên thấy là bịa.
   if (DIA_CHI_DAY_DU.test(explanation)) return null;
@@ -304,6 +337,31 @@ const NOI_VE: Array<[RegExp, RegExp]> = [
 /** `true` khi lời văn nhắc một hành vi nặng mà L2 không hề gắn mã tương ứng. */
 export function noiQuaMaLyDo(loiVan: string, reasonCodes: string[]): boolean {
   return NOI_VE.some(([cum, ma]) => cum.test(loiVan) && !reasonCodes.some((c) => ma.test(c)));
+}
+
+/*
+ * NEO ĐỦ — chiều ngược của `noiQuaMaLyDo`. Phản biện 26/09 (F-04, hướng bền).
+ *
+ * `noiQuaMaLyDo` chặn lời văn nói về hành vi nặng mà L2 không gắn mã: NÓI QUÁ. Không lớp
+ * nào chặn NÓI THIẾU. Đo được: giao dịch vừa chuyển tiền vừa đổi chủ, mô hình trả "Giao
+ * dịch chuyển … ra khỏi ví của bạn." — đúng số, đúng chiều, không chữ cấm — và câu đó
+ * tới người dùng, im lặng về việc mất quyền kiểm soát.
+ *
+ * Danh sách đen không bao giờ bắt được kiểu này. Neo này suy từ DỮ KIỆN: mỗi hậu quả lõi
+ * tất định đã xác định (`nhanDien().lech`) phải được lời văn nhắc tới, bằng bất kỳ cách
+ * nói nào trong nhóm dưới. Thiếu một cái ⇒ rơi về câu tất định, vốn luôn nêu đủ.
+ */
+const CACH_NHAC: Record<HauQuaLech["loai"], RegExp> = {
+  doi_chu: /đổi chủ|chủ sở hữu|quyền sở hữu|quyền kiểm soát|chủ mới|chủ tài khoản/i,
+  cap_quyen_rut: /quyền rút|(?:được|có thể) (?:phép )?rút|uỷ quyền|ủy quyền|delegate/i,
+  trao_quyen_dong: /quyền đóng|đóng tài khoản|đóng được tài khoản/i,
+  doi_chuong_trinh: /chương trình/i,
+};
+
+/** `true` khi lời văn BỎ SÓT ít nhất một hậu quả lõi tất định đã xác định. */
+export function boSotHauQua(loiVan: string, cacLoai: HauQuaLech["loai"][]): boolean {
+  const s = chuanHoaDeSoi(loiVan);
+  return cacLoai.some((l) => !CACH_NHAC[l].test(s));
 }
 
 export function neoHanhDong(
@@ -420,7 +478,9 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
 
     // Hành động chính: lõi xác định đọc thẳng từ chênh lệch số dư, nên nó ĐÚNG
     // hơn mô hình. Chỉ dùng của mô hình khi lõi không nhận ra được gì.
-    const { hanhDong } = nhanDien(facts, options?.kyHieuToken);
+    const { hanhDong, lech } = nhanDien(facts, options?.kyHieuToken);
+    // Và không được BỎ SÓT hậu quả nào lõi đã thấy — xem `boSotHauQua`.
+    if (boSotHauQua(ra.explanation, lech.map((l) => l.loai))) return nen;
 
     return {
       // Lõi tất định đúng hơn mô hình vì nó đọc thẳng từ chênh lệch số dư. Chỉ

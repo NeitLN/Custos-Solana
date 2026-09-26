@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Keypair, PublicKey, SystemProgram, TransactionInstruction, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
-import { ACCOUNT_SIZE, AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { ACCOUNT_SIZE, AccountLayout, MINT_SIZE, MintLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { extractFacts } from "../src/l1/fetch.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import { dungBangChenhLech } from "../src/diff.ts";
@@ -157,6 +157,16 @@ test("A1b — mô phỏng HỎNG cũng không được bịa ra mất mát", asy
   assert.equal(boiaMat, undefined, `mô phỏng hỏng mà vẫn vẽ ra số dư về 0: ${JSON.stringify(boiaMat)}`);
 });
 
+function accMint() {
+  const data = Buffer.alloc(MINT_SIZE);
+  MintLayout.encode(
+    { mintAuthorityOption: 0, mintAuthority: PublicKey.default, supply: 1n, decimals: 6, isInitialized: true,
+      freezeAuthorityOption: 0, freezeAuthority: PublicKey.default },
+    data,
+  );
+  return { data, executable: false, lamports: 1_461_600, owner: TOKEN_PROGRAM_ID, rentEpoch: 0 };
+}
+
 test("ÂM TÍNH — giao dịch nhỏ đo đủ thì KHÔNG có gì thay đổi", async () => {
   // Chốt chặn chống sửa quá tay: bản vá không được biến mọi giao dịch thành Vàng.
   const ata = Keypair.generate().publicKey;
@@ -164,8 +174,12 @@ test("ÂM TÍNH — giao dịch nhỏ đo đủ thì KHÔNG có gì thay đổi"
 
   const conn = {
     getAddressLookupTable: async () => ({ value: null }),
+    // "Đo đủ" phải gồm cả MINT: từ 26/09 mint không đọc được là dữ liệu khuyết (F-08),
+    // nên fixture trả tài khoản hệ thống rỗng cho mint như trước sẽ đúng là bị báo thiếu.
     getMultipleAccountsInfo: async (keys: PublicKey[]) =>
-      keys.map((k) => (k.equals(ata) ? accToken(toi.publicKey, 500_000_000n) : accThuong(SYS, 5_000_000_000))),
+      keys.map((k) =>
+        k.equals(ata) ? accToken(toi.publicKey, 500_000_000n) : k.equals(MINT) ? accMint() : accThuong(SYS, 5_000_000_000),
+      ),
     simulateTransaction: async (_t: unknown, cfg: { accounts?: { addresses?: string[] } }) => ({
       value: {
         err: null, logs: [], innerInstructions: [],
@@ -184,4 +198,72 @@ test("ÂM TÍNH — giao dịch nhỏ đo đủ thì KHÔNG có gì thay đổi"
   assert.deepEqual(f.accountKhongDoDuoc, [], "đo đủ thì danh sách phải rỗng");
   const r = danhGia(f);
   assert.ok(!r.reasonCodes.includes(REASON.TRANG_THAI_DO_KHUYET));
+});
+
+/* ── Mảng `accounts` của mô phỏng bị THIẾU vị trí — phản biện 26/09, F-07 ──── */
+
+/**
+ * `accounts: null` và mô phỏng hỏng đã được xử lý. Còn một hình dạng nữa: mảng CÓ
+ * nhưng NGẮN hơn danh sách đã hỏi (hoặc có lỗ). Bản trước đọc ô vắng thành `null`,
+ * tức "tài khoản không còn tồn tại", và dựng ra dòng SOL 1,0 → 0,0 kèm `SOL_ROI_VI`
+ * — một khoản mất bịa ra từ dữ liệu không hề có.
+ *
+ * Phân biệt phải giữ: `null` CÓ MẶT ở đúng vị trí vẫn nghĩa là tài khoản đã bị đóng
+ * (CloseAccount) — đó là dữ kiện thật, không phải thiếu dữ liệu.
+ */
+function hienTruongChuyenSol(accountsSau: (sim: { addresses: string[] }) => unknown[]) {
+  const vi = Keypair.generate().publicKey;
+  const nhan = Keypair.generate().publicKey;
+  const tx = new VersionedTransaction(
+    new TransactionMessage({
+      payerKey: vi, recentBlockhash: PublicKey.default.toBase58(),
+      instructions: [SystemProgram.transfer({ fromPubkey: vi, toPubkey: nhan, lamports: 1 })],
+    }).compileToV0Message(),
+  );
+  const conn = {
+    getAddressLookupTable: async () => ({ value: null }),
+    getSignaturesForAddress: async () => [],
+    getMultipleAccountsInfo: async (keys: PublicKey[]) =>
+      keys.map((k) => (k.equals(vi) ? accThuong(SYS, 1_000_000_000) : null)),
+    simulateTransaction: async (_t: unknown, cfg: { accounts: { addresses: string[] } }) => ({
+      value: { err: null, logs: [], innerInstructions: [], accounts: accountsSau(cfg.accounts) },
+    }),
+  };
+  return { vi, nhan, chay: () => extractFacts(conn as never, tx) };
+}
+
+const thuongSau = (l: number) => ({ data: ["", "base64"], executable: false, lamports: l, owner: SYS.toBase58(), rentEpoch: 0 });
+
+for (const [ten, hinhDang] of [
+  ["mảng rỗng", () => []],
+  // eslint-disable-next-line no-sparse-arrays
+  ["mảng có lỗ", (s: { addresses: string[] }) => Object.assign(new Array(s.addresses.length), { 1: thuongSau(1) })],
+] as const) {
+  test(`mô phỏng trả ${ten} ⇒ vị trí vắng là CHƯA ĐO, không phải mất tiền`, async () => {
+    const h = hienTruongChuyenSol(hinhDang as (s: { addresses: string[] }) => unknown[]);
+    const f = await h.chay();
+    assert.ok(f.accountKhongDoDuoc.includes(h.vi.toBase58()), "ví người ký phải nằm trong danh sách chưa đo");
+    const r = danhGia(f);
+    assert.ok(r.reasonCodes.includes(REASON.TRANG_THAI_DO_KHUYET));
+    assert.ok(!r.reasonCodes.includes(REASON.SOL_ROI_VI), "không được bịa ra SOL rời ví");
+    const bang = dungBangChenhLech(f, r.hits);
+    assert.ok(!bang.some((d) => d.soLieu?.truoc === "1000000000" && d.soLieu.sau === "0"), "không được có dòng 1 → 0");
+  });
+}
+
+test("mô phỏng trả mảng NGẮN ⇒ đúng các vị trí bị cắt là chưa đo, vị trí có mặt vẫn đo", async () => {
+  let hoi: string[] = [];
+  const h = hienTruongChuyenSol((s) => {
+    hoi = s.addresses;
+    return s.addresses.slice(0, -1).map(() => thuongSau(1_000_000_000));
+  });
+  const f = await h.chay();
+  assert.ok(hoi.length >= 2, "cần ít nhất hai account để có một vị trí bị cắt");
+  assert.deepEqual(f.accountKhongDoDuoc, [hoi.at(-1)], "chỉ vị trí cuối bị cắt mới là chưa đo");
+});
+
+test("đối chứng: `null` CÓ MẶT đúng vị trí vẫn là tài khoản đã đóng, không phải thiếu", async () => {
+  const h = hienTruongChuyenSol((s) => s.addresses.map((a, i) => (i === 0 ? null : thuongSau(1))));
+  const f = await h.chay();
+  assert.deepEqual(f.accountKhongDoDuoc, [], "mảng đủ độ dài thì không có gì là chưa đo");
 });

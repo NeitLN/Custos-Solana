@@ -1,4 +1,4 @@
-import { kyHieuAnToan, type Facts } from "@custos-solana/core";
+import { kyHieuAnToan, quyenRutMoRong, type Facts } from "@custos-solana/core";
 import type { PrimaryAction } from "@custos-solana/types";
 
 /**
@@ -79,7 +79,9 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
     if (t.ownerAfter !== null && t.ownerAfter !== facts.signer) {
       lech.push({ loai: "doi_chu", taiKhoan: rutGon(t.address), benNhan: rutGon(t.ownerAfter) });
     }
-    if (t.delegateAfter && t.delegateAfter !== t.delegateBefore && t.delegateAfter !== facts.signer) {
+    // Cùng hàm với luật 3 và bảng chênh lệch: nâng hạn mức của CÙNG người được uỷ
+    // quyền cũng là mở rộng quyền rút, không riêng việc đổi người.
+    if (t.delegateAfter && quyenRutMoRong(t) && t.delegateAfter !== facts.signer) {
       lech.push({ loai: "cap_quyen_rut", taiKhoan: rutGon(t.address), benNhan: rutGon(t.delegateAfter) });
     }
     if (
@@ -115,7 +117,7 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
       (t) =>
         t.ownerBefore === facts.signer &&
         t.delegateAfter &&
-        t.delegateAfter !== t.delegateBefore &&
+        quyenRutMoRong(t) &&
         t.delegateAfter !== facts.signer,
     );
     const viNhan = new Set(capQuyen.map((t) => t.delegateAfter));

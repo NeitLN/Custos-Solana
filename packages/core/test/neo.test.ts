@@ -202,54 +202,37 @@ test("msToiDa không hữu hạn hoặc âm ⇒ quá cũ, không sống vô hạ
 
 /* ── Đường dây: ví phải THẬT SỰ dùng cổng này ──────────────────────────────── */
 
-test("ví kiểm neo TRƯỚC khi ký, và chặn khi không khớp", () => {
+/*
+ * Từ 26/09 phòng phân tích KHÔNG ký; ba bài dưới trước đây đọc `neoRef`/`kyVaGui` trong
+ * App.tsx. Canh mã đã gỡ là canh một lời hứa không ai giữ, nên chúng chuyển sang đường ký
+ * thật: `live/session.ts` dựng neo, `live/policy.ts` (`ConsentGate`) đối chiếu lúc ký. Bài
+ * CHẠY THẬT cho hai cổng này nằm ở `apps/demo-wallet/test/liveDemo.test.ts`.
+ */
+const phien = () => readFileSync(join(GOC, "apps/demo-wallet/src/live/session.ts"), "utf8");
+const congKy = () => readFileSync(join(GOC, "apps/demo-wallet/src/live/policy.ts"), "utf8");
+
+test("ví dựng neo từ byte CHỤP TRƯỚC khi kiểm, và đối chiếu bằng byte thật lúc ký", () => {
   /*
-   * Bài đọc mã, yếu hơn bài chạy thật — nó chỉ chặn việc âm thầm tháo cổng ra.
-   * Nhưng cổng này là thứ duy nhất chặn được việc ký một giao dịch khác với thứ
-   * người dùng đang đọc, nên nó phải có ít nhất một phép canh.
+   * CU-02: đọc `tx.message.serialize()` ở chỗ dựng neo là đọc SAU khi `inspect()` đã await,
+   * và một `tx` bị thay `serialize` trong cửa sổ await sẽ cho neo ghi đúng bản tráo.
    */
-  const s = app();
-  assert.match(s, /const neoRef = useRef<NeoKetQua \| null>\(null\)/);
-  /*
-   * CU-02 nới MẪU, không nới ĐIỀU KIỆN — và nới theo hướng chặt hơn.
-   *
-   * Bản trước đòi đúng chuỗi `neoKetQua(tx.message.serialize(`. Ý định là *"neo từ
-   * byte thật, không phải một bản mô tả"*, và ý định đó vẫn giữ nguyên. Nhưng đọc
-   * `tx.message.serialize()` ở CHỖ DỰNG NEO là đọc SAU khi `inspect()` đã await —
-   * và đã tái hiện được rằng một `tx` bị thay `serialize` trong cửa sổ await sẽ
-   * cho một neo ghi đúng bản tráo, rồi `khopNeo` lúc ký trả KHỚP.
-   *
-   * Nên nay đòi ba điều, mỗi điều mạnh hơn điều cũ:
-   *   1. bytes được chụp vào một biến TRƯỚC khi vào `inspect()`
-   *   2. neo dựng từ CHÍNH biến đó, không phải từ một lần serialize mới
-   *   3. có so bytes lúc kết thúc để phát hiện tx đã đổi giữa chừng
-   */
-  assert.match(
-    s,
-    /const byteNay = txNay\.message\.serialize\(\);/,
-    "phải chụp bytes ngay khi tx sinh ra, TRƯỚC mọi await",
-  );
-  assert.match(
-    s,
-    /neoRef\.current = neoKetQua\(byteLucKiem,/,
-    "neo phải dựng từ bytes ĐÃ CHỤP, không phải serialize lại sau await",
-  );
-  assert.match(
-    s,
-    /byteBayGio\.every\(\(b, i\) => b === byteLucKiem\[i\]\)/,
-    "phải so bytes cuối lượt để phát hiện tx đổi giữa chừng",
-  );
-  assert.match(s, /khopNeo\(neo, tx\.message\.serialize\(\)/, "phải đối chiếu bằng byte thật");
-  assert.match(s, /chặn ký:/, "phải ghi nhật ký khi chặn");
+  const s = phien();
+  const chup = s.search(/bytes = tx\.message\.serialize\(\)\.slice\(\)/);
+  const kiem = s.search(/await this\.#inspect\(/);
+  assert.ok(chup > 0 && kiem > chup, "phải chụp bytes TRƯỚC khi gọi inspect");
+  assert.match(s, /neoKetQua\(bytes,/, "neo phải dựng từ bytes ĐÃ CHỤP");
+  assert.match(s, /#gate\.consume\(id, request\.tx\.message\.serialize\(\)/, "lúc ký phải đối chiếu bằng byte thật");
+  assert.match(congKy(), /khopNeo\(p\.anchor, bytes/, "cổng ký phải so neo với byte");
+  // Phòng phân tích vẫn phát hiện giao dịch đổi TRONG lúc kiểm — thẻ nó hiện phải đúng.
+  assert.match(app(), /byteBayGio\.every\(\(b, i\) => b === byteLucKiem\[i\]\)/);
 });
 
-test("ví dọn neo khi mở lượt kiểm mới", () => {
-  // Giữa lúc bắt đầu lượt mới và lúc có kết quả mới, nút Ký không được có neo nào
-  // để dựa vào — nếu không, nó ký theo phán quyết của lượt trước.
-  assert.match(app(), /setHauQua\(null\);[\s\S]{0,300}?neoRef\.current = null;/);
+test("ví huỷ đồng ý cũ khi mở yêu cầu mới", () => {
+  // Giữa yêu cầu mới và kết quả mới, không được còn đồng ý nào của lượt trước để dựa vào.
+  assert.match(congKy(), /prepare\([^)]*\) \{\s*this\.cancel\(\);/, "prepare phải huỷ đồng ý cũ trước tiên");
+  assert.match(phien(), /#clearRequest\(\) \{[\s\S]{0,120}?this\.#gate\.cancel\(\)/, "dọn yêu cầu phải huỷ đồng ý");
 });
 
 test("ví KHÔNG ký khi kết quả kiểm quá cũ", () => {
-  assert.match(app(), /if \(quaCu\(neo\)\)/);
-  assert.match(app(), /quá cũ nên không còn đáng tin/);
+  assert.match(congKy(), /consume\([\s\S]{0,600}?quaCu\(p\.anchor\)/, "consume phải kiểm neo quá cũ lúc ký");
 });

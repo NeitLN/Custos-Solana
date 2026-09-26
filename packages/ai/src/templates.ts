@@ -154,10 +154,18 @@ function cauCho(ma: string, facts: Facts): string | null {
 
     case REASON.TRANG_THAI_DO_KHUYET: {
       const n = facts.accountKhongDoDuoc?.length ?? 0;
-      if (n === 0) return null;
+      const m = facts.mintKhongDoc?.length ?? 0;
+      if (n === 0 && m === 0) return null;
       // Nói về GIỚI HẠN CỦA CHÚNG TÔI, không cáo buộc giao dịch. Người dùng cần
       // biết bảng chênh lệch phía trên có thể chưa kể hết chuyện.
-      return `Giao dịch này chạm tới ${n} tài khoản mà chúng tôi không đọc được trạng thái sau khi ký, nên bảng thay đổi bên trên có thể còn thiếu.`;
+      const cau: string[] = [];
+      if (n > 0) {
+        cau.push(`Giao dịch này chạm tới ${n} tài khoản mà chúng tôi không đọc được trạng thái sau khi ký, nên bảng thay đổi bên trên có thể còn thiếu.`);
+      }
+      if (m > 0) {
+        cau.push(`Chúng tôi không đọc được thông tin của ${m} loại token trong giao dịch này, nên số lượng đang hiện ở đơn vị gốc và các cảnh báo về token đó (đóng băng, phát hành thêm) có thể còn thiếu.`);
+      }
+      return cau.join(" ");
     }
 
     case REASON.MO_PHONG_HONG:

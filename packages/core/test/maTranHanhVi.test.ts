@@ -178,5 +178,6 @@ test("ma trận ghi ca `cancel` là lỗi tìm ra trong B03, kèm bằng chứng
   const onHuy = app.match(/onHuy=\{\(\) => \{[\s\S]*?\n\s{22}\}\}/);
   assert.ok(onHuy, "không tìm thấy `onHuy` trong App.tsx");
   assert.match(onHuy[0], /luotRef\.current\+\+/, "ma trận nói đã sửa nhưng mã chưa có");
-  assert.match(onHuy[0], /neoRef\.current = null/, "ma trận nói đã sửa nhưng mã chưa có");
+  // Vế "xoá neo" đã bỏ 26/09: phòng phân tích không ký nữa nên không còn neo để xoá. Neo và
+  // đồng ý của đường ký thật do `ConsentGate` huỷ — `neo.test.ts` canh.
 });

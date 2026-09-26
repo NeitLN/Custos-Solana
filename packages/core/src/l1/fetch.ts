@@ -199,7 +199,8 @@ export async function extractFacts(
   // thể trả `accounts: null` kèm `err: null`. Phải tách hai chuyện đó ra, nếu
   // không thì "không đo được" bị đọc thành "số dư về 0".
   let coDuLieuAccount = false;
-  let after: (AccountInfo<Buffer> | null)[] = [];
+  // `undefined` = RPC KHÔNG trả vị trí đó (chưa đo); `null` = trả null (account không tồn tại).
+  let after: (AccountInfo<Buffer> | null | undefined)[] = [];
   let inner: {
     programId: string;
     accounts: string[];
@@ -268,8 +269,16 @@ export async function extractFacts(
     // trong khi L2 và L3 vẫn đang đọc số bịa. Trạng thái sau không đọc được thì phải
     // KHÔNG TỒN TẠI ngay từ L1, để mọi tầng phía sau tự động nhất quán.
     coDuLieuAccount = Array.isArray(v.accounts) && !v.err;
+    // VỊ TRÍ VẮNG KHÁC VỚI Ô NULL — phản biện 26/09, F-07.
+    //
+    // `null` CÓ MẶT ở đúng vị trí nghĩa là account không còn tồn tại sau giao dịch
+    // (CloseAccount) — một dữ kiện. Mảng NGẮN hơn danh sách đã hỏi, hay có lỗ, thì vị
+    // trí vắng là KHÔNG ĐO ĐƯỢC. Bản trước gộp hai thứ: `accounts: []` cho ra dòng
+    // "1,0 → 0,0 SOL" và `SOL_ROI_VI` — mất tiền bịa ra từ dữ liệu không hề có.
+    const mang = v.accounts;
     after = simIdx.map((_, k) => {
-      const a = v.accounts?.[k];
+      if (!Array.isArray(mang) || !(k in mang)) return undefined;
+      const a = mang[k];
       if (!a) return null;
       return {
         data: Buffer.from(a.data[0] ?? "", "base64"),
@@ -319,7 +328,12 @@ export async function extractFacts(
   // `null` — và `null` bị đọc tiếp thành "số dư 0, không còn chủ". Sản phẩm vừa
   // nói "Bình thường" vừa vẽ ra cảnh người dùng mất sạch.
   const afterByIndex = new Map<number, AccountInfo<Buffer> | null>();
-  if (coDuLieuAccount) simIdx.forEach((orig, k) => afterByIndex.set(orig, after[k] ?? null));
+  if (coDuLieuAccount) {
+    simIdx.forEach((orig, k) => {
+      const a = after[k];
+      if (a !== undefined) afterByIndex.set(orig, a);
+    });
+  }
 
   // Account có mặt trong giao dịch mà KHÔNG đo được trạng thái sau.
   const khongDo = new Set<string>();
@@ -329,6 +343,8 @@ export async function extractFacts(
   }
   // (b) mô phỏng không trả dữ liệu account, hoặc hỏng hẳn
   if (!coDuLieuAccount) for (const i of simIdx) khongDo.add(allKeys[i]!.toBase58());
+  // (c) mô phỏng CÓ trả mảng, nhưng thiếu đúng vị trí này (F-07)
+  else simIdx.forEach((orig, k) => { if (after[k] === undefined) khongDo.add(allKeys[orig]!.toBase58()); });
   const accountKhongDoDuoc = [...khongDo];
 
   // Mọi account có trạng thái sau — nguồn cho luật 12.
@@ -372,6 +388,8 @@ export async function extractFacts(
       amountAfter: a?.amount ?? 0n,
       delegateBefore: b?.delegate ?? null,
       delegateAfter: a?.delegate ?? null,
+      // Không có trạng thái trước = tài khoản chưa tồn tại, tức chưa từng uỷ quyền.
+      delegatedAmountBefore: b?.delegatedAmount ?? 0n,
       delegatedAmountAfter: a?.delegatedAmount ?? 0n,
       closeAuthorityBefore: b?.closeAuthority ?? null,
       closeAuthorityAfter: a?.closeAuthority ?? null,
@@ -456,6 +474,10 @@ export async function extractFacts(
       // thì `docKyHieuToken` tự hỏi lại như bản cũ.
     }
   }
+
+  // Mint vẫn thiếu sau cả hai đường đọc. Tính SAU khối try/catch ở trên: lượt đọc ném
+  // lỗi cũng phải rơi vào đây, không được lặng lẽ thành "mint không có gì đáng nói".
+  const mintKhongDoc = [...mintAddrs].filter((a) => !mints.some((m) => m.address === a));
 
   // Ký hiệu token — đọc TỪ CHUỖI, không qua nhà cung cấp nào.
   //
@@ -629,6 +651,7 @@ export async function extractFacts(
     instructions,
     lookupTables,
     accountKhongDoDuoc,
+    mintKhongDoc,
     nguoiKy,
     nguoiDungDuocChiDinh,
     phiUocTinh,

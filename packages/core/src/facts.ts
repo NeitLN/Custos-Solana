@@ -11,6 +11,9 @@ export type TokenAccountFact = {
   amountAfter: bigint;
   delegateBefore: string | null;
   delegateAfter: string | null;
+  /** Hạn mức uỷ quyền TRƯỚC giao dịch. `undefined` = không biết: Facts đóng băng
+   *  trước 26/09 không có trường này. KHÔNG được đọc thành 0 — xem `quyenRutMoRong`. */
+  delegatedAmountBefore?: bigint;
   delegatedAmountAfter: bigint;
   closeAuthorityBefore: string | null;
   closeAuthorityAfter: string | null;
@@ -217,5 +220,32 @@ export type Facts = {
    * Xem docs/bao-mat/SECURITY-AUDIT.md — F2 và A1.
    */
   accountKhongDoDuoc: string[];
+  /**
+   * Mint của các tài khoản token trong giao dịch mà L1 KHÔNG đọc hoặc không giải
+   * được: RPC trả `null`, dữ liệu hỏng, hay lượt đọc ném lỗi.
+   *
+   * Mint là dữ liệu PHÂN TÍCH, không phải làm giàu: luật 4–7 đọc quyền phát hành,
+   * đóng băng, permanent delegate, transfer hook từ đây, và `decimals` quyết định
+   * con số người dùng nhìn thấy. Thiếu mint mà im lặng thì các cảnh báo đó biến mất
+   * và giao dịch ra `safe` (phản biện 26/09, F-08). Tuỳ chọn cho Facts đóng băng cũ.
+   */
+  mintKhongDoc?: string[];
   coverage: { analyzed: number; total: number; unverifiedPrograms: number };
 };
+
+/**
+ * Giao dịch này có MỞ RỘNG quyền rút trên tài khoản không — đổi sang người được uỷ
+ * quyền khác, hoặc nâng hạn mức của CÙNG người đó.
+ *
+ * Luật 3, bảng chênh lệch và L3 cùng dùng hàm này, để ba nơi không thể bất đồng về
+ * một sự kiện. Bản trước chỉ nhìn địa chỉ delegate: Approve lại cùng ví từ 1 token
+ * lên u64::MAX lọt qua cả ba (phản biện 26/09, F-01).
+ *
+ * Hạn mức trước không biết (Facts cũ) thì KHÔNG coi là mở rộng: một tài khoản có sẵn
+ * uỷ quyền lớn mà giao dịch không đụng tới sẽ bị tố oan ở mọi giao dịch sau.
+ */
+export function quyenRutMoRong(t: TokenAccountFact): boolean {
+  if (t.delegateAfter === null) return false;
+  if (t.delegateAfter !== t.delegateBefore) return true;
+  return t.delegatedAmountBefore !== undefined && t.delegatedAmountAfter > t.delegatedAmountBefore;
+}

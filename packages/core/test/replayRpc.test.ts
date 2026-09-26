@@ -176,9 +176,13 @@ test("capture TỪ CHỐI ghi mẫu mainnet bằng endpoint không phải mainne
   );
 });
 
-test("fixture hiện có đều capture từ devnet, và không mẫu mainnet nào lọt vào", () => {
+test("mỗi fixture được capture bằng endpoint ĐÚNG cluster với mẫu", () => {
   // Bài này chấm dữ liệu THẬT trên đĩa, không chấm mã. Nếu ai đó capture tay bằng
-  // endpoint khác, nó đỏ.
+  // endpoint khác cluster, nó đỏ.
+  //
+  // 26/09: 10 mẫu mainnet được capture bằng endpoint MAINNET (chủ dự án cho phép đọc
+  // mainnet). Điều bài này canh không đổi — mẫu mainnet ghi bằng RPC devnet là ghi một sự
+  // thật KHÁC (ALT/account không tồn tại ở đó); chỉ là giờ mẫu mainnet có fixture hợp lệ.
   if (!existsSync(join(GOC, FIX))) return;
   const mf = JSON.parse(doc("data/benchmark/manifest.json")) as {
     mau: Array<{ id: string; nguonGoc: string }>;
@@ -186,13 +190,12 @@ test("fixture hiện có đều capture từ devnet, và không mẫu mainnet n�
   const nguonGoc = new Map(mf.mau.map((m) => [m.id, m.nguonGoc]));
   for (const f of readdirSync(join(GOC, FIX)).filter((x) => x.endsWith(".json"))) {
     const id = f.slice(0, -5);
-    assert.notEqual(
-      nguonGoc.get(id),
-      "real-mainnet",
-      `${id} là mẫu mainnet mà có fixture — kiểm endpoint đã capture`,
-    );
     const fx = JSON.parse(doc(join(FIX, f))) as { nguon: string; phienBan: number };
-    assert.match(fx.nguon, /devnet/i, `${f}: capture từ "${fx.nguon}", không phải devnet`);
+    if (nguonGoc.get(id) === "real-mainnet") {
+      assert.match(fx.nguon, /mainnet/i, `${f}: mẫu mainnet nhưng capture từ "${fx.nguon}"`);
+    } else {
+      assert.match(fx.nguon, /devnet/i, `${f}: capture từ "${fx.nguon}", không phải devnet`);
+    }
     assert.equal(fx.phienBan, 1, `${f}: phiên bản fixture lạ`);
   }
 });
@@ -219,14 +222,15 @@ test("cả ba file đều nói rõ replay KHÔNG phải thực thi SVM", () => {
 
 test("BENCHMARK.md phân biệt mẫu ĐỦ ĐIỀU KIỆN với mẫu ĐÃ CHẠY", () => {
   /*
-   * `l1-replay` có **29** mẫu đủ điều kiện nhưng chỉ **19** chạy được — 10 mẫu
+   * `l1-replay` có **29** mẫu đủ điều kiện. Tới 25/09 chỉ **19** chạy được — 10 mẫu
    * `real-mainnet` chưa có fixture vì capture từ chối ghi chúng bằng endpoint devnet.
+   * 26/09 chúng được capture bằng endpoint mainnet (chỉ đọc) ⇒ **29/29**.
    *
-   * Ghi mỗi "29/38" thì người đọc hiểu thành "29 mẫu đã chứng minh L1 đúng". Khoảng
-   * cách 10 mẫu đó là **sự thật cần ghi**, không phải chỗ cần lấp.
+   * Ghi mỗi "29/38" thì người đọc hiểu thành "29 mẫu đã chứng minh L1 đúng". Cột "đã
+   * chạy" phải ghi số THẬT, và phải khớp số fixture trên đĩa (bài ở trên).
    */
   const b = doc("docs/BENCHMARK.md");
-  assert.match(b, /19\/29/, "BENCHMARK.md không ghi số mẫu THẬT SỰ chạy được");
+  assert.match(b, /\| 29\/38 \| \*\*29\/29\*\* \|/, "BENCHMARK.md không ghi số mẫu THẬT SỰ chạy được");
 
   /*
    * NEO VÀO HÀNG TIÊU ĐỀ BẢNG, không quét cả trang — và đây là một lỗi đã mắc ngay
@@ -256,7 +260,7 @@ test("số mẫu có fixture khớp con số tài liệu công bố", () => {
    */
   if (!existsSync(join(GOC, FIX))) return;
   const so = readdirSync(join(GOC, FIX)).filter((x) => x.endsWith(".json")).length;
-  assert.equal(so, 19, `có ${so} fixture nhưng tài liệu ghi 19 — chạy lại và cập nhật số`);
+  assert.equal(so, 29, `có ${so} fixture nhưng tài liệu ghi 29 — chạy lại và cập nhật số`);
 });
 
 /* ── Ghép `getMultipleAccountsInfo` theo địa chỉ — sửa hồi quy 25/09 ─────────── */
