@@ -1,0 +1,177 @@
+{
+  "phienBan": 1,
+  "id": "MN-01",
+  "captureLuc": "2026-09-26T16:15:43.719Z",
+  "nguon": "api.mainnet-beta.solana.com",
+  "banGhi": [
+    {
+      "method": "getFeeForMessage",
+      "khoa": "getFeeForMessage:f749366f516a9393",
+      "thamSo": {
+        "msg": "gAEABQwm6HIaUBZnopvDg+yX1icUXmOB/F/R6Rgir0XqnXo7GST0Evw4GnbTXgwHW+PTV5ZJostnm45pYhsGMCzE26T/V61EyHnPJVXdbY5OXTW/CPT6vmBAo0uURT1A3SzfdZN69Iq/Ixk4L/YPa+MHow6dsZYR01tvQMbdzpLMhCGhE48ZD2D81mRl5Kp+o7kmfo6OM19jS0mb9Vzbzzb70mC2wtj9bwiEtyw7kYWbt9TO3Ff0w7PpmOwmwJSaiOFcFQ/EVNxS4bzvmbr6if7+yIKSU5Qvtpaf985qSCLiMPC0ZgMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAhROsqs4cqBrjcT7OFbrLFlnUiCkkx0PD5jYvuJ/uDs6cr4R/byGlXMmKBglHFz2SSGWIUIaF6p2MTSJLZA7KvO1X5vjo+bgs5RuWTu4LKpBjJ0qAGDY8PmAMbtT5LWNP7mq4GDRttgB87suy5/c6D2FxwuRnU5I8EaSP8sm0reOMA4LmM/eS1FfCkbV3TsEAmak9R4JtCiHj7lO73kj0MQMHAAkDAwAAAAAAAAAHAAUCoNkIAAkrDyYAJRsMHRonKB8SDiEgDSITHBkWKRgXFSMQHhQrKgYDCgECBCQRHgUIC08NAgMCAAAmAKgAAACADoBpAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABtQE6qUIaAQAdACEAAAC7EYRoh4tqbAEAAAAAAAAAHqlCGgAAAAABAoTGfVsiQe2Af+0hO41weLLSNeUvaD0tEFEZgHDaBpATCEtNTEorUBozD0cUSQABFQkYCgYNFlECFySh+EZHZ7RJe6ghCL32CnH/Tx+TKacTdRT7bf0tz45VBiAfGx4dIwMcIiE="
+      },
+      "ketQua": {
+        "__loi": "failed to get fee for message: invalid transaction message: Attempted to lookup addresses from a table that does not exist"
+      }
+    },
+    {
+      "method": "getAddressLookupTable",
+      "khoa": "getAddressLookupTable:b8f64cf7fc931906",
+      "thamSo": {
+        "addr": "9wJMxftWBbhhofCo79kyWuYaokv7Y22ZpogHfueTMbeA"
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0",
+          "slot": 450725752
+        },
+        "value": null
+      }
+    },
+    {
+      "method": "getAddressLookupTable",
+      "khoa": "getAddressLookupTable:37080bb26fed919a",
+      "thamSo": {
+        "addr": "3TzvbWWwC6MSsgkf7yZLc6BGsFrjaz9Cs888JeBt2EKN"
+      },
+      "ketQua": {
+        "context": {
+          "apiVersion": "4.3.0",
+          "slot": 450725752
+        },
+        "value": null
+      }
+    },
+    {
+      "method": "getMultipleAccountsInfo",
+      "khoa": "getMultipleAccountsInfo:e240005bdcd53ca7",
+      "thamSo": {
+        "keys": [
+          "3ct4z3q2XHEGTb4Noe3Wh5iySA8e5UZawUXkWAnkfh5J",
+          "3VFYBJS1npEh6RUWZoF5NgsDQiRaTF9gbc2RmVPSGb3U",
+          "6uFi9SxqpE6s9KYFU5R2KBzWGPYLYiyhoaj2qwS4Wsaz",
+          "9Gy1miaranc7LnwkFhCp88YY6anA8d4hyxfkKmXnFZX8",
+          "AdbTv214PiDFCTyuKK7jzumpZUexyJEv4MFCk4x7XHN5",
+          "E7c12M3eUoMpKwmvSEe2o9EmHizu2uLCVBwsPPxp2xV4",
+          "EDPxgF2u5PG2xr2PEgmt3sLnipZ7dGTBxYuUyoC1zuSd",
+          "ComputeBudget111111111111111111111111111111",
+          "9xUdCBUBob7kYg1ph5MCGjzJcG4tLtEm9scuepXb5UnH",
+          "BYdq7NJXWHnTzzCogT6VByrPXvUQwkD5PuZQLS8JvZtw",
+          "GyVNCicZV3jpuYWv5SdN2fA7NsLHZ7wUCBGd7Lrspump",
+          "H3gR53xV4UmwixeAMUqx1ZcZ4pgu9t13dYeCcaYi69QN"
+        ]
+      },
+      "ketQua": [
+        null,
+        null,
+        {
+          "data": {
+            "__buffer": "7Vfm+Oj5uCzlG5ZO7gsqkGMnSoAYNjw+YAxu1PktY0969Iq/Ixk4L/YPa+MHow6dsZYR01tvQMbdzpLMhCGhEwPYJl2zAwcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgcAAAA="
+          },
+          "executable": false,
+          "lamports": 2074080,
+          "owner": {
+            "__pubkey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 170
+        },
+        {
+          "data": {
+            "__buffer": "8ZptBBGxbbz+AABQoBHC/WApLeX6emKT6VY9SpdMyAU2MOlp8K324fT3MO1X5vjo+bgs5RuWTu4LKpBjJ0qAGDY8PmAMbtT5LWNPBpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAHXA20AYv00mLWfLFnCQhc+v0kyG8WCpm1DyIRTJzwQM1etRMh5zyVV3W2OTl01vwj0+r5gQKNLlEU9QN0s33WTjxkPYPzWZGXkqn6juSZ+jo4zX2NLSZv1XNvPNvvSYLZab++nHAAAAEQhgaWH+h/aObfkCwTnjNaZkBQFTCJnMS5SWNs6oIhYAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+          },
+          "executable": false,
+          "lamports": 2985840,
+          "owner": {
+            "__pubkey": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 301
+        },
+        {
+          "data": {
+            "__buffer": "BpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAF69Iq/Ixk4L/YPa+MHow6dsZYR01tvQMbdzpLMhCGhE+dTdgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAADwHR8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          "executable": false,
+          "lamports": 9794007,
+          "owner": {
+            "__pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 165
+        },
+        {
+          "data": {
+            "__buffer": "BpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAGFE6yqzhyoGuNxPs4VussWWdSIKSTHQ8PmNi+4n+4OzqXaewAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAADwHR8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          "executable": false,
+          "lamports": 10156181,
+          "owner": {
+            "__pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 165
+        },
+        null,
+        {
+          "data": {
+            "__buffer": "Y29tcHV0ZV9idWRnZXRfcHJvZ3JhbQ=="
+          },
+          "executable": true,
+          "lamports": 1,
+          "owner": {
+            "__pubkey": "NativeLoader1111111111111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 22
+        },
+        null,
+        {
+          "data": {
+            "__buffer": "AgAAAH2guhyOEv7aeyJDm2yF0+KXmvghEERs5Zlf7j3dZgyo"
+          },
+          "executable": true,
+          "lamports": 1141440,
+          "owner": {
+            "__pubkey": "BPFLoaderUpgradeab1e11111111111111111111111"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 36
+        },
+        {
+          "data": {
+            "__buffer": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAqJLNkV8OBwAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARIAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO1X5vjo+bgs5RuWTu4LKpBjJ0qAGDY8PmAMbtT5LWNPEwCfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7Vfm+Oj5uCzlG5ZO7gsqkGMnSoAYNjw+YAxu1PktY08IAAAAbWVvd2NvaW4EAAAATUVPV0MAAABodHRwczovL2lwZnMuaW8vaXBmcy9RbVlTWTU1c1RlNVFCNnNlQW9abmNOcWVIVEFnTkZuZlhEY0pOb3pDRnJEZFZWAAAAAA=="
+          },
+          "executable": false,
+          "lamports": 3654000,
+          "owner": {
+            "__pubkey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+          },
+          "rentEpoch": 18446744073709552000,
+          "space": 397
+        },
+        null
+      ]
+    },
+    {
+      "method": "simulateTransaction",
+      "khoa": "simulateTransaction:5e43379636e646da",
+      "thamSo": {
+        "msg": "gAEABQwm6HIaUBZnopvDg+yX1icUXmOB/F/R6Rgir0XqnXo7GST0Evw4GnbTXgwHW+PTV5ZJostnm45pYhsGMCzE26T/V61EyHnPJVXdbY5OXTW/CPT6vmBAo0uURT1A3SzfdZN69Iq/Ixk4L/YPa+MHow6dsZYR01tvQMbdzpLMhCGhE48ZD2D81mRl5Kp+o7kmfo6OM19jS0mb9Vzbzzb70mC2wtj9bwiEtyw7kYWbt9TO3Ff0w7PpmOwmwJSaiOFcFQ/EVNxS4bzvmbr6if7+yIKSU5Qvtpaf985qSCLiMPC0ZgMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAhROsqs4cqBrjcT7OFbrLFlnUiCkkx0PD5jYvuJ/uDs6cr4R/byGlXMmKBglHFz2SSGWIUIaF6p2MTSJLZA7KvO1X5vjo+bgs5RuWTu4LKpBjJ0qAGDY8PmAMbtT5LWNP7mq4GDRttgB87suy5/c6D2FxwuRnU5I8EaSP8sm0reOMA4LmM/eS1FfCkbV3TsEAmak9R4JtCiHj7lO73kj0MQMHAAkDAwAAAAAAAAAHAAUCoNkIAAkrDyYAJRsMHRonKB8SDiEgDSITHBkWKRgXFSMQHhQrKgYDCgECBCQRHgUIC08NAgMCAAAmAKgAAACADoBpAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABtQE6qUIaAQAdACEAAAC7EYRoh4tqbAEAAAAAAAAAHqlCGgAAAAABAoTGfVsiQe2Af+0hO41weLLSNeUvaD0tEFEZgHDaBpATCEtNTEorUBozD0cUSQABFQkYCgYNFlECFySh+EZHZ7RJe6ghCL32CnH/Tx+TKacTdRT7bf0tz45VBiAfGx4dIwMcIiE=",
+        "addresses": [
+          "3ct4z3q2XHEGTb4Noe3Wh5iySA8e5UZawUXkWAnkfh5J",
+          "6uFi9SxqpE6s9KYFU5R2KBzWGPYLYiyhoaj2qwS4Wsaz",
+          "AdbTv214PiDFCTyuKK7jzumpZUexyJEv4MFCk4x7XHN5",
+          "E7c12M3eUoMpKwmvSEe2o9EmHizu2uLCVBwsPPxp2xV4",
+          "GyVNCicZV3jpuYWv5SdN2fA7NsLHZ7wUCBGd7Lrspump",
+          "3VFYBJS1npEh6RUWZoF5NgsDQiRaTF9gbc2RmVPSGb3U",
+          "9Gy1miaranc7LnwkFhCp88YY6anA8d4hyxfkKmXnFZX8",
+          "EDPxgF2u5PG2xr2PEgmt3sLnipZ7dGTBxYuUyoC1zuSd"
+        ]
+      },
+      "ketQua": {
+        "__loi": "failed to simulate transaction: invalid transaction: Transaction loads an address table account that doesn't exist"
+      }
+    }
+  ]
+}

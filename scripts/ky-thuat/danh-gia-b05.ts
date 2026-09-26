@@ -4,7 +4,7 @@
  *   node --experimental-strip-types scripts/ky-thuat/danh-gia-b05.ts
  *   npm run danh-gia-b05
  *
- * **KHÔNG CHẠM MẠNG.** Chạy `extractFacts` sản xuất trên 19 fixture RPC đã ghi.
+ * **KHÔNG CHẠM MẠNG.** Chạy `extractFacts` sản xuất trên mọi fixture RPC đã ghi (29 từ 26/09).
  *
  * BA ĐIỀU THẺ CẤM, VÀ TRANG NÀY TUÂN CẢ BA:
  *
@@ -70,7 +70,7 @@ const TINH_CHAT: TinhChat[] = [
     apDung: (f) => f.simulationOk === false,
     dat: (f) => f.accounts.length === 0 && Object.keys(f.solDelta).length === 0,
     daChungMinh:
-      "gỡ vế `!v.err` khỏi `coDuLieuAccount` ⇒ 4/4 tụt còn 1/4",
+      "gỡ vế `!v.err` khỏi `coDuLieuAccount` ⇒ 14/14 tụt còn 5/14 (đo lại 26/09 trên 29 fixture)",
   },
   {
     ma: "P2",
@@ -80,7 +80,7 @@ const TINH_CHAT: TinhChat[] = [
       "chỗ trống mang hình dạng dữ liệu, phải được khai là không đo được",
     apDung: (f) => f.simulationOk === false,
     dat: (f) => (f.accountKhongDoDuoc ?? []).length > 0,
-    daChungMinh: "tắt nhánh ghi account khuyết ⇒ 4/4 tụt còn 0/4",
+    daChungMinh: "tắt nhánh ghi account khuyết ⇒ 14/14 tụt còn 0/14 (đo lại 26/09 trên 29 fixture)",
   },
   {
     ma: "P3",
@@ -91,13 +91,13 @@ const TINH_CHAT: TinhChat[] = [
     /*
      * CHƯA CHỨNG MINH ĐƯỢC, và ghi ra thay vì đếm nó vào điểm.
      *
-     * Mẫu duy nhất kích hoạt P3 là `R10-pos`, và mẫu đó cũng có `simulationOk: false`.
+     * Mọi mẫu kích hoạt P3 (`R10-pos` và, từ 26/09, 5 mẫu mainnet) đều có `simulationOk: false`.
      * Nên fail-safe 1 đã nâng verdict lên `warning` trước khi lớp ALT kịp làm gì —
      * tắt fail-safe 3 hay tắt luật 10 đều không kéo P3 xuống được.
      *
      * Cùng hình dạng với phát hiện FS3 ở TB-B04: hai lớp chồng nhau, không tách được
      * bằng dữ liệu hiện có. Muốn tách cần một mẫu **ALT hỏng mà mô phỏng THÀNH CÔNG**,
-     * và bộ 19 fixture không có mẫu nào như vậy. Dựng nó cần Devnet.
+     * và bộ 29 fixture không có mẫu nào như vậy. Dựng nó cần Devnet.
      */
     daChungMinh: "",
   },
@@ -127,7 +127,7 @@ for (const m of hoSo.mau) {
     lyDo: !m.giaoDich
       ? "không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp"
       : m.nguonGoc === "real-mainnet"
-        ? "mẫu mainnet: `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó"
+        ? "mẫu mainnet chưa có fixture — capture bằng endpoint MAINNET (`capture-rpc.ts` từ chối endpoint devnet)"
         : "chưa capture fixture",
   });
 }
