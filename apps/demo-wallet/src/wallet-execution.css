@@ -21,7 +21,7 @@
    toàn chiều rộng phía trên header (hai thanh điều hướng chồng nhau). */
 .wallet-surface-bar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;width:fit-content;max-width:100%;margin:4px 0 22px;padding:4px;background:#e6ece2;border:1px solid #c5d3c3;border-radius:10px}
 .wallet-surface-bar span{margin:0 8px 0 4px;font-size:11px}
-@media(max-width:650px){.wallet-surface-bar{width:100%;padding:4px;margin:0 0 16px}.wallet-surface-bar button{flex:1 1 0}.wallet-surface-bar span{width:100%;margin:2px 4px 4px;padding-left:0}}
+@media(max-width:650px){.wallet-surface-bar{width:100%;padding:4px;margin:0 0 16px}.wallet-surface-bar button{flex:1 1 0;min-height:44px}.wallet-surface-bar span{width:100%;margin:2px 4px 4px;padding-left:0}}
 /* Điện thoại: yêu cầu ký/kết quả lên trước cột ví; lúc rảnh bỏ hình trang trí cho trang ngắn lại. */
 @media(max-width:650px){.wallet-execution .review-card[data-noi-bat="1"]{order:-1}.wallet-execution .review-card:not([data-noi-bat]) .demo-scan-art{display:none}}
 @media(max-width:650px){.wallet-execution .review-card:not([data-noi-bat]) .wallet-expectations{display:none}}
