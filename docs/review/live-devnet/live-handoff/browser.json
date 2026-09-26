@@ -1,0 +1,11 @@
+{
+  "sends": 1,
+  "errors": [],
+  "checks": [
+    "dApp current-session handoff -> actual inspect danger -> cancel -> zero transaction sends beyond setup",
+    "guest uses isolated address; reload retains address and locks signer; no setup/funding auto-send"
+  ],
+  "dapp": "http://127.0.0.1:5192/Custos-Solana/tan-cong/?custosLive=da6474cd-95ea-43a8-adce-a9571edbf0f4",
+  "axe": [],
+  "passed": true
+}

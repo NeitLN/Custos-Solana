@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: nhận JSON hợp lệ
+ok 1 - nhận JSON hợp lệ
+  ---
+  duration_ms: 0.8868
+  type: 'test'
+  ...
+# Subtest: nhận JSON bọc trong khối mã — mô hình hay làm vậy
+ok 2 - nhận JSON bọc trong khối mã — mô hình hay làm vậy
+  ---
+  duration_ms: 0.2448
+  type: 'test'
+  ...
+# Subtest: TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch an toàn
+ok 3 - TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch an toàn
+  ---
+  duration_ms: 0.1037
+  type: 'test'
+  ...
+# Subtest: VẪN CHO PHÉP mô tả hậu quả — không được chặn nhầm chữ bình thường
+ok 4 - VẪN CHO PHÉP mô tả hậu quả — không được chặn nhầm chữ bình thường
+  ---
+  duration_ms: 0.0947
+  type: 'test'
+  ...
+# Subtest: TỪ CHỐI đầu ra sai schema
+ok 5 - TỪ CHỐI đầu ra sai schema
+  ---
+  duration_ms: 0.2315
+  type: 'test'
+  ...
+# Subtest: bỏ qua trường lạ — mô hình KHÔNG thể chen `level` vào
+ok 6 - bỏ qua trường lạ — mô hình KHÔNG thể chen `level` vào
+  ---
+  duration_ms: 0.0841
+  type: 'test'
+  ...
+# Subtest: mô hình KHÔNG hạ được aiAdvisory mà lõi xác định đã nêu
+ok 7 - mô hình KHÔNG hạ được aiAdvisory mà lõi xác định đã nêu
+  ---
+  duration_ms: 9.937
+  type: 'test'
+  ...
+# Subtest: mô hình NÂNG được aiAdvisory khi lõi không thấy gì
+ok 8 - mô hình NÂNG được aiAdvisory khi lõi không thấy gì
+  ---
+  duration_ms: 0.2688
+  type: 'test'
+  ...
+# Subtest: mô hình NÉM LỖI ⇒ rơi về lõi xác định, không sập
+ok 9 - mô hình NÉM LỖI ⇒ rơi về lõi xác định, không sập
+  ---
+  duration_ms: 0.3525
+  type: 'test'
+  ...
+# Subtest: mô hình TRẢ RÁC ⇒ dùng câu của lõi xác định, không hiện rác cho người dùng
+ok 10 - mô hình TRẢ RÁC ⇒ dùng câu của lõi xác định, không hiện rác cho người dùng
+  ---
+  duration_ms: 0.3182
+  type: 'test'
+  ...
+# Subtest: mô hình TREO ⇒ thời hạn cắt, người dùng vẫn có câu trả lời
+ok 11 - mô hình TREO ⇒ thời hạn cắt, người dùng vẫn có câu trả lời
+  ---
+  duration_ms: 151.1748
+  type: 'test'
+  ...
+# Subtest: TÊN TOKEN chứa câu ra lệnh KHÔNG tới được mô hình
+ok 12 - TÊN TOKEN chứa câu ra lệnh KHÔNG tới được mô hình
+  ---
+  duration_ms: 0.7064
+  type: 'test'
+  ...
+# Subtest: KÝ HIỆU TOKEN hợp lệ vẫn dùng được — không chặn quá tay
+ok 13 - KÝ HIỆU TOKEN hợp lệ vẫn dùng được — không chặn quá tay
+  ---
+  duration_ms: 0.5645
+  type: 'test'
+  ...
+# Subtest: KỂ CẢ khi mô hình bị lái hoàn toàn, câu trấn an vẫn không tới người dùng
+ok 14 - KỂ CẢ khi mô hình bị lái hoàn toàn, câu trấn an vẫn không tới người dùng
+  ---
+  duration_ms: 0.2519
+  type: 'test'
+  ...
+# Subtest: mô hình KHÔNG BAO GIỜ nhận giao dịch thô — chỉ nhận dữ kiện đã bóc
+ok 15 - mô hình KHÔNG BAO GIỜ nhận giao dịch thô — chỉ nhận dữ kiện đã bóc
+  ---
+  duration_ms: 0.7663
+  type: 'test'
+  ...
+# Subtest: dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn vị thô
+ok 16 - dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn vị thô
+  ---
+  duration_ms: 0.25
+  type: 'test'
+  ...
+# Subtest: system prompt cấm mô hình kết luận an toàn hay nguy hiểm
+ok 17 - system prompt cấm mô hình kết luận an toàn hay nguy hiểm
+  ---
+  duration_ms: 0.1112
+  type: 'test'
+  ...
+# Subtest: NEO · địa chỉ đầy đủ trong lời văn là bịa — mô hình không hề nhận được cái nào
+ok 18 - NEO · địa chỉ đầy đủ trong lời văn là bịa — mô hình không hề nhận được cái nào
+  ---
+  duration_ms: 0.0537
+  type: 'test'
+  ...
+# Subtest: NEO · số không có trong dữ liệu đã gửi thì bị từ chối
+ok 19 - NEO · số không có trong dữ liệu đã gửi thì bị từ chối
+  ---
+  duration_ms: 0.0506
+  type: 'test'
+  ...
+# Subtest: NEO · địa chỉ viết tắt vẫn dùng được — không chặn quá tay
+ok 20 - NEO · địa chỉ viết tắt vẫn dùng được — không chặn quá tay
+  ---
+  duration_ms: 0.0517
+  type: 'test'
+  ...
+# Subtest: NEO · không truyền neo thì giữ nguyên hành vi cũ
+ok 21 - NEO · không truyền neo thì giữ nguyên hành vi cũ
+  ---
+  duration_ms: 0.0279
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · loại lạ bị vứt
+ok 22 - NEO HÀNH ĐỘNG · loại lạ bị vứt
+  ---
+  duration_ms: 0.0276
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · token không có trong dữ liệu đã gửi thì bị vứt
+ok 23 - NEO HÀNH ĐỘNG · token không có trong dữ liệu đã gửi thì bị vứt
+  ---
+  duration_ms: 0.0435
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · null vẫn là null, không tự dựng hành động
+ok 24 - NEO HÀNH ĐỘNG · null vẫn là null, không tự dựng hành động
+  ---
+  duration_ms: 0.0234
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình
+ok 25 - NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình
+  ---
+  duration_ms: 0.2768
+  type: 'test'
+  ...
+# Subtest: CHIỀU · nói người ký NHẬN trong khi tài sản đang RA thì bị vứt
+ok 26 - CHIỀU · nói người ký NHẬN trong khi tài sản đang RA thì bị vứt
+  ---
+  duration_ms: 0.1304
+  type: 'test'
+  ...
+# Subtest: CHIỀU · lời văn ĐÚNG chiều phải đi lọt
+ok 27 - CHIỀU · lời văn ĐÚNG chiều phải đi lọt
+  ---
+  duration_ms: 0.0359
+  type: 'test'
+  ...
+# Subtest: CHIỀU · không xác định được chiều thì KHÔNG chặn
+ok 28 - CHIỀU · không xác định được chiều thì KHÔNG chặn
+  ---
+  duration_ms: 0.0249
+  type: 'test'
+  ...
+# Subtest: CHIỀU · câu nói CẢ HAI vế thì không bị coi là ngược
+ok 29 - CHIỀU · câu nói CẢ HAI vế thì không bị coi là ngược
+  ---
+  duration_ms: 0.0459
+  type: 'test'
+  ...
+# Subtest: CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví
+ok 30 - CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví
+  ---
+  duration_ms: 0.0485
+  type: 'test'
+  ...
+# Subtest: chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào
+ok 31 - chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào
+  ---
+  duration_ms: 0.0626
+  type: 'test'
+  ...
+# Subtest: ÂM TÍNH · câu mô tả hậu quả bình thường vẫn đi lọt
+ok 32 - ÂM TÍNH · câu mô tả hậu quả bình thường vẫn đi lọt
+  ---
+  duration_ms: 0.0591
+  type: 'test'
+  ...
+# Subtest: mô phỏng hỏng ⇒ chặn câu nói người ký SẼ NHẬN
+ok 33 - mô phỏng hỏng ⇒ chặn câu nói người ký SẼ NHẬN
+  ---
+  duration_ms: 0.0338
+  type: 'test'
+  ...
+# Subtest: không được nói về hành vi nặng mà L2 chưa gắn mã
+ok 34 - không được nói về hành vi nặng mà L2 chưa gắn mã
+  ---
+  duration_ms: 0.0325
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 498.0121

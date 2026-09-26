@@ -49,7 +49,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 38 mẫu dữ liệu · 1042 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 38 mẫu dữ liệu · 1136 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá.
 
@@ -97,6 +97,7 @@ Những điều dưới đây đến từ 5 vòng phản biện. Mỗi điều �
 5. **Không có smart contract, không ghi gì lên chain.** Custos là lớp đọc và mô phỏng. Anchor program, memo on-chain, registry đặt cọc đều đã bị loại khỏi bản thi.
 6. **Không phóng đại mối đe doạ.** Token-2022 Permanent Delegate, Transfer Hook, và Address Lookup Table đều là **năng lực hợp lệ của giao thức**, có ca dùng chính đáng. Chỉ gắn cờ khi kết hợp hành vi cụ thể trong chính giao dịch đang xét. Gắn Đỏ cho sự tồn tại của một tính năng là cách nhanh nhất tạo false positive.
 7. **Demo phải trung thực.** Bảng chênh lệch hiển thị đúng những gì giao dịch làm. `SetAuthority` chỉ lấy *quyền kiểm soát*, không rút tiền — nếu hiển thị 500 → 0 thì giao dịch phải thật sự chứa `Transfer`. Thể lệ BTC: trình bày sai về mức hoàn thiện bị trừ điểm hoặc loại.
+8. **Ví demo cố định: `AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ` — KHÔNG được đổi, KHÔNG tạo ví demo mới.** Chủ dự án chốt 26/09/2026. Mọi demo (ví mẫu, trang tấn công, script Devnet, hiện trường) dùng ví này; nạp SOL Devnet từ https://faucet.solana.com/. Khoá chỉ ở `.devnet/vi-demo.json` (gitignore); ký thật chỉ ở màn thực thi của ví mẫu, bằng file đó — không còn `VITE_DEMO_SECRET` (26/09); ví cũ `2EjYM…` chỉ còn bản sao lưu. Hết SOL thì nạp thêm vào ĐÚNG ví này. Guard: `apps/demo-wallet/test/viDemoCoDinh.test.ts`.
 
 ## Giao kèo kiểu dữ liệu — đóng băng, không đổi
 

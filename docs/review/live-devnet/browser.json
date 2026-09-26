@@ -1,0 +1,117 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/thuc-chien.html",
+  "console": [
+    "Failed to load resource: the server responded with a status of 429 ()"
+  ],
+  "sends": [
+    {
+      "method": "sendTransaction"
+    },
+    {
+      "method": "sendTransaction"
+    }
+  ],
+  "receipts": [
+    {
+      "signature": "3wWzfC49DvgiG2Z6azKaEqU5FjZQ2iGQUbSDGrLbBKaufNDvtqVRwDLjmappwJ3nNjZ7TAHhmu1bEp4Ww58xmf9h",
+      "cluster": "devnet",
+      "kind": "transfer",
+      "protected": true,
+      "prediction": {
+        "source": "FdjNBAWBeQ73qKARgS3WDgoGHsgZ5pDjdE5x1M7rBPSR",
+        "mint": "FvtCbN6rQUakidfTC5GduVcNf9bf94tCcBsnBtEc9RSU",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "490000000",
+        "ownerAfter": null,
+        "message": "5fMtF6AgbcGZ1rZrVBQQSf7FnjHspTCqyFUtBw365m9Xh3GSgVbt8nyMtNStnAXcV1zKM1PF8w2c9VbCtBPJqN5ZXCJ27ziQNzTgeMFYcoshrHiUSMyjADoQk3Zvn81mp2KtdaVRSFKRkQygaT2mXJuPqGRW3bm1HT8Yiu2L9RBYyTAvCghwvnGYWpTsJizgg9Brxc2RAgc6Yex7gc9wht6vGutDETL6vuN3tTnh9LAc9NyLtj3FJix7q"
+      },
+      "observation": {
+        "message": "5fMtF6AgbcGZ1rZrVBQQSf7FnjHspTCqyFUtBw365m9Xh3GSgVbt8nyMtNStnAXcV1zKM1PF8w2c9VbCtBPJqN5ZXCJ27ziQNzTgeMFYcoshrHiUSMyjADoQk3Zvn81mp2KtdaVRSFKRkQygaT2mXJuPqGRW3bm1HT8Yiu2L9RBYyTAvCghwvnGYWpTsJizgg9Brxc2RAgc6Yex7gc9wht6vGutDETL6vuN3tTnh9LAc9NyLtj3FJix7q",
+        "slot": 503881324,
+        "err": null,
+        "fee": 5000,
+        "keys": [
+          "5UUo3B7gfRr8Bu8G8E8RQbKAYu1TU9oRxPGrKvzoVYgZ",
+          "FdjNBAWBeQ73qKARgS3WDgoGHsgZ5pDjdE5x1M7rBPSR",
+          "C7cGib5GhmKa2LYMis9S25HXCXWro4TKt6YLuoVQopeB",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "FvtCbN6rQUakidfTC5GduVcNf9bf94tCcBsnBtEc9RSU",
+            "owner": "5UUo3B7gfRr8Bu8G8E8RQbKAYu1TU9oRxPGrKvzoVYgZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "FvtCbN6rQUakidfTC5GduVcNf9bf94tCcBsnBtEc9RSU",
+            "owner": "DW58YCaNJvzHutEnAjzMMkKUEWQ13XomLLgAaqSd2kMy",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "FvtCbN6rQUakidfTC5GduVcNf9bf94tCcBsnBtEc9RSU",
+            "owner": "5UUo3B7gfRr8Bu8G8E8RQbKAYu1TU9oRxPGrKvzoVYgZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "490000000",
+              "decimals": 6,
+              "uiAmount": 490,
+              "uiAmountString": "490"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "FvtCbN6rQUakidfTC5GduVcNf9bf94tCcBsnBtEc9RSU",
+            "owner": "DW58YCaNJvzHutEnAjzMMkKUEWQ13XomLLgAaqSd2kMy",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "10000000",
+              "decimals": 6,
+              "uiAmount": 10,
+              "uiAmountString": "10"
+            }
+          }
+        ],
+        "owner": "5UUo3B7gfRr8Bu8G8E8RQbKAYu1TU9oRxPGrKvzoVYgZ",
+        "ownerSlot": 503881338
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "490000000",
+        "balance": "match",
+        "authority": "unknown"
+      },
+      "createdAt": "2026-09-25T07:33:03.812Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
+    }
+  ],
+  "checks": [
+    "isolated setup confirmed: 500 DEMO",
+    "protected ordinary transfer confirmed with matching metadata"
+  ],
+  "funding": {
+    "cluster": "devnet",
+    "recipient": "5UUo3B7gfRr8Bu8G8E8RQbKAYu1TU9oRxPGrKvzoVYgZ",
+    "lamports": 30000000,
+    "signature": "5sFsnBu22pv3cWWg2qvhKZqjYyewWkSivVMZtAQTCMrQdAzUysTgNZhgCeJfzmABhYPhrgGqxCvjHA8ZwJjsnCSh"
+  },
+  "passed": false,
+  "error": "failed to get recent blockhash: Error: 429 : {\"jsonrpc\":\"2.0\",\"error\":{\"code\": 429, \"message\":\"Connection rate limits exceeded\"}, \"id\": \"573fb0d5-8eaa-4e0c-b2ee-639152fe458f\" }"
+}

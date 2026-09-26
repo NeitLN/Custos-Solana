@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "two tabs: foreign pending cache blocks stale controller and is not overwritten (fault fixture; no transaction sent)",
+    "new tab cannot discard a saved unresolved send through the UI",
+    "restore discards cached success/prediction; read-only query obtains actual historic Devnet metadata"
+  ],
+  "writes": [],
+  "errors": [],
+  "axe": {
+    "1440": [],
+    "375": []
+  },
+  "passed": true
+}

@@ -266,7 +266,7 @@ Năm lỗi dưới đây đều **của chính tôi**, và mỗi lỗi mất ít
 npm run check                  # typecheck + 716 test
 npm run so-lieu                # ĐO LẠI rồi mới đồng bộ tài liệu — đừng gọi lẻ
 npm run nop-bai -- --strict    # cổng nộp bài, 13 ô
-npm run replay-rpc             # replay offline, 19/29 fixture
+npm run replay-rpc             # replay offline, 29/29 fixture
 npm run doi-khang              # 5 probe đối kháng, offline
 npm run thu-tich-hop:deterministic   # 14 kiểm, fixture, không mạng
 npm run thu-tich-hop:devnet    # CẦN MẠNG + DNS — đang hỏng, mục 1.1

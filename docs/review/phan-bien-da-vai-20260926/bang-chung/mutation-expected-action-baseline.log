@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: inspect() trả về InspectResult hợp lệ theo hợp đồng
+ok 1 - inspect() trả về InspectResult hợp lệ theo hợp đồng
+  ---
+  duration_ms: 30.5789
+  type: 'test'
+  ...
+# Subtest: vắng L3 thì sản phẩm vẫn chạy — verdict và mã lý do nguyên vẹn
+ok 2 - vắng L3 thì sản phẩm vẫn chạy — verdict và mã lý do nguyên vẹn
+  ---
+  duration_ms: 4.0437
+  type: 'test'
+  ...
+# Subtest: L3 NÉM LỖI cũng không được làm sập lượt kiểm tra
+ok 3 - L3 NÉM LỖI cũng không được làm sập lượt kiểm tra
+  ---
+  duration_ms: 1.2582
+  type: 'test'
+  ...
+# Subtest: L3 KHÔNG thể sửa được level — kiểu dữ liệu chặn từ đầu
+ok 4 - L3 KHÔNG thể sửa được level — kiểu dữ liệu chặn từ đầu
+  ---
+  duration_ms: 1.1965
+  type: 'test'
+  ...
+# Subtest: expectedAction LỆCH ⇒ nâng nghi ngờ
+ok 5 - expectedAction LỆCH ⇒ nâng nghi ngờ
+  ---
+  duration_ms: 1.1842
+  type: 'test'
+  ...
+# Subtest: expectedAction KHỚP ⇒ KHÔNG tắt cảnh báo nào (dApp độc hại khai đúng được)
+ok 6 - expectedAction KHỚP ⇒ KHÔNG tắt cảnh báo nào (dApp độc hại khai đúng được)
+  ---
+  duration_ms: 0.8801
+  type: 'test'
+  ...
+# Subtest: định dạng số theo kiểu Việt Nam
+ok 7 - định dạng số theo kiểu Việt Nam
+  ---
+  duration_ms: 9.9613
+  type: 'test'
+  ...
+# Subtest: QA · aiAdvisory lạ từ L3 bị ép về null, không lọt ra hợp đồng
+ok 8 - QA · aiAdvisory lạ từ L3 bị ép về null, không lọt ra hợp đồng
+  ---
+  duration_ms: 6.0666
+  type: 'test'
+  ...
+# Subtest: QA · aiAdvisory HỢP LỆ vẫn đi qua — đối chứng
+ok 9 - QA · aiAdvisory HỢP LỆ vẫn đi qua — đối chứng
+  ---
+  duration_ms: 0.9669
+  type: 'test'
+  ...
+# Subtest: QA · L3 trả kiểu SAI HẲN không làm vỡ hợp đồng
+ok 10 - QA · L3 trả kiểu SAI HẲN không làm vỡ hợp đồng
+  ---
+  duration_ms: 4.2711
+  type: 'test'
+  ...
+# Subtest: QA · chữ do L3 sinh bị giới hạn độ dài trước khi vào kết quả
+ok 11 - QA · chữ do L3 sinh bị giới hạn độ dài trước khi vào kết quả
+  ---
+  duration_ms: 1.5133
+  type: 'test'
+  ...
+# Subtest: dApp khai `transfer` cho một lệnh chuyển token ⇒ KHÔNG bị ghi là lệch
+ok 12 - dApp khai `transfer` cho một lệnh chuyển token ⇒ KHÔNG bị ghi là lệch
+  ---
+  duration_ms: 60.1148
+  type: 'test'
+  ...
+# Subtest: khai bằng đúng chữ L3 dùng (`chuyển token`) cũng khớp
+ok 13 - khai bằng đúng chữ L3 dùng (`chuyển token`) cũng khớp
+  ---
+  duration_ms: 5.4825
+  type: 'test'
+  ...
+# Subtest: dApp khai `airdrop`/`swap`/`approve` cho một lệnh CHUYỂN tiền đi ⇒ VẪN lệch
+ok 14 - dApp khai `airdrop`/`swap`/`approve` cho một lệnh CHUYỂN tiền đi ⇒ VẪN lệch
+  ---
+  duration_ms: 11.309
+  type: 'test'
+  ...
+# Subtest: bảng lời khai là MỘT CHIỀU và không nhận tên lạ
+ok 15 - bảng lời khai là MỘT CHIỀU và không nhận tên lạ
+  ---
+  duration_ms: 0.3345
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3013.7612

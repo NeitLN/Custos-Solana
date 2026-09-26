@@ -1,0 +1,111 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/thuc-chien.html",
+  "signature": "4mCyh8LVT5jF3ZSjxHMrScVwWJ73bsXuFbv7pTZNohVdmyDfuLNmfM3d8RsneSAeZDQXtfB1Hniat1bbzqh45BiC",
+  "mode": "query-only persisted evidence recovery",
+  "writes": [],
+  "console": [],
+  "viewports": [
+    {
+      "width": 1440,
+      "axe": [],
+      "overflow": false,
+      "tableFocusable": true
+    },
+    {
+      "width": 375,
+      "axe": [],
+      "overflow": false,
+      "tableFocusable": true
+    }
+  ],
+  "receipt": {
+    "signature": "4mCyh8LVT5jF3ZSjxHMrScVwWJ73bsXuFbv7pTZNohVdmyDfuLNmfM3d8RsneSAeZDQXtfB1Hniat1bbzqh45BiC",
+    "cluster": "devnet",
+    "kind": "attack",
+    "protected": false,
+    "prediction": {
+      "source": "63Hb5D5qqbdkN1U9ohXXkhpdwu3TumkUSDWivEy2paAR",
+      "mint": "5tL42YYQ9XojxF995FNj1kpkNJFR8sgKtzBBBWNYAVwQ",
+      "decimals": 6,
+      "before": "490000000",
+      "after": "245000000",
+      "ownerAfter": "Byh6uZJRkPWh9FWii7znPoUmZcKApc4vb8H79DRHJjB6",
+      "message": "22HymaiHoB11i4t3cNc8RMMFjW9t6sVbmPRsPatGuBaXzfLFVGjmUuAuG4zi9Qz2LPzCkrHbzLsvsocGVYwynegFzcs2gKYSTutitzHJAzatWnbzfu9ieCNpyYXrvDVLphFQAnF4ufc7g5fhmw6qwUFAhUTKVRURXq5652djNmRd8qBfqs91KHNPvLfbVS4iEPqKmTKeVNw8EvmNbnHHTdYJDq9ndxruCyxtd2VdyQDaGEqEgeYearnfeTvAEspLb1xmm4Lvp5bJak7SA82hdz4ebYCufrC2bfLJ9bvUP8ypgH9h"
+    },
+    "observation": {
+      "message": "22HymaiHoB11i4t3cNc8RMMFjW9t6sVbmPRsPatGuBaXzfLFVGjmUuAuG4zi9Qz2LPzCkrHbzLsvsocGVYwynegFzcs2gKYSTutitzHJAzatWnbzfu9ieCNpyYXrvDVLphFQAnF4ufc7g5fhmw6qwUFAhUTKVRURXq5652djNmRd8qBfqs91KHNPvLfbVS4iEPqKmTKeVNw8EvmNbnHHTdYJDq9ndxruCyxtd2VdyQDaGEqEgeYearnfeTvAEspLb1xmm4Lvp5bJak7SA82hdz4ebYCufrC2bfLJ9bvUP8ypgH9h",
+      "slot": 503885190,
+      "err": null,
+      "fee": 5000,
+      "keys": [
+        "AETHo3dfgtDokCfAEPH96NWRrzuJ7p3EfwzGbzerbTP8",
+        "63Hb5D5qqbdkN1U9ohXXkhpdwu3TumkUSDWivEy2paAR",
+        "G2Bf2rdheDjJ1TKArLLjh82fSREjwFgxpmMqW1vQHmqL",
+        "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      ],
+      "pre": [
+        {
+          "accountIndex": 1,
+          "mint": "5tL42YYQ9XojxF995FNj1kpkNJFR8sgKtzBBBWNYAVwQ",
+          "owner": "AETHo3dfgtDokCfAEPH96NWRrzuJ7p3EfwzGbzerbTP8",
+          "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "uiTokenAmount": {
+            "amount": "490000000",
+            "decimals": 6,
+            "uiAmount": 490,
+            "uiAmountString": "490"
+          }
+        },
+        {
+          "accountIndex": 2,
+          "mint": "5tL42YYQ9XojxF995FNj1kpkNJFR8sgKtzBBBWNYAVwQ",
+          "owner": "Byh6uZJRkPWh9FWii7znPoUmZcKApc4vb8H79DRHJjB6",
+          "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "uiTokenAmount": {
+            "amount": "10000000",
+            "decimals": 6,
+            "uiAmount": 10,
+            "uiAmountString": "10"
+          }
+        }
+      ],
+      "post": [
+        {
+          "accountIndex": 1,
+          "mint": "5tL42YYQ9XojxF995FNj1kpkNJFR8sgKtzBBBWNYAVwQ",
+          "owner": "Byh6uZJRkPWh9FWii7znPoUmZcKApc4vb8H79DRHJjB6",
+          "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "uiTokenAmount": {
+            "amount": "245000000",
+            "decimals": 6,
+            "uiAmount": 245,
+            "uiAmountString": "245"
+          }
+        },
+        {
+          "accountIndex": 2,
+          "mint": "5tL42YYQ9XojxF995FNj1kpkNJFR8sgKtzBBBWNYAVwQ",
+          "owner": "Byh6uZJRkPWh9FWii7znPoUmZcKApc4vb8H79DRHJjB6",
+          "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "uiTokenAmount": {
+            "amount": "255000000",
+            "decimals": 6,
+            "uiAmount": 255,
+            "uiAmountString": "255"
+          }
+        }
+      ],
+      "owner": "Byh6uZJRkPWh9FWii7znPoUmZcKApc4vb8H79DRHJjB6",
+      "ownerSlot": 503887665
+    },
+    "comparison": {
+      "actualBefore": "490000000",
+      "actualAfter": "245000000",
+      "balance": "match",
+      "authority": "match"
+    },
+    "createdAt": "2026-09-25T07:43:44.010Z",
+    "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
+  },
+  "passed": true
+}
