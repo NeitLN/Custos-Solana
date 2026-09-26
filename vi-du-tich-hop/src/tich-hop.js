@@ -44,7 +44,7 @@ function coHan(viec, ms) {
  *
  * @returns {Promise<{
  *   cho: "ky"|"hoi"|"chan",
- *   lyDo: "khong_van_de"|"coverage_khuyet"|"phat_hien"|"khong_kiem_duoc",
+ *   lyDo: "khong_van_de"|"coverage_khuyet"|"de_nghi_kiem_tra"|"phat_hien"|"khong_kiem_duoc",
  *   ketQua: object|null,
  *   loi: string|null,
  * }>}
@@ -80,5 +80,8 @@ export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNgu
   if (r.coverage && r.coverage.analyzed < r.coverage.total) {
     return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
+  // Custos đề nghị kiểm tra thủ công (lớp diễn giải, hoặc lời khai của dApp lệch). Không
+  // đổi `level` — nhưng bỏ qua nó thì đề nghị ấy không bao giờ tới người dùng.
+  if (r.aiAdvisory === "review_required") return { cho: "hoi", lyDo: "de_nghi_kiem_tra", ketQua: r, loi: null };
   return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
 }

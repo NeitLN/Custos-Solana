@@ -32,9 +32,9 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 | | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **8,4 giây** — trung vị 10 lượt trên 9 bản dựng, dải 6,6–13,1 |
-| Dòng mã tích hợp | **30** (`src/tich-hop.js`) |
-| Một lượt `inspect()` | **638 ms** — trung vị 10 lượt trên 9 bản dựng |
+| Cài đặt → kết quả đầu tiên | **8,4 giây** — trung vị 10 lượt trên 9 bản dựng, dải 6,6–13,2 |
+| Dòng mã tích hợp | **31** (`src/tich-hop.js`) |
+| Một lượt `inspect()` | **639 ms** — trung vị 10 lượt trên 9 bản dựng |
 | Cần khoá riêng | **không** — `inspect()` mô phỏng, mô phỏng không đòi chữ ký |
 | Cần khoá API mô hình | **không** — đường tất định `dienGiaiKhongAI` |
 
@@ -48,12 +48,12 @@ dApp thật đã có sẵn những địa chỉ đó; nó không lấy chúng t�
 
 ## Ba ràng buộc bên tích hợp phải giữ
 
-Ba ràng buộc dưới đây nằm trong `src/tich-hop.js` — **30 dòng**, đọc hết được.
+Ba ràng buộc dưới đây nằm trong `src/tich-hop.js` — **31 dòng**, đọc hết được.
 
 **Hợp đồng KÝ nằm ở file khác: `src/ky.js`.** Tách có chủ ý — `tich-hop.js` là phần
 gọi Custos, `ky.js` là phần ví tự quyết định làm gì với câu trả lời. Custos trả thông
 tin; policy chặn/hỏi/ký là của bên tích hợp. Trộn hai thứ làm người đọc tưởng SDK cấm ký,
-và thổi con số "30 dòng tích hợp" lên trong khi công sức gọi Custos không hề tăng.
+và thổi con số "31 dòng tích hợp" lên trong khi công sức gọi Custos không hề tăng.
 
 1. **`nguoiDung` lấy từ VÍ, không từ dApp.** Để dApp khai hộ địa chỉ người ký là mở
    đúng cái cửa mà trường này sinh ra để đóng.
@@ -84,4 +84,4 @@ chính snapshot đó, rồi giữ cặp `{quyetDinh, neo}` trong state riêng c�
 Khi ký, truyền cặp này cùng transaction hiện tại vào `kySauKhiKiem`.
 Neo phải thuộc state tin cậy của ví, không nhận từ dApp. Đổi message, ví, cluster
 hoặc hết hạn thì kiểm lại. Thiếu neo bị từ chối. SDK không tự giữ state cho consumer.
-30 dòng chỉ đo hàm gọi SDK trong `tich-hop.js`, không tính toàn bộ hợp đồng ký.
+31 dòng chỉ đo hàm gọi SDK trong `tich-hop.js`, không tính toàn bộ hợp đồng ký.
