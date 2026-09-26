@@ -74,11 +74,12 @@ một SDK gọi API có khoá. Nên có một bài kiểm canh đúng chỗ đó
 | Bản | Có neo grounding? | Ghi chú |
 |---|---|---|
 | `0.1.2` | **KHÔNG** | Đã lên registry TRƯỚC khi bản vá được thêm. Đo được: **9/10** lời bịa tới được người dùng. **Đừng dùng.** |
-| `0.2.0` | Có | **Đã phát hành lên npm** và đã nghiệm thu trên chính gói registry: **10/10** bẫy bị chặn, 0 lọt |
+| `0.2.0` | Có | Đã phát hành lên npm; nghiệm thu trên gói registry: **10/10** bẫy bị chặn, 0 lọt |
+| `0.3.0` | Có | **Bản hiện tại** (26/09/2026), cần `@custos-solana/core` `^0.2.0`. Thêm: nhận diện `Approve`, chặn chữ phán quyết kể cả khi lẫn ký tự vô hình, chặn câu bỏ sót hậu quả — xem `CHANGELOG.md`. Nghiệm thu trên chính gói registry: **10/10** bẫy bị chặn, 0 lọt, 0 lần đổi `level` |
 
 Version npm là bất biến, nên `0.1.2` không sửa đè được — chỉ phát hành bản mới.
 
-> `npm install @custos-solana/ai` nay lấy về `0.2.0`. Nếu bạn đang dùng `0.1.2`,
+> `npm install @custos-solana/ai` nay lấy về `0.3.0` (kéo theo core `0.2.0`). Nếu bạn đang dùng `0.1.2`,
 > nâng lên: đó là bản để lời bịa của mô hình đi thẳng tới câu người dùng đọc trước
 > khi ký.
 
