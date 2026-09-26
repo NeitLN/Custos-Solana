@@ -211,6 +211,26 @@ export async function chay(argv: string[]): Promise<number> {
     return MA.loiInput;
   }
 
+  /*
+   * BIÊN LAI (CU-11) — kiểm TRƯỚC khi gọi mạng.
+   *
+   * CLI chỉ xuất được chế độ `chiaSe`, và đó là ràng buộc THẬT chứ không phải chưa làm:
+   * `inspect()` không trả `Facts` ra ngoài — hợp đồng `InspectResult` đã đóng băng và
+   * không được nới chỉ để tiện cho CLI. Không có `Facts` thì không có gì để replay.
+   *
+   * Bản trước kiểm SAU `inspect()`: gõ sai `--receipt` mà RPC chậm thì người dùng đợi
+   * 20 giây rồi nhận "lỗi hạ tầng" (mã 4) thay vì "sai lệnh" (mã 3) — đo 26/09 khi
+   * Devnet công cộng không trả `getMultipleAccounts`. Lỗi đầu vào không cần mạng.
+   */
+  if (d.receipt !== undefined && d.receipt !== "chiaSe") {
+    process.stderr.write(
+      d.receipt === "rieng"
+        ? "lỗi đầu vào: CLI chưa xuất được biên lai chế độ `rieng` — inspect() không trả Facts ra ngoài, nên không có dữ liệu để replay. Dùng --receipt chiaSe\n"
+        : "lỗi đầu vào: --receipt chỉ nhận `chiaSe`\n",
+    );
+    return MA.loiInput;
+  }
+
   const han = Number(d.han ?? 20_000);
   if (!Number.isFinite(han) || han <= 0) {
     process.stderr.write("lỗi đầu vào: --han phải là số dương\n");
@@ -228,25 +248,7 @@ export async function chay(argv: string[]): Promise<number> {
     });
 
     if (d.receipt !== undefined) {
-      /*
-       * BIÊN LAI (CU-11).
-       *
-       * CLI chỉ xuất được chế độ `chiaSe`, và đó là ràng buộc THẬT chứ không phải
-       * chưa làm: `inspect()` không trả `Facts` ra ngoài — hợp đồng `InspectResult`
-       * đã đóng băng và không được nới chỉ để tiện cho CLI. Không có `Facts` thì
-       * không có gì để replay.
-       *
-       * Nói thẳng thay vì im lặng xuất một biên lai `rieng` rỗng ruột trông như
-       * đầy đủ.
-       */
-      if (d.receipt !== "chiaSe") {
-        process.stderr.write(
-          d.receipt === "rieng"
-            ? "lỗi đầu vào: CLI chưa xuất được biên lai chế độ `rieng` — inspect() không trả Facts ra ngoài, nên không có dữ liệu để replay. Dùng --receipt chiaSe\n"
-            : "lỗi đầu vào: --receipt chỉ nhận `chiaSe`\n",
-        );
-        return MA.loiInput;
-      }
+      // Giá trị đã được kiểm trước lời gọi mạng — tới đây chỉ còn `chiaSe`.
       const bl = dungReceipt(r, "chiaSe" as CheDoReceipt);
       process.stdout.write(receiptRaJson(bl) + "\n");
       return MA[r.level];
@@ -315,11 +317,23 @@ export async function chay(argv: string[]): Promise<number> {
 
 // Chỉ chạy khi được gọi như một chương trình, không khi bị import trong test.
 if (process.argv[1] && /cli\.(ts|js)$/.test(process.argv[1])) {
-  chay(process.argv.slice(2)).then(
-    (ma) => process.exit(ma),
-    (e) => {
-      process.stderr.write(`lỗi hạ tầng: ${e instanceof Error ? e.message : String(e)}\n`);
-      process.exit(MA.loiHaTang);
-    },
-  );
+  /*
+   * ĐẶT `exitCode`, ĐỪNG GỌI `process.exit()` NGAY — review 26/09.
+   *
+   * `process.exit()` lúc kết nối keep-alive tới RPC còn đang đóng làm Node trên Windows
+   * sập ở libuv (`Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)`), và mã thoát
+   * thành 3221226505 thay vì 0/1/2/3/4. Đo được 6/6 lượt với một RPC tại chỗ. Mã thoát là
+   * hợp đồng của CLI (CU-10): một script CI đọc 3221226505 sẽ không biết engine thấy gì.
+   *
+   * Để Node tự thoát khi hết việc thì mã giữ đúng (6/6). Lưới an toàn: còn handle nào
+   * giữ tiến trình quá 2 giây thì mới thoát cứng; timer `unref()` nên tự nó không níu.
+   */
+  const ket = (ma: number) => {
+    process.exitCode = ma;
+    setTimeout(() => process.exit(ma), 2000).unref();
+  };
+  chay(process.argv.slice(2)).then(ket, (e) => {
+    process.stderr.write(`lỗi hạ tầng: ${e instanceof Error ? e.message : String(e)}\n`);
+    ket(MA.loiHaTang);
+  });
 }

@@ -1,6 +1,6 @@
 {
   "name": "@custos-solana/ai",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -9,7 +9,7 @@
     "./anthropic": "./src/anthropic.ts"
   },
   "dependencies": {
-    "@custos-solana/core": "^0.1.0",
+    "@custos-solana/core": "^0.2.0",
     "@custos-solana/types": "^0.1.0"
   },
   "devDependencies": {
@@ -19,6 +19,7 @@
     "dist",
     "src",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {

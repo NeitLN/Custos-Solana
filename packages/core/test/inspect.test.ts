@@ -304,3 +304,39 @@ test("bảng lời khai là MỘT CHIỀU và không nhận tên lạ", async ()
   assert.equal(cungLoaiHanhDong("constructor", "chuyển token"), false);
   assert.equal(cungLoaiHanhDong("__proto__", "chuyển token"), false);
 });
+
+/* ── Interpreter không được sửa dữ kiện qua tham chiếu — phản biện 26/09, F-02 ── */
+
+/**
+ * `locL3` chỉ lọc GIÁ TRỊ TRẢ VỀ của interpreter. Nhưng `inspect()` đưa cho nó chính
+ * `facts` và chính mảng `l2.reasonCodes` — một adapter có lỗi (hoặc không đáng tin)
+ * `splice` mảng đó là `reasonCodes` trong kết quả mất sạch, dù `level` vẫn đúng.
+ * Codex tái hiện: `reasonCodes: []`, coverage `123/1`. Quyết định đã khoá số 1 nói L3
+ * không chạm được dữ kiện của L2 — phải đúng cả ở runtime, không chỉ ở kiểu.
+ */
+test("interpreter sửa facts/reasonCodes/options (trước, và SAU khi trả về) ⇒ kết quả không đổi", async () => {
+  const doiChung = await inspect({ connection: rpc }, tx(), {});
+  const tuyChon = { kyHieuToken: { A: "USDC" }, expectedAction: { type: "transfer" } };
+  let giu: { f?: { coverage: { analyzed: number } }; c?: string[] } = {};
+  const r = await inspect(
+    {
+      connection: rpc,
+      interpret: async (f, c, _l, o) => {
+        c.splice(0);
+        (f as { coverage: { analyzed: number } }).coverage.analyzed = 123;
+        (o as { kyHieuToken: Record<string, string> }).kyHieuToken["A"] = "BỊ SỬA";
+        giu = { f: f as never, c };
+        return { explanation: "", detectedPrimaryAction: null, aiAdvisory: null };
+      },
+    },
+    tx(),
+    tuyChon,
+  );
+  // Sửa tiếp SAU khi inspect đã trả về: adapter giữ tham chiếu rồi dùng về sau.
+  giu.c?.push("MA_BIA");
+  if (giu.f) giu.f.coverage.analyzed = 999;
+
+  assert.deepEqual(r.reasonCodes, doiChung.reasonCodes, "reasonCodes bị interpreter xoá");
+  assert.deepEqual(r.coverage, doiChung.coverage, "coverage bị interpreter sửa");
+  assert.equal(tuyChon.kyHieuToken.A, "USDC", "options của bên gọi bị interpreter sửa");
+});

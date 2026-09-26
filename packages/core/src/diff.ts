@@ -1,5 +1,5 @@
 import type { DiffEntry } from "@custos-solana/types";
-import type { Facts } from "./facts.ts";
+import { quyenRutMoRong, type Facts } from "./facts.ts";
 import type { RuleHit, BangChung } from "./l2/rules.ts";
 import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
@@ -157,6 +157,16 @@ export function dungBangChenhLech(
     // wSOL đã nằm trong dòng "Số dư SOL của bạn" — hiện thêm ở đây là đếm hai lần.
     if (t.mint === WSOL_MINT) continue;
     const dec = decimalsCua.get(t.mint) ?? 0;
+    /*
+     * KHÔNG BIẾT `decimals` THÌ NÓI LÀ KHÔNG BIẾT — F-08.
+     *
+     * Bản trước lấy `?? 0`: mint không đọc được thì 1 token hiện thành "1.000.000",
+     * và `soLieu.decimals: 0` đi ra ngoài như một dữ kiện. Số lượng thô vẫn là dữ kiện
+     * đo được nên vẫn hiện, nhưng ghi rõ là đơn vị gốc; `soLieu` bỏ hẳn vì trường
+     * `decimals` của nó là số, không có chỗ để nói "chưa biết".
+     */
+    const biet = decimalsCua.has(t.mint);
+    const so = (x: bigint) => (biet ? dinhDangSo(x, dec) : `${dinhDangSo(x, 0)} đơn vị gốc`);
     // Người dùng không đọc được base58. Mục đích duy nhất của sản phẩm là làm
     // người ta HIỂU KỊP trước khi bấm ký, nên hiện ký hiệu khi biết.
     //
@@ -169,8 +179,8 @@ export function dungBangChenhLech(
     if (t.amountBefore !== t.amountAfter) {
       out.push({
         label: `${NHAN.SO_DU}${nhan} sau khi ký`,
-        before: dinhDangSo(t.amountBefore, dec),
-        after: dinhDangSo(t.amountAfter, dec),
+        before: so(t.amountBefore),
+        after: so(t.amountAfter),
         /*
          * SỐ THÔ — CU-06. `before`/`after` là chuỗi đã format theo quy ước tiếng
          * Việt; một consumer muốn cộng hay so sánh phải parse ngược, và parse
@@ -180,13 +190,17 @@ export function dungBangChenhLech(
          * `mint` đi kèm vì `nhan` có thể trùng nhau giữa hai token khác mint —
          * gộp chúng là đúng lỗi mục 4.2 cấm.
          */
-        soLieu: {
-          truoc: t.amountBefore.toString(),
-          sau: t.amountAfter.toString(),
-          decimals: dec,
-          mint: t.mint,
-          taiKhoan: t.address,
-        },
+        ...(biet
+          ? {
+              soLieu: {
+                truoc: t.amountBefore.toString(),
+                sau: t.amountAfter.toString(),
+                decimals: dec,
+                mint: t.mint,
+                taiKhoan: t.address,
+              },
+            }
+          : {}),
         severity:
           t.amountAfter < t.amountBefore &&
           (coBangChung("tokenAccount", t.address) || coHitO(t.address))
@@ -206,11 +220,17 @@ export function dungBangChenhLech(
       });
     }
 
-    if (t.delegateAfter !== null && t.delegateAfter !== t.delegateBefore) {
+    if (t.delegateAfter !== null && quyenRutMoRong(t)) {
+      // Cùng người được uỷ quyền mà hạn mức tăng: cột trước PHẢI có hạn mức cũ, nếu
+      // không hai cột trông y hệt và người đọc không thấy gì đã đổi.
+      const hanMucCu =
+        t.delegateBefore === t.delegateAfter && t.delegatedAmountBefore !== undefined
+          ? ` — tới ${so(t.delegatedAmountBefore)}`
+          : "";
       out.push({
         label: `${NHAN.DUOC_PHEP_RUT}${nhan}`,
-        before: t.delegateBefore ? rutGon(t.delegateBefore) : "không ai",
-        after: `${rutGon(t.delegateAfter)} — tới ${dinhDangSo(t.delegatedAmountAfter, dec)}`,
+        before: t.delegateBefore ? `${rutGon(t.delegateBefore)}${hanMucCu}` : "không ai",
+        after: `${rutGon(t.delegateAfter)} — tới ${so(t.delegatedAmountAfter)}`,
         severity:
           coBangChung("tokenAccount", t.address) || coHitO(t.address) ? "danger" : "warning",
         ...(t.delegateBefore ? { truocDayDu: t.delegateBefore } : {}),

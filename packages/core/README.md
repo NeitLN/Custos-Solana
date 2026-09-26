@@ -104,11 +104,15 @@ async function kiemTruocKhiKy({ connection, tx, viNguoiDung, dAppKhai }) {
   if (r.coverage.analyzed < r.coverage.total) {
     return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
+  // Custos đề nghị kiểm tra thủ công: không đổi `level`, nhưng không được ký thẳng.
+  if (r.aiAdvisory === "review_required") {
+    return { cho: "hoi", lyDo: "de_nghi_kiem_tra", ketQua: r, loi: null };
+  }
   return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
 }
 ```
 
-### Bốn trạng thái, và vì sao `lyDo` tách khỏi `cho`
+### Các trạng thái, và vì sao `lyDo` tách khỏi `cho`
 
 `cho` trả lời *ví phải làm gì*. `lyDo` trả lời *vì sao*. Hai câu đó **không suy ra
 được từ nhau**, và gộp chúng lại là lỗi thật đã xảy ra trong chính repo này.
@@ -117,6 +121,7 @@ async function kiemTruocKhiKy({ connection, tx, viNguoiDung, dAppKhai }) {
 |---|---|---|---|
 | `ky` | `khong_van_de` | Đã kiểm hết, không thấy gì | Luồng ký bình thường |
 | `hoi` | `phat_hien` | Có phát hiện mức Vàng | Cảnh báo kèm bảng chênh lệch |
+| `hoi` | `de_nghi_kiem_tra` | Không thấy gì, nhưng **Custos đề nghị kiểm tra thủ công** (`aiAdvisory`) — lớp diễn giải thấy hậu quả lạ, hoặc dApp khai một đằng làm một nẻo | Hiện đề nghị kèm bảng chênh lệch; cho ký nếu người dùng xác nhận đã xem |
 | `hoi` | `coverage_khuyet` | Không thấy gì, **nhưng chưa đọc hết lệnh** | *"Custos đọc hiểu 1/3 lệnh"* — đừng nói an toàn |
 | `chan` | `phat_hien` | Phát hiện mức Đỏ | Cảnh báo nguy hiểm |
 | `chan` | `khong_kiem_duoc` | **Hạ tầng hỏng**, chưa kiểm được gì | *"Chưa kiểm tra được"* — **đừng** hiện cảnh báo nguy hiểm |
@@ -125,7 +130,7 @@ Hai dòng cuối cùng cho `chan`, và đó là chủ ý: cả hai đều không
 chúng giống nhau thì người dùng học được rằng Custos hay báo bừa — vì phần lớn lần
 gặp màu đỏ của họ thật ra chỉ là Devnet chậm. Khi ấy cảnh báo THẬT cũng bị bỏ qua.
 
-Bản đầy đủ, có chú thích từng dòng: [`vi-du-tich-hop/src/tich-hop.js`](https://github.com/NeitLN/Custos-Solana/blob/main/vi-du-tich-hop/src/tich-hop.js) — 30 dòng mã, chạy thật trên Devnet.
+Bản đầy đủ, có chú thích từng dòng: [`vi-du-tich-hop/src/tich-hop.js`](https://github.com/NeitLN/Custos-Solana/blob/main/vi-du-tich-hop/src/tich-hop.js) — 31 dòng mã, chạy thật trên Devnet.
 
 > ### ⚠️ `nguoiDung` — trường dễ bỏ nhất, và bỏ là hỏng
 >
@@ -472,7 +477,7 @@ luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập 
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 1042 test, chạy offline
+npx npm@11.6.2 run check     # 1136 test, chạy offline
 npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet

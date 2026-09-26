@@ -95,6 +95,22 @@ test("safe nhưng coverage KHUYẾT ⇒ HỎI, không phải ký thẳng", async
   assert.equal(q.lyDo, "coverage_khuyet");
 });
 
+test("safe, đọc hiểu hết, nhưng CÓ đề nghị kiểm tra thủ công ⇒ HỎI — phản biện 26/09, F-03", async () => {
+  // `aiAdvisory` là tín hiệu riêng, KHÔNG đổi `level`. Nhưng nếu bên tích hợp bỏ qua nó
+  // và trả "khong_van_de" thì đề nghị đó không bao giờ tới người dùng. Lời khai lệch
+  // của dApp cũng đi qua đúng trường này (inspect.ts), nên đây là đường duy nhất để
+  // "trang web nói một đằng" tới được người dùng khi L2 xanh.
+  const q = await goi(() => Promise.resolve({ ...ketQua("safe", 3, 3), aiAdvisory: "review_required" }));
+  assert.equal(q.cho, "hoi");
+  assert.equal(q.lyDo, "de_nghi_kiem_tra");
+});
+
+test("đề nghị kiểm tra KHÔNG hạ được mức Đỏ xuống Hỏi", async () => {
+  const q = await goi(() => Promise.resolve({ ...ketQua("danger"), aiAdvisory: "review_required" }));
+  assert.equal(q.cho, "chan");
+  assert.equal(q.lyDo, "phat_hien");
+});
+
 test("safe và đọc hiểu hết ⇒ KÝ", async () => {
   const q = await goi(() => Promise.resolve(ketQua("safe", 3, 3)));
   assert.equal(q.cho, "ky");

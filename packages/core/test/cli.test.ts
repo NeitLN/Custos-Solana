@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { execFileSync } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
+import { rpcTuFixture } from "./rpcGiaHttp.ts";
 import {
   Keypair, SystemProgram, TransactionMessage, VersionedTransaction,
 } from "@solana/web3.js";
@@ -257,6 +258,24 @@ test("CU-11 · `--help` nhắc tới `--receipt`", () => {
 
 /* ── CU-18 · policy của ví qua CLI ──────────────────────────────────────────── */
 
+/**
+ * Chạy CLI BẤT ĐỒNG BỘ, trỏ `--rpc` vào RPC giả phát lại fixture `R01-pos` — review 26/09,
+ * mục 3.4. Bài CU-18 trước gọi Devnet thật và đỏ cả phút khi Devnet ngừng trả dữ liệu
+ * tài khoản. Phải bất đồng bộ: `execFileSync` chặn event loop, nên server HTTP trong cùng
+ * tiến trình sẽ không bao giờ trả lời.
+ */
+async function chayCLIQuaFixture(...args: string[]): Promise<{ ma: number; out: string; err: string }> {
+  const rpc = await rpcTuFixture("R01-pos");
+  try {
+    return await new Promise((xong) => {
+      execFile(process.execPath, ["--experimental-strip-types", CLI, ...args, "--rpc", rpc.url], { encoding: "utf8" },
+        (e, out, err) => xong({ ma: e ? ((e as { code?: number }).code ?? -1) : 0, out, err }));
+    });
+  } finally {
+    await rpc.dong();
+  }
+}
+
 function txThat(): string {
   return readFileSync(
     fileURLToPath(new URL("../../../data/seed/tx/R01-pos.base64", import.meta.url)),
@@ -264,20 +283,20 @@ function txThat(): string {
   ).trim();
 }
 
-test("CU-18 · vắng `--policy` ⇒ policyDecision là `null`, KHÔNG phải allow", () => {
+test("CU-18 · vắng `--policy` ⇒ policyDecision là `null`, KHÔNG phải allow", async () => {
   /*
    * `null` và `"allow"` nói hai điều khác hẳn nhau: *không ai quyết định* và *đã
    * có người cho phép*. Một consumer đọc `"allow"` khi thật ra chưa ai xét là
    * đúng kiểu lỗi mà lớp bảo vệ này sinh ra để tránh.
    */
-  const r = chayCLI("--json", "--tx", txThat());
-  assert.ok(r.out.length > 0, "không có stdout");
+  const r = await chayCLIQuaFixture("--json", "--tx", txThat());
+  assert.ok(r.out.length > 0, `không có stdout: ${r.err}`);
   const j = JSON.parse(r.out) as { policyDecision: unknown };
   assert.equal(j.policyDecision, null);
 });
 
-test("CU-18 · `--policy chat` trên giao dịch danger ⇒ block, nói rõ AI quyết định", () => {
-  const r = chayCLI("--json", "--policy", "chat", "--tx", txThat());
+test("CU-18 · `--policy chat` trên giao dịch danger ⇒ block, nói rõ AI quyết định", async () => {
+  const r = await chayCLIQuaFixture("--json", "--policy", "chat", "--tx", txThat());
   const j = JSON.parse(r.out) as {
     engineLevel: string;
     policyDecision: { quyetDinh: string; profile: string; maLyDo: string[]; cau: string };
@@ -292,14 +311,15 @@ test("CU-18 · `--policy chat` trên giao dịch danger ⇒ block, nói rõ AI q
   assert.equal(r.ma, 2, "exit code phải theo ENGINE, không theo policy");
 });
 
-test("CU-18 · exit code KHÔNG đổi theo policy — nó là phân loại engine", () => {
+test("CU-18 · exit code KHÔNG đổi theo policy — nó là phân loại engine", async () => {
   /*
    * Ranh giới dễ trượt nhất của thẻ: policy `block` KHÔNG được biến exit code
    * thành một mã khác. Exit code nói *engine thấy gì*; policy nói *ví cho phép
    * gì*. Trộn chúng là làm hỏng hợp đồng CU-10 mà không ai để ý.
    */
-  const a = chayCLI("--json", "--tx", txThat());
-  const b = chayCLI("--json", "--policy", "chat", "--tx", txThat());
+  const a = await chayCLIQuaFixture("--json", "--tx", txThat());
+  const b = await chayCLIQuaFixture("--json", "--policy", "chat", "--tx", txThat());
+  assert.equal(a.ma, 2, `fixture phải cho engine danger (mã 2), nhận ${a.ma}: ${a.err}`);
   assert.equal(a.ma, b.ma, "policy làm đổi exit code");
 });
 
@@ -318,4 +338,21 @@ test("CU-18 · `--help` nhắc `--policy` và nói policy KHÔNG nới kết lu�
   const r = chayCLI("--help");
   assert.match(r.out, /--policy/, "`--help` không nhắc --policy");
   assert.match(r.out, /chỉ có thể chặt hơn|KHÔNG bao giờ nới/, "không nói rõ ranh giới của policy");
+});
+
+test("CU-11 · lỗi đầu vào được báo TRƯỚC mọi lời gọi mạng — RPC chết vẫn ra mã 3", () => {
+  /*
+   * Bản trước kiểm `--receipt` SAU `inspect()`. Đo 26/09, Devnet công cộng ngừng trả
+   * `getMultipleAccounts`: gõ sai lệnh ⇒ đợi 20 giây rồi nhận "lỗi hạ tầng" (mã 4). Hai
+   * bài CU-11 ở trên không bắt được, vì chúng chỉ chạy tới đó khi mạng tốt. Trỏ `--rpc`
+   * vào cổng không có ai nghe: nếu CLI còn gọi mạng trước, nó sẽ ra 4 chứ không phải 3.
+   */
+  const TX = readFileSync(
+    fileURLToPath(new URL("../../../data/seed/tx/R01-pos.base64", import.meta.url)),
+    "utf8",
+  ).trim();
+  const t0 = Date.now();
+  const r = chayCLI("--receipt", "rieng", "--tx", TX, "--rpc", "http://127.0.0.1:9", "--han", "3000");
+  assert.equal(r.ma, 3, `phải là lỗi đầu vào (3), nhận ${r.ma}: ${r.err}`);
+  assert.ok(Date.now() - t0 < 2500, "lỗi đầu vào không được chờ hết thời hạn mạng");
 });

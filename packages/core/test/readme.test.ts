@@ -152,6 +152,10 @@ async function kiemTruocKhiKyReadme(conn: unknown, hanMs = HAN_MS_README) {
   if (r.coverage.analyzed < r.coverage.total) {
     return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
+  // Custos đề nghị kiểm tra thủ công: không đổi `level`, nhưng không được ký thẳng.
+  if (r.aiAdvisory === "review_required") {
+    return { cho: "hoi", lyDo: "de_nghi_kiem_tra", ketQua: r, loi: null };
+  }
   return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
 }
 

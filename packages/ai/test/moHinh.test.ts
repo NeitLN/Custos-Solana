@@ -103,6 +103,46 @@ test("TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch 
   }
 });
 
+test("TỪ CHỐI câu PHÁN QUYẾT và câu XÚI KÝ — phản biện 26/09, F-04", () => {
+  /*
+   * Danh sách cũ chỉ bắt lời trấn an. Ba câu dưới đi lọt nguyên văn tới người dùng
+   * (Codex tái hiện bằng một callback trả JSON đúng schema):
+   *   · "Giao dịch này nguy hiểm."          — AI kết luận nguy hiểm: cấm (quyết định số 1)
+   *   · "Bạn có thể ký mà không phải kiểm tra thêm." — xúi ký bằng chữ khác "cứ ký"
+   *   · "Tài sản của bạn được bảo vệ tuyệt đối."    — trấn an không dùng chữ "an toàn"
+   * Mức cảnh báo đã hiện riêng, do L2 quyết. Lời diễn giải chỉ kể hậu quả.
+   */
+  for (const c of [
+    "Giao dịch này nguy hiểm.",
+    "Bạn có thể ký mà không phải kiểm tra thêm.",
+    "Tài sản của bạn được bảo vệ tuyệt đối.",
+    "Đây là một vụ lừa đảo.",
+    "Giao dịch độc hại, đừng ký.",
+    "Hãy ký để nhận thưởng.",
+    "Bạn nên ký giao dịch này.",
+    "Không nguy hiểm gì cả.",
+    // Chèn ký tự vô hình giữa chữ để né bộ lọc.
+    "Giao dịch này nguy​ hiểm.",
+    "Bạn cứ⁠ ký nhé.",
+    // Unicode tổ hợp (NFD): "ý" viết bằng "y" + dấu sắc rời.
+    "Bạn cứ ký nhé.",
+  ]) {
+    const r = soiDauRa(JSON.stringify({ detectedPrimaryAction: null, explanation: c, aiAdvisory: null }));
+    assert.equal(r, null, `phải từ chối: ${JSON.stringify(c)}`);
+  }
+});
+
+test("VẪN CHO PHÉP câu kể hậu quả có chữ 'ký' hay 'kiểm tra' — không chặn quá tay", () => {
+  for (const c of [
+    "Nếu bạn ký, tài khoản token sẽ đổi chủ sang một ví lạ.",
+    "Sau khi ký, một ví khác được phép rút token của bạn.",
+    "Hãy kiểm tra kỹ ví nhận trước khi quyết định.",
+  ]) {
+    const r = soiDauRa(JSON.stringify({ detectedPrimaryAction: null, explanation: c, aiAdvisory: "review_required" }));
+    assert.notEqual(r, null, `không được chặn nhầm: ${c}`);
+  }
+});
+
 test("VẪN CHO PHÉP mô tả hậu quả — không được chặn nhầm chữ bình thường", () => {
   // Chặn quá tay cũng là hỏng: mô hình phải nói được "tài khoản sẽ đổi chủ".
   const r = soiDauRa(JSON.stringify({
@@ -482,4 +522,64 @@ test("không được nói về hành vi nặng mà L2 chưa gắn mã", () => {
   );
   // Câu không nhắc hành vi nặng thì không liên quan.
   assert.equal(noiQuaMaLyDo("Giao dịch chuyển 500 token khỏi ví của bạn.", []), false);
+});
+
+test("dữ liệu gửi mô hình: thiếu mint ⇒ 'đơn vị gốc', và nâng hạn mức cùng người là delegate mới (F-08, F-01)", async () => {
+  // Bảng chênh lệch đã thôi bịa decimals = 0; dữ liệu gửi mô hình phải nói cùng một thứ,
+  // nếu không mô hình diễn đạt sai độ lớn (lệch đúng 10^decimals) bằng dữ kiện của ta.
+  let gui = "";
+  const dg = dienGiaiBangMoHinh(async (p) => {
+    gui = p.user;
+    return '{"detectedPrimaryAction":null,"explanation":"Có thay đổi.","aiAdvisory":null}';
+  });
+  const f = facts({
+    mints: [],
+    tokenAccounts: [
+      ta({ amountBefore: 500_000_000n, amountAfter: 499_000_000n }),
+      ta({ address: "TK2", delegateBefore: "UQ", delegateAfter: "UQ", delegatedAmountBefore: 1n, delegatedAmountAfter: 9n, amountBefore: 5n, amountAfter: 4n }),
+    ],
+  });
+  await dg(f, [], "vi");
+  const d = JSON.parse(gui) as { thayDoiSoDu: Array<{ truoc: string; delegateMoi: string | null }> };
+  assert.equal(d.thayDoiSoDu[0]!.truoc, "500.000.000 đơn vị gốc");
+  assert.equal(d.thayDoiSoDu[1]!.delegateMoi, "UQ", "nâng hạn mức của CÙNG người được uỷ quyền vẫn là mở rộng quyền rút");
+});
+
+/* ── Neo đủ: lời mô hình không được BỎ SÓT hậu quả lõi đã xác định ─────────── */
+
+/**
+ * Danh sách cấm bắt câu nói SAI; các neo bắt giá trị bịa. Không lớp nào bắt câu nói
+ * THIẾU. Đo 26/09: giao dịch vừa chuyển tiền vừa đổi chủ, mô hình trả "Giao dịch chuyển
+ * 0,0 … ra khỏi ví của bạn." — đúng số, đúng chiều, không chữ cấm — và câu đó tới người
+ * dùng, im lặng về việc mất quyền kiểm soát tài khoản. Đó là kiểu nói dối an toàn nhất
+ * với một bộ lọc danh sách đen.
+ *
+ * Mỗi hậu quả lõi tất định đã nêu (đổi chủ, cấp quyền rút, trao quyền đóng, đổi chương
+ * trình) phải được lời mô hình nhắc tới; không thì dùng câu tất định.
+ */
+test("mô hình BỎ SÓT việc đổi chủ ⇒ rơi về câu tất định", async () => {
+  const r = await dienGiaiBangMoHinh(
+    moHinhTraVe('{"detectedPrimaryAction":null,"explanation":"Giao dịch chuyển token ra khỏi ví của bạn.","aiAdvisory":null}'),
+  )(factsTanCong(), [REASON.SET_AUTHORITY_ACCOUNT_OWNER], "vi");
+  assert.notEqual(r.explanation, "Giao dịch chuyển token ra khỏi ví của bạn.");
+  assert.match(r.explanation, /đổi chủ/, "câu tất định phải nêu việc đổi chủ");
+});
+
+test("mô hình NHẮC ĐỦ hậu quả bằng lời của nó ⇒ được giữ", async () => {
+  const cau = "Token rời khỏi ví bạn, và một ví lạ trở thành chủ sở hữu mới của tài khoản token.";
+  const r = await dienGiaiBangMoHinh(
+    moHinhTraVe(JSON.stringify({ detectedPrimaryAction: null, explanation: cau, aiAdvisory: null })),
+  )(factsTanCong(), [REASON.SET_AUTHORITY_ACCOUNT_OWNER], "vi");
+  assert.equal(r.explanation, cau);
+});
+
+test("neo đủ: từng loại hậu quả có cách nhắc riêng", async () => {
+  const { boSotHauQua } = await import("../src/moHinh.ts");
+  assert.equal(boSotHauQua("Ví lạ được phép rút token của bạn.", ["cap_quyen_rut"]), false);
+  assert.equal(boSotHauQua("Token rời ví bạn.", ["cap_quyen_rut"]), true);
+  assert.equal(boSotHauQua("Một ví khác sẽ có quyền đóng tài khoản này.", ["trao_quyen_dong"]), false);
+  assert.equal(boSotHauQua("Tài khoản chuyển sang chương trình khác điều khiển.", ["doi_chuong_trinh"]), false);
+  // Chèn ký tự vô hình để khớp mà người đọc không thấy chữ đó — vẫn phải đọc như cũ.
+  assert.equal(boSotHauQua("Tài khoản đổi​ chủ.", ["doi_chu"]), false);
+  assert.equal(boSotHauQua("Không có gì.", []), false, "không có hậu quả nào thì không có gì để thiếu");
 });

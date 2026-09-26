@@ -315,7 +315,9 @@ test("hợp đồng ký nằm ở file RIÊNG, không thổi số dòng tích h�
   };
   assert.equal(
     demDongMa(doc("vi-du-tich-hop/src/tich-hop.js")),
-    30,
+    // 30 → 31 ngày 26/09: thêm nhánh `aiAdvisory` (phản biện F-03). Đó là phần BẮT BUỘC
+    // của một tích hợp đúng, không phải hợp đồng ký — giấu nó để giữ số 30 mới là thổi số.
+    31,
     "số dòng tích hợp đã đổi — sáu chỗ công bố sẽ lệch",
   );
   assert.ok(

@@ -155,7 +155,16 @@ export async function inspect(
 
   if (deps.interpret) {
     try {
-      const r = await deps.interpret(facts, l2.reasonCodes, options.locale ?? "vi", options);
+      // BẢN SAO, không phải tham chiếu — phản biện 26/09, F-02. `locL3` chỉ lọc giá trị
+      // TRẢ VỀ; đưa chính `facts` và mảng `l2.reasonCodes` cho interpreter thì một
+      // adapter lỗi `splice` là `reasonCodes` trong kết quả mất sạch, kể cả khi nó sửa
+      // SAU lúc đã trả về (giữ tham chiếu, dùng về sau). Chi phí: một lần sao Facts.
+      const r = await deps.interpret(
+        structuredClone(facts),
+        [...l2.reasonCodes],
+        options.locale ?? "vi",
+        structuredClone(options),
+      );
       const sach = locL3(r);
       detectedPrimaryAction = sach.detectedPrimaryAction;
       explanation = sach.explanation;
