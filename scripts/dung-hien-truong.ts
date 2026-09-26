@@ -21,6 +21,7 @@ import {
 } from "@solana/spl-token";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { napVi, RPC } from "./vi-devnet.ts";
+import { DEFAULT_DEMO_WALLET } from "./demo-wallet-config.ts";
 
 const DEC = 6;
 const SO_LUONG = 500n * 10n ** BigInt(DEC);
@@ -60,6 +61,12 @@ async function taoTaiKhoanToken(conn: Connection, tra: Keypair, mint: PublicKey,
 async function main() {
   const conn = new Connection(RPC, "confirmed");
   const nanNhan = napVi();
+  // Ví demo đã chốt, KHÔNG được đổi (chủ dự án, 26/09/2026). `napVi()` cũng kiểm,
+  // nhưng đây là chỗ duy nhất ghi `nanNhan` vào hien-truong.json — nên kiểm lại
+  // ngay tại đây, trước khi tạo bất cứ gì trên chuỗi.
+  if (nanNhan.publicKey.toBase58() !== DEFAULT_DEMO_WALLET) {
+    throw new Error(`ví ký là ${nanNhan.publicKey.toBase58()}, không phải ví demo ${DEFAULT_DEMO_WALLET} — dừng, không dựng hiện trường`);
+  }
   const sol = (await conn.getBalance(nanNhan.publicKey)) / LAMPORTS_PER_SOL;
   console.log("ví nạn nhân:", nanNhan.publicKey.toBase58(), `(${sol} SOL)`);
   if (sol < 0.05) throw new Error("không đủ SOL trả phí");
