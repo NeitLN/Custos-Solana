@@ -1,0 +1,288 @@
+TAP version 13
+# Subtest: nhận JSON hợp lệ
+ok 1 - nhận JSON hợp lệ
+  ---
+  duration_ms: 0.7312
+  type: 'test'
+  ...
+# Subtest: nhận JSON bọc trong khối mã — mô hình hay làm vậy
+ok 2 - nhận JSON bọc trong khối mã — mô hình hay làm vậy
+  ---
+  duration_ms: 0.1389
+  type: 'test'
+  ...
+# Subtest: TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch an toàn
+not ok 3 - TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch an toàn
+  ---
+  duration_ms: 0.6959
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\ai\\test\\moHinh.test.ts:91:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    phải từ chối: Giao dịch này an toàn, bạn có thể ký.
+    + actual - expected
+    
+    + {
+    +   aiAdvisory: null,
+    +   detectedPrimaryAction: null,
+    +   explanation: 'Giao dịch này an toàn, bạn có thể ký.'
+    + }
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    detectedPrimaryAction: ~
+    explanation: 'Giao dịch này an toàn, bạn có thể ký.'
+    aiAdvisory: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/ai/test/moHinh.test.ts:102:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: VẪN CHO PHÉP mô tả hậu quả — không được chặn nhầm chữ bình thường
+ok 4 - VẪN CHO PHÉP mô tả hậu quả — không được chặn nhầm chữ bình thường
+  ---
+  duration_ms: 0.1147
+  type: 'test'
+  ...
+# Subtest: TỪ CHỐI đầu ra sai schema
+ok 5 - TỪ CHỐI đầu ra sai schema
+  ---
+  duration_ms: 0.137
+  type: 'test'
+  ...
+# Subtest: bỏ qua trường lạ — mô hình KHÔNG thể chen `level` vào
+ok 6 - bỏ qua trường lạ — mô hình KHÔNG thể chen `level` vào
+  ---
+  duration_ms: 0.0635
+  type: 'test'
+  ...
+# Subtest: mô hình KHÔNG hạ được aiAdvisory mà lõi xác định đã nêu
+ok 7 - mô hình KHÔNG hạ được aiAdvisory mà lõi xác định đã nêu
+  ---
+  duration_ms: 9.6028
+  type: 'test'
+  ...
+# Subtest: mô hình NÂNG được aiAdvisory khi lõi không thấy gì
+ok 8 - mô hình NÂNG được aiAdvisory khi lõi không thấy gì
+  ---
+  duration_ms: 0.2414
+  type: 'test'
+  ...
+# Subtest: mô hình NÉM LỖI ⇒ rơi về lõi xác định, không sập
+ok 9 - mô hình NÉM LỖI ⇒ rơi về lõi xác định, không sập
+  ---
+  duration_ms: 0.299
+  type: 'test'
+  ...
+# Subtest: mô hình TRẢ RÁC ⇒ dùng câu của lõi xác định, không hiện rác cho người dùng
+ok 10 - mô hình TRẢ RÁC ⇒ dùng câu của lõi xác định, không hiện rác cho người dùng
+  ---
+  duration_ms: 0.3306
+  type: 'test'
+  ...
+# Subtest: mô hình TREO ⇒ thời hạn cắt, người dùng vẫn có câu trả lời
+ok 11 - mô hình TREO ⇒ thời hạn cắt, người dùng vẫn có câu trả lời
+  ---
+  duration_ms: 156.3401
+  type: 'test'
+  ...
+# Subtest: TÊN TOKEN chứa câu ra lệnh KHÔNG tới được mô hình
+ok 12 - TÊN TOKEN chứa câu ra lệnh KHÔNG tới được mô hình
+  ---
+  duration_ms: 0.6688
+  type: 'test'
+  ...
+# Subtest: KÝ HIỆU TOKEN hợp lệ vẫn dùng được — không chặn quá tay
+ok 13 - KÝ HIỆU TOKEN hợp lệ vẫn dùng được — không chặn quá tay
+  ---
+  duration_ms: 0.5764
+  type: 'test'
+  ...
+# Subtest: KỂ CẢ khi mô hình bị lái hoàn toàn, câu trấn an vẫn không tới người dùng
+not ok 14 - KỂ CẢ khi mô hình bị lái hoàn toàn, câu trấn an vẫn không tới người dùng
+  ---
+  duration_ms: 3.071
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\ai\\test\\moHinh.test.ts:215:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!r.explanation.includes("an toàn"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/ai/test/moHinh.test.ts:222:10)
+    async Test.run (node:internal/test_runner/test:1113:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: mô hình KHÔNG BAO GIỜ nhận giao dịch thô — chỉ nhận dữ kiện đã bóc
+ok 15 - mô hình KHÔNG BAO GIỜ nhận giao dịch thô — chỉ nhận dữ kiện đã bóc
+  ---
+  duration_ms: 1.0623
+  type: 'test'
+  ...
+# Subtest: dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn vị thô
+ok 16 - dữ liệu gửi cho mô hình đã CHIA DECIMALS, không gửi đơn vị thô
+  ---
+  duration_ms: 0.4685
+  type: 'test'
+  ...
+# Subtest: system prompt cấm mô hình kết luận an toàn hay nguy hiểm
+ok 17 - system prompt cấm mô hình kết luận an toàn hay nguy hiểm
+  ---
+  duration_ms: 0.1525
+  type: 'test'
+  ...
+# Subtest: NEO · địa chỉ đầy đủ trong lời văn là bịa — mô hình không hề nhận được cái nào
+ok 18 - NEO · địa chỉ đầy đủ trong lời văn là bịa — mô hình không hề nhận được cái nào
+  ---
+  duration_ms: 0.0528
+  type: 'test'
+  ...
+# Subtest: NEO · số không có trong dữ liệu đã gửi thì bị từ chối
+ok 19 - NEO · số không có trong dữ liệu đã gửi thì bị từ chối
+  ---
+  duration_ms: 0.0583
+  type: 'test'
+  ...
+# Subtest: NEO · địa chỉ viết tắt vẫn dùng được — không chặn quá tay
+ok 20 - NEO · địa chỉ viết tắt vẫn dùng được — không chặn quá tay
+  ---
+  duration_ms: 0.0448
+  type: 'test'
+  ...
+# Subtest: NEO · không truyền neo thì giữ nguyên hành vi cũ
+ok 21 - NEO · không truyền neo thì giữ nguyên hành vi cũ
+  ---
+  duration_ms: 0.0266
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · loại lạ bị vứt
+ok 22 - NEO HÀNH ĐỘNG · loại lạ bị vứt
+  ---
+  duration_ms: 0.0251
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · token không có trong dữ liệu đã gửi thì bị vứt
+ok 23 - NEO HÀNH ĐỘNG · token không có trong dữ liệu đã gửi thì bị vứt
+  ---
+  duration_ms: 0.0394
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · null vẫn là null, không tự dựng hành động
+ok 24 - NEO HÀNH ĐỘNG · null vẫn là null, không tự dựng hành động
+  ---
+  duration_ms: 0.0219
+  type: 'test'
+  ...
+# Subtest: NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình
+ok 25 - NEO HÀNH ĐỘNG · lõi tất định luôn thắng mô hình
+  ---
+  duration_ms: 0.2794
+  type: 'test'
+  ...
+# Subtest: CHIỀU · nói người ký NHẬN trong khi tài sản đang RA thì bị vứt
+ok 26 - CHIỀU · nói người ký NHẬN trong khi tài sản đang RA thì bị vứt
+  ---
+  duration_ms: 0.1064
+  type: 'test'
+  ...
+# Subtest: CHIỀU · lời văn ĐÚNG chiều phải đi lọt
+ok 27 - CHIỀU · lời văn ĐÚNG chiều phải đi lọt
+  ---
+  duration_ms: 0.0334
+  type: 'test'
+  ...
+# Subtest: CHIỀU · không xác định được chiều thì KHÔNG chặn
+ok 28 - CHIỀU · không xác định được chiều thì KHÔNG chặn
+  ---
+  duration_ms: 0.0228
+  type: 'test'
+  ...
+# Subtest: CHIỀU · câu nói CẢ HAI vế thì không bị coi là ngược
+ok 29 - CHIỀU · câu nói CẢ HAI vế thì không bị coi là ngược
+  ---
+  duration_ms: 0.0469
+  type: 'test'
+  ...
+# Subtest: CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví
+ok 30 - CHIỀU · phí mạng KHÔNG bị coi là tài sản rời ví
+  ---
+  duration_ms: 0.065
+  type: 'test'
+  ...
+# Subtest: chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào
+not ok 31 - chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào
+  ---
+  duration_ms: 0.3993
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\ai\\test\\moHinh.test.ts:415:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    phải chặn: Không có gì bất thường.
+    + actual - expected
+    
+    + {
+    +   aiAdvisory: null,
+    +   detectedPrimaryAction: null,
+    +   explanation: 'Không có gì bất thường.'
+    + }
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    detectedPrimaryAction: ~
+    explanation: 'Không có gì bất thường.'
+    aiAdvisory: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/ai/test/moHinh.test.ts:424:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: ÂM TÍNH · câu mô tả hậu quả bình thường vẫn đi lọt
+ok 32 - ÂM TÍNH · câu mô tả hậu quả bình thường vẫn đi lọt
+  ---
+  duration_ms: 0.103
+  type: 'test'
+  ...
+# Subtest: mô phỏng hỏng ⇒ chặn câu nói người ký SẼ NHẬN
+ok 33 - mô phỏng hỏng ⇒ chặn câu nói người ký SẼ NHẬN
+  ---
+  duration_ms: 0.0391
+  type: 'test'
+  ...
+# Subtest: không được nói về hành vi nặng mà L2 chưa gắn mã
+ok 34 - không được nói về hành vi nặng mà L2 chưa gắn mã
+  ---
+  duration_ms: 0.0388
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 31
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 503.9851

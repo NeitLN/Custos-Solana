@@ -1,0 +1,82 @@
+[
+  {
+    "name": "L2-owner",
+    "baselineExit": 0,
+    "mutatedExit": 1,
+    "failedTests": [
+      "not ok 1 - LUẬT 1 kích hoạt — tài khoản token của người ký đổi chủ",
+      "not ok 14 - FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng",
+      "not ok 29 - nhiều luật cùng kích hoạt — lấy mức cao nhất, mã lý do không trùng lặp"
+    ],
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-reporter=tap",
+      "C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\l2.test.ts"
+    ],
+    "file": "packages/core/src/l2/rules.ts",
+    "before": "if (t.ownerBefore === t.ownerAfter) continue;",
+    "after": "if (true) continue;"
+  },
+  {
+    "name": "fail-safe",
+    "baselineExit": 0,
+    "mutatedExit": 1,
+    "failedTests": [
+      "not ok 3 - TRUNG THỰC — mô phỏng hỏng thì KHÔNG được bịa hậu quả, nhưng vẫn giữ dòng trung thực"
+    ],
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-reporter=tap",
+      "C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\failsafe.test.ts"
+    ],
+    "file": "packages/core/src/l2/evaluate.ts",
+    "before": "if (!facts.simulationOk) {",
+    "after": "if (false) {"
+  },
+  {
+    "name": "expected-action",
+    "baselineExit": 0,
+    "mutatedExit": 1,
+    "failedTests": [
+      "not ok 5 - expectedAction LỆCH ⇒ nâng nghi ngờ",
+      "not ok 6 - expectedAction KHỚP ⇒ KHÔNG tắt cảnh báo nào (dApp độc hại khai đúng được)",
+      "not ok 12 - dApp khai `transfer` cho một lệnh chuyển token ⇒ KHÔNG bị ghi là lệch",
+      "not ok 13 - khai bằng đúng chữ L3 dùng (`chuyển token`) cũng khớp",
+      "not ok 14 - dApp khai `airdrop`/`swap`/`approve` cho một lệnh CHUYỂN tiền đi ⇒ VẪN lệch"
+    ],
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-reporter=tap",
+      "C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\inspect.test.ts"
+    ],
+    "file": "packages/core/src/inspect.ts",
+    "before": "!cungLoaiHanhDong(mongDoi.type, detectedPrimaryAction.type)",
+    "after": "cungLoaiHanhDong(mongDoi.type, detectedPrimaryAction.type)"
+  },
+  {
+    "name": "LLM-verdict-filter",
+    "baselineExit": 0,
+    "mutatedExit": 1,
+    "failedTests": [
+      "not ok 3 - TỪ CHỐI câu trấn an — AI không được xác nhận giao dịch an toàn",
+      "not ok 14 - KỂ CẢ khi mô hình bị lái hoàn toàn, câu trấn an vẫn không tới người dùng",
+      "not ok 31 - chặn câu trấn an và câu xúi ký, dù không bịa giá trị nào"
+    ],
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-reporter=tap",
+      "C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\ai\\test\\moHinh.test.ts"
+    ],
+    "file": "packages/ai/src/moHinh.ts",
+    "before": "if (CHU_CAM.some((re) => re.test(explanation))) return null;",
+    "after": "if (false) return null;"
+  }
+]

@@ -1,0 +1,129 @@
+[
+  {
+    "id": "F-01",
+    "tieuDe": "Tăng hạn mức của delegate cũ không được phát hiện",
+    "loai": "LỖI",
+    "muc": "P0",
+    "vai": "1 — auditor",
+    "viTri": [
+      "packages/core/src/l2/rules.ts:131",
+      "packages/core/src/l1/fetch.ts:375",
+      "packages/core/src/facts.ts:14",
+      "packages/core/src/diff.ts:209",
+      "packages/ai/src/nhanDien.ts:82"
+    ],
+    "taiHien": "Chạy `node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`; xem dòng `F-01 L1-to-L3` trong `bang-chung/probe.log`. Probe dựng SPL account bằng AccountLayout và giao dịch Approve chưa ký, RPC stub có trạng thái trước/sau. Delegate không đổi; hạn mức từ 1 DEMO lên u64::MAX; mint đã thu hồi mint/freeze authority. Ví được bảo vệ là ví cố định. Không gửi giao dịch.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: riêng F-01 phải xanh sau sửa; bộ `node --test packages/core/test/l2.test.ts packages/core/test/inspect.test.ts packages/ai/test/nhanDien.test.ts` vẫn qua. Cuối đợt cả sáu test mới phải xanh.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-08",
+    "tieuDe": "Không đọc được mint vẫn trả safe và tự gán decimals=0",
+    "loai": "LỖI",
+    "muc": "P0",
+    "vai": "1 — auditor",
+    "viTri": [
+      "packages/core/src/l1/fetch.ts:449",
+      "packages/core/src/l1/fetch.ts:454",
+      "packages/core/src/diff.ts:159",
+      "packages/core/src/l2/rules.ts:471"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, dòng `F-08 missing mint`. Cùng giao dịch chuyển 1 token, cùng account buffers và mô phỏng; chỉ đổi lượt đọc mint từ buffer hợp lệ sang null. Mint đối chứng có freeze authority; không gửi giao dịch.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: F-08 xanh. Thêm test tích hợp L1→L2 và diff vào suite core; ca đủ mint vẫn giữ cảnh báo thuộc tính hiện có, ca thiếu mint không safe và không giả decimals.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-07",
+    "tieuDe": "Mảng accounts bị cắt được đọc thành tài khoản về 0",
+    "loai": "LỖI",
+    "muc": "P1",
+    "vai": "1 — auditor",
+    "viTri": [
+      "packages/core/src/l1/fetch.ts:270",
+      "packages/core/src/l1/fetch.ts:322"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, dòng `F-07 truncated simulation accounts`: trước ví có 1 SOL, tx chuyển 1 lamport, RPC stub trả err:null và accounts:[] dù đã yêu cầu account.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: F-07 xanh, có TRANG_THAI_DO_KHUYET và không dựng dòng SOL 1→0 từ ô không tồn tại; `node --test packages/core/test/failsafe.test.ts packages/core/test/dong-tai-khoan.test.ts` qua.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-04",
+    "tieuDe": "Lời AI vẫn tự kết luận nguy hiểm và khuyên ký",
+    "loai": "LỖI",
+    "muc": "P0",
+    "vai": "6 — AI/LLM",
+    "viTri": [
+      "packages/ai/src/moHinh.ts:93",
+      "packages/ai/src/moHinh.ts:234",
+      "packages/ai/src/moHinh.ts:429"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, ba dòng `F-04`. Callback GoiMoHinh giả lập trả JSON đúng schema trên Facts cấp quyền hợp lệ. Đây là phép thử validator, KHÔNG phải đo mô hình thật hay chứng minh token metadata đã prompt-inject thành công.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: F-04 xanh; `node --test packages/ai/test/moHinh.test.ts packages/ai/test/boiThoiHanC05.test.ts` qua. Báo riêng số câu bị chặn sai/cho lọt trên tập giữ lại; không tự đặt tỷ lệ chưa đo.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-02",
+    "tieuDe": "Interpreter nhận tham chiếu có thể sửa dữ kiện L2 trả về",
+    "loai": "LỖI",
+    "muc": "P1",
+    "vai": "5 — senior maintainer",
+    "viTri": [
+      "packages/core/src/inspect.ts:158",
+      "packages/core/src/inspect.ts:266",
+      "packages/core/src/inspect.ts:267"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, dòng `F-02`. Callback interpret thực hiện reasonCodes.splice(0) và sửa facts.coverage.analyzed=123 rồi trả về bình thường.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: F-02 xanh; `node --test packages/core/test/inspect.test.ts packages/core/test/chanDoanX01.test.ts` qua; kết quả warning phải còn MO_PHONG_HONG và coverage không vượt total.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-03",
+    "tieuDe": "Ví dụ tích hợp cho ký dù có yêu cầu kiểm tra thủ công",
+    "loai": "LỖI",
+    "muc": "P1",
+    "vai": "3 — kỹ sư tích hợp",
+    "viTri": [
+      "vi-du-tich-hop/src/tich-hop.js:75",
+      "vi-du-tich-hop/src/tich-hop.js:83",
+      "packages/core/README.md:92",
+      "apps/demo-wallet/src/WalletExecution.tsx:118",
+      "apps/demo-wallet/src/live/session.ts:317"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, dòng `F-03`: inject InspectResult safe + coverage đầy đủ + aiAdvisory=review_required vào kiemTruocKhiKy.",
+    "nghiemThu": "`node --experimental-strip-types --test --test-reporter=tap docs/review/phan-bien-da-vai-20260926/bang-chung/regression.test.mjs`: F-03 xanh, safe+advisory trả hoi; thêm test consumer thật trong suite thay vì chỉ tìm chuỗi README. Chạy lại các test ví dụ tích hợp tất định sau khi rà script bảo đảm chỉ ghi trong phạm vi được phép.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-05",
+    "tieuDe": "URL guest vẫn thay ví mặc định đã khoá",
+    "loai": "LỖI",
+    "muc": "P1",
+    "vai": "4 — người dùng Việt Nam",
+    "viTri": [
+      "apps/demo-wallet/src/WalletExecution.tsx:23",
+      "apps/demo-wallet/src/WalletExecution.tsx:28",
+      "apps/demo-wallet/src/WalletExecution.tsx:35",
+      "apps/demo-wallet/src/WalletExecution.tsx:191",
+      "apps/demo-wallet/test/viDemoCoDinh.test.ts:62"
+    ],
+    "taiHien": "Dựng và chạy browser theo mục 4. Mở `http://127.0.0.1:5197/?guest=1&wallet=724Me67n3Rfc4G6FisqPFi1ukt5qEfcFQQ3t1vBWHw3G`. Xem guest-public-address.png và browser.json. Chỉ truyền địa chỉ CÔNG KHAI cũ; không sinh khoá, không upload, không ký. Code còn cho phép ?guest=1 không địa chỉ tự gọi Keypair.generate; nhánh này chỉ đọc code, không chạy browser.",
+    "nghiemThu": "Chạy lại build-review.mjs và browser-review.py. Artifact guest-public-address phải vẫn hiện ví AqX3…EBCLZ; không có Ví khách riêng/Tự thử bằng ví khách riêng. Test viDemoCoDinh vẫn qua. Không dùng khoá thật để test.",
+    "phuThuoc": []
+  },
+  {
+    "id": "F-06",
+    "tieuDe": "So quyền đọc ở slot sau dễ bị hiểu thành hậu quả của giao dịch cũ",
+    "loai": "RỦI RO",
+    "muc": "P2",
+    "vai": "4 — UX, phối hợp auditor",
+    "viTri": [
+      "apps/demo-wallet/src/live/receipt.ts:35",
+      "apps/demo-wallet/src/live/receipt.ts:44",
+      "apps/demo-wallet/src/live/session.ts:370",
+      "apps/demo-wallet/src/live/Receipt.tsx:26"
+    ],
+    "taiHien": "`node --experimental-strip-types docs/review/phan-bien-da-vai-20260926/bang-chung/probe.mjs`, dòng `F-06`: giao dịch ở slot 100, quyền đọc lại slot 900 khác dự báo. compareReceipt trả authority:mismatch. Hàm đã tái hiện; chưa thực hiện hai giao dịch thật để chứng minh chuỗi sự kiện ngoài mạng.",
+    "nghiemThu": "Thêm test vào apps/demo-wallet/test/liveDemo.test.ts rồi chạy `node --test apps/demo-wallet/test/liveDemo.test.ts`; fixture có một thay đổi quyền xen giữa không bị ghi là Custos dự báo sai; số dư theo metadata vẫn đối chiếu được.",
+    "phuThuoc": []
+  }
+]

@@ -1,0 +1,17 @@
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 360 modules transformed.
+rendering chunks...
+computing gzip size...
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/index.html                         0.85 kB │ gzip:   0.50 kB
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/assets/index-BFKlpYAT.css         92.12 kB │ gzip:  19.72 kB
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/assets/mock-safe-DD7ZMUeT.js       0.68 kB │ gzip:   0.44 kB
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/assets/mock-warning-CQdeN89U.js    0.73 kB │ gzip:   0.53 kB
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/assets/mock-danger-e_O5uXEj.js     1.00 kB │ gzip:   0.67 kB
+../../docs/review/phan-bien-da-vai-20260926/bang-chung/site/assets/index-0MkIk47I.js         683.38 kB │ gzip: 208.93 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.77s

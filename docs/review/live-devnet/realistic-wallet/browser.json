@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/",
+  "sends": 1,
+  "checks": [
+    "setup: fresh mint, 500 DEMO, fixed funded wallet"
+  ],
+  "receipts": [],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "passed": false,
+  "error": "Locator.check: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".wallet-request\").locator(\".wallet-consent input\")\n"
+}

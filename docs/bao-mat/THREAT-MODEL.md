@@ -127,6 +127,9 @@ tránh luật *"không biết gì cũng đỏ"* vốn là cách nhanh nhất t�
 | Bộ chắn neo địa chỉ/số | 13/13 bẫy bị chặn, kèm **3/3 đối chứng dương** |
 | `boiThoiHan` | mô hình chậm hoặc lỗi ⇒ rơi về câu tất định |
 | `aiAdvisory` trường riêng | AI chỉ được **yêu cầu kiểm tra thủ công** |
+| Danh sách cấm, sau chuẩn hoá Unicode | câu trấn an, câu **phán quyết** ("nguy hiểm", "lừa đảo") và câu **xúi ký**; bỏ ký tự vô hình, gộp dấu tổ hợp trước khi soi (26/09) — danh sách đen nên luôn thiếu |
+| Neo đủ (`boSotHauQua`) | lời văn **bỏ sót** một hậu quả lõi tất định đã nêu (đổi chủ, cấp quyền rút, trao quyền đóng, đổi chương trình) ⇒ rơi về câu tất định. Chiều ngược của "không nói về hành vi L2 chưa gắn mã" (26/09) |
+| Bản sao dữ kiện | interpreter nhận **bản sao** Facts/mã lý do/options, không sửa được kết quả L2 qua tham chiếu (26/09) |
 
 **Giới hạn đã đo được, và nó bất lợi:** bộ đếm bắt số **bịa ra**, không bắt số
 **grounded nhưng ghép sai**. Và lượt live 12/09 cho thấy mô hình **đếm sai số lệnh**

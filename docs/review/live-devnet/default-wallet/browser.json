@@ -1,0 +1,10 @@
+{
+  "address": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "writes": [],
+  "errors": [],
+  "checks": [
+    "matching local key unlocks fixed wallet without send",
+    "reload preserves address and forgets private key"
+  ],
+  "passed": true
+}

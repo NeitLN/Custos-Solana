@@ -1,0 +1,310 @@
+TAP version 13
+# Subtest: LUẬT 1 kích hoạt — tài khoản token của người ký đổi chủ
+not ok 1 - LUẬT 1 kích hoạt — tài khoản token của người ký đổi chủ
+  ---
+  duration_ms: 2.4401
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\l2.test.ts:67:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'safe' !== 'danger'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'danger'
+  actual: 'safe'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/core/test/l2.test.ts:69:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.start (node:internal/test_runner/test:1003:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: LUẬT 1 KHÔNG kích hoạt — tài khoản của người khác đổi chủ
+ok 2 - LUẬT 1 KHÔNG kích hoạt — tài khoản của người khác đổi chủ
+  ---
+  duration_ms: 0.2505
+  type: 'test'
+  ...
+# Subtest: LUẬT 2 kích hoạt — trao quyền đóng tài khoản cho ví lạ
+ok 3 - LUẬT 2 kích hoạt — trao quyền đóng tài khoản cho ví lạ
+  ---
+  duration_ms: 0.217
+  type: 'test'
+  ...
+# Subtest: LUẬT 2 KHÔNG kích hoạt — người ký tự giữ quyền đóng của mình
+ok 4 - LUẬT 2 KHÔNG kích hoạt — người ký tự giữ quyền đóng của mình
+  ---
+  duration_ms: 0.1535
+  type: 'test'
+  ...
+# Subtest: LUẬT 3 kích hoạt — cấp quyền rút vượt số dư đang có
+ok 5 - LUẬT 3 kích hoạt — cấp quyền rút vượt số dư đang có
+  ---
+  duration_ms: 0.1816
+  type: 'test'
+  ...
+# Subtest: LUẬT 3 KHÔNG kích hoạt — cấp quyền rút đúng bằng số dư (hành vi dApp chuẩn, ca R03-neg)
+ok 6 - LUẬT 3 KHÔNG kích hoạt — cấp quyền rút đúng bằng số dư (hành vi dApp chuẩn, ca R03-neg)
+  ---
+  duration_ms: 0.1497
+  type: 'test'
+  ...
+# Subtest: LUẬT 12 kích hoạt — account đổi program sở hữu (vector assign của ca Coinspect)
+ok 7 - LUẬT 12 kích hoạt — account đổi program sở hữu (vector assign của ca Coinspect)
+  ---
+  duration_ms: 0.1894
+  type: 'test'
+  ...
+# Subtest: LUẬT 12 đọc từ facts.accounts chứ không phải tokenAccounts
+ok 8 - LUẬT 12 đọc từ facts.accounts chứ không phải tokenAccounts
+  ---
+  duration_ms: 0.1215
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE — mô phỏng hỏng thì không bao giờ ra safe
+ok 9 - FAIL-SAFE — mô phỏng hỏng thì không bao giờ ra safe
+  ---
+  duration_ms: 0.1923
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE — lệnh chưa đọc hiểu mà CHẠM tài sản người ký ⇒ warning
+ok 10 - FAIL-SAFE — lệnh chưa đọc hiểu mà CHẠM tài sản người ký ⇒ warning
+  ---
+  duration_ms: 0.3538
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE — lệnh chưa đọc hiểu mà KHÔNG chạm tài sản người ký ⇒ vẫn safe
+ok 11 - FAIL-SAFE — lệnh chưa đọc hiểu mà KHÔNG chạm tài sản người ký ⇒ vẫn safe
+  ---
+  duration_ms: 0.1694
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE — lookup table không giải được thì không bao giờ ra safe
+ok 12 - FAIL-SAFE — lookup table không giải được thì không bao giờ ra safe
+  ---
+  duration_ms: 0.1395
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE 3 tự đứng được, KHÔNG dựa vào luật 10
+ok 13 - FAIL-SAFE 3 tự đứng được, KHÔNG dựa vào luật 10
+  ---
+  duration_ms: 0.6382
+  type: 'test'
+  ...
+# Subtest: FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng
+not ok 14 - FAIL-SAFE không hạ cấp verdict Đỏ xuống Vàng
+  ---
+  duration_ms: 0.3884
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\l2.test.ts:203:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'warning'
+    - 'danger'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'danger'
+  actual: 'warning'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/core/test/l2.test.ts:211:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: LUẬT 4 — token có Permanent Delegate nhưng PD KHÔNG ra tay ⇒ chỉ Vàng
+ok 15 - LUẬT 4 — token có Permanent Delegate nhưng PD KHÔNG ra tay ⇒ chỉ Vàng
+  ---
+  duration_ms: 0.2116
+  type: 'test'
+  ...
+# Subtest: LUẬT 4 KHÔNG lên Đỏ khi chính người ký chuyển token của mình
+ok 16 - LUẬT 4 KHÔNG lên Đỏ khi chính người ký chuyển token của mình
+  ---
+  duration_ms: 0.1635
+  type: 'test'
+  ...
+# Subtest: LUẬT 6 kích hoạt — người phát hành vẫn tạo thêm token được
+ok 17 - LUẬT 6 kích hoạt — người phát hành vẫn tạo thêm token được
+  ---
+  duration_ms: 0.1144
+  type: 'test'
+  ...
+# Subtest: LUẬT 6 KHÔNG kích hoạt — mint authority đã thu hồi
+ok 18 - LUẬT 6 KHÔNG kích hoạt — mint authority đã thu hồi
+  ---
+  duration_ms: 0.0654
+  type: 'test'
+  ...
+# Subtest: LUẬT 9 kích hoạt — chương trình lạ GHI vào tài khoản người ký
+ok 19 - LUẬT 9 kích hoạt — chương trình lạ GHI vào tài khoản người ký
+  ---
+  duration_ms: 0.0851
+  type: 'test'
+  ...
+# Subtest: LUẬT 9 KHÔNG kích hoạt — chương trình lạ KHÔNG chạm tài sản người ký
+ok 20 - LUẬT 9 KHÔNG kích hoạt — chương trình lạ KHÔNG chạm tài sản người ký
+  ---
+  duration_ms: 0.0512
+  type: 'test'
+  ...
+# Subtest: LUẬT 11 kích hoạt — NHIỀU loại tài sản cùng rời ví
+ok 21 - LUẬT 11 kích hoạt — NHIỀU loại tài sản cùng rời ví
+  ---
+  duration_ms: 0.1619
+  type: 'test'
+  ...
+# Subtest: LUẬT 11 KHÔNG kích hoạt — gửi tiền cho ai đó, một loại tài sản
+ok 22 - LUẬT 11 KHÔNG kích hoạt — gửi tiền cho ai đó, một loại tài sản
+  ---
+  duration_ms: 0.0796
+  type: 'test'
+  ...
+# Subtest: LUẬT 11 KHÔNG kích hoạt — swap có nhận lại token khác
+ok 23 - LUẬT 11 KHÔNG kích hoạt — swap có nhận lại token khác
+  ---
+  duration_ms: 0.0748
+  type: 'test'
+  ...
+# Subtest: LUẬT 11 KHÔNG BAO GIỜ tự mình ra Đỏ
+ok 24 - LUẬT 11 KHÔNG BAO GIỜ tự mình ra Đỏ
+  ---
+  duration_ms: 0.0855
+  type: 'test'
+  ...
+# Subtest: LUẬT 8 kích hoạt — gửi phần lớn tài sản cho ví tạo 2 giờ trước
+ok 25 - LUẬT 8 kích hoạt — gửi phần lớn tài sản cho ví tạo 2 giờ trước
+  ---
+  duration_ms: 0.1308
+  type: 'test'
+  ...
+# Subtest: LUẬT 8 KHÔNG kích hoạt — ví nhận đã tồn tại lâu
+ok 26 - LUẬT 8 KHÔNG kích hoạt — ví nhận đã tồn tại lâu
+  ---
+  duration_ms: 0.0675
+  type: 'test'
+  ...
+# Subtest: LUẬT 8 KHÔNG kích hoạt khi KHÔNG TRA ĐƯỢC tuổi ví
+ok 27 - LUẬT 8 KHÔNG kích hoạt khi KHÔNG TRA ĐƯỢC tuổi ví
+  ---
+  duration_ms: 0.0814
+  type: 'test'
+  ...
+# Subtest: LUẬT 8 KHÔNG kích hoạt — gửi phần nhỏ cho ví mới
+ok 28 - LUẬT 8 KHÔNG kích hoạt — gửi phần nhỏ cho ví mới
+  ---
+  duration_ms: 0.0936
+  type: 'test'
+  ...
+# Subtest: nhiều luật cùng kích hoạt — lấy mức cao nhất, mã lý do không trùng lặp
+not ok 29 - nhiều luật cùng kích hoạt — lấy mức cao nhất, mã lý do không trùng lặp
+  ---
+  duration_ms: 0.2092
+  type: 'test'
+  location: 'C:\\Users\\Viet Tien\\Downloads\\Hackathon\\docs\\review\\phan-bien-da-vai-20260926\\bang-chung\\mutation-copy\\packages\\core\\test\\l2.test.ts:355:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    ba lần kích hoạt
+    
+    1 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Viet%20Tien/Downloads/Hackathon/docs/review/phan-bien-da-vai-20260926/bang-chung/mutation-copy/packages/core/test/l2.test.ts:366:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1106:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:788:18)
+    Test.postRun (node:internal/test_runner/test:1235:19)
+    Test.run (node:internal/test_runner/test:1163:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+  ...
+# Subtest: giao dịch sạch, đọc hiểu hết, không luật nào kích hoạt ⇒ safe
+ok 30 - giao dịch sạch, đọc hiểu hết, không luật nào kích hoạt ⇒ safe
+  ---
+  duration_ms: 0.1443
+  type: 'test'
+  ...
+# Subtest: LUẬT 5 kích hoạt — token có transfer hook trỏ tới chương trình chưa đọc hiểu
+ok 31 - LUẬT 5 kích hoạt — token có transfer hook trỏ tới chương trình chưa đọc hiểu
+  ---
+  duration_ms: 0.1522
+  type: 'test'
+  ...
+# Subtest: LUẬT 5 KHÔNG kích hoạt — hook trỏ tới chương trình đã xác minh (ca R05-neg)
+ok 32 - LUẬT 5 KHÔNG kích hoạt — hook trỏ tới chương trình đã xác minh (ca R05-neg)
+  ---
+  duration_ms: 0.1035
+  type: 'test'
+  ...
+# Subtest: LUẬT 5 KHÔNG kích hoạt — Token-2022 nhưng không cài hook
+ok 33 - LUẬT 5 KHÔNG kích hoạt — Token-2022 nhưng không cài hook
+  ---
+  duration_ms: 0.0994
+  type: 'test'
+  ...
+# Subtest: LUẬT 7 kích hoạt — người phát hành vẫn đóng băng được tài khoản của bạn
+ok 34 - LUẬT 7 kích hoạt — người phát hành vẫn đóng băng được tài khoản của bạn
+  ---
+  duration_ms: 0.101
+  type: 'test'
+  ...
+# Subtest: LUẬT 7 chỉ mang tính THÔNG TIN — USDC cũng có freeze authority
+ok 35 - LUẬT 7 chỉ mang tính THÔNG TIN — USDC cũng có freeze authority
+  ---
+  duration_ms: 0.1111
+  type: 'test'
+  ...
+# Subtest: LUẬT 7 KHÔNG kích hoạt — chính người ký giữ quyền đóng băng
+ok 36 - LUẬT 7 KHÔNG kích hoạt — chính người ký giữ quyền đóng băng
+  ---
+  duration_ms: 0.072
+  type: 'test'
+  ...
+# Subtest: LUẬT 7 KHÔNG kích hoạt — freeze authority đã thu hồi (ca R07-neg)
+ok 37 - LUẬT 7 KHÔNG kích hoạt — freeze authority đã thu hồi (ca R07-neg)
+  ---
+  duration_ms: 0.0764
+  type: 'test'
+  ...
+# Subtest: LUẬT 10 kích hoạt — có bảng tra địa chỉ không giải được
+ok 38 - LUẬT 10 kích hoạt — có bảng tra địa chỉ không giải được
+  ---
+  duration_ms: 0.0842
+  type: 'test'
+  ...
+# Subtest: LUẬT 10 KHÔNG kích hoạt — ALT giải được bình thường (7/10 giao dịch mainnet)
+ok 39 - LUẬT 10 KHÔNG kích hoạt — ALT giải được bình thường (7/10 giao dịch mainnet)
+  ---
+  duration_ms: 0.9837
+  type: 'test'
+  ...
+# Subtest: LUẬT 10 lấp chỗ trống của fail-safe 3 — trước đây Vàng mà không nói được vì sao
+ok 40 - LUẬT 10 lấp chỗ trống của fail-safe 3 — trước đây Vàng mà không nói được vì sao
+  ---
+  duration_ms: 0.136
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 37
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 237.993

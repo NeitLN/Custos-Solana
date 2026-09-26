@@ -1,7 +1,7 @@
 # Custos — release candidate
 
-**Commit:** `67da493337d55c773114491ceef51c25fdb15b7f`
-**Gói:** `@custos-solana/core` · `@custos-solana/ai@0.2.0` · `@custos-solana/types`
+**Commit:** `301be243dcab137119ccff98be7bd23a0707be0b`
+**Gói:** `@custos-solana/core` · `@custos-solana/ai@0.3.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
 giải thích bằng tiếng Việt. Engine luật tất định quyết định mức cảnh báo; mô hình
@@ -11,14 +11,14 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 
 | | |
 |---|---|
-| Test tự động | **1042** pass · 0 fail |
+| Test tự động | **1136** pass · 0 fail |
 | Luật tất định | **14** — 14 luật có ca đối chứng gần giống |
 | Mẫu kiểm thử đã gắn nhãn | **38** |
 | Giao dịch bị gắn **mã cáo buộc** trên cohort công khai lưu offline | **0** |
 | Coverage trung bình | **82 %** trên 9/20 mẫu |
 | Lệnh chạm tài sản người ký đọc hiểu được | **13/20** |
 | Người dùng thật nêu được hậu quả | **13/20** |
-| Tích hợp từ ngoài monorepo | **10.8 giây** tới kết quả đầu · **30** dòng mã · **920 ms** một lượt |
+| Tích hợp từ ngoài monorepo | **13.2 giây** tới kết quả đầu · **31** dòng mã · **963 ms** một lượt |
 | Bẫy đối kháng AI bị chặn | **13/13** máy bắt được, 3/3 câu đúng vẫn đi qua |
 
 > **`0` là số CÁO BUỘC, không phải "0 false positive".** Cohort chưa
@@ -41,7 +41,7 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - Mô hình không nhận giao dịch thô, không nhận địa chỉ đầy đủ, và mọi số trong lời
   giải thích phải có căn cứ trong dữ liệu đã gửi.
 - **`@custos-solana/ai@0.1.2` trên npm THIẾU neo grounding** — mô hình chèn được địa
-  chỉ ví bịa. Dùng `0.2.0` trở lên.
+  chỉ ví bịa. Dùng `0.3.0` trở lên.
 
 ## Chạy thử
 

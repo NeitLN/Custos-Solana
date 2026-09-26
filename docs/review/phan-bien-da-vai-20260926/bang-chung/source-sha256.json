@@ -1,0 +1,16 @@
+{
+  "apps/demo-wallet/src/WalletExecution.tsx": "a702ecdb3bd9d05dcc9a01af34db6d2f245208561135b2834401a600e27aea41",
+  "apps/demo-wallet/src/live/Receipt.tsx": "c130777e84c955e8bf39310bf0977592626b7c623c57011317f872aa79db92e3",
+  "apps/demo-wallet/src/live/receipt.ts": "a49529293f11f7c2d7b5b0e473eed13cb6f07b63e977508e679ddc2792217fa2",
+  "apps/demo-wallet/src/live/session.ts": "5beb3fdc2f8d00f44698ed7c990ef7cd7172e5969f8dcba312fc42f1d8fa9ff0",
+  "apps/demo-wallet/test/viDemoCoDinh.test.ts": "6204f794cdcc9aa53a7b6f2cd0abe48c053e12b1245efecacc8aec00294b51c7",
+  "packages/ai/src/moHinh.ts": "30f144f466c88ebeefbba2b4fd2fbcc8c90f211cccef5dc187d0514aa409a5bb",
+  "packages/ai/src/nhanDien.ts": "5436152ba3966a5bc8a9c7d81b81afeb90fb109a99ea69d09d543bf0be890b03",
+  "packages/core/README.md": "7415d9c39973691f6343a070e8b7e598e98a646eb7e72ffca4861ec90bab40d4",
+  "packages/core/src/diff.ts": "aea64b1f639c3aa13855ed9936c5161cd35195e4e273db02f5a388544aae83ce",
+  "packages/core/src/facts.ts": "eee787bef075b2d83f24f620a0e7723b678126eea3e198afe7773e36c67f20fb",
+  "packages/core/src/inspect.ts": "3d3d727f265b1cede378626b4b48a238af9763731aa8b464c38979345b6ae53f",
+  "packages/core/src/l1/fetch.ts": "7ac61261b81089f62885c056e0c30fee825d756b0f2c3a4401d034a71c5e53bf",
+  "packages/core/src/l2/rules.ts": "089ee09dde7d248e7d4de1efccb0cffb25bb1674d8c26bf02bb21ca908eaa445",
+  "vi-du-tich-hop/src/tich-hop.js": "0bb22810eca0f8f99a03d060ecfffa808df6d1a8519bcbe32bd18f5a601f9506"
+}

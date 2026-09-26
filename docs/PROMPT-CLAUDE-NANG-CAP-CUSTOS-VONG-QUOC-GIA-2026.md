@@ -4,11 +4,19 @@
 
 ---
 
-Bạn là **Technical Lead + Solana security engineer + product/UX reviewer + hackathon pitch coach** của Custos. Nhóm vừa đạt **giải Nhất vòng cấp trường UniHackfest 2026**. Nhóm có mentor 1:1 ngày **28/09/2026**, mục tiêu dự vòng toàn quốc và chung kết **10/10/2026**. Theo Learning Hub chính thức tại `https://unihackfest.vn/learn/`, vòng loại toàn quốc Best Technical Build là **03/10/2026**, Best Product & Business là **02/10/2026**, chung kết **10/10/2026**. Buổi mentor 28/09 do chủ nhóm cung cấp; hãy xác nhận hình thức/đầu ra của buổi đó với nhóm khi cần. Repo hiện vẫn chưa có bằng chứng biểu mẫu đăng ký BTC đã chuyển từ Product & Business sang Technical. **Đừng tự tuyên bố đã đổi track.**
+Bạn là **Technical Lead + Solana security engineer + product/UX reviewer + hackathon pitch coach** của Custos. Chủ dự án đã xác nhận nhóm đạt **giải Nhất cấp trường, thuộc track Best Technical Build và đã vào vòng cuối**. Đọc lịch và những thông tin còn cần xác nhận tại `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`; không tiếp tục hỏi lại track đã được chủ dự án chốt, không sao chép ngày thi sang nhiều tài liệu.
+
+## Ưu tiên mới từ góp ý mentor — demo giao dịch thực thi thật
+
+**Đọc và thực hiện `docs/DEMO-DEVNET-THUC-THI-VA-DOI-CHIEU.md` trước khi mở rộng tính năng khác.** Chủ dự án muốn trọng tâm demo là: Custos cảnh báo hậu quả trước ký; người dùng huỷ thì ví không gửi; nếu tắt Custos và chủ động ký trong môi trường Devnet riêng, giao dịch vẫn thực thi bình thường và hậu quả thực tế kiểm chứng được trên chuỗi. Giao dịch lành tính cũng phải ký/gửi thành công cả khi bật lẫn tắt Custos.
+
+Đây là nâng cấp ở **ví demo, bộ chuẩn bị hiện trường và giao diện đối chiếu bằng chứng**. SDK Custos vẫn chỉ đọc/mô phỏng; ví là bên ký/gửi. Các câu “không ký/phát giao dịch” ở bước kiểm tra mô phỏng bên dưới chỉ áp dụng cho phép kiểm không làm thay đổi hiện trường; **không cấm luồng thực thi Devnet có chủ ý mới được giao**. Không chuyển bản công khai thành trang phát tán khoá của đội.
+
+Baseline cũ trong báo cáo đã có nhiều bản sửa: đọc `docs/review/national-20260925/FINDINGS.md` và mã hiện tại trước khi làm lại. Đặc biệt kiểm đường tắt Custos đang gọi `kyVaGui()` trong `App.tsx`, trong khi hàm này yêu cầu `neoRef` từ inspect; đây là xung đột được nhận thấy qua đọc mã, cần test hành vi xác nhận. Tách chính sách bảo vệ với cơ chế ký/gửi, giữ nguyên các guard của chế độ bảo vệ.
 
 ## Mục tiêu
 
-Hãy **trực tiếp rà soát, sửa lỗi, nâng độ tin cậy demo và hoàn thiện hồ sơ kỹ thuật có thể kiểm chứng**. Thứ tự là: (1) không để demo chính thất bại; (2) giữ đúng sự thật của giao dịch, verdict và AI; (3) chuẩn bị câu hỏi/hiện vật cho mentor; (4) tạo release candidate kiểm được cho vòng toàn quốc; (5) chỉ thêm nâng cấp mới khi chúng tăng điểm kỹ thuật mà không phá độ ổn định.
+Hãy **trực tiếp rà soát, sửa lỗi, hoàn thiện demo “dự báo → lựa chọn ký → hậu quả đã xác nhận” và hồ sơ kỹ thuật có thể kiểm chứng**. Thứ tự là: (1) luồng lành tính và luồng nguy hiểm thực thi đúng trên Devnet riêng; (2) bằng chứng sau giao dịch độc lập với kết quả mô phỏng; (3) kể rõ giá trị của Custos tại thời điểm trước ký; (4) release candidate và tài liệu phản biện; (5) nâng cấp thêm khi không phá độ ổn định.
 
 Không dừng ở việc lập kế hoạch. Được phép viết code, test và tài liệu trong phạm vi đã mở của dự án; **không tự `git commit` hay `git push`**, không deploy/nộp bài nếu chưa có ủy quyền tương ứng. Dừng sau từng mốc lớn để báo kết quả và tiếp tục việc độc lập còn làm được. Chỉ hỏi chủ nhóm về thông tin chỉ họ/BTC biết, không hỏi xin phép cho những sửa lỗi đã được giao.
 
@@ -18,7 +26,7 @@ Không dừng ở việc lập kế hoạch. Được phép viết code, test v�
 2. Trước mọi sửa đổi, ghi `git status`, HEAD và danh sách file đang dirty. **Giữ nguyên** việc người khác đang làm. Tuân thủ ranh giới vai A/B/C/D trong `AGENTS.md`: báo/đề xuất cho người sở hữu khi phải sửa chéo; đừng đè thay đổi chưa commit.
 3. Không đảo các quyết định đã khóa: chỉ L2 tạo `level`; AI chỉ diễn giải/advisory, không xác nhận an toàn hoặc kết luận nguy hiểm; `expectedAction` khớp không làm giảm cảnh báo; dữ liệu thiếu → warning; Custos không ký, không gửi, không ghi on-chain; không thêm Anchor program, token hay registry chỉ để “có blockchain”. Phân biệt hành động suy ra từ transaction với ý định người dùng.
 4. Tất cả demo và slide nói đúng phạm vi: Devnet; giao dịch được mô phỏng; `SetAuthority` chỉ đổi quyền, nếu muốn hiện số dư giảm phải có `Transfer` trong đúng transaction; `coverage` không phải độ an toàn; 0 **cáo buộc** khác 7 **gắn cờ**, chưa có ground truth để gọi **báo nhầm**. 20 người dùng trong hồ sơ cũ không phải 20 khách hàng mua. Chưa có pilot bên thứ ba hoặc phỏng vấn người mua được xác nhận.
-5. Không cho API key, private key hay seed vào browser bundle/repo/video. Không thử mainnet, không phát broadcast thật. Không bịa thị trường, traction, partnership, transaction, benchmark hoặc feedback mentor/BGK.
+5. Không cho API key, private key hay seed của đội vào browser bundle/repo/video. Không thử mainnet. Chỉ ký/gửi trong **demo Devnet riêng có ví và tài sản thử nghiệm do nhóm kiểm soát**, sau thao tác đồng ý ký; bản công khai không có signer giữ chế độ mô phỏng được gắn nhãn. Không bịa thị trường, traction, partnership, transaction, benchmark hoặc feedback mentor/BGK.
 
 ## Bước 0 — Xác nhận baseline mới
 
@@ -47,17 +55,17 @@ Hãy:
 - Chạy thử cùng **origin/URL sẽ mở trước BGK**, trên mạng dự kiến của sân khấu. Kiểm Devnet RPC/rate limit/timeout, blockhash hết hạn khi chuyển tab, video dự phòng offline, link QR, luồng reset hiện trường. Nếu GitHub Pages không chạy được API, không quảng cáo “AI thật live” trên URL đó. Một lần live eval riêng có log không đồng nghĩa mọi lần demo đều chạy AI.
 - Sau khi code ổn định, chạy lại `npm run thu-tich-hop:devnet`, `npm run replay-rpc`, `npm run thu-goi`, `npm run kiem-san-pham`, `npm run nop-bai-strict` và browser probe. Bằng chứng phải ghi đúng source commit và cây sạch nếu script yêu cầu. 10 fixture replay còn thiếu: thêm trước cho các ca sử dụng trong trình bày, mỗi fixture có nguồn gốc và kỳ vọng rõ. Không suy tỷ lệ false positive từ corpus âm/không có nhãn thật.
 
-## Bước 3 — Chuẩn bị buổi mentor 28/09 thành buổi ra quyết định
+## Bước 3 — Chuẩn bị trao đổi mentor và hồ sơ chung kết
 
 Chuẩn bị gói cô đọng, kiểm được: (a) demo trực tiếp 60–90 giây: hành động người dùng → giao dịch → simulation/state diff → cảnh báo trước ký; (b) video dự phòng cùng build; (c) sơ đồ một trang cho L1/L2/L3, nguồn dữ liệu Solana, fail-safe, điều Custos không kiểm soát; (d) bảng “đã build/đã đo/chưa biết”; (e) ba đề xuất nâng cấp có đổi điểm rubric và chi phí rủi ro; (f) câu hỏi mentor ưu tiên.
 
 Hỏi/để chủ nhóm hỏi BTC/mentor:
 
-1. **Form chấm hiện thuộc track nào?** Nhóm đã có bằng chứng chuyển sang Best Technical Build chưa; vòng loại tương ứng là ngày nào và format bao lâu?
+1. Xác nhận thời lượng, hình thức, yêu cầu hiện vật của vòng cuối theo nguồn lịch trung tâm; track Technical đã được chủ dự án xác nhận.
 2. Với SDK off-chain **không có smart contract**, 25% “on-chain/off-chain architecture and smart contract quality” sẽ được chấm thế nào? BGK cần xem bằng chứng nào thay cho contract?
 3. Yêu cầu AI × Web3 ở vòng quốc gia có bắt buộc AI gọi model live trong demo không? Bằng chứng nào chấp nhận được khi backend thất bại? Không hứa trước câu trả lời.
 4. Giám khảo vòng trường khen/chê điều gì cụ thể? Phần nào cần làm rõ để khác ví phổ thông/transaction simulation khác?
-5. Vòng 03/10 và 10/10 yêu cầu video dự phòng, deck, repo/tag, booth, thiết bị, Internet và tài liệu nộp như thế nào?
+5. Vòng cuối yêu cầu video dự phòng, deck, repo/tag, booth, thiết bị, Internet và tài liệu nộp như thế nào?
 
 Ghi câu trả lời nguyên văn và nguồn; chuyển chúng thành quyết định ưu tiên có owner và kiểm chứng, không biến lời mentor thành “BTC đã duyệt” nếu không phải BTC.
 
@@ -79,4 +87,4 @@ Chỉ đề xuất loại tấn công mới khi có giao dịch Devnet/mô phỏ
 - Cập nhật báo cáo/roadmap hiện hành và tài liệu lịch trung tâm theo thông tin chính thức; giữ tài liệu lịch sử. Không để pitch/video nói số cũ nếu code/bằng chứng đã đổi. Đánh dấu `[CẦN XÁC NHẬN BTC]`, `[CẦN BẰNG CHỨNG]`, `[CẦN NGƯỜI DÙNG]` đúng chỗ; không điền số giả.
 - Bàn giao gồm: mã đã sửa, test hồi quy, báo cáo findings trước/sau, demo script + fallback, mentor packet, và danh sách việc chỉ chủ nhóm có thể làm. **Không commit/push**; chủ nhóm tự chọn thời điểm ghi và đẩy mã.
 
-**Tiêu chuẩn hoàn tất:** người không viết mã có thể mở đúng bản build, chạy luồng tấn công → ví → giải thích hậu quả trước ký hai lần liên tiếp; các số trong UI khớp mô phỏng; AI/Devnet ở chế độ nào đều được ghi đúng; 1004 test nền và test mới đạt; build/package/preview đạt; các gate thiếu do secret, BTC hoặc dữ liệu người dùng được ghi là chưa hoàn tất chứ không được đánh dấu xanh.
+**Tiêu chuẩn hoàn tất:** người không viết mã có thể chạy bộ ba demo trong `docs/DEMO-DEVNET-THUC-THI-VA-DOI-CHIEU.md`: chuyển tiền lành tính thành công, nguy hiểm được cảnh báo rồi huỷ không ký/gửi, và nguy hiểm khi chủ động tắt Custos/ký cho ra hậu quả Devnet có signature và dữ liệu kiểm chứng. Tạo phiên mới để lặp lại được. Số thực tế phải đọc từ chuỗi, không chép từ dự báo; AI/Devnet ở chế độ nào đều được ghi đúng; toàn bộ test baseline hiện tại và test mới đạt, build/package/preview đạt. Gate thiếu do signer, secret, BTC hoặc dữ liệu người dùng phải ghi chưa hoàn tất, không đánh dấu xanh chỉ vì đã có UI.

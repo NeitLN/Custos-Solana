@@ -103,7 +103,7 @@ tầng dưới đây chứng minh ba điều khác nhau, và trộn chúng là c
 | Tầng | Chạy gì | Chứng minh | Đủ điều kiện | **Đã chạy** |
 |---|---|---|---|---|
 | `l2-facts` | L2 trên Facts **đã đóng băng** | luật **không hồi quy** | 38/38 | **38/38** |
-| `l1-replay` | dựng lại tx từ base64 → đường L1 sản xuất | **L1 bóc tách đúng** | 29/38 | **19/29** |
+| `l1-replay` | dựng lại tx từ base64 → đường L1 sản xuất | **L1 bóc tách đúng** | 29/38 | **29/29** |
 | `devnet-live` | chạy thật trên Devnet (TB-B07) | hành vi runtime | 19/38 | **0/19 fixture** — nhưng xem mục 3b: có **suite live riêng 4 ca** |
 
 **Hai cột cuối là hai chuyện khác nhau, và gộp chúng là cách nói quá dễ nhất ở
@@ -150,7 +150,9 @@ Suite này **không** biến 19 fixture lịch sử thành 19 fixture đã captu
 kia khác 0 thì phải chạy lại đúng 19 mẫu ấy trên Devnet, và mười mẫu `real-mainnet`
 trong đó vẫn sẽ không chạy được vì account không tồn tại ở Devnet.
 
-#### Tầng `l1-replay` — đã chạy 19/29. Việc TB-B02.
+#### Tầng `l1-replay` — đã chạy 29/29. Việc TB-B02.
+
+> **26/09/2026:** 10 mẫu mainnet (`MN-01…10`) được capture bằng endpoint **mainnet** (chỉ đọc và mô phỏng, chủ dự án cho phép). Bốn mẫu (`MN-01`, `03`, `05`, `06`) nay mô phỏng HỎNG vì Address Lookup Table của chúng đã bị đóng trên mainnet sau 21/08 — fixture ghi đúng sự thật đó, replay tái lập nó, và phép kiểm độ nhạy chạm được qua thông điệp lỗi của `simulateTransaction`. Phần mô tả bên dưới về "19" là bối cảnh lúc chỉ có fixture devnet.
 
 Runner offline: `npm run replay-rpc`. Nó đọc fixture RPC đã ghi ở
 [`data/benchmark/rpc/`](../data/benchmark/rpc) và chạy qua **`extractFacts` sản
@@ -337,7 +339,7 @@ và nếu neo lại thì phải ghi ngày mới ở mọi chỗ, không được
   kích hoạt luật của chính đội. Điều đó hợp lệ để kiểm luật, và **không** thay được
   dữ liệu độc lập.
 - Không nói tập kiểm tính chất (mục 8) là accuracy hay thẩm định độc lập. Nó đo
-  **độ đáp ứng tính chất** trên 19/38 mẫu, và một trong ba tính chất còn **chưa
+  **độ đáp ứng tính chất** trên 29/38 mẫu, và một trong ba tính chất còn **chưa
   chứng minh được** là nó bắt được lỗi.
 
 ---
@@ -351,7 +353,7 @@ Mục 1 và 2 nói vì sao trang này **không** có confusion matrix và **khô
 lại. Mục này trả lời câu còn lại: *nếu chưa đo được độ chính xác, thì đo được cái gì?*
 
 Đáp: **độ đáp ứng tính chất** — những bất biến suy từ tài liệu RPC của Solana, kiểm
-trên 19 mẫu chạy được qua đường L1 sản xuất.
+trên 29 mẫu chạy được qua đường L1 sản xuất (19 tới 25/09; 10 mẫu mainnet thêm 26/09).
 
 ### 8.1 · Nguồn của tính chất — và vì sao KHÔNG dùng đặc tả nội bộ
 
@@ -374,36 +376,44 @@ không ai trong đội viết.
 
 | | Tính chất | Áp dụng | Đạt | Đã chứng minh bắt được lỗi? |
 |---|---|---|---|---|
-| **P1** | mô phỏng hỏng ⇒ KHÔNG có trạng thái sau | 4/19 | **4/4** | gỡ vế `!v.err` ⇒ tụt còn **1/4** |
-| **P2** | không đo được ⇒ phải ghi vào `accountKhongDoDuoc` | 4/19 | **4/4** | tắt nhánh ghi khuyết ⇒ tụt còn **0/4** |
-| **P3** | ALT không giải được ⇒ verdict không bao giờ `safe` | 1/19 | 1/1 | **CHƯA** |
+| **P1** | mô phỏng hỏng ⇒ KHÔNG có trạng thái sau | 14/29 | **14/14** | gỡ vế `!v.err` ⇒ tụt còn **5/14** |
+| **P2** | không đo được ⇒ phải ghi vào `accountKhongDoDuoc` | 14/29 | **14/14** | tắt nhánh ghi khuyết ⇒ tụt còn **0/14** |
+| **P3** | ALT không giải được ⇒ verdict không bao giờ `safe` | 6/29 | 6/6 | **CHƯA** |
+
+> **Đo lại 26/09 trên 29 fixture** — hai mutation được chạy lại, không chép số cũ. Trên
+> 19 fixture devnet trước đó số là 4/19 · 4/4 → 1/4 · 0/4 và P3 1/19. Cả 10 mẫu mainnet
+> đều **mô phỏng hỏng** hôm capture (5 mẫu vì ALT đã bị đóng, 4 vì `AccountNotFound`,
+> 2 vì lỗi chương trình) — nên chúng làm dày P1/P2 chứ **không** thêm ca mô phỏng thành
+> công nào.
 
 **Cột cuối là cột quan trọng nhất, và P3 không có nó.**
 
-Một tính chất "1/1 đạt" mà không chứng minh được là nó *bắt* được lỗi thì chưa phải
-tính chất — nó là một phép đếm. Mẫu duy nhất kích hoạt P3 (`R10-pos`) cũng có
-`simulationOk: false`, nên fail-safe 1 đã nâng verdict lên `warning` trước khi lớp ALT
-kịp làm gì. Tắt fail-safe 3 hay tắt luật 10 đều không kéo P3 xuống được.
+Một tính chất "6/6 đạt" mà không chứng minh được là nó *bắt* được lỗi thì chưa phải
+tính chất — nó là một phép đếm. **Mọi** mẫu kích hoạt P3 (`R10-pos` và 5 mẫu mainnet)
+cũng có `simulationOk: false`, nên fail-safe 1 đã nâng verdict lên `warning` trước khi
+lớp ALT kịp làm gì. Tắt fail-safe 3 hay tắt luật 10 đều không kéo P3 xuống được.
 
 Đây **cùng hình dạng** với phát hiện FS3 ở [mục 3 của
 `MUTATION-B04.md`](bao-mat/MUTATION-B04.md): hai lớp chồng nhau, không tách được bằng
-dữ liệu hiện có. Muốn tách cần một mẫu **ALT hỏng mà mô phỏng THÀNH CÔNG** — bộ 19
-fixture không có, và dựng nó cần Devnet.
+dữ liệu hiện có. Muốn tách cần một mẫu **ALT hỏng mà mô phỏng THÀNH CÔNG** — bộ 29
+fixture không có (mainnet cũng không cho: ALT không tải được thì node từ chối mô phỏng
+luôn), và dựng nó cần Devnet.
 
 Ghi P3 vào bảng với ô trống, chứ không bỏ nó đi: bỏ đi thì bảng trông hoàn hảo và mất
 luôn thông tin rằng còn một tính chất chưa kiểm được.
 
-### 8.3 · 19 mẫu KHÔNG đánh giá được — nhóm riêng, không trộn vào mẫu số
+### 8.3 · 9 mẫu KHÔNG đánh giá được — nhóm riêng, không trộn vào mẫu số
 
-Nghiệm thu thẻ đòi *"số không đánh giá được và lý do"*. 19/38 mẫu không chạy được ở
-tầng này, chia hai nhóm:
+Nghiệm thu thẻ đòi *"số không đánh giá được và lý do"*. 9/38 mẫu không chạy được ở
+tầng này:
 
 | Số | Lý do |
 |---|---|
-| **10** | mẫu `real-mainnet` — `capture-rpc.ts` từ chối ghi fixture bằng endpoint devnet vì ALT/account không tồn tại ở đó |
 | **9** | không có file giao dịch — ca đối chứng dựng bằng cách sửa Facts trực tiếp |
 
-19 + 19 = 38. Trộn hai nhóm này vào mẫu số là cách một tập đánh giá tự thu nhỏ mà
+29 + 9 = 38. (Tới 25/09 nhóm này còn **10** mẫu `real-mainnet` chưa có fixture vì
+`capture-rpc.ts` từ chối ghi chúng bằng endpoint devnet; 26/09 chúng được capture bằng
+endpoint mainnet, chỉ đọc và mô phỏng.) Trộn hai nhóm này vào mẫu số là cách một tập đánh giá tự thu nhỏ mà
 người đọc vẫn thấy tỉ lệ đẹp.
 
 ### 8.4 · Ba điều mục này KHÔNG nói

@@ -1,0 +1,3 @@
+npm warn audit request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: 
+npm error audit endpoint returned an error
+npm error A complete log of this run can be found in: C:\Users\Viet Tien\Downloads\Hackathon\docs\review\phan-bien-da-vai-20260926\bang-chung\npm-cache\_logs\2026-09-25T19_00_39_987Z-debug-0.log

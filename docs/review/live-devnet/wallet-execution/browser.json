@@ -1,0 +1,306 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/",
+  "console": [],
+  "sends": [
+    {
+      "method": "sendTransaction"
+    },
+    {
+      "method": "sendTransaction"
+    },
+    {
+      "method": "sendTransaction"
+    },
+    {
+      "method": "sendTransaction"
+    },
+    {
+      "method": "sendTransaction"
+    }
+  ],
+  "receipts": [
+    {
+      "signature": "3JSHGErx8v4g3wWdWfbznSh6ecwugtGqsA9udmV2i8miyJEfJQ7zPEedvR2NiugjHGPnYqvqWm9fFx8wdAayBBWQ",
+      "cluster": "devnet",
+      "kind": "transfer",
+      "protected": true,
+      "prediction": {
+        "source": "s1dy8RRiStHKco8HCMyXEBxhdGL9tHBuRk25W5TW17v",
+        "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "490000000",
+        "ownerAfter": null,
+        "message": "5fMtF6AdL5ze4bnHGWkQAHHs6eH3RsoYRhZch8FhVs5nrhKstWRGAY4cY8cjMAu7EMEq35KsAsrDjmueJUviJ9PWYdJJbcR4USYgGcYDhFterbLBPvTPe1FCtqJEzX2EJ4zRCyDX2yjkJMtcXVBwLaf4GvhRNPDs4SGfTQ6rcd3hUZLLieKGg6xYH5aip6AG3YvwCLyhpHfp7UNjacjNLYux2gDZKapBLCKS5hyX3GRTH4oQkejLhWM6f"
+      },
+      "observation": {
+        "message": "5fMtF6AdL5ze4bnHGWkQAHHs6eH3RsoYRhZch8FhVs5nrhKstWRGAY4cY8cjMAu7EMEq35KsAsrDjmueJUviJ9PWYdJJbcR4USYgGcYDhFterbLBPvTPe1FCtqJEzX2EJ4zRCyDX2yjkJMtcXVBwLaf4GvhRNPDs4SGfTQ6rcd3hUZLLieKGg6xYH5aip6AG3YvwCLyhpHfp7UNjacjNLYux2gDZKapBLCKS5hyX3GRTH4oQkejLhWM6f",
+        "slot": 503892388,
+        "err": null,
+        "fee": 5000,
+        "keys": [
+          "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+          "s1dy8RRiStHKco8HCMyXEBxhdGL9tHBuRk25W5TW17v",
+          "9DerqwS1hvHEkqp5K6n1StioBArxTstoUaeS8G5zEJgV",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "490000000",
+              "decimals": 6,
+              "uiAmount": 490,
+              "uiAmountString": "490"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "10000000",
+              "decimals": 6,
+              "uiAmount": 10,
+              "uiAmountString": "10"
+            }
+          }
+        ],
+        "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+        "ownerSlot": 503892406
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "490000000",
+        "balance": "match",
+        "authority": "unknown"
+      },
+      "createdAt": "2026-09-25T08:03:41.378Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
+    },
+    {
+      "signature": "2rbbN3uYaYZxyaXFbKzbYgXsnseKZkYaUUZyvrEvAewsqWnvbKXo9fqXw7P3XsopMLWUDwK6Zz2BnmHTUN4triX4",
+      "cluster": "devnet",
+      "kind": "attack",
+      "protected": false,
+      "prediction": {
+        "source": "s1dy8RRiStHKco8HCMyXEBxhdGL9tHBuRk25W5TW17v",
+        "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+        "decimals": 6,
+        "before": "490000000",
+        "after": "245000000",
+        "ownerAfter": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+        "message": "22HymaiFwr3go3Cmd2LYsZPkuftHrXonMBJxH6SiWJdT9w5xChikAP1KVoiq9EZ9Rz6zDpczDtsmzUotN3UHqJvRXFY8rax9i2eHuqEPvJVtHHaqctorU62fSYRxbwZTMyBgrdQ8YA7zukCxgTN6Eu2Sor5Dmz5oE7XjJkqqfL4p4QAZXC2qQ1bBwfQWzUvsKuUfLPAcPS4gQ6a3bXqUYoc8DVGpLB2Axsg9D6NxRn8MGbo9MnKQ7FapByt14t7HRip6mdxXbNRgxRnFZQSzo8AdKZEdjAkjnwqngbBeFikDMTFm"
+      },
+      "observation": {
+        "message": "22HymaiFwr3go3Cmd2LYsZPkuftHrXonMBJxH6SiWJdT9w5xChikAP1KVoiq9EZ9Rz6zDpczDtsmzUotN3UHqJvRXFY8rax9i2eHuqEPvJVtHHaqctorU62fSYRxbwZTMyBgrdQ8YA7zukCxgTN6Eu2Sor5Dmz5oE7XjJkqqfL4p4QAZXC2qQ1bBwfQWzUvsKuUfLPAcPS4gQ6a3bXqUYoc8DVGpLB2Axsg9D6NxRn8MGbo9MnKQ7FapByt14t7HRip6mdxXbNRgxRnFZQSzo8AdKZEdjAkjnwqngbBeFikDMTFm",
+        "slot": 503892555,
+        "err": null,
+        "fee": 5000,
+        "keys": [
+          "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+          "s1dy8RRiStHKco8HCMyXEBxhdGL9tHBuRk25W5TW17v",
+          "9DerqwS1hvHEkqp5K6n1StioBArxTstoUaeS8G5zEJgV",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "490000000",
+              "decimals": 6,
+              "uiAmount": 490,
+              "uiAmountString": "490"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "10000000",
+              "decimals": 6,
+              "uiAmount": 10,
+              "uiAmountString": "10"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "245000000",
+              "decimals": 6,
+              "uiAmount": 245,
+              "uiAmountString": "245"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "BSZxQBNbKorXGwyhLPoaiD9yrEVSuoyEP8TenconH5at",
+            "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "255000000",
+              "decimals": 6,
+              "uiAmount": 255,
+              "uiAmountString": "255"
+            }
+          }
+        ],
+        "owner": "ASoJCDwH5Wd7CSKCBWJdqHzaRGUUWoAeDfkJDBJ7A6er",
+        "ownerSlot": 503892555
+      },
+      "comparison": {
+        "actualBefore": "490000000",
+        "actualAfter": "245000000",
+        "balance": "match",
+        "authority": "match"
+      },
+      "createdAt": "2026-09-25T08:04:08.932Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
+    },
+    {
+      "signature": "4KTYrji7yDnf8GRcYoVsYHFCU57uh9Qa11hxxou2WNju9uFBvYNSuEq4WbLiAG9vn6f1E4Ve5ouTqZguQtADYhkp",
+      "cluster": "devnet",
+      "kind": "transfer",
+      "protected": false,
+      "prediction": {
+        "source": "3wHjbLPrLpeRah8YDQkdyjj7Nmj8qFp72GG9DtdqZqGM",
+        "mint": "qQ6E5n6nusCdXu5hf8DqVctpUe8r8FE9HaaT3daZPTv",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "490000000",
+        "ownerAfter": null,
+        "message": "5fMtF6AdL5ze4bnHGWkQAHHs6eH3RsoYRhZch8FhVs5nrhKstWRPkUMcAdZkS8naAYgZEHSfn72DngUKvvi6W3AL7aKXhDDMZqLASmhzHQNjEijSUsGecR8RWgRfEoccGJ9VymZvEDsodXDoWTmypQXpJv4VkU1GCLx18UxmCJX7w2FZrfZiu8jFb1JzVtpWWyNnRUFgCFcvLaCT28RLBJCmitdBNbK6Tq3ErRdTwrDUFYGC48Hi2cDfD"
+      },
+      "observation": {
+        "message": "5fMtF6AdL5ze4bnHGWkQAHHs6eH3RsoYRhZch8FhVs5nrhKstWRPkUMcAdZkS8naAYgZEHSfn72DngUKvvi6W3AL7aKXhDDMZqLASmhzHQNjEijSUsGecR8RWgRfEoccGJ9VymZvEDsodXDoWTmypQXpJv4VkU1GCLx18UxmCJX7w2FZrfZiu8jFb1JzVtpWWyNnRUFgCFcvLaCT28RLBJCmitdBNbK6Tq3ErRdTwrDUFYGC48Hi2cDfD",
+        "slot": 503892642,
+        "err": null,
+        "fee": 5000,
+        "keys": [
+          "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+          "3wHjbLPrLpeRah8YDQkdyjj7Nmj8qFp72GG9DtdqZqGM",
+          "BATqSaNMixfxyFgRWwUGiE514QNxsthMqnAWB3Yxt4pQ",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "qQ6E5n6nusCdXu5hf8DqVctpUe8r8FE9HaaT3daZPTv",
+            "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "qQ6E5n6nusCdXu5hf8DqVctpUe8r8FE9HaaT3daZPTv",
+            "owner": "E8e58Hp8DFirRSjizrnkkEgzZXC2MKfNAtN5g3v3QAVh",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "qQ6E5n6nusCdXu5hf8DqVctpUe8r8FE9HaaT3daZPTv",
+            "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "490000000",
+              "decimals": 6,
+              "uiAmount": 490,
+              "uiAmountString": "490"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "qQ6E5n6nusCdXu5hf8DqVctpUe8r8FE9HaaT3daZPTv",
+            "owner": "E8e58Hp8DFirRSjizrnkkEgzZXC2MKfNAtN5g3v3QAVh",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "10000000",
+              "decimals": 6,
+              "uiAmount": 10,
+              "uiAmountString": "10"
+            }
+          }
+        ],
+        "owner": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+        "ownerSlot": 503892643
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "490000000",
+        "balance": "match",
+        "authority": "unknown"
+      },
+      "createdAt": "2026-09-25T08:04:23.161Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
+    }
+  ],
+  "checks": [
+    "isolated setup confirmed: 500 DEMO",
+    "protected ordinary transfer confirmed with matching metadata",
+    "protected attack cancelled: zero send requests",
+    "unprotected attack confirmed: token delta and changed owner match prediction",
+    "new isolated session and unprotected ordinary transfer confirmed",
+    "wallet identity and balance preserved across same-page analysis switch"
+  ],
+  "funding": {
+    "cluster": "devnet",
+    "recipient": "2U4BF6NLb3sLjQTeZKMYUJ1egLnB5PaHMtGKx3RYhYEX",
+    "lamports": 30000000,
+    "signature": "3QG3HPWmK4CxoxqWCJ3meAYwYGA6tZt2Edkk6x8rrAuR5bBmAPFXeMLX68WFuBNhWZH9RgwkQAgtWo83iNH4Bwc2"
+  },
+  "axe": [],
+  "passed": true
+}

@@ -1,0 +1,10 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/",
+  "sends": 1,
+  "checks": [],
+  "receipts": [],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "passed": false,
+  "error": ""
+}
