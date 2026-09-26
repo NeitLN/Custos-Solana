@@ -4,6 +4,7 @@ import { chuoiBanGiao, dungTxTanCongSong, kiemSanSangTanCong, type SanSangTanCon
 import { conDungDuoc, layBlockhash, HAN_LAY_BLOCKHASH_MS } from "./blockhash.ts";
 import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
+import { danhSachRpc, ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
 import { RewardArtwork } from "./RewardArtwork.tsx";
 
 /**
@@ -51,6 +52,10 @@ const VI = KL_VI.loai === "co" ? KL_VI.url : null;
 // `VITE_RPC` chỉ đọc khi DEV: bản dựng công khai không mang endpoint riêng của
 // máy đội. Cùng ràng buộc với ví — xem `hienTruong.ts`.
 const RPC_RIENG = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
+// Endpoint dự phòng, cùng quy tắc chỉ-DEV như `VITE_RPC` — review 26/09, mục 3.3.
+const RPC_DU_PHONG = import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined;
+const ketNoi = (rpcHienTruong: string | null | undefined) =>
+  ketNoiDuPhong(danhSachRpc(chonRpc(rpcHienTruong, RPC_RIENG), RPC_DU_PHONG));
 
 /** Đếm ngược tới cuối ngày. Đồng hồ THẬT — không phải số đứng yên giả vờ chạy.
  *  Gấp gáp là đòn bẩy kinh điển của airdrop lừa đảo, và nó chỉ có tác dụng nếu
@@ -128,7 +133,7 @@ export default function App() {
   useEffect(() => {
     if (!ht) return;
     let huy = false;
-    const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
+    const conn = ketNoi(ht.rpc);
     /*
      * LẤY SẴN CẢ TRẠNG THÁI HIỆN TRƯỜNG, không chỉ blockhash — P0 rà soát 25/09.
      *
@@ -241,7 +246,7 @@ export default function App() {
      * hơn nhiều so với một thẻ lỗi nói thẳng.
      */
     setDangGui(true);
-    const conn = new Connection(chonRpc(ht.rpc, RPC_RIENG), "confirmed");
+    const conn = ketNoi(ht.rpc);
     layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
       .then(async ({ ma }) => {
         // Cùng hạn 9 giây cho chặng kiểm hiện trường: đường nguội không được treo.
@@ -364,6 +369,7 @@ export default function App() {
             <p className="reward-action-note mt-2.5 text-center text-[12px] text-muc-nhat">
               Mở yêu cầu trong ví demo để kiểm tra trước khi ký. SOLB là phần thưởng hư cấu.
             </p>
+            {dangGui && <BaoCham />}
 
             {/* ĐƯỜNG LUI CHO SÂN KHẤU.
                 Popup đã được vá để không bị chặn, nhưng trình duyệt lạ trên máy
@@ -484,5 +490,20 @@ export default function App() {
         <footer className="attack-footer"><span>SolBonus / đạo cụ trình diễn</span><span>Custos · Đọc giao dịch trước khi ký</span></footer>
       </main>
     </div>
+  );
+}
+
+/** Chờ Devnet quá 4 giây thì nói ra, đừng im tới lúc hết hạn — review 26/09, mục 3.10. */
+function BaoCham() {
+  const [cham, setCham] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setCham(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+  if (!cham) return null;
+  return (
+    <p className="mt-2 text-center text-[12px] text-muc-nhat" role="status">
+      Devnet đang trả lời chậm. Trang vẫn chờ; nếu hết thời hạn sẽ có nút thử lại và dữ liệu mẫu dự phòng.
+    </p>
   );
 }

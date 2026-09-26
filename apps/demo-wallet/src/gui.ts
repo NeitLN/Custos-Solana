@@ -8,7 +8,8 @@
  * Với một sản phẩm bảo mật, im lặng sau khi người dùng đã bấm KÝ là kiểu hỏng tệ
  * nhất: họ tin giao dịch đã đi, trong khi nó chưa đi.
  *
- * Ký thật đòi `VITE_DEMO_SECRET`, và bản công khai cố ý không có khoá. Nếu luồng này
+ * Ký thật đòi khoá của ví demo (từ 26/09: chỉ ở màn thực thi, nạp bằng file), và bản
+ * công khai cố ý không có khoá. Nếu luồng này
  * nằm trong component thì nó chỉ kiểm được trên máy có khoá — tức gần như không ai
  * kiểm. Tách ra đây thì `gui.test.ts` chạy nó bằng stub trong `npm run check`.
  */
@@ -147,6 +148,20 @@ const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
  * Thuật toán là chia lấy dư cơ số 58 trên mảng byte, cộng tiền tố `1` cho mỗi byte 0
  * đứng đầu — đúng quy cách base58 gốc.
  */
+/**
+ * Chữ ký đầu tiên của giao dịch — tức transaction ID — hoặc `null` khi chưa ký đủ.
+ *
+ * Bản sửa T02: `signatures[0]` có ngay sau `t.sign(...)`, không cần chờ RPC. Nhưng giao dịch
+ * chưa được ký đủ thì ô đó là 64 byte 0, và mã hoá ra một chuỗi toàn "1" trông như ID thật.
+ * Trả `null` để `guiGiaoDich` đi nhánh "chưa sẵn sàng gửi" thay vì mời người dùng đi tra một
+ * giao dịch không tồn tại. Mọi chỗ gọi `guiGiaoDich` phải lấy chữ ký qua hàm này.
+ */
+export function chuKyDauTien(t: { signatures: Uint8Array[] }): string | null {
+  const s = t.signatures[0];
+  if (!s || s.every((b) => b === 0)) return null;
+  return maBase58(s);
+}
+
 export function maBase58(b: Uint8Array): string {
   const so: number[] = [];
   for (const byte of b) {

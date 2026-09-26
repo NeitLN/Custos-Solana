@@ -8,6 +8,8 @@ import "./style.css";
 import "./product-presentation.css";
 import "./tool-design.css";
 import "./demo-design.css";
+import "./live/live-demo.css";
+import "./wallet-execution.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

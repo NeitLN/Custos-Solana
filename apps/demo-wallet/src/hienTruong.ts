@@ -1,4 +1,5 @@
 import { chonRpc as chonRpcChung } from "../../../scripts/diaChiDemo.ts";
+import { danhSachRpc } from "../../../scripts/rpcDuPhong.ts";
 
 export type HienTruong = {
   rpc: string;
@@ -46,6 +47,15 @@ export type HienTruong = {
  */
 export function chonRpc(ht: HienTruong | null | undefined): string {
   return chonRpcChung(ht?.rpc, import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined);
+}
+
+/**
+ * Danh sách endpoint cho ví: endpoint chính, rồi `VITE_RPC_DU_PHONG` (phân cách dấu phẩy).
+ * Như `VITE_RPC`, dự phòng CHỈ đọc khi DEV — URL có khoá không vào bản công khai. Xem
+ * `scripts/rpcDuPhong.ts` (review 26/09, mục 3.3).
+ */
+export function dsRpc(ht: HienTruong | null | undefined): string[] {
+  return danhSachRpc(chonRpc(ht), import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined);
 }
 
 /**

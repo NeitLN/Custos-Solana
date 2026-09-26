@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
-import { guiGiaoDich, maBase58, type TrangThaiGui } from "../src/gui.ts";
+import { guiGiaoDich, maBase58, chuKyDauTien, type TrangThaiGui } from "../src/gui.ts";
 import { PublicKey } from "@solana/web3.js";
 
 /**
@@ -334,17 +334,25 @@ test("maBase58 đúng ở ca biên: byte 0 đứng đầu", () => {
   assert.equal(maBase58(new Uint8Array([0])), "1");
 });
 
-test("App.tsx TRUYỀN `chuKy` — nếu không, bản sửa T02 không tới người dùng", () => {
-  /*
-   * Bài canh đường dây, không canh cú pháp. `guiGiaoDich` sửa đúng rồi mà người gọi
-   * không truyền `chuKy` thì người dùng vẫn thấy "chưa được gửi đi" — lỗi vẫn còn
-   * nguyên ở chỗ duy nhất nó gây hại.
-   */
-  const app = readFileSync(
-    new URL("../src/App.tsx", import.meta.url),
-    "utf8",
-  );
-  assert.match(app, /chuKy: \(t: VersionedTransaction\)/);
-  assert.match(app, /maBase58\(s\)/);
-  assert.match(app, /every\(\(b\) => b === 0\)/, "phải chặn mảng chữ ký toàn số 0");
+test("`chuKyDauTien`: chưa ký đủ (toàn số 0) ⇒ null, KHÔNG bịa ID toàn số 0 — bản sửa T02", () => {
+  assert.equal(chuKyDauTien({ signatures: [new Uint8Array(64)] }), null);
+  assert.equal(chuKyDauTien({ signatures: [] }), null);
+  const s = new Uint8Array(64); s[5] = 7;
+  assert.equal(chuKyDauTien({ signatures: [s] }), maBase58(s));
 });
+
+test("đường ký THẬT (`live/session.ts`) lấy chữ ký qua `chuKyDauTien` — mọi chỗ gọi `guiGiaoDich`", () => {
+  /*
+   * Chuyển từ guard cũ "App.tsx TRUYỀN `chuKy`" (26/09): phòng phân tích không ký nữa, và
+   * lúc chuyển thì lộ ra đường ký mới tự đọc `maBase58(t.signatures[0]!)` ở cả hai chỗ —
+   * mất đúng phép kiểm toàn-số-0 của T02. Giao dịch chưa ký đủ sẽ ra một ID gồm toàn "1"
+   * và người dùng được mời đi tra một giao dịch không tồn tại.
+   */
+  const s = readFileSync(new URL("../src/live/session.ts", import.meta.url), "utf8");
+  const soGoi = (s.match(/guiGiaoDich\(/g) ?? []).length;
+  const soDung = (s.match(/chuKyDauTien\(t\)/g) ?? []).length;
+  assert.ok(soGoi > 0, "không thấy lời gọi guiGiaoDich trong session.ts");
+  assert.equal(soDung, soGoi, `${soGoi} lời gọi guiGiaoDich nhưng chỉ ${soDung} chỗ dùng chuKyDauTien`);
+  assert.doesNotMatch(s, /maBase58\(t\.signatures\[0\]!\)/, "còn chỗ đọc chữ ký thô, bỏ qua kiểm toàn số 0");
+});
+
