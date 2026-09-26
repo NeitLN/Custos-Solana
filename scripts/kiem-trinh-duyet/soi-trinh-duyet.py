@@ -245,8 +245,14 @@ async def main() -> None:
             ck(f"{ten} · không tràn ngang", khong_tran(tran), ghi_chu(tran))
             if ok:
                 await soi_axe(pg, f"ví đang cảnh báo · {ten}")
+                # Chỉ đo nút ĐƯỢC VẼ. Màn thực thi được giữ gắn trong DOM khi đang ở màn
+                # phân tích (để không mất phiên đang chạy khi chuyển màn), nên nút của nó
+                # nằm dưới `hidden` và đo ra 0 px — không ai bấm được nút đó, nó không phải
+                # CTA. `getClientRects().length` chỉ bằng 0 với cây `display:none`; một nút
+                # HIỂN THỊ mà bị ép cao 0 px vẫn có một hình chữ nhật và vẫn làm bài đỏ.
                 cao = await pg.evaluate(
                     """() => [...document.querySelectorAll('button.nut')]
+                         .filter(e => e.getClientRects().length > 0)
                          .map(e => Math.round(e.getBoundingClientRect().height))"""
                 )
                 ck(f"{ten} · mọi CTA chính ≥44px", all(x >= 44 for x in cao), str(cao))
