@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-17T13:36:24.369Z",
-  "sourceCommit": "21fde989815210e2ec40d9326c4d2112ce829664",
+  "doLuc": "2026-09-26T16:47:14.849Z",
+  "sourceCommit": "df3cce4b32a37ce88dca51f18e2eca5803582077",
   "phienBanHoi": "latest",
-  "ai": "0.2.0",
-  "core": "0.1.1",
+  "ai": "0.3.0",
+  "core": "0.2.0",
   "tong": 10,
   "chan": 10,
   "lotChu": 0,
