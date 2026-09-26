@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """Bấm đúp, chuyển kịch bản giữa chừng và StrictMode — hành vi THẬT trên trình duyệt.
 
+⚠️ LỖI THỜI MỘT PHẦN (26/09/2026): phòng phân tích không ký nữa — `kyVaGui` và nút "Vẫn ký"
+đã gỡ khỏi App.tsx. Ca "bấm đúp nút Ký" dưới đây không còn gì để đo; chặn gửi lặp nay nằm ở
+đường ký thật (`live/session.ts` `#exclusive` + `live/policy.ts` `ConsentGate`), canh bằng
+`apps/demo-wallet/test/liveDemo.test.ts` và `liveSession.test.ts`. Các ca đổi kịch bản giữa
+chừng và StrictMode vẫn áp dụng.
+
     npm run vi                                        # server ở 5188
     python -X utf8 scripts/kiem-trinh-duyet/soi-race-gui.py
 

@@ -1,6 +1,7 @@
 import { Keypair, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { DEFAULT_DEMO_WALLET, DEMO_FAUCET_URL } from "./demo-wallet-config.ts";
 
 /**
  * Ví ký cố định cho các script devnet.
@@ -17,8 +18,13 @@ const DUONG_DAN = ".devnet/vi-demo.json";
 export function napVi(duongDan = DUONG_DAN): Keypair {
   if (existsSync(duongDan)) {
     const raw = JSON.parse(readFileSync(duongDan, "utf8")) as number[];
-    return Keypair.fromSecretKey(Uint8Array.from(raw));
+    const key = Keypair.fromSecretKey(Uint8Array.from(raw));
+    if (duongDan === DUONG_DAN && key.publicKey.toBase58() !== DEFAULT_DEMO_WALLET) {
+      throw new Error("Keypair local không khớp ví demo mặc định. Không tự thay ví hoặc ghi đè khoá.");
+    }
+    return key;
   }
+  if (duongDan === DUONG_DAN) throw new Error(`Thiếu ${DUONG_DAN}. Cần keypair của ${DEFAULT_DEMO_WALLET}; không tạo ví mới thay thế.`);
   const kp = Keypair.generate();
   mkdirSync(dirname(duongDan), { recursive: true });
   writeFileSync(duongDan, JSON.stringify([...kp.secretKey]));
@@ -37,6 +43,7 @@ if (process.argv[1]?.endsWith("vi-devnet.ts")) {
   const kp = napVi();
   console.log("Ví ký devnet:", kp.publicKey.toBase58());
   console.log("Khoá lưu tại:", DUONG_DAN, "(đã gitignore)");
+  console.log("Faucet Devnet:", DEMO_FAUCET_URL);
   void soDu(kp).then((s) => {
     console.log("Số dư      :", s, "SOL");
     if (s === 0) {

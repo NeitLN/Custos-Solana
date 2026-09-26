@@ -22,32 +22,21 @@ const app = readFileSync(fileURLToPath(new URL("../src/App.tsx", import.meta.url
  * mà hai dòng đọc mã đã chặn được.
  */
 
-test("khoá gửi dùng REF, không dùng state React", () => {
+test("chặn gửi lặp nằm ở ĐƯỜNG KÝ THẬT, không ở phòng phân tích (26/09)", () => {
   /*
-   * Đây là bản sửa chính. `setState` không cập nhật closure của lượt render hiện
-   * tại, nên `if (dangGui) return` — với `dangGui` dẫn xuất từ state — để lọt hai
-   * lần bấm trong cùng lượt sự kiện. Probe C03-a đo được: 2 lần gửi thay vì 1.
+   * Ba bài cũ canh khoá gửi bằng ref trong `kyVaGui` của App.tsx. Phòng phân tích nay KHÔNG
+   * ký — đoạn đó đã gỡ. Canh mã chết là canh một lời hứa không còn ai giữ: guard xanh mà
+   * đường ký thật không được bảo vệ. Chặn gửi lặp nay là `#exclusive` + `ConsentGate` (đồng
+   * ý dùng một lần) — bài chạy thật: `liveDemo.test.ts` ("consent is ONE-USE") và
+   * `liveSession.test.ts` ("double execution submits once").
    */
-  assert.match(app, /const dangGuiRef = useRef\(false\)/, "phải có ref khoá gửi");
-  assert.match(
-    app,
-    /if \(dangGuiRef\.current\) return;\s*\n\s*dangGuiRef\.current = true;/,
-    "phải khoá NGAY khi handler nhận việc, bằng ref",
-  );
-  assert.doesNotMatch(
-    app,
-    /if \(dangGui\) return;/,
-    "cổng cũ đọc state React — nó không chặn được bấm đúp",
-  );
+  const s = readFileSync(fileURLToPath(new URL("../src/live/session.ts", import.meta.url)), "utf8");
+  assert.match(s, /async #exclusive</, "đường ký thật mất khoá độc quyền");
+  assert.match(s, /this\.#gate\.consume\(/, "đường ký thật không tiêu đồng ý trước khi gửi");
+  assert.doesNotMatch(app, /guiGiaoDich|kyVaGui/, "App.tsx lại có đường gửi — khoá C03 phải đi cùng nó");
 });
 
-test("khoá gửi được nhả trong `finally`", () => {
-  /*
-   * Một khoá không nhả thì nút Ký chết vĩnh viễn tới khi tải lại trang — tệ hơn lỗi
-   * nó chặn. `guiGiaoDich` không ném, nhưng `doSoDu()` sau đó thì có.
-   */
-  assert.match(app, /finally \{[\s\S]{0,400}?dangGuiRef\.current = false;/);
-});
+
 
 test("mỗi lượt kiểm tra có ID, và kết quả lượt cũ bị bỏ", () => {
   /*
@@ -60,9 +49,13 @@ test("mỗi lượt kiểm tra có ID, và kết quả lượt cũ bị bỏ", (
   assert.match(app, /const conDung = \(\) => luot === luotRef\.current/);
 });
 
-test("`ketQua` và `txCho` chỉ được ghi CÙNG NHAU, sau khi kiểm lượt", () => {
+test("`ketQua` chỉ được ghi SAU khi kiểm lượt, không gì xen vào giữa", () => {
   /*
    * BÀI QUAN TRỌNG NHẤT CỦA FILE.
+   *
+   * (26/09: `txCho` — giao dịch nút Ký sẽ ký — đã gỡ cùng đường ký của phòng phân tích.
+   * Điều kiện giữ nguyên cho `ketQua`: thẻ cảnh báo từ một lượt đã bị thay thế là nói về
+   * một giao dịch khác với giao dịch đang chờ.)
    *
    * `ketQua` là thẻ cảnh báo người dùng đọc; `txCho` là giao dịch nút Ký sẽ ký. Ghi
    * hai thứ đó từ một lượt đã bị thay thế là tạo ra đúng tình huống sản phẩm này
@@ -90,9 +83,9 @@ test("`ketQua` và `txCho` chỉ được ghi CÙNG NHAU, sau khi kiểm lượt
    */
   const ma = app.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
   const m = ma.match(
-    /if \(!conDung\(\)\) return;([\s\S]*?)setKetQua\(r\);\s*\n\s*setTxCho\(tx\);/,
+    /if \(!conDung\(\)\) return;([\s\S]*?)setKetQua\(r\);/,
   );
-  assert.ok(m, "không tìm thấy `conDung()` ngay trước hai setState");
+  assert.ok(m, "không tìm thấy `conDung()` ngay trước setKetQua");
   for (const cam of ["await", "if (", "return", "catch"]) {
     assert.ok(
       !m[1]!.includes(cam),
@@ -113,14 +106,7 @@ test("mọi nhánh ghi state trong lượt kiểm đều qua `conDung()`", () =>
   }
 });
 
-test("gửi xong mà lượt đã đổi thì KHÔNG dọn thẻ kết quả", () => {
-  /*
-   * Giao dịch đã đi thì không rút lại được, nên `gui` vẫn phản ánh kết cục thật.
-   * Nhưng thẻ kết quả đang hiện thuộc lượt khác — xoá nó là xoá nhầm thứ người dùng
-   * đang đọc.
-   */
-  assert.match(app, /if \(luot !== luotRef\.current\) return;/);
-});
+
 
 test("HUỶ vô hiệu lượt kiểm đang bay, không chỉ dọn màn hình", () => {
   /*
@@ -145,12 +131,6 @@ test("HUỶ vô hiệu lượt kiểm đang bay, không chỉ dọn màn hình",
     /luotRef\.current\+\+/,
     "huỷ phải vô hiệu lượt đang bay — nếu không, kết quả về muộn dựng lại thẻ đã huỷ",
   );
-  assert.match(
-    than,
-    /neoRef\.current = null/,
-    "huỷ phải xoá neo — neo còn sống nghĩa là `kyVaGui` vẫn có đủ điều kiện cho ký",
-  );
-  assert.match(than, /setTxCho\(null\)/, "huỷ phải dọn giao dịch chờ");
   assert.match(than, /setKetQua\(null\)/, "huỷ phải dọn thẻ kết quả");
 });
 
@@ -161,6 +141,8 @@ test("KHÔNG hứa exactly-once trên toàn mạng", () => {
    * không kiểm soát được điều đó. Ghi ranh giới vào mã để người đọc sau không đọc
    * bản sửa mạnh hơn thực tế.
    */
-  assert.match(app, /exactly-once/i, "phải ghi rõ ranh giới ngay tại chỗ khoá");
-  assert.match(app, /Hai tab là hai tiến trình|MỘT tab/);
+  // Khoá gửi nay ở đường ký thật (26/09), nên ranh giới phải ghi ở đó.
+  const s = readFileSync(fileURLToPath(new URL("../src/live/session.ts", import.meta.url)), "utf8");
+  assert.match(s, /exactly-once/i, "phải ghi rõ ranh giới ngay tại chỗ khoá");
+  assert.match(s, /Hai tab là hai tiến trình|MỘT tab/);
 });

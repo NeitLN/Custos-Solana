@@ -10,7 +10,7 @@ const GOC = join(import.meta.dirname, "..");
  * Thêm trang mới mà quên h1 thì bài dưới đỏ.
  */
 const TRANG: Array<[string, string]> = [
-  ["index.html", "App.tsx"],
+  ["index.html", "WalletExecution.tsx"],
   ["soi.html", "Inspector.tsx"],
   ["so-lieu.html", "SoLieu.tsx"],
   ["phong-van.html", "PhongVan.tsx"],

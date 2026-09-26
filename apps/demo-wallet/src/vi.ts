@@ -1,89 +1,28 @@
-import { Keypair } from "@solana/web3.js";
-
+/** Khoá localStorage bản cũ từng dùng để lưu một ví tự sinh. Chỉ còn để DỌN. */
 const KHOA_LUU = "custos.vi-demo";
 
 /**
- * Ví của Demo Wallet — PHẢI cố định giữa các lần tải trang.
+ * PHÒNG PHÂN TÍCH KHÔNG KÝ — review 26/09, mục 3.5.
  *
- * Bản đầu sinh ví mới mỗi lần render. Hậu quả: nạp tiền xong, reload một cái là
- * mất trắng. Mà kế hoạch demo yêu cầu "ví nạp sẵn" — ví ephemeral không nạp sẵn
- * được, và trên sân khấu thì không có cơ hội nạp lại.
+ * Trước đây phòng phân tích ký bằng khoá trong `VITE_DEMO_SECRET` (`.env.development.local`),
+ * còn màn thực thi ký bằng file keypair người dùng chọn. Hai cơ chế cho cùng một ví demo
+ * là hai bề mặt rò khoá và hai hành vi khác nhau cho cùng một nút "Ký"; chính
+ * `scripts/demo-wallet-config.ts` ghi "không bao giờ đặt khoá riêng vào VITE_*". Và đường
+ * ký qua biến môi trường là đường đã làm hỏng hiện trường Devnet ngày 25/09: bấm "Vẫn ký"
+ * trên bản dev là gửi thật.
  *
- * Thứ tự ưu tiên:
- *   1. VITE_DEMO_SECRET  — dùng chung ví với các script devnet, nạp tiền một lần
- *   2. localStorage      — giữ được qua reload
- *   3. sinh mới          — lần chạy đầu
+ * Nay chỉ còn MỘT cách ký: màn thực thi ("Ví của bạn"), mở quyền bằng file khoá của đúng ví
+ * demo cố định (`live/session.ts`, `unlock()`). Mã gửi của phòng phân tích đã gỡ khỏi
+ * `App.tsx`; các bảo vệ của nó (khoá gửi lặp, neo kết quả, kết quả quá cũ) nằm ở
+ * `live/session.ts` và `live/policy.ts`.
  *
- * Đây là ví DEVNET dùng để minh hoạ. Không bao giờ dùng cơ chế này cho tiền thật.
+ * File này chỉ còn một việc: dọn ví tự sinh mà các bản cũ đã ghi vào localStorage của người
+ * xem. Chỉ ngừng ghi thì không lấy nó đi.
  */
-/** Bản deploy công khai KHÔNG nhúng khoá ký của hiện trường.
- *
- *  Người xem vẫn chạy được `inspect()` và thấy đầy đủ màn cảnh báo — mô phỏng
- *  không cần chữ ký. Cái họ không làm được là KÝ, và đó là chủ đích:
- *
- *    - không ai phá được hiện trường của đội trước buổi thi
- *    - không nhúng khoá riêng vào một trang web công khai
- *
- *  Ký được hay không do có `VITE_DEMO_SECRET` hay không quyết định. */
-export const kyDuoc = (): boolean => {
-  // `?khongkhoa=1` giả lập bản công khai NGAY TRÊN MÁY CÓ KHOÁ.
-  //
-  // Không có nó thì máy của đội luôn đi đường ký thật, nên màn "nếu bạn ký mà
-  // không có Custos" — thứ mà mọi người bấm link công khai sẽ thấy — không ai
-  // trong đội xem được lúc tập. Thứ không ai tập là thứ hỏng vào đúng hôm thi.
-  //
-  // Chỉ đi một chiều: bắt CHẶT hơn, không bao giờ mở khoá ký ở nơi không có khoá.
-  if (new URLSearchParams(window.location.search).has("khongkhoa")) return false;
-  return Boolean(import.meta.env["VITE_DEMO_SECRET"]);
-};
-
-/**
- * Khoá chỉ được ghi xuống đĩa khi việc đó THẬT SỰ mua được gì.
- *
- * Nó mua được đúng một thứ: giữ ví qua reload trên máy người đang phát triển,
- * để nạp devnet một lần rồi làm việc tiếp. Trên bản deploy công khai nó không
- * mua gì cả — ở đó `kyDuoc()` là false, `napVi()` chỉ được gọi trong nhánh ký,
- * nên khoá sinh ra không bao giờ ký gì.
- *
- * Trước đây bản công khai vẫn ghi khoá riêng thô vào `localStorage` của MỌI
- * người xem, rồi không dùng vào việc gì. Rủi ro thật thì nhỏ — khoá devnet rỗng,
- * sinh tại chỗ, không rời máy — nhưng nó không đổi lấy được gì, và "khoá riêng
- * trong localStorage" là thứ không nên có mặt trong một sản phẩm bảo mật kể cả
- * khi vô hại. Cách rẻ nhất để không phải giải thích là đừng ghi.
- */
-const luuDuocXuongDia = (): boolean => import.meta.env.DEV;
-
-export function napVi(): Keypair {
-  const tuEnv = import.meta.env["VITE_DEMO_SECRET"];
-  if (tuEnv) {
-    try {
-      return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(tuEnv) as number[]));
-    } catch {
-      console.warn("[custos] VITE_DEMO_SECRET không đọc được — bỏ qua");
-    }
+export function donKhoaCu(): void {
+  try {
+    localStorage.removeItem(KHOA_LUU);
+  } catch {
+    /* trình duyệt chặn storage thì cũng chẳng có gì để dọn */
   }
-
-  if (!luuDuocXuongDia()) {
-    // Dọn cả khoá do bản cũ để lại: người đã mở trang trước lần sửa này vẫn còn
-    // một khoá nằm trong máy họ, và chỉ ngừng ghi thì không lấy nó đi.
-    try {
-      localStorage.removeItem(KHOA_LUU);
-    } catch {
-      /* trình duyệt chặn storage thì cũng chẳng có gì để dọn */
-    }
-    return Keypair.generate(); // chỉ sống trong bộ nhớ, mất khi đóng tab
-  }
-
-  const daLuu = localStorage.getItem(KHOA_LUU);
-  if (daLuu) {
-    try {
-      return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(daLuu) as number[]));
-    } catch {
-      localStorage.removeItem(KHOA_LUU);
-    }
-  }
-
-  const kp = Keypair.generate();
-  localStorage.setItem(KHOA_LUU, JSON.stringify([...kp.secretKey]));
-  return kp;
 }

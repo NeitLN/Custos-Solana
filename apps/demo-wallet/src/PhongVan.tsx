@@ -5,7 +5,8 @@ import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { docNguonSong, dungTxTanCongSong } from "../../../scripts/hienTruongSong.ts";
-import { docHienTruong, chonRpc, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, dsRpc, type HienTruong } from "./hienTruong.ts";
+import { ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
 import { coHan } from "../../../scripts/coHan.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import {
@@ -112,7 +113,7 @@ export function PhongVan() {
   const [bamThat, setBamThat] = useState<"huy" | "ky" | null>(null);
 
   const dung = useCallback(async (ht: HienTruong) => {
-    const c = new Connection(chonRpc(ht), "confirmed");
+    const c = ketNoiDuPhong(dsRpc(ht));
     const { blockhash } = await c.getLatestBlockhash();
     /*
      * SỐ DƯ SỐNG — cùng hàm với trang tấn công và sổ kịch bản của ví.

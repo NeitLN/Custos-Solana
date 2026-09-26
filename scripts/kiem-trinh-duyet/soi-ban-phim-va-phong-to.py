@@ -104,7 +104,9 @@ async def nhom_a(b) -> None:
 
     # Bốn thao tác của thẻ kết quả phải nằm trên đường đi. Thiếu một cái nghĩa là
     # người dùng bàn phím không mở được mục đó, dù chuột thì bấm được.
-    for can in ["Xem chi tiết", "Chi tiết kỹ thuật", "Chặn & huỷ giao dịch", "Vẫn ký"]:
+    # "Vẫn ký" đã bỏ khỏi danh sách 26/09: phòng phân tích không ký nữa (ký thật ở tab
+    # "Ví của bạn"), nên thẻ cảnh báo ở đây KHÔNG được có nút ký — cùng cách soi-inspector.py.
+    for can in ["Xem chi tiết", "Chi tiết kỹ thuật", "Chặn & huỷ giao dịch"]:
         ck(f"Tab tới được: {can}", any(can in t for t in ten), " → ".join(ten)[:90])
 
     # Vòng focus phải THẤY ĐƯỢC. `outline: none` không kèm gì thay thế là kiểu hỏng
@@ -129,12 +131,10 @@ async def nhom_a(b) -> None:
     # Thứ tự KHÔNG trung tính. Với một sản phẩm chặn giao dịch, lựa chọn an toàn
     # phải tới trước — người bấm Tab-Enter theo phản xạ sẽ trúng "huỷ", không trúng
     # "vẫn ký". Đây là quyết định sản phẩm, nên nó xứng đáng có một bài kiểm.
-    try:
-        i_huy = next(i for i, t in enumerate(ten) if "Chặn & huỷ" in t)
-        i_ky = next(i for i, t in enumerate(ten) if "Vẫn ký" in t)
-        ck("lựa chọn AN TOÀN đứng trước trong thứ tự Tab", i_huy < i_ky, f"huỷ #{i_huy + 1} · ký #{i_ky + 1}")
-    except StopIteration:
-        ck("lựa chọn AN TOÀN đứng trước trong thứ tự Tab", False, "không thấy đủ hai nút")
+    #
+    # Từ 26/09 phòng phân tích không có nút ký, nên câu hỏi thứ tự trở thành câu hỏi mạnh
+    # hơn: KHÔNG có đường nào tới "Vẫn ký" bằng bàn phím ở đây.
+    ck("không có nút 'Vẫn ký' trên đường Tab của phòng phân tích", not any("Vẫn ký" in t for t in ten), " → ".join(ten)[:90])
 
     # Enter và Space đều phải mở được khối gập — `<button>` thật thì được cả hai,
     # một `<div onClick>` đội lốt thì chỉ được chuột.

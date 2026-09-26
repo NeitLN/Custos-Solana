@@ -26,6 +26,23 @@ export default defineConfig(({ command, isPreview }) => ({
   // Dòng này chặn việc leo cây. Đây là bẫy đã cắn ở dự án PawPass.
   css: { postcss: {} },
 
+  // Tách thư viện Solana khỏi mã của trang — review 26/09, mục 3.9. Trước đó một chunk
+  // 503 kB (Vite cảnh báo). Trang cần web3.js NGAY khi mở (đọc hiện trường, lấy sẵn
+  // blockhash) nên tải trễ không bớt được gì; tách ra thì trình duyệt cache được phần
+  // thư viện, và mỗi lần sửa trang chỉ phải tải lại phần mã nhỏ.
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // CHỈ tách `@solana`. Bản đầu tách cả `buffer`, `bn.js`… sang chunk khác và trang
+          // trắng với "Cannot set properties of undefined (setting 'byteLength')": polyfill
+          // `buffer` phải khởi tạo cùng chỗ với mã dùng nó. Kiểm trên bản build thật.
+          return /[\\/]node_modules[\\/]@solana[\\/]/.test(id) ? "solana" : undefined;
+        },
+      },
+    },
+  },
+
   // @solana/web3.js v1 cần Buffer và global — trình duyệt không có sẵn.
   define: { global: "globalThis" },
   // Dấu gạch chéo cuối là BẮT BUỘC: nó buộc Vite lấy gói npm `buffer`,
