@@ -1,0 +1,594 @@
+[
+  {
+    "name": "execution-locked",
+    "text": "Solana Devnet\n· Ví demo cố định · Token không có giá trị tiền thật\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nKý và thực thi trên Devnet\n\nVí của bạn · Quyết định của bạn\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nGửi token, xem cảnh báo trước khi ký và kiểm chứng điều thực sự xảy ra với tài khoản của bạn.\n\n01\nChọn giao dịch\n02\nXem & ký\n03\nXác nhận trên chuỗi\nTài khoản của bạn\n\nVí thử nghiệm mặc định\n\nAqX3F…EBCLZ\n\nSố dư tài khoản DEMO\n\nChưa đo\nDEMO\n\nCập nhật để xem SOL trả phí\n\nGửi DEMO\n↓ Nhận SOL\n↻ Cập nhật\nChuẩn bị ví của bạn\n\nĐịa chỉ này cố định qua các lần mở trang. Giữ file keypair trên máy để dùng lại. Nạp tối thiểu 0,012 SOL Devnet để tạo 500 DEMO.\n\nĐịa chỉ nhận SOL Devnet\nSao chép\nMở Solana Faucet ↗\nCập nhật số dư\n\nMở quyền ký bằng keypair của ví mặc định\n\nChọn file khoá (.json)…\n\nChọn .devnet/vi-demo.json trên máy. File được đọc tại trình duyệt, không gửi lên server hoặc lưu vào localStorage.\n\nChỉ dùng với ví Devnet cố định của bản demo. Không bao giờ nạp khoá riêng của ví thật vào một trang web — kể cả trang này.\n\nThao tác tạo mint, ba tài khoản token và cấp 0,001 SOL Devnet cho ứng dụng thử nghiệm trả phí bước sau. Không thể hoàn tác giao dịch đã gửi.\n\nKý tạo phiên thử nghiệm\nLớp bảo vệ Custos\nĐọc hậu quả trước khi quyết định ký\nỨng dụng đang kết nối\nNhận quà tặng\nỨng dụng thử nghiệm · ký để nhận quà\n↗\n\nKịch bản có điều kiện ẩn: chuyển nửa số token và đổi chủ tài khoản. Chỉ dùng token DEMO của phiên này.\n\nMở dApp của phiên này ↗\nKhám phá các tình huống về quyền\nCài đặt và dữ kiện của phiên\nLịch sử giao dịch\n\nChưa có giao dịch được ký. Huỷ trước khi ký không tạo giao dịch trên chuỗi.\n\nXác nhận giao dịch\n\nCustos bên cạnh bạn\nCustos bật\nVí mặc định đã sẵn sàng để nhận SOL Devnet. Chọn keypair đúng ví để ký.\nQuyết định có hậu quả thật.\n\nGửi lượng DEMO bạn chọn, hoặc mở lời mời nhận quà để xem Custos phát hiện hậu quả ẩn. Cấp quyền cho ứng dụng có thể cho phép nó chuyển token trong giao dịch sau mà bạn không ký lại.\n\nTrước khi ký\nĐọc thay đổi tài sản và quyền kiểm soát.\nQuyết định của bạn\nHuỷ yêu cầu hoặc chủ động bỏ qua cảnh báo.\nSau xác nhận\nKiểm chứng số dư và chữ ký trên Explorer.\nCustos phân tích. Bạn quyết định. Ví ký và gửi trên Solana Devnet.\nCác kịch bản nâng cao nằm trong “Phòng phân tích” ở đầu trang.",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Gửi DEMO",
+        "disabled": true
+      },
+      {
+        "text": "↓ Nhận SOL",
+        "disabled": false
+      },
+      {
+        "text": "↻ Cập nhật",
+        "disabled": false
+      },
+      {
+        "text": "Sao chép",
+        "disabled": false
+      },
+      {
+        "text": "Cập nhật số dư",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "Ký tạo phiên thử nghiệm",
+        "disabled": true
+      },
+      {
+        "text": "Nhận quà tặng\nỨng dụng thử nghiệm · ký để nhận quà\n↗",
+        "disabled": true
+      },
+      {
+        "text": "Mở dApp của phiên này ↗",
+        "disabled": true
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ],
+    "failures": []
+  },
+  {
+    "name": "live-danger",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nKhông thể kiểm tra giao dịch\n\nCustos chưa nhận được kết quả mô phỏng từ Solana Devnet sau 12 giây. Chúng tôi chưa thể kết luận giao dịch này an toàn.\n\nThử lại\nXem một thẻ mẫu đã ghi sẵn\n\nDữ liệu mẫu có nhãn riêng, không phải kết quả mô phỏng trực tiếp.\n\nNhật ký kỹ thuật · 2 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      },
+      {
+        "text": "Thử lại",
+        "disabled": false
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getFeeForMessage",
+        "allowed": true
+      },
+      {
+        "method": "getMultipleAccounts",
+        "allowed": true
+      }
+    ],
+    "failures": []
+  },
+  {
+    "name": "live-control",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nKhông thể kiểm tra giao dịch\n\nCustos chưa nhận được kết quả mô phỏng từ Solana Devnet sau 12 giây. Chúng tôi chưa thể kết luận giao dịch này an toàn.\n\nThử lại\nXem một thẻ mẫu đã ghi sẵn\n\nDữ liệu mẫu có nhãn riêng, không phải kết quả mô phỏng trực tiếp.\n\nNhật ký kỹ thuật · 3 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      },
+      {
+        "text": "Thử lại",
+        "disabled": false
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getFeeForMessage",
+        "allowed": true
+      },
+      {
+        "method": "getMultipleAccounts",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      }
+    ],
+    "failures": []
+  },
+  {
+    "name": "live-missing",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nKhông thể kiểm tra giao dịch\n\nCustos chưa nhận được kết quả mô phỏng từ Solana Devnet sau 12 giây. Chúng tôi chưa thể kết luận giao dịch này an toàn.\n\nThử lại\nXem một thẻ mẫu đã ghi sẵn\n\nDữ liệu mẫu có nhãn riêng, không phải kết quả mô phỏng trực tiếp.\n\nNhật ký kỹ thuật · 4 sự kiện\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      },
+      {
+        "text": "Thử lại",
+        "disabled": false
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getFeeForMessage",
+        "allowed": true
+      },
+      {
+        "method": "getMultipleAccounts",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      }
+    ],
+    "failures": []
+  },
+  {
+    "name": "mock-result",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n⚠ ĐANG XEM DỮ LIỆU MOCK \"DANGER\" — KHÔNG PHẢI KẾT QUẢ THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nNguy hiểm\n\nKhông nên ký giao dịch này\n\nRủi ro cao\n\nUSDC trong ví bạn sẽ giảm từ 500,00 xuống 0,00, và tài khoản USDC của bạn sẽ đổi chủ sang 9xQe…7Tm2. Sau khi ký, bạn không lấy lại được.\n\nXem chi tiết\nCustos nhận diện\nswap · SOL → USDC\nThay đổi nếu bạn ký\ntrước → sau\nSố dư USDC sau khi ký\n500,00 → 0,00\nChủ sở hữu tài khoản USDC\nBạn → 9xQe…7Tm2\nPhí mạng\n— → 0,000005 SOL\n\nĐã đọc hiểu 10 trên 11 lệnh\n\n91%\n\n1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.\n\nCustos đề nghị kiểm tra thủ công\n\nMức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm.\n\nChi tiết kỹ thuật\nChặn & huỷ giao dịch\nDemo chỉ mô phỏng · không nhúng khoá ký\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      },
+      {
+        "text": "Xem chi tiết",
+        "disabled": false
+      },
+      {
+        "text": "Chi tiết kỹ thuật",
+        "disabled": false
+      },
+      {
+        "text": "Chặn & huỷ giao dịch",
+        "disabled": false
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getFeeForMessage",
+        "allowed": true
+      },
+      {
+        "method": "getMultipleAccounts",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ],
+    "failures": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      }
+    ]
+  },
+  {
+    "name": "inspector-invalid",
+    "text": "Custos Inspector\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\n\nPhân tích trước khi ký · Solana Devnet\n\nĐọc giao dịch.\nTrước khi đặt niềm tin.\n\nDán chuỗi base64 của một giao dịch chưa ký, hoặc chọn tệp. Custos mô phỏng nó trên Devnet rồi cho biết nó làm gì với tài sản của bạn.\n\n01 / DỮ LIỆU ĐẦU VÀO\nGiao dịch cần kiểm tra\nDữ liệu đi đâu: để mô phỏng, Custos gửi toàn bộ nội dung giao dịch tới máy chủ RPC bên dưới. Không có bước nào chạy hoàn toàn trên máy bạn. Trang này không lưu lịch sử và không nhận khoá riêng hay seed phrase.\nGiao dịch (base64)\nhoặc chọn tệp…\nVí của bạn (tuỳ chọn)\n\nBỏ trống thì Custos phân tích theo người trả phí — có thể không phải bạn.\n\nMáy chủ RPC\nKiểm giao dịch\n02 / KẾT QUẢ PHÂN TÍCH\nHiểu điều sắp xảy ra\nChuỗi này không phải base64. Kiểm lại xem có lẫn ký tự lạ hoặc thiếu phần cuối không.",
+    "buttons": [
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "Kiểm giao dịch",
+        "disabled": false
+      }
+    ],
+    "calls": [
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getFeeForMessage",
+        "allowed": true
+      },
+      {
+        "method": "getMultipleAccounts",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "method": "getAccountInfo",
+        "allowed": true
+      },
+      {
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ],
+    "failures": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "failure": "net::ERR_ABORTED"
+      }
+    ]
+  }
+]

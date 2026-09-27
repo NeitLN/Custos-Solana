@@ -1,0 +1,27 @@
+ M apps/demo-wallet/src/App.tsx
+ M apps/demo-wallet/src/PhongVan.tsx
+ M apps/demo-wallet/src/WalletExecution.tsx
+ M apps/demo-wallet/test/kichBanDoiKhang.test.ts
+ M apps/trang-tan-cong/src/App.tsx
+ M data/a11y/ban-trinh-dien.json
+ M data/a11y/dau-vao-sai.json
+ M data/a11y/landing.json
+ M packages/ai/src/mucNgan.ts
+ M packages/ai/test/nhanDien.test.ts
+ M packages/core/src/diff.ts
+ M packages/core/test/artifactNopBai.test.ts
+ M packages/core/test/cheNhayCam.test.ts
+ M packages/core/test/replay.test.ts
+ M packages/core/test/tan-cong.test.ts
+ M scripts/do-thi-truong.ts
+ M scripts/dong-bo-so-tai-lieu.mjs
+ M scripts/dong-goi-ban-trinh-dien.mjs
+ M scripts/eval-ai.ts
+ M scripts/kiem-nop-bai.ts
+ M scripts/kiem-trinh-duyet/soi-cau-hinh-hong.py
+ M scripts/kiem-trinh-duyet/soi-inspector.py
+ M scripts/kiem-trinh-duyet/soi-landing.py
+ M scripts/kiem-trinh-duyet/soi-layout-landing.py
+ M scripts/kiem-trinh-duyet/soi-race-gui.py
+ M scripts/kiem-trinh-duyet/verify-redesign.py
+?? docs/review/chung-ket-20260927/

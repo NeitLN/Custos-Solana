@@ -1,0 +1,52 @@
+{
+  "measuredAt": "2026-09-26T18:14:59.400Z",
+  "endpoint": "https://api.devnet.solana.com",
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "results": [
+    {
+      "method": "getLatestBlockhash",
+      "http": 200,
+      "elapsedMs": 316,
+      "result": {
+        "jsonrpc": "2.0",
+        "result": {
+          "context": {
+            "apiVersion": "4.3.0",
+            "slot": 504497752
+          },
+          "value": {
+            "blockhash": "8UR11mVfpdQ6xw5Dwa9towuDZpX5dXbJiopSEPfnK5gH",
+            "lastValidBlockHeight": 491749351
+          }
+        },
+        "id": 1
+      }
+    },
+    {
+      "method": "getBalance",
+      "http": 200,
+      "elapsedMs": 300,
+      "result": {
+        "jsonrpc": "2.0",
+        "result": {
+          "context": {
+            "apiVersion": "4.3.0",
+            "slot": 504497752
+          },
+          "value": 9928786680
+        },
+        "id": 1
+      }
+    },
+    {
+      "method": "getAccountInfo",
+      "elapsedMs": 8003,
+      "error": "TimeoutError: The operation was aborted due to timeout"
+    },
+    {
+      "method": "getMultipleAccounts",
+      "elapsedMs": 8003,
+      "error": "TimeoutError: The operation was aborted due to timeout"
+    }
+  ]
+}
