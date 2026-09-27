@@ -2,34 +2,38 @@ import { ProductNavigation } from "./ProductNavigation.tsx";
 import { WalletExecution } from "./WalletExecution.tsx";
 import { initialWalletSurface } from "./walletSurface.ts";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { PublicKey, type Connection } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan, dienGiaiBangMoHinh } from "@custos-solana/ai";
-import { KICH_BAN, timKichBan, type KichBan } from "./kichBan.ts";
+import { timKichBan } from "./kichBan.ts";
+import { PhongKichBan } from "./PhongKichBan.tsx";
 import { dungGoiQuaServer, coAiKhong } from "./goiAiQuaServer.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
 import { docHienTruong, docHienTruongChiTiet, chonRpc, dsRpc, clusterCua, hostCua, type HienTruong } from "./hienTruong.ts";
-import { ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
+import { ketNoiDuPhong, taoBoChon, locTheoGenesis, LoiNguonTron, LoiKhongCoRpcDung, type QuanSatRpc } from "../../../scripts/rpcDuPhong.ts";
+import { ThieuFixture } from "../../../scripts/replayFixture.ts";
+import {
+  docBoReplay,
+  connReplay,
+  soVoiLucGhi,
+  tuyChonInspectKichBan,
+  LoiPhatLai,
+  type BoReplayKichBan,
+} from "./replayKichBan.ts";
+import { kiemSanSang, dsChoLuotKiem, type KetQuaPreflight } from "./preflight.ts";
+import { DaiNguon, BangSanSang, type ThongTinNguon } from "./NguonKiem.tsx";
+import goiCore from "../../../packages/core/package.json";
 import { HoatDong } from "./HoatDong.tsx";
 import { docYeuCauNgoaiChiTiet } from "./yeuCauNgoai.ts";
 import { donKhoaCu } from "./vi.ts";
 import { locDongNhatKy } from "./locNhatKy.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { docNguonSong, HienTruongChuaSan } from "../../../scripts/hienTruongSong.ts";
-import {
-  ArrowIcon,
-  CheckIcon,
-  CopyIcon,
-  ExternalIcon,
-  GiftIcon,
-  SendIcon,
-  ShieldIcon,
-  WalletIcon,
-} from "./Icons.tsx";
+import { CheckIcon, CopyIcon, ExternalIcon, ShieldIcon, WalletIcon } from "./Icons.tsx";
 
 /**
  * Kịch bản được nhận diện bằng ID CHUỖI từ sổ đăng ký, không còn là union hai nhánh.
@@ -132,6 +136,34 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
   // Nhịp 1 của kịch bản demo, dựng lại KHÔNG cần khoá ký — xem HauQua.tsx.
   const [hauQua, setHauQua] = useState<InspectResult | null>(null);
   const [kichCuoi, setKichCuoi] = useState<Kich>("tan-cong-day-du");
+  /*
+   * NGUỒN CỦA LƯỢT KIỂM KẾ TIẾP — CK-02. Người xem CHỌN; URL không chọn hộ (một liên kết
+   * từ ngoài không được tự đặt "trực tiếp" hay "phát lại").
+   */
+  const [nguonKiem, setNguonKiem] = useState<"trucTiep" | "phatLai">("trucTiep");
+  const [boReplay, setBoReplay] = useState<BoReplayKichBan | null>(null);
+  /** Nguồn THẬT của kết quả đang hiển thị — ghi cùng lúc với kết quả, cùng một lượt. */
+  const [thongTinNguon, setThongTinNguon] = useState<ThongTinNguon | null>(null);
+  const [sanSang, setSanSang] = useState<KetQuaPreflight | "dang" | null>(null);
+  /** Huỷ lượt đang bay khi lượt mới bắt đầu hoặc hết hạn — dừng cả vòng thử lại (CK-01). */
+  const huyLuotRef = useRef<AbortController | null>(null);
+  /*
+   * NẠP SẴN BỘ PHÁT LẠI (Codex review 27/09). Nạp lúc bấm thì mất mạng giữa chừng làm
+   * đường lui "dữ liệu đã ghi" hỏng đúng lúc cần nó. Nạp ngầm sau khi trang ổn định; lỗi
+   * thì im — lượt phát lại sẽ thử lại và báo lý do trong hạn của nó.
+   */
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      void docBoReplay().then((k) => {
+        if ("bo" in k) setBoReplay((cu) => cu ?? k.bo);
+      });
+    }, 1_500);
+    return () => window.clearTimeout(t);
+  }, []);
+  /** Kịch bản đã chạy trong phiên — đánh dấu chặng đã đi của luồng hướng dẫn (CK-03). */
+  const [daChay, setDaChay] = useState<ReadonlySet<string>>(() => new Set());
+  /** Tín hiệu bước 3: mở dữ kiện của thẻ kết quả đang xem. */
+  const [moBangChung, setMoBangChung] = useState(0);
 
   /**
    * AI có sẵn sàng không — hỏi server MỘT LẦN lúc mở trang, không tốn lượt gọi mô hình.
@@ -142,8 +174,12 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
   const [coAi, setCoAi] = useState<boolean | null>(null);
   /** Chiều diễn giải của LƯỢT GẦN NHẤT. Ghi lại thứ đã xảy ra, không phải dự định. */
   const [chieuDienGiai, setChieuDienGiai] = useState<ChieuDienGiai>("tatDinh");
-  /** Người dùng có muốn dùng mô hình không. Tắt được để so hai đường cạnh nhau. */
-  const [muonDungAi, setMuonDungAi] = useState(true);
+  /**
+   * Có dùng mô hình khi server có cấu hình hay không. Hằng `true`: giao diện CHƯA có công
+   * tắc — chú thích cũ nói "tắt được" nhưng setter chưa từng được gọi. Giữ tên để khi thêm
+   * công tắc thì chỉ đổi dòng này.
+   */
+  const muonDungAi = true;
 
   useEffect(() => {
     let huy = false;
@@ -280,13 +316,54 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       ? `Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau ${Math.round(e.ms / 1000)} giây.`
       : e instanceof HienTruongChuaSan
         ? `Hiện trường demo trên Devnet chưa sẵn sàng: ${e.lyDo}. Đây là trạng thái của bản demo, KHÔNG phải kết luận về giao dịch.`
-        : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
+        : e instanceof LoiNguonTron
+          ? `Hai nhà cung cấp RPC trả lời hai nửa của cùng một lượt đọc, hai lần liền (${e.nguon.join(" + ")}). Ghép lại không phải một ảnh chụp trạng thái, nên Custos bỏ kết quả.`
+          : e instanceof LoiPhatLai
+            ? `Không phát lại được: ${e.message}. Phát lại không bao giờ gọi mạng bù.`
+            : e instanceof LoiKhongCoRpcDung
+              ? "Không endpoint RPC nào được xác nhận là Solana Devnet, nên Custos không mô phỏng. Đây là cấu hình của bản demo, KHÔNG phải kết luận về giao dịch."
+              : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
 
   // Lọc TẠI CHỖ GHI, không lọc tại chỗ hiển thị: mọi đường vào nhật ký đều đi qua
   // đây, nên không cần nhớ lọc ở từng nơi gọi. Xem `locNhatKy.ts` — lỗi RPC đã đo
   // được là mang nguyên cả trang HTML, và `VITE_RPC` có thể chứa credential.
   const ghi = (s: string) => setNhatKy((n) => [...n, locDongNhatKy(s)]);
-  const conn = useCallback(() => ketNoiDuPhong(dsRpc(ht)), [ht]);
+  /*
+   * BỘ CHỌN ENDPOINT DÙNG CHUNG giữa các lượt (CK-01): lượt sau không chờ lại endpoint vừa
+   * treo. Mỗi lượt kiểm vẫn có connection riêng để mang `signal` huỷ và bộ ghi nguồn riêng.
+   */
+  const boChonRef = useRef(taoBoChon());
+  /*
+   * DANH SÁCH ĐÃ LỌC GENESIS (code review 27/09). Trước khi lọc xong chỉ dùng endpoint
+   * chính; dự phòng chỉ vào danh sách khi KHÔNG bị chứng minh là khác cluster — cả khi
+   * lọc lúc tải hiện trường lẫn khi preflight chạy. Danh sách đổi ⇒ bộ chọn mới: chỉ số
+   * ưu tiên là chỉ số trong ĐÚNG danh sách đó, không mang sang danh sách khác.
+   */
+  const [dsXacMinh, setDsXacMinh] = useState<string[] | null>(null);
+  // Bản ref cho đường yêu cầu dApp — effect đó chạy MỘT lần nên không đọc được state mới.
+  const dsXacMinhRef = useRef<string[] | null>(null);
+  const datDsXacMinh = useCallback((ds: string[]) => {
+    boChonRef.current = taoBoChon();
+    dsXacMinhRef.current = ds;
+    setDsXacMinh(ds);
+  }, []);
+  useEffect(() => {
+    if (!ht) return;
+    let huy = false;
+    void locTheoGenesis(dsRpc(ht)).then(({ dung }) => {
+      // RỖNG cũng ghi (Codex review lần 2, mục 5): quay về endpoint chính lúc này là dùng
+      // lại đúng endpoint genesis vừa chứng minh sai mạng.
+      if (!huy) datDsXacMinh(dung);
+    });
+    return () => {
+      huy = true;
+    };
+  }, [ht, datDsXacMinh]);
+  const conn = useCallback(
+    (tuy: { signal?: AbortSignal; ghiNhan?: (q: QuanSatRpc) => void } = {}) =>
+      ketNoiDuPhong(dsChoLuotKiem(dsXacMinh, dsRpc(ht)), { boChon: boChonRef.current, ...tuy }),
+    [ht, dsXacMinh],
+  );
 
   const [tuDApp, setTuDApp] = useState<string | null>(null);
   const daXuLyYeuCau = useRef(false);
@@ -342,7 +419,8 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
         docHienTruong().then((htNay) =>
           inspect(
             {
-              connection: ketNoiDuPhong(dsRpc(htNay)),
+              // Cùng cửa chọn endpoint với kịch bản: dự phòng chưa qua genesis không vào.
+              connection: ketNoiDuPhong(dsChoLuotKiem(dsXacMinhRef.current, dsRpc(htNay))),
               interpret: dungInterpreter(),
             },
             yc.tx,
@@ -386,32 +464,13 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
     void doSoDu();
   }, [doSoDu]);
 
-  /**
-   * Dựng giao dịch cho một kịch bản, tra từ sổ đăng ký.
-   *
-   * ID không có trong sổ thì NÉM, không im lặng rơi về kịch bản mặc định. Rơi về
-   * mặc định nghĩa là người dùng bấm một nút và nhận về giao dịch của nút khác —
-   * đúng loại sai lệch mà sản phẩm này tồn tại để chống.
+  /*
+   * Dựng tx và quyết định có khai `nguoiDung` nay nằm trong `chayKiem`, qua `kb.dungTx`
+   * và `tuyChonInspectKichBan` — CÙNG hàm với script ghi fixture, để phát lại đi đúng
+   * đường của lượt trực tiếp. ID lạ vẫn NÉM, không rơi về kịch bản mặc định.
    */
-  function dungTx(kich: Kich, blockhash: string, soDuNguon: bigint): VersionedTransaction {
-    if (!ht) throw new Error("chưa có hiện trường");
-    const kb = timKichBan(kich);
-    if (!kb) throw new Error(`không có kịch bản "${kich}"`);
-    return kb.dungTx(ht, { blockhash, soDuNguon });
-  }
 
-  /**
-   * Ví có khai người dùng cho kịch bản này không. Đọc từ SỔ, không tự quyết ở đây.
-   *
-   * Bản trước luôn khai `ht.nanNhan`, nên luật 14 không bao giờ bật trên giao diện
-   * dù sổ có một kịch bản mang tên "Không rõ đang bảo vệ ai". Xem `khongKhaiNguoiDung`.
-   */
-  function khaiNguoiDung(kich: Kich): { nguoiDung?: string } {
-    if (!ht) return {};
-    return timKichBan(kich)?.khongKhaiNguoiDung ? {} : { nguoiDung: ht.nanNhan };
-  }
-
-  async function bam(kich: Kich, epBatCustos = false) {
+  async function bam(kich: Kich, epBatCustos = false, nguonEp?: "trucTiep" | "phatLai") {
     /*
      * KHOÁ VÀO BẰNG REF — `disabled={dangChay}` một mình KHÔNG đủ.
      *
@@ -431,7 +490,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
     if (dangKiemRef.current) return;
     dangKiemRef.current = true;
     try {
-      await chayKiem(kich, epBatCustos);
+      await chayKiem(kich, epBatCustos, nguonEp);
     } finally {
       /*
        * Nhả khoá ở MỌI đường ra, kể cả hai `return` sớm bên trong `chayKiem`
@@ -442,154 +501,193 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
     }
   }
 
-  async function chayKiem(kich: Kich, epBatCustos: boolean) {
+  async function chayKiem(kich: Kich, epBatCustos: boolean, nguonEp?: "trucTiep" | "phatLai") {
     // `batCustos` đọc từ closure nên setState ở nút "Xem Custos chặn nó" chưa
-    // kịp thấy được. Truyền thẳng cờ thay vì chờ một vòng render.
+    // kịp thấy được. Truyền thẳng cờ thay vì chờ một vòng render. Cùng lý do cho nguồn.
     const coCustos = epBatCustos || batCustos;
+    const phatLai = (nguonEp ?? nguonKiem) === "phatLai";
     setKichCuoi(kich);
     if (cheDo?.loai === "mock") {
+      setThongTinNguon(null);
       setKetQua(cheDo.ketQua);
       return;
     }
-    if (!ht) return;
-    // Nút "Thử lại" phải chạy lại ĐÚNG kịch bản vừa bấm, kèm đúng cờ Custos đang
-    // dùng — chạy lại một kịch bản khác thì người dùng không biết mình vừa thử gì.
-    thuLaiRef.current = () => void bam(kich, epBatCustos);
+    if (!ht && !phatLai) return;
+    // Nút "Thử lại" phải chạy lại ĐÚNG kịch bản vừa bấm, kèm đúng cờ Custos và đúng
+    // nguồn đang dùng — chạy lại một thứ khác thì người dùng không biết mình vừa thử gì.
+    thuLaiRef.current = () => void bam(kich, epBatCustos, phatLai ? "phatLai" : "trucTiep");
     /*
      * MỞ MỘT LƯỢT MỚI — mọi lượt đang chạy dở từ đây trở thành lượt cũ.
      *
      * TB-C03. Không có ID lượt thì một lượt CHẬM về sau lượt nhanh sẽ ghi đè kết
      * quả: màn hình hiện thẻ cảnh báo của lượt A trong khi giao dịch đang chờ là của
-     * lượt B — thẻ nói về một giao dịch KHÁC với thứ người dùng sắp quyết định. Đúng kiểu
-     * sai mà sản phẩm này tồn tại để chống, xảy ra trong chính sản phẩm.
+     * lượt B — thẻ nói về một giao dịch KHÁC với thứ người dùng sắp quyết định.
      *
      * Tái hiện cơ chế ở `scripts/ky-thuat/probe-race-c03.ts` ca C03-c.
      */
     const luot = ++luotRef.current;
     const conDung = () => luot === luotRef.current;
+    /*
+     * HUỶ LƯỢT CŨ Ở TẦNG MẠNG — CK-01. ID lượt ở trên chặn kết quả cũ GHI lên màn hình,
+     * nhưng không dừng được request của lượt cũ: web3.js vẫn thử lại khi gặp 429, và
+     * lượt bị bỏ tiếp tục đốt hạn mức của endpoint mà lượt mới đang cần.
+     */
+    huyLuotRef.current?.abort();
+    const huyLuot = new AbortController();
+    huyLuotRef.current = huyLuot;
 
     setDangChay(true);
     setLoi(null);
     setKetQua(null);
     setHauQua(null);
+    setThongTinNguon(null);
     try {
       /*
-       * HẠN BỌC CẢ LƯỢT KIỂM TRA, không chỉ `inspect()`.
+       * HAI NGUỒN, MỘT ĐƯỜNG CHẠY — CK-02.
        *
-       * Bản đầu của bản vá này chỉ bọc `inspect()`. Nhưng lời gọi RPC ĐẦU TIÊN là
-       * `getLatestBlockhash()`, và nó nằm ngoài hạn — nên khi Devnet nhận kết nối
-       * rồi không hồi âm, ví treo cho tới lúc mạng tự bỏ cuộc. Đo trên trình duyệt
-       * thật: thẻ lỗi hiện ở giây thứ 30, không phải giây 12, và nội dung là "không
-       * kết nối được" thay vì "quá hạn".
+       *   · trực tiếp: RPC Devnet, có dự phòng, ghi lại host nào trả lời từng lượt đọc;
+       *   · phát lại: connection đọc fixture ghi sẵn của ĐÚNG kịch bản này, cùng ảnh chụp
+       *     hiện trường lúc ghi. Không mạng, không signer, không AI.
        *
-       * Người dùng chờ MỘT việc — "Custos kiểm tra giao dịch này" — nên hạn phải
-       * đặt quanh đúng việc đó, không quanh một chặng bên trong nó.
+       * Mọi chặng bên dưới — blockhash, số dư sống, dựng tx, `inspect()` — là CÙNG mã cho
+       * cả hai. Phát lại vì vậy chạy lại engine thật, không đọc một kết quả đã lưu.
        */
-      const c = conn();
-      // MỘT ngân sách cho cả lượt. Nhánh Custos-TẮT bên dưới còn một chặng mô phỏng
-      // nữa; nó phải tiêu nốt phần còn lại của 12 giây này, không được cấp 12 giây mới.
+      /*
+       * HẠN BỌC CẢ LƯỢT KIỂM TRA, không chỉ `inspect()` — kể cả lần đọc bộ phát lại.
+       *
+       * Lời gọi RPC ĐẦU TIÊN là `getLatestBlockhash()`; bọc mỗi `inspect()` thì Devnet
+       * nhận kết nối rồi im lặng sẽ treo ví tới lúc mạng tự bỏ cuộc (~30 s, đã đo).
+       * MỘT ngân sách cho cả lượt — lượt đọc lại khi trộn nguồn tiêu nốt phần còn lại của
+       * 12 giây này, không được cấp 12 giây mới.
+       */
       const han = moHan(HAN_MS);
-      const { tx, byteLucKiem, r } = await coHanChung(
-        (async () => {
-          const { blockhash } = await c.getLatestBlockhash();
-          /*
-           * SỐ DƯ SỐNG, trong cùng ngân sách thời gian với blockhash. Một lượt RPC.
-           *
-           * Trước đây số lượng lấy từ `hien-truong.json`, và file đó nói 500 000 000
-           * trong khi tài khoản đã còn 490 000 000. Hiện trường hỏng thì
-           * `docNguonSong` ném `HienTruongChuaSan` — thẻ lỗi nói đúng điều đó, thay vì
-           * một thẻ cảnh báo "Chưa đọc hiểu hết" cho một giao dịch không thể chạy.
-           */
-          const { soDu } = await docNguonSong(c, ht);
-          const txNay = dungTx(kich, blockhash, soDu);
-          /*
-           * CHỤP BYTES TRƯỚC LẦN AWAIT TIẾP THEO — CU-02, mục 4.3.
-           *
-           * Bản trước đọc `tx.message.serialize()` ở chỗ dựng neo, tức SAU khi
-           * `inspect()` đã await xong. Giữa hai thời điểm đó có một cửa sổ, và một
-           * `tx` do bên ngoài cung cấp là object MUTABLE.
-           *
-           * Đã tái hiện: cho một object có `message.serialize()` trả `[1,2,3,4]`,
-           * gọi hàm đọc-sau-await, rồi thay `serialize` thành `[9,9,9,9]` ngay
-           * trong cửa sổ await. Neo dựng ra ghi `[9,9,9,9]` — tức nó neo đúng cái
-           * giao dịch ĐÃ BỊ TRÁO — và `khopNeo` lúc ký trả KHỚP, vì nó so bản tráo
-           * với chính bản tráo.
-           *
-           * Ví demo này tự dựng `txNay` nên không có dApp nào tráo được. Nhưng đó
-           * là may mắn của kịch bản, không phải bảo vệ của kiến trúc: cùng đoạn mã
-           * này là thứ một ví thật sẽ chép, và ví thật nhận `tx` từ dApp.
-           *
-           * Chụp ở đây thì cửa sổ bằng không: không có `await` nào giữa lúc tạo
-           * `txNay` và lúc đọc bytes của nó.
-           */
-          const byteNay = txNay.message.serialize();
-          if (!coCustos) return { tx: txNay, byteLucKiem: byteNay, r: null };
-          ghi("đang chạy thử giao dịch trên devnet…");
-          return {
-            tx: txNay,
-            byteLucKiem: byteNay,
-            r: await inspect({ connection: c, interpret: dungInterpreter() }, txNay, {
-              locale: "vi",
-              // Ví biết địa chỉ của chính mình, nên nó phải nói ra — trừ đúng kịch bản
-              // minh hoạ việc ví KHÔNG nói ra. Quyết định nằm ở sổ, không ở đây.
-              ...khaiNguoiDung(kich),
-              /*
-               * BẬT DẤU VẾT — thẻ TB-X02.
-               *
-               * Đây là ví DEMO cho giám khảo, không phải ví thật của người dùng cuối.
-               * Thẻ đòi *"thêm progressive disclosure để giám khảo xem trace khi cần"*,
-               * và trace đó chính là thứ TB-X01 vừa dựng.
-               *
-               * Một ví thật KHÔNG nên bật mặc định: `chanDoan` mang địa chỉ đầy đủ của
-               * mọi tài khoản liên quan, và phần lớn người dùng không cần chúng. Mặc
-               * định của SDK vẫn là tắt — xem ADR-0002.
-               *
-               * Không thêm một lượt RPC nào: dữ liệu lấy từ `l2.hits` đã tính xong.
-               */
-              chanDoan: true,
-              ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
-            }),
-          };
-        })(),
-        han,
-      );
+      let htDung: HienTruong;
+      let taoC: () => { c: Connection; nguonOk: Set<string>; thieu: () => Array<{ method: string }> };
+      let mauPL: BoReplayKichBan["mau"][number] | undefined;
+      let boPL: BoReplayKichBan | undefined;
+      if (phatLai) {
+        boPL = boReplay ?? undefined;
+        if (!boPL) {
+          const kqBo = await coHanChung(docBoReplay(), han);
+          if ("loi" in kqBo) throw new LoiPhatLai(kqBo.loi);
+          boPL = kqBo.bo;
+          if (conDung()) setBoReplay(kqBo.bo);
+        }
+        mauPL = boPL.mau.find((m) => m.id === kich);
+        if (!mauPL) throw new LoiPhatLai(`chưa có dữ liệu đã ghi cho kịch bản "${kich}"`);
+        htDung = boPL.hienTruong;
+        const m = mauPL;
+        taoC = () => {
+          const rp = connReplay(m);
+          return { c: rp.conn as Connection, nguonOk: new Set(m.nguon), thieu: rp.thieu };
+        };
+        ghi(`phát lại dữ liệu RPC ghi lúc ${m.captureLuc} — không gọi mạng`);
+      } else {
+        htDung = ht!;
+        taoC = () => {
+          const nguonOk = new Set<string>();
+          const c = conn({
+            signal: huyLuot.signal,
+            ghiNhan: (q) => void (q.ketQua === "ok" && nguonOk.add(q.nguon)),
+          });
+          return { c, nguonOk, thieu: () => [] };
+        };
+      }
+      const kb = timKichBan(kich);
+      if (!kb) throw new Error(`không có kịch bản "${kich}"`);
+      const tuyChon = tuyChonInspectKichBan(kb, htDung);
+      // Phát lại không gọi mô hình: lượt đó phải tái lập được và không có mạng.
+      const phienDich = () => (phatLai ? boiThoiHan(dienGiaiKhongAI) : dungInterpreter());
+      if (phatLai) setChieuDienGiai("tatDinh");
+
+      const motLan = async () => {
+        const { c, nguonOk, thieu } = taoC();
+        const { blockhash } = await c.getLatestBlockhash();
+        /*
+         * SỐ DƯ SỐNG, trong cùng ngân sách thời gian với blockhash. Hiện trường hỏng thì
+         * `docNguonSong` ném `HienTruongChuaSan` — thẻ lỗi nói đúng điều đó.
+         */
+        const { soDu } = await docNguonSong(c, htDung);
+        const txNay = kb.dungTx(htDung, { blockhash, soDuNguon: soDu });
+        /*
+         * CHỤP BYTES TRƯỚC LẦN AWAIT TIẾP THEO — CU-02, mục 4.3. Đọc sau `await` thì một
+         * `tx` bị tráo trong cửa sổ đó được neo đúng bản tráo và "khớp" với chính nó.
+         */
+        const byteNay = txNay.message.serialize();
+        /*
+         * CẢ HAI NHÁNH mô phỏng TRONG lượt này (code review 27/09). Bản trước để nhánh
+         * Custos-TẮT chạy `inspect()` SAU phép kiểm trộn nguồn và sau khi đã chốt dải nguồn:
+         * lượt đó đổi sang nhà B thì bảng hậu quả ghép hai nhà mà dải vẫn ghi nhà A, và
+         * sai khác engine so với lúc ghi không được so. Nay nhánh chỉ khác ở chỗ HIỂN THỊ.
+         */
+        ghi(
+          !coCustos
+            ? "Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng"
+            : phatLai
+              ? "đang chạy lại engine trên dữ liệu đã ghi…"
+              : "đang chạy thử giao dịch trên devnet…",
+        );
+        // Tuỳ chọn từ `tuyChonInspectKichBan` — gồm `chanDoan: true` (dấu vết TB-X02) và
+        // `nguoiDung` đọc từ SỔ (`khongKhaiNguoiDung`), cùng hàm với script ghi fixture.
+        const r = await inspect({ connection: c, interpret: phienDich() }, txNay, tuyChon);
+        return { c, nguonOk, thieu, tx: txNay, byteLucKiem: byteNay, r };
+      };
+      /*
+       * MỘT NGUỒN CHO MỘT LƯỢT ĐỌC — CK-01, mục 4. Endpoint dự phòng có thể trả lời nửa
+       * sau của lượt: trạng thái trước từ nhà A, mô phỏng từ nhà B, hai slot khác nhau.
+       * Bỏ lượt và đọc lại từ đầu MỘT lần; vẫn trộn thì báo lỗi, không nhận kết quả ghép.
+       */
+      let lan = await coHanChung(motLan(), han);
+      if (!phatLai && lan.nguonOk.size > 1) {
+        ghi(`lượt đọc trộn nguồn (${[...lan.nguonOk].join(" + ")}) — bỏ, đọc lại từ đầu`);
+        lan = await coHanChung(motLan(), han);
+        if (lan.nguonOk.size > 1) throw new LoiNguonTron([...lan.nguonOk]);
+      }
+      const { tx, byteLucKiem, r } = lan;
+      /*
+       * FIXTURE THIẾU LỜI GỌI — `extractFacts` NUỐT lỗi mô phỏng thành "mô phỏng hỏng",
+       * nên một fixture khuyết vẫn ra kết quả trông hợp lệ. Hộp `thieu()` là lớp duy nhất
+       * thấy điều đó (bài học TB-B02). Thiếu thì dừng, KHÔNG gọi mạng bù.
+       */
+      const t = lan.thieu();
+      if (t.length) {
+        throw new LoiPhatLai(`dữ liệu đã ghi thiếu lời gọi ${[...new Set(t.map((x) => x.method))].join(", ")}`);
+      }
+      const tt: ThongTinNguon =
+        phatLai && mauPL && boPL
+          ? {
+              kieu: "phatLai",
+              ghiLuc: mauPL.captureLuc,
+              nguon: mauPL.nguon,
+              ...(mauPL.slot !== undefined ? { slot: mauPL.slot } : {}),
+              engineNay: goiCore.version,
+              engineLucGhi: boPL.engineLucGhi.core,
+              gioiHan: boPL.gioiHan,
+            }
+          : { kieu: "trucTiep", nguon: [...lan.nguonOk] };
+      ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+      if (tt.kieu === "phatLai" && mauPL) {
+        const so = soVoiLucGhi(r, mauPL.ketQuaLucGhi);
+        // Engine đổi thì sai khác PHẢI hiện ra — ở CẢ HAI nhánh; không lấy kết quả lúc ghi đè lên.
+        if (!so.khop) tt.lech = so.moTa;
+      }
 
       if (!coCustos) {
         // Phòng phân tích không ký (26/09); ký thật chỉ ở tab "Ví của bạn". Khi Custos TẮT,
-        // nhánh này dựng lại hậu quả từ mô phỏng thay vì dừng ở ngõ cụt — nếu không người
-        // xem mất đúng nửa có sức thuyết phục của kịch bản.
-        //
-        // Mô phỏng KHÔNG cần chữ ký, nên hậu quả vẫn tính ra được thật. Chạy
-        // `inspect()` và hiện trạng thái sau, dán nhãn rõ là kết quả mô phỏng.
-        ghi("Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng");
-        const rTat = await coHanChung(
-          inspect({ connection: c, interpret: dungInterpreter() }, tx, {
-            locale: "vi",
-            ...khaiNguoiDung(kich),
-            ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
-          }),
-          han,
-        );
+        // hậu quả dựng từ CHÍNH lượt mô phỏng vừa qua kiểm nguồn — không cần chữ ký, và
+        // được dán nhãn là mô phỏng.
+        const rTat = r;
         // Lượt đã bị thay thế ⇒ bỏ kết quả, đừng ghi đè thứ người dùng đang xem.
+        if (conDung()) setThongTinNguon(tt);
         if (conDung()) setHauQua(rTat);
         return;
       }
 
-      if (!r) throw new Error("không dựng được kết quả kiểm tra");
-      ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
-      /*
-       * `ketQua` chỉ được ghi từ lượt HIỆN TẠI. Ghi từ một lượt đã bị thay thế là cho
-       * người dùng đọc cảnh báo về một giao dịch khác với giao dịch đang chờ.
-       */
       /*
        * GIAO DỊCH CÓ BỊ ĐỔI TRONG LÚC KIỂM KHÔNG? — CU-02, mục 4.3.
        *
        * Phải hỏi TRƯỚC `conDung()`, không phải sau: giữa phép kiểm lượt và hai
        * `setState` không được có nhánh nào, và `c03Race.test.ts` canh đúng điều đó.
-       * Bản đầu của tôi đặt khối này vào giữa và làm bài ấy đỏ — bài đỏ ĐÚNG.
-       *
-       * `byteLucKiem` chụp ngay khi `txNay` sinh ra, trước mọi `await`. Nếu bytes
-       * hiện tại đã khác, `r` nói về một giao dịch không còn tồn tại.
        */
       const byteBayGio = tx.message.serialize();
       const byteConKhop =
@@ -608,10 +706,18 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       }
 
       if (!conDung()) return;
+      setThongTinNguon(tt);
       setKetQua(r);
-    } catch (e) {
-      // Ghi nhật ký kỹ thuật cho đội, VÀ dựng thẻ lỗi cho người dùng. Trước đây chỉ
-      // có vế đầu, nên người xem chỉ thấy một vùng trống không giải thích gì.
+    } catch (e0) {
+      // Hết hạn hay lỗi: dừng mọi request còn bay của lượt này (web3.js tự thử lại 429).
+      huyLuot.abort();
+      /*
+       * `ThieuFixture` ném từ `getLatestBlockhash`/`getParsedAccountInfo` (không qua L1 nên
+       * không bị nuốt) là lỗi CỦA PHÁT LẠI — thẻ không được nói "không kết nối được Devnet"
+       * về một lượt không hề dùng mạng (code review 27/09).
+       */
+      const e = phatLai && e0 instanceof ThieuFixture ? new LoiPhatLai(`dữ liệu đã ghi thiếu lời gọi ${e0.method}`) : e0;
+      // Ghi nhật ký kỹ thuật cho đội, VÀ dựng thẻ lỗi cho người dùng.
       ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
       if (conDung()) {
         setKetQua(null);
@@ -619,13 +725,27 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       }
     } finally {
       /*
-       * Chỉ lượt HIỆN TẠI được tắt cờ đang chạy.
-       *
-       * Lượt cũ kết thúc muộn mà tắt cờ thì vòng quay biến mất trong khi lượt mới
-       * vẫn đang chạy — người dùng thấy giao diện đứng yên và tưởng nút hỏng.
+       * Chỉ lượt HIỆN TẠI được tắt cờ đang chạy. Lượt cũ kết thúc muộn mà tắt cờ thì
+       * vòng quay biến mất trong khi lượt mới vẫn đang chạy.
        */
       if (conDung()) setDangChay(false);
     }
+  }
+
+  /** Kiểm tra sẵn sàng Devnet (CK-01) — chỉ đọc, bấm tay; không chạy ngầm mỗi lần tải trang. */
+  async function kiemTraSanSang() {
+    if (!ht || sanSang === "dang") return;
+    setSanSang("dang");
+    ghi("kiểm tra sẵn sàng Devnet — chỉ đọc, không ký, không gửi");
+    // Bộ chọn RIÊNG (code review 27/09): preflight gọi với danh sách một URL và danh sách
+    // đã lọc — chỉ số của nó không có nghĩa trong danh sách của lượt phân tích.
+    const boChonPreflight = taoBoChon();
+    const kq = await kiemSanSang(dsRpc(ht), ht, (ds, ghiNhan) => ketNoiDuPhong(ds, { boChon: boChonPreflight, ghiNhan }));
+    ghi(`sẵn sàng: ${kq.sanSang ? "có" : "chưa"} — ${kq.buoc.map((b) => `${b.ma}:${b.trangThai}`).join(" ")}`);
+    // Endpoint preflight chứng minh là KHÁC cluster thì lượt phân tích sau không dùng nữa.
+    // Kể cả RỖNG: không endpoint nào đúng cluster thì lượt sau phải báo thế, không đoán.
+    datDsXacMinh(kq.dsDung);
+    setSanSang(kq);
   }
 
   const chuaDung = ht === null && loiCauHinh === null;
@@ -684,7 +804,13 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       </div>
 
       {cheDo?.loai === "mock" && (
-        <div className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white">
+        // Landmark có tên (CK-F07): axe báo `region` khi dải này nằm ngoài mọi landmark, và
+        // người dùng trình đọc màn hình nhảy theo landmark sẽ bỏ lỡ cảnh báo mock.
+        <div
+          role="region"
+          aria-label="Chế độ dữ liệu mock"
+          className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white"
+        >
           ⚠ Đang xem dữ liệu mock &quot;{cheDo.ten}&quot; — không phải kết quả thật
         </div>
       )}
@@ -847,48 +973,68 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                   đúng hàm dựng của bản ghi đó. Không còn khoảng cách giữa nhãn và
                   giao dịch thật sự chạy.
                 */}
-                <div className="grid gap-2.5 sm:grid-cols-2">
-                  {KICH_BAN.map((kb: KichBan) => {
-                    const laDoiChung = kb.nhom === "doiChung";
-                    const laThieu = kb.nhom === "thieuDuLieu";
-                    return (
-                      <button
-                        key={kb.id}
-                        onClick={() => void bam(kb.id)}
-                        disabled={dangChay}
-                        title={kb.tienDieuKien}
-                        className={`action-card group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45${
-                          laDoiChung || laThieu ? "" : " action-card--primary"
+                {/*
+                  NGUỒN DỮ LIỆU — CK-01/CK-02. Người xem CHỌN, không có gì tự đổi nguồn
+                  sau lưng họ: live lỗi thì thẻ lỗi ĐỀ NGHỊ phát lại, không tự chuyển.
+                */}
+                <fieldset className="nguon-kiem mb-3 rounded-xl border border-vien p-3" data-chon-nguon={nguonKiem}>
+                  <legend className="px-1 text-[12px] font-semibold text-chu">Nguồn dữ liệu</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {(
+                      [
+                        ["trucTiep", "Devnet trực tiếp", "Mô phỏng ngay trên Solana Devnet — cần mạng."],
+                        ["phatLai", "Dữ liệu đã ghi", "Engine chạy lại trên phản hồi RPC đã ghi — không cần mạng."],
+                      ] as const
+                    ).map(([giaTri, ten, moTa]) => (
+                      <label
+                        key={giaTri}
+                        className={`flex min-h-[44px] min-w-[200px] flex-1 cursor-pointer items-start gap-2 rounded-lg border px-3 py-2 ${
+                          nguonKiem === giaTri ? "border-chu bg-white" : "border-vien"
                         }`}
                       >
-                        <div className="flex w-full items-start justify-between gap-3">
-                          <span
-                            className={`action-icon grid h-9 w-9 place-items-center rounded-xl ${
-                              laDoiChung || laThieu ? "text-chu-nhat" : "action-icon--gift text-nhan"
-                            }`}
-                          >
-                            {laDoiChung || laThieu ? (
-                              <SendIcon className="h-5 w-5" />
-                            ) : (
-                              <GiftIcon className="h-5 w-5" />
-                            )}
-                          </span>
-                          <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
-                        </div>
+                        <input
+                          type="radio"
+                          name="nguon-kiem"
+                          value={giaTri}
+                          checked={nguonKiem === giaTri}
+                          disabled={dangChay}
+                          onChange={() => setNguonKiem(giaTri)}
+                          className="mt-1"
+                        />
                         <span>
-                          <span className="block text-[14px] font-semibold text-chu">{kb.tieuDe}</span>
-                          <span className="mt-0.5 block text-[11.5px] text-chu-mo">
-                            {laDoiChung
-                              ? "Đối chứng — engine phải im"
-                              : laThieu
-                                ? "Dữ liệu khuyết — fail-safe"
-                                : kb.loiMoi}
-                          </span>
+                          <span className="block text-[13px] font-semibold text-chu">{ten}</span>
+                          <span className="block text-[11.5px] text-chu-mo">{moTa}</span>
                         </span>
+                      </label>
+                    ))}
+                  </div>
+                  {nguonKiem === "trucTiep" && (
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        className="lien-ket min-h-[44px] text-[12.5px] text-chu-mo underline underline-offset-4"
+                        onClick={() => void kiemTraSanSang()}
+                        disabled={sanSang === "dang"}
+                      >
+                        {sanSang === "dang" ? "Đang kiểm tra sẵn sàng…" : "Kiểm tra sẵn sàng Devnet"}
                       </button>
-                    );
-                  })}
-                </div>
+                      {sanSang && sanSang !== "dang" && <BangSanSang kq={sanSang} />}
+                    </div>
+                  )}
+                </fieldset>
+                <PhongKichBan
+                  dangChay={dangChay}
+                  onChon={(id) => {
+                    setDaChay((d) => new Set(d).add(id));
+                    void bam(id);
+                  }}
+                  daChay={daChay}
+                  coKetQua={!!ketQua}
+                  onMoBangChung={() => {
+                    ghi("mở dữ kiện của kết quả đang xem");
+                    setMoBangChung((n) => n + 1);
+                  }}
+                />
 
                 <label className={`protection-switch mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-4 ${batCustos ? "is-on" : "is-off"}`}>
                   <span className="flex min-w-0 items-center gap-3">
@@ -1057,20 +1203,47 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                     >
                       Thử lại
                     </button>
-                    {/* Đường lui khi Devnet không trả lời — cùng chế độ `?mock=` trang tấn công đã
-                        dùng. Nhãn nói rõ đây KHÔNG phải kết quả trực tiếp (review 26/09, mục 3.3). */}
-                    <a
-                      href="?mock=danger"
-                      className="mt-3 inline-flex min-h-[44px] items-center text-[13px] font-medium text-chu-mo underline underline-offset-4"
-                    >
-                      Xem một thẻ mẫu đã ghi sẵn
-                    </a>
-                    <p className="text-[12px] text-chu-mo">Dữ liệu mẫu có nhãn riêng, không phải kết quả mô phỏng trực tiếp.</p>
+                    {/*
+                      ĐƯỜNG LUI CÙNG CÂU CHUYỆN — CK-02 / CK-F02.
+                      Bản trước trỏ `?mock=danger`: chọn "nhận thưởng" mà thẻ mock lại nói về
+                      swap SOL → USDC. Nay chạy lại ĐÚNG kịch bản vừa chọn trên dữ liệu RPC
+                      đã ghi, bằng engine thật, và dải nguồn nói rõ đó là phát lại. Người xem
+                      bấm mới chuyển — không tự chuyển sau lưng họ.
+                    */}
+                    {nguonKiem === "trucTiep" && (
+                      <button
+                        type="button"
+                        className="mt-3 inline-flex min-h-[44px] items-center text-[13px] font-medium text-chu underline underline-offset-4"
+                        onClick={() => {
+                          setLoi(null);
+                          setNguonKiem("phatLai");
+                          ghi("người dùng chuyển sang phát lại dữ liệu đã ghi cho đúng kịch bản này");
+                          void bam(kichCuoi, false, "phatLai");
+                        }}
+                      >
+                        Chạy lại ca này bằng dữ liệu đã ghi
+                      </button>
+                    )}
+                    <p className="text-[12px] text-chu-mo">
+                      Dữ liệu đã ghi có nhãn phát lại riêng — không phải kết quả mô phỏng trực tiếp.
+                    </p>
+                    {nguonKiem === "trucTiep" && (
+                      <button
+                        type="button"
+                        className="mt-2 inline-flex min-h-[44px] items-center text-[12.5px] text-chu-mo underline underline-offset-4"
+                        onClick={() => void kiemTraSanSang()}
+                        disabled={sanSang === "dang"}
+                      >
+                        {sanSang === "dang" ? "Đang kiểm tra sẵn sàng…" : "Xem chặng nào của Devnet đang hỏng"}
+                      </button>
+                    )}
+                    {sanSang && sanSang !== "dang" && <BangSanSang kq={sanSang} />}
                   </div>
                 )}
 
                 {hauQua && (
                   <div className="hien">
+                    {thongTinNguon && <DaiNguon tt={thongTinNguon} />}
                     <p className="my-3 text-sm text-chu-mo">Đây là mô phỏng trên hiện trường công khai. Chọn “Ví của bạn” phía trên để ký và thực thi bằng ví thử nghiệm của phiên.</p>
                     <HauQua
                       ketQua={hauQua}
@@ -1116,9 +1289,11 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                     aria-label="Kết quả kiểm tra giao dịch"
                     className="hien scroll-mt-4 outline-none"
                   >
+                    {thongTinNguon && <DaiNguon tt={thongTinNguon} />}
                     <CanhBao
                       ketQua={ketQua}
                       nguonChu={chieuDienGiai}
+                      moBangChung={moBangChung}
                       /*
                        * BỐI CẢNH LƯỢT KIỂM — thẻ TB-X02.
                        *
@@ -1132,9 +1307,12 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                        */
                       boiCanh={{
                         cluster: clusterCua(chonRpc(ht)),
-                        nguon: hostCua(chonRpc(ht)),
-                        kieu: cheDo?.loai === "mock" ? "mock" : "live",
+                        // Host ĐÃ TRẢ LỜI lượt này (CK-01), không phải endpoint cấu hình;
+                        // chưa ghi nhận được thì lùi về host cấu hình, vẫn chỉ là host.
+                        nguon: thongTinNguon?.nguon.length ? thongTinNguon.nguon.join(", ") : hostCua(chonRpc(ht)),
+                        kieu: cheDo?.loai === "mock" ? "mock" : thongTinNguon?.kieu === "phatLai" ? "replay" : "live",
                         ...(cheDo?.loai === "mock" ? { tenMock: cheDo.ten } : {}),
+                        ...(thongTinNguon?.kieu === "phatLai" ? { ghiLuc: thongTinNguon.ghiLuc } : {}),
                       }}
                       onHuy={() => {
                         ghi("người dùng huỷ giao dịch");

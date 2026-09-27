@@ -1,5 +1,5 @@
 import { chonRpc as chonRpcChung } from "../../../scripts/diaChiDemo.ts";
-import { danhSachRpc } from "../../../scripts/rpcDuPhong.ts";
+import { danhSachRpc, duPhongTheoBan, hostCuaRpc } from "../../../scripts/rpcDuPhong.ts";
 
 export type HienTruong = {
   rpc: string;
@@ -14,6 +14,11 @@ export type HienTruong = {
   taiKhoanBanBe: string;
   soLuong: string;
   dungLuc: string;
+  /**
+   * RPC Devnet dự phòng cho bản PRODUCTION — người vận hành khai (CK-01). Chỉ URL qua
+   * `locRpcCongKhai` được dùng: https, không khoá, host trong allowlist Devnet công khai.
+   */
+  rpcDuPhong?: string[];
 };
 
 /**
@@ -50,12 +55,18 @@ export function chonRpc(ht: HienTruong | null | undefined): string {
 }
 
 /**
- * Danh sách endpoint cho ví: endpoint chính, rồi `VITE_RPC_DU_PHONG` (phân cách dấu phẩy).
- * Như `VITE_RPC`, dự phòng CHỈ đọc khi DEV — URL có khoá không vào bản công khai. Xem
- * `scripts/rpcDuPhong.ts` (review 26/09, mục 3.3).
+ * Danh sách endpoint cho ví: endpoint chính, rồi dự phòng. DEV đọc `VITE_RPC_DU_PHONG`;
+ * production chỉ đọc `ht.rpcDuPhong` đã lọc allowlist — URL có khoá không vào bản công
+ * khai. Xem `duPhongTheoBan` trong `scripts/rpcDuPhong.ts` (CK-01).
  */
 export function dsRpc(ht: HienTruong | null | undefined): string[] {
-  return danhSachRpc(chonRpc(ht), import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined);
+  return danhSachRpc(
+    chonRpc(ht),
+    // Đọc biến CHỈ sau `DEV ?`: Vite thay chuỗi bằng giá trị thật lúc build, và chỉ loại
+    // được nó khỏi bundle khi cả nhánh bị cắt — truyền thẳng làm khoá lọt vào production
+    // dù hàm nhận không dùng tới (Codex review 27/09, tái hiện bằng khoá giả).
+    duPhongTheoBan(!!import.meta.env.DEV, import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined, ht?.rpcDuPhong),
+  );
 }
 
 /**
@@ -82,13 +93,8 @@ export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" |
 }
 
 /** Host của endpoint. Bỏ path và query vì credential của RPC thương mại nằm ở đó. */
-export function hostCua(rpc: string): string {
-  try {
-    return new URL(rpc).host;
-  } catch {
-    return "(không đọc được endpoint)";
-  }
-}
+// MỘT bản lọc host cho mọi nơi (ví, preflight, fixture, log) — `scripts/rpcDuPhong.ts`.
+export const hostCua = hostCuaRpc;
 
 /**
  * Đọc hiện trường devnet do `scripts/dung-hien-truong.ts` dựng ra.
@@ -141,6 +147,9 @@ export function xacThucHienTruong(x: unknown): string | null {
     return "`soLuong` phải là chuỗi chỉ gồm chữ số";
   }
   if (o["rpc"] !== undefined && typeof o["rpc"] !== "string") return "`rpc` phải là chuỗi";
+  if (o["rpcDuPhong"] !== undefined && !(Array.isArray(o["rpcDuPhong"]) && o["rpcDuPhong"].every((x) => typeof x === "string"))) {
+    return "`rpcDuPhong` phải là mảng chuỗi URL";
+  }
   if (typeof o["rpc"] === "string" && o["rpc"] !== "") {
     try {
       const u = new URL(o["rpc"]);

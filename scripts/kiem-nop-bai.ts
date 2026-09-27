@@ -374,14 +374,9 @@ if (STRICT) {
    * `kiem-nop-bai.ts` và `tao-so-lieu.ts` KHÔNG nằm trong danh sách: sửa cổng hay
    * sửa bước đồng bộ tài liệu không làm một phép đo mạng đã chạy sai đi.
    */
-  const laMa = (f: string) =>
-    !f.endsWith(".md") &&
-    (/^packages\//.test(f) ||
-      /^vi-du-tich-hop\//.test(f) ||
-      f === "scripts/dong-goi-sdk.mjs" ||
-      f === "scripts/thu-tich-hop.mjs" ||
-      f === "apps/demo-wallet/public/hien-truong.json");
-  // Quy tắc tổ tiên nằm ở `toTien.ts` — một bản duy nhất cho cả hai cổng.
+  // Danh sách trên và quy tắc tổ tiên nằm ở `toTien.ts` — một bản duy nhất cho cả hai
+  // cổng. Bản sao cục bộ từng nằm ở đây đã không còn được gọi, nên bị gỡ để hai danh
+  // sách không trôi lệch nhau.
   const klTH = bangChungConHieuLuc(shaTH);
 
   muc.push({

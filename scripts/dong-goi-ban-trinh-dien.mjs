@@ -20,7 +20,7 @@
  * và không có khoá riêng nào nằm trong một thư mục được chuyền tay.
  */
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 
 const DICH = resolve("ban-trinh-dien");
@@ -35,20 +35,26 @@ const chay = (cmd, args) =>
     shell: win,
   });
 
-console.log("1/3 · build lại hai app với đường dẫn TƯƠNG ĐỐI");
-for (const [ten, goi] of [
-  ["ví mẫu", "@custos-solana/demo-wallet"],
-  ["trang tấn công", "@custos-solana/trang-tan-cong"],
+/*
+ * BUILD THẲNG VÀO `ban-trinh-dien/`, KHÔNG QUA `dist` CỦA TỪNG APP.
+ *
+ * Bản trước build với `--base=./` vào `dist` của từng app rồi chép ra. Hệ quả: sau khi
+ * đóng gói, `dist` production bị thay bằng bản base tương đối, và `vite preview` ở
+ * `/Custos-Solana/` phục vụ nhầm bản đó — link thành `./`, các probe landing đỏ hàng
+ * loạt trên một trang không có lỗi nào (27/09). Ví build trước vì `--emptyOutDir` của
+ * nó xoá cả thư mục đích, kể cả `tan-cong/`.
+ */
+console.log("1/3 · build hai app với đường dẫn TƯƠNG ĐỐI, thẳng vào thư mục đích");
+rmSync(DICH, { recursive: true, force: true });
+for (const [ten, goi, ra] of [
+  ["ví mẫu", "@custos-solana/demo-wallet", DICH],
+  ["trang tấn công", "@custos-solana/trang-tan-cong", resolve(DICH, "tan-cong")],
 ]) {
-  chay(npm, ["run", "build", "-w", goi, "--", "--base=./"]);
+  chay(npm, ["run", "build", "-w", goi, "--", "--base=./", "--outDir", ra, "--emptyOutDir"]);
   console.log(`      ${ten}`);
 }
 
-console.log("2/3 · gộp vào một thư mục");
-rmSync(DICH, { recursive: true, force: true });
-mkdirSync(resolve(DICH, "tan-cong"), { recursive: true });
-cpSync("apps/demo-wallet/dist", DICH, { recursive: true });
-cpSync("apps/trang-tan-cong/dist", resolve(DICH, "tan-cong"), { recursive: true });
+console.log("2/3 · thêm file khởi chạy");
 // DỪNG HẲN nếu thiếu một file khởi chạy, thay vì âm thầm bỏ qua.
 //
 // Bản đầu viết `if (existsSync(nguon)) cpSync(...)`. Cộng với một dòng .gitignore

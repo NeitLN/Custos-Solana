@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Connection } from "@solana/web3.js";
 import { chuoiBanGiao, dungTxTanCongSong, kiemSanSangTanCong, type SanSangTanCong } from "../../../scripts/hienTruongSong.ts";
 import { conDungDuoc, layBlockhash, HAN_LAY_BLOCKHASH_MS } from "./blockhash.ts";
 import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
-import { danhSachRpc, ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
+import { danhSachRpc, duPhongTheoBan, ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
 import { RewardArtwork } from "./RewardArtwork.tsx";
 
 /**
@@ -52,10 +51,16 @@ const VI = KL_VI.loai === "co" ? KL_VI.url : null;
 // `VITE_RPC` chỉ đọc khi DEV: bản dựng công khai không mang endpoint riêng của
 // máy đội. Cùng ràng buộc với ví — xem `hienTruong.ts`.
 const RPC_RIENG = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
-// Endpoint dự phòng, cùng quy tắc chỉ-DEV như `VITE_RPC` — review 26/09, mục 3.3.
-const RPC_DU_PHONG = import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined;
-const ketNoi = (rpcHienTruong: string | null | undefined) =>
-  ketNoiDuPhong(danhSachRpc(chonRpc(rpcHienTruong, RPC_RIENG), RPC_DU_PHONG));
+// Endpoint dự phòng: DEV đọc `VITE_RPC_DU_PHONG`; production chỉ đọc `rpcDuPhong` của
+// hiện trường đã lọc allowlist — cùng quy tắc với ví (`duPhongTheoBan`, CK-01).
+const ketNoi = (ht: { rpc?: string | null; rpcDuPhong?: unknown }) =>
+  ketNoiDuPhong(
+    danhSachRpc(
+      chonRpc(ht.rpc, RPC_RIENG),
+      // Chỉ sau `DEV ?` — xem chú thích cùng chỗ trong `hienTruong.ts` (khoá lọt bundle).
+      duPhongTheoBan(!!import.meta.env.DEV, import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined, ht.rpcDuPhong),
+    ),
+  );
 
 /** Đếm ngược tới cuối ngày. Đồng hồ THẬT — không phải số đứng yên giả vờ chạy.
  *  Gấp gáp là đòn bẩy kinh điển của airdrop lừa đảo, và nó chỉ có tác dụng nếu
@@ -133,7 +138,7 @@ export default function App() {
   useEffect(() => {
     if (!ht) return;
     let huy = false;
-    const conn = ketNoi(ht.rpc);
+    const conn = ketNoi(ht);
     /*
      * LẤY SẴN CẢ TRẠNG THÁI HIỆN TRƯỜNG, không chỉ blockhash — P0 rà soát 25/09.
      *
@@ -246,7 +251,7 @@ export default function App() {
      * hơn nhiều so với một thẻ lỗi nói thẳng.
      */
     setDangGui(true);
-    const conn = ketNoi(ht.rpc);
+    const conn = ketNoi(ht);
     layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
       .then(async ({ ma }) => {
         // Cùng hạn 9 giây cho chặng kiểm hiện trường: đường nguội không được treo.

@@ -110,7 +110,14 @@ async def main() -> None:
         t = await pg.locator("body").inner_text()
 
         print("A · trang dựng được và nói đúng phạm vi")
-        ck("trang Inspector dựng được", "Kiểm một giao dịch" in t)
+        # Neo vào ô nhập và nút hành động, không vào tiêu đề: tiêu đề đổi theo đợt thiết kế
+        # ("Kiểm một giao dịch" → "Đọc giao dịch.") và từng làm bài này đỏ trên một trang
+        # dựng hoàn toàn bình thường.
+        ck(
+            "trang Inspector dựng được",
+            "Giao dịch cần kiểm tra" in t
+            and await pg.get_by_role("button", name="Kiểm giao dịch").count() == 1,
+        )
         ck(
             "cảnh báo riêng tư hiện TRƯỚC ô nhập",
             "Dữ liệu đi đâu" in t and t.index("Dữ liệu đi đâu") < t.index("Giao dịch (base64)"),

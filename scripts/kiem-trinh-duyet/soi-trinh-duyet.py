@@ -328,7 +328,9 @@ async def main() -> None:
         if hien:
             t = await pg.locator('[role="alert"]').inner_text()
             ck("nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch", "không phải kết luận" in t)
-            ck("có đường lui dữ liệu mẫu CÓ NHÃN", "dữ liệu mẫu" in t.lower())
+            # CK-02: đường lui là PHÁT LẠI đúng kịch bản trên dữ liệu đã ghi, có nhãn riêng —
+            # không còn là thẻ mock cố định (mock kể một câu chuyện khác ca đang chọn).
+            ck("có đường lui dữ liệu đã ghi CÓ NHÃN", "dữ liệu đã ghi" in t.lower() and "phát lại" in t.lower())
             await soi_axe(pg, "trang tấn công · trạng thái lỗi")
             treo["bat"] = False
             await pg.locator('[role="alert"] button').first.click()

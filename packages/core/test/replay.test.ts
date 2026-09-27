@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chayLaiTuJson, chayLaiTuReceipt } from "../src/replay.ts";
-import { dungReceipt, receiptRaJson, docReceipt } from "../src/receipt.ts";
+import { dungReceipt, receiptRaJson } from "../src/receipt.ts";
 import { giaiDongBangFacts } from "../src/facts-io.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import type { Facts } from "../src/facts.ts";

@@ -94,11 +94,20 @@ test("App truyền cluster SUY TỪ endpoint đang dùng, không phải hằng s
    */
   const s = doc("../src/App.tsx");
   assert.match(s, /cluster: clusterCua\(chonRpc\(ht\)\)/, "cluster phải suy từ endpoint");
-  assert.match(s, /nguon: hostCua\(chonRpc\(ht\)\)/, "endpoint phải lọc qua `hostCua`");
+  /*
+   * Từ CK-01 endpoint hiển thị là host ĐÃ TRẢ LỜI lượt này (ghi nhận qua `fetchDuPhong`,
+   * vốn chỉ trả host), lùi về host cấu hình khi chưa ghi nhận được. Cả hai vế đều đi qua
+   * bộ lọc host — không vế nào in URL đầy đủ.
+   */
   assert.match(
     s,
-    /kieu: cheDo\?\.loai === "mock" \? "mock" : "live"/,
-    "kiểu live/mock phải đọc từ chế độ thật, không gán cứng",
+    /nguon: thongTinNguon\?\.nguon\.length \? thongTinNguon\.nguon\.join\(", "\) : hostCua\(chonRpc\(ht\)\)/,
+    "endpoint phải là host đã trả lời, hoặc lọc qua `hostCua`",
+  );
+  assert.match(
+    s,
+    /kieu: cheDo\?\.loai === "mock" \? "mock" : thongTinNguon\?\.kieu === "phatLai" \? "replay" : "live"/,
+    "kiểu live/replay/mock phải đọc từ lượt thật, không gán cứng",
   );
 });
 
@@ -111,8 +120,15 @@ test("demo BẬT `chanDoan` — trace của X01 không nằm chết trong SDK", 
    *
    * Đây là ví DEMO, không phải ví thật — mặc định của SDK vẫn là tắt.
    */
-  const s = doc("../src/App.tsx");
-  assert.match(s, /chanDoan: true/, "demo không bật dấu vết — trace của X01 không ai xem được");
+  /*
+   * ĐỌC MÃ, KHÔNG ĐỌC CHÚ THÍCH. Sau CK-02 dòng `chanDoan: true` chuyển sang
+   * `tuyChonInspectKichBan`, và bài này từng vẫn xanh chỉ vì App.tsx còn nhắc
+   * `chanDoan: true` trong một chú thích — xanh vì lý do sai. Nay bỏ chú thích trước khi
+   * đọc, và canh cả hai đầu: hàm bật cờ, App dùng hàm.
+   */
+  const bo = (x: string) => x.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  assert.match(bo(doc("../src/replayKichBan.ts")), /chanDoan: true/, "demo không bật dấu vết — trace của X01 không ai xem được");
+  assert.match(bo(doc("../src/App.tsx")), /tuyChonInspectKichBan\(/, "App không dùng tuỳ chọn có bật dấu vết");
 });
 
 test("khối bối cảnh nằm TRONG phần đóng sẵn, không dàn ra luồng chính", () => {

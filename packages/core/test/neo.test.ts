@@ -218,7 +218,9 @@ test("ví dựng neo từ byte CHỤP TRƯỚC khi kiểm, và đối chiếu b�
    */
   const s = phien();
   const chup = s.search(/bytes = tx\.message\.serialize\(\)\.slice\(\)/);
-  const kiem = s.search(/await this\.#inspect\(/);
+  // Vị trí LỆNH GỌI `this.#inspect(` — từ CK-01 nó nằm trong `coHan(...)` (hạn 15 s) nên
+  // không còn đứng ngay sau `await`; thứ tự chụp-trước-khi-kiểm vẫn là thứ bài này canh.
+  const kiem = s.search(/this\.#inspect\(/);
   assert.ok(chup > 0 && kiem > chup, "phải chụp bytes TRƯỚC khi gọi inspect");
   assert.match(s, /neoKetQua\(bytes,/, "neo phải dựng từ bytes ĐÃ CHỤP");
   assert.match(s, /#gate\.consume\(id, request\.tx\.message\.serialize\(\)/, "lúc ký phải đối chiếu bằng byte thật");

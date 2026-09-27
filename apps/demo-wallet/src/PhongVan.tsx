@@ -1,6 +1,6 @@
 import { ProductHeader } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useState } from "react";
-import { Connection, VersionedTransaction } from "@solana/web3.js";
+import { VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";

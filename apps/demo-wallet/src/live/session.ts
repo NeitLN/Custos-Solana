@@ -27,7 +27,15 @@ import { chuKyDauTien, guiGiaoDich, maBase58, type TrangThaiGui } from "../gui.t
 import { ConsentGate, canBoQua } from "./policy.ts";
 import { dungDuBao, dungQuanSat } from "./quanSat.ts";
 import { liveRpcFetch } from "./rpc.ts";
-import { danhSachRpc, fetchDuPhong } from "../../../../scripts/rpcDuPhong.ts";
+import { coHan, LoiQuaHan } from "../../../../scripts/coHan.ts";
+import {
+  fetchDuPhong,
+  duPhongTheoBan,
+  genesisCua,
+  GENESIS_DEVNET,
+  LoiNguonTron,
+  type QuanSatRpc,
+} from "../../../../scripts/rpcDuPhong.ts";
 import { compareReceipt, type LiveReceipt, type Prediction } from "./receipt.ts";
 import { DEFAULT_DEMO_WALLET } from "../../../../scripts/demo-wallet-config.ts";
 import { buildScenario, parseDemoAmount, SCENARIOS, type LiveKind } from "./scenarios.ts";
@@ -36,9 +44,65 @@ import { buildLiveHandoff, type LiveHandoff } from "./handoff.ts";
 export type { LiveKind } from "./scenarios.ts";
 export type { DemoAccounts } from "./store.ts";
 
-export const DEVNET_GENESIS = "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG";
+// MỘT bản genesis cho cả repo — `scripts/rpcDuPhong.ts`.
+export const DEVNET_GENESIS = GENESIS_DEVNET;
 export const LIVE_RPC = "https://api.devnet.solana.com";
+
+/*
+ * DANH SÁCH ĐỌC CỦA PHIÊN — một mảng DUY NHẤT, `fetchDuPhong` giữ tham chiếu tới nó.
+ *
+ * Khởi đầu CHỈ có endpoint chính. Dự phòng (DEV: `VITE_RPC_DU_PHONG`; production:
+ * `rpcDuPhong` đã lọc allowlist) tới SAU, qua `datDuPhongLive`, và chỉ được nhận khi
+ * `getGenesisHash` của CHÍNH endpoint đó chứng minh là Devnet. Code review 27/09: `#devnet()`
+ * kiểm genesis một lần qua connection có dự phòng — endpoint nào trả lời cũng được — nên một
+ * dự phòng thêm sau chưa từng được kiểm. Lệnh GỬI luôn đi endpoint chính.
+ */
+const DS_RPC_LIVE: string[] = [LIVE_RPC];
+
+export async function datDuPhongLive(
+  cauHinh: unknown,
+  xacMinh: (url: string) => Promise<"devnet" | "khacCluster" | "chuaDo"> = (u) => genesisCua(u),
+): Promise<string[]> {
+  // Chỉ sau `DEV ?` — xem `hienTruong.ts`: truyền thẳng làm khoá lọt vào bundle production.
+  const them = duPhongTheoBan(
+    !!import.meta.env?.DEV,
+    import.meta.env?.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined,
+    cauHinh,
+  ).filter((u) => !DS_RPC_LIVE.includes(u));
+  const kq = await Promise.all(them.map((u) => xacMinh(u)));
+  // Đường ký thật: CHỈ nhận endpoint đã chứng minh là Devnet — chưa đo được thì chưa dùng.
+  them.forEach((u, i) => {
+    if (kq[i] === "devnet" && !DS_RPC_LIVE.includes(u)) DS_RPC_LIVE.push(u);
+  });
+  return [...DS_RPC_LIVE];
+}
+
+/**
+ * NGUỒN CỦA LƯỢT KIỂM ĐANG CHẠY — code review Codex 27/09. `fetchDuPhong` của connection
+ * mặc định ghi host trả lời từng lượt đọc vào đây; `prepare()` mở tập mới trước `inspect()`
+ * và đọc lại sau. Hai host ⇒ lượt kiểm đã trộn nguồn. Đối tượng xuất ra để test giả lập
+ * được nguồn (connection của test không đi qua `fetchDuPhong`).
+ */
+export const NGUON_DOC_LIVE: { hienTai: { nguon: Set<string>; tu: number } | null } = { hienTai: null };
+
+/**
+ * Ghi nguồn của MỘT lượt đọc vào lượt kiểm đang mở — nhưng chỉ khi request đó BẮT ĐẦU sau khi
+ * lượt kiểm mở (`bayGio - q.ms >= tu`). Codex review lần 2 (27/09): `coHan()` chỉ ngừng CHỜ,
+ * request của lượt đã quá hạn vẫn chạy; phản hồi muộn của nó từng được ghi vào lượt mới, và
+ * một lượt chỉ dùng nhà B bị từ chối vì "trộn nguồn".
+ */
+export function ghiNguonLive(q: QuanSatRpc, bayGio = Date.now()): void {
+  const h = NGUON_DOC_LIVE.hienTai;
+  if (q.ketQua !== "ok" || !h || bayGio - q.ms < h.tu) return;
+  h.nguon.add(q.nguon);
+}
 export const DECIMALS = 6;
+/**
+ * HẠN CHO MỘT LƯỢT KIỂM CỦA PHIÊN LIVE — CK-01. Nghiệm thu 27/09: không có hạn này, bước
+ * chuẩn bị treo "đang mô phỏng" quá 90 s khi RPC đọc account treo từng lời gọi một.
+ * Đối tượng (không phải hằng) để test rút ngắn được; mã sản phẩm không sửa nó.
+ */
+export const CAU_HINH_LIVE = { hanKiemMs: 15_000 };
 export type PendingView = {
   id: number;
   kind: LiveKind;
@@ -113,11 +177,11 @@ export class LiveSession {
         disableRetryOnRateLimit: true,
         confirmTransactionInitialTimeout: 25_000,
         // Dự phòng nằm DƯỚI lớp thử-lại-khi-429: đọc thì chuyển endpoint, ký thì không bao giờ.
-        // `VITE_RPC_DU_PHONG` chỉ đọc khi DEV — review 26/09, mục 3.3.
+        // DEV: `VITE_RPC_DU_PHONG`; production: `rpcDuPhong` của hiện trường qua `datDuPhongLive`.
         fetch: liveRpcFetch(
-          fetchDuPhong(
-            danhSachRpc(LIVE_RPC, import.meta.env?.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined),
-          ),
+          fetchDuPhong(DS_RPC_LIVE, {
+            ghiNhan: (q) => ghiNguonLive(q),
+          }),
         ),
       });
     this.#inspect = inspector;
@@ -236,7 +300,8 @@ export class LiveSession {
     });
   }
   async #devnet() {
-    // Endpoint is immutable for this session. Cache identity, not account state.
+    // Identity is cached once. Fallbacks join `DS_RPC_LIVE` only after their OWN genesis check
+    // (`datDuPhongLive`), so whichever endpoint answers here is Devnet.
     if (this.#verifiedDevnet) return;
     if ((await this.#connection.getGenesisHash()) !== DEVNET_GENESIS)
       throw new Error("Chỉ cho phép mạng Solana Devnet đã xác minh.");
@@ -611,8 +676,25 @@ export class LiveSession {
       });
       let result: InspectResult | null = null;
       const captured: { facts?: Facts } = {};
-      try {
-        result = await this.#inspect(
+      /*
+       * MỘT NGUỒN CHO MỘT LƯỢT KIỂM (Codex review 27/09). Trộn ⇒ đọc lại MỘT lần; vẫn trộn:
+       * bảo vệ bật thì từ chối (không có yêu cầu ký nào dựng từ kết quả ghép); bảo vệ tắt
+       * thì bỏ dự báo — kiểm lúc đó chỉ để đo, và một dự báo ghép thì không đo được gì.
+       */
+      const kiemMotLan = async () => {
+        // Facts của lượt TRƯỚC không được sống sang lượt này (và dự báo không dựng từ nó).
+        captured.facts = undefined;
+        const lanNay = { nguon: new Set<string>(), tu: Date.now() };
+        NGUON_DOC_LIVE.hienTai = lanNay;
+        try {
+          const r = await kiemMotLanGoc();
+          return { r, nguon: [...lanNay.nguon] };
+        } finally {
+          if (NGUON_DOC_LIVE.hienTai === lanNay) NGUON_DOC_LIVE.hienTai = null;
+        }
+      };
+      const kiemMotLanGoc = () =>
+        coHan(this.#inspect(
           {
             connection: this.#connection,
             interpret: async (...args) => {
@@ -626,9 +708,30 @@ export class LiveSession {
             locale: "vi",
             kyHieuToken: { [a.mint]: "DEMO" },
           },
-        );
+        ), CAU_HINH_LIVE.hanKiemMs);
+      try {
+        let lan = await kiemMotLan();
+        if (lan.nguon.length > 1) lan = await kiemMotLan();
+        if (lan.nguon.length > 1) {
+          // Dự báo cũng không được dựng từ Facts ghép (Codex review lần 2, mục 1).
+          captured.facts = undefined;
+          if (protectedMode) {
+            throw new Error(
+              `Hai nhà cung cấp RPC trả lời hai nửa của cùng một lượt kiểm, hai lần liền (${lan.nguon.join(" + ")}) — không tạo yêu cầu ký từ kết quả ghép.`,
+            );
+          }
+          throw new LoiNguonTron(lan.nguon);
+        }
+        result = lan.r;
       } catch (e) {
-        if (protectedMode) throw e;
+        // Bảo vệ bật: chưa kiểm xong thì KHÔNG có yêu cầu ký — quá hạn là lý do, nói rõ.
+        if (protectedMode) {
+          throw e instanceof LoiQuaHan
+            ? new Error(
+                `Custos chưa có kết quả mô phỏng sau ${Math.round(e.ms / 1000)} giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.`,
+              )
+            : e;
+        }
       }
       if (version !== this.#version) return;
       const prediction = dungDuBao({

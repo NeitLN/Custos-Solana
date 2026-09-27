@@ -139,7 +139,6 @@ const kq = { thap: tinh("thap"), goc: tinh("goc"), cao: tinh("cao") };
 
 /* ── biến nào quyết định kết quả ──────────────────────────────────────────── */
 function doNhay() {
-  const goc = tinh("goc").somUsdNam;
   return BIEN.filter((b) => b.thap !== b.cao)
     .map((b) => {
       const luu = { ...b };

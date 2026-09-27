@@ -144,8 +144,9 @@ async def main() -> None:
         # quả bất ngờ, việc đầu tiên là xác minh đột biến có thật sự được áp dụng.
         await pg.evaluate(
             """() => {
+                // Nút ĐANG HIỂN THỊ: màn thực thi ẩn cũng có một nút cùng chữ.
                 const n = [...document.querySelectorAll('button')]
-                  .find(b => b.textContent.includes('Nhận quà tặng'));
+                  .find(b => b.getClientRects().length > 0 && b.textContent.includes('Nhận quà tặng'));
                 const k = Object.keys(n).find(k => k.startsWith('__reactProps$'));
                 const onClick = n[k].onClick;
                 // Hai lần gọi handler trong cùng một lượt, không qua DOM.

@@ -16,6 +16,8 @@ const maCua = (p: string) =>
 const CAPTURE = "scripts/ky-thuat/capture-rpc.ts";
 const REPLAY = "scripts/ky-thuat/chay-replay.ts";
 const ADAPTER = "scripts/ky-thuat/replay-rpc.ts";
+/** Nơi hành vi adapter THẬT nằm từ CK-02; `ADAPTER` chỉ còn tái xuất + `docFixture`. */
+const LOI_ADAPTER = "scripts/replayFixture.ts";
 const FIX = "data/benchmark/rpc";
 
 /**
@@ -56,9 +58,16 @@ test("`chay-replay.ts` không có đường ra mạng nào", () => {
 test("adapter dùng chung cũng không tự mở kết nối", () => {
   // `replay-rpc.ts` được CẢ capture lẫn replay nạp. Nếu nó tự dựng `Connection` thì
   // đường ra mạng đi vòng qua module dùng chung, và bài trên không thấy.
-  const ma = maCua(ADAPTER);
-  assert.ok(!ma.includes("new Connection"), "adapter tự dựng `Connection`");
-  assert.ok(!ma.includes("fetch("), "adapter gọi `fetch`");
+  // Từ CK-02 phần adapter nằm ở `scripts/replayFixture.ts` (chạy cả trong trình duyệt);
+  // `replay-rpc.ts` chỉ tái xuất. Canh CẢ HAI, không chỉ lớp vỏ.
+  for (const f of [ADAPTER, "scripts/replayFixture.ts"]) {
+    const ma = maCua(f);
+    assert.ok(!ma.includes("new Connection"), `${f} tự dựng \`Connection\``);
+    assert.ok(!ma.includes("fetch("), `${f} gọi \`fetch\``);
+    for (const cam of ["node:http", "node:https", "node:fs", "undici"]) {
+      assert.ok(!ma.includes(cam) || f === ADAPTER, `${f} chứa \`${cam}\``);
+    }
+  }
 });
 
 test("chỉ `capture-rpc.ts` chạm mạng, và nó đòi khai báo ý định", () => {
@@ -122,7 +131,7 @@ test("adapter NÉM khi thiếu fixture, không trả `null` và không gọi m�
    * Trả `null` thì `extractFacts` đọc như "account không tồn tại" — một sự thật khác
    * hẳn "tôi không có dữ liệu". Fixture khuyết biến thành Facts nói sai.
    */
-  const ma = maCua(ADAPTER);
+  const ma = maCua(LOI_ADAPTER);
   assert.match(ma, /throw\s+e/, "adapter không ném khi thiếu fixture");
   assert.match(ma, /daThieu\.push/, "adapter không ghi lại request thiếu");
   assert.ok(
@@ -134,10 +143,12 @@ test("adapter NÉM khi thiếu fixture, không trả `null` và không gọi m�
 test("lỗi RPC đã ghi được NÉM LẠI, không đọc thành dữ liệu hợp lệ", () => {
   // Fixture lưu lỗi RPC dưới `{__loi}`. Trả object đó như response làm một lỗi mạng
   // biến thành một response trống rỗng nhưng "thành công".
-  const ma = maCua(ADAPTER);
+  const ma = maCua(LOI_ADAPTER);
   assert.match(ma, /__loi/, "adapter không xử lý bản ghi lỗi");
   assert.match(ma, /__loi[\s\S]{0,220}throw new Error/, "adapter không ném lại lỗi đã ghi");
-  assert.match(maCua(CAPTURE), /__loi/, "capture không ghi lỗi RPC — fixture sẽ khuyết im lặng");
+  // Bộ ghi (`connGhi`) nay ở cùng module; capture phải DÙNG nó, không tự ghi bản khác.
+  assert.match(ma, /ketQua: \{ __loi:/, "bộ ghi không ghi lỗi RPC — fixture sẽ khuyết im lặng");
+  assert.match(maCua(CAPTURE), /connGhi\(/, "capture không dùng bộ ghi dùng chung");
 });
 
 /* ── 3 · Fixture không được chứa secret, và phải khai đúng cluster ─────────── */
@@ -147,7 +158,10 @@ test("fixture chỉ giữ HOST của endpoint", () => {
    * Credential của RPC thương mại nằm ở path và query (`/?api-key=…`). Fixture là thứ
    * được commit, nên một endpoint đầy đủ trong đó là rò khoá vĩnh viễn trong git.
    */
-  assert.match(maCua(ADAPTER), /new URL\(url\)\.host/, "`locNguon` không lọc về host");
+  // Từ code review 27/09 chỉ còn MỘT bản lọc host (`hostCuaRpc` trong rpcDuPhong.ts); adapter
+  // tái xuất nó làm `locNguon`. Canh cả bản lọc lẫn việc adapter dùng đúng bản đó.
+  assert.match(maCua("scripts/rpcDuPhong.ts"), /hostCuaRpc\(url: string\)[\s\S]{0,80}new URL\(url\)\.host/, "`hostCuaRpc` không lọc về host");
+  assert.match(maCua(LOI_ADAPTER), /hostCuaRpc as locNguon/, "`locNguon` không dùng bản lọc host dùng chung");
   if (!existsSync(join(GOC, FIX))) return;
   for (const f of readdirSync(join(GOC, FIX)).filter((x) => x.endsWith(".json"))) {
     const fx = JSON.parse(doc(join(FIX, f))) as { nguon: string };

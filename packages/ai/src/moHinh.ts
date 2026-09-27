@@ -65,8 +65,8 @@ Trả về đúng JSON theo schema sau, không kèm giải thích nào khác:
  * Chỉ soi phần TRẤN AN. Không chặn chữ mô tả hậu quả: mô hình được phép nói
  * "tài khoản của bạn sẽ đổi chủ" vì đó là dữ kiện đo được, không phải phán quyết.
  */
-// KHÔNG dùng ranh giới từ ở đây. `` của JavaScript tính theo bảng chữ ASCII,
-// nên `/cứ ký/` KHÔNG khớp chuỗi "cứ ký" — "ý" không phải ký tự từ. Một bộ
+// KHÔNG dùng ranh giới từ ở đây. `\b` của JavaScript tính theo bảng chữ ASCII,
+// nên `/\bcứ ký\b/` KHÔNG khớp chuỗi "cứ ký" — "ý" không phải ký tự từ. Một bộ
 // lọc an toàn im lặng không khớp gì thì tệ hơn không có bộ lọc, vì nó tạo cảm
 // giác đã chặn rồi. Test đối kháng bắt được đúng chỗ này.
 /*
@@ -358,6 +358,88 @@ const CACH_NHAC: Record<HauQuaLech["loai"], RegExp> = {
   doi_chuong_trinh: /chương trình/i,
 };
 
+/**
+ * PHỦ NHẬN DỮ KIỆN CÓ THẬT — tập giữ lại CK-08, 27/09.
+ *
+ * Mô hình thật viết cho ca cấp quyền vượt số dư: *"Số lượng token được phép sử dụng không
+ * được hiển thị trong dữ liệu"* — trong khi hạn mức nằm ngay trong dữ liệu gửi đi. Câu đó
+ * không bịa số, không trấn an, không bỏ sót hậu quả theo nghĩa hẹp — nên mọi lớp cũ cho qua.
+ * Nhưng nó dạy người đọc rằng Custos KHÔNG BIẾT điều Custos biết, và che mất điểm nguy hiểm.
+ *
+ * Chỉ áp khi mô phỏng thành công và đọc hiểu ĐỦ: khi thật sự thiếu dữ liệu, "chưa rõ" là câu
+ * trung thực và phải được phép.
+ */
+const PHU_NHAN_DU_KIEN =
+  /không (?:được )?(?:hiển thị|thể hiện|ghi|nêu|có)(?: rõ)? trong (?:dữ liệu|thông tin)|dữ liệu không (?:cho biết|nêu|hiển thị|có)|không rõ (?:số lượng|hạn mức|bao nhiêu)|không xác định được (?:số lượng|hạn mức)/i;
+
+/*
+ * Chỉ khi câu phủ nhận nói về một ĐẠI LƯỢNG (Codex review lần 2, mục 7): "danh tính người
+ * đứng sau địa chỉ không được hiển thị trong dữ liệu" là câu ĐÚNG — Facts không có danh tính.
+ */
+const DAI_LUONG = /số lượng|hạn mức|số tiền|số dư|bao nhiêu|số token/i;
+
+/** Tách câu để soi: lời văn đã chuẩn hoá, cắt ở dấu kết câu. */
+const cacCau = (s: string) => s.split(/(?<=[.!?])\s+/);
+
+export function phuNhanDuKien(loiVan: string, facts: Facts): boolean {
+  if (!facts.simulationOk || facts.coverage.analyzed < facts.coverage.total) return false;
+  return cacCau(chuanHoaDeSoi(loiVan)).some((c) => PHU_NHAN_DU_KIEN.test(c) && DAI_LUONG.test(c));
+}
+
+/**
+ * ĐẾM SAI PHẠM VI — lượt đo mô hình thật 27/09. Coverage 0/8 mà câu viết "7 lệnh không thể
+ * phân tích"; 0/5 mà viết "4 lệnh". Nói ĐÚNG phần chưa đọc hiểu là trục khác biệt của sản
+ * phẩm, nên một con số sai ở đây tệ hơn không nói. Con số đi với "lệnh/hướng dẫn/hành động"
+ * chỉ được là số đã đọc, tổng, hoặc số chưa đọc; con số đi với "chương trình chưa xác minh"
+ * phải khớp Facts.
+ */
+export function demSaiPhamVi(loiVan: string, facts: Facts): boolean {
+  const s = chuanHoaDeSoi(loiVan);
+  const { analyzed, total, unverifiedPrograms } = facts.coverage;
+  const hopLe = new Set([analyzed, total, total - analyzed]);
+  const LENH = "(?:lệnh|hướng dẫn|hành động|chỉ thị)";
+  // Dạng phân số "0/8 lệnh": chỉ được là đã đọc / tổng.
+  for (const m of s.matchAll(new RegExp(`(\\d+)\\s*/\\s*(\\d+)\\s+${LENH}`, "gi")))
+    if (Number(m[1]) !== analyzed || Number(m[2]) !== total) return true;
+  /*
+   * Con số NGAY TRƯỚC lời nói đọc được hay không (Codex review lần 2, mục 2): "0 lệnh chưa
+   * đọc hiểu" khi 8/8 chưa đọc là HOÁN ĐỔI hai đại lượng — tập ba số hợp lệ cũ cho qua vì 0
+   * nằm trong tập. Có vế đi kèm thì con số phải khớp ĐÚNG đại lượng vế đó nêu.
+   */
+  for (const m of s.matchAll(new RegExp(`(?<![\\d/])(\\d+)\\s+${LENH}`, "gi"))) {
+    const n = Number(m[1]);
+    const sau = s.slice(m.index! + m[0].length, m.index! + m[0].length + 30);
+    if (/^\s*(?:(?:vẫn|còn|đều) )?(?:chưa|không)/i.test(sau)) {
+      if (n !== total - analyzed) return true;
+    } else if (/^\s*(?:đã|được) (?:được )?(?:đọc|phân tích|hiểu|giải mã)/i.test(sau)) {
+      if (n !== analyzed) return true;
+    } else if (!hopLe.has(n)) return true;
+  }
+  for (const m of s.matchAll(/(\d+)\s+chương trình chưa (?:được )?xác minh/gi)) if (Number(m[1]) !== unverifiedPrograms) return true;
+  return false;
+}
+
+/**
+ * MÔ PHỎNG HỎNG MÀ VẪN NÓI TRẠNG THÁI SAU — lượt đo mô hình thật 27/09. "Mô phỏng không
+ * thành công… số dư giảm xuống 0": không có trạng thái sau nào để nói (fail-safe). Câu
+ * "Custos không biết giao dịch sẽ làm gì với số dư" thì đúng và phải đi qua.
+ */
+export function noiTrangThaiSauKhiMoPhongHong(loiVan: string, facts: Facts): boolean {
+  if (facts.simulationOk) return false;
+  /*
+   * Codex review lần 2: "số dư sau giao dịch BẰNG 0" lọt (mục 3); còn "chưa thể kết luận số
+   * dư sẽ giảm hay tăng" bị chặn oan (mục 8). Khẳng định bị chặn; khẳng định nằm SAU một lời
+   * nói không biết / chưa thể kết luận trong cùng câu thì không phải khẳng định.
+   */
+  const KHANG_DINH =
+    /số dư[^.]{0,40}?(?:giảm|về|xuống|tăng|còn lại|sẽ là|bằng|chỉ còn)|(?:giảm|về|bằng|còn) (?:xuống )?0(?!\d)|sẽ (?:mất|nhận|rời ví)/gi;
+  const KHONG_BIET =
+    /(?:chưa|không) (?:thể |được )?(?:biết|rõ|xác định|kết luận|nói chắc|dự đoán|khẳng định)/i;
+  return cacCau(chuanHoaDeSoi(loiVan)).some((c) =>
+    [...c.matchAll(KHANG_DINH)].some((m) => !KHONG_BIET.test(c.slice(Math.max(0, m.index! - 60), m.index!))),
+  );
+}
+
 /** `true` khi lời văn BỎ SÓT ít nhất một hậu quả lõi tất định đã xác định. */
 export function boSotHauQua(loiVan: string, cacLoai: HauQuaLech["loai"][]): boolean {
   const s = chuanHoaDeSoi(loiVan);
@@ -475,6 +557,11 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
     if (nguocChieu(ra.explanation, huongTaiSanNguoiKy(facts), !facts.simulationOk)) return nen;
     // Và không được nói về hành vi nặng mà L2 chưa hề gắn mã.
     if (noiQuaMaLyDo(ra.explanation, reasonCodes)) return nen;
+    // Và không được nói "dữ liệu không có" về điều dữ liệu CÓ — xem `phuNhanDuKien`.
+    if (phuNhanDuKien(ra.explanation, facts)) return nen;
+    // Phần chưa đọc hiểu phải được ĐẾM đúng, và mô phỏng hỏng thì không có trạng thái sau.
+    if (demSaiPhamVi(ra.explanation, facts)) return nen;
+    if (noiTrangThaiSauKhiMoPhongHong(ra.explanation, facts)) return nen;
 
     // Hành động chính: lõi xác định đọc thẳng từ chênh lệch số dư, nên nó ĐÚNG
     // hơn mô hình. Chỉ dùng của mô hình khi lõi không nhận ra được gì.
