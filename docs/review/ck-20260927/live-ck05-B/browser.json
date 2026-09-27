@@ -1,0 +1,277 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 3,
+  "checks": [
+    "unprotected normal transfer confirmed",
+    "AC07: unprotected cancel sends nothing"
+  ],
+  "receipts": [
+    {
+      "signature": "5EVuM7HzfEQsvMUBBucNbLgTMmK4FTet12angygYetdMztbH7szriiUR47ejGHSPMcYN4Gw5HDNPxnQwgGM4DPmb",
+      "cluster": "devnet",
+      "kind": "transfer",
+      "protected": false,
+      "prediction": {
+        "source": "6m2GUavrmGDaXkkCmz5eZHPJorAbSkw81DXXkivuGGfA",
+        "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "497000000",
+        "ownerAfter": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "message": "5fMtF6AnRa1cfcypWJSSnT8efgx9QMxrxZ79AWrh3jXgWeeZy3Gie8TfmzrQ35AFG31ZyPnnyhqVzWVFgyUmevxUF3v5JfrMtmQrKxK4ZVCrAN7Pq2DW16rA6X7Xga43AwrBL7TvWPtdzKx78etHZSsX4rjzHUV88N4UsbnT8CNxWtg5d82kMvwvJBam6huSkSxnFCW6r264Bhz2N764GhrsZ7ZvDVNpy4Ld6tnYFeEx4zvJBjMGHbSDM",
+        "target": "6462qGnqV3wzFCPUisYZSa3LQNHixDauiVRiLWRCi49y",
+        "targetBefore": "0",
+        "targetAfter": "3000000",
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": null
+      },
+      "observation": {
+        "message": "5fMtF6AnRa1cfcypWJSSnT8efgx9QMxrxZ79AWrh3jXgWeeZy3Gie8TfmzrQ35AFG31ZyPnnyhqVzWVFgyUmevxUF3v5JfrMtmQrKxK4ZVCrAN7Pq2DW16rA6X7Xga43AwrBL7TvWPtdzKx78etHZSsX4rjzHUV88N4UsbnT8CNxWtg5d82kMvwvJBam6huSkSxnFCW6r264Bhz2N764GhrsZ7ZvDVNpy4Ld6tnYFeEx4zvJBjMGHbSDM",
+        "slot": 504802357,
+        "err": null,
+        "rightsAttributable": true,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "6m2GUavrmGDaXkkCmz5eZHPJorAbSkw81DXXkivuGGfA",
+          "6462qGnqV3wzFCPUisYZSa3LQNHixDauiVRiLWRCi49y",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "497000000",
+              "decimals": 6,
+              "uiAmount": 497,
+              "uiAmountString": "497"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "3000000",
+              "decimals": 6,
+              "uiAmount": 3,
+              "uiAmountString": "3"
+            }
+          }
+        ],
+        "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "ownerSlot": 504802417,
+        "delegate": null,
+        "allowance": "0",
+        "closeAuthority": null,
+        "closed": false,
+        "preLamports": [
+          9876314720,
+          1488440,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9876309720,
+          1488440,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "497000000",
+        "targetBefore": "0",
+        "targetAfter": "3000000",
+        "target": "match",
+        "delegate": "match",
+        "closeAuthority": "match",
+        "balance": "match",
+        "authority": "match"
+      },
+      "createdAt": "2026-09-27T13:48:02.606Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492053323,
+      "decision": {
+        "action": "approve",
+        "level": "safe",
+        "aiAdvisory": null,
+        "reasonCodes": [],
+        "requestId": 1,
+        "at": "2026-09-27T13:48:02.607Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    },
+    {
+      "signature": "3i5ugJqWPhwqucv6HPvR6UZYdrjUsz1PtvtEifTVZMTMpimfoPZnVE1KQSEu2tqWmDMZJRU2DeuvdNSzHBm2mxZY",
+      "cluster": "devnet",
+      "kind": "attack",
+      "protected": false,
+      "prediction": {
+        "source": "6m2GUavrmGDaXkkCmz5eZHPJorAbSkw81DXXkivuGGfA",
+        "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+        "decimals": 6,
+        "before": "497000000",
+        "after": "248500000",
+        "ownerAfter": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+        "message": "22HymaiHwXdSngBAjecpoibubEV1gbxzGp5gQb2EodkscsBzbr1YXkUD3LPihLUdsPpK5WttpFoPQ2TPjDzaDpCcGsSDThLS2xHkRwmZfofwddKmbF9cjsh5uNvxH88uUcNJYWAfXeVpGcdwgZLaMRuqLcVzHXf5fCg24BXCL5j4sTF21gDCfqarHnfBx6oGUnFHczG1d4oqrfV9xLm75RupTxcdc5J1dEfH4LHhXWdDo5YjrfvAfZrHn4mnTu13c4YFj9PKm6J73R1UdH62fjrDvF921i7Mo24BpJqBiPrbP6K9",
+        "target": "6462qGnqV3wzFCPUisYZSa3LQNHixDauiVRiLWRCi49y",
+        "targetBefore": "3000000",
+        "targetAfter": "251500000",
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": null
+      },
+      "observation": {
+        "message": "22HymaiHwXdSngBAjecpoibubEV1gbxzGp5gQb2EodkscsBzbr1YXkUD3LPihLUdsPpK5WttpFoPQ2TPjDzaDpCcGsSDThLS2xHkRwmZfofwddKmbF9cjsh5uNvxH88uUcNJYWAfXeVpGcdwgZLaMRuqLcVzHXf5fCg24BXCL5j4sTF21gDCfqarHnfBx6oGUnFHczG1d4oqrfV9xLm75RupTxcdc5J1dEfH4LHhXWdDo5YjrfvAfZrHn4mnTu13c4YFj9PKm6J73R1UdH62fjrDvF921i7Mo24BpJqBiPrbP6K9",
+        "slot": 504802703,
+        "err": null,
+        "rightsAttributable": false,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "6m2GUavrmGDaXkkCmz5eZHPJorAbSkw81DXXkivuGGfA",
+          "6462qGnqV3wzFCPUisYZSa3LQNHixDauiVRiLWRCi49y",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "497000000",
+              "decimals": 6,
+              "uiAmount": 497,
+              "uiAmountString": "497"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "3000000",
+              "decimals": 6,
+              "uiAmount": 3,
+              "uiAmountString": "3"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "248500000",
+              "decimals": 6,
+              "uiAmount": 248.5,
+              "uiAmountString": "248.5"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "2EHwkmPPEThPVGDNuH45GRwKKZRaTFoTCHVJ5DfyFhJX",
+            "owner": "HzsR5jpJxcsXGYk5m2RaqNZaEFppBd4nR8U4WRY3JB46",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "251500000",
+              "decimals": 6,
+              "uiAmount": 251.5,
+              "uiAmountString": "251.5"
+            }
+          }
+        ],
+        "owner": null,
+        "ownerSlot": null,
+        "allowance": null,
+        "closed": false,
+        "preLamports": [
+          9876309720,
+          1488440,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9876304720,
+          1488440,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "497000000",
+        "actualAfter": "248500000",
+        "targetBefore": "3000000",
+        "targetAfter": "251500000",
+        "target": "match",
+        "delegate": "unknown",
+        "closeAuthority": "unknown",
+        "balance": "match",
+        "authority": "unknown"
+      },
+      "createdAt": "2026-09-27T13:49:22.530Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492053612,
+      "decision": {
+        "action": "approve",
+        "level": "danger",
+        "aiAdvisory": "review_required",
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "requestId": 3,
+        "at": "2026-09-27T13:49:22.530Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    }
+  ],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "tu": "B",
+  "passed": false,
+  "error": ""
+}

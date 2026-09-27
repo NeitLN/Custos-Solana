@@ -85,12 +85,17 @@ phiên mới. Giao thức dApp mới giới hạn mẫu nhận quà, không ph�
 
 ## Khách tự thử
 
-**Tự thử bằng ví khách riêng** mở `?guest=1`, tạo keypair riêng trong bộ nhớ tab.
-Khách tự nạp SOL Devnet; không dùng quỹ hoặc keypair của nhóm.
-**Tải keypair ví khách về máy** là xuất khoá có chủ đích; không chia sẻ file đó.
-URL giữ public key khi reload; phải nhập lại keypair đã tải để ký.
-Không lưu file trước khi đóng tab thì không thể tái tạo khoá từ địa chỉ.
-Mặc định vẫn là ví nhóm; chưa tích hợp Phantom/Solflare.
+**Không còn "ví khách"** (gỡ 26/09/2026, quyết định khoá số 8). Mọi demo dùng đúng một ví
+cố định `AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ`; `?guest=1` và `?wallet=` không còn
+tác dụng. Ký thật chỉ ở màn thực thi của ví mẫu, bằng file khoá cục bộ đúng ví đó.
+
+Người muốn tự thử **không cần khoá**: Phòng phân tích (mặc định) chạy "Thử có hướng dẫn"
+hoặc "Tự chọn tình huống", với nguồn **Devnet trực tiếp** hoặc **Dữ liệu đã ghi** — nguồn
+thứ hai chạy lại engine thật trên phản hồi RPC đã ghi, không cần mạng, có nhãn PHÁT LẠI.
+Chưa tích hợp Phantom/Solflare.
+
+> Nội dung cũ của mục này (ví khách `?guest=1`, tải keypair ví khách) là **lịch sử** —
+> xem `git log -- docs/CHAY-DEMO-GIAO-DICH-THAT.md`.
 
 ## Phục hồi và lỗi
 

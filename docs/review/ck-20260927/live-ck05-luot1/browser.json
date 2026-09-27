@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 1,
+  "checks": [
+    "setup: fresh mint, 500 DEMO, fixed funded wallet"
+  ],
+  "receipts": [],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "passed": false,
+  "error": "['failed to get info about account B4gdq5QCogKaafTNBWFVvp8NuR9JVVPYgyBuC5ZmxMYn: TimeoutError: signal timed out']"
+}

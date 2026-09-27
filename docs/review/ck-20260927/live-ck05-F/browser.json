@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 1,
+  "checks": [],
+  "receipts": [],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "tu": "F",
+  "retries": [
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 1,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 2,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 4,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 5,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    }
+  ],
+  "passed": false,
+  "error": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+}

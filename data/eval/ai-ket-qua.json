@@ -1,5 +1,5 @@
 {
-  "doLuc": "2026-09-18T18:40:47.980Z",
+  "doLuc": "2026-09-27T15:01:47.209Z",
   "soMau": 38,
   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
   "template": {
@@ -113,105 +113,14 @@
     ]
   },
   "moHinhThat": {
-    "trangThai": "đã đo",
-    "batDau": "2026-09-18T18:39:14.043Z",
-    "xong": "2026-09-18T18:40:47.979Z",
-    "moHinh": "claude-haiku-4-5-20251001",
-    "tokenRaToiDa": 400,
-    "tokenRaToiDaLaMacDinh": true,
-    "sdkMaxRetriesMacDinh": 2,
-    "datMaxRetriesTuongMinh": true,
-    "promptDoDai": 1191,
-    "promptBam": "6d2f1409",
-    "boDuLieu": {
-      "nguon": "data/seed/index.json",
-      "thuLuc": "2026-08-21T00:24:40.946Z",
-      "soMau": 38
-    },
-    "soMau": 38,
-    "treTrungViMs": 2234,
-    "treCaoNhatMs": 4307,
-    "hanMacDinhMs": 4000,
-    "duongDoCoBocThoiHan": false,
-    "soLuotUocSeBiCat": 1,
-    "soLuotBiCatThatSu": 0,
-    "giaTriTangThem": {
-      "soCaKhacCauMau": 27,
-      "chuThemTrungVi": 112,
-      "soCaNoiVeCoverage": 13,
-      "soCaCauMauNoiVeCoverage": 14,
-      "soCaCoCoverageKhuyet": 16,
-      "boQuaCoverage": [
-        {
-          "id": "R10-pos",
-          "coverage": "0/1",
-          "cauAI": "Mô phỏng giao dịch không thành công. Hệ thống phát hiện các vấn đề: chương trình không được giải mã, khả năng mất SOL, và mô phỏng bị lỗi. Không thể xác định hành động chính của giao dịch từ dữ liệu hiện có."
-        }
-      ]
-    },
-    "tokenVao": 28878,
-    "tokenRa": 7147,
-    "luiVeTatDinh": 11,
-    "tyLeDungDauRaMoHinh": 0.7105263157894737,
-    "soLoiApi": 0,
-    "loiApi": [],
-    "viPham": [
-      {
-        "id": "MN-10",
-        "loai": "số không có trong facts",
-        "chiTiet": "4",
-        "cau": "Mô phỏng giao dịch không thành công nên không thể xác định hành động chính. Tuy nhiên, dữ liệu cho thấy nhiều tài khoản token sẽ có số dư về 0. Cụ thể: 469,747451587 và 55.159.743,889993 đơn vị token So11…1112 và 5mH1…pump sẽ bị xóa sạch. Ngoài ra, có 2 chương trình chưa xác minh được gọi, 4 lệnh không thể giải mã, và phân tích chỉ bao phủ 0 trên 5 tài khoản liên quan.",
-        "soChoPhep": [
-          "0",
-          "0,0",
-          "0,001214342",
-          "0,0018444",
-          "0,00203928",
-          "0,00207408",
-          "0,00272832",
-          "0,00298584",
-          "0,00377232",
-          "0,136281918",
-          "0,138321198",
-          "1",
-          "1,991176912",
-          "1,993216192",
-          "1.214.342",
-          "1.701,031224589",
-          "1.701.031.224.589",
-          "1.844.400",
-          "1.993.216.192",
-          "138,51074177",
-          "138,51278105",
-          "138.321.198",
-          "138.512.781.050",
-          "2",
-          "2.039.280",
-          "2.074.080",
-          "2.728.320",
-          "2.985.840",
-          "3",
-          "3.772.320",
-          "39,12678176",
-          "39.126.781.760",
-          "40,167403693",
-          "40,169450973",
-          "40.169.450.973",
-          "469,747451587",
-          "469,749490867",
-          "469.749.490.867",
-          "5",
-          "55.159.743,889993",
-          "79,294185453"
-        ],
-        "coverage": "0/5"
-      }
-    ]
+    "trangThai": "BLOCKED_BY_SECRET",
+    "vaSao": "chưa có ANTHROPIC_API_KEY trong môi trường; không đo được độ trễ và token thật",
+    "luuY": "lượt offline này KHÔNG xoá lượt live trước — xem `liveGanNhat`"
   },
   "liveGanNhat": {
     "trangThai": "đã đo",
-    "batDau": "2026-09-18T18:39:14.043Z",
-    "xong": "2026-09-18T18:40:47.979Z",
+    "batDau": "2026-09-27T13:52:38.733Z",
+    "xong": "2026-09-27T13:54:20.710Z",
     "moHinh": "claude-haiku-4-5-20251001",
     "tokenRaToiDa": 400,
     "tokenRaToiDaLaMacDinh": true,
@@ -225,84 +134,27 @@
       "soMau": 38
     },
     "soMau": 38,
-    "treTrungViMs": 2234,
-    "treCaoNhatMs": 4307,
+    "treTrungViMs": 2671,
+    "treCaoNhatMs": 4108,
     "hanMacDinhMs": 4000,
     "duongDoCoBocThoiHan": false,
     "soLuotUocSeBiCat": 1,
     "soLuotBiCatThatSu": 0,
     "giaTriTangThem": {
-      "soCaKhacCauMau": 27,
-      "chuThemTrungVi": 112,
-      "soCaNoiVeCoverage": 13,
+      "soCaKhacCauMau": 19,
+      "chuThemTrungVi": 99,
+      "soCaNoiVeCoverage": 15,
       "soCaCauMauNoiVeCoverage": 14,
       "soCaCoCoverageKhuyet": 16,
-      "boQuaCoverage": [
-        {
-          "id": "R10-pos",
-          "coverage": "0/1",
-          "cauAI": "Mô phỏng giao dịch không thành công. Hệ thống phát hiện các vấn đề: chương trình không được giải mã, khả năng mất SOL, và mô phỏng bị lỗi. Không thể xác định hành động chính của giao dịch từ dữ liệu hiện có."
-        }
-      ]
+      "boQuaCoverage": []
     },
     "tokenVao": 28878,
-    "tokenRa": 7147,
-    "luiVeTatDinh": 11,
-    "tyLeDungDauRaMoHinh": 0.7105263157894737,
+    "tokenRa": 7206,
+    "luiVeTatDinh": 19,
+    "tyLeDungDauRaMoHinh": 0.5,
     "soLoiApi": 0,
     "loiApi": [],
-    "viPham": [
-      {
-        "id": "MN-10",
-        "loai": "số không có trong facts",
-        "chiTiet": "4",
-        "cau": "Mô phỏng giao dịch không thành công nên không thể xác định hành động chính. Tuy nhiên, dữ liệu cho thấy nhiều tài khoản token sẽ có số dư về 0. Cụ thể: 469,747451587 và 55.159.743,889993 đơn vị token So11…1112 và 5mH1…pump sẽ bị xóa sạch. Ngoài ra, có 2 chương trình chưa xác minh được gọi, 4 lệnh không thể giải mã, và phân tích chỉ bao phủ 0 trên 5 tài khoản liên quan.",
-        "soChoPhep": [
-          "0",
-          "0,0",
-          "0,001214342",
-          "0,0018444",
-          "0,00203928",
-          "0,00207408",
-          "0,00272832",
-          "0,00298584",
-          "0,00377232",
-          "0,136281918",
-          "0,138321198",
-          "1",
-          "1,991176912",
-          "1,993216192",
-          "1.214.342",
-          "1.701,031224589",
-          "1.701.031.224.589",
-          "1.844.400",
-          "1.993.216.192",
-          "138,51074177",
-          "138,51278105",
-          "138.321.198",
-          "138.512.781.050",
-          "2",
-          "2.039.280",
-          "2.074.080",
-          "2.728.320",
-          "2.985.840",
-          "3",
-          "3.772.320",
-          "39,12678176",
-          "39.126.781.760",
-          "40,167403693",
-          "40,169450973",
-          "40.169.450.973",
-          "469,747451587",
-          "469,749490867",
-          "469.749.490.867",
-          "5",
-          "55.159.743,889993",
-          "79,294185453"
-        ],
-        "coverage": "0/5"
-      }
-    ]
+    "viPham": []
   },
   "cases": [
     {
@@ -341,10 +193,10 @@
       "soMa": 2,
       "coverage": "1/1",
       "template": {
-        "soChu": 123,
+        "soChu": 259,
         "diaChiBia": 0,
         "soBia": 0,
-        "aiAdvisory": "review_required"
+        "aiAdvisory": null
       }
     },
     {
@@ -355,10 +207,10 @@
       "soMa": 1,
       "coverage": "1/1",
       "template": {
-        "soChu": 123,
+        "soChu": 145,
         "diaChiBia": 0,
         "soBia": 0,
-        "aiAdvisory": "review_required"
+        "aiAdvisory": null
       }
     },
     {
