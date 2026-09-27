@@ -92,7 +92,17 @@ for (const [ten, gt] of [
 
 /** Thay dòng khớp `moc` bằng `dung(dòng cũ)`. Vắng mốc là lỗi: tài liệu đã đổi cấu trúc. */
 function thayDong(duong, viec) {
-  const dong = readFileSync(duong, "utf8").split("\n");
+  /*
+   * GIỮ NGUYÊN KIỂU XUỐNG DÒNG CỦA TỪNG DÒNG.
+   *
+   * Tách theo "\n" thì mỗi dòng của file CRLF còn dính "\r" ở cuối. Hàm `dung` dựng
+   * lại dòng (và `.` của regex không khớp "\r") nên "\r" rơi mất ở đúng dòng được
+   * thay: file thành CRLF lẫn LF, git coi là đã sửa dù chữ không đổi, và cổng
+   * `kiem-san-pham` báo "tài liệu lệch số đo" theo lượt. Bóc "\r" trước, trả lại sau.
+   */
+  const tho = readFileSync(duong, "utf8").split("\n");
+  const cr = tho.map((d) => d.endsWith("\r"));
+  const dong = tho.map((d, k) => (cr[k] ? d.slice(0, -1) : d));
   let doi = 0;
   for (const [moc, dung] of viec) {
     /*
@@ -112,7 +122,8 @@ function thayDong(duong, viec) {
       }
     }
   }
-  writeFileSync(duong, dong.join("\n"));
+  // Không đổi dòng nào thì không ghi: ghi lại y nguyên vẫn đổi mtime.
+  if (doi > 0) writeFileSync(duong, dong.map((d, k) => (cr[k] ? d + "\r" : d)).join("\n"));
   console.log(`  ${duong}: ${doi} dòng đổi`);
 }
 

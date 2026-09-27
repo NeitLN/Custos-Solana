@@ -6,6 +6,9 @@ p = argparse.ArgumentParser()
 p.add_argument('--allow-devnet-send', action='store_true')
 p.add_argument('--url', default='http://127.0.0.1:5192/Custos-Solana/')
 p.add_argument('--out', default='docs/review/live-devnet/realistic-wallet')
+# Bắt đầu từ phân đoạn nào (A→D). Mỗi phân đoạn tự tạo phiên mới, nên chạy tiếp từ B/C/D
+# không lặp lại giao dịch của phân đoạn trước — tiết kiệm SOL khi RPC làm lượt trước dừng giữa chừng.
+p.add_argument('--tu', default='A', choices=['A', 'B', 'C', 'D', 'E', 'F'])
 args = p.parse_args()
 if not args.allow_devnet_send: raise SystemExit('Require --allow-devnet-send; uses only configured Devnet DEMO assets.')
 out = pathlib.Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -27,6 +30,12 @@ with sync_playwright() as pw:
         page.wait_for_function("() => !document.querySelector('.live-spinner')", timeout=90000)
         if not error and page.locator('[role=alert]').count(): raise AssertionError(page.locator('[role=alert]').all_inner_texts())
     def button(name): return page.get_by_role('button', name=name, exact=True)
+    def dat_bao_ve(bat):
+        # Công tắc đổi BẤT ĐỒNG BỘ (qua Web Lock trong `run`), nên `check()/uncheck()` của
+        # Playwright — vốn kiểm trạng thái ngay sau cú bấm — báo "không đổi". Bấm rồi CHỜ.
+        sw = page.get_by_role('switch', name='Bảo vệ bằng Custos')
+        if sw.is_checked() != bat: sw.click()
+        page.wait_for_function("b => document.querySelector('[role=switch][aria-label=\"Bảo vệ bằng Custos\"]')?.checked === b", arg=bat, timeout=15000)
     def setup():
         page.wait_for_timeout(10000)
         if button('Ký tạo phiên thử nghiệm').count(): button('Ký tạo phiên thử nghiệm').click()
@@ -48,8 +57,23 @@ with sync_playwright() as pw:
             if details.get_attribute('open') is None: details.locator('summary').click()
             page.locator('#scenario-amount').fill(amount)
             details.get_by_role('button', name=re.compile('^'+re.escape(kind))).click()
-        page.locator('.wallet-request').wait_for(timeout=90000)
+        # Chờ yêu cầu ký HOẶC thẻ lỗi — chỉ chờ yêu cầu thì lỗi RPC hiện ngay vẫn bị chờ đủ 90 s.
+        page.wait_for_selector('.wallet-request, [role=alert]', timeout=90000)
         idle()
+    _prep_goc = prep
+    def prep(kind, amount='10'):
+        # Chặng CHUẨN BỊ chỉ đọc + mô phỏng, trước bước ký: thử lại khi RPC đọc quá hạn là an
+        # toàn — với điều kiện số lần gửi KHÔNG đổi. Tạo phiên và ký KHÔNG bao giờ tự thử lại
+        # (không gửi lại giao dịch chưa rõ kết quả). Máy chạy bị Devnet giới hạn đọc theo IP.
+        for lan in range(6):
+            gui_truoc = report['sends']
+            try:
+                return _prep_goc(kind, amount)
+            except AssertionError as e:
+                tam_thoi = any(s in str(e) for s in ('timed out', 'failed to get', 'quá hạn', 'không kết nối', '429'))
+                if not tam_thoi or report['sends'] != gui_truoc or lan == 5: raise
+                report.setdefault('retries', []).append({'kind': kind, 'attempt': lan + 1, 'reason': str(e)[:160]}); save()
+                page.wait_for_timeout(45000)
     def execute():
         request = page.locator('.wallet-request')
         request.wait_for()
@@ -59,11 +83,14 @@ with sync_playwright() as pw:
         request.locator('.wallet-consent input').check()
         request.get_by_role('button', name=re.compile(r'^(Bỏ qua cảnh báo và gửi|Ký và gửi trên Devnet)$')).click()
         page.wait_for_function("old => document.querySelector('[role=alert]') || (JSON.parse(localStorage.getItem('custos.live-receipt.v1') || 'null')?.signature !== old && !document.querySelector('.wallet-request') && !document.querySelector('.live-spinner'))", arg=previous, timeout=90000)
-        idle()
-        r = page.evaluate("JSON.parse(localStorage.getItem('custos.live-receipt.v1'))")
-        for _ in range(3):
+        r = page.evaluate("JSON.parse(localStorage.getItem('custos.live-receipt.v1') || 'null')")
+        # Chưa có chữ ký mới ⇒ lỗi TRƯỚC khi gửi: nêu ra như cũ.
+        if not r or r.get('signature') == previous: idle()
+        # ĐÃ GỬI mà đọc biên nhận quá hạn: chỉ TRA CỨU LẠI (đọc), không bao giờ gửi lại.
+        idle(error=True)
+        for _ in range(6):
             if r.get('observation'): break
-            page.wait_for_timeout(4000); button('Tra cứu lại').click(); idle()
+            page.wait_for_timeout(15000); button('Tra cứu lại').click(); idle(error=True)
             r = page.evaluate("JSON.parse(localStorage.getItem('custos.live-receipt.v1'))")
         assert r['observation']['err'] is None, r
         report['receipts'].append(r); save()
@@ -73,50 +100,61 @@ with sync_playwright() as pw:
         report['wallet'] = page.locator('#live-wallet-address').input_value()
         assert report['wallet'] == 'AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ'
         page.locator('#demo-keypair').set_input_files('.devnet/vi-demo.json'); idle()
-        setup(); check('setup: fresh mint, 500 DEMO, fixed funded wallet')
-        prep('transfer', '12,5'); r = execute()
-        assert r['comparison']['actualBefore'] == '500000000' and r['comparison']['actualAfter'] == '487500000'
-        assert r['comparison']['targetAfter'] == '12500000'
-        check('AC03: custom fractional transfer confirmed; source and destination measured')
-        prep('attack'); assert 'Nguy hiểm' in page.locator('.wallet-request').inner_text()
-        sends = report['sends']; button('Chặn & huỷ giao dịch').click()
-        assert report['sends'] == sends; check('AC04: protected cancel sends nothing')
-        prep('attack'); r = execute()
-        assert r['protected'] and r['decision']['action'] == 'override' and r['decision']['level'] == 'danger'
-        assert page.get_by_role('switch', name='Bảo vệ bằng Custos').is_checked()
-        assert r['comparison']['balance'] == 'match' and r['comparison']['authority'] == 'match'
-        assert '0,0 DEMO' in page.locator('.wallet-rights').inner_text()
-        check('AC05: red override stays protected; transfer and changed owner confirmed')
-        page.screenshot(path=str(out/'01-red-override.png'), full_page=True)
-        setup(); page.get_by_role('switch', name='Bảo vệ bằng Custos').uncheck()
-        prep('transfer', '3'); execute(); check('unprotected normal transfer confirmed')
-        prep('attack'); sends = report['sends']; button('Huỷ giao dịch').click(); assert report['sends'] == sends
-        check('AC07: unprotected cancel sends nothing')
-        prep('attack'); r = execute(); assert not r['protected'] and r['comparison']['authority'] == 'match'
-        check('AC06: unprotected attack confirmed with separate consent')
-        setup(); page.get_by_role('switch', name='Bảo vệ bằng Custos').check()
-        prep('Trao quyền kiểm soát'); r = execute()
-        assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
-        assert r['comparison']['authority'] == 'match'; check('AC08: owner-only changes authority without token transfer')
-        setup()
-        prep('Cấp quyền sử dụng token', '30'); r = execute()
-        assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
-        assert r['observation']['allowance'] == '30000000'; check('AC09: approve grants allowance; balance unchanged')
-        prep('Ứng dụng sử dụng quyền', '12'); r = execute()
-        assert r['signer'] != report['wallet'] and r['comparison']['actualAfter'] == '488000000'
-        check('AC10: delegate signs its own transaction; owner does not sign')
-        prep('Thu hồi quyền đã cấp'); r = execute()
-        assert r['observation']['delegate'] is None and r['observation']['allowance'] == '0'
-        check('AC11: revoke confirmed on chain')
-        page.screenshot(path=str(out/'02-revoke.png'), full_page=True)
-        page.locator('#scenario-amount').fill('1')
-        page.locator('.wallet-scenarios').get_by_role('button', name=re.compile('^Ứng dụng sử dụng quyền')).click(); idle(error=True)
-        assert 'không có quyền' in page.locator('[role=alert]').inner_text()
-        check('AC11: delegate cannot prepare another spend after revoke')
-        prep('Gửi kèm chuyển thêm', '2'); r = execute(); assert r['comparison']['actualAfter'] == '485000000'
-        check('S06: requested 2 plus additional 1 DEMO actually transfers; verdict not forced')
+        report['tu'] = args.tu
+        if args.tu == 'A':
+            setup(); check('setup: fresh mint, 500 DEMO, fixed funded wallet')
+            prep('transfer', '12,5'); r = execute()
+            assert r['comparison']['actualBefore'] == '500000000' and r['comparison']['actualAfter'] == '487500000'
+            assert r['comparison']['targetAfter'] == '12500000'
+            check('AC03: custom fractional transfer confirmed; source and destination measured')
+            prep('attack'); assert 'Nguy hiểm' in page.locator('.wallet-request').inner_text()
+            sends = report['sends']; button('Chặn & huỷ giao dịch').click()
+            assert report['sends'] == sends; check('AC04: protected cancel sends nothing')
+            prep('attack'); r = execute()
+            assert r['protected'] and r['decision']['action'] == 'override' and r['decision']['level'] == 'danger'
+            assert page.get_by_role('switch', name='Bảo vệ bằng Custos').is_checked()
+            assert r['comparison']['balance'] == 'match' and r['comparison']['authority'] == 'match'
+            assert '0,0 DEMO' in page.locator('.wallet-rights').inner_text()
+            check('AC05: red override stays protected; transfer and changed owner confirmed')
+            page.screenshot(path=str(out/'01-red-override.png'), full_page=True)
+        if args.tu <= 'B':
+            setup(); dat_bao_ve(False)
+            prep('transfer', '3'); execute(); check('unprotected normal transfer confirmed')
+            prep('attack'); sends = report['sends']; button('Huỷ giao dịch').click(); assert report['sends'] == sends
+            check('AC07: unprotected cancel sends nothing')
+            prep('attack'); r = execute(); assert not r['protected'] and r['comparison']['authority'] == 'match'
+            check('AC06: unprotected attack confirmed with separate consent')
+        if args.tu <= 'C':
+            setup(); dat_bao_ve(True)
+            prep('Trao quyền kiểm soát'); r = execute()
+            assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
+            assert r['comparison']['authority'] == 'match'; check('AC08: owner-only changes authority without token transfer')
+        if args.tu <= 'D':
+            setup()
+            prep('Cấp quyền sử dụng token', '30'); r = execute()
+            assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
+            assert r['observation']['allowance'] == '30000000'; check('AC09: approve grants allowance; balance unchanged')
+            prep('Ứng dụng sử dụng quyền', '12'); r = execute()
+            assert r['signer'] != report['wallet'] and r['comparison']['actualAfter'] == '488000000'
+            check('AC10: delegate signs its own transaction; owner does not sign')
+            prep('Thu hồi quyền đã cấp'); r = execute()
+            assert r['observation']['delegate'] is None and r['observation']['allowance'] == '0'
+            check('AC11: revoke confirmed on chain')
+            page.screenshot(path=str(out/'02-revoke.png'), full_page=True)
+            page.locator('#scenario-amount').fill('1')
+            page.locator('.wallet-scenarios').get_by_role('button', name=re.compile('^Ứng dụng sử dụng quyền')).click(); idle(error=True)
+            assert 'không có quyền' in page.locator('[role=alert]').inner_text()
+            check('AC11: delegate cannot prepare another spend after revoke')
+        if args.tu in ('E', 'F'):
+            setup()
+        if args.tu <= 'E':
+            prep('Gửi kèm chuyển thêm', '2'); r = execute()
+            # Tương đối với số dư trước: phân đoạn E bắt đầu ở phiên mới (500), không ở 488.
+            assert int(r['comparison']['actualAfter']) == int(r['comparison']['actualBefore']) - 3_000_000
+            check('S06: requested 2 plus additional 1 DEMO actually transfers; verdict not forced')
         prep('Trao quyền đóng tài khoản'); r = execute(); assert r['observation']['closeAuthority'] is not None
-        prep('transfer', '485'); execute()
+        so = int(r['comparison']['actualAfter'])
+        prep('transfer', str(so // 10**6) if so % 10**6 == 0 else f'{so / 10**6:.6f}'.rstrip('0').replace('.', ',')); execute()
         prep('Ứng dụng đóng tài khoản rỗng'); r = execute(); assert r['observation']['closed']
         check('S07: close authority used only after emptying token account; actor receives rent')
         page.screenshot(path=str(out/'03-close.png'), full_page=True)

@@ -20,9 +20,9 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { Connection, VersionedTransaction, type PublicKey } from "@solana/web3.js";
+import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { extractFacts } from "../../packages/core/src/l1/fetch.ts";
-import { khoaRequest, locNguon, type BanGhi, type Fixture, type Method } from "./replay-rpc.ts";
+import { connGhi, locNguon, type BanGhi, type Fixture } from "./replay-rpc.ts";
 
 const SEED = "data/seed";
 const RA = "data/benchmark/rpc";
@@ -33,111 +33,7 @@ if (process.env["CUSTOS_CAPTURE"] !== "1") {
   process.exit(2);
 }
 
-/**
- * Chuyển giá trị trả về của RPC thành thứ JSON giữ được.
- *
- * `Buffer` và `bigint` là hai thứ mất trắng qua `JSON.stringify` — `Buffer` thành
- * một object `{type:"Buffer",data:[...]}` khổng lồ, `bigint` thì ném lỗi. Mã hoá
- * tường minh để `replay-rpc.ts` hồi sinh đúng.
- *
- * `PublicKey` thành `{__pubkey: "<base58>"}` — **không** thành chuỗi trần.
- *
- * Đây là một lỗi đã mắc và phải đo mới thấy. Bản đầu mã hoá `PublicKey` thành chuỗi
- * base58; replay trả về chuỗi đó, và `parseTokenAccount` gọi `info.owner.toBase58()`
- * trên một `string` → **19/19 mẫu lỗi**.
- *
- * Không sửa được bằng cách đoán theo tên trường, vì web3.js dùng hai kiểu khác nhau
- * cho cùng một tên:
- *
- *   · `AccountInfo.owner`                  → `PublicKey`  (index.d.ts:3019)
- *   · `SimulatedTransactionAccountInfo.owner` → `string`   (index.d.ts:2219)
- *
- * Nên phải ghi lại **kiểu thật tại thời điểm capture**, và đó là việc của chỗ này.
- */
-function deJson(x: unknown): unknown {
-  if (x === null || x === undefined) return x ?? null;
-  if (typeof x === "bigint") return `${x}`;
-  if (Buffer.isBuffer(x)) return { __buffer: x.toString("base64") };
-  if (x instanceof Uint8Array) return { __buffer: Buffer.from(x).toString("base64") };
-  if (Array.isArray(x)) return x.map(deJson);
-  if (typeof x === "object") {
-    const o = x as Record<string, unknown>;
-    // `PublicKey` có `toBase58`; nhận diện theo hành vi, không theo `instanceof`
-    // (web3.js có thể được nạp hai lần qua hai đường import khác nhau).
-    if (typeof o["toBase58"] === "function") return { __pubkey: (o["toBase58"] as () => string)() };
-    return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, deJson(v)]));
-  }
-  return x;
-}
-
-/** Bọc `Connection` thật, ghi lại mọi lượt gọi mà `extractFacts` thực hiện. */
-function connGhi(that: Connection, banGhi: BanGhi[]): unknown {
-  const ghi = async (method: Method, thamSo: unknown, chay: () => Promise<unknown>) => {
-    const khoa = khoaRequest(method, thamSo);
-    // Cùng request gọi hai lần thì ghi một lần — fixture là bảng tra, không phải nhật ký.
-    const daCo = banGhi.some((b) => b.khoa === khoa);
-    try {
-      const kq = await chay();
-      if (!daCo) banGhi.push({ method, khoa, thamSo, ketQua: deJson(kq) });
-      return kq;
-    } catch (e) {
-      /*
-       * GHI CẢ LỖI — bản đầu chỉ ghi khi `chay()` thành công.
-       *
-       * Đo được: `R09-neg` và `R10-pos` có fixture **không chứa bản ghi
-       * `simulateTransaction` nào**. Lý do là RPC ném (giao dịch chưa ký, ALT không
-       * tồn tại), `await chay()` ném theo, và dòng `banGhi.push` bên dưới không bao
-       * giờ chạy.
-       *
-       * Hậu quả: replay không có gì để trả về cho request đó, nên nó ném
-       * `ThieuFixture` — và `extractFacts` nuốt thành `simulationError`. Fixture
-       * "thiếu một cách im lặng" biến thành Facts trông hợp lệ.
-       *
-       * Một lỗi RPC **là** một response hợp lệ để ghi lại: nó chính là thứ mạng đã
-       * trả về lúc đó, và replay phải tái lập được đúng nó.
-       */
-      if (!daCo) {
-        banGhi.push({
-          method,
-          khoa,
-          thamSo,
-          ketQua: { __loi: e instanceof Error ? e.message : String(e) },
-        });
-      }
-      throw e;
-    }
-  };
-
-  return {
-    getSignaturesForAddress: (dc: PublicKey, cfg: unknown) =>
-      ghi("getSignaturesForAddress", { dc: dc.toBase58(), cfg }, () =>
-        that.getSignaturesForAddress(dc, cfg as never),
-      ),
-    getMultipleAccountsInfo: (keys: PublicKey[]) =>
-      ghi("getMultipleAccountsInfo", { keys: keys.map((k) => k.toBase58()) }, () =>
-        that.getMultipleAccountsInfo(keys),
-      ),
-    getFeeForMessage: (msg: { serialize(): Uint8Array }) =>
-      ghi(
-        "getFeeForMessage",
-        { msg: Buffer.from(msg.serialize()).toString("base64") },
-        () => that.getFeeForMessage(msg as never),
-      ),
-    getAddressLookupTable: (addr: PublicKey) =>
-      ghi("getAddressLookupTable", { addr: addr.toBase58() }, () =>
-        that.getAddressLookupTable(addr),
-      ),
-    simulateTransaction: (tx: VersionedTransaction, cfg: { accounts?: { addresses?: string[] } }) =>
-      ghi(
-        "simulateTransaction",
-        {
-          msg: Buffer.from(tx.message.serialize()).toString("base64"),
-          addresses: cfg.accounts?.addresses ?? [],
-        },
-        () => that.simulateTransaction(tx, cfg as never),
-      ),
-  };
-}
+// Bộ ghi dùng chung `connGhi` (scripts/replayFixture.ts) — cùng khoá với replay.
 
 const mf = JSON.parse(readFileSync("data/benchmark/manifest.json", "utf8")) as {
   mau: Array<{ id: string; tang: string[]; nguonGoc: string; tep: { giaoDich?: { duong: string } } }>;

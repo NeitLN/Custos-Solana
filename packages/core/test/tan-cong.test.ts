@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { dungGiaoDichTanCong, dungGiaoDichLanhTinh, MEMO_PROGRAM } from "../../../scripts/tan-cong.ts";
 import { decodeInstruction } from "../src/l1/decode.ts";

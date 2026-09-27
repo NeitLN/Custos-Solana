@@ -2,8 +2,9 @@ import { Trace } from "./Trace.tsx";
 import type { InspectResult } from "@custos-solana/types";
 import { chiLaThongTin } from "@custos-solana/core";
 import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
+import { nhomHauQua, taiSanDoi, type DongDiff } from "./nhomHauQua.ts";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
@@ -85,11 +86,29 @@ export type BoiCanh = {
   cluster: string;
   /** Host của endpoint — bỏ path/query vì credential nằm ở đó. */
   nguon: string;
-  /** `live` = vừa gọi RPC thật; `mock` = đọc file dựng sẵn. Không được lẫn. */
-  kieu: "live" | "mock";
+  /**
+   * `live` = vừa gọi RPC thật; `replay` = engine vừa chạy lại trên phản hồi RPC đã ghi
+   * (CK-02); `mock` = đọc một kết quả dựng sẵn. Ba thứ khác nhau, không được lẫn.
+   */
+  kieu: "live" | "mock" | "replay";
   /** Tên file mock, chỉ có khi `kieu === "mock"`. */
   tenMock?: string;
+  /** Thời điểm ghi dữ liệu, chỉ có khi `kieu === "replay"`. */
+  ghiLuc?: string;
 };
+
+/** Một dòng hậu quả — y như bảng cũ, chỉ tách ra để hai khối dùng chung. */
+function DongHauQua({ d }: { d: DongDiff }) {
+  const mau = MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700";
+  return (
+    <div className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5">
+      <span className={`text-[13px] ${mau}`}>{d.label}</span>
+      <span className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${mau}`}>
+        {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
+      </span>
+    </div>
+  );
+}
 
 export function CanhBao({
   ketQua,
@@ -98,6 +117,7 @@ export function CanhBao({
   choPhepKy = true,
   boiCanh,
   nguonChu,
+  moBangChung = 0,
 }: {
   ketQua: InspectResult;
   onHuy: () => void;
@@ -114,8 +134,15 @@ export function CanhBao({
    * nhãn "live" là nói quá về sản phẩm.
    */
   nguonChu?: "moHinh" | "tatDinh" | "moHinhLoi" | "chuaCauHinh";
+  /**
+   * Tín hiệu MỞ phần dữ kiện (bước 3 của luồng có hướng dẫn, CK-03). Mỗi lần số này
+   * tăng, khối "Chi tiết kỹ thuật" mở ra và nhận focus. Không đóng lại thứ người dùng
+   * đang đọc, không đổi gì khác của thẻ.
+   */
+  moBangChung?: number;
 }) {
   const { analyzed, total, unverifiedPrograms } = ketQua.coverage;
+  const hq = nhomHauQua(ketQua.diff);
 
   // HAI LOẠI "Cần xem kỹ" rất khác nhau, và gộp chúng lại là cách nhanh nhất
   // tạo mệt mỏi cảnh báo:
@@ -130,6 +157,20 @@ export function CanhBao({
   // `level` KHÔNG đổi — fail-safe giữ nguyên. Chỉ cách nói đổi.
   const [moRong, setMoRong] = useState(false);
   const [moKyThuat, setMoKyThuat] = useState(false);
+  const nutKyThuat = useRef<HTMLButtonElement | null>(null);
+  /*
+   * CHỈ LẦN BẤM MỚI (code review 27/09). Bộ đếm không bao giờ về 0, và thẻ được gắn lại ở
+   * mỗi lượt kiểm — so với "> 0" thì sau một lần bấm, MỌI kết quả sau đều tự mở phần kỹ
+   * thuật và giành focus. Nhớ giá trị lúc gắn; chỉ phản ứng khi nó tăng sau đó.
+   */
+  const moBangChungLucGan = useRef(moBangChung);
+  useEffect(() => {
+    if (moBangChung > moBangChungLucGan.current) {
+      moBangChungLucGan.current = moBangChung;
+      setMoKyThuat(true);
+      nutKyThuat.current?.focus();
+    }
+  }, [moBangChung]);
   // "Chưa đọc hiểu hết" CHỈ đúng khi coverage THẬT SỰ còn khuyết.
   //
   // Bản trước thiếu vế `analyzed < total`, nên một giao dịch coverage 1/1 (đọc hiểu
@@ -310,25 +351,38 @@ export function CanhBao({
                 trước <span className="px-0.5">→</span> sau
               </span>
             </div>
-            <div className="divide-y divide-slate-100">
-              {ketQua.diff.map((d, i) => (
-                <div
-                  key={i}
-                  className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5"
-                >
-                  <span
-                    className={`text-[13px] ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}
-                  >
-                    {d.label}
-                  </span>
-                  <span
-                    className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700"}`}
-                  >
-                    {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
-                  </span>
+            {/*
+              HAI KHỐI: TÀI SẢN / QUYỀN KIỂM SOÁT — CK-04.
+              Token còn nguyên trong tài khoản KHÔNG có nghĩa quyền đối với nó còn
+              nguyên. Trộn chung một bảng thì "số dư không đổi" đọc như "không có gì".
+              Khối trống nói "không thấy trong phần đã đọc hiểu", không nói "không có":
+              phần chưa đọc hiểu vẫn có thể chứa thay đổi.
+            */}
+            {(
+              [
+                ["TÀI SẢN", hq.taiSan, taiSanDoi(hq.taiSan) ? null : "Không thấy số dư token hay SOL nào đổi trong phần đã đọc hiểu, ngoài phí."],
+                ["QUYỀN KIỂM SOÁT", hq.quyen, "Không thấy quyền nào đổi trong phần đã đọc hiểu."],
+              ] as const
+            ).map(([ten, dong, khiTrong]) => (
+              <section key={ten} aria-label={`Hậu quả nếu ký — ${ten.toLowerCase()}`} className="border-t border-slate-100">
+                <h4 className="px-4 pt-2.5 text-[11px] font-semibold tracking-wide text-slate-500 sm:px-5">{ten}</h4>
+                {khiTrong && (dong.length === 0 || ten === "TÀI SẢN") && (
+                  <p className="px-4 pb-1 pt-1 text-[12.5px] text-slate-600 sm:px-5">{khiTrong}</p>
+                )}
+                <div className="divide-y divide-slate-100">
+                  {dong.map((d, i) => (
+                    <DongHauQua key={i} d={d} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </section>
+            ))}
+            {hq.khac.length > 0 && (
+              <section aria-label="Hậu quả nếu ký — phần khác" className="divide-y divide-slate-100 border-t border-slate-100">
+                {hq.khac.map((d, i) => (
+                  <DongHauQua key={i} d={d} />
+                ))}
+              </section>
+            )}
           </div>
         )}
 
@@ -407,6 +461,7 @@ export function CanhBao({
             thứ ba mức sinh ra để tách. Ai muốn tự kiểm chứng thì bấm một cái. */}
         <div className="px-4 py-3 sm:px-5">
           <button
+            ref={nutKyThuat}
             type="button"
             aria-expanded={moKyThuat}
             onClick={() => setMoKyThuat((v) => !v)}
@@ -431,7 +486,9 @@ export function CanhBao({
                     <dd className="break-all font-semibold text-slate-800">
                       {boiCanh.kieu === "live"
                         ? "chạy thật — vừa gọi RPC"
-                        : `dữ liệu mock “${boiCanh.tenMock ?? "?"}” — KHÔNG phải kết quả thật`}
+                        : boiCanh.kieu === "replay"
+                          ? `phát lại — engine vừa chạy trên phản hồi RPC ghi lúc ${boiCanh.ghiLuc ?? "?"}; KHÔNG phải giao dịch Devnet mới`
+                          : `dữ liệu mock “${boiCanh.tenMock ?? "?"}” — KHÔNG phải kết quả thật`}
                     </dd>
                   </div>
                   <div className="flex flex-wrap gap-x-2">

@@ -21,8 +21,12 @@ import type { Facts } from "@custos-solana/core";
  * bảo nó làm. Đó là ca xấu nhất, và là ca đáng kiểm.
  */
 
-/** Facts tối thiểu, đủ để L2 và L3 chạy. Số liệu thật, không phải chỗ trống. */
-function dungFacts(kyHieuDoc: string): Facts {
+/**
+ * Facts tối thiểu, đủ để L2 và L3 chạy. Số liệu thật, không phải chỗ trống.
+ * Chuỗi độc KHÔNG nằm trong Facts: nó đi vào qua `kyHieuToken` của tuỳ chọn — đúng
+ * đường ví tích hợp đưa ký hiệu token đọc từ metadata tới L3.
+ */
+function dungFacts(): Facts {
   const NGUOI_KY = "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF";
   const KE_TAN_CONG = "HaVREgPPBxHHJfUWV7yVPqU8epvoT1f5QGSNP9bAEXTT";
   return {
@@ -74,7 +78,7 @@ test("mô hình BỊ CHIẾM hoàn toàn ⇒ câu trấn an KHÔNG tới ngườ
 
   const dienGiai = dienGiaiBangMoHinh(moHinhDaBiChiem);
   const kq = await dienGiai(
-    dungFacts(KY_HIEU_DOC),
+    dungFacts(),
     ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"],
     "vi",
     { kyHieuToken: { "43JGWQPDygFB8FgQ1ifoLoCeKH75d6vMTAS88SBK4tjd": KY_HIEU_DOC } },
@@ -97,7 +101,7 @@ test("mô hình bịa địa chỉ trong ký hiệu độc ⇒ bị chặn", asy
     });
 
   const kq = await dienGiaiBangMoHinh(moHinhBia)(
-    dungFacts(KY_HIEU_DOC),
+    dungFacts(),
     ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"],
     "vi",
     { kyHieuToken: { "43JGWQPDygFB8FgQ1ifoLoCeKH75d6vMTAS88SBK4tjd": KY_HIEU_DOC } },
@@ -122,7 +126,7 @@ test("ký hiệu token độc không hiện nguyên văn trong câu tất địn
   };
 
   const kq = await dienGiaiBangMoHinh(moHinhIm)(
-    dungFacts(KY_HIEU_DOC),
+    dungFacts(),
     ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"],
     "vi",
     { kyHieuToken: { "43JGWQPDygFB8FgQ1ifoLoCeKH75d6vMTAS88SBK4tjd": KY_HIEU_DOC } },

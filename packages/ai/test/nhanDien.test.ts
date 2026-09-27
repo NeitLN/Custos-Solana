@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { Facts, TokenAccountFact, AccountFact, MintFact } from "@custos-solana/core";
+import type { Facts, TokenAccountFact, MintFact } from "@custos-solana/core";
 import { REASON } from "@custos-solana/core";
 import { nhanDien, dienGiaiKhongAI } from "../src/index.ts";
 

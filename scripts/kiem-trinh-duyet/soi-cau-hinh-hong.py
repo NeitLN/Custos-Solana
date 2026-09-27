@@ -56,7 +56,10 @@ async def chay(sao: Path) -> list[str]:
             chu = (await pg.inner_text("body")).strip()
             co_thong_bao = "Cấu hình demo lỗi" in chu or "Chưa dựng hiện trường" in chu
             # Dữ liệu hỏng KHÔNG được tạo ra thao tác ký nào.
-            so_nut_ky = await pg.locator("button:has-text('Ký')").count()
+            # Chỉ đếm nút HIỂN THỊ: màn thực thi được giữ gắn trong DOM (ẩn, nút bị vô
+            # hiệu hoá) để không mất phiên, và 9 nút "Ký" của nó từng làm bài này đỏ
+            # dù người dùng không thấy nút ký nào (27/09).
+            so_nut_ky = await pg.locator("button:has-text('Ký'):visible").count()
 
             dat = len(chu) > 40 and co_thong_bao and so_nut_ky == 0
             print(

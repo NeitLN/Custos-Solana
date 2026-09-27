@@ -1,7 +1,5 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { locDongNhatKy } from "../src/che-nhay-cam.ts";
 
 /**

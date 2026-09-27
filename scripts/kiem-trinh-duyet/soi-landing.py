@@ -28,6 +28,11 @@ if sys.platform == "win32":
 # chạy nó khi preview ở cổng khác sẽ kiểm nhầm server — hoặc ERR_CONNECTION_REFUSED
 # như lần đầu tôi chạy lại sau khi chuyển sang 5198.
 CONG = int(sys.argv[1]) if len(sys.argv) > 1 else 5198
+
+def gon(s: str) -> str:
+    """Gộp mọi khoảng trắng (kể cả ngắt dòng của <br>) thành một dấu cách."""
+    return " ".join(s.split())
+
 GOC = f"http://localhost:{CONG}/Custos-Solana"
 TRANG = f"{GOC}/gioi-thieu.html"
 
@@ -95,7 +100,9 @@ async def main() -> None:
 
         h1 = await pg.locator("h1").all_inner_texts()
         ck("đúng MỘT h1", len(h1) == 1, f"{len(h1)} h1")
-        ck("h1 đúng nội dung", "Hiểu điều bạn sắp ký" in (h1[0] if h1 else ""), (h1[0] if h1 else "")[:40])
+        # `inner_text` giữ ngắt dòng của <br> trong tiêu đề ("Hiểu điều" xuống dòng
+        # "bạn sắp ký.") — so trên chữ đã gộp khoảng trắng, không trên cách trình bày.
+        ck("h1 đúng nội dung", "Hiểu điều bạn sắp ký" in gon(h1[0] if h1 else ""), (h1[0] if h1 else "")[:40])
 
         for tag in ("header", "nav", "main", "footer"):
             ck(f"có <{tag}>", await pg.locator(tag).count() >= 1)
@@ -178,7 +185,7 @@ async def main() -> None:
         await pg.get_by_role("button", name="English").click()
         await pg.wait_for_timeout(300)
         tEN = await pg.locator("body").inner_text()
-        ck("EN: h1 đã dịch", "Understand what" in tEN)
+        ck("EN: h1 đã dịch", "Understand what" in gon(tEN))
         ck("EN: A/B đã dịch", "Transfer and change owner" in tEN)
         ck("EN: FAQ đã dịch", "Is Custos a new wallet?" in tEN)
         ck("EN: giữ nguyên lực câu giới hạn", "does not guarantee that a transaction is safe" in tEN)
@@ -282,7 +289,7 @@ async def main() -> None:
         ck("mobile: VI/EN nằm trong menu", await pg.get_by_role("button", name="English").count() == 1)
         await pg.get_by_role("button", name="English").last.click()
         await pg.wait_for_timeout(350)
-        ck("mobile: đổi được sang EN từ menu", "Understand what" in await pg.locator("h1").inner_text())
+        ck("mobile: đổi được sang EN từ menu", "Understand what" in gon(await pg.locator("h1").inner_text()))
         ck(
             "mobile EN: vẫn không tràn ngang",
             await pg.evaluate(
@@ -295,8 +302,10 @@ async def main() -> None:
         # ── H · Hồi quy: ví, Inspector, số liệu ──────────────────────────────
         print("\nH · Hồi quy các trang cũ")
         for duong, ten, mong in [
-            ("/", "ví mẫu", "Custos Wallet"),
-            ("/soi.html", "Inspector", "Kiểm một giao dịch"),
+            # Neo vào chữ của khung làm việc, không vào tiêu đề thương hiệu: cả hai đã
+            # đổi theo đợt thiết kế ("Custos Wallet", "Kiểm một giao dịch").
+            ("/", "ví mẫu", "Ví mẫu tích hợp Custos SDK"),
+            ("/soi.html", "Inspector", "Giao dịch cần kiểm tra"),
             ("/so-lieu.html", "số liệu", "Custos"),
         ]:
             ctx = await b.new_context(viewport={"width": 1280, "height": 900})

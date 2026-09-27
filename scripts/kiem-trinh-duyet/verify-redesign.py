@@ -101,7 +101,8 @@ with sync_playwright() as p:
             page.goto(BASE+f'?mock={severity}&khongkhoa=1', wait_until='networkidle')
             expect(page.get_by_text(f'Đang xem dữ liệu mock "{severity}"', exact=False)).to_be_visible()
             page.get_by_role('button', name='Nhận quà tặng', exact=False).click()
-            expect(page.locator('.empty-review')).to_have_count(0)
+            # `:visible`: màn thực thi được giữ gắn trong DOM (ẩn) và có `.empty-review` riêng.
+            expect(page.locator('.empty-review:visible')).to_have_count(0)
             layout(page, f'wallet-{severity}-{width}')
             audit(page, f'wallet-{severity}-{width}')
             page.screenshot(path=str(OUT/f'wallet-{severity}-{width}.png'), full_page=True)

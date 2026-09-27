@@ -1,7 +1,6 @@
 import type { DiffEntry } from "@custos-solana/types";
 import { quyenRutMoRong, type Facts } from "./facts.ts";
 import type { RuleHit, BangChung } from "./l2/rules.ts";
-import { NGUONG_SOL_PHAN_TRAM } from "./constants.ts";
 import { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);

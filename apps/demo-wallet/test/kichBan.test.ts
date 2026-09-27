@@ -210,12 +210,18 @@ test("ca thiếu dữ liệu: người trả phí là ví có SOL trong hiện t
 test("khongKhaiNguoiDung: đúng ca thiếu dữ liệu, và App.tsx đọc nó từ sổ", () => {
   const coCo = KICH_BAN.filter((k) => k.khongKhaiNguoiDung).map((k) => k.nhom);
   assert.deepEqual(coCo, ["thieuDuLieu"]);
-  const ma = readFileSync("apps/demo-wallet/src/App.tsx", "utf8")
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\/\/.*$/gm, "");
-  assert.ok(ma.includes("khongKhaiNguoiDung"), "App.tsx không đọc cờ khongKhaiNguoiDung");
-  assert.ok(!/nguoiDung:\s*ht\.nanNhan,/.test(ma.replace(/\{ nguoiDung: ht\.nanNhan \}/g, "")),
-    "App.tsx còn khai cứng nguoiDung ngoài hàm khaiNguoiDung");
+  const boChu = (f: string) =>
+    readFileSync(f, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  /*
+   * Từ CK-02 quyết định khai `nguoiDung` nằm ở `tuyChonInspectKichBan` — MỘT hàm cho cả
+   * ví lẫn script ghi fixture, để phát lại đi đúng đường của lượt trực tiếp. Canh cả hai
+   * đầu: hàm đọc cờ từ sổ, và App gọi hàm đó chứ không tự dựng tuỳ chọn.
+   */
+  const ham = boChu("apps/demo-wallet/src/replayKichBan.ts");
+  assert.ok(ham.includes("khongKhaiNguoiDung"), "tuyChonInspectKichBan không đọc cờ khongKhaiNguoiDung");
+  const ma = boChu("apps/demo-wallet/src/App.tsx");
+  assert.match(ma, /tuyChonInspectKichBan\(kb, htDung\)/, "App.tsx không dựng tuỳ chọn inspect qua hàm dùng chung");
+  assert.ok(!/nguoiDung:\s*ht(Dung)?\.nanNhan/.test(ma), "App.tsx còn khai cứng nguoiDung ngoài hàm dùng chung");
 });
 
 /** Kịch bản đổi chủ phải nhắm vào ATA CỦA NẠN NHÂN, nếu không luật 1 bỏ qua. */

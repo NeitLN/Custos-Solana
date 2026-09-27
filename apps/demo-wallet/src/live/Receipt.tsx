@@ -1,4 +1,5 @@
 import { dinhDangSo } from "@custos-solana/core";
+import { sha256Hex } from "../../../../packages/core/src/sha256.ts";
 import { DECIMALS } from "./session.ts";
 import { nhanDoiChieuQuyen, type LiveReceipt } from "./receipt.ts";
 import { SCENARIOS } from "./scenarios.ts";
@@ -212,6 +213,16 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
         <summary>Signature và tài khoản đầy đủ</summary>
         <p>
           Signature <code>{r.signature}</code>
+        </p>
+        {/*
+          MESSAGE ĐÃ ĐỒNG Ý = MESSAGE ĐÃ GHI NHẬN? — CK-05. Dấu vân tay là SHA-256 của
+          message (base64) mà người dùng đồng ý ký; đối chiếu với message trong metadata
+          Devnet. Chỉ nói "trùng" khi đọc được metadata — chưa đọc thì là chưa rõ.
+        */}
+        <p>
+          Dấu vân tay message đã đồng ý ký <code>{sha256Hex(p.message).slice(0, 16)}</code>
+          {" · "}
+          {o ? (o.message === p.message ? "trùng message Devnet ghi nhận" : "KHÁC message Devnet ghi nhận") : "chưa đọc được message Devnet ghi nhận"}
         </p>
         <p>
           Tài khoản nguồn <code>{p.source}</code>

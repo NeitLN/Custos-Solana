@@ -107,10 +107,22 @@ async def main() -> None:
                 """() => {
                   const hero = document.querySelector('.lg-hero, [data-hero]');
                   if (!hero) return { loi: 'không tìm thấy hero' };
+                  /*
+                   * Lớp TRANG TRÍ thuần được bỏ qua — nhưng chỉ khi đủ cả ba: nằm trong
+                   * khối `aria-hidden`, không nhận chuột, và không mang chữ. Quầng sáng
+                   * `.cine-light` của cảnh hero (27/09) là radial-gradient gần trong suốt:
+                   * `elementFromPoint` trên mọi link/nút của hero đều trúng đúng phần tử,
+                   * nên nó không che gì. Một chip CÓ CHỮ đè tiêu đề (ca UI-03) vẫn bị bắt
+                   * dù nằm trong khối nào.
+                   */
+                  const trangTri = e => !!e.closest('[aria-hidden="true"]')
+                       && getComputedStyle(e).pointerEvents === 'none'
+                       && !(e.textContent || '').trim();
                   const abs = [...hero.querySelectorAll('*')].filter(
                     e => getComputedStyle(e).position === 'absolute'
                        && e.getBoundingClientRect().width > 0
-                       && !e.hasAttribute('aria-hidden'));
+                       && !e.hasAttribute('aria-hidden')
+                       && !trangTri(e));
                   const chu = [...hero.querySelectorAll('h1,h2,h3,dt,dd,p,span,a,button')]
                     .filter(e => (e.textContent || '').trim().length > 1
                               && e.getBoundingClientRect().width > 0

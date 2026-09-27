@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { DEMO_FAUCET_URL } from "../../../scripts/demo-wallet-config.ts";
 import { dinhDangSo, inspect } from "@custos-solana/core";
 import { dienGiaiBangMoHinh } from "@custos-solana/ai";
@@ -12,7 +12,9 @@ import { CanhBao } from "./CanhBao.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { WalletIcon, SendIcon, GiftIcon, ShieldIcon, CopyIcon } from "./Icons.tsx";
 import { coAiKhong, dungGoiQuaServer } from "./goiAiQuaServer.ts";
-import { LiveSession, canBoQua } from "./live/session.ts";
+import { LiveSession, canBoQua, datDuPhongLive } from "./live/session.ts";
+import { moTaLoiLive } from "./live/loiRpc.ts";
+import { docHienTruong } from "./hienTruong.ts";
 import { Receipt, token, short, explorer } from "./live/Receipt.tsx";
 
 const STORAGE = "custos.live-receipt.v1";
@@ -44,6 +46,11 @@ export function WalletExecution({
     () => new LiveSession(undefined, inspect, undefined, (...args) => interpreter.current()(...args)),
   );
   const [view, setView] = useState(session.view);
+  // RPC dự phòng của hiện trường (CK-01) — chỉ cho lệnh ĐỌC; gửi vẫn đi endpoint chính.
+  useEffect(() => {
+    // Kể cả khi không tải được hiện trường: bản DEV vẫn có `VITE_RPC_DU_PHONG` để kiểm.
+    void docHienTruong().then((ht) => datDuPhongLive(ht?.rpcDuPhong));
+  }, []);
   const [cache] = useState(() => {
     try {
       return new PublicSessionCache(localStorage, sessionStorageKey(session.view.wallet));
@@ -169,7 +176,7 @@ export function WalletExecution({
           "Trình duyệt cần hỗ trợ Web Locks trên HTTPS hoặc localhost để tránh hai tab cùng ký.",
         );
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(moTaLoiLive(e instanceof Error ? e.message : String(e)));
     }
   };
   const cancel = () => {

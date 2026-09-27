@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-26T16:09:37.661Z",
+  "sinhLuc": "2026-09-27T15:07:39.333Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -33,7 +33,7 @@
     "soBayChanDuoc": 13,
     "soDoiChung": 3,
     "soDoiChungQua": 3,
-    "moHinhThat": "đã đo",
+    "moHinhThat": "BLOCKED_BY_SECRET",
     "liveGanNhat": "đã đo"
   },
   "nguoiMua": 0,
@@ -66,7 +66,7 @@
     }
   },
   "test": {
-    "pass": 1136,
+    "pass": 1201,
     "fail": 0
   },
   "hieuNang": {

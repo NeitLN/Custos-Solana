@@ -20,8 +20,6 @@
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { danhGia } from "../packages/core/src/l2/evaluate.ts";
-import { dinhDangSo, dungBangChenhLech } from "../packages/core/src/diff.ts";
-import type { Facts } from "../packages/core/src/facts.ts";
 // JSON không có BigInt. `giaiDongBangFacts` là bộ hồi sinh dùng chung với bộ test
 // dataset — tự viết bộ thứ hai là mở đường cho hai bản đọc cùng một file khác nhau.
 import { giaiDongBangFacts } from "../packages/core/src/facts-io.ts";
@@ -29,6 +27,12 @@ import { dienGiaiKhongAI, boiThoiHan } from "../packages/ai/src/index.ts";
 import { dienGiaiBangMoHinh, type GoiMoHinh } from "../packages/ai/src/moHinh.ts";
 
 const THAT = process.argv.includes("--that");
+/*
+ * `--thu=N` — LƯỢT THỬ CHI PHÍ: chỉ N mẫu đầu, in số token thật rồi DỪNG, không ghi biên
+ * bản. Dùng để biết một lượt tốn bao nhiêu trước khi chạy cả bộ trên ngân sách giới hạn;
+ * một lượt thử không được thay kết quả đo đầy đủ trong `liveGanNhat`.
+ */
+const THU = Number(process.argv.find((a) => a.startsWith("--thu="))?.slice(6) ?? 0);
 const KHOA = process.env["ANTHROPIC_API_KEY"];
 
 type Mau = { id: string; facts: string; cuc: string; nguonGoc: string; luat: number | null };
@@ -313,6 +317,15 @@ async function main() {
   if (THAT && !KHOA) {
     console.error("✖ --that cần ANTHROPIC_API_KEY trong environment. Không dán khoá vào dòng lệnh.");
     process.exit(1);
+  }
+  if (THAT && KHOA && THU > 0) {
+    const thu = await doMoHinhThat(seed.mau.slice(0, THU));
+    console.log(
+      `
+LƯỢT THỬ ${THU} mẫu (KHÔNG ghi biên bản): token vào ${thu["tokenVao"]} · token ra ${thu["tokenRa"]} · ` +
+        `trung bình/mẫu ${Math.round(Number(thu["tokenVao"]) / THU)} vào + ${Math.round(Number(thu["tokenRa"]) / THU)} ra`,
+    );
+    process.exit(0);
   }
   if (THAT && KHOA) {
     moHinhThat = await doMoHinhThat(seed.mau);
