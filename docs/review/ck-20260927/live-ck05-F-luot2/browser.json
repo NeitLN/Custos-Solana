@@ -1,0 +1,170 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 2,
+  "checks": [],
+  "receipts": [
+    {
+      "signature": "43bLSz4SFxS3Ny7wzUF89VL25h3tUJ1oCd6du76FLYSTA8z4YsNXaB56ebVCYtV6ymWRow3tLWrehSqKo2hg3ii2",
+      "cluster": "devnet",
+      "kind": "close-authority",
+      "protected": true,
+      "prediction": {
+        "source": "59k3SfpfH1dhUXABYiKHbsGL6tioCYp7sFwYHTsWGaMg",
+        "mint": "EC8EyrN8TqnZZqMnnZtLTw4kT3JoV6AstwXBc5zWTKZJ",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "500000000",
+        "ownerAfter": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "message": "UsNssHBAY8QoYKsxZM7fE7PdHptXSzTkdFQWiZfTTYh9d7F1x6ohqkNscCe1N3v7bspiQhZyZgBYAhhxe6E3btUkg1oLu34qpvv84a1VWuzK48bZdAi6kGiiMhEinmmtKdP1ooupb1pMkHpPpsvdmiHcrz2fz3dTNTUA41m8zcjxRN1xRcQsdDoMcwwoSeUKpLEMKBZyLn4CPiiZ7vUatZTCrKMgpDibGMuT54289Jni7u9",
+        "target": "8dW7XapydQJ4HxjZGGmPsC3roz97uNWsLcornRuXgBDT",
+        "targetBefore": null,
+        "targetAfter": null,
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": "B2M1VkdAkGFHqJ8R3ooSviafk5ftwt9G6Lwb19zAvPuS"
+      },
+      "observation": {
+        "message": "UsNssHBAY8QoYKsxZM7fE7PdHptXSzTkdFQWiZfTTYh9d7F1x6ohqkNscCe1N3v7bspiQhZyZgBYAhhxe6E3btUkg1oLu34qpvv84a1VWuzK48bZdAi6kGiiMhEinmmtKdP1ooupb1pMkHpPpsvdmiHcrz2fz3dTNTUA41m8zcjxRN1xRcQsdDoMcwwoSeUKpLEMKBZyLn4CPiiZ7vUatZTCrKMgpDibGMuT54289Jni7u9",
+        "slot": 504825237,
+        "err": null,
+        "rightsAttributable": true,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "59k3SfpfH1dhUXABYiKHbsGL6tioCYp7sFwYHTsWGaMg",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "EC8EyrN8TqnZZqMnnZtLTw4kT3JoV6AstwXBc5zWTKZJ",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "EC8EyrN8TqnZZqMnnZtLTw4kT3JoV6AstwXBc5zWTKZJ",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          }
+        ],
+        "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "ownerSlot": 504825239,
+        "delegate": null,
+        "allowance": "0",
+        "closeAuthority": "B2M1VkdAkGFHqJ8R3ooSviafk5ftwt9G6Lwb19zAvPuS",
+        "closed": false,
+        "preLamports": [
+          9836937000,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9836932000,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "500000000",
+        "targetBefore": null,
+        "targetAfter": null,
+        "target": "unknown",
+        "delegate": "match",
+        "closeAuthority": "match",
+        "balance": "match",
+        "authority": "match"
+      },
+      "createdAt": "2026-09-27T15:16:10.334Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492076142,
+      "decision": {
+        "action": "override",
+        "level": "danger",
+        "aiAdvisory": "review_required",
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "requestId": 1,
+        "at": "2026-09-27T15:16:10.334Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    }
+  ],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "tu": "F",
+  "retries": [
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 1,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 2,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 4,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 5,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 1,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 2,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 4,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 5,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    }
+  ],
+  "passed": false,
+  "error": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+}

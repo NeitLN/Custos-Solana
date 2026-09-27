@@ -5,7 +5,8 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 
 | Roadmap | Tiền tố mã | Bảng |
 |---|---|---|
-| [docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md) — **đang thực hiện** | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
+| [docs/roadmap/ROADMAP-CUSTOS-CHUNG-KET.md](ROADMAP-CUSTOS-CHUNG-KET.md) — **đang thực hiện (27/09)** | `CK-` | [Bảng chung kết](#bảng-công-việc--roadmap-chung-kết-ck) |
+| [docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md) — đã thực hiện trước | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [docs/roadmap/ROADMAP-CLAUDE.md](../roadmap/ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |
 
 **Cập nhật 17/09/2026 (baseline CU-00):** HEAD `15f28b6`, **cây làm việc sạch**,
@@ -91,6 +92,38 @@ câu) và thêm **ba neo** `vi-du-tich-hop/README.md` vào `NEO_DONG_BO`.
 **Claim số bảy trôi:** `README.md` dòng 44 (bảng rubric Technical) giữ `inspect()`
 **664 ms** trong khi sáu chỗ khác đã 656 — cùng file với dòng 93 nói 656. Dòng đó
 không có mốc sync. Đã sửa số, thêm mốc và neo.
+
+## Bảng công việc — roadmap chung kết (CK-)
+
+Nguồn thẻ: [ROADMAP-CUSTOS-CHUNG-KET.md](ROADMAP-CUSTOS-CHUNG-KET.md) · báo cáo chạy thử
+[chung-ket-20260927/BAO-CAO.md](../review/chung-ket-20260927/BAO-CAO.md). Trạng thái dùng
+chung bộ nhãn của bảng TB. **Chưa commit** — mọi thay đổi CK nằm trên cây làm việc, chờ chủ
+dự án review.
+
+**Baseline CK-00 (27/09/2026):** HEAD `964363a` + thay đổi chưa commit của lượt "kiểm lỗi
+toàn dự án" (dọn import, 2 script, 6 probe). Node v24.12.0 · npm 11.6.2. `npm run check`
+đầu lượt: **1136 pass / 0 fail**; replay offline **29/29**. Máy này bị Devnet công cộng
+giới hạn đọc account theo IP (api.devnet, rpcpool treo `getAccountInfo`; onfinality 429) —
+mọi ô "live" dưới đây đo được hay không phụ thuộc điều đó, không phụ thuộc mã.
+
+| Thẻ | Trạng thái | Đã có (tái dùng) | Làm trong lượt này | Chưa kiểm / chặn |
+|---|---|---|---|---|
+| CK-00 | DONE | CU/TB, báo cáo 27/09 | Bảng này; phân loại đã có / sửa / mới | — |
+| CK-01 | VERIFY | `rpcDuPhong.ts` (đổi endpoint khi đọc) | Preflight 5 chặng chỉ đọc (`preflight.ts`: genesis theo từng endpoint → blockhash → ví → tài khoản nguồn → mô phỏng ca lành); ghi nguồn từng lượt đọc (`ghiNhan`, chỉ host); huỷ lượt cũ dừng cả vòng thử lại; **sửa lỗi thật**: phản hồi đến sau khi huỷ từng được trả như kết quả hợp lệ (test đỏ trước); lỗi JSON-RPC của endpoint trong HTTP 200 ⇒ chuyển, lỗi của yêu cầu ⇒ không; một lượt đọc trộn hai nhà cung cấp ⇒ bỏ, đọc lại một lần, vẫn trộn ⇒ `LoiNguonTron`; bản production chỉ nhận `hien-truong.json → rpcDuPhong` qua allowlist (https, không khoá, host Devnet công khai) — **không tự điền nhà cung cấp nào** | **Chủ dự án duyệt 27/09**: `rpcDuPhong` = rpcpool + onfinality public (genesis Devnet đã kiểm từng endpoint, không khoá); nối vào cả màn thực thi (`datDuPhongLive`). **Sửa lỗi thật từ nghiệm thu live**: lượt kiểm của phiên live không có hạn (treo >90 s) ⇒ `CAU_HINH_LIVE.hanKiemMs` 15 s, test đỏ trước; lỗi RPC hiện bằng tiếng Việt (`live/loiRpc.ts`). Chưa đo độ trễ live trên build trình diễn |
+| CK-02 | DONE | `replay-rpc.ts`, 29 fixture | Tách adapter chạy được trong trình duyệt (`scripts/replayFixture.ts`, replay 29/29 giữ nguyên khoá); `capture-kich-ban.ts` ghi fixture THEO KỊCH BẢN (một nguồn/lượt, không lượt dở, gộp không ghi đè); ví có nguồn "Dữ liệu đã ghi": engine thật chạy lại, 0 request mạng (đo trên trình duyệt), dải "PHÁT LẠI" luôn hiện, so với kết quả lúc ghi, thiếu lời gọi ⇒ báo, không gọi bù; thẻ lỗi đề nghị phát lại ĐÚNG ca thay cho mock cố định | **9/9 kịch bản có fixture trọn** (27/09, qua onfinality, mỗi lượt một nguồn); `replayKichBan.test.ts` xanh |
+| CK-03 | DONE | sổ `kichBan.ts` | `PhongKichBan.tsx`: "Thử có hướng dẫn — 3 bước" + "Tự chọn tình huống" nhóm tài sản / quyền / dữ liệu thiếu, ca đối chiếu ngay cạnh ca nguy hiểm; sửa hai nhãn thuật ngữ kiểm thử | Chưa có nghiên cứu người dùng — đây là đánh giá chuyên gia |
+| CK-04 | DOING | `CanhBao.tsx`, `Trace.tsx` | Hậu quả chia TÀI SẢN / QUYỀN KIỂM SOÁT (`nhomHauQua.ts`, test trên kết quả engine thật: chỉ đổi chủ ⇒ tài sản không đổi; approve ≠ đã chuyển); bước 3 mở dữ kiện | Copy địa chỉ đầy đủ ở phòng phân tích; bố cục máy chiếu |
+| CK-05 | VERIFY | session/policy/receipt đã có test | **Nghiệm thu live 27/09** ([biên bản](../review/ck-20260927/NGHIEM-THU-LIVE.md)): AC03 chuyển có Custos bật ✓ · AC04 huỷ không gửi ✓ · AC05 override ✓ trên chuỗi (nguồn giảm đúng nửa + đổi chủ; receipt tự động chưa đọc được) · Custos tắt: chuyển ✓, AC07 huỷ ✓, AC06 tấn công ✓ (số dư khớp, quyền "chưa rõ" theo thiết kế) | Receipt tự động của AC05 |
+| CK-06 | VERIFY | `live/scenarios.ts` | Live ✓: AC08 chỉ đổi chủ (số dư giữ nguyên) · AC09 cấp quyền 30 · AC10 actor tự ký, chủ ví không ký · AC11 thu hồi + actor bị chặn lần sau · S06 chuyển thêm 1 ngoài yêu cầu | S07 mới trao quyền đóng; chuyển hết + đóng chưa chạy |
+| CK-07 | BLOCKED_TECH | test hai tab, không xoá được giao dịch dở, khôi phục không khôi phục khoá | Probe: chỉ tra cứu lại (đọc) khi đọc biên nhận quá hạn sau gửi — không bao giờ gửi lại; chạy theo phân đoạn A–F | AC17 (reload khôi phục) và AC21 chưa chạy live — RPC quá hạn ở chặng chuẩn bị |
+| CK-08 | VERIFY | `eval-ai.ts` | **Đo model thật 27/09** (claude-haiku-4-5): tập giữ lại mới `eval-ai-giu-lai.ts` (Facts từ bộ phát lại ví cố định, không trùng `data/seed`) — lần 1 bắt 1 câu phủ nhận dữ kiện có thật ⇒ thêm `phuNhanDuKien`, họ đó chuyển sang regression, thay ca mới ⇒ sau khi đủ fixture: **12/12 ca (8 họ), 0 vi phạm lọt**, lùi câu mẫu 2/12. Codex review lần 2 sửa thêm 4 lỗ bộ chắn (hoán đổi số đã/chưa đọc; "bằng 0" khi mô phỏng hỏng; hai ca chặn oan) — số đo trên là của bộ chắn TRƯỚC lượt sửa; 10/10 câu mô hình đã nhận vẫn qua bộ chắn mới (phát lại, không gọi API). Tập phát triển 38 mẫu: lần 1 lọt 2 câu (đếm sai lệnh chưa đọc hiểu; nói số dư sau khi mô phỏng hỏng) ⇒ thêm `demSaiPhamVi`, `noiTrangThaiSauKhiMoPhongHong` + regression ⇒ đo lại: **0 vi phạm**, dùng câu mô hình **50 %** (trước vá 68 %), trễ trung vị 2,7 s. Tổng token cả lượt: ~82k vào / ~20k ra | Tự đánh giá của đội, mẫu nhỏ; chưa có người dùng độc lập; không coi 0 lỗi là chứng minh an toàn |
+| CK-09 | TODO | nhãn nguồn diễn giải (`nguonChu`) | Phát lại luôn dùng câu tất định (không gọi mô hình) | Kiểm máy chủ AI trên môi trường trình diễn |
+| CK-10 | TODO | `MA-TRAN-NANG-LUC.md`, ca CPI | — | — |
+| CK-11 | VERIFY | `vi-du-tich-hop` + ADR-0003 đã phủ: neo byte → `khopNeo` ngay trước ký; signer từ chối ⇒ `tu_choi`, treo ⇒ `chua_ro`, trả tx khác ⇒ không chuyển gửi; bấm hai lần ⇒ ký một lần; `review_required` ⇒ hỏi; `thu-goi` cài tarball ngoài monorepo (10/10 bẫy), `thu-goi-registry` 10/10 trên gói npm 0.3.0 | Không xây lại — đối chiếu đủ ca roadmap đòi | Tự thử ngoài monorepo KHÔNG phải pilot bên thứ ba |
+| CK-12 | DOING | theme hiện tại | Banner mock vào landmark có tên (CK-F07): axe 0 vi phạm ở mock/nghỉ/phát lại có kết quả, 1440 + 390 | Zoom 200 %, Firefox/WebKit, screen reader |
+| CK-13 | DOING | `so-lieu`, manifest | Hướng dẫn hiện hành `CHAY-DEMO-GIAO-DICH-THAT.md` bỏ "ví khách", nói đúng ví cố định + hai nguồn phân tích; hai báo cáo `live-devnet` gắn nhãn LỊCH SỬ, giữ nguyên số | Trang số liệu chưa tách replay / live / AI thành mục riêng |
+| CK-14 | DOING | probe CI | Đo phát lại trên build production (preview): trung vị **4 ms**, khoảng 3–39 ms, n=70, 0 request mạng — [artifact](../review/ck-20260927/do-replay.json); mục tiêu thiết kế 1 s | Không báo p95 (n<30/ca); 2/9 ca chưa đo được; live chưa đo — RPC chặn máy này |
+| CK-15 | TODO | deck/script | — | Việc của D |
 
 ## Bảng công việc — roadmap UPDATE CUSTOS (CU-)
 

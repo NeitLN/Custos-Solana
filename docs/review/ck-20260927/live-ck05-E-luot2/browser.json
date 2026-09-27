@@ -1,0 +1,325 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 3,
+  "checks": [
+    "S06: requested 2 plus additional 1 DEMO actually transfers; verdict not forced"
+  ],
+  "receipts": [
+    {
+      "signature": "M41pnjcj3sqpPW5jF99yDjFwbnEmNGvAM7CoCwzbby3zP51rZEX5Dr2ey72jcT9KfGxcS7VSW446j3M7a2y49YH",
+      "cluster": "devnet",
+      "kind": "extra",
+      "protected": true,
+      "prediction": {
+        "source": "XeuDZoaYi9LZewrWtzyZkyYY4SD79w8mKQaf1B6xb9o",
+        "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "497000000",
+        "ownerAfter": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "message": "AvDQK1fVMHfn7cBNEMhLP3uoXVcFp2rGjRyeNJ9nn5iujPUq1C9YooSofRvsjDeBFCwAPwfEzyYP5stT44YRTUqPEjrZDgg3R6k66kKjvGZ6o14Sxfv7t8uP3k69umYCe5zVEL1eexTkZJuvqLzd9DND6vLU5a2yMpEEQBYNxeAg1ByXELae6Cbpjxr9cAmzLSWitu4dhp6arRKVEtZxUTQVAmMhQi9LZAx29q9qxzpt1UNcyyMsGAPVW3YrNB9XGPtuzmzQVvPS1JQqHSGHocXFL2kAUCYzncfkjMRqnvSjMfzcGx85VYVD1",
+        "target": "6hziKXhEt8aoZE3TQAYV3NQHnMMnVRCEPSZpPjNVqGXi",
+        "targetBefore": "0",
+        "targetAfter": "2000000",
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": null
+      },
+      "observation": {
+        "message": "AvDQK1fVMHfn7cBNEMhLP3uoXVcFp2rGjRyeNJ9nn5iujPUq1C9YooSofRvsjDeBFCwAPwfEzyYP5stT44YRTUqPEjrZDgg3R6k66kKjvGZ6o14Sxfv7t8uP3k69umYCe5zVEL1eexTkZJuvqLzd9DND6vLU5a2yMpEEQBYNxeAg1ByXELae6Cbpjxr9cAmzLSWitu4dhp6arRKVEtZxUTQVAmMhQi9LZAx29q9qxzpt1UNcyyMsGAPVW3YrNB9XGPtuzmzQVvPS1JQqHSGHocXFL2kAUCYzncfkjMRqnvSjMfzcGx85VYVD1",
+        "slot": 504808290,
+        "err": null,
+        "rightsAttributable": true,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "XeuDZoaYi9LZewrWtzyZkyYY4SD79w8mKQaf1B6xb9o",
+          "6hziKXhEt8aoZE3TQAYV3NQHnMMnVRCEPSZpPjNVqGXi",
+          "hDDzt84ye6oDdSYLv7xYoquw9d7aXQeWmMHVZPAsfU4",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          },
+          {
+            "accountIndex": 3,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "497000000",
+              "decimals": 6,
+              "uiAmount": 497,
+              "uiAmountString": "497"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "2000000",
+              "decimals": 6,
+              "uiAmount": 2,
+              "uiAmountString": "2"
+            }
+          },
+          {
+            "accountIndex": 3,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "1000000",
+              "decimals": 6,
+              "uiAmount": 1,
+              "uiAmountString": "1"
+            }
+          }
+        ],
+        "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "ownerSlot": 504808291,
+        "delegate": null,
+        "allowance": "0",
+        "closeAuthority": null,
+        "closed": false,
+        "preLamports": [
+          9850061240,
+          1488440,
+          1488440,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9850056240,
+          1488440,
+          1488440,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "497000000",
+        "targetBefore": "0",
+        "targetAfter": "2000000",
+        "target": "match",
+        "delegate": "match",
+        "closeAuthority": "match",
+        "balance": "match",
+        "authority": "match"
+      },
+      "createdAt": "2026-09-27T14:10:51.635Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492059175,
+      "decision": {
+        "action": "approve",
+        "level": "safe",
+        "aiAdvisory": null,
+        "reasonCodes": [],
+        "requestId": 1,
+        "at": "2026-09-27T14:10:51.635Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    },
+    {
+      "signature": "59ELRpRKYhS7uiWsUkxXHSV6Z6c13gJ46MBTB2i1DH1debmLLzGnjdzpp4kcMhnLwPQscYNwKHinGHoBTz7CjRsT",
+      "cluster": "devnet",
+      "kind": "close-authority",
+      "protected": true,
+      "prediction": {
+        "source": "XeuDZoaYi9LZewrWtzyZkyYY4SD79w8mKQaf1B6xb9o",
+        "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+        "decimals": 6,
+        "before": "497000000",
+        "after": "497000000",
+        "ownerAfter": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "message": "UsNssHBAY8QoYKsxZM7fE7PdHptXSzTkdFQWiZfTTYh9d7F1x6nLda37oe3gjbFoidAhFy5orMgqDPcqJixGXvfKy3Ut6NJKj8VvGMmugUyuVhgnUzoY12EANzorp44p3T3zScEtCShM94a9MmvFc8c4QR3cP1ptZkbbgiNtDMLkha7C92kYYarKsCPdQTKzRZCsZanph2BfGMtyAFD7zqoYhyTg36hvVS9CtV9WrnQmRR1",
+        "target": "6hziKXhEt8aoZE3TQAYV3NQHnMMnVRCEPSZpPjNVqGXi",
+        "targetBefore": null,
+        "targetAfter": null,
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR"
+      },
+      "observation": {
+        "message": "UsNssHBAY8QoYKsxZM7fE7PdHptXSzTkdFQWiZfTTYh9d7F1x6nLda37oe3gjbFoidAhFy5orMgqDPcqJixGXvfKy3Ut6NJKj8VvGMmugUyuVhgnUzoY12EANzorp44p3T3zScEtCShM94a9MmvFc8c4QR3cP1ptZkbbgiNtDMLkha7C92kYYarKsCPdQTKzRZCsZanph2BfGMtyAFD7zqoYhyTg36hvVS9CtV9WrnQmRR1",
+        "slot": 504809621,
+        "err": null,
+        "rightsAttributable": true,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "XeuDZoaYi9LZewrWtzyZkyYY4SD79w8mKQaf1B6xb9o",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "497000000",
+              "decimals": 6,
+              "uiAmount": 497,
+              "uiAmountString": "497"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "ETZpnWzSY8Z6govWwpNVKXUpNzy84dP2q6EAE7eJpz2P",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "497000000",
+              "decimals": 6,
+              "uiAmount": 497,
+              "uiAmountString": "497"
+            }
+          }
+        ],
+        "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "ownerSlot": 504809623,
+        "delegate": null,
+        "allowance": "0",
+        "closeAuthority": "BsN56bKHfrXe1GXcPd2qJZ4yKcsN9yTFAgndgknJHbRR",
+        "closed": false,
+        "preLamports": [
+          9850056240,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9850051240,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "497000000",
+        "actualAfter": "497000000",
+        "targetBefore": null,
+        "targetAfter": null,
+        "target": "unknown",
+        "delegate": "match",
+        "closeAuthority": "match",
+        "balance": "match",
+        "authority": "match"
+      },
+      "createdAt": "2026-09-27T14:15:59.897Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492060566,
+      "decision": {
+        "action": "override",
+        "level": "danger",
+        "aiAdvisory": "review_required",
+        "reasonCodes": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "requestId": 2,
+        "at": "2026-09-27T14:15:59.897Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    }
+  ],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "tu": "E",
+  "retries": [
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 1,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 2,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "Trao quyền đóng tài khoản",
+      "attempt": 4,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 1,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 2,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 4,
+      "reason": "['RPC Devnet không trả lời trong hạn (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 5,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    }
+  ],
+  "passed": false,
+  "error": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+}

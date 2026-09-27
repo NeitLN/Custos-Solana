@@ -1,5 +1,9 @@
 # Triển khai đặc tả demo chân thật
 
+> **TÀI LIỆU LỊCH SỬ (nhãn thêm 27/09/2026).** Mô tả phiên bản trước 26/09. "Ví khách" nhắc
+> dưới đây **đã bị gỡ** — mọi demo nay dùng ví cố định `AqX3Fm…BCLZ` (quyết định khoá số 8).
+> Không dùng file này làm nghiệm thu bản hiện tại; trạng thái hiện hành ở `docs/roadmap/TIEN-DO.md`.
+
 Nguồn: `docs/DAC-TA-DEMO-CUSTOS-CHAN-THAT.md`.
 
 - [x] P0: decision/override, form gửi, receipt nguồn/đích và quyền sử dụng.

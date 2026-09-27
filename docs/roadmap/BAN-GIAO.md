@@ -4,7 +4,107 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
-## Hiện trạng — 18/09/2026 (lát cắt A + CU-10/13/16/17/22/24)
+## Hiện trạng — 27/09/2026 (roadmap chung kết, lát cắt CK-00 → 04)
+
+Trạng thái từng thẻ: [TIEN-DO.md, bảng CK](TIEN-DO.md#bảng-công-việc--roadmap-chung-kết-ck).
+**Chưa commit.** `npm run check`: 1 bài đỏ CỐ Ý — `replayKichBan.test.ts` đòi mọi
+kịch bản có fixture trọn, và 2/9 còn khuyết.
+
+### Việc dở dang, làm ngay khi Devnet cho đọc account
+
+```bash
+CUSTOS_CAPTURE=1 CUSTOS_RPC=https://devnet.rpcpool.com   node --experimental-strip-types scripts/ky-thuat/capture-kich-ban.ts lanh-tinh tan-cong-day-du
+npx tsx --test apps/demo-wallet/test/replayKichBan.test.ts   # phải xanh
+```
+
+Kiểm trước bằng `curl` `getMultipleAccounts` lên endpoint đó — `getLatestBlockhash` trả
+lời KHÔNG có nghĩa đọc account được (đúng lỗi CK-F01). Script chỉ đọc + mô phỏng, có cổng
+`CUSTOS_CAPTURE=1`, gộp vào bộ đang có chứ không ghi đè.
+
+### Bẫy gặp trong lượt này — dễ lặp
+
+1. **Lượt ghi trộn hai nhà cung cấp.** Với danh sách dự phòng, nửa đầu lượt đọc từ nhà A,
+   mô phỏng từ nhà B. Script nay bỏ lượt đó; đừng "sửa" bằng cách gộp host lại.
+2. **Lời gọi làm giàu còn dở lúc engine kết luận** (lịch sử ví nhận, hạn 2,5 s trong L1)
+   không có bản ghi ⇒ phát lại báo thiếu. Script thử lượt đầy đủ trước; chỉ ở lượt cuối
+   mới ghi nó thành `QUA_HAN_LUC_GHI` — đúng điều đã xảy ra lúc ghi.
+3. **`dong-goi-ban-trinh-dien.mjs` từng ghi đè `dist` production** bằng bản base `./`;
+   `vite preview` ở `/Custos-Solana/` phục vụ nhầm và probe landing đỏ hàng loạt. Đã sửa
+   (build thẳng vào `ban-trinh-dien/`).
+4. **TaskStop dừng `npm run vi` nhưng vite con vẫn giữ cổng 5188/5189** — kill PID theo
+   `netstat` trước khi dựng lại với biến môi trường khác.
+5. **axe chạy lúc thẻ kết quả còn hiệu ứng hiện dần** cho 20 lỗi tương phản giả. Chờ
+   animation xong (probe chính thức có `cho_animation`) rồi mới đo.
+6. **Guard đọc mã nguồn xanh nhờ chú thích.** `chanDoan: true` từng chỉ còn nằm trong một
+   chú thích của App.tsx mà bài vẫn xanh. Bỏ chú thích trước khi đọc.
+
+### Sửa sau review (27/09) — code review + Codex, 15 lỗi
+
+Codex CLI phải nâng 0.138.0 → 0.157.1 và dừng runtime cũ (broker/app-server giữ bản cũ
+trong bộ nhớ) mới chạy được. Mỗi lỗi có test hoặc phép kiểm đỏ trước:
+
+- **Rò khoá vào bundle**: đọc `import.meta.env["VITE_RPC_DU_PHONG"]` không sau `DEV ?` ⇒
+  Vite nhúng giá trị thật (khoá giả nằm trong 3 file JS production). Sửa + guard
+  `khongRoRpcBundle.test.ts` quét mọi chỗ đọc `VITE_RPC…`.
+- **Trộn nguồn**: phiên ký thật không kiểm (nay `NGUON_DOC_LIVE`, đọc lại một lần, bảo vệ
+  bật thì từ chối); nhánh Custos-TẮT của Phòng phân tích mô phỏng SAU phép kiểm (nay chung
+  một lượt `motLan`, kèm so sai khác lúc ghi).
+- **Genesis**: dự phòng thêm sau vào phiên live chưa từng được kiểm (nay chỉ nhận khi
+  `getGenesisHash` của chính nó là Devnet); Phòng phân tích dùng danh sách đã lọc
+  (`locTheoGenesis`), preflight có bộ chọn riêng và kết quả lọc được dùng.
+- **RPC**: mã lỗi endpoint thành danh sách tường minh (-32003/-32013/-32015 là lỗi yêu cầu);
+  body đọc MỘT lần trong hạn — hết hạn khi đang đọc body không còn bị ghi "ok".
+- **Phát lại**: nạp sẵn bộ dữ liệu + đọc trong hạn; `ThieuFixture` ở blockhash/số dư báo là
+  lỗi phát lại; so cả coverage; script ghi fixture không giữ ca cũ khi hiện trường đổi
+  (`gopBoReplay`) và bỏ URL khỏi log lỗi.
+- **Giao diện**: nút bước 3 chỉ phản ứng lần bấm mới; một bản lọc host + một hằng genesis.
+
+### Codex review lần 2 (27/09) — 10 lỗi, đóng hết, mỗi lỗi test đỏ trước
+
+- **Phiên live** (`live/session.ts`): quan sát RPC của lượt trước đến muộn không còn lọt vào
+  nguồn của lượt sau (`ghiNguonLive` lọc theo thời điểm bắt đầu lượt); `captured.facts` xoá
+  đầu mỗi lượt và khi trộn nguồn — không còn Facts của lượt bị bỏ đi vào biên nhận.
+- **Bộ chắn L3** (`packages/ai/src/moHinh.ts`): hoán đổi "0 lệnh chưa đọc" ↔ "8 lệnh đã đọc"
+  bị bắt (con số phải khớp đúng vế nó đứng cạnh; dạng `0/8` phải là đã đọc/tổng); "số dư
+  sau giao dịch bằng 0" khi mô phỏng hỏng bị bắt; câu "chưa thể kết luận số dư sẽ giảm hay
+  tăng" không còn bị chặn oan; "không được hiển thị trong dữ liệu" chỉ bị chặn khi nói về
+  một đại lượng (danh tính chủ địa chỉ thật sự không có trong Facts).
+  **Lỗi phụ tìm ra khi sửa:** mẫu `(giảm|về) 0\b` trong file chứa KÝ TỰ BACKSPACE thật (0x08)
+  — script Python ghi `"\b"` không thoát — nên chưa bao giờ khớp. Đã sửa, cùng hai chú thích
+  có sẵn ở HEAD bị lỗi y hệt; thêm guard quét ký tự điều khiển trong `packages/ai/src`.
+  Phát lại 10 câu mô hình thật đã được nhận ở tập giữ lại qua bộ chắn mới: 10/10 vẫn qua.
+- **Genesis loại hết** (`App.tsx`): không còn quay về endpoint chính vừa bị loại; preflight
+  ghi cả danh sách rỗng; `ketNoiDuPhong([])` ném `LoiKhongCoRpcDung` (câu không có URL);
+  yêu cầu từ dApp đi chung cửa `dsChoLuotKiem` với kịch bản.
+- **Ghi fixture** (`capture-kich-ban.ts`): genesis hỏi TỪNG endpoint (`chiDevnetDaXacMinh`,
+  chỉ giữ endpoint chứng minh là Devnet; có endpoint khác cluster ⇒ dừng).
+- **Eval giữ lại**: lượt không khoá không còn xoá lượt đo mô hình thật (`liveGanNhat`, kèm
+  cảnh báo khi bộ chắn đã đổi từ lượt đo — số cũ là của bộ chắn cũ).
+- **Test yếu**: bài "một endpoint có ghi nhận" nay gọi qua Connection của `ketNoiDuPhong`;
+  đột biến bỏ `ghiNhan` khỏi `canBoc` làm bài đỏ.
+
+**Còn mở, rủi ro thấp:** `PhongVan.tsx` và trang tấn công dựng connection từ danh sách dự
+phòng chưa qua genesis (chỉ lấy blockhash/số dư; production chỉ có host trong allowlist
+Devnet; blockhash sai mạng làm mô phỏng hỏng ⇒ Cần xem kỹ, không bao giờ An toàn).
+Số đo mô hình thật của CK-08 là số của bộ chắn TRƯỚC lượt sửa này — đo lại tốn API.
+
+### Quyết định của chủ dự án (27/09) và việc còn lại
+
+- **Đã duyệt RPC dự phòng**: `hien-truong.json → rpcDuPhong` = `devnet.rpcpool.com`,
+  `solana-devnet.api.onfinality.io/public` (genesis Devnet kiểm từng endpoint; không khoá).
+- **Đã cho phép broadcast Devnet** cho CK-05/06/07. Nghiệm thu live đã chạy (biên bản
+  `docs/review/ck-20260927/NGHIEM-THU-LIVE.md`); giả thuyết "chặn theo IP" đã bị bác — mạng
+  khác treo y hệt, api.devnet quá tải. Còn S07 đầy đủ, AC17, AC21 — chạy tiếp bằng `--tu F`:
+
+```bash
+cd apps/demo-wallet && npm run build && npx vite preview --port 5192 --host 127.0.0.1   # terminal 1
+python apps/demo-wallet/tools/probe-realistic-wallet.py --allow-devnet-send   --url "http://127.0.0.1:5192/Custos-Solana/?thucThi=1" --out docs/review/ck-20260927/live-ck05
+```
+
+  Mỗi lượt tạo một phiên mới (~0,0086 SOL). Probe chỉ thử lại chặng CHUẨN BỊ (chỉ đọc) khi
+  số lần gửi không đổi; không bao giờ tự gửi lại.
+
+## Lịch sử — 18/09/2026 (lát cắt A + CU-10/13/16/17/22/24)
 
 **840 pass, 0 fail.** Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**;
 `nop-bai --strict` **11/13**. 49 commit chưa push.

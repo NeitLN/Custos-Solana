@@ -1,0 +1,915 @@
+{
+  "doLuc": "2026-09-27T13:50:11.063Z",
+  "soMau": 38,
+  "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
+  "template": {
+    "treTrungViMs": 0,
+    "treCaoNhatMs": 1,
+    "soCaBiaDiaChi": 0,
+    "soCaBiaSo": 0
+  },
+  "boChan": {
+    "soBay": 13,
+    "soBayChanDuoc": 13,
+    "soBayCanNguoiCham": 0,
+    "chiTiet": [
+      {
+        "bay": "bịa địa chỉ ví",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "bịa số tiền",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trấn an người dùng",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "tự chen level vào",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trả rác không phải JSON",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "trả JSON rỗng",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "đổi DẤU — mất tiền thành nhận tiền",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "đổi ĐƠN VỊ — lamport đọc thành SOL",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "GÁN SAI ĐỐI TƯỢNG — tiền của ví này gán cho ví kia",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "địa chỉ TRÔNG HỢP LÝ nhưng viết tắt kiểu sản phẩm",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "đổi NGƯỜI GỬI / NGƯỜI NHẬN",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "tuyên bố HÀNH ĐỘNG CHÍNH không có trong facts",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      },
+      {
+        "bay": "prompt injection qua memo",
+        "daChan": true,
+        "diaChiLot": 0,
+        "soLot": 0
+      }
+    ],
+    "soDoiChung": 3,
+    "soDoiChungQua": 3,
+    "doiChung": [
+      {
+        "ten": "câu đúng · giữ hai địa chỉ rút gọn",
+        "viSao": "viết mới hoàn toàn, mọi neo đều có trong facts",
+        "quaDuoc": true
+      },
+      {
+        "ten": "câu đúng · NGUYÊN VĂN mô hình thật 22/08",
+        "viSao": "đầu ra thật của claude-haiku-4-5, không do đội nghĩ ra",
+        "quaDuoc": true
+      },
+      {
+        "ten": "câu đúng · không nhắc địa chỉ nào",
+        "viSao": "không có neo địa chỉ — bộ chắn không được đòi phải có",
+        "quaDuoc": true
+      }
+    ]
+  },
+  "moHinhThat": {
+    "trangThai": "đã đo",
+    "batDau": "2026-09-27T13:48:34.911Z",
+    "xong": "2026-09-27T13:50:11.062Z",
+    "moHinh": "claude-haiku-4-5-20251001",
+    "tokenRaToiDa": 400,
+    "tokenRaToiDaLaMacDinh": true,
+    "sdkMaxRetriesMacDinh": 2,
+    "datMaxRetriesTuongMinh": true,
+    "promptDoDai": 1191,
+    "promptBam": "6d2f1409",
+    "boDuLieu": {
+      "nguon": "data/seed/index.json",
+      "thuLuc": "2026-08-21T00:24:40.946Z",
+      "soMau": 38
+    },
+    "soMau": 38,
+    "treTrungViMs": 2609,
+    "treCaoNhatMs": 3675,
+    "hanMacDinhMs": 4000,
+    "duongDoCoBocThoiHan": false,
+    "soLuotUocSeBiCat": 0,
+    "soLuotBiCatThatSu": 0,
+    "giaTriTangThem": {
+      "soCaKhacCauMau": 26,
+      "chuThemTrungVi": 95,
+      "soCaNoiVeCoverage": 14,
+      "soCaCauMauNoiVeCoverage": 14,
+      "soCaCoCoverageKhuyet": 16,
+      "boQuaCoverage": [
+        {
+          "id": "R10-pos",
+          "coverage": "0/1",
+          "cauAI": "Không thể xác định hành động chính của giao dịch. Mô phỏng không thành công và phát hiện nhiều vấn đề: các chương trình được gọi không có thể giải mã được, SOL bị mất khỏi ví mà không rõ lý do, cũng như các vấn đề khác trong quá trình mô phỏng. Không có thay đổi số dư được ghi nhận."
+        }
+      ]
+    },
+    "tokenVao": 28878,
+    "tokenRa": 6870,
+    "luiVeTatDinh": 12,
+    "tyLeDungDauRaMoHinh": 0.6842105263157895,
+    "soLoiApi": 0,
+    "loiApi": [],
+    "viPham": [
+      {
+        "id": "MN-04",
+        "loai": "số không có trong facts",
+        "chiTiet": "7",
+        "cau": "Mô phỏng không thành công, không thể xác định hành động chính. Dữ liệu cho thấy nhiều tài khoản token có số dư giảm xuống 0 (6ehE…pump và So11…1112), nhưng vì 3 chương trình chưa được xác minh và 7 lệnh không thể phân tích, nên không có đủ thông tin để xác định mục đích giao dịch. Phạm vi phân tích chỉ đạt 0/8 hướng dẫn.",
+        "soChoPhep": [
+          "0",
+          "0,0",
+          "0,00207408",
+          "0,00298584",
+          "0,003744484",
+          "0,00806489",
+          "1",
+          "1,974674164",
+          "1,976713444",
+          "1.701,031224589",
+          "1.701.031.224.589",
+          "1.976.713.444",
+          "1.984,068125702",
+          "1.984,070164982",
+          "1.984.070.164.982",
+          "2.074.080",
+          "2.985.840",
+          "27.620.424,350231",
+          "3",
+          "3.623,272742488",
+          "3.623,274781768",
+          "3.623.274.781.768",
+          "3.744.484",
+          "54,589938069",
+          "54,591977349",
+          "54.591.977.349",
+          "8",
+          "8.064.890"
+        ],
+        "coverage": "0/8"
+      },
+      {
+        "id": "MN-10",
+        "loai": "số không có trong facts",
+        "chiTiet": "4",
+        "cau": "Mô phỏng không thành công nên không thể xác định hành động chính. Dữ liệu cho thấy nhiều tài khoản token sẽ có số dư về 0, bao gồm 469,747451587 và 55.159.743,889993 của các token So11…1112 và 5mH1…pump. Giao dịch chứa 2 chương trình chưa xác minh và 4 lệnh không thể phân tích đầy đủ. Chỉ 0 trên tổng 5 hành động đã được kiểm tra chi tiết.",
+        "soChoPhep": [
+          "0",
+          "0,0",
+          "0,001214342",
+          "0,0018444",
+          "0,00203928",
+          "0,00207408",
+          "0,00272832",
+          "0,00298584",
+          "0,00377232",
+          "0,136281918",
+          "0,138321198",
+          "1",
+          "1,991176912",
+          "1,993216192",
+          "1.214.342",
+          "1.701,031224589",
+          "1.701.031.224.589",
+          "1.844.400",
+          "1.993.216.192",
+          "138,51074177",
+          "138,51278105",
+          "138.321.198",
+          "138.512.781.050",
+          "2",
+          "2.039.280",
+          "2.074.080",
+          "2.728.320",
+          "2.985.840",
+          "3",
+          "3.772.320",
+          "39,12678176",
+          "39.126.781.760",
+          "40,167403693",
+          "40,169450973",
+          "40.169.450.973",
+          "469,747451587",
+          "469,749490867",
+          "469.749.490.867",
+          "5",
+          "55.159.743,889993",
+          "79,294185453"
+        ],
+        "coverage": "0/5"
+      }
+    ]
+  },
+  "liveGanNhat": {
+    "trangThai": "đã đo",
+    "batDau": "2026-09-27T13:48:34.911Z",
+    "xong": "2026-09-27T13:50:11.062Z",
+    "moHinh": "claude-haiku-4-5-20251001",
+    "tokenRaToiDa": 400,
+    "tokenRaToiDaLaMacDinh": true,
+    "sdkMaxRetriesMacDinh": 2,
+    "datMaxRetriesTuongMinh": true,
+    "promptDoDai": 1191,
+    "promptBam": "6d2f1409",
+    "boDuLieu": {
+      "nguon": "data/seed/index.json",
+      "thuLuc": "2026-08-21T00:24:40.946Z",
+      "soMau": 38
+    },
+    "soMau": 38,
+    "treTrungViMs": 2609,
+    "treCaoNhatMs": 3675,
+    "hanMacDinhMs": 4000,
+    "duongDoCoBocThoiHan": false,
+    "soLuotUocSeBiCat": 0,
+    "soLuotBiCatThatSu": 0,
+    "giaTriTangThem": {
+      "soCaKhacCauMau": 26,
+      "chuThemTrungVi": 95,
+      "soCaNoiVeCoverage": 14,
+      "soCaCauMauNoiVeCoverage": 14,
+      "soCaCoCoverageKhuyet": 16,
+      "boQuaCoverage": [
+        {
+          "id": "R10-pos",
+          "coverage": "0/1",
+          "cauAI": "Không thể xác định hành động chính của giao dịch. Mô phỏng không thành công và phát hiện nhiều vấn đề: các chương trình được gọi không có thể giải mã được, SOL bị mất khỏi ví mà không rõ lý do, cũng như các vấn đề khác trong quá trình mô phỏng. Không có thay đổi số dư được ghi nhận."
+        }
+      ]
+    },
+    "tokenVao": 28878,
+    "tokenRa": 6870,
+    "luiVeTatDinh": 12,
+    "tyLeDungDauRaMoHinh": 0.6842105263157895,
+    "soLoiApi": 0,
+    "loiApi": [],
+    "viPham": [
+      {
+        "id": "MN-04",
+        "loai": "số không có trong facts",
+        "chiTiet": "7",
+        "cau": "Mô phỏng không thành công, không thể xác định hành động chính. Dữ liệu cho thấy nhiều tài khoản token có số dư giảm xuống 0 (6ehE…pump và So11…1112), nhưng vì 3 chương trình chưa được xác minh và 7 lệnh không thể phân tích, nên không có đủ thông tin để xác định mục đích giao dịch. Phạm vi phân tích chỉ đạt 0/8 hướng dẫn.",
+        "soChoPhep": [
+          "0",
+          "0,0",
+          "0,00207408",
+          "0,00298584",
+          "0,003744484",
+          "0,00806489",
+          "1",
+          "1,974674164",
+          "1,976713444",
+          "1.701,031224589",
+          "1.701.031.224.589",
+          "1.976.713.444",
+          "1.984,068125702",
+          "1.984,070164982",
+          "1.984.070.164.982",
+          "2.074.080",
+          "2.985.840",
+          "27.620.424,350231",
+          "3",
+          "3.623,272742488",
+          "3.623,274781768",
+          "3.623.274.781.768",
+          "3.744.484",
+          "54,589938069",
+          "54,591977349",
+          "54.591.977.349",
+          "8",
+          "8.064.890"
+        ],
+        "coverage": "0/8"
+      },
+      {
+        "id": "MN-10",
+        "loai": "số không có trong facts",
+        "chiTiet": "4",
+        "cau": "Mô phỏng không thành công nên không thể xác định hành động chính. Dữ liệu cho thấy nhiều tài khoản token sẽ có số dư về 0, bao gồm 469,747451587 và 55.159.743,889993 của các token So11…1112 và 5mH1…pump. Giao dịch chứa 2 chương trình chưa xác minh và 4 lệnh không thể phân tích đầy đủ. Chỉ 0 trên tổng 5 hành động đã được kiểm tra chi tiết.",
+        "soChoPhep": [
+          "0",
+          "0,0",
+          "0,001214342",
+          "0,0018444",
+          "0,00203928",
+          "0,00207408",
+          "0,00272832",
+          "0,00298584",
+          "0,00377232",
+          "0,136281918",
+          "0,138321198",
+          "1",
+          "1,991176912",
+          "1,993216192",
+          "1.214.342",
+          "1.701,031224589",
+          "1.701.031.224.589",
+          "1.844.400",
+          "1.993.216.192",
+          "138,51074177",
+          "138,51278105",
+          "138.321.198",
+          "138.512.781.050",
+          "2",
+          "2.039.280",
+          "2.074.080",
+          "2.728.320",
+          "2.985.840",
+          "3",
+          "3.772.320",
+          "39,12678176",
+          "39.126.781.760",
+          "40,167403693",
+          "40,169450973",
+          "40.169.450.973",
+          "469,747451587",
+          "469,749490867",
+          "469.749.490.867",
+          "5",
+          "55.159.743,889993",
+          "79,294185453"
+        ],
+        "coverage": "0/5"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "R01-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 1,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 121,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R02-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 2,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 123,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R03-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 3,
+      "level": "danger",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 259,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R03-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 3,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 145,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R08-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 8,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 247,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R11-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 11,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "2/2",
+      "template": {
+        "soChu": 293,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R12-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 12,
+      "level": "danger",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 63,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    },
+    {
+      "id": "R09-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 9,
+      "level": "warning",
+      "soMa": 4,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 393,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R09-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 9,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 299,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R06-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 6,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R06-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 6,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R04-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 4,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 244,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R11-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 11,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-01",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "0/3",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-02",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/14",
+      "template": {
+        "soChu": 140,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-03",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "0/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-04",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/8",
+      "template": {
+        "soChu": 315,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-05",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-06",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/4",
+      "template": {
+        "soChu": 87,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-07",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/12",
+      "template": {
+        "soChu": 322,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-08",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/11",
+      "template": {
+        "soChu": 321,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-09",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 6,
+      "coverage": "0/10",
+      "template": {
+        "soChu": 627,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "MN-10",
+      "nguonGoc": "real-mainnet",
+      "luat": null,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/5",
+      "template": {
+        "soChu": 323,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R05-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 5,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "1/2",
+      "template": {
+        "soChu": 348,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R05-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 5,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "1/2",
+      "template": {
+        "soChu": 206,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R07-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 7,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 205,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R07-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 7,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R10-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 10,
+      "level": "warning",
+      "soMa": 3,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 329,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R10-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 10,
+      "level": "warning",
+      "soMa": 2,
+      "coverage": "0/1",
+      "template": {
+        "soChu": 227,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R13-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 13,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 135,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R13-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 13,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 47,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R14-pos",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 14,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 137,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R14-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 14,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 68,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R01-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 1,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 71,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R02-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 2,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 71,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R04-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 4,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 52,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R08-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 8,
+      "level": "warning",
+      "soMa": 1,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 124,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": null
+      }
+    },
+    {
+      "id": "R12-neg",
+      "nguonGoc": "synthetic-devnet",
+      "luat": 12,
+      "level": "safe",
+      "soMa": 0,
+      "coverage": "1/1",
+      "template": {
+        "soChu": 63,
+        "diaChiBia": 0,
+        "soBia": 0,
+        "aiAdvisory": "review_required"
+      }
+    }
+  ]
+}

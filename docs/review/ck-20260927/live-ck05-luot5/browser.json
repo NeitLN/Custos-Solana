@@ -1,0 +1,180 @@
+{
+  "url": "http://127.0.0.1:5192/Custos-Solana/?thucThi=1",
+  "sends": 2,
+  "checks": [
+    "setup: fresh mint, 500 DEMO, fixed funded wallet",
+    "AC03: custom fractional transfer confirmed; source and destination measured"
+  ],
+  "receipts": [
+    {
+      "signature": "5aemVamZdjR2Ye1ERopzLMYX94CD9W4rTpkXwrVesohHXDyP7bPAZXN8L7gQLqtGgXx4KZXtdvrvXwmwvVmSPEUF",
+      "cluster": "devnet",
+      "kind": "transfer",
+      "protected": true,
+      "prediction": {
+        "source": "ENjvqvAFWGc8U9uEMg6Cyjgkvke9faTPKeGbF5roHcbM",
+        "mint": "6AVTLkqCwGDMUdguMSGgSFrHD1ipn1euUrK1vEMX7T6Q",
+        "decimals": 6,
+        "before": "500000000",
+        "after": "487500000",
+        "ownerAfter": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+        "message": "5fMtF6AnRa1cfcypWJSSnT8efgx9QMxrxZ79AWrh3jXgWeeZy3HCVnr5DhWLVHmxi1FDAygdk3o3SaKGabFDFpNjhg92cFjvntAUdS1GKQeauaT8mHkF3u7UF1mUGXN93B7ATXEj61k44FuUb83dwUjXjHxzfHBb51AApfeVBtjMNCL5AyHUZyF8jU3wJf1Rr5jev7aGRJqKzgZ7LSF1xL5qoib3La1gKz3NR3G89NCqTAVrhNM5ySjMh",
+        "target": "Hpp1ztAMT7a1DJhFCAnytUvYebPrzN8guAUWZVu5Snhg",
+        "targetBefore": "0",
+        "targetAfter": "12500000",
+        "authorityMeasured": true,
+        "delegateAfter": null,
+        "allowanceAfter": "0",
+        "closeAuthorityAfter": null
+      },
+      "observation": {
+        "message": "5fMtF6AnRa1cfcypWJSSnT8efgx9QMxrxZ79AWrh3jXgWeeZy3HCVnr5DhWLVHmxi1FDAygdk3o3SaKGabFDFpNjhg92cFjvntAUdS1GKQeauaT8mHkF3u7UF1mUGXN93B7ATXEj61k44FuUb83dwUjXjHxzfHBb51AApfeVBtjMNCL5AyHUZyF8jU3wJf1Rr5jev7aGRJqKzgZ7LSF1xL5qoib3La1gKz3NR3G89NCqTAVrhNM5ySjMh",
+        "slot": 504798204,
+        "err": null,
+        "rightsAttributable": false,
+        "fee": 5000,
+        "keys": [
+          "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+          "ENjvqvAFWGc8U9uEMg6Cyjgkvke9faTPKeGbF5roHcbM",
+          "Hpp1ztAMT7a1DJhFCAnytUvYebPrzN8guAUWZVu5Snhg",
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "pre": [
+          {
+            "accountIndex": 1,
+            "mint": "6AVTLkqCwGDMUdguMSGgSFrHD1ipn1euUrK1vEMX7T6Q",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "500000000",
+              "decimals": 6,
+              "uiAmount": 500,
+              "uiAmountString": "500"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "6AVTLkqCwGDMUdguMSGgSFrHD1ipn1euUrK1vEMX7T6Q",
+            "owner": "DBvn7gnBN4373MLnDpz6Q7xdq1fSQCWMzbr3SkBTkxrr",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "0",
+              "decimals": 6,
+              "uiAmount": null,
+              "uiAmountString": "0"
+            }
+          }
+        ],
+        "post": [
+          {
+            "accountIndex": 1,
+            "mint": "6AVTLkqCwGDMUdguMSGgSFrHD1ipn1euUrK1vEMX7T6Q",
+            "owner": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "487500000",
+              "decimals": 6,
+              "uiAmount": 487.5,
+              "uiAmountString": "487.5"
+            }
+          },
+          {
+            "accountIndex": 2,
+            "mint": "6AVTLkqCwGDMUdguMSGgSFrHD1ipn1euUrK1vEMX7T6Q",
+            "owner": "DBvn7gnBN4373MLnDpz6Q7xdq1fSQCWMzbr3SkBTkxrr",
+            "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "uiTokenAmount": {
+              "amount": "12500000",
+              "decimals": 6,
+              "uiAmount": 12.5,
+              "uiAmountString": "12.5"
+            }
+          }
+        ],
+        "owner": null,
+        "ownerSlot": null,
+        "allowance": null,
+        "closed": false,
+        "preLamports": [
+          9896001080,
+          1488440,
+          1488440,
+          20369267856
+        ],
+        "postLamports": [
+          9895996080,
+          1488440,
+          1488440,
+          20369267856
+        ]
+      },
+      "comparison": {
+        "actualBefore": "500000000",
+        "actualAfter": "487500000",
+        "targetBefore": "0",
+        "targetAfter": "12500000",
+        "target": "match",
+        "delegate": "unknown",
+        "closeAuthority": "unknown",
+        "balance": "match",
+        "authority": "unknown"
+      },
+      "createdAt": "2026-09-27T13:32:03.370Z",
+      "note": "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới.",
+      "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "signer": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+      "expiresAtBlock": 492049179,
+      "decision": {
+        "action": "approve",
+        "level": "safe",
+        "aiAdvisory": null,
+        "reasonCodes": [],
+        "requestId": 1,
+        "at": "2026-09-27T13:32:03.370Z",
+        "policy": "warn_and_allow_override"
+      },
+      "resolution": "confirmed"
+    }
+  ],
+  "errors": [],
+  "wallet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+  "retries": [
+    {
+      "kind": "transfer",
+      "attempt": 1,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "transfer",
+      "attempt": 2,
+      "reason": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+    },
+    {
+      "kind": "attack",
+      "attempt": 1,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "attack",
+      "attempt": 2,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "attack",
+      "attempt": 3,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "attack",
+      "attempt": 4,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    },
+    {
+      "kind": "attack",
+      "attempt": 5,
+      "reason": "['RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại.']"
+    }
+  ],
+  "passed": false,
+  "error": "['Custos chưa có kết quả mô phỏng sau 15 giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.']"
+}

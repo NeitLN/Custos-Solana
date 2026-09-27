@@ -1,5 +1,9 @@
 # Bàn giao demo Custos có hậu quả thật
 
+> **TÀI LIỆU LỊCH SỬ (nhãn thêm 27/09/2026).** Mô tả phiên bản trước 26/09. "Ví khách" nhắc
+> dưới đây **đã bị gỡ** — mọi demo nay dùng ví cố định `AqX3Fm…BCLZ` (quyết định khoá số 8).
+> Không dùng file này làm nghiệm thu bản hiện tại; trạng thái hiện hành ở `docs/roadmap/TIEN-DO.md`.
+
 ## Đã triển khai
 
 Tại **Ví mẫu hiện tại**, không tạo trang ký riêng. Không đổi SDK/types/engine luật.

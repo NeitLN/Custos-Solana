@@ -1,0 +1,109 @@
+{
+ "phepDo": "CK-14 · độ trễ phát lại theo kịch bản trong trình duyệt",
+ "doLuc": "2026-09-26T19:26:47.899219+00:00",
+ "sourceCommit": "964363a2232c681852cce30b77fe0a5b6b22913b",
+ "dirtyWorktree": true,
+ "build": "production (vite build, base /Custos-Solana/) phục vụ bằng vite preview cổng 5198",
+ "trinhDuyet": "Chromium headless (Playwright), 1440x900",
+ "lenh": "python docs/review/ck-20260927/do-replay.py",
+ "phamVi": "click nút kịch bản → xuất hiện thẻ kết quả MỚI có dải PHÁT LẠI; gồm dựng tx + inspect() + render",
+ "mau": {
+  "thuong-gia-mat-token": [
+   39,
+   4,
+   7,
+   6,
+   3,
+   5,
+   3,
+   3,
+   3,
+   3
+  ],
+  "doi-chu-tai-khoan": [
+   6,
+   4,
+   4,
+   5,
+   4,
+   4,
+   4,
+   4,
+   3,
+   5
+  ],
+  "cap-quyen-vuot-so-du": [
+   4,
+   3,
+   4,
+   4,
+   4,
+   3,
+   5,
+   4,
+   4,
+   3
+  ],
+  "cap-quyen-vua-du": [
+   4,
+   4,
+   5,
+   4,
+   3,
+   4,
+   4,
+   3,
+   4,
+   6
+  ],
+  "trao-quyen-dong": [
+   4,
+   4,
+   4,
+   3,
+   5,
+   4,
+   5,
+   4,
+   3,
+   4
+  ],
+  "chuyen-them-ngoai-hanh-dong": [
+   4,
+   3,
+   5,
+   4,
+   3,
+   4,
+   4,
+   4,
+   4,
+   6
+  ],
+  "thieu-du-lieu": [
+   5,
+   4,
+   3,
+   4,
+   3,
+   4,
+   3,
+   3,
+   4,
+   4
+  ]
+ },
+ "tongHop": {
+  "n": 70,
+  "trungViMs": 4.0,
+  "minMs": 3,
+  "maxMs": 39
+ },
+ "requestRaNgoaiTrongLucPhatLai": 0,
+ "gioiHan": [
+  "n=10 mỗi ca (<30) nên KHÔNG báo p95; chỉ trung vị và khoảng.",
+  "2/9 kịch bản (lanh-tinh, tan-cong-day-du) chưa đo: fixture còn khuyết một lời gọi, phát lại báo thiếu thay vì chạy.",
+  "Một máy, một trình duyệt; không phải máy trình diễn chính thức.",
+  "Lượt đầu gồm cả tải bộ dữ liệu JSON (~286 KB)."
+ ]
+}
