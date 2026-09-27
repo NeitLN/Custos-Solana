@@ -1,0 +1,38 @@
+
+> replay-rpc
+> node --experimental-strip-types scripts/ky-thuat/chay-replay.ts
+
+  ok   R01-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R02-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R03-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R03-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R08-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R11-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R12-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R09-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, solDelta, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   R09-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, solDelta, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   R06-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R06-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R04-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R11-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   MN-01      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationOk, simulationError, accounts, tokenAccounts, mints, solDelta, instructions, lookupTables, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.__loi
+  ok   MN-02      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationOk, simulationError, accounts, tokenAccounts, mints, solDelta, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   MN-03      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationOk, simulationError, accounts, tokenAccounts, mints, solDelta, instructions, lookupTables, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.__loi
+  ok   MN-04      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationError, accounts, tokenAccounts, mints, solDelta, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   MN-05      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationOk, simulationError, accounts, tokenAccounts, mints, solDelta, instructions, lookupTables, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.__loi
+  ok   MN-06      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationOk, simulationError, accounts, tokenAccounts, mints, solDelta, instructions, lookupTables, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.__loi
+  ok   MN-07      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, solDelta, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   MN-08      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationError, accounts, tokenAccounts, mints, solDelta, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   MN-09      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationError, accounts, tokenAccounts, mints, solDelta, instructions, lookupTables, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   MN-10      tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: simulationError, accounts, tokenAccounts, mints, solDelta, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+  ok   R05-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R05-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, coverage, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R07-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R07-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, tokenAccounts, mints, instructions, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi lamports
+  ok   R10-pos    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, solDelta, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.__loi
+  ok   R10-neg    tất định=✓ nhạy-fixture=✓ · lệch bản đóng băng: accounts, solDelta, nguCanh, accountKhongDoDuoc, mintKhongDoc, nguoiKy, nguoiDungDuocChiDinh, phiUocTinh, phiChinhXac · đổi simulateTransaction.err
+
+replay OFFLINE · 29/29 đạt · 0 hỏng · 0 chưa có fixture
+  29 mẫu lệch với Facts đóng băng 21/08 — **báo cáo, không phải lỗi**: decoder đã tốt lên, số dư ví devnet đã đổi, và bản đóng băng thiếu 5 trường schema mới.
+  Replay phát lại response ĐÃ GHI. Nó chứng minh L1 bóc tách đúng, KHÔNG phải một lần thực thi SVM mới.
+  12 mẫu có lượt đọc account GHÉP theo địa chỉ từ các lô đã ghi (L1 đổi cách chia lô sau lúc capture). Chỉ ghép khi mỗi địa chỉ có đúng một giá trị trong fixture.

@@ -1,0 +1,15 @@
+{
+  "head": "964363a2232c681852cce30b77fe0a5b6b22913b",
+  "dirty": true,
+  "note": "Hashes read after testing; review made no product implementation edits. See git-status.txt for pre-existing changes.",
+  "sourceSha256": {
+    "apps/demo-wallet/src/App.tsx": "de6c395886ba25216f0b70571a4f928c0b9af4247ba9b31c5c7405d9cac47ae0",
+    "apps/demo-wallet/src/WalletExecution.tsx": "196eee7650c1f071d0d698ce97caed887e6c6e3784d8d0395527d7ed48e581db",
+    "apps/demo-wallet/src/live/session.ts": "1ad860d55d598fba7233eb78d7ba2c9aed3bebd67b7820008de4453da0d5fa9a",
+    "apps/demo-wallet/src/live/receipt.ts": "13110885045c83a3cb422204e56afb1edfc1fa1e8f9e32f7c9c25b5380dc4187",
+    "apps/demo-wallet/src/kichBan.ts": "0de8414e43231b57d55c88612804e10ee9bb473ed33ae99e71e7c23edc96d884",
+    "scripts/rpcDuPhong.ts": "6ce717f5c5437e07cac865c962c894dd2f9518114bcb9a400e9d1c28ab302b8c",
+    "packages/ai/src/moHinh.ts": "7bb3eea202385e6c12852cf790eec725b21ea80c548c2129b51a6eb63b8bec37",
+    "packages/core/src/diff.ts": "aa324f9ba7ded598c1edead9b11abdeac7a139612c5f3cebe0db77c8543fea03"
+  }
+}

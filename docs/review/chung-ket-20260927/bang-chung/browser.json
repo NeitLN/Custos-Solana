@@ -1,0 +1,781 @@
+[
+  {
+    "name": "wallet",
+    "url": "http://127.0.0.1:5198/",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nGiao dịch chưa ký. Quyết định vẫn ở bạn.\n\nChọn “Nhận quà tặng” hoặc “Gửi 10 token” để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.\n\nTài sản của bạn thay đổi ra sao\n\nSố dư và quyền sở hữu, trước và sau khi ký.\n\nTrước → Sau\n\nVì sao nguy hiểm, bằng tiếng Việt\n\nMột câu nói rõ hậu quả, không phải mã lỗi.\n\nLý do cảnh báo\n\nPhần Custos CHƯA đọc hiểu\n\nCustos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.\n\nPhạm vi đã đọc\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Giới thiệu",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Giao dịch thành công55WDoMJ6md…L6Zn3D1 ngày trước",
+        "href": "https://explorer.solana.com/tx/55WDoMJ6mdc3RbjmoUHH8SKfMnYETPbWydQC1QfYCeCjNnXSs9k5jqhStoxHo8AfevkbnYQfeq2oRbv4b5L6Zn3D?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3g3EZLkcnQ…Na8fKU1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3g3EZLkcnQ5ME1eg5eb7eAx6Dfpsr1wWedpdGURtvnAhqGuGZLRmvJ4xKkp8hh5GS4tdDMrTHik3fpRgseNa8fKU?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3eL99MTfnB…MztuiZ1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3eL99MTfnBMkUw5vBz7gZoax8AkTaHTZhuuvV5Wh6DUfiVxHcA73vVAYY6aScvKdFaZcj1LRj4uQQAx4Q4MztuiZ?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công23UShkHiSh…E6WWhg1 ngày trước",
+        "href": "https://explorer.solana.com/tx/23UShkHiShLqZR6viaZ66VBkA7MNwHkqjdi99zYFBnRqQNQfgGWJSLxJT8Gpfzpc7FcYnMP4ZZda4d1TkzE6WWhg?cluster=devnet"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ]
+  },
+  {
+    "name": "wallet-mobile",
+    "url": "http://127.0.0.1:5198/",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nGiao dịch chưa ký. Quyết định vẫn ở bạn.\n\nChọn “Nhận quà tặng” hoặc “Gửi 10 token” để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.\n\nTài sản của bạn thay đổi ra sao\n\nSố dư và quyền sở hữu, trước và sau khi ký.\n\nTrước → Sau\n\nVì sao nguy hiểm, bằng tiếng Việt\n\nMột câu nói rõ hậu quả, không phải mã lỗi.\n\nLý do cảnh báo\n\nPhần Custos CHƯA đọc hiểu\n\nCustos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.\n\nPhạm vi đã đọc\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Giới thiệu",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Giao dịch thành công55WDoMJ6md…L6Zn3D1 ngày trước",
+        "href": "https://explorer.solana.com/tx/55WDoMJ6mdc3RbjmoUHH8SKfMnYETPbWydQC1QfYCeCjNnXSs9k5jqhStoxHo8AfevkbnYQfeq2oRbv4b5L6Zn3D?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3g3EZLkcnQ…Na8fKU1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3g3EZLkcnQ5ME1eg5eb7eAx6Dfpsr1wWedpdGURtvnAhqGuGZLRmvJ4xKkp8hh5GS4tdDMrTHik3fpRgseNa8fKU?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3eL99MTfnB…MztuiZ1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3eL99MTfnBMkUw5vBz7gZoax8AkTaHTZhuuvV5Wh6DUfiVxHcA73vVAYY6aScvKdFaZcj1LRj4uQQAx4Q4MztuiZ?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công23UShkHiSh…E6WWhg1 ngày trước",
+        "href": "https://explorer.solana.com/tx/23UShkHiShLqZR6viaZ66VBkA7MNwHkqjdi99zYFBnRqQNQfgGWJSLxJT8Gpfzpc7FcYnMP4ZZda4d1TkzE6WWhg?cluster=devnet"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ]
+  },
+  {
+    "name": "landing",
+    "url": "http://127.0.0.1:5198/gioi-thieu.html",
+    "text": "Bỏ qua, tới nội dung chính\nCustos\nSolana transaction insights\nCách hoạt động\nTrải nghiệm\nCho nhà phát triển\nFAQ\nVI\nTiếng Việt\nEN\nEnglish\nMở demo Custos\n\nKiểm tra giao dịch Solana trước ký\n\nHiểu điều\nbạn sắp ký.\n\nXem thay đổi tài sản và quyền kiểm soát trong giao dịch Solana, cùng dữ kiện đứng sau mỗi cảnh báo.\n\nMở demo Custos\n\nBản thử nghiệm Devnet · Không dùng tài sản thật\n\nA\nB\n!\nXem tình huống A/B\nCùng số dư. Khác quyền kiểm soát.\nPhân tích giao dịch\nKết quả mẫu đã lưu\n\nChuyển 10 token\nDevnet\n\nTÀI SẢN\n\nSố dư token\n500,0\n→\n490,0\n\nQUYỀN KIỂM SOÁT\n\n!\nChủ tài khoản token\nBạn\n→\nđịa chỉ khác\n\nCó thao tác đổi chủ trong transaction mẫu.\n\nXem đối chiếu và bằng chứng\n→\n\nMinh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.\n\nCuộn để khám phá\n↓\nCUSTOS / PRE-SIGN INSIGHTS\nSolana Devnet\nMôi trường thử nghiệm\nSDK\nDành cho ví và dApp\nInspector\nKiểm tra transaction\nBằng chứng\nXem dữ kiện và giới hạn\nCùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu đã lưu · hai simulation độc lập\n\nĐối chiếu hai tình huống mẫu A và B theo từng mục.\nMục so sánh\tAA · Chỉ chuyển\tBB · Chuyển và đổi chủ\nToken chuyển\t10\t10\nSố dư sau mô phỏng\t490,0\t490,0\nThao tác đổi chủ tài khoản\tKhông có trong transaction mẫu\t!Có\nKết luận lượt mẫu\tKhông phát hiện nguy hiểm trong phần đã đọc\tPhát hiện thay đổi quyền kiểm soát\nXem dữ kiện của ca B\nXem dữ kiện của ca A\nMở demo để kiểm tra\n\nBạn sẽ chuyển sang ứng dụng demo.\n\n01\nMô phỏng\n\nXem trước thay đổi của giao dịch\n\n02\nĐọc dữ kiện\n\nHiểu cảnh báo và phạm vi đã kiểm\n\n03\nBạn quyết định\n\nCân nhắc trước khi ký\n\nMột chữ ký.\nNhiều điều thay đổi.\n\nNhìn vào cả tài sản và quyền kiểm soát, trước khi bạn quyết định.\n\nCách Custos kiểm một giao dịch.\n\nBa bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.\n\n01\nNhận transaction chưa ký\n\nVí hoặc dApp đưa giao dịch vào trước bước ký. Custos không cần khóa riêng.\n\n02\nMô phỏng và phân tích\n\nChạy mô phỏng trên mạng, đọc thay đổi tài khoản, rồi áp bộ luật phát hiện.\n\n03\nTrả kết quả kèm dữ kiện\n\nKết quả đi cùng dữ kiện liên quan và phạm vi đã đọc hiểu được.\n\nVí hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.\n\nXem hậu quả\n\nĐối chiếu trạng thái trước và sau mô phỏng để thấy thay đổi về tài sản, phí và quyền.\n\nHiểu cảnh báo\n\nĐọc hành vi đáng chú ý bằng ngôn ngữ rõ ràng, cùng phạm vi Custos đã kiểm được.\n\nKiểm bằng chứng\n\nĐi từ cảnh báo tới dữ kiện liên quan và mở thêm chi tiết khi cần kiểm sâu.\n\nĐưa phần kiểm tra vào trước bước ký.\n\nTích hợp Custos vào ví hoặc dApp để phân tích transaction chưa ký, hiển thị cảnh báo và cho người dùng xem dữ kiện liên quan.\n\nPhân tích giao dịch\n\nỨng dụng tạo giao dịch\n\nGiao dịch chưa ký từ ví hoặc dApp\n\nCustos phân tích\n\nMô phỏng và phân tích thay đổi\n\ninspect()\nHiển thị kết quả\n\nCảnh báo, dữ kiện và phạm vi đã đọc\n\n↓\n\nĐiều kiện ký do ví quản lý\n\nKiểm tra phiên và sự đồng ý\n\nGắn kết quả với đúng giao dịch và sự đồng ý\n\nChuyển đến bộ ký của ví\n\nÁp dụng điều kiện ký của ví\n\n{ }\ninspect-transaction.ts\nTypeScript\nimport { inspect } from \"@custos-solana/core\";\n\nconst ketQua = await inspect({ connection }, tx, {\n  locale: \"vi\",\n  nguoiDung: viNguoiDung.toBase58(),\n});\n\n// Đọc kết quả trước khi xử lý bước ký.\nketQua.level;        // \"safe\" | \"warning\" | \"danger\"\nketQua.reasonCodes;  // [\"SPL_SET_AUTHORITY__ACCOUNT_OWNER\"]\nketQua.coverage;     // phạm vi đã đọc hiểu\nketQua.diff;         // thay đổi để hiển thị\n\nVí dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói công khai trên npm là 0.1.1 và chưa có mọi thay đổi trong mã nguồn.\n\nSDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.\n\nĐọc hướng dẫn SDK\n(mở trong tab mới)\nMở Inspector\nXem hướng dẫn CLI\n(mở trong tab mới)\nCó dữ kiện để xem, có giới hạn để biết.\n\nBạn có thể mở mã nguồn, xem cách đo và kiểm tra các tình huống đã ghi nhận. Kết quả cần được đọc cùng phạm vi hỗ trợ và điều kiện mô phỏng.\n\nCustos không bảo đảm một giao dịch an toàn tuyệt đối. Dữ liệu thiếu, chương trình chưa hỗ trợ và thay đổi trạng thái mạng có thể giới hạn kết quả. Bản demo dùng Solana Devnet.\n\nMã nguồn và hướng dẫn\n↗\n(mở trong tab mới)\n\nToàn bộ mã nguồn, tài liệu tích hợp SDK và consumer tham chiếu.\n\nSố liệu kèm cách đo\n↗\n\nCác con số của dự án, kèm lệnh và điều kiện đã dùng để đo.\n\nPhạm vi hỗ trợ\n↗\n(mở trong tab mới)\n\nChương trình nào Custos đọc hiểu được, và đọc tới mức nào.\n\nTình huống minh họa\n↗\n(mở trong tab mới)\n\nArtifact gốc của hai tình huống A/B trên trang này.\n\nCâu hỏi thường gặp\n\nPhạm vi, giới hạn và cách đọc kết quả của Custos.\n\nCustos có phải một ví mới không?\nTôi có cần nhập seed phrase hoặc dùng tài sản thật để thử không?\nKết quả “không phát hiện nguy hiểm” có nghĩa là an toàn tuyệt đối không?\nAI có quyết định giao dịch nguy hiểm không?\nTôi có thể thử transaction khác không?\nWebsite đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?\nCustos có tự chặn mọi ví ký giao dịch nguy hiểm không?\nTôi bắt đầu tích hợp từ đâu?\nXem giao dịch bằng một góc nhìn khác.\n\nBắt đầu từ một tình huống mẫu, rồi mở dữ kiện đứng sau cảnh báo.\n\nMở demo Custos\nĐọc tài liệu tích hợp\n(mở trong tab mới)\nCustos\n\nPhân tích giao dịch Solana trước khi ký.\n\nDemo ví mẫu\nInspector\nTài liệu SDK\n(mở trong tab mới)\nGitHub\n(mở trong tab mới)\nSố liệu\n\nBản thử nghiệm trên Solana Devnet.\n\n▷\nĐã giảm chuyển động",
+    "buttons": [
+      {
+        "text": "VI\nTiếng Việt",
+        "disabled": false
+      },
+      {
+        "text": "EN\nEnglish",
+        "disabled": false
+      },
+      {
+        "text": "Xem dữ kiện của ca B",
+        "disabled": false
+      },
+      {
+        "text": "Xem dữ kiện của ca A",
+        "disabled": false
+      },
+      {
+        "text": "▷\nĐã giảm chuyển động",
+        "disabled": true
+      }
+    ],
+    "links": [
+      {
+        "text": "Bỏ qua, tới nội dung chính",
+        "href": "#noi-dung"
+      },
+      {
+        "text": "CustosSolana transaction insights",
+        "href": "#dau-trang"
+      },
+      {
+        "text": "Cách hoạt động",
+        "href": "#cach-hoat-dong"
+      },
+      {
+        "text": "Trải nghiệm",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Cho nhà phát triển",
+        "href": "#nha-phat-trien"
+      },
+      {
+        "text": "FAQ",
+        "href": "#faq"
+      },
+      {
+        "text": "Mở demo Custos",
+        "href": "/"
+      },
+      {
+        "text": "Mở demo Custos",
+        "href": "/"
+      },
+      {
+        "text": "AB!Xem tình huống A/BCùng số dư. Khác quyền kiểm soát.",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Xem đối chiếu và bằng chứng →",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Cuộn để khám phá↓",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Solana DevnetMôi trường thử nghiệm",
+        "href": "/"
+      },
+      {
+        "text": "SDKDành cho ví và dApp",
+        "href": "#nha-phat-trien"
+      },
+      {
+        "text": "InspectorKiểm tra transaction",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Bằng chứngXem dữ kiện và giới hạn",
+        "href": "#bang-chung"
+      },
+      {
+        "text": "Mở demo để kiểm tra",
+        "href": "/"
+      },
+      {
+        "text": "Đọc hướng dẫn SDK (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "Mở Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Xem hướng dẫn CLI (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md#c%C3%A0i-%C4%91%E1%BA%B7t"
+      },
+      {
+        "text": "Mã nguồn và hướng dẫn ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana"
+      },
+      {
+        "text": "Số liệu kèm cách đo ↗",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Phạm vi hỗ trợ ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/docs/MA-TRAN-NANG-LUC.md"
+      },
+      {
+        "text": "Tình huống minh họa ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/demo-wow-20260918/scenarios.json"
+      },
+      {
+        "text": "Mở demo Custos",
+        "href": "/"
+      },
+      {
+        "text": "Đọc tài liệu tích hợp (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "Demo ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Tài liệu SDK (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "GitHub (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": []
+  },
+  {
+    "name": "landing-mobile",
+    "url": "http://127.0.0.1:5198/gioi-thieu.html",
+    "text": "Bỏ qua, tới nội dung chính\nCustos\nMở menu\n\nKiểm tra giao dịch Solana trước ký\n\nHiểu điều\nbạn sắp ký.\n\nXem thay đổi tài sản và quyền kiểm soát trong giao dịch Solana, cùng dữ kiện đứng sau mỗi cảnh báo.\n\nMở demo Custos\n\nBản thử nghiệm Devnet · Không dùng tài sản thật\n\nA\nB\n!\nXem tình huống A/B\nCùng số dư. Khác quyền kiểm soát.\nPhân tích giao dịch\nKết quả mẫu đã lưu\n\nChuyển 10 token\nDevnet\n\nTÀI SẢN\n\nSố dư token\n500,0\n→\n490,0\n\nQUYỀN KIỂM SOÁT\n\n!\nChủ tài khoản token\nBạn\n→\nđịa chỉ khác\n\nCó thao tác đổi chủ trong transaction mẫu.\n\nXem đối chiếu và bằng chứng\n→\n\nMinh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.\n\nCuộn để khám phá\n↓\nSolana Devnet\nMôi trường thử nghiệm\nSDK\nDành cho ví và dApp\nInspector\nKiểm tra transaction\nBằng chứng\nXem dữ kiện và giới hạn\nCùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu đã lưu · hai simulation độc lập\n\nA · Chỉ chuyển\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\nThao tác đổi chủ tài khoản\nKhông có trong transaction mẫu\nB · Chuyển và đổi chủ\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\nThao tác đổi chủ tài khoản\nCó\n\nA và B đều còn 490 token sau mô phỏng; chỉ B có thao tác đổi chủ tài khoản.\n\nXem dữ kiện của ca B\nXem dữ kiện của ca A\nMở demo để kiểm tra\n\nBạn sẽ chuyển sang ứng dụng demo.\n\n01\nMô phỏng\n\nXem trước thay đổi của giao dịch\n\n02\nĐọc dữ kiện\n\nHiểu cảnh báo và phạm vi đã kiểm\n\n03\nBạn quyết định\n\nCân nhắc trước khi ký\n\nMột chữ ký.\nNhiều điều thay đổi.\n\nNhìn vào cả tài sản và quyền kiểm soát, trước khi bạn quyết định.\n\nCách Custos kiểm một giao dịch.\n\nBa bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.\n\n01\nNhận transaction chưa ký\n\nVí hoặc dApp đưa giao dịch vào trước bước ký. Custos không cần khóa riêng.\n\n02\nMô phỏng và phân tích\n\nChạy mô phỏng trên mạng, đọc thay đổi tài khoản, rồi áp bộ luật phát hiện.\n\n03\nTrả kết quả kèm dữ kiện\n\nKết quả đi cùng dữ kiện liên quan và phạm vi đã đọc hiểu được.\n\nVí hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.\n\nXem hậu quả\n\nĐối chiếu trạng thái trước và sau mô phỏng để thấy thay đổi về tài sản, phí và quyền.\n\nHiểu cảnh báo\n\nĐọc hành vi đáng chú ý bằng ngôn ngữ rõ ràng, cùng phạm vi Custos đã kiểm được.\n\nKiểm bằng chứng\n\nĐi từ cảnh báo tới dữ kiện liên quan và mở thêm chi tiết khi cần kiểm sâu.\n\nĐưa phần kiểm tra vào trước bước ký.\n\nTích hợp Custos vào ví hoặc dApp để phân tích transaction chưa ký, hiển thị cảnh báo và cho người dùng xem dữ kiện liên quan.\n\nPhân tích giao dịch\n\nỨng dụng tạo giao dịch\n\nGiao dịch chưa ký từ ví hoặc dApp\n\nCustos phân tích\n\nMô phỏng và phân tích thay đổi\n\nHiển thị kết quả\n\nCảnh báo, dữ kiện và phạm vi đã đọc\n\n↓\n\nĐiều kiện ký do ví quản lý\n\nKiểm tra phiên và sự đồng ý\n\nGắn kết quả với đúng giao dịch và sự đồng ý\n\nChuyển đến bộ ký của ví\n\nÁp dụng điều kiện ký của ví\n\n{ }\ninspect-transaction.ts\nimport { inspect } from \"@custos-solana/core\";\n\nconst ketQua = await inspect({ connection }, tx, {\n  locale: \"vi\",\n  nguoiDung: viNguoiDung.toBase58(),\n});\n\n// Đọc kết quả trước khi xử lý bước ký.\nketQua.level;        // \"safe\" | \"warning\" | \"danger\"\nketQua.reasonCodes;  // [\"SPL_SET_AUTHORITY__ACCOUNT_OWNER\"]\nketQua.coverage;     // phạm vi đã đọc hiểu\nketQua.diff;         // thay đổi để hiển thị\n\nVí dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói công khai trên npm là 0.1.1 và chưa có mọi thay đổi trong mã nguồn.\n\nSDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.\n\nĐọc hướng dẫn SDK\n(mở trong tab mới)\nMở Inspector\nXem hướng dẫn CLI\n(mở trong tab mới)\nCó dữ kiện để xem, có giới hạn để biết.\n\nBạn có thể mở mã nguồn, xem cách đo và kiểm tra các tình huống đã ghi nhận. Kết quả cần được đọc cùng phạm vi hỗ trợ và điều kiện mô phỏng.\n\nCustos không bảo đảm một giao dịch an toàn tuyệt đối. Dữ liệu thiếu, chương trình chưa hỗ trợ và thay đổi trạng thái mạng có thể giới hạn kết quả. Bản demo dùng Solana Devnet.\n\nMã nguồn và hướng dẫn\n↗\n(mở trong tab mới)\n\nToàn bộ mã nguồn, tài liệu tích hợp SDK và consumer tham chiếu.\n\nSố liệu kèm cách đo\n↗\n\nCác con số của dự án, kèm lệnh và điều kiện đã dùng để đo.\n\nPhạm vi hỗ trợ\n↗\n(mở trong tab mới)\n\nChương trình nào Custos đọc hiểu được, và đọc tới mức nào.\n\nTình huống minh họa\n↗\n(mở trong tab mới)\n\nArtifact gốc của hai tình huống A/B trên trang này.\n\nCâu hỏi thường gặp\n\nPhạm vi, giới hạn và cách đọc kết quả của Custos.\n\nCustos có phải một ví mới không?\nTôi có cần nhập seed phrase hoặc dùng tài sản thật để thử không?\nKết quả “không phát hiện nguy hiểm” có nghĩa là an toàn tuyệt đối không?\nAI có quyết định giao dịch nguy hiểm không?\nTôi có thể thử transaction khác không?\nWebsite đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?\nCustos có tự chặn mọi ví ký giao dịch nguy hiểm không?\nTôi bắt đầu tích hợp từ đâu?\nXem giao dịch bằng một góc nhìn khác.\n\nBắt đầu từ một tình huống mẫu, rồi mở dữ kiện đứng sau cảnh báo.\n\nMở demo Custos\nĐọc tài liệu tích hợp\n(mở trong tab mới)\nCustos\n\nPhân tích giao dịch Solana trước khi ký.\n\nDemo ví mẫu\nInspector\nTài liệu SDK\n(mở trong tab mới)\nGitHub\n(mở trong tab mới)\nSố liệu\n\nBản thử nghiệm trên Solana Devnet.\n\n▷\nĐã giảm chuyển động",
+    "buttons": [
+      {
+        "text": "Mở menu",
+        "disabled": false
+      },
+      {
+        "text": "Xem dữ kiện của ca B",
+        "disabled": false
+      },
+      {
+        "text": "Xem dữ kiện của ca A",
+        "disabled": false
+      },
+      {
+        "text": "▷\nĐã giảm chuyển động",
+        "disabled": true
+      }
+    ],
+    "links": [
+      {
+        "text": "Bỏ qua, tới nội dung chính",
+        "href": "#noi-dung"
+      },
+      {
+        "text": "CustosSolana transaction insights",
+        "href": "#dau-trang"
+      },
+      {
+        "text": "Mở demo Custos",
+        "href": "/"
+      },
+      {
+        "text": "AB!Xem tình huống A/BCùng số dư. Khác quyền kiểm soát.",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Xem đối chiếu và bằng chứng →",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Cuộn để khám phá↓",
+        "href": "#trai-nghiem"
+      },
+      {
+        "text": "Solana DevnetMôi trường thử nghiệm",
+        "href": "/"
+      },
+      {
+        "text": "SDKDành cho ví và dApp",
+        "href": "#nha-phat-trien"
+      },
+      {
+        "text": "InspectorKiểm tra transaction",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Bằng chứngXem dữ kiện và giới hạn",
+        "href": "#bang-chung"
+      },
+      {
+        "text": "Mở demo để kiểm tra",
+        "href": "/"
+      },
+      {
+        "text": "Đọc hướng dẫn SDK (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "Mở Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Xem hướng dẫn CLI (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md#c%C3%A0i-%C4%91%E1%BA%B7t"
+      },
+      {
+        "text": "Mã nguồn và hướng dẫn ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana"
+      },
+      {
+        "text": "Số liệu kèm cách đo ↗",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Phạm vi hỗ trợ ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/docs/MA-TRAN-NANG-LUC.md"
+      },
+      {
+        "text": "Tình huống minh họa ↗ (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/demo-wow-20260918/scenarios.json"
+      },
+      {
+        "text": "Mở demo Custos",
+        "href": "/"
+      },
+      {
+        "text": "Đọc tài liệu tích hợp (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "Demo ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Tài liệu SDK (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md"
+      },
+      {
+        "text": "GitHub (mở trong tab mới)",
+        "href": "https://github.com/NeitLN/Custos-Solana"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": []
+  },
+  {
+    "name": "inspector",
+    "url": "http://127.0.0.1:5198/soi.html",
+    "text": "Custos Inspector\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\n\nPhân tích trước khi ký · Solana Devnet\n\nĐọc giao dịch.\nTrước khi đặt niềm tin.\n\nDán chuỗi base64 của một giao dịch chưa ký, hoặc chọn tệp. Custos mô phỏng nó trên Devnet rồi cho biết nó làm gì với tài sản của bạn.\n\n01 / DỮ LIỆU ĐẦU VÀO\nGiao dịch cần kiểm tra\nDữ liệu đi đâu: để mô phỏng, Custos gửi toàn bộ nội dung giao dịch tới máy chủ RPC bên dưới. Không có bước nào chạy hoàn toàn trên máy bạn. Trang này không lưu lịch sử và không nhận khoá riêng hay seed phrase.\nGiao dịch (base64)\nhoặc chọn tệp…\nVí của bạn (tuỳ chọn)\n\nBỏ trống thì Custos phân tích theo người trả phí — có thể không phải bạn.\n\nMáy chủ RPC\nKiểm giao dịch\n02 / KẾT QUẢ PHÂN TÍCH\nHiểu điều sắp xảy ra\nChờ giao dịch của bạn.\n\nKết quả sẽ xuất hiện tại đây sau khi mô phỏng. Inspector không có quyền ký hoặc gửi giao dịch.\n\nBiến động tài sản\nQuyền kiểm soát tài khoản\nDữ kiện và phần chưa đọc được",
+    "buttons": [
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "Kiểm giao dịch",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Custos Inspector",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Giới thiệu",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": []
+  },
+  {
+    "name": "evidence",
+    "url": "http://127.0.0.1:5198/so-lieu.html",
+    "text": "Custos Bằng chứng\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\n\nHỒ SƠ KIỂM CHỨNG / CUSTOS\n\nCó số liệu.\nCó cả giới hạn.\n\nMỗi con số dưới đây sinh ra từ một phép đo có file trong repo — không có số nào gõ tay. Trang tự cập nhật theo lần đo gần nhất.\n\nDữ liệu được sinh từ phép đo\nCập nhật 26/9/2026\nDữ liệu công khai\nMức độ hiểu\nTích hợp SDK\nĐánh giá AI\nChưa đo được\nSản phẩm\nKiểm engine trên dữ liệu công khai đã lưu offline\n\nĐo ngày 25/8/2026\n\nĐây là dữ liệu lịch sử, không phải runtime. Một số giao dịch công khai đã được lưu thành dữ liệu offline để kiểm engine. Demo và sản phẩm dự thi vận hành hoàn toàn trên Devnet — lúc demo Custos không kết nối mạng chính.\n\n0\ngiao dịch bị CÁO BUỘC\n\nCáo buộc = có mã lý do BUỘC TỘI một hành vi cụ thể. Khác với mức Cần xem kỹ: 7 giao dịch ở mức đó là do THÔNG TIN hoặc coverage khuyết (ví dụ \"chương trình chưa xác minh\", \"mô phỏng hỏng\") — thận trọng, không phải buộc tội. Đó là lý do số này là 0 dù có 7 cảnh báo. Đo trên 9 giao dịch SPL công khai đã lưu offline; cohort chưa gán nhãn ground truth nên đây KHÔNG phải precision/recall hay tỉ lệ báo nhầm.\n\n82%\nlệnh đọc hiểu được\n\nTrung bình trên 9 giao dịch. Phần còn lại Custos KHÔNG đoán — nó báo là chưa hiểu và giữ verdict ở mức thận trọng.\n\n65%\nlệnh chạm tài sản đọc hiểu được\n\n13/20 lệnh có động tới tài sản của người ký. Đây là con số sát hơn coverage chung, vì lệnh không chạm tài sản thì đọc hiểu hay không cũng ít quan trọng.\n\n0\ncảnh báo không có lý do\n\nMọi cảnh báo phải kèm mã lý do truy được về một luật cụ thể. Con số này phải luôn bằng 0 — khác 0 nghĩa là có luật đang báo động mà không nói được vì sao.\n\nGiới hạn của phép đo: đo trên một tập cố định 20 giao dịch, nhưng chỉ 9 còn mô phỏng được ở lần đo này (11 bỏ qua). Mô phỏng phụ thuộc trạng thái chuỗi hiện tại, nên giao dịch càng cũ càng dễ hỏng — số mẫu tụt dần theo thời gian, và coverage tụt theo vì mẫu rụng, không phải vì code kém đi. Script đếm và báo số bỏ qua thay vì lặng lẽ thu nhỏ mẫu số.\n\nVerdict trên 9 giao dịch mô phỏng được:\n\nNguy hiểm\n0\nCần xem kỹ\n7\nBình thường\n2\n\nTrong đó 0 giao dịch bị cáo buộc (có mã buộc tội); phần cảnh báo còn lại là thông tin hoặc coverage khuyết.\n\nNgười thật có hiểu cảnh báo không\n\n20 người · hỏi ngày 29/08 và 30/08/2026\n\nĐo trên bản giao diện LÚC ĐÓ. Tấm cảnh báo được thiết kế lại sau đợt phỏng vấn (01/09 và 04/09). Lúc đó người tham gia thấy mức Nguy hiểm, bảng số dư 500 → 0, dòng đổi chủ tài khoản và \"đã đọc hiểu 2 trên 3 lệnh\". Bản đang chạy giữ mức, dòng đổi chủ và độ phủ đó, nhưng số dư khác: hiện trường nay chuyển một nửa số dư đọc từ chuỗi lúc chạy, nên bảng không còn là 500 → 0. Hình thức cũng khác. Con số dưới đây không phải đo trên đúng bản đang chạy.\n\n13/20\nnêu được hậu quả\n\nChiếu màn hình rồi hỏi \"nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?\" — không giải thích trước. Tính là ĐÚNG khi nêu được mất tiền HOẶC mất quyền kiểm soát. 5 người hiểu một phần và 2 người hiểu sai; \"một phần\" KHÔNG gộp vào \"đúng\".\n\n4/20\nvẫn ký dù đã thấy cảnh báo\n\nHỏi TÁCH RA sau khi đã chép xong câu trả lời đầu — hỏi cùng lúc thì chính câu này đã mách rằng có gì đó đáng huỷ. Trong 4 người: 2 người HIỂU ĐÚNG hậu quả rồi vẫn ký có ý thức (ví phụ, token demo không giá trị), nên chỉ 2 người ký vì đọc nhầm màn hình. Đó mới là chỗ sản phẩm thất bại, và đội giữ nguyên con số thay vì gộp cho đẹp.\n\n10\nhuỷ giao dịch\n\nCòn 6 người nói sẽ kiểm tra thêm rồi mới quyết. Hiểu và hành động là HAI biến khác nhau — đo mỗi mức hiểu là đo nửa câu chuyện, và là nửa dễ đẹp hơn.\n\nGiới hạn của phép đo: một người hỏi cả 20 — không có trôi thang chấm giữa nhiều người hỏi, nhưng cũng không có ai chấm chéo. Hỏi qua tin nhắn và video call, nên phần qua tin nhắn không quan sát được thời gian đọc, và người trả lời có thời gian tra cứu. Biên bản đã ẩn danh nằm ở docs/BIEN-BAN-PHONG-VAN.md; số đếm bằng scripts/kiem-phong-van.ts, không đếm tay.\n\nMột bên ngoài cài SDK này mất bao lâu\n\ndApp mẫu, cài từ tarball ở thư mục ngoài monorepo\n\nTích hợp này do chính đội dựng. Nó chứng minh SDK cài được và dùng được từ vị trí người ngoài. Nó không chứng minh có bên thứ ba nào đã chọn dùng Custos — hiện chưa có bên nào.\n\n8.4 giây\ntừ npm install tới kết quả đầu tiên\n\nĐo cả lượt: cài phụ thuộc, rồi chạy ba kịch bản thật trên Devnet. Không cần khoá riêng — inspect() mô phỏng, mà mô phỏng không đòi chữ ký.\n\n31\ndòng mã tích hợp\n\nĐếm dòng thật, bỏ dòng trống và chú thích, trong đúng file chứa toàn bộ phần gọi Custos. Ba ràng buộc bên tích hợp phải giữ: địa chỉ lấy từ VÍ chứ không từ dApp, ngữ cảnh dApp khai chỉ được làm sản phẩm thận trọng hơn, và lỗi thì CHẶN chứ không bao giờ thành ký được.\n\n639 ms\nmột lượt kiểm tra trên Devnet\n\nĐo trên kịch bản tấn công thật: dApp khai 'nhận airdrop' nhưng rút token và đổi chủ tài khoản. Custos trả mức Nguy hiểm, đọc hiểu 2/2 lệnh.\n\nAI có thể làm hỏng gì\n\nchạy mô hình giả cố tình nói bậy, trên 38 mẫu đã gắn nhãn\n\n13/13\nbẫy bị chặn\n\nBịa địa chỉ ví, bịa số tiền, trấn an người dùng, tự chen mức nguy hiểm vào, trả rác, trả rỗng. Hai bẫy đầu TỪNG LỌT: bộ chắn cũ kiểm định dạng và câu trấn an nhưng không kiểm lời văn có căn cứ hay không. Đã vá — mô hình không bao giờ nhận được địa chỉ đầy đủ, nên mọi địa chỉ trong đầu ra là do nó nghĩ ra.\n\nĐã đo với mô hình thật — nhưng lợi ích thì chưa đo được. Lượt live có thật, ghi trong data/eval/ai-ket-qua.json. Thứ chưa đo được là lớp AI có giúp người dùng hiểu hơn không: trên thước nêu phần chưa đọc hiểu được, mô hình ngang câu mẫu, không hơn. Bản demo công khai vẫn cố ý không nhúng khoá, nên trang này chạy đường tất định. Cách đo đầy đủ ở docs/AI-EVALUATION.md.\n\nĐiều đội CHƯA đo được\n\nCác giới hạn hiện tại, để đọc kết quả trong đúng phạm vi.\n\n0\nphỏng vấn NGƯỜI MUA (ví, dApp)\n\nĐội đã hỏi người dùng cuối, chưa hỏi người quyết định tích hợp. Hai nhóm trả lời hai câu khác nhau, và số của nhóm này không thay cho nhóm kia được. Bộ câu hỏi đã soạn ở docs/PHONG-VAN-NGUOI-MUA.md.\n\n0\nví hoặc dApp bên thứ ba đã tích hợp\n\nChưa có bên nào. Ví dụ tích hợp phía trên do chính đội dựng — nó đo được ma sát tích hợp, không đo được nhu cầu thị trường.\n\nSản phẩm\n14\nluật xác định\n\nEngine luật quyết định verdict. AI không tạo và không sửa verdict — nó có trường riêng và chỉ được đề nghị kiểm tra thủ công.\n\n1136\ntest tự động\n\nChạy thật lúc sinh trang này, không đếm file. 0 test hỏng. Cả 14 luật đều có mẫu kích hoạt; 14 luật có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định.\n\n38\nmẫu kiểm thử\n\nMỗi mẫu ghi rõ nguồn gốc. Con số cáo buộc chỉ đo trên mẫu công khai đã lưu offline, không gộp mẫu đội tự dựng.\n\n6.5\nlượt gọi RPC mỗi lượt kiểm tra\n\nTrung vị, thấp nhất 4 cao nhất 9, đo trên 20 giao dịch công khai đã lưu offline, ngày 23/8/2026. Không tính lượt lấy giao dịch về — ví đã có sẵn nó.\n\nSinh lúc 23:09:37 26/9/2026 bởi scripts/tao-so-lieu.ts. Cách đo của từng con số nằm trong docs/SEED-DATASET.md và docs/DON-VI-KINH-TE.md.",
+    "buttons": [],
+    "links": [
+      {
+        "text": "Custos Bằng chứng",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Giới thiệu",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Dữ liệu công khai",
+        "href": "#du-lieu-cong-khai"
+      },
+      {
+        "text": "Mức độ hiểu",
+        "href": "#muc-do-hieu"
+      },
+      {
+        "text": "Tích hợp SDK",
+        "href": "#tich-hop"
+      },
+      {
+        "text": "Đánh giá AI",
+        "href": "#danh-gia-ai"
+      },
+      {
+        "text": "Chưa đo được",
+        "href": "#gioi-han"
+      },
+      {
+        "text": "Sản phẩm",
+        "href": "#san-pham"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": []
+  },
+  {
+    "name": "attack",
+    "url": "http://127.0.0.1:5198/tan-cong/",
+    "text": "⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet\nSolBonus\nTình huống demo của Custos\nNhận thưởng\n↗\nVề kịch bản\nHỏi đáp\n\nSolBonus · Community rewards\n\nMột lời mời.\nMột phần thưởng.\nMột chữ ký.\n\nMột trang tặng thưởng có thể trông rất thuyết phục. Hãy xem điều gì xảy ra khi yêu cầu nhận quà được mở trong ví tích hợp Custos.\n\n↗\nLời hứa trên giao diện. Sự thật trong giao dịch.\n\nPHIẾU NHẬN THƯỞNG\nDEMO · DEVNET\n“Ví của bạn đủ điều kiện nhận thưởng”\n1.000\nSOLB\n✓\nAqX3…BCLZ\nví trong kịch bản\n◷\nĐợt nhận đóng sau\nĐồng hồ trong kịch bản\n22:45:46\nNhận 1.000 SOLB\n\nMở yêu cầu trong ví demo để kiểm tra trước khi ký. SOLB là phần thưởng hư cấu.\n\n↗\nPhần kiểm tra giao dịch nằm trong ví Custos.\nNhững tín hiệu dễ khiến bạn tin tưởng\n\nChi tiết hư cấu được dùng làm đạo cụ trong tình huống này.\n\n12.847\nví đã nhận thưởng\nĐã kiểm toán\nbởi đối tác bảo mật\nKhông thu phí\nchỉ tốn phí mạng\n\nBên dưới lời hứa\n\nGiao diện nói “nhận quà”.\nGiao dịch làm điều khác.\n\nKhông có SOLB nào cả. Mọi thứ phía trên — đủ điều kiện, đếm ngược, số ví đã nhận, huy hiệu kiểm toán — là những đòn bẩy mà một trang lừa đảo thật dùng để bạn bấm nhanh hơn suy nghĩ. Giao dịch nút kia đẩy sang ví sẽ chuyển toàn bộ token demo đi và đổi chủ tài khoản, trong khi vẫn khai với ví rằng đó là \"airdrop\".\n\nĐó chính là điểm: bạn không cần nhận ra trang này là giả. Custos đọc giao dịch trước khi bạn ký, và nói cho bạn biết nó thật sự làm gì.\n\nHiểu đúng tình huống demo\nCó phần thưởng SOLB thật không?\nNút nhận thưởng thực hiện điều gì?\nNếu Devnet không phản hồi thì sao?\nSolBonus / đạo cụ trình diễn\nCustos · Đọc giao dịch trước khi ký",
+    "buttons": [
+      {
+        "text": "Nhận 1.000 SOLB",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Nhận thưởng ↗",
+        "href": "#nhan-thuong"
+      },
+      {
+        "text": "Về kịch bản",
+        "href": "#kich-ban"
+      },
+      {
+        "text": "Hỏi đáp",
+        "href": "#hoi-dap"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getAccountInfo",
+        "allowed": true
+      }
+    ]
+  },
+  {
+    "name": "attack-mobile",
+    "url": "http://127.0.0.1:5198/tan-cong/",
+    "text": "⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet\nSolBonus\nTình huống demo của Custos\nNhận thưởng\n↗\nVề kịch bản\nHỏi đáp\n\nSolBonus · Community rewards\n\nMột lời mời.\nMột phần thưởng.\nMột chữ ký.\n\nMột trang tặng thưởng có thể trông rất thuyết phục. Hãy xem điều gì xảy ra khi yêu cầu nhận quà được mở trong ví tích hợp Custos.\n\n↗\nLời hứa trên giao diện. Sự thật trong giao dịch.\n\nPHIẾU NHẬN THƯỞNG\nDEMO · DEVNET\n“Ví của bạn đủ điều kiện nhận thưởng”\n1.000\nSOLB\n✓\nAqX3…BCLZ\nví trong kịch bản\n◷\nĐợt nhận đóng sau\nĐồng hồ trong kịch bản\n22:45:44\nNhận 1.000 SOLB\n\nMở yêu cầu trong ví demo để kiểm tra trước khi ký. SOLB là phần thưởng hư cấu.\n\n↗\nPhần kiểm tra giao dịch nằm trong ví Custos.\nNhững tín hiệu dễ khiến bạn tin tưởng\n\nChi tiết hư cấu được dùng làm đạo cụ trong tình huống này.\n\n12.847\nví đã nhận thưởng\nĐã kiểm toán\nbởi đối tác bảo mật\nKhông thu phí\nchỉ tốn phí mạng\n\nBên dưới lời hứa\n\nGiao diện nói “nhận quà”.\nGiao dịch làm điều khác.\n\nKhông có SOLB nào cả. Mọi thứ phía trên — đủ điều kiện, đếm ngược, số ví đã nhận, huy hiệu kiểm toán — là những đòn bẩy mà một trang lừa đảo thật dùng để bạn bấm nhanh hơn suy nghĩ. Giao dịch nút kia đẩy sang ví sẽ chuyển toàn bộ token demo đi và đổi chủ tài khoản, trong khi vẫn khai với ví rằng đó là \"airdrop\".\n\nĐó chính là điểm: bạn không cần nhận ra trang này là giả. Custos đọc giao dịch trước khi bạn ký, và nói cho bạn biết nó thật sự làm gì.\n\nHiểu đúng tình huống demo\nCó phần thưởng SOLB thật không?\nNút nhận thưởng thực hiện điều gì?\nNếu Devnet không phản hồi thì sao?\nSolBonus / đạo cụ trình diễn\nCustos · Đọc giao dịch trước khi ký",
+    "buttons": [
+      {
+        "text": "Nhận 1.000 SOLB",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Nhận thưởng ↗",
+        "href": "#nhan-thuong"
+      },
+      {
+        "text": "Về kịch bản",
+        "href": "#kich-ban"
+      },
+      {
+        "text": "Hỏi đáp",
+        "href": "#hoi-dap"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [],
+    "requests": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getLatestBlockhash",
+        "allowed": true
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getAccountInfo",
+        "allowed": true
+      }
+    ]
+  },
+  {
+    "name": "analysis",
+    "url": "http://127.0.0.1:5198/?mock=danger",
+    "text": "BẢN TRÌNH DIỄN · SOLANA DEVNET · KHÔNG DÙNG TÀI SẢN THẬT\n⚠ ĐANG XEM DỮ LIỆU MOCK \"DANGER\" — KHÔNG PHẢI KẾT QUẢ THẬT\n\nCustos\nDemo\n\nVí mẫu tích hợp Custos SDK\n\nGiới thiệu\nVí mẫu\nInspector\nSố liệu\nPhòng phân tích\nVí của bạn\nPhân tích các kịch bản trên hiện trường mẫu\n\nKhông gian trải nghiệm\n\nMột giao dịch.\nNhìn rõ trước khi ký.\n\nChọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.\n\n01\nChọn tình huống\n02\nCustos phân tích\n03\nĐọc kết quả\nCustos Demo 01\nVí thử nghiệm của bạn\nAqX3F…EBCLZ\nTổng tài sản thử nghiệm\nSPL\n500\nUSDC-demo\n\nToken thử nghiệm trên Devnet · không có giá trị quy đổi\n\n01 Chọn một giao dịch để thử\n\nDiễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết.\n\nNhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.\nĐổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.\nCấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.\nCấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im\nTrao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.\nChuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.\nKhông rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe\nGiao dịch lành tính — đối chứng\nĐối chứng — engine phải im\nTấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.\nLớp bảo vệ Custos\nMô phỏng và giải thích trước khi ký\nHoạt động gần đây\nGiao dịch thành công\n55WDoMJ6md…L6Zn3D\n1 ngày trước\nGiao dịch thành công\n3g3EZLkcnQ…Na8fKU\n1 ngày trước\nGiao dịch thành công\n3eL99MTfnB…MztuiZ\n1 ngày trước\nGiao dịch thành công\n23UShkHiSh…E6WWhg\n1 ngày trước\n02 Kiểm tra trước khi ký\n\nMô phỏng giao dịch rồi giải thích hậu quả\n\nChạy trước khi ký\nGiao dịch chưa ký. Quyết định vẫn ở bạn.\n\nChọn “Nhận quà tặng” hoặc “Gửi 10 token” để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.\n\nTài sản của bạn thay đổi ra sao\n\nSố dư và quyền sở hữu, trước và sau khi ký.\n\nTrước → Sau\n\nVì sao nguy hiểm, bằng tiếng Việt\n\nMột câu nói rõ hậu quả, không phải mã lỗi.\n\nLý do cảnh báo\n\nPhần Custos CHƯA đọc hiểu\n\nCustos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.\n\nPhạm vi đã đọc\nVí mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.\nEngine luật quyết định mức cảnh báo · AI không được đổi mức",
+    "buttons": [
+      {
+        "text": "Phòng phân tích",
+        "disabled": false
+      },
+      {
+        "text": "Ví của bạn",
+        "disabled": false
+      },
+      {
+        "text": "AqX3F…EBCLZ",
+        "disabled": false
+      },
+      {
+        "text": "Nhận thưởng nhưng token rời ví\nNhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
+        "disabled": false
+      },
+      {
+        "text": "Đổi chủ tài khoản token\nNâng cấp ví lên bản Pro — ký để kích hoạt.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vượt số dư\nCho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
+        "disabled": false
+      },
+      {
+        "text": "Cấp quyền rút vừa đủ — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Trao quyền đóng tài khoản\nDọn dẹp tài khoản rác để nhận lại phí thuê.",
+        "disabled": false
+      },
+      {
+        "text": "Chuyển thêm ngoài hành động chính\nGửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
+        "disabled": false
+      },
+      {
+        "text": "Không rõ đang bảo vệ ai\nDữ liệu khuyết — fail-safe",
+        "disabled": false
+      },
+      {
+        "text": "Giao dịch lành tính — đối chứng\nĐối chứng — engine phải im",
+        "disabled": false
+      },
+      {
+        "text": "Tấn công đầy đủ — chuyển tiền và đổi chủ\nNhận quà tặng — ký để nhận.",
+        "disabled": false
+      }
+    ],
+    "links": [
+      {
+        "text": "Giới thiệu",
+        "href": "/gioi-thieu.html"
+      },
+      {
+        "text": "Ví mẫu",
+        "href": "/"
+      },
+      {
+        "text": "Inspector",
+        "href": "/soi.html"
+      },
+      {
+        "text": "Số liệu",
+        "href": "/so-lieu.html"
+      },
+      {
+        "text": "Giao dịch thành công55WDoMJ6md…L6Zn3D1 ngày trước",
+        "href": "https://explorer.solana.com/tx/55WDoMJ6mdc3RbjmoUHH8SKfMnYETPbWydQC1QfYCeCjNnXSs9k5jqhStoxHo8AfevkbnYQfeq2oRbv4b5L6Zn3D?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3g3EZLkcnQ…Na8fKU1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3g3EZLkcnQ5ME1eg5eb7eAx6Dfpsr1wWedpdGURtvnAhqGuGZLRmvJ4xKkp8hh5GS4tdDMrTHik3fpRgseNa8fKU?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công3eL99MTfnB…MztuiZ1 ngày trước",
+        "href": "https://explorer.solana.com/tx/3eL99MTfnBMkUw5vBz7gZoax8AkTaHTZhuuvV5Wh6DUfiVxHcA73vVAYY6aScvKdFaZcj1LRj4uQQAx4Q4MztuiZ?cluster=devnet"
+      },
+      {
+        "text": "Giao dịch thành công23UShkHiSh…E6WWhg1 ngày trước",
+        "href": "https://explorer.solana.com/tx/23UShkHiShLqZR6viaZ66VBkA7MNwHkqjdi99zYFBnRqQNQfgGWJSLxJT8Gpfzpc7FcYnMP4ZZda4d1TkzE6WWhg?cluster=devnet"
+      }
+    ],
+    "errors": [],
+    "overflow": false,
+    "axe": [
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          "<div class=\"bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white\">⚠ Đang xem dữ liệu mock \"danger\" — không phải kết quả thật</div>"
+        ]
+      }
+    ],
+    "requests": [
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getSignaturesForAddress",
+        "allowed": true
+      },
+      {
+        "url": "https://api.devnet.solana.com/",
+        "method": "getTokenAccountBalance",
+        "allowed": true
+      }
+    ]
+  }
+]
