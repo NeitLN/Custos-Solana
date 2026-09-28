@@ -13,6 +13,9 @@
 .wallet-unlock-warning{margin-top:8px;padding:8px 10px;border-left:3px solid #b45309;background:#fff7ed;color:#7c2d12;font-size:11px;line-height:1.5}
 /* Nút chọn file tiếng Việt thay điều khiển gốc — review 26/09, mục 3.11. */
 .wallet-unlock-title{font-size:12px;font-weight:600;color:#31513d;margin:0 0 8px}
+.wallet-session-recovery{margin:6px 0 12px;padding:12px;border:1px solid #c7d5c1;border-radius:10px;background:#f3f7f1;font-size:13px;line-height:1.6;color:#2f4a3c}
+.wallet-session-recovery .wallet-inline-actions button{min-height:44px;font-size:12px}
+.wallet-session-recovery .wallet-inline-actions button:disabled{opacity:.5;cursor:not-allowed}
 .wallet-file-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
 .wallet-file-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:6px;background:#e6ece2;color:#31513d;font-size:12px;font-weight:600;cursor:pointer}
 .wallet-file-input:focus-visible+.wallet-file-btn{outline:2px solid #31513d;outline-offset:2px}

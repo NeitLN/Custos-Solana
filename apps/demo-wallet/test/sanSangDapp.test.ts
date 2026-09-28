@@ -30,3 +30,8 @@ test("màn ví hiện lý do ngay dưới khối dApp khi chưa dùng được",
   assert.match(s, /lyDoDappChuaSan\(/);
   assert.match(s, /className="wallet-dapp-ly-do"/);
 });
+
+test('giao dịch chưa rõ kết quả phải được tra cứu trước khi tạo hoặc dùng phiên', () => {
+  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true, coPhien: false })!, /Tra cứu/);
+  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true })!, /Tra cứu/);
+});

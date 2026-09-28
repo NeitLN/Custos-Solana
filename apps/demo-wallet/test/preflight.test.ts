@@ -172,11 +172,11 @@ test("tồn đọng review · lọc genesis có NHỚ: hỏi mỗi endpoint mộ
   assert.equal(hoi, 2, "đã có kết quả mà vẫn hỏi lại genesis");
 });
 
-test("tồn đọng review · màn phỏng vấn và trang tấn công dựng connection từ danh sách ĐÃ lọc genesis", () => {
+test("tồn đọng review · màn phỏng vấn lọc genesis; SolBonus độc lập kiểm Devnet trước dựng giao dịch", () => {
   const doc = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), "utf8");
   const pv = doc("../src/PhongVan.tsx");
   assert.ok(!/ketNoiDuPhong\(dsRpc\(ht\)\)/.test(pv), "phỏng vấn dùng dự phòng chưa qua genesis");
   assert.ok(/locGenesis\(/.test(pv));
   const tc = doc("../../trang-tan-cong/src/App.tsx");
-  assert.ok(/locGenesis\(/.test(tc), "trang tấn công dùng dự phòng chưa qua genesis");
+  assert.ok(/await kiemDevnet\(connection\)/.test(tc), "SolBonus chưa xác minh Devnet");
 });

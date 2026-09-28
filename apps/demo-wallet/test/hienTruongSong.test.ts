@@ -218,11 +218,10 @@ test("bàn giao trang tấn công → ví: byte, lời khai và hai hậu quả 
  * Bỏ chú thích trước khi tìm — bài học đã sập bốn lần trong repo (BAN-GIAO-CHO-CODEX.md):
  * chú thích ở đây CỐ Ý nhắc tới `ht.soLuong` để giải thích lỗi.
  */
-test("ba luồng dựng ca tấn công đều dùng dungTxTanCongSong, không đọc ht.soLuong", () => {
+test("hai luồng nội bộ ví dùng dungTxTanCongSong, không đọc ht.soLuong (SolBonus có builder độc lập B3)", () => {
   const boChuThich = (s: string) =>
     s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
   for (const f of [
-    "apps/trang-tan-cong/src/App.tsx",
     "apps/demo-wallet/src/PhongVan.tsx",
     "apps/demo-wallet/src/kichBan.ts",
   ]) {
