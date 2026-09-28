@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "CUSTOS_GOC=1 VITE_CO_API_AI=1 VITE_TRANG_CHINH=gioi-thieu npm run build --workspace apps/demo-wallet && CUSTOS_GOC=1 npm run build -w @custos-solana/trang-tan-cong && mkdir -p apps/demo-wallet/dist/tan-cong && cp -r apps/trang-tan-cong/dist/. apps/demo-wallet/dist/tan-cong",
+  "buildCommand": "bash scripts/build-vercel.sh",
   "outputDirectory": "apps/demo-wallet/dist",
   "installCommand": "echo engine-strict=false >> .npmrc && npm install --no-audit --no-fund",
   "framework": null,

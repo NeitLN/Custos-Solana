@@ -2,6 +2,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
+/** Lệnh dựng Vercel THẬT: `buildCommand` cộng nội dung script nó gọi (Vercel giới hạn 256 ký tự). */
+function lenhDungVercel(): string {
+  const v = JSON.parse(readFileSync("vercel.json", "utf8")) as { buildCommand: string };
+  const sh = v.buildCommand.match(/scripts\/[\w-]+\.sh/)?.[0];
+  return v.buildCommand + "\n" + (sh ? readFileSync(sh, "utf8") : "");
+}
+
 /**
  * CHẾ ĐỘ AI CỦA TỪNG BẢN BUILD — rà soát 25/09, P1.
  *
@@ -16,8 +23,7 @@ import { readFileSync } from "node:fs";
 const boChuThich = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 test("vercel.json bật VITE_CO_API_AI=1 — bản duy nhất đi kèm hàm server", () => {
-  const v = JSON.parse(readFileSync("vercel.json", "utf8")) as { buildCommand: string };
-  assert.match(v.buildCommand, /\bVITE_CO_API_AI=1\b/);
+  assert.match(lenhDungVercel(), /\bVITE_CO_API_AI=1\b/);
 });
 
 test("GitHub Pages KHÔNG bật cờ — bản tĩnh không được hứa AI", () => {
