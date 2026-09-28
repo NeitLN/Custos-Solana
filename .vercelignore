@@ -43,3 +43,16 @@ apps/trang-tan-cong/dist
 # Biến môi trường cục bộ. `.env.local` chứa VERCEL_OIDC_TOKEN do `vercel link` tạo.
 .env
 .env.*
+
+# ⚠️ KHOÁ RIÊNG CỦA VÍ DEMO — KHÔNG BAO GIỜ được rời máy (CLAUDE.md, quyết định số 8).
+# Bản trước thiếu dòng này: `.gitignore` có `.devnet/` nhưng Vercel CLI KHÔNG đọc `.gitignore`,
+# nên `vercel deploy` từ máy dev đã đẩy `.devnet/vi-demo.json` vào nguồn của deployment
+# (không phục vụ công khai — đầu ra chỉ là `apps/demo-wallet/dist` — nhưng vẫn là khoá rời máy).
+# Phát hiện 28/09 khi rà trước lượt deploy có AI. Guard: `apps/demo-wallet/test/vercelIgnore.test.ts`.
+.devnet
+*.pem
+keypair*.json
+
+# Gói bản trình diễn và bản dựng thư viện — sinh ra, không phải nguồn.
+*.zip
+packages/*/dist
