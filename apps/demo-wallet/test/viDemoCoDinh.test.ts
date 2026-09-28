@@ -82,5 +82,11 @@ test("màn thực thi KHÔNG cho URL hay nút nào đổi sang ví khác — ph�
   assert.doesNotMatch(ma, /\.(?:get|has|set)\(\s*['"](?:guest|wallet)['"]/, "không đọc/ghi ví qua URL");
   assert.doesNotMatch(ma, /Keypair\.generate\(/, "không tự sinh ví trong giao diện");
   assert.doesNotMatch(ma, /ví khách/i, "không còn lối vào 'ví khách'");
-  assert.match(ma, /new LiveSession\(undefined, inspect, undefined,/, "phiên phải dùng ví mặc định, không truyền khoá hay địa chỉ khác");
+  // `inspect` có thể được bọc để gắn nhãn nguồn diễn giải theo lượt (CK-09) — tham số VÍ (1) và
+  // KHOÁ (3) vẫn phải là `undefined`: đó mới là điều bài này canh.
+  assert.match(
+    ma,
+    /new LiveSession\(undefined, (?:inspect|gan\.bocInspect\(inspect\)), undefined,/,
+    "phiên phải dùng ví mặc định, không truyền khoá hay địa chỉ khác",
+  );
 });

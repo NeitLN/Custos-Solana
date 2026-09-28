@@ -46,7 +46,28 @@ export type { DemoAccounts } from "./store.ts";
 
 // MỘT bản genesis cho cả repo — `scripts/rpcDuPhong.ts`.
 export const DEVNET_GENESIS = GENESIS_DEVNET;
-export const LIVE_RPC = "https://api.devnet.solana.com";
+const RPC_CONG_CONG = "https://api.devnet.solana.com";
+
+/**
+ * Endpoint CHÍNH của phiên live (đọc + gửi). DEV: `VITE_RPC` của máy đội — cùng thứ tự với
+ * Phòng phân tích (`hienTruong.ts`); nghiệm thu 28/09 dùng RPC Devnet riêng vì endpoint công
+ * cộng treo đọc account theo đợt. Production: KHÔNG đọc biến môi trường (khoá không vào
+ * bundle). Endpoint nào cũng phải qua kiểm genesis của phiên trước khi dùng.
+ */
+export function chonRpcLive(dev: boolean, env: string | undefined): string {
+  if (!dev || !env) return RPC_CONG_CONG;
+  try {
+    return new URL(env).protocol === "https:" ? env : RPC_CONG_CONG;
+  } catch {
+    return RPC_CONG_CONG;
+  }
+}
+
+export const LIVE_RPC = chonRpcLive(
+  !!import.meta.env?.DEV,
+  // Chỉ sau `DEV ?` — truyền thẳng làm Vite nhúng khoá vào bundle (xem `khongRoRpcBundle.test.ts`).
+  import.meta.env?.DEV ? import.meta.env["VITE_RPC"] : undefined,
+);
 
 /*
  * DANH SÁCH ĐỌC CỦA PHIÊN — một mảng DUY NHẤT, `fetchDuPhong` giữ tham chiếu tới nó.
@@ -114,6 +135,8 @@ export type PendingView = {
   signer: string;
   target: string;
   state: string;
+  /** Host RPC đã trả lời lượt kiểm (chỉ host — URL có thể mang khoá). Rỗng: chưa có lượt kiểm được nhận. */
+  nguonDoc: string[];
 };
 export type LiveView = {
   wallet: string;
@@ -675,6 +698,8 @@ export class LiveSession {
         send: { pha: "nghi" },
       });
       let result: InspectResult | null = null;
+      // Host đã trả lời lượt kiểm được nhận — thẻ cảnh báo hiện ĐÚNG nó (Codex review lần 4).
+      let nguonDoc: string[] = [];
       const captured: { facts?: Facts } = {};
       /*
        * MỘT NGUỒN CHO MỘT LƯỢT KIỂM (Codex review 27/09). Trộn ⇒ đọc lại MỘT lần; vẫn trộn:
@@ -723,6 +748,7 @@ export class LiveSession {
           throw new LoiNguonTron(lan.nguon);
         }
         result = lan.r;
+        nguonDoc = lan.nguon;
       } catch (e) {
         // Bảo vệ bật: chưa kiểm xong thì KHÔNG có yêu cầu ký — quá hạn là lý do, nói rõ.
         if (protectedMode) {
@@ -760,6 +786,7 @@ export class LiveSession {
         signer: signer.toBase58(),
         target: target.toBase58(),
         state: this.#accountState(),
+        nguonDoc,
       };
       this.#request = { tx, expiry, view };
       this.#update({ pending: view, status: "Chưa ký, chưa gửi. Bạn quyết định ở bước xác nhận." });

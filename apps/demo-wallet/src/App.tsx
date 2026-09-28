@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { PublicKey, type Connection } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
-import { dienGiaiKhongAI, boiThoiHan, dienGiaiBangMoHinh } from "@custos-solana/ai";
+import { theoDoiDienGiai, type ExplanationSource } from "./live/interpreter.ts";
 import { timKichBan } from "./kichBan.ts";
 import { PhongKichBan } from "./PhongKichBan.tsx";
 import { dungGoiQuaServer, coAiKhong } from "./goiAiQuaServer.ts";
@@ -28,6 +28,7 @@ import { kiemSanSang, dsChoLuotKiem, type KetQuaPreflight } from "./preflight.ts
 import { DaiNguon, BangSanSang, type ThongTinNguon } from "./NguonKiem.tsx";
 import goiCore from "../../../packages/core/package.json";
 import { HoatDong } from "./HoatDong.tsx";
+import { DaiPhamVi } from "./DaiPhamVi.tsx";
 import { docYeuCauNgoaiChiTiet } from "./yeuCauNgoai.ts";
 import { donKhoaCu } from "./vi.ts";
 import { locDongNhatKy } from "./locNhatKy.ts";
@@ -53,11 +54,7 @@ type Kich = string;
  *
  * Gộp hai chiều thành một nhãn "live" là cách nhanh nhất để nói quá về sản phẩm.
  */
-type ChieuDienGiai =
-  | "moHinh"      // mô hình vừa được gọi thật
-  | "tatDinh"     // đường tất định — không gọi mô hình
-  | "moHinhLoi"   // đã gọi nhưng hỏng, đã lui về tất định
-  | "chuaCauHinh"; // server chưa có khoá
+type ChieuDienGiai = ExplanationSource; // xem `live/interpreter.ts` — sáu nguồn, chốt theo lượt
 
 export default function App() {
   const [surface, setSurface] = useState(() => initialWalletSurface(window.location.search, window.location.hash));
@@ -212,34 +209,17 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
    * RANH GIỚI KHÔNG ĐỔI: cả hai nhánh đều trả về một `Interpreter`, và kiểu đó
    * KHÔNG có trường `level`. Dù đi đường mô hình hay đường tất định, L3 không chạm
    * được vào verdict — đó là bảo đảm của kiểu, không phải của kỷ luật lập trình.
+   * Mô hình chậm hoặc hỏng thì rơi về tất định, người dùng vẫn đọc được.
    *
-   * `boiThoiHan` bọc cả hai: mô hình chậm thì rơi về tất định, người dùng vẫn đọc được.
+   * MỘT BỘ THEO DÕI CHO MỘT LƯỢT — CK-09. Nhãn chốt lúc câu trả về và chỉ được đặt CÙNG
+   * CHỖ với kết quả của đúng lượt (`conDung()`). Bản trước đặt "moHinh" trước khi gọi và để
+   * nhánh lỗi sửa lại: câu mẫu sau khi bộ chắn lùi / quá hạn vẫn mang nhãn AI, và lỗi của
+   * một lượt cũ về muộn đổi được nhãn của lượt đang hiện.
    */
-  const dungInterpreter = useCallback(() => {
-    if (!muonDungAi || coAi !== true) {
-      setChieuDienGiai("tatDinh");
-      return boiThoiHan(dienGiaiKhongAI);
-    }
-    // Đặt trước là "đã gọi mô hình"; nhánh lỗi bên dưới sửa lại nếu không phải vậy.
-    setChieuDienGiai("moHinh");
-    const goi = dungGoiQuaServer({
-      ghiNhanDung: () => {
-        /* usage thật do server chuyển tiếp — chưa gắn vào giao diện ở bản này */
-      },
-    });
-    return boiThoiHan(
-      dienGiaiBangMoHinh(async (loiNhac) => {
-        try {
-          return await goi(loiNhac);
-        } catch (e) {
-          // Phân biệt "chưa cấu hình" với "gọi hỏng": hai câu khác nhau với người xem.
-          setChieuDienGiai(e instanceof Error && e.name === "ChuaCauHinhAI" ? "chuaCauHinh" : "moHinhLoi");
-          throw e;
-        }
-      }),
-      8_000,
-    );
-  }, [muonDungAi, coAi]);
+  const dungTheoDoi = useCallback(
+    () => theoDoiDienGiai(muonDungAi && coAi === true ? dungGoiQuaServer() : null, 8_000),
+    [muonDungAi, coAi],
+  );
   const [dangChay, setDangChay] = useState(false);
   const [nhatKy, setNhatKy] = useState<string[]>([]);
   const [daSaoChep, setDaSaoChep] = useState(false);
@@ -415,13 +395,14 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       // devnet công cộng), không hardcode chuỗi endpoint tại chỗ này.
       // Hạn bọc CẢ chuỗi (đọc hiện trường + mô phỏng), cùng lý do như ở `bam()`:
       // đặt hạn quanh một chặng bên trong thì chặng còn lại vẫn treo được.
+      const theoDoi = dungTheoDoi();
       void coHan(
         docHienTruong().then((htNay) =>
           inspect(
             {
               // Cùng cửa chọn endpoint với kịch bản: dự phòng chưa qua genesis không vào.
               connection: ketNoiDuPhong(dsChoLuotKiem(dsXacMinhRef.current, dsRpc(htNay))),
-              interpret: dungInterpreter(),
+              interpret: theoDoi.interpreter,
             },
             yc.tx,
             {
@@ -437,6 +418,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
         .then((r) => {
           ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
           setKetQua(r);
+          setChieuDienGiai(theoDoi.nguon() ?? "tatDinh");
         })
         .catch((e: unknown) => {
           ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
@@ -597,8 +579,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       if (!kb) throw new Error(`không có kịch bản "${kich}"`);
       const tuyChon = tuyChonInspectKichBan(kb, htDung);
       // Phát lại không gọi mô hình: lượt đó phải tái lập được và không có mạng.
-      const phienDich = () => (phatLai ? boiThoiHan(dienGiaiKhongAI) : dungInterpreter());
-      if (phatLai) setChieuDienGiai("tatDinh");
+      const theoDoi = phatLai ? theoDoiDienGiai(null) : dungTheoDoi();
 
       const motLan = async () => {
         const { c, nguonOk, thieu } = taoC();
@@ -629,7 +610,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
         );
         // Tuỳ chọn từ `tuyChonInspectKichBan` — gồm `chanDoan: true` (dấu vết TB-X02) và
         // `nguoiDung` đọc từ SỔ (`khongKhaiNguoiDung`), cùng hàm với script ghi fixture.
-        const r = await inspect({ connection: c, interpret: phienDich() }, txNay, tuyChon);
+        const r = await inspect({ connection: c, interpret: theoDoi.interpreter }, txNay, tuyChon);
         return { c, nguonOk, thieu, tx: txNay, byteLucKiem: byteNay, r };
       };
       /*
@@ -708,6 +689,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       if (!conDung()) return;
       setThongTinNguon(tt);
       setKetQua(r);
+      setChieuDienGiai(theoDoi.nguon() ?? "tatDinh");
     } catch (e0) {
       // Hết hạn hay lỗi: dừng mọi request còn bay của lượt này (web3.js tự thử lại 429).
       huyLuot.abort();
@@ -766,42 +748,9 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
 
   return (
     <div className="app-shell demo-shell min-h-screen bg-nen text-chu">
-      <div className="scope-bar" role="status">
-        <div className="scope-bar__track">
-          <span className="scope-bar__message">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-          <span className="scope-bar__message" aria-hidden="true">
-            <span className="scope-dot mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" />
-            Bản trình diễn · Solana Devnet · Không dùng tài sản thật
-          </span>
-        </div>
-      </div>
+      <DaiPhamVi>
+        Bản trình diễn trên <strong>Solana Devnet</strong> · không dùng tài sản thật
+      </DaiPhamVi>
 
       {cheDo?.loai === "mock" && (
         // Landmark có tên (CK-F07): axe báo `region` khi dải này nằm ngoài mọi landmark, và

@@ -196,6 +196,24 @@ export async function locTheoGenesis(
 }
 
 /**
+ * `locTheoGenesis` CÓ NHỚ, cho trang dựng connection nhiều lần (phỏng vấn, trang tấn công).
+ * Chỉ nhớ khi mọi endpoint đã trả lời genesis; còn endpoint "chưa đo" thì lần sau hỏi lại —
+ * nhớ một lần mạng chập thành kết quả cả phiên là giữ một endpoint chưa từng được xác minh.
+ */
+export function taoLocGenesisNho(tuyChon: Parameters<typeof genesisCua>[1] = {}) {
+  const nho = new Map<string, string[]>();
+  return async (ds: readonly string[]): Promise<string[]> => {
+    const khoa = ds.join("\n");
+    const co = nho.get(khoa);
+    if (co) return [...co];
+    const kq = await Promise.all(ds.map((u) => genesisCua(u, tuyChon)));
+    const dung = ds.filter((_, i) => kq[i] !== "khacCluster");
+    if (kq.every((x) => x !== "chuaDo")) nho.set(khoa, dung);
+    return [...dung];
+  };
+}
+
+/**
  * XÁC MINH NGHIÊM cho dữ liệu sẽ DÁN NHÃN Devnet (fixture ghi lại) — Codex review lần 2,
  * mục 6. Khác `locTheoGenesis` (giữ endpoint "chưa đo" để demo sống còn chạy được): ở đây
  * chỉ giữ endpoint CHỨNG MINH là Devnet. Lý do bỏ chỉ mang host — URL có thể mang khoá.

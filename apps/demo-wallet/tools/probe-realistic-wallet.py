@@ -9,6 +9,8 @@ p.add_argument('--out', default='docs/review/live-devnet/realistic-wallet')
 # Bắt đầu từ phân đoạn nào (A→D). Mỗi phân đoạn tự tạo phiên mới, nên chạy tiếp từ B/C/D
 # không lặp lại giao dịch của phân đoạn trước — tiết kiệm SOL khi RPC làm lượt trước dừng giữa chừng.
 p.add_argument('--tu', default='A', choices=['A', 'B', 'C', 'D', 'E', 'F'])
+# Dừng SAU phân đoạn nào (mặc định chạy tới hết). `--tu A --den B` chỉ chạy AC03–AC07.
+p.add_argument('--den', default='F', choices=['A', 'B', 'C', 'D', 'E', 'F'])
 args = p.parse_args()
 if not args.allow_devnet_send: raise SystemExit('Require --allow-devnet-send; uses only configured Devnet DEMO assets.')
 out = pathlib.Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -81,7 +83,9 @@ with sync_playwright() as pw:
         warning_button = request.get_by_role('button', name=re.compile(r'^(Ký giao dịch|Vẫn ký)'))
         if warning_button.count(): warning_button.click()
         request.locator('.wallet-consent input').check()
-        request.get_by_role('button', name=re.compile(r'^(Bỏ qua cảnh báo và gửi|Ký và gửi trên Devnet)$')).click()
+        # Ba nhãn của `WalletExecution.tsx`: đề nghị kiểm tra (aiAdvisory) / bỏ qua cảnh báo / ký thường.
+        # Thiếu nhãn đầu, ca "Ứng dụng đóng tài khoản rỗng" (28/09) treo 30 s ở chỗ bấm — không gửi gì.
+        request.get_by_role('button', name=re.compile(r'^(Đã xem, vẫn ký và gửi|Bỏ qua cảnh báo và gửi|Ký và gửi trên Devnet)$')).click()
         page.wait_for_function("old => document.querySelector('[role=alert]') || (JSON.parse(localStorage.getItem('custos.live-receipt.v1') || 'null')?.signature !== old && !document.querySelector('.wallet-request') && !document.querySelector('.live-spinner'))", arg=previous, timeout=90000)
         r = page.evaluate("JSON.parse(localStorage.getItem('custos.live-receipt.v1') || 'null')")
         # Chưa có chữ ký mới ⇒ lỗi TRƯỚC khi gửi: nêu ra như cũ.
@@ -100,8 +104,9 @@ with sync_playwright() as pw:
         report['wallet'] = page.locator('#live-wallet-address').input_value()
         assert report['wallet'] == 'AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ'
         page.locator('#demo-keypair').set_input_files('.devnet/vi-demo.json'); idle()
-        report['tu'] = args.tu
-        if args.tu == 'A':
+        report['tu'] = args.tu; report['den'] = args.den
+        chay = lambda s: args.tu <= s <= args.den
+        if chay('A'):
             setup(); check('setup: fresh mint, 500 DEMO, fixed funded wallet')
             prep('transfer', '12,5'); r = execute()
             assert r['comparison']['actualBefore'] == '500000000' and r['comparison']['actualAfter'] == '487500000'
@@ -117,19 +122,28 @@ with sync_playwright() as pw:
             assert '0,0 DEMO' in page.locator('.wallet-rights').inner_text()
             check('AC05: red override stays protected; transfer and changed owner confirmed')
             page.screenshot(path=str(out/'01-red-override.png'), full_page=True)
-        if args.tu <= 'B':
+        if chay('B'):
             setup(); dat_bao_ve(False)
             prep('transfer', '3'); execute(); check('unprotected normal transfer confirmed')
             prep('attack'); sends = report['sends']; button('Huỷ giao dịch').click(); assert report['sends'] == sends
             check('AC07: unprotected cancel sends nothing')
-            prep('attack'); r = execute(); assert not r['protected'] and r['comparison']['authority'] == 'match'
-            check('AC06: unprotected attack confirmed with separate consent')
-        if args.tu <= 'C':
+            prep('attack'); r = execute(); assert not r['protected']
+            # Quyền KHÔNG bao giờ được "lệch". "Chưa rõ" chỉ hợp lệ khi đúng lý do thiết kế (receipt.ts,
+            # F-06): chủ được đọc ở slot MUỘN hơn và chưa quy được cho giao dịch này — và chủ đọc được
+            # vẫn phải là chủ mới như dự báo.
+            auth, o = r['comparison']['authority'], r['observation']
+            assert auth in ('match', 'unknown'), auth
+            if auth == 'unknown':
+                assert o.get('ownerSlot') is not None and o['ownerSlot'] > o['slot'] and not o.get('rightsAttributable'), o
+                assert o.get('owner') == r['prediction'].get('ownerAfter'), (o.get('owner'), r['prediction'].get('ownerAfter'))
+            assert r['comparison']['balance'] == 'match'
+            check('AC06: unprotected attack confirmed with separate consent' + ('' if auth == 'match' else ' (quyền: chưa quy được cho đúng giao dịch — đúng thiết kế, chủ đọc được trùng dự báo)'))
+        if chay('C'):
             setup(); dat_bao_ve(True)
             prep('Trao quyền kiểm soát'); r = execute()
             assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
             assert r['comparison']['authority'] == 'match'; check('AC08: owner-only changes authority without token transfer')
-        if args.tu <= 'D':
+        if chay('D'):
             setup()
             prep('Cấp quyền sử dụng token', '30'); r = execute()
             assert r['comparison']['actualBefore'] == r['comparison']['actualAfter'] == '500000000'
@@ -145,35 +159,38 @@ with sync_playwright() as pw:
             page.locator('.wallet-scenarios').get_by_role('button', name=re.compile('^Ứng dụng sử dụng quyền')).click(); idle(error=True)
             assert 'không có quyền' in page.locator('[role=alert]').inner_text()
             check('AC11: delegate cannot prepare another spend after revoke')
-        if args.tu in ('E', 'F'):
+        if args.tu in ('E', 'F') and chay('E' if args.tu == 'E' else 'F'):
             setup()
-        if args.tu <= 'E':
+        if chay('E'):
             prep('Gửi kèm chuyển thêm', '2'); r = execute()
             # Tương đối với số dư trước: phân đoạn E bắt đầu ở phiên mới (500), không ở 488.
             assert int(r['comparison']['actualAfter']) == int(r['comparison']['actualBefore']) - 3_000_000
             check('S06: requested 2 plus additional 1 DEMO actually transfers; verdict not forced')
-        prep('Trao quyền đóng tài khoản'); r = execute(); assert r['observation']['closeAuthority'] is not None
-        so = int(r['comparison']['actualAfter'])
-        prep('transfer', str(so // 10**6) if so % 10**6 == 0 else f'{so / 10**6:.6f}'.rstrip('0').replace('.', ',')); execute()
-        prep('Ứng dụng đóng tài khoản rỗng'); r = execute(); assert r['observation']['closed']
-        check('S07: close authority used only after emptying token account; actor receives rent')
-        page.screenshot(path=str(out/'03-close.png'), full_page=True)
-        page.reload(wait_until='networkidle')
-        sends = report['sends']; button('Khôi phục phiên đã lưu').click(); idle()
-        assert report['sends'] == sends
-        assert not page.locator('.wallet-request').count()
-        assert page.locator('#demo-keypair').count()
-        check('AC17: reload restores public session and closed account without signing/resending')
-        page.add_script_tag(path='node_modules/axe-core/axe.min.js')
-        report['axe'] = {}
-        for width in [1440, 375]:
-            page.set_viewport_size({'width': width, 'height': 1000})
-            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-            violations = page.evaluate('async () => (await axe.run()).violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))')
-            report['axe'][str(width)] = violations
-            assert not violations, violations
-            page.screenshot(path=str(out/f'04-restored-{width}.png'), full_page=True)
-        assert not report['errors']; report['passed'] = True; check('AC21: desktop/mobile axe and overflow checks passed')
+        if chay('F'):
+            prep('Trao quyền đóng tài khoản'); r = execute(); assert r['observation']['closeAuthority'] is not None
+            so = int(r['comparison']['actualAfter'])
+            prep('transfer', str(so // 10**6) if so % 10**6 == 0 else f'{so / 10**6:.6f}'.rstrip('0').replace('.', ',')); execute()
+            prep('Ứng dụng đóng tài khoản rỗng'); r = execute(); assert r['observation']['closed']
+            check('S07: close authority used only after emptying token account; actor receives rent')
+            page.screenshot(path=str(out/'03-close.png'), full_page=True)
+            page.reload(wait_until='networkidle')
+            sends = report['sends']; button('Khôi phục phiên đã lưu').click(); idle()
+            assert report['sends'] == sends
+            assert not page.locator('.wallet-request').count()
+            assert page.locator('#demo-keypair').count()
+            check('AC17: reload restores public session and closed account without signing/resending')
+            page.add_script_tag(path='node_modules/axe-core/axe.min.js')
+            report['axe'] = {}
+            for width in [1440, 375]:
+                page.set_viewport_size({'width': width, 'height': 1000})
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                violations = page.evaluate('async () => (await axe.run()).violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))')
+                report['axe'][str(width)] = violations
+                assert not violations, violations
+                page.screenshot(path=str(out/f'04-restored-{width}.png'), full_page=True)
+            assert not report['errors']; report['passed'] = True; check('AC21: desktop/mobile axe and overflow checks passed')
+        else:
+            assert not report['errors']; report['passed'] = True
     except Exception as e:
         report['passed'] = False; report['error'] = str(e)
         page.screenshot(path=str(out/'failure.png'), full_page=True)

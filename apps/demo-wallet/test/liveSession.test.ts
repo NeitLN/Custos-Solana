@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { AccountLayout, MintLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { InspectResult } from "@custos-solana/types";
@@ -289,4 +290,27 @@ test('a late response from a request started BEFORE this inspection is not count
     ghiNguonLive({ method: 'getMultipleAccounts', nguon: 'b.example', ketQua: 'ok', ms: 1_000 }, 1_005_000);
     assert.deepEqual([...NGUON_DOC_LIVE.hienTai!.nguon], ['b.example']);
   } finally { NGUON_DOC_LIVE.hienTai = null; }
+});
+
+test('endpoint chính của phiên live: DEV đọc VITE_RPC (RPC riêng của máy đội), production KHÔNG BAO GIỜ', async () => {
+  const { chonRpcLive } = await import('../src/live/session.ts');
+  const rieng = 'https://devnet.helius-rpc.com/?api-key=BI-MAT';
+  assert.equal(chonRpcLive(true, rieng), rieng);
+  // Production: biến môi trường bị bỏ qua hoàn toàn — khoá không được vào bundle công khai.
+  assert.equal(chonRpcLive(false, rieng), 'https://api.devnet.solana.com');
+  // Rỗng / không phải https ⇒ endpoint công cộng, không đoán.
+  assert.equal(chonRpcLive(true, undefined), 'https://api.devnet.solana.com');
+  assert.equal(chonRpcLive(true, ''), 'https://api.devnet.solana.com');
+  assert.equal(chonRpcLive(true, 'http://devnet.helius-rpc.com/?api-key=X'), 'https://api.devnet.solana.com');
+});
+
+test('Codex lần 4, mục 2 · yêu cầu ký mang ĐÚNG host đã trả lời lượt kiểm — thẻ không được ghi cứng một nguồn', async () => {
+  const { ghiNguonLive } = await import('../src/live/session.ts');
+  const f = fixture(); await f.session.setup();
+  f.setInspectHook(() => { ghiNguonLive({ method: 'getMultipleAccounts', nguon: 'devnet.helius-rpc.com', ketQua: 'ok', ms: 0 }); });
+  await f.session.prepare('transfer');
+  const p = f.session.view.pending as { nguonDoc?: string[] } | null;
+  assert.deepEqual(p?.nguonDoc, ['devnet.helius-rpc.com']);
+  const src = readFileSync('apps/demo-wallet/src/WalletExecution.tsx', 'utf8');
+  assert.doesNotMatch(src, /nguon: "api\.devnet\.solana\.com"/, 'thẻ cảnh báo vẫn ghi cứng nguồn');
 });

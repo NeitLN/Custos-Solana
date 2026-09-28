@@ -2,13 +2,14 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Keypair } from "@solana/web3.js";
 import { DEMO_FAUCET_URL } from "../../../scripts/demo-wallet-config.ts";
 import { dinhDangSo, inspect } from "@custos-solana/core";
-import { dienGiaiBangMoHinh } from "@custos-solana/ai";
-import { trackedInterpreter, type ExplanationSource } from "./live/interpreter.ts";
+import type { GoiMoHinh } from "@custos-solana/ai";
+import { ganNhanTheoLuot, type ExplanationSource } from "./live/interpreter.ts";
 import { sessionStorageKey, PublicSessionCache, mayDiscardSession } from "./live/store.ts";
 import { SCENARIOS, type LiveKind } from "./live/scenarios.ts";
 import { acceptLiveMessage, type LiveHandoff } from "./live/handoff.ts";
 import { ProductNavigation } from "./ProductNavigation.tsx";
 import { CanhBao } from "./CanhBao.tsx";
+import { DaiPhamVi } from "./DaiPhamVi.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { WalletIcon, SendIcon, GiftIcon, ShieldIcon, CopyIcon } from "./Icons.tsx";
 import { coAiKhong, dungGoiQuaServer } from "./goiAiQuaServer.ts";
@@ -32,18 +33,19 @@ export function WalletExecution({
   const [aiAvailable, setAiAvailable] = useState<boolean | null>(null);
   const [useAI, setUseAI] = useState(true);
   const [source, setSource] = useState<ExplanationSource>("tatDinh");
-  const interpreter = useRef(() => trackedInterpreter(null, setSource));
-  interpreter.current = () => {
-    return trackedInterpreter(
-      useAI && aiAvailable === true ? dienGiaiBangMoHinh(dungGoiQuaServer()) : null,
-      setSource,
-    );
-  };
+  /*
+   * NHÃN THEO LƯỢT KIỂM (CK-09, Codex review lần 3): thế hệ tăng khi `inspect` BẮT ĐẦU, không
+   * khi L3 bắt đầu — lượt quá hạn ở L1 rồi gọi L3 muộn không đè được nhãn lượt đang hiện.
+   * `goiRef` giữ lựa chọn AI của lần render mới nhất cho lời gọi kế tiếp.
+   */
+  const goiRef = useRef<GoiMoHinh | null>(null);
+  goiRef.current = useAI && aiAvailable === true ? dungGoiQuaServer() : null;
+  const [gan] = useState(() => ganNhanTheoLuot(setSource, () => goiRef.current));
   // Luôn là ví demo cố định (AGENTS.md, quyết định số 8). Chế độ "ví khách" từng đọc
   // `?guest=1&wallet=…` từ URL rồi đổi hẳn sang ví đó, hoặc tự sinh keypair mới —
   // phản biện 26/09, F-05. Query cũ giờ bị bỏ qua.
   const [session] = useState(
-    () => new LiveSession(undefined, inspect, undefined, (...args) => interpreter.current()(...args)),
+    () => new LiveSession(undefined, gan.bocInspect(inspect), undefined, (...args) => gan.interpreter()(...args)),
   );
   const [view, setView] = useState(session.view);
   // RPC dự phòng của hiện trường (CK-01) — chỉ cho lệnh ĐỌC; gửi vẫn đi endpoint chính.
@@ -315,10 +317,9 @@ export function WalletExecution({
 
   return (
     <div className="app-shell demo-shell wallet-execution min-h-screen bg-nen text-chu">
-      <div className="wallet-network-strip" role="region" aria-label="Mạng thử nghiệm">
-        <span className="scope-dot" /> Solana Devnet{" "}
-        <span>· Ví demo cố định · Token không có giá trị tiền thật</span>
-      </div>
+      <DaiPhamVi nhan="Mạng thử nghiệm">
+        <strong>Solana Devnet</strong> · ví demo cố định · token không có giá trị tiền thật
+      </DaiPhamVi>
       <div className="wallet-container">
         <header className="wallet-header flex items-center justify-between gap-4">
           <a
@@ -802,7 +803,7 @@ export function WalletExecution({
                       ketQua={p.result}
                       onHuy={cancel}
                       onKy={() => setConfirm(true)}
-                      boiCanh={{ cluster: "devnet", nguon: "api.devnet.solana.com", kieu: "live" }}
+                      boiCanh={{ cluster: "devnet", nguon: p.nguonDoc.length ? p.nguonDoc.join(" + ") : "không rõ", kieu: "live" }}
                       nguonChu={source}
                     />
                   ) : (

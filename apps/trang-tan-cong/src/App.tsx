@@ -3,7 +3,7 @@ import { chuoiBanGiao, dungTxTanCongSong, kiemSanSangTanCong, type SanSangTanCon
 import { conDungDuoc, layBlockhash, HAN_LAY_BLOCKHASH_MS } from "./blockhash.ts";
 import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
-import { danhSachRpc, duPhongTheoBan, ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
+import { danhSachRpc, duPhongTheoBan, ketNoiDuPhong, taoLocGenesisNho, LoiKhongCoRpcDung } from "../../../scripts/rpcDuPhong.ts";
 import { RewardArtwork } from "./RewardArtwork.tsx";
 
 /**
@@ -53,13 +53,18 @@ const VI = KL_VI.loai === "co" ? KL_VI.url : null;
 const RPC_RIENG = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
 // Endpoint dự phòng: DEV đọc `VITE_RPC_DU_PHONG`; production chỉ đọc `rpcDuPhong` của
 // hiện trường đã lọc allowlist — cùng quy tắc với ví (`duPhongTheoBan`, CK-01).
-const ketNoi = (ht: { rpc?: string | null; rpcDuPhong?: unknown }) =>
+//
+// Genesis TRƯỚC khi dùng (tồn đọng review 27/09): dự phòng chứng minh là khác cluster thì bỏ,
+// không còn endpoint nào thì `ketNoiDuPhong` ném `LoiKhongCoRpcDung`. Một lượt 4 giây — trang
+// này đứng trên đường bấm của người xem; chưa đo được thì giữ endpoint, như ví.
+const locGenesis = taoLocGenesisNho({ soLan: 1, msHan: 4_000 });
+const ketNoi = async (ht: { rpc?: string | null; rpcDuPhong?: unknown }) =>
   ketNoiDuPhong(
-    danhSachRpc(
+    await locGenesis(danhSachRpc(
       chonRpc(ht.rpc, RPC_RIENG),
       // Chỉ sau `DEV ?` — xem chú thích cùng chỗ trong `hienTruong.ts` (khoá lọt bundle).
       duPhongTheoBan(!!import.meta.env.DEV, import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined, ht.rpcDuPhong),
-    ),
+    )),
   );
 
 /** Đếm ngược tới cuối ngày. Đồng hồ THẬT — không phải số đứng yên giả vờ chạy.
@@ -138,7 +143,6 @@ export default function App() {
   useEffect(() => {
     if (!ht) return;
     let huy = false;
-    const conn = ketNoi(ht);
     /*
      * LẤY SẴN CẢ TRẠNG THÁI HIỆN TRƯỜNG, không chỉ blockhash — P0 rà soát 25/09.
      *
@@ -152,9 +156,9 @@ export default function App() {
      * `window.open` — ràng buộc về popup ở trên vẫn giữ nguyên.
      */
     const lay = () => {
-      conn
-        .getLatestBlockhash()
-        .then(async ({ blockhash }) => {
+      ketNoi(ht)
+        .then(async (conn) => {
+          const { blockhash } = await conn.getLatestBlockhash();
           const sanSang = await kiemSanSangTanCong(conn, ht, blockhash);
           if (!huy) blockhashRef.current = { ma: blockhash, luc: Date.now(), sanSang };
         })
@@ -251,11 +255,11 @@ export default function App() {
      * hơn nhiều so với một thẻ lỗi nói thẳng.
      */
     setDangGui(true);
-    const conn = ketNoi(ht);
-    layBlockhash(() => conn.getLatestBlockhash(), blockhashRef.current)
+    const connP = ketNoi(ht);
+    layBlockhash(async () => (await connP).getLatestBlockhash(), blockhashRef.current)
       .then(async ({ ma }) => {
         // Cùng hạn 9 giây cho chặng kiểm hiện trường: đường nguội không được treo.
-        const sanSang = await coHan(kiemSanSangTanCong(conn, ht, ma), HAN_LAY_BLOCKHASH_MS);
+        const sanSang = await coHan(kiemSanSangTanCong(await connP, ht, ma), HAN_LAY_BLOCKHASH_MS);
         if (huyRef.current) return;
         blockhashRef.current = { ma, luc: Date.now(), sanSang };
         if (sanSang.loai === "chuaSan") {
@@ -271,6 +275,8 @@ export default function App() {
         setLoi(
           e instanceof LoiQuaHan
             ? "Devnet không trả lời trong 9 giây."
+            : e instanceof LoiKhongCoRpcDung
+            ? "Không endpoint RPC nào được xác nhận là Solana Devnet, nên trang không chuẩn bị giao dịch."
             // Chặng hỏng có thể là blockhash HOẶC đọc hiện trường — nói điều cả hai chung.
             : "Không kết nối được tới Devnet để chuẩn bị giao dịch.",
         );

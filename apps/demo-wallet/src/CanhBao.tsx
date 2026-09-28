@@ -3,8 +3,10 @@ import type { InspectResult } from "@custos-solana/types";
 import { chiLaThongTin } from "@custos-solana/core";
 import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
 import { useEffect, useRef, useState } from "react";
-import { AlertIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
+import { AlertIcon, CheckIcon, CopyIcon, ExternalIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
+import { diaChiCuaDong, lienKetExplorer } from "./diaChi.ts";
 import { nhomHauQua, taiSanDoi, type DongDiff } from "./nhomHauQua.ts";
+import { NHAN_NGUON, DU_LIEU_GUI_MO_HINH, type ExplanationSource } from "./live/interpreter.ts";
 
 /** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
@@ -97,8 +99,73 @@ export type BoiCanh = {
   ghiLuc?: string;
 };
 
+/** Nút sao chép một chuỗi. Không chép được (trình duyệt chặn) thì NÓI RA, không im lặng. */
+function NutSaoChep({ chuoi, nhan }: { chuoi: string; nhan: string }) {
+  const [trangThai, setTrangThai] = useState<"nghi" | "daChep" | "loi">("nghi");
+  useEffect(() => {
+    if (trangThai === "nghi") return;
+    const t = window.setTimeout(() => setTrangThai("nghi"), 1800);
+    return () => window.clearTimeout(t);
+  }, [trangThai]);
+  return (
+    <button
+      type="button"
+      className="dia-chi-nut inline-flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 text-[11.5px] text-slate-700 hover:bg-slate-50"
+      aria-label={`Sao chép ${nhan.toLowerCase()} đầy đủ`}
+      onClick={() => {
+        // Ngữ cảnh không an toàn (http thường) không có `clipboard`.
+        if (!navigator.clipboard) return setTrangThai("loi");
+        navigator.clipboard.writeText(chuoi).then(
+          () => setTrangThai("daChep"),
+          () => setTrangThai("loi"),
+        );
+      }}
+    >
+      {trangThai === "daChep" ? <CheckIcon className="h-3 w-3" /> : <CopyIcon className="h-3 w-3" />}
+      <span aria-live="polite">
+        {trangThai === "daChep" ? "Đã chép" : trangThai === "loi" ? "Không chép được — hãy chọn chuỗi" : "Sao chép"}
+      </span>
+    </button>
+  );
+}
+
+/**
+ * Địa chỉ ĐẦY ĐỦ của một dòng — CK-04. Bảng in bản rút gọn để đọc nhanh; bản rút gọn 4…4
+ * ký tự lại là chỗ địa chỉ "vanity" giả được, nên chuỗi đầy đủ phải đọc, chép và mở
+ * Explorer được ngay trên thẻ. Explorer chỉ có khi biết đúng cluster của lượt.
+ */
+function DiaChiDong({ d, cluster }: { d: DongDiff; cluster: string | undefined }) {
+  const ds = diaChiCuaDong(d);
+  if (ds.length === 0) return null;
+  return (
+    <ul className="dia-chi-day-du mt-1 grid gap-1 sm:col-span-2">
+      {ds.map((x) => {
+        const url = lienKetExplorer(x.diaChi, cluster);
+        return (
+          <li key={x.nhan} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] text-slate-600">
+            <span>{x.nhan}:</span>
+            <code className="break-all font-mono text-slate-800">{x.diaChi}</code>
+            <NutSaoChep chuoi={x.diaChi} nhan={x.nhan} />
+            {url && (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-emerald-800 underline underline-offset-2"
+              >
+                Explorer <ExternalIcon className="h-3 w-3" />
+                <span className="sr-only">(mở tab mới)</span>
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 /** Một dòng hậu quả — y như bảng cũ, chỉ tách ra để hai khối dùng chung. */
-function DongHauQua({ d }: { d: DongDiff }) {
+function DongHauQua({ d, cluster }: { d: DongDiff; cluster: string | undefined }) {
   const mau = MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700";
   return (
     <div className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5">
@@ -106,6 +173,7 @@ function DongHauQua({ d }: { d: DongDiff }) {
       <span className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${mau}`}>
         {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
       </span>
+      <DiaChiDong d={d} cluster={cluster} />
     </div>
   );
 }
@@ -133,7 +201,7 @@ export function CanhBao({
    * phỏng thật với câu chữ tất định vẫn là kết quả thật — gộp hai chiều làm một
    * nhãn "live" là nói quá về sản phẩm.
    */
-  nguonChu?: "moHinh" | "tatDinh" | "moHinhLoi" | "chuaCauHinh";
+  nguonChu?: ExplanationSource;
   /**
    * Tín hiệu MỞ phần dữ kiện (bước 3 của luồng có hướng dẫn, CK-03). Mỗi lần số này
    * tăng, khối "Chi tiết kỹ thuật" mở ra và nhận focus. Không đóng lại thứ người dùng
@@ -143,6 +211,8 @@ export function CanhBao({
 }) {
   const { analyzed, total, unverifiedPrograms } = ketQua.coverage;
   const hq = nhomHauQua(ketQua.diff);
+  // Kết quả mock không có địa chỉ thật để mở; vắng bối cảnh thì không đoán cluster.
+  const clusterExplorer = boiCanh && boiCanh.kieu !== "mock" ? boiCanh.cluster : undefined;
 
   // HAI LOẠI "Cần xem kỹ" rất khác nhau, và gộp chúng lại là cách nhanh nhất
   // tạo mệt mỏi cảnh báo:
@@ -264,6 +334,12 @@ export function CanhBao({
                 >
                   {moRong ? "Thu gọn" : "Xem chi tiết"}
                 </button>
+                {/* Nguồn câu chi tiết thấy được KHI CHƯA MỞ (CK-04: "[AI: nguồn diễn giải]"). */}
+                {nguonChu && (
+                  <span className="nhan-nguon-ngan ml-2 text-[11.5px] text-slate-500" data-nguon={nguonChu}>
+                    · {NHAN_NGUON[nguonChu].ngan}
+                  </span>
+                )}
                 {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
                 {moRong && (
                   <>
@@ -278,14 +354,17 @@ export function CanhBao({
                       `level` do L2 sinh trong mọi trường hợp.
                     */}
                     {nguonChu && (
-                      <p className="mt-1.5 text-[11.5px] leading-relaxed text-slate-500">
-                        {nguonChu === "moHinh"
-                          ? "Câu trên do mô hình ngôn ngữ viết, đã qua bộ soi đầu ra. Mức cảnh báo vẫn do engine luật quyết."
-                          : nguonChu === "moHinhLoi"
-                            ? "Mô hình không trả lời được nên câu trên là câu tất định. Mức cảnh báo không đổi."
-                            : nguonChu === "chuaCauHinh"
-                              ? "Bản này chưa cấu hình mô hình ngôn ngữ nên câu trên là câu tất định. Mức cảnh báo không đổi."
-                              : "Câu trên do lõi xác định viết, không gọi mô hình ngôn ngữ."}
+                      <p className="nguon-dien-giai mt-1.5 text-[11.5px] leading-relaxed text-slate-500" data-nguon={nguonChu}>
+                        <strong className="font-semibold text-slate-700">{NHAN_NGUON[nguonChu].ngan}.</strong>{" "}
+                        {NHAN_NGUON[nguonChu].dai}
+                        {/* Lượt có gọi mô hình ⇒ nói rõ cái gì đã rời máy (CK-09). */}
+                        {nguonChu !== "tatDinh" && nguonChu !== "chuaCauHinh" && (
+                          <>
+                            {" "}
+                            Đã gửi cho nhà cung cấp mô hình: {Object.values(DU_LIEU_GUI_MO_HINH).join("; ")}. Không gửi
+                            giao dịch thô, chữ ký hay khoá.
+                          </>
+                        )}
                       </p>
                     )}
                   </>
@@ -371,7 +450,7 @@ export function CanhBao({
                 )}
                 <div className="divide-y divide-slate-100">
                   {dong.map((d, i) => (
-                    <DongHauQua key={i} d={d} />
+                    <DongHauQua key={i} d={d} cluster={clusterExplorer} />
                   ))}
                 </div>
               </section>
@@ -379,7 +458,7 @@ export function CanhBao({
             {hq.khac.length > 0 && (
               <section aria-label="Hậu quả nếu ký — phần khác" className="divide-y divide-slate-100 border-t border-slate-100">
                 {hq.khac.map((d, i) => (
-                  <DongHauQua key={i} d={d} />
+                  <DongHauQua key={i} d={d} cluster={clusterExplorer} />
                 ))}
               </section>
             )}
@@ -543,10 +622,10 @@ export function CanhBao({
       <div className="grid gap-2 border-t border-slate-200/80 px-4 py-4 sm:grid-cols-2 sm:px-5">
         {choPhepKy && !hd.huyChinh ? (
           <>
-            <button onClick={onKy} className="nut nut-chinh sm:order-2">
+            <button onClick={onKy} className="nut nut-quyet-dinh nut-chinh sm:order-2">
               {hd.ky}
             </button>
-            <button onClick={onHuy} className="nut nut-phu sm:order-1">
+            <button onClick={onHuy} className="nut nut-quyet-dinh nut-phu sm:order-1">
               {hd.huy}
             </button>
           </>
@@ -554,12 +633,12 @@ export function CanhBao({
           <>
             <button
               onClick={onHuy}
-              className={`nut ${ketQua.level === "danger" ? "nut-nguy" : "nut-chinh"}`}
+              className={`nut nut-quyet-dinh ${ketQua.level === "danger" ? "nut-nguy" : "nut-chinh"}`}
             >
               {hd.huy}
             </button>
             {choPhepKy ? (
-              <button onClick={onKy} className="nut nut-phu">
+              <button onClick={onKy} className="nut nut-quyet-dinh nut-phu">
                 {hd.ky}
               </button>
             ) : (
