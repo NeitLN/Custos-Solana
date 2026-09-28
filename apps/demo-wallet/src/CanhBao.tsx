@@ -182,6 +182,7 @@ export function CanhBao({
   ketQua,
   onHuy,
   onKy,
+  onTiepTuc,
   choPhepKy = true,
   boiCanh,
   nguonChu,
@@ -190,6 +191,11 @@ export function CanhBao({
   ketQua: InspectResult;
   onHuy: () => void;
   onKy: () => void;
+  /**
+   * Khi KHÔNG ký được (Phòng phân tích): "Vẫn tiếp tục" mở khung hậu quả theo mô phỏng — góp ý
+   * mentor 28/09: người xem phải thấy tiếp tục thì mất gì. Vắng thì giữ dòng chữ tĩnh cũ.
+   */
+  onTiepTuc?: () => void;
   /** Bản công khai không nhúng khoá ký — ẩn nút thay vì để nó bấm rồi lỗi. */
   choPhepKy?: boolean;
   /** Bối cảnh lượt kiểm. Vắng mặt ⇒ khối dữ kiện không hiện, không bịa. */
@@ -640,6 +646,10 @@ export function CanhBao({
             {choPhepKy ? (
               <button onClick={onKy} className="nut nut-quyet-dinh nut-phu">
                 {hd.ky}
+              </button>
+            ) : onTiepTuc ? (
+              <button onClick={onTiepTuc} className="nut nut-quyet-dinh nut-phu">
+                {ketQua.level === "safe" ? "Tiếp tục — xem kết quả" : "Vẫn tiếp tục — xem điều sẽ xảy ra"}
               </button>
             ) : (
               <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[11.5px] leading-relaxed text-slate-500">
