@@ -1,0 +1,26 @@
+{
+  "name": "@custos-solana/thu-ket-noi",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Spike G0-1: dApp tối giản dùng @solana/wallet-adapter-react thuần. Không import mã ví, không gọi inspect().",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5190 --strictPort",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@custos-solana/connector": "*",
+    "@solana/wallet-adapter-base": "^0.9.28",
+    "@solana/wallet-adapter-react": "^0.15.40",
+    "@solana/web3.js": "^1.99.0",
+    "buffer": "^6",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5",
+    "vite": "^7",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}

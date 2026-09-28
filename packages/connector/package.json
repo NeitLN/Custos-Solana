@@ -1,0 +1,20 @@
+{
+  "name": "@custos-solana/connector",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Spike G0-1: đăng ký ví mẫu Custos theo Wallet Standard để dApp dùng wallet-adapter thường gọi được — mọi chữ ký đi qua inspect() trong cửa sổ ví.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./giao-thuc": "./src/giaoThuc.ts"
+  },
+  "dependencies": {
+    "@solana/wallet-standard-features": "^1.5.0",
+    "@wallet-standard/base": "^1.1.1",
+    "@wallet-standard/features": "^1.1.1",
+    "@wallet-standard/wallet": "^1.1.1"
+  }
+}
