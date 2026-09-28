@@ -85,3 +85,14 @@ Khi ký, truyền cặp này cùng transaction hiện tại vào `kySauKhiKiem`.
 Neo phải thuộc state tin cậy của ví, không nhận từ dApp. Đổi message, ví, cluster
 hoặc hết hạn thì kiểm lại. Thiếu neo bị từ chối. SDK không tự giữ state cho consumer.
 31 dòng chỉ đo hàm gọi SDK trong `tich-hop.js`, không tính toàn bộ hợp đồng ký.
+
+### Signer phải trả giao dịch ĐÃ KÝ
+
+`signer` phải trả về giao dịch đã ký. `kySauKhiKiem` chỉ khai `da_ky` khi giao dịch
+trả về có message trùng byte với bản đã kiểm, **và** ô chữ ký của ví chứa chữ ký
+ed25519 hợp lệ của đúng khoá đó trên đúng các byte đó (xác minh bằng WebCrypto có
+sẵn, không thêm thư viện). Trả `undefined`, trả giao dịch chưa ký, hay chữ ký của
+khoá khác ⇒ `chua_ro` với lý do `signer_khong_tra_chu_ky`: không gửi, và không ký lại.
+Ví không phải người ký bắt buộc của message ⇒ `khong_ky` (`vi_khong_phai_nguoi_ky`),
+signer không được gọi. Khi `da_ky`, gửi **`giaoDichDaKy`** trong kết quả, không gửi
+transaction gốc.

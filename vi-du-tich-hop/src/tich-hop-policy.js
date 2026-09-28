@@ -141,7 +141,15 @@ export async function motLuot({
     nguoiDungDongY: dongY,
   });
 
-  return { trangThai: doiKetCuc(ky), lyDo: ky.lyDo, chiTiet: ky.chiTiet, ketQua, policy };
+  return {
+    trangThai: doiKetCuc(ky),
+    lyDo: ky.lyDo,
+    chiTiet: ky.chiTiet,
+    ketQua,
+    policy,
+    // Chỉ có khi `da_ky`: giao dịch đã xác minh chữ ký — thứ duy nhất được gửi đi.
+    ...(ky.daKy ? { giaoDichDaKy: ky.giaoDichDaKy } : {}),
+  };
 }
 
 /**
