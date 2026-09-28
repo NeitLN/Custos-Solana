@@ -1010,3 +1010,147 @@ button {
   }
 
 }
+
+/*
+ * KHUNG "NẾU BẠN KÝ GIAO DỊCH NÀY" (`KhungTiepTuc.tsx`) — góp ý mentor 28/09. Cùng ngôn ngữ với
+ * thẻ cảnh báo: nền trắng, viền mảnh, số tabular. Màu là tín hiệu PHỤ — luôn có chữ đi kèm.
+ * Không animation đếm số (CK-12): số hiện ngay, đúng như mô phỏng cho biết.
+ */
+.khung-tiep-tuc {
+  margin-top: 12px;
+  border: 1px solid #d9e0d6;
+  border-radius: 18px;
+  background: #fff;
+  padding: 18px 20px 20px;
+  outline: none;
+}
+.khung-tiep-tuc--nguy {
+  border-color: #f3c6cf;
+  box-shadow: 0 0 0 4px rgb(194 24 60 / 0.05);
+}
+.khung-tiep-tuc__dau {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-bottom: 14px;
+}
+.khung-tiep-tuc__dau h3 {
+  font-size: 18px;
+  font-weight: 650;
+  color: #0f1f18;
+}
+.khung-tiep-tuc__nhan {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #3f5046;
+  background: #f1f4ef;
+  border: 1px solid #dfe6dc;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.khung-tiep-tuc__trong {
+  font-size: 14px;
+  color: #3f564b;
+}
+.ktt-tai-san,
+.ktt-quyen {
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #f7f9f6;
+  border: 1px solid #e5ebe3;
+}
+.ktt-tai-san + .ktt-tai-san,
+.ktt-tai-san + .ktt-quyen,
+.ktt-quyen + .ktt-quyen {
+  margin-top: 10px;
+}
+.ktt-tai-san--mat,
+.ktt-quyen--mat {
+  background: #fff5f6;
+  border-color: #f6d3da;
+}
+.ktt-tai-san__ten,
+.ktt-quyen__ten {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4d5e55;
+}
+.ktt-tai-san__so {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  font-size: 30px;
+  line-height: 1.15;
+  color: #6b7a72;
+}
+.ktt-tai-san__so strong {
+  font-weight: 700;
+  color: #0f1f18;
+}
+.ktt-tai-san--mat .ktt-tai-san__so strong {
+  color: #a3122f;
+}
+.ktt-mui-ten {
+  font-size: 20px;
+  color: #9aa6a0;
+}
+.ktt-tai-san__chenh {
+  align-self: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #a3122f;
+  background: #fde4e8;
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+.ktt-quyen__doi {
+  margin-top: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 15px;
+  color: #4d5e55;
+  overflow-wrap: anywhere;
+}
+.ktt-quyen__doi strong {
+  color: #0f1f18;
+}
+.ktt-quyen--mat .ktt-quyen__doi strong {
+  color: #a3122f;
+}
+.ktt-tai-san p,
+.ktt-quyen p {
+  margin-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #33463d;
+}
+.khung-tiep-tuc__canh-bao {
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #7f1024;
+}
+.khung-tiep-tuc__pham-vi {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #4d5e55;
+}
+.khung-tiep-tuc__nut {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+@media (min-width: 640px) {
+  .khung-tiep-tuc__nut {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .ktt-tai-san__so {
+    font-size: 24px;
+  }
+}

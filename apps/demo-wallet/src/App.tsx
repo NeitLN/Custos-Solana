@@ -29,6 +29,7 @@ import { DaiNguon, BangSanSang, type ThongTinNguon } from "./NguonKiem.tsx";
 import goiCore from "../../../packages/core/package.json";
 import { HoatDong } from "./HoatDong.tsx";
 import { DaiPhamVi } from "./DaiPhamVi.tsx";
+import { KhungTiepTuc } from "./KhungTiepTuc.tsx";
 import { docYeuCauNgoaiChiTiet } from "./yeuCauNgoai.ts";
 import { donKhoaCu } from "./vi.ts";
 import { locDongNhatKy } from "./locNhatKy.ts";
@@ -77,13 +78,13 @@ export default function App() {
     {/* Phân tích đứng TRƯỚC trong DOM, khớp thứ tự hiển thị: màn thực thi ẩn bên dưới cũng
         có thẻ "Nhận quà tặng" (bị khoá khi chưa có khoá), và bộ chọn `.first` của probe CI
         từng trúng nó — review 26/09, mục 3.2. */}
-    {surface === "analysis" && <AnalysisWallet chuyenMan={chuyenMan} />}
+    {surface === "analysis" && <AnalysisWallet chuyenMan={chuyenMan} moVi={() => setSurface("wallet")} />}
     {/* Keep the signer alive when inspecting advanced cases in the same page. */}
     <div hidden={surface !== "wallet"}><WalletExecution visible={surface === "wallet"} onBusy={setWalletBusy} chuyenMan={chuyenMan} /></div>
   </>;
 }
 
-function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
+function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () => void }) {
   const [cheDo, setCheDo] = useState<CheDo | null>(null);
   /*
    * ĐƯA KẾT QUẢ VÀO TẦM NHÌN — trên điện thoại nó nằm dưới màn hình.
@@ -236,6 +237,8 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
    */
   const [loiYeuCau, setLoiYeuCau] = useState<string | null>(null);
   const [daHuy, setDaHuy] = useState(false);
+  /** "Vẫn tiếp tục" — khung hậu quả theo mô phỏng của kết quả đang xem (góp ý mentor 28/09). */
+  const [xemHauQua, setXemHauQua] = useState(false);
 
   /*
    * TRẠNG THÁI LỖI RIÊNG cho việc kiểm tra giao dịch.
@@ -387,6 +390,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
       setDangChay(true);
       setLoi(null);
       setDaHuy(false);
+      setXemHauQua(false);
       // Địa chỉ người dùng lấy từ HIỆN TRƯỜNG CỦA VÍ, KHÔNG lấy từ yêu cầu của dApp.
       // Ví biết địa chỉ của chính nó; để dApp khai hộ là mở đúng cái cửa mà trường
       // này sinh ra để đóng. Xem docs/bao-mat/SECURITY-AUDIT.md — F1b.
@@ -521,6 +525,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
     setDangChay(true);
     setLoi(null);
     setKetQua(null);
+    setXemHauQua(false);
     setHauQua(null);
     setThongTinNguon(null);
     try {
@@ -1286,6 +1291,7 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                          */
                         luotRef.current++;
                         setKetQua(null);
+                        setXemHauQua(false);
                         setDaHuy(true);
                       }}
                       // Phòng phân tích không ký (26/09). Ký thật ở tab "Ví của bạn".
@@ -1293,7 +1299,24 @@ function AnalysisWallet({ chuyenMan }: { chuyenMan: ReactNode }) {
                       onKy={() => {
                         throw new Error("Phòng phân tích không ký — đây là lỗi lập trình, không phải thao tác người dùng");
                       }}
+                      onTiepTuc={() => {
+                        ghi("người dùng chọn tiếp tục — xem hậu quả theo mô phỏng, không ký, không gửi");
+                        setXemHauQua(true);
+                      }}
                     />
+                    {xemHauQua && (
+                      <KhungTiepTuc
+                        ketQua={ketQua}
+                        onChan={() => {
+                          ghi("người dùng quay lại và chặn giao dịch");
+                          luotRef.current++;
+                          setKetQua(null);
+                          setXemHauQua(false);
+                          setDaHuy(true);
+                        }}
+                        {...(moVi ? { onMoVi: moVi } : {})}
+                      />
+                    )}
                   </div>
                 )}
 
