@@ -1,0 +1,21 @@
+{
+  "ngay": "2026-09-29",
+  "url": "https://solbonus-custos.vercel.app/tan-cong/",
+  "buoc": [
+    "hai origin HTTPS: solbonus-custos.vercel.app ↔ custos-solana.vercel.app; popup mở khi trình chặn BẬT",
+    "cảnh báo Nguy hiểm hiện TRƯỚC khi có bất kỳ sendTransaction nào",
+    "người dùng vẫn ký → SolBonus tự gửi ĐÚNG MỘT lần → xác nhận trên Devnet",
+    "biên nhận trong ví: khopHet=true"
+  ],
+  "gui": [
+    "https://solbonus-custos.vercel.app/tan-cong/"
+  ],
+  "loiTrang": [],
+  "vi": "https://custos-solana.vercel.app/ket-noi.html",
+  "taiKhoanChon": "487zqKiwndVDXiXiZWbBfWhscy3C3nBbGbMBifxvyWAH",
+  "canhBao": "https://solbonus-custos.vercel.app yêu cầu ký một giao dịch\n\nNguy hiểm\n\nCustos phát hiện hành vi cụ thể trong chính giao dịch này. Đọc bảng bên dưới trước khi quyết định.\n\nHành động chính được nhận diện: chuyển Ca3M…VDgC đi. Nhưng giao dịch còn đổi chủ tài khoản token sang EicA…o73F — việc này không phục vụ chuyển Ca3M…VDgC đi. Ví nhận EicA…o73F vừa được tạo cách đây 8.5 giờ. Ví mới tinh nhận phần lớn tài sản là hình dạng quen thuộc của một vụ lừa.\n\nSố dư Ca3M…VDgC sau khi ký\n499,0 → 249,5\nChủ sở hữu tài khoản Ca3M…VDgC\nBạn → EicA…o73F\nPhí mạng\n— → 0,000005 SOL\n\nMã lý do: SPL_SET_AUTHORITY__ACCOUNT_OWNER, VI_NHAN_MOI_TAO · phủ 2/2 lệnh\n\nTôi đã đọc cảnh báo và vẫn muốn ký\nChặn giao dịch\nVẫn ký",
+  "chuKy": "https://explorer.solana.com/tx/LDxqW6gh5euJWtypEA95yPzUVEZoPGDv2p3ZovrSDRcVcFrw2gUNd7qbZHfDjmNg3PdwwA1FU9iDR5pfg2eroQ2?cluster=devnet",
+  "khopHet": "true",
+  "bienNhan": "Biên nhận\n\nGiao dịch đã chạy trên Devnet.\n\nLDxqW6gh5e…2eroQ2 trên Explorer\nMục\tCustos dự báo\tThực tế\t\nKết quả thực thi\tthành công\tthành công\t✓\nSố dư 487z…yWAH\t249500000\t249500000\t✓\nChủ 487z…yWAH\tEicA…o73F\tEicA…o73F\t✓\nSOL của ví sau (chỉ để xem)\t19659739760\t19659739760\t—\n\nThực tế khớp dự báo của Custos ở mọi dòng được chấm.",
+  "ok": true
+}

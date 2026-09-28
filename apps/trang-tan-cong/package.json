@@ -8,6 +8,9 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@custos-solana/connector": "*",
+    "@solana/wallet-adapter-react": "^0.15.40",
+    "bs58": "^6.0.0",
     "@solana/web3.js": "^1",
     "@solana/spl-token": "^0.4",
     "react": "^19",

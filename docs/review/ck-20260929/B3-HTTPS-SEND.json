@@ -1,0 +1,20 @@
+{
+  "url": "https://solbonus-custos.vercel.app/tan-cong/",
+  "checks": [
+    "chain discovery -> independent danger transaction -> wallet inspect -> reject -> zero sends",
+    "benign -> inspect -> user signature -> dApp sends exactly once -> confirmed on Devnet",
+    "popup closed -> adapter disconnect -> reconnect available",
+    "390px mobile: no horizontal overflow, axe zero violations"
+  ],
+  "errors": [],
+  "sends": [
+    "https://solbonus-custos.vercel.app/tan-cong/"
+  ],
+  "wallet": "https://custos-solana.vercel.app/ket-noi.html",
+  "tokens": 5,
+  "danger": "https://solbonus-custos.vercel.app yêu cầu ký một giao dịch\n\nNguy hiểm\n\nCustos phát hiện hành vi cụ thể trong chính giao dịch này. Đọc bảng bên dưới trước khi quyết định.\n\nHành động chính được nhận diện: chuyển Ca3M…VDgC đi. Nhưng giao dịch còn đổi chủ tài khoản token sang EicA…o73F — việc này không phục vụ chuyển Ca3M…VDgC đi. Ví nhận EicA…o73F vừa được tạo cách đây 7.9 giờ. Ví mới tinh nhận phần lớn tài sản là hình dạng quen thuộc của một vụ lừa.\n\nSố dư Ca3M…VDgC sau khi ký\n499,0 → 249,5\nChủ sở hữu tài khoản Ca3M…VDgC\nBạn → EicA…o73F\nPhí mạng\n— → 0,000005 SOL\n\nMã lý do: SPL_SET_AUTHORITY__ACCOUNT_OWNER, VI_NHAN_MOI_TAO · phủ 2/2 lệnh\n\nTôi đã đọc cảnh báo và vẫn muốn ký\nChặn giao dịch\nVẫn ký\nNạp file khoá ở trên để ký.",
+  "benign": "https://solbonus-custos.vercel.app yêu cầu ký một giao dịch\n\nAn toàn\n\nKhông tìm thấy dấu hiệu nào trong danh sách chúng tôi kiểm tra được.\n\nPhí mạng\n— → 0,000005 SOL\n\nMã lý do: không có · phủ 1/1 lệnh\n\nChặn giao dịch\nKý\nNạp file khoá ở trên để ký.",
+  "signatureUrl": "https://explorer.solana.com/tx/47mVVpPEtoM3Ap3pMX7bH87B4yUoqBRhHbRhu9CbVtViFt3L8maGyE5J8bJ186JfL9CKH81MnYWdpTWqPB59y4np?cluster=devnet",
+  "axe": [],
+  "ok": true
+}

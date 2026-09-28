@@ -15,6 +15,7 @@
  */
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join, extname } from "node:path";
+import { createHash } from "node:crypto";
 
 const thuMuc = process.argv[2] ?? "site";
 const KHOA_CO_THE_CO = [".devnet/vi-demo.json"];
@@ -57,10 +58,20 @@ for (const kp of KHOA_CO_THE_CO) {
 // Keypair Solana đúng 64 byte. Ngưỡng đầu tiên tôi đặt là 32 và nó bắt nhầm
 // một bảng tra 37 phần tử trong thư viện. Một phép kiểm an toàn hay kêu oan
 // thì người ta sẽ tắt nó đi, và tới lúc rò rỉ thật cũng không ai nghe nữa.
-const MAU_KEYPAIR = /(?:\d{1,3}\s*,\s*){59,}\d{1,3}/;
+const MAU_KEYPAIR = /(?:\d{1,3}\s*,\s*){59,}\d{1,3}/g;
+// qrcode/lib/core/error-correction-code.js, pulled in by wallet-adapter mobile.
+// Exact public table fingerprints, NOT an exemption for a library/bundle filename.
+// The real-key comparison above still scans every byte, including these tables.
+const BANG_QR_CONG_KHAI = new Set([
+  "fb8c644b4874bd060cec4ac2737ee8f52d4fce5b24a202e524910485db13d4bc",
+  "cfd31737490ab687bd1dc05c04b45ded776d691c53f7df81bfee67e6afde7ad4",
+]);
 for (const f of files) {
-  const m = readFileSync(f, "utf8").match(MAU_KEYPAIR);
-  if (m) loi.push(`mảng ${m[0].split(",").length} số trông giống keypair trong ${f}`);
+  for (const m of readFileSync(f, "utf8").matchAll(MAU_KEYPAIR)) {
+    const hash = createHash("sha256").update(chuan(m[0])).digest("hex");
+    if (!BANG_QR_CONG_KHAI.has(hash))
+      loi.push(`mảng ${m[0].split(",").length} số trông giống keypair trong ${f}`);
+  }
 }
 
 // ── lớp 3: khoá API nhúng trong URL hoặc chuỗi ──────────────────
@@ -81,7 +92,8 @@ for (const f of files) {
 const MAU_KHOA_API = [
   [/[?&](?:api[-_]?key|apikey|access[-_]?token)=[A-Za-z0-9_-]{16,}/i, "khoá API trong URL"],
   [/sk-ant-[A-Za-z0-9_-]{20,}/, "khoá Anthropic (sk-ant-…)"],
-  [/https?:\/\/[^\s"'`]*:[^\s"'`@/]{8,}@/, "URL có nhúng mật khẩu"],
+  // Userinfo belongs before the first /, ? or #, never inside a font query.
+  [/https?:\/\/[^\s"'`/?#@:]+:[^\s"'`@/?#]{8,}@/, "URL có nhúng mật khẩu"],
 ];
 for (const f of files) {
   const noiDung = readFileSync(f, "utf8");
