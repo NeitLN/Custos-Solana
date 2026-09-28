@@ -17,7 +17,15 @@ export default defineConfig(({ command, isPreview }) => ({
   // `isPreview` cùng lý do với ví — xem `apps/demo-wallet/vite.config.ts`. `vite
   // preview` chạy với `command === "serve"`, nên thiếu nó thì mọi asset rơi xuống
   // SPA fallback và trang trắng, trong khi máy chủ vẫn trả 200.
-  base: command === "build" || isPreview ? "/Custos-Solana/tan-cong/" : "/",
+  // Bản tên miền gốc (Vercel, `CUSTOS_GOC=1` — CỜ boolean, không phải đường dẫn, cùng lý do Git
+  // Bash ở trên): trang nằm ở `/tan-cong/` cạnh ví. Thiếu nhánh này thì Vercel không có trang
+  // tấn công và nút "Mở dApp của phiên này" mở ra 404 (28/09).
+  base:
+    command === "build" || isPreview
+      ? process.env["CUSTOS_GOC"] === "1"
+        ? "/tan-cong/"
+        : "/Custos-Solana/tan-cong/"
+      : "/",
   plugins: [react(), tailwindcss()],
 
   // ⚠️ BẮT BUỘC — không được xoá.
