@@ -1,0 +1,58 @@
+{
+ "luc": "2026-09-28T12:54:44.466753+00:00",
+ "url": "http://localhost:5188",
+ "kiem": [
+  {
+   "ten": "ví dựng khi storage bị chặn",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "phát lại vẫn ra kết quả",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "tab 'Ví của bạn' vẫn mở",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "0 pageerror khi storage bị chặn",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "mất mạng: phát lại vẫn ra kết quả",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "mất mạng: live ra thẻ lỗi trong hạn",
+   "dat": true,
+   "chiTiet": "0.1s"
+  },
+  {
+   "ten": "thẻ lỗi không lộ URL/JSON thô",
+   "dat": true,
+   "chiTiet": "Không thể kiểm tra giao dịch\n\nCustos không kết nối được tới Solana Devnet để mô phỏng giao"
+  },
+  {
+   "ten": "mất mạng: không có yêu cầu ký",
+   "dat": true,
+   "chiTiet": ""
+  },
+  {
+   "ten": "mất mạng: 0 pageerror",
+   "dat": true,
+   "chiTiet": ""
+  }
+ ],
+ "hostBiChan": [
+  "api.devnet.solana.com"
+ ],
+ "gioiHan": [
+  "Chromium headless; mất mạng mô phỏng bằng chặn request, không rút cáp.",
+  "Storage bị chặn bằng cách làm getter ném lỗi — giống chế độ chặn cookie/site data."
+ ]
+}

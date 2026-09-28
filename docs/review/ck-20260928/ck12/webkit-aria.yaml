@@ -1,0 +1,43 @@
+- region "Thẻ cảnh báo Custos":
+  - heading "Nguy hiểm" [level=3]
+  - paragraph: Không nên ký giao dịch này
+  - text: Rủi ro cao
+  - paragraph: USDC-demo trong ví bạn sẽ giảm từ 500,0 xuống 250,0, và tài khoản USDC-demo của bạn sẽ đổi chủ sang CRZa…picz. Sau khi ký, bạn không lấy lại được.
+  - button "Xem chi tiết"
+  - text: · Câu mẫu tất định Custos nhận diện chuyển token Thay đổi nếu bạn ký trước → sau
+  - region "Hậu quả nếu ký — tài sản":
+    - heading "TÀI SẢN" [level=4]
+    - text: Số dư USDC-demo sau khi ký 500,0 → 250,0
+    - list:
+      - listitem:
+        - text: "Mint:"
+        - code: BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua
+        - button "Sao chép mint đầy đủ": Sao chép
+        - link "Explorer (mở tab mới)":
+          - /url: https://explorer.solana.com/address/BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua?cluster=devnet
+      - listitem:
+        - text: "Tài khoản token:"
+        - code: JBQ9SiALovgymB6rA6E14QshDrtgjcPLACtCKKyQGobp
+        - button "Sao chép tài khoản token đầy đủ": Sao chép
+        - link "Explorer (mở tab mới)":
+          - /url: https://explorer.solana.com/address/JBQ9SiALovgymB6rA6E14QshDrtgjcPLACtCKKyQGobp?cluster=devnet
+    - text: Phí mạng — → 0,000005 SOL
+  - region "Hậu quả nếu ký — quyền kiểm soát":
+    - heading "QUYỀN KIỂM SOÁT" [level=4]
+    - text: Chủ sở hữu tài khoản USDC-demo Bạn → CRZa…picz
+    - list:
+      - listitem:
+        - text: "Địa chỉ mới:"
+        - code: CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz
+        - button "Sao chép địa chỉ mới đầy đủ": Sao chép
+        - link "Explorer (mở tab mới)":
+          - /url: https://explorer.solana.com/address/CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz?cluster=devnet
+  - paragraph: Đã đọc hiểu 2 trên 3 lệnh
+  - text: 67%
+  - progressbar "Mức đọc hiểu giao dịch"
+  - paragraph: 1 chương trình chưa xác minh. Đây là mức đọc hiểu, không phải mức an toàn.
+  - paragraph: Custos đề nghị kiểm tra thủ công
+  - paragraph: Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm.
+  - button "Chi tiết kỹ thuật"
+  - button "Chặn & huỷ giao dịch"
+  - text: Demo chỉ mô phỏng · không nhúng khoá ký

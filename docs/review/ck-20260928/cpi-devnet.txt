@@ -1,0 +1,7 @@
+# npm run cpi-devnet — 2026-09-27T20:28:01Z — commit 6b00631 (cây có thay đổi chưa commit)
+RPC: api.devnet.solana.com
+mô phỏng: OK
+lệnh ngoài: AToken… createAtaIdempotent
+lệnh LỒNG (CPI): 4 — Tokenk… getAccountDataSize, 111111… createAccount, Tokenk… initializeImmutableOwner, Tokenk… initializeAccount3
+mức: safe · mã: (không) · đọc hiểu 5/5
+CPI-DEVNET-OK — thấy và đọc hiểu mọi lệnh lồng; CPI lành không bị cáo buộc

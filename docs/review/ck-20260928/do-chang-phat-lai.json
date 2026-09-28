@@ -1,0 +1,1473 @@
+{
+ "phepDo": "CK-14 · thời gian theo chặng của một lượt kiểm (node, không gồm render)",
+ "doLuc": "2026-09-28T12:40:12.110Z",
+ "sourceCommit": "6b00631584022cfe45fb12da04e6d4bffce6d151",
+ "dirtyWorktree": true,
+ "lenh": "node --env-file=.env.local --experimental-strip-types scripts/ky-thuat/do-chang.ts --n=10",
+ "nguon": "phát lại fixture (không mạng)",
+ "l3": "câu mẫu tất định",
+ "soKichBan": 9,
+ "soLuot": 90,
+ "lanh": {
+  "dungTx": {
+   "trungVi": 0.3,
+   "thapNhat": 0.2,
+   "caoNhat": 1.7
+  },
+  "docRpc": {
+   "trungVi": 0.5,
+   "thapNhat": 0.4,
+   "caoNhat": 4.1
+  },
+  "moPhong": {
+   "trungVi": 0.1,
+   "thapNhat": 0,
+   "caoNhat": 0.3
+  },
+  "l2": {
+   "trungVi": 0.1,
+   "thapNhat": 0.1,
+   "caoNhat": 9.9
+  },
+  "l3": {
+   "trungVi": 0,
+   "thapNhat": 0,
+   "caoNhat": 0.3
+  },
+  "tong": {
+   "trungVi": 1.1,
+   "thapNhat": 0.7,
+   "caoNhat": 16.4
+  }
+ },
+ "am": {
+  "dungTx": {
+   "trungVi": 0.1,
+   "thapNhat": 0.1,
+   "caoNhat": 1.5
+  },
+  "docRpc": {
+   "trungVi": 0.4,
+   "thapNhat": 0.3,
+   "caoNhat": 3
+  },
+  "moPhong": {
+   "trungVi": 0.1,
+   "thapNhat": 0,
+   "caoNhat": 0.4
+  },
+  "l2": {
+   "trungVi": 0.1,
+   "thapNhat": 0.1,
+   "caoNhat": 0.3
+  },
+  "l3": {
+   "trungVi": 0,
+   "thapNhat": 0,
+   "caoNhat": 0.1
+  },
+  "tong": {
+   "trungVi": 0.7,
+   "thapNhat": 0.5,
+   "caoNhat": 4.8
+  }
+ },
+ "gioiHan": [
+  "n=90 (<30 mỗi nhóm) nên KHÔNG báo p95 — chỉ trung vị và khoảng.",
+  "Đo trong Node trên máy đội, không phải trình duyệt hay máy trình diễn; không gồm render.",
+  "'đọc RPC' = thời gian L1 trừ mô phỏng: L1 gọi RPC song song, cộng từng lời gọi sẽ lớn hơn thời gian thật.",
+  "Phát lại không có độ trễ mạng — số này là trần dưới của một lượt kiểm."
+ ],
+ "tungLuot": [
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 0,
+   "dungTx": 1.7,
+   "docRpc": 4.1,
+   "moPhong": 0.3,
+   "l2": 9.88,
+   "l3": 0.3,
+   "tong": 16.4,
+   "rpc": {
+    "getFeeForMessage": 0.866800000000012,
+    "getMultipleAccountsInfo": 0.32409999999993033,
+    "simulateTransaction": 0.30299999999999727,
+    "getSignaturesForAddress": 0.16769999999996799
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 1,
+   "dungTx": 0.3,
+   "docRpc": 1.5,
+   "moPhong": 0.1,
+   "l2": 0.24,
+   "l3": 0,
+   "tong": 2.2,
+   "rpc": {
+    "getFeeForMessage": 0.241800000000012,
+    "getMultipleAccountsInfo": 0.17750000000006594,
+    "simulateTransaction": 0.11160000000000991,
+    "getSignaturesForAddress": 0.08109999999999218
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 2,
+   "dungTx": 0.3,
+   "docRpc": 1,
+   "moPhong": 0.1,
+   "l2": 0.18,
+   "l3": 0,
+   "tong": 1.6,
+   "rpc": {
+    "getFeeForMessage": 0.16870000000000118,
+    "getMultipleAccountsInfo": 0.11739999999997508,
+    "simulateTransaction": 0.1308999999999969,
+    "getSignaturesForAddress": 0.03819999999996071
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 3,
+   "dungTx": 0.2,
+   "docRpc": 0.8,
+   "moPhong": 0.1,
+   "l2": 0.15,
+   "l3": 0,
+   "tong": 1.2,
+   "rpc": {
+    "getFeeForMessage": 0.1494000000000142,
+    "getMultipleAccountsInfo": 0.087600000000009,
+    "simulateTransaction": 0.10109999999997399,
+    "getSignaturesForAddress": 0.039199999999993906
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 4,
+   "dungTx": 0.2,
+   "docRpc": 0.7,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1.1,
+   "rpc": {
+    "getFeeForMessage": 0.16570000000001528,
+    "getMultipleAccountsInfo": 0.10360000000002856,
+    "simulateTransaction": 0.07429999999999382,
+    "getSignaturesForAddress": 0.0403999999999769
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 5,
+   "dungTx": 0.2,
+   "docRpc": 0.7,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 1.1,
+   "rpc": {
+    "getFeeForMessage": 0.12250000000000227,
+    "getMultipleAccountsInfo": 0.10860000000002401,
+    "simulateTransaction": 0.06720000000001392,
+    "getSignaturesForAddress": 0.04410000000001446
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 6,
+   "dungTx": 0.2,
+   "docRpc": 0.8,
+   "moPhong": 0.1,
+   "l2": 0.16,
+   "l3": 0,
+   "tong": 1.3,
+   "rpc": {
+    "getFeeForMessage": 0.1239999999999668,
+    "getMultipleAccountsInfo": 0.09710000000001173,
+    "simulateTransaction": 0.12659999999999627,
+    "getSignaturesForAddress": 0.05349999999998545
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 7,
+   "dungTx": 0.9,
+   "docRpc": 1.5,
+   "moPhong": 0.2,
+   "l2": 0.18,
+   "l3": 0,
+   "tong": 2.7,
+   "rpc": {
+    "getFeeForMessage": 0.46350000000001046,
+    "getMultipleAccountsInfo": 0.2529999999999859,
+    "simulateTransaction": 0.20659999999998035,
+    "getSignaturesForAddress": 0.08129999999999882
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 8,
+   "dungTx": 0.2,
+   "docRpc": 0.9,
+   "moPhong": 0.1,
+   "l2": 0.16,
+   "l3": 0,
+   "tong": 1.4,
+   "rpc": {
+    "getFeeForMessage": 0.14159999999998263,
+    "getMultipleAccountsInfo": 0.10120000000000573,
+    "simulateTransaction": 0.08629999999999427,
+    "getSignaturesForAddress": 0.06290000000001328
+   }
+  },
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 9,
+   "dungTx": 1.5,
+   "docRpc": 3,
+   "moPhong": 0.2,
+   "l2": 0.18,
+   "l3": 0,
+   "tong": 4.8,
+   "rpc": {
+    "getFeeForMessage": 0.17989999999997508,
+    "getMultipleAccountsInfo": 0.10339999999996508,
+    "simulateTransaction": 0.18809999999996307,
+    "getSignaturesForAddress": 0.05189999999998918
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 0,
+   "dungTx": 0.3,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.19,
+   "l3": 0.1,
+   "tong": 1.1,
+   "rpc": {
+    "getFeeForMessage": 0.11570000000000391,
+    "getMultipleAccountsInfo": 0.05880000000001928,
+    "simulateTransaction": 0.0705000000000382
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.07400000000001228,
+    "getMultipleAccountsInfo": 0.048499999999989996,
+    "simulateTransaction": 0.04480000000000928
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.5,
+   "rpc": {
+    "getFeeForMessage": 0.06879999999995334,
+    "getMultipleAccountsInfo": 0.04470000000003438,
+    "simulateTransaction": 0.043400000000019645
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.08559999999999945,
+    "getMultipleAccountsInfo": 0.061399999999991905,
+    "simulateTransaction": 0.06059999999996535
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.1,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.08510000000001128,
+    "getMultipleAccountsInfo": 0.052600000000040836,
+    "simulateTransaction": 0.04800000000000182
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.11820000000000164,
+    "getMultipleAccountsInfo": 0.048699999999996635,
+    "simulateTransaction": 0.05360000000001719
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.5,
+   "rpc": {
+    "getFeeForMessage": 0.06700000000000728,
+    "getMultipleAccountsInfo": 0.044399999999996,
+    "simulateTransaction": 0.0413000000000352
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 7,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06799999999998363,
+    "getMultipleAccountsInfo": 0.044499999999970896,
+    "simulateTransaction": 0.041800000000023374
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 8,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.0877999999999588,
+    "getMultipleAccountsInfo": 0.05009999999998627,
+    "simulateTransaction": 0.04680000000001883
+   }
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.09839999999996962,
+    "getMultipleAccountsInfo": 0.059599999999988995,
+    "simulateTransaction": 0.040000000000020464
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 0,
+   "dungTx": 0.3,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.18,
+   "l3": 0.3,
+   "tong": 1.2,
+   "rpc": {
+    "getFeeForMessage": 0.08929999999998017,
+    "getMultipleAccountsInfo": 0.050299999999992906,
+    "simulateTransaction": 0.04370000000000118
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07830000000001291,
+    "getMultipleAccountsInfo": 0.05060000000003129,
+    "simulateTransaction": 0.045000000000015916
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.1,
+   "l3": 0.1,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.09140000000002146,
+    "getMultipleAccountsInfo": 0.05629999999996471,
+    "simulateTransaction": 0.07799999999997453
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.07609999999999673,
+    "getMultipleAccountsInfo": 0.049200000000041655,
+    "simulateTransaction": 0.042899999999974625
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 1.8,
+   "moPhong": 0.1,
+   "l2": 0.15,
+   "l3": 0.1,
+   "tong": 2.2,
+   "rpc": {
+    "getFeeForMessage": 1.3468000000000302,
+    "getMultipleAccountsInfo": 0.12590000000000146,
+    "simulateTransaction": 0.08289999999999509
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 5,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.14,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.10499999999996135,
+    "getMultipleAccountsInfo": 0.07909999999998263,
+    "simulateTransaction": 0.06490000000002283
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 6,
+   "dungTx": 0.2,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.12,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.13339999999999463,
+    "getMultipleAccountsInfo": 0.07639999999997826,
+    "simulateTransaction": 0.073599999999999
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 7,
+   "dungTx": 0.2,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.12,
+   "l3": 0.1,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.11299999999999955,
+    "getMultipleAccountsInfo": 0.07139999999998281,
+    "simulateTransaction": 0.05289999999996553
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 8,
+   "dungTx": 0.2,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0.1,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.09649999999999181,
+    "getMultipleAccountsInfo": 0.06499999999994088,
+    "simulateTransaction": 0.05099999999998772
+   }
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 9,
+   "dungTx": 0.2,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.12,
+   "l3": 0.1,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.0969000000000051,
+    "getMultipleAccountsInfo": 0.07110000000000127,
+    "simulateTransaction": 0.05099999999998772
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 0,
+   "dungTx": 0.3,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.09340000000003101,
+    "getMultipleAccountsInfo": 0.057999999999992724,
+    "simulateTransaction": 0.057999999999992724
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07570000000004029,
+    "getMultipleAccountsInfo": 0.050499999999999545,
+    "simulateTransaction": 0.043600000000026284
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07570000000004029,
+    "getMultipleAccountsInfo": 0.05059999999997444,
+    "simulateTransaction": 0.04169999999999163
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.08199999999999363,
+    "getMultipleAccountsInfo": 0.04969999999997299,
+    "simulateTransaction": 0.04159999999995989
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.08789999999999054,
+    "getMultipleAccountsInfo": 0.04939999999999145,
+    "simulateTransaction": 0.043000000000006366
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.08670000000000755,
+    "getMultipleAccountsInfo": 0.055900000000008276,
+    "simulateTransaction": 0.04110000000002856
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.11009999999998854,
+    "getMultipleAccountsInfo": 0.07930000000004611,
+    "simulateTransaction": 0.04019999999997026
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 7,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07230000000004111,
+    "getMultipleAccountsInfo": 0.04950000000002319,
+    "simulateTransaction": 0.0787000000000262
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 8,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.07169999999996435,
+    "getMultipleAccountsInfo": 0.04949999999996635,
+    "simulateTransaction": 0.04100000000005366
+   }
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06999999999999318,
+    "getMultipleAccountsInfo": 0.047600000000045384,
+    "simulateTransaction": 0.04930000000001655
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 0,
+   "dungTx": 0.2,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.06909999999999172,
+    "getMultipleAccountsInfo": 0.04820000000000846,
+    "simulateTransaction": 0.048699999999996635
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.09210000000001628,
+    "getMultipleAccountsInfo": 0.047999999999944976,
+    "simulateTransaction": 0.048800000000028376
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06870000000003529,
+    "getMultipleAccountsInfo": 0.050499999999999545,
+    "simulateTransaction": 0.04660000000001219
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 3,
+   "dungTx": 0.2,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07089999999999463,
+    "getMultipleAccountsInfo": 0.04949999999996635,
+    "simulateTransaction": 0.04939999999999145
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.08,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07290000000000418,
+    "getMultipleAccountsInfo": 0.049100000000009913,
+    "simulateTransaction": 0.057399999999972806
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.2,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07939999999996417,
+    "getMultipleAccountsInfo": 0.05009999999998627,
+    "simulateTransaction": 0.169399999999996
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0.1,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06459999999998445,
+    "getMultipleAccountsInfo": 0.04990000000003647,
+    "simulateTransaction": 0.05119999999999436
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 7,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06130000000001701,
+    "getMultipleAccountsInfo": 0.04220000000003665,
+    "simulateTransaction": 0.049000000000035016
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 8,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06290000000001328,
+    "getMultipleAccountsInfo": 0.041400000000010095,
+    "simulateTransaction": 0.03640000000001464
+   }
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06279999999998154,
+    "getMultipleAccountsInfo": 0.06730000000004566,
+    "simulateTransaction": 0.04169999999999163
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 0,
+   "dungTx": 0.3,
+   "docRpc": 0.7,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1.2,
+   "rpc": {
+    "getFeeForMessage": 0.10840000000001737,
+    "getMultipleAccountsInfo": 0.05560000000002674,
+    "simulateTransaction": 0.06830000000002201,
+    "getSignaturesForAddress": 0.09649999999999181
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.13260000000002492,
+    "getMultipleAccountsInfo": 0.10850000000004911,
+    "simulateTransaction": 0.06589999999999918,
+    "getSignaturesForAddress": 0.07400000000001228
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.7,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.08780000000001564,
+    "getMultipleAccountsInfo": 0.06509999999997262,
+    "simulateTransaction": 0.05930000000000746,
+    "getSignaturesForAddress": 0.0805000000000291
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.10200000000003229,
+    "getMultipleAccountsInfo": 0.07029999999997472,
+    "simulateTransaction": 0.05009999999998627,
+    "getSignaturesForAddress": 0.07310000000006767
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 4,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.08480000000002974,
+    "getMultipleAccountsInfo": 0.059499999999957254,
+    "simulateTransaction": 0.06079999999997199,
+    "getSignaturesForAddress": 0.07159999999998945
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.07919999999995753,
+    "getMultipleAccountsInfo": 0.054500000000018645,
+    "simulateTransaction": 0.07009999999996808,
+    "getSignaturesForAddress": 0.07789999999999964
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.7,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.09359999999998081,
+    "getMultipleAccountsInfo": 0.10470000000003665,
+    "simulateTransaction": 0.061900000000036925,
+    "getSignaturesForAddress": 0.07839999999998781
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 7,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.10919999999998709,
+    "getMultipleAccountsInfo": 0.07540000000000191,
+    "simulateTransaction": 0.058100000000024465,
+    "getSignaturesForAddress": 0.07009999999996808
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 8,
+   "dungTx": 0.7,
+   "docRpc": 1.8,
+   "moPhong": 0.4,
+   "l2": 0.32,
+   "l3": 0,
+   "tong": 3.2,
+   "rpc": {
+    "getFeeForMessage": 0.12850000000003092,
+    "getMultipleAccountsInfo": 0.07190000000002783,
+    "simulateTransaction": 0.3574999999999591,
+    "getSignaturesForAddress": 0.11889999999999645
+   }
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 9,
+   "dungTx": 0.2,
+   "docRpc": 0.9,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1.2,
+   "rpc": {
+    "getFeeForMessage": 0.11630000000002383,
+    "getMultipleAccountsInfo": 0.09190000000000964,
+    "simulateTransaction": 0.062100000000043565,
+    "getSignaturesForAddress": 0.08070000000003574
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 0,
+   "dungTx": 0.4,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 1.1,
+   "rpc": {
+    "getFeeForMessage": 0.12430000000000518,
+    "getMultipleAccountsInfo": 0.06270000000000664,
+    "simulateTransaction": 0.05699999999995953
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.06880000000001019,
+    "getMultipleAccountsInfo": 0.049000000000035016,
+    "simulateTransaction": 0.039400000000000546
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.07650000000001,
+    "getMultipleAccountsInfo": 0.05629999999996471,
+    "simulateTransaction": 0.04790000000002692
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.09110000000003993,
+    "getMultipleAccountsInfo": 0.06799999999998363,
+    "simulateTransaction": 0.04929999999995971
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.07,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.10930000000001883,
+    "getMultipleAccountsInfo": 0.057599999999979445,
+    "simulateTransaction": 0.04070000000001528
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.08930000000003702,
+    "getMultipleAccountsInfo": 0.051400000000001,
+    "simulateTransaction": 0.04050000000000864
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.5,
+   "rpc": {
+    "getFeeForMessage": 0.06920000000002346,
+    "getMultipleAccountsInfo": 0.047300000000007,
+    "simulateTransaction": 0.03669999999999618
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 7,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.07150000000001455,
+    "getMultipleAccountsInfo": 0.046699999999987085,
+    "simulateTransaction": 0.0362999999999829
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 8,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.5,
+   "rpc": {
+    "getFeeForMessage": 0.06380000000001473,
+    "getMultipleAccountsInfo": 0.045000000000015916,
+    "simulateTransaction": 0.034500000000036835
+   }
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.3,
+   "moPhong": 0,
+   "l2": 0.06,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.07570000000004029,
+    "getMultipleAccountsInfo": 0.048399999999958254,
+    "simulateTransaction": 0.040000000000020464
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 0,
+   "dungTx": 0.2,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.12,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.06979999999998654,
+    "getMultipleAccountsInfo": 0.04729999999995016,
+    "simulateTransaction": 0.038000000000010914,
+    "getSignaturesForAddress": 0.03000000000002956
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 1,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.1,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.08029999999996562,
+    "getMultipleAccountsInfo": 0.04099999999999682,
+    "simulateTransaction": 0.03679999999997108,
+    "getSignaturesForAddress": 0.014099999999984902
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 2,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.1,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.08109999999999218,
+    "getMultipleAccountsInfo": 0.045700000000067575,
+    "simulateTransaction": 0.03999999999996362,
+    "getSignaturesForAddress": 0.015899999999987813
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 3,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.6,
+   "rpc": {
+    "getFeeForMessage": 0.059599999999988995,
+    "getMultipleAccountsInfo": 0.04630000000003065,
+    "simulateTransaction": 0.03930000000002565,
+    "getSignaturesForAddress": 0.014499999999998181
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 4,
+   "dungTx": 0.1,
+   "docRpc": 0.4,
+   "moPhong": 0,
+   "l2": 0.09,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.06060000000002219,
+    "getMultipleAccountsInfo": 0.041600000000016735,
+    "simulateTransaction": 0.04359999999996944,
+    "getSignaturesForAddress": 0.015100000000018099
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.6,
+   "moPhong": 0,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.09129999999998972,
+    "getMultipleAccountsInfo": 0.06290000000001328,
+    "simulateTransaction": 0.04860000000002174,
+    "getSignaturesForAddress": 0.01659999999998263
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.1,
+   "l3": 0,
+   "tong": 0.7,
+   "rpc": {
+    "getFeeForMessage": 0.077699999999993,
+    "getMultipleAccountsInfo": 0.04710000000005721,
+    "simulateTransaction": 0.051200000000051205,
+    "getSignaturesForAddress": 0.017300000000034288
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 7,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.06990000000001828,
+    "getMultipleAccountsInfo": 0.08909999999997353,
+    "simulateTransaction": 0.045000000000015916,
+    "getSignaturesForAddress": 0.02070000000003347
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 8,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.09850000000000136,
+    "getMultipleAccountsInfo": 0.0805000000000291,
+    "simulateTransaction": 0.052199999999970714,
+    "getSignaturesForAddress": 0.02070000000003347
+   }
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.11339999999995598,
+    "getMultipleAccountsInfo": 0.10789999999997235,
+    "simulateTransaction": 0.05340000000001055,
+    "getSignaturesForAddress": 0.01870000000002392
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 0,
+   "dungTx": 0.3,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1.2,
+   "rpc": {
+    "getFeeForMessage": 0.13879999999994652,
+    "getMultipleAccountsInfo": 0.0805000000000291,
+    "simulateTransaction": 0.08899999999999864,
+    "getSignaturesForAddress": 0.02559999999999718
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 1,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1.1,
+   "rpc": {
+    "getFeeForMessage": 0.13659999999998718,
+    "getMultipleAccountsInfo": 0.09639999999996007,
+    "simulateTransaction": 0.11879999999996471,
+    "getSignaturesForAddress": 0.021399999999971442
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 2,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.12,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.11679999999995516,
+    "getMultipleAccountsInfo": 0.06979999999998654,
+    "simulateTransaction": 0.06869999999997844,
+    "getSignaturesForAddress": 0.02760000000000673
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 3,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.13,
+   "l3": 0,
+   "tong": 1,
+   "rpc": {
+    "getFeeForMessage": 0.13240000000001828,
+    "getMultipleAccountsInfo": 0.08389999999997144,
+    "simulateTransaction": 0.05809999999996762,
+    "getSignaturesForAddress": 0.02010000000001355
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 4,
+   "dungTx": 0.2,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.10469999999997981,
+    "getMultipleAccountsInfo": 0.07479999999998199,
+    "simulateTransaction": 0.05750000000000455,
+    "getSignaturesForAddress": 0.017700000000047567
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 5,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0,
+   "l2": 0.12,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.09309999999999263,
+    "getMultipleAccountsInfo": 0.06440000000003465,
+    "simulateTransaction": 0.04939999999999145,
+    "getSignaturesForAddress": 0.017400000000009186
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 6,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.12,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.08990000000000009,
+    "getMultipleAccountsInfo": 0.059799999999995634,
+    "simulateTransaction": 0.05400000000003047,
+    "getSignaturesForAddress": 0.019499999999993634
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 7,
+   "dungTx": 0.2,
+   "docRpc": 0.6,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.12229999999999563,
+    "getMultipleAccountsInfo": 0.08529999999996107,
+    "simulateTransaction": 0.05020000000001801,
+    "getSignaturesForAddress": 0.017200000000002547
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 8,
+   "dungTx": 0.2,
+   "docRpc": 0.5,
+   "moPhong": 0,
+   "l2": 0.15,
+   "l3": 0,
+   "tong": 0.9,
+   "rpc": {
+    "getFeeForMessage": 0.11629999999996699,
+    "getMultipleAccountsInfo": 0.07789999999999964,
+    "simulateTransaction": 0.04660000000001219,
+    "getSignaturesForAddress": 0.01890000000003056
+   }
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 9,
+   "dungTx": 0.1,
+   "docRpc": 0.5,
+   "moPhong": 0.1,
+   "l2": 0.11,
+   "l3": 0,
+   "tong": 0.8,
+   "rpc": {
+    "getFeeForMessage": 0.08910000000003038,
+    "getMultipleAccountsInfo": 0.061800000000005184,
+    "simulateTransaction": 0.052099999999995816,
+    "getSignaturesForAddress": 0.027500000000031832
+   }
+  }
+ ]
+}

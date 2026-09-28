@@ -1,0 +1,278 @@
+{
+ "luc": "2026-09-28T13:33:31.558069+00:00",
+ "url": "http://localhost:5188",
+ "hanhTrinh": "phát lại · Tấn công đầy đủ",
+ "engine": [
+  {
+   "engine": "chromium",
+   "kho": [
+    {
+     "w": 320,
+     "h": 800,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 390,
+     "h": 844,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 640,
+     "h": 800,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.375,
+     "dat": true
+    },
+    {
+     "w": 768,
+     "h": 1024,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1024,
+     "h": 768,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.375,
+     "dat": true
+    },
+    {
+     "w": 1280,
+     "h": 720,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1440,
+     "h": 1000,
+     "tranPx": -15,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    }
+   ],
+   "axe": {
+    "1440": [],
+    "390": []
+   },
+   "loiConsole": [],
+   "phienBan": "149.0.7827.55",
+   "mucHienThi": null,
+   "aria": {
+    "coMucCanhBao": true,
+    "coHaiNhomHauQua": true,
+    "nutSaoChepCoTen": 3,
+    "linkExplorer": 3,
+    "nutHuyCoTen": true
+   },
+   "saoChep": {
+    "hien": "BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua",
+    "chep": "BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua",
+    "dat": true
+   },
+   "banPhim": {
+    "chayDuocCa": true,
+    "tabToiNutHuy": true,
+    "vienFocus": "solid 2px"
+   }
+  },
+  {
+   "engine": "firefox",
+   "kho": [
+    {
+     "w": 320,
+     "h": 800,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 390,
+     "h": 844,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 640,
+     "h": 800,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.366668701171875,
+     "dat": true
+    },
+    {
+     "w": 768,
+     "h": 1024,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1024,
+     "h": 768,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.366668701171875,
+     "dat": true
+    },
+    {
+     "w": 1280,
+     "h": 720,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1440,
+     "h": 1000,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    }
+   ],
+   "axe": {
+    "1440": [],
+    "390": []
+   },
+   "loiConsole": [],
+   "phienBan": "151.0",
+   "mucHienThi": null,
+   "aria": {
+    "coMucCanhBao": true,
+    "coHaiNhomHauQua": true,
+    "nutSaoChepCoTen": 3,
+    "linkExplorer": 3,
+    "nutHuyCoTen": true
+   },
+   "banPhim": {
+    "chayDuocCa": true,
+    "tabToiNutHuy": true,
+    "vienFocus": "solid 2px"
+   }
+  },
+  {
+   "engine": "webkit",
+   "kho": [
+    {
+     "w": 320,
+     "h": 800,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 390,
+     "h": 844,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 640,
+     "h": 800,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.375,
+     "dat": true
+    },
+    {
+     "w": 768,
+     "h": 1024,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1024,
+     "h": 768,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 55.375,
+     "dat": true
+    },
+    {
+     "w": 1280,
+     "h": 720,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    },
+    {
+     "w": 1440,
+     "h": 1000,
+     "tranPx": 0,
+     "nutHuy": true,
+     "coChuNutHuy": 15,
+     "caoNutHuy": 44,
+     "dat": true
+    }
+   ],
+   "axe": {
+    "1440": [],
+    "390": []
+   },
+   "loiConsole": [],
+   "phienBan": "26.5",
+   "mucHienThi": null,
+   "aria": {
+    "coMucCanhBao": true,
+    "coHaiNhomHauQua": true,
+    "nutSaoChepCoTen": 3,
+    "linkExplorer": 3,
+    "nutHuyCoTen": true
+   },
+   "banPhim": {
+    "chayDuocCa": true,
+    "tabToiNutHuy": true,
+    "vienFocus": "solid 2px"
+   }
+  }
+ ],
+ "gioiHan": [
+  "Cây trợ năng KHÔNG thay cho chạy NVDA/VoiceOver thật.",
+  "640 px mô phỏng 1280 px phóng 200 % bằng khổ màn, không bằng zoom của trình duyệt.",
+  "WebKit của Playwright trên Windows không phải Safari trên macOS/iOS."
+ ]
+}
