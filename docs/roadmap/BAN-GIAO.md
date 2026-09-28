@@ -83,10 +83,75 @@ trong bộ nhớ) mới chạy được. Mỗi lỗi có test hoặc phép kiể
 - **Test yếu**: bài "một endpoint có ghi nhận" nay gọi qua Connection của `ketNoiDuPhong`;
   đột biến bỏ `ghiNhan` khỏi `canBoc` làm bài đỏ.
 
-**Còn mở, rủi ro thấp:** `PhongVan.tsx` và trang tấn công dựng connection từ danh sách dự
-phòng chưa qua genesis (chỉ lấy blockhash/số dư; production chỉ có host trong allowlist
-Devnet; blockhash sai mạng làm mô phỏng hỏng ⇒ Cần xem kỹ, không bao giờ An toàn).
-Số đo mô hình thật của CK-08 là số của bộ chắn TRƯỚC lượt sửa này — đo lại tốn API.
+Số đo mô hình thật của CK-08 là số của bộ chắn TRƯỚC lượt sửa này — đo lại tốn API
+(trang Số liệu nay tự nói điều đó qua cờ `boChanDaDoi`).
+
+### 28/09 — CK-04, 09, 10, 12, 13 + tồn đọng genesis (chưa commit)
+
+Chi tiết từng thẻ ở `TIEN-DO.md`. Điều dễ sót khi tiếp tục:
+
+- **Genesis ở phỏng vấn + trang tấn công đã đóng**: `taoLocGenesisNho` (nhớ kết quả chỉ khi
+  mọi endpoint đã trả lời; "chưa đo" thì lần sau hỏi lại), một lượt 4 giây.
+- **Nhãn nguồn diễn giải** giờ gắn với lượt, không với phiên (`theoDoiDienGiai`). Đừng quay
+  lại kiểu `setChieuDienGiai(...)` trong callback gọi mô hình — test canh đúng điều đó.
+- **Nút quyết định 15px** qua lớp riêng `nut-quyet-dinh`; `.nut` chung vẫn 13px.
+- **Cặp ALT (R10) lẫn biến** — xem `data/doi-chung/ck10.json` → `viecConMo`. Đừng "sửa" bằng
+  cách bỏ `SOL_ROI_VI` khỏi kỳ vọng: cáo buộc đó đúng sự thật với giao dịch.
+- Firefox/WebKit của Playwright đã cài ở máy này (`python -m playwright install firefox webkit`).
+- Không có máy chủ AI ở môi trường trình diễn — CK-09 phần "kiểm máy chủ" bị chặn vì hạ tầng.
+
+**Nghiệm thu live qua RPC Devnet riêng (28/09):** chủ dự án thêm `VITE_RPC` (Helius Devnet,
+có khoá) vào `.env.local`. Màn thực thi nay đọc nó ở DEV (`chonRpcLive`, production bỏ qua —
+quét bundle: 0 tệp chứa khoá). Chạy: `npm run vi` rồi
+`python apps/demo-wallet/tools/probe-realistic-wallet.py --allow-devnet-send --tu F --url "http://localhost:5188/?thucThi=1" --out <thư mục>`.
+S07, AC17, AC21 đạt; còn AC05 (biên nhận tự động) và AC06 chưa đạt trong probe tự động.
+
+**Phần 3 (28/09 chiều) — code còn làm được, đã xong:**
+- **9 Facts seed sai bất biến L1** (mô phỏng hỏng mà có số dư sau = 0) ⇒ luật 13 cáo buộc 5 giao
+  dịch mainnet lành của tập âm. Đã sửa DỮ LIỆU (không vá luật — L1 hiện tại vốn đúng), guard
+  `packages/core/test/seedBatBien.test.ts`. Kết quả eval AI dev-set trước 28/09 chạy trên Facts
+  sai này (câu "số dư về 0" của mô hình một phần do dữ liệu bịa); đã đo lại.
+- CK-10 cặp ALT sạch; CK-13 chuỗi bằng chứng 16 giao dịch; CK-14 đo chặng (`do-chang.ts`) + probe
+  ca lỗi `soi-ck14-loi.py`; CK-08 đo lại mô hình thật 0/12 + 0/38.
+
+**Vercel (28/09 tối, chủ dự án cho phép deploy):** https://custos-solana.vercel.app — AI thật chạy.
+- **Proxy mở đã chạy công khai trước khi sửa**: `/api/dien-giai` nhận system/user tuỳ ý với
+  `ANTHROPIC_API_KEY` đặt trên Vercel từ 10 ngày trước. Nay chỉ nhận prompt Custos (hash),
+  khuôn dữ kiện đã lọc, trần 10/phút/IP và 60/phút/instance; lượt bị từ chối không gọi Anthropic.
+  Trần là GIẢM TỐC — cần đặt hạn mức chi tiêu ở Anthropic Console.
+- **Khoá ví Devnet đã rời máy qua `vercel deploy`**: `.vercelignore` thiếu `.devnet` (Vercel CLI không
+  đọc `.gitignore`). 12 deployment ngày 18/09 chứa `src/.devnet/{vi-demo.json,hien-truong.json}` (khi
+  đó là ví cũ `2EjYM…`); 10 deployment 19–27/09 không đọc được cây nguồn (404) nên KHÔNG xác nhận
+  được. Chỉ thành viên team Vercel xem được nguồn; khoá chỉ có SOL Devnet. Đã sửa `.vercelignore`
+  (+ guard `vercelIgnore.test.ts`); deployment mới quét lại: sạch. **Chờ chủ dự án quyết**: xoá các
+  deployment cũ chứa nguồn.
+- Kiểm tra quét nguồn deployment: script tạm (API Vercel, chỉ đọc) — xem phiên 28/09.
+
+**Codex review lần 4 (28/09 tối) — 5 mục P2, đóng hết** (Codex chạy được qua subagent lần này):
+- `do-chang.ts --ai` gắn nhãn "mô hình thật" cho cả lượt lỗi ⇒ `tomTatNguonL3` + `theoDoiDienGiai`;
+  thử khoá giả: báo "CHỈ 0/9 lượt mô hình trả lời".
+- Thẻ cảnh báo màn ký ghi cứng nguồn `api.devnet.solana.com` ⇒ `PendingView.nguonDoc` = host thật
+  của lượt kiểm.
+- Probe CK-12/CK-14 thoát 0 dù có FAIL ⇒ `SystemExit(1)`.
+- CK-10: ca fixture-test không bị kiểm cáo buộc thừa ⇒ helper `packages/core/test/caoBuocThua.ts`
+  gọi trong cả 8 bài được tham chiếu; CK-10 đòi thân bài có `caoBuocThua(`. Ca `null` có mặt
+  (ví bị đóng — đo được) cho phép đúng `SOL_ROI_VI`, có lý do.
+- Test chuỗi bằng chứng chỉ kiểm hình dạng ⇒ đối chiếu từng hàng với biên nhận gốc; đột biến
+  (đảo Custos bật/tắt, ép mức "safe") đều đỏ.
+
+**Codex review lần 3 (28/09) — 5 mục, đóng hết, test đỏ trước:**
+- Màn thực thi tăng thế hệ nhãn lúc L3 bắt đầu ⇒ lượt quá hạn ở L1 gọi L3 muộn đè nhãn lượt
+  đang hiện. Nay `ganNhanTheoLuot` (`live/interpreter.ts`): thế hệ tăng khi `inspect` bắt đầu.
+- Trang Số liệu gán một nguyên nhân chung ("dừng ở bước chuẩn bị") cho mọi ca chưa đạt — sai
+  với AC05 (đã lên chuỗi, biên nhận đọc quá hạn) và AC06 (quyền chưa quy được). Đã viết lại.
+- Đếm SỐ vi phạm thay vì số MẪU có vi phạm ⇒ `demMauViPham` (khử trùng theo id).
+- CK-10: ca không khai `caoBuocChoPhep` (R03-pos) lọt mọi cáo buộc thêm ⇒ mặc định = mã kỳ vọng.
+- Test địa chỉ đầy đủ chỉ tìm tên hàm ⇒ canh đúng đường nối (đột biến "chép bản rút gọn" và
+  "bỏ khỏi dòng" đều đỏ) + probe CK-12 đọc clipboard thật trên Chromium.
+- Guard ví cố định F-05 (`viDemoCoDinh.test.ts`) mở rộng cho `gan.bocInspect(inspect)`; vẫn đòi
+  tham số ví và khoá là `undefined`.
+- Chạy Codex: lệnh `codex-companion.mjs task` bị chế độ quyền tự động chặn khi gọi từ Claude —
+  chủ dự án tự chạy trong terminal (bản chỉ đọc, KHÔNG `--write`).
 
 ### Quyết định của chủ dự án (27/09) và việc còn lại
 

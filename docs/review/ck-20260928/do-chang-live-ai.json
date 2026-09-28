@@ -1,0 +1,215 @@
+{
+ "phepDo": "CK-14 · thời gian theo chặng của một lượt kiểm (node, không gồm render)",
+ "doLuc": "2026-09-28T13:00:51.621Z",
+ "sourceCommit": "6b00631584022cfe45fb12da04e6d4bffce6d151",
+ "dirtyWorktree": true,
+ "lenh": "node --env-file=.env.local --experimental-strip-types scripts/ky-thuat/do-chang.ts --live --ai --n=1",
+ "nguon": "live Devnet qua RPC riêng (host devnet.helius-rpc.com)",
+ "l3": "mô hình thật — 9/9 lượt mô hình trả lời",
+ "nguonL3": {
+  "moHinh": 7,
+  "moHinhBiChan": 2
+ },
+ "l3MoHinhTraLoiMs": [
+  3038,
+  2483,
+  2647,
+  2548,
+  3068,
+  2476,
+  2351,
+  2412,
+  2723
+ ],
+ "soKichBan": 9,
+ "soLuot": 9,
+ "lanh": {
+  "dungTx": {
+   "trungVi": 558.3,
+   "thapNhat": 515.3,
+   "caoNhat": 778.2
+  },
+  "docRpc": {
+   "trungVi": 585.6,
+   "thapNhat": 548.4,
+   "caoNhat": 1415.2
+  },
+  "moPhong": {
+   "trungVi": 260.5,
+   "thapNhat": 219.8,
+   "caoNhat": 287.2
+  },
+  "l2": {
+   "trungVi": 0.3,
+   "thapNhat": 0.2,
+   "caoNhat": 10
+  },
+  "l3": {
+   "trungVi": 2548,
+   "thapNhat": 2350.8,
+   "caoNhat": 3068
+  },
+  "tong": {
+   "trungVi": 4162.2,
+   "thapNhat": 3702.9,
+   "caoNhat": 5418.7
+  }
+ },
+ "am": null,
+ "gioiHan": [
+  "n=9 (<30 mỗi nhóm) nên KHÔNG báo p95 — chỉ trung vị và khoảng.",
+  "Đo trong Node trên máy đội, không phải trình duyệt hay máy trình diễn; không gồm render.",
+  "'đọc RPC' = thời gian L1 trừ mô phỏng: L1 gọi RPC song song, cộng từng lời gọi sẽ lớn hơn thời gian thật.",
+  "Live đi qua RPC riêng gói miễn phí — endpoint công cộng chậm và treo theo đợt, số này KHÔNG đại diện cho nó."
+ ],
+ "tungLuot": [
+  {
+   "id": "thuong-gia-mat-token",
+   "lan": 0,
+   "dungTx": 689.5,
+   "docRpc": 1415.2,
+   "moPhong": 265.7,
+   "l2": 10.02,
+   "l3": 3038.4,
+   "tong": 5418.7,
+   "rpc": {
+    "getFeeForMessage": 249.9402,
+    "getMultipleAccountsInfo": 1099.7323999999996,
+    "simulateTransaction": 265.6567,
+    "getSignaturesForAddress": 311.25210000000015
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "doi-chu-tai-khoan",
+   "lan": 0,
+   "dungTx": 558.3,
+   "docRpc": 560,
+   "moPhong": 231.2,
+   "l2": 0.3,
+   "l3": 2483.2,
+   "tong": 3833,
+   "rpc": {
+    "getFeeForMessage": 238.58270000000084,
+    "getMultipleAccountsInfo": 558.9752999999982,
+    "simulateTransaction": 231.16440000000148
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "cap-quyen-vuot-so-du",
+   "lan": 0,
+   "dungTx": 778.2,
+   "docRpc": 557.5,
+   "moPhong": 258.9,
+   "l2": 0.36,
+   "l3": 2647.1,
+   "tong": 4242.1,
+   "rpc": {
+    "getMultipleAccountsInfo": 556.338099999999,
+    "getFeeForMessage": 292.10489999999845,
+    "simulateTransaction": 258.9361000000008
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "cap-quyen-vua-du",
+   "lan": 0,
+   "dungTx": 543.5,
+   "docRpc": 585.6,
+   "moPhong": 260.5,
+   "l2": 0.25,
+   "l3": 2548,
+   "tong": 3937.8,
+   "rpc": {
+    "getFeeForMessage": 253.39940000000206,
+    "getMultipleAccountsInfo": 584.6620000000003,
+    "simulateTransaction": 260.4856
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "trao-quyen-dong",
+   "lan": 0,
+   "dungTx": 554.4,
+   "docRpc": 569.7,
+   "moPhong": 219.8,
+   "l2": 0.18,
+   "l3": 3068,
+   "tong": 4412.1,
+   "rpc": {
+    "getMultipleAccountsInfo": 568.6617000000006,
+    "getFeeForMessage": 298.79509999999937,
+    "simulateTransaction": 219.8305999999975
+   },
+   "nguonL3": "moHinhBiChan"
+  },
+  {
+   "id": "chuyen-them-ngoai-hanh-dong",
+   "lan": 0,
+   "dungTx": 553.1,
+   "docRpc": 872.1,
+   "moPhong": 260.5,
+   "l2": 0.33,
+   "l3": 2476.1,
+   "tong": 4162.2,
+   "rpc": {
+    "getFeeForMessage": 262.6938000000009,
+    "getMultipleAccountsInfo": 575.9176000000043,
+    "simulateTransaction": 260.53809999999794,
+    "getSignaturesForAddress": 568.3711000000003
+   },
+   "nguonL3": "moHinhBiChan"
+  },
+  {
+   "id": "thieu-du-lieu",
+   "lan": 0,
+   "dungTx": 575.8,
+   "docRpc": 548.4,
+   "moPhong": 227.7,
+   "l2": 0.19,
+   "l3": 2350.8,
+   "tong": 3702.9,
+   "rpc": {
+    "getMultipleAccountsInfo": 547.6970000000001,
+    "getFeeForMessage": 280.52880000000005,
+    "simulateTransaction": 227.65899999999965
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "lanh-tinh",
+   "lan": 0,
+   "dungTx": 585.3,
+   "docRpc": 869.2,
+   "moPhong": 279.3,
+   "l2": 0.33,
+   "l3": 2411.8,
+   "tong": 4145.9,
+   "rpc": {
+    "getMultipleAccountsInfo": 565.4218999999939,
+    "getFeeForMessage": 291.3382999999958,
+    "simulateTransaction": 279.29819999999745,
+    "getSignaturesForAddress": 302.9346000000005
+   },
+   "nguonL3": "moHinh"
+  },
+  {
+   "id": "tan-cong-day-du",
+   "lan": 0,
+   "dungTx": 515.3,
+   "docRpc": 1249.5,
+   "moPhong": 287.2,
+   "l2": 0.35,
+   "l3": 2723.4,
+   "tong": 4775.8,
+   "rpc": {
+    "getFeeForMessage": 280.8917000000001,
+    "getMultipleAccountsInfo": 964.4179000000076,
+    "simulateTransaction": 287.21250000000146,
+    "getSignaturesForAddress": 283.7233000000051
+   },
+   "nguonL3": "moHinh"
+  }
+ ]
+}

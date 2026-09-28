@@ -1,0 +1,79 @@
+{
+  "url": "http://localhost:5188/?thucThi=1",
+  "gui": {
+    "A": 1,
+    "B": 1
+  },
+  "checks": [
+    {
+      "ten": "A tạo phiên thành công",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "B cũ thấy phiên đã lưu của A, nút tạo phiên bị vô hiệu",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "B cũ KHÔNG gửi giao dịch nào",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "B khôi phục thấy đúng phiên của A",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "B chuẩn bị được yêu cầu ký",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "B gửi 1 DEMO, chuỗi xác nhận",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "A cũ chuẩn bị ⇒ bị chặn \"tab khác\", không có yêu cầu ký",
+      "dat": true,
+      "chiTiet": "Phiên ví đã thay đổi ở tab khác. Tải lại rồi khôi phục phiên; tra cứu giao dịch đang chờ trước khi ký tiếp."
+    },
+    {
+      "ten": "A cũ KHÔNG gửi giao dịch nào",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "đúng MỘT tab có yêu cầu ký, tab kia bị chặn \"tab khác\"",
+      "dat": true,
+      "chiTiet": "có yêu cầu: ['A'] · bị chặn: ['B']"
+    },
+    {
+      "ten": "A: huỷ xong, không còn yêu cầu ký",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "huỷ yêu cầu còn lại ⇒ không gửi thêm gì",
+      "dat": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "0 pageerror trên hai tab",
+      "dat": true,
+      "chiTiet": ""
+    }
+  ],
+  "loi": [],
+  "chuKy": [
+    {
+      "tab": "B",
+      "loai": "transfer",
+      "chuKy": "5fhvZCAftV8M78qc4KKEyJY6VPrWqTZufcW6jGHBwxcXngkXGQXy7VVRYumvMC9pMUkKsWh7KGzusLywGfZPWMZG",
+      "soDu": "match"
+    }
+  ],
+  "passed": true
+}

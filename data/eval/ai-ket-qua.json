@@ -1,5 +1,5 @@
 {
-  "doLuc": "2026-09-27T15:01:47.209Z",
+  "doLuc": "2026-09-28T12:46:16.347Z",
   "soMau": 38,
   "nguon": "data/seed/index.json — 33 mẫu đã gắn nhãn, không phải fixture dựng riêng",
   "template": {
@@ -113,14 +113,9 @@
     ]
   },
   "moHinhThat": {
-    "trangThai": "BLOCKED_BY_SECRET",
-    "vaSao": "chưa có ANTHROPIC_API_KEY trong môi trường; không đo được độ trễ và token thật",
-    "luuY": "lượt offline này KHÔNG xoá lượt live trước — xem `liveGanNhat`"
-  },
-  "liveGanNhat": {
     "trangThai": "đã đo",
-    "batDau": "2026-09-27T13:52:38.733Z",
-    "xong": "2026-09-27T13:54:20.710Z",
+    "batDau": "2026-09-28T12:44:42.978Z",
+    "xong": "2026-09-28T12:46:16.346Z",
     "moHinh": "claude-haiku-4-5-20251001",
     "tokenRaToiDa": 400,
     "tokenRaToiDaLaMacDinh": true,
@@ -134,24 +129,85 @@
       "soMau": 38
     },
     "soMau": 38,
-    "treTrungViMs": 2671,
-    "treCaoNhatMs": 4108,
+    "treTrungViMs": 2403,
+    "treCaoNhatMs": 3438,
     "hanMacDinhMs": 4000,
     "duongDoCoBocThoiHan": false,
-    "soLuotUocSeBiCat": 1,
+    "soLuotUocSeBiCat": 0,
     "soLuotBiCatThatSu": 0,
     "giaTriTangThem": {
-      "soCaKhacCauMau": 19,
-      "chuThemTrungVi": 99,
-      "soCaNoiVeCoverage": 15,
-      "soCaCauMauNoiVeCoverage": 14,
+      "soCaKhacCauMau": 23,
+      "chuThemTrungVi": 96,
+      "soCaNoiVeCoverage": 14,
+      "soCaCauMauNoiVeCoverage": 16,
       "soCaCoCoverageKhuyet": 16,
-      "boQuaCoverage": []
+      "boQuaCoverage": [
+        {
+          "id": "R10-pos",
+          "coverage": "0/1",
+          "cauAI": "Không thể xác định hành động chính của giao dịch. Mô phỏng không thành công do các yếu tố sau: chương trình không được giải mã, mô phỏng bị hỏng, và trạng thái dữ liệu không đầy đủ. Không có thay đổi số dư được ghi nhận. Do không thể mô phỏng thành công, không có thông tin đáng tin cậy về hậu quả của giao dịch này."
+        },
+        {
+          "id": "R10-neg",
+          "coverage": "0/1",
+          "cauAI": "Mô phỏng giao dịch không thành công. Không thể xác định hành động chính vì dữ liệu không cho thấy các thay đổi số dư hoặc tương tác cụ thể nào. Mã lý do chỉ ra rằng có vấn đề trong quá trình mô phỏng và trạng thái không xác định được."
+        }
+      ]
     },
-    "tokenVao": 28878,
-    "tokenRa": 7206,
-    "luiVeTatDinh": 19,
-    "tyLeDungDauRaMoHinh": 0.5,
+    "tokenVao": 26947,
+    "tokenRa": 6511,
+    "luiVeTatDinh": 15,
+    "tyLeDungDauRaMoHinh": 0.6052631578947368,
+    "soLoiApi": 0,
+    "loiApi": [],
+    "viPham": []
+  },
+  "liveGanNhat": {
+    "trangThai": "đã đo",
+    "batDau": "2026-09-28T12:44:42.978Z",
+    "xong": "2026-09-28T12:46:16.346Z",
+    "moHinh": "claude-haiku-4-5-20251001",
+    "tokenRaToiDa": 400,
+    "tokenRaToiDaLaMacDinh": true,
+    "sdkMaxRetriesMacDinh": 2,
+    "datMaxRetriesTuongMinh": true,
+    "promptDoDai": 1191,
+    "promptBam": "6d2f1409",
+    "boDuLieu": {
+      "nguon": "data/seed/index.json",
+      "thuLuc": "2026-08-21T00:24:40.946Z",
+      "soMau": 38
+    },
+    "soMau": 38,
+    "treTrungViMs": 2403,
+    "treCaoNhatMs": 3438,
+    "hanMacDinhMs": 4000,
+    "duongDoCoBocThoiHan": false,
+    "soLuotUocSeBiCat": 0,
+    "soLuotBiCatThatSu": 0,
+    "giaTriTangThem": {
+      "soCaKhacCauMau": 23,
+      "chuThemTrungVi": 96,
+      "soCaNoiVeCoverage": 14,
+      "soCaCauMauNoiVeCoverage": 16,
+      "soCaCoCoverageKhuyet": 16,
+      "boQuaCoverage": [
+        {
+          "id": "R10-pos",
+          "coverage": "0/1",
+          "cauAI": "Không thể xác định hành động chính của giao dịch. Mô phỏng không thành công do các yếu tố sau: chương trình không được giải mã, mô phỏng bị hỏng, và trạng thái dữ liệu không đầy đủ. Không có thay đổi số dư được ghi nhận. Do không thể mô phỏng thành công, không có thông tin đáng tin cậy về hậu quả của giao dịch này."
+        },
+        {
+          "id": "R10-neg",
+          "coverage": "0/1",
+          "cauAI": "Mô phỏng giao dịch không thành công. Không thể xác định hành động chính vì dữ liệu không cho thấy các thay đổi số dư hoặc tương tác cụ thể nào. Mã lý do chỉ ra rằng có vấn đề trong quá trình mô phỏng và trạng thái không xác định được."
+        }
+      ]
+    },
+    "tokenVao": 26947,
+    "tokenRa": 6511,
+    "luiVeTatDinh": 15,
+    "tyLeDungDauRaMoHinh": 0.6052631578947368,
     "soLoiApi": 0,
     "loiApi": [],
     "viPham": []
@@ -260,10 +316,10 @@
       "nguonGoc": "synthetic-devnet",
       "luat": 9,
       "level": "warning",
-      "soMa": 4,
+      "soMa": 3,
       "coverage": "0/1",
       "template": {
-        "soChu": 393,
+        "soChu": 307,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -274,10 +330,10 @@
       "nguonGoc": "synthetic-devnet",
       "luat": 9,
       "level": "warning",
-      "soMa": 3,
+      "soMa": 2,
       "coverage": "0/1",
       "template": {
-        "soChu": 299,
+        "soChu": 219,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -389,7 +445,7 @@
       "soMa": 3,
       "coverage": "0/8",
       "template": {
-        "soChu": 315,
+        "soChu": 308,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -431,7 +487,7 @@
       "soMa": 3,
       "coverage": "0/12",
       "template": {
-        "soChu": 322,
+        "soChu": 308,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -445,7 +501,7 @@
       "soMa": 3,
       "coverage": "0/11",
       "template": {
-        "soChu": 321,
+        "soChu": 308,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -456,10 +512,10 @@
       "nguonGoc": "real-mainnet",
       "luat": null,
       "level": "warning",
-      "soMa": 6,
+      "soMa": 3,
       "coverage": "0/10",
       "template": {
-        "soChu": 627,
+        "soChu": 308,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -473,7 +529,7 @@
       "soMa": 3,
       "coverage": "0/5",
       "template": {
-        "soChu": 323,
+        "soChu": 308,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -543,7 +599,7 @@
       "soMa": 3,
       "coverage": "0/1",
       "template": {
-        "soChu": 329,
+        "soChu": 321,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
@@ -557,7 +613,7 @@
       "soMa": 2,
       "coverage": "0/1",
       "template": {
-        "soChu": 227,
+        "soChu": 219,
         "diaChiBia": 0,
         "soBia": 0,
         "aiAdvisory": null
