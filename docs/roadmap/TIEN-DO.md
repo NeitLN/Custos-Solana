@@ -5,7 +5,32 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 
 | Roadmap | Tiền tố mã | Bảng |
 |---|---|---|
-| [docs/roadmap/ROADMAP-CUSTOS-CHUNG-KET.md](ROADMAP-CUSTOS-CHUNG-KET.md) — **đang thực hiện (27/09)** | `CK-` | [Bảng chung kết](#bảng-công-việc--roadmap-chung-kết-ck) |
+| [docs/roadmap/ROADMAP-SAU-MENTOR.md](ROADMAP-SAU-MENTOR.md) — **đang thực hiện (29/09)** | `G0-`, `B`, `A`, `C`, `D`, `F` | [Bảng sau mentor](#bảng-công-việc--roadmap-sau-mentor) |
+| [docs/roadmap/ROADMAP-CUSTOS-CHUNG-KET.md](ROADMAP-CUSTOS-CHUNG-KET.md) — đang thực hiện (27/09) | `CK-` | [Bảng chung kết](#bảng-công-việc--roadmap-chung-kết-ck) |
+
+## Bảng công việc — roadmap sau mentor
+
+Cập nhật B3 29/09/2026. `npm run typecheck` đạt; `npm test`: **1341 test pass, 0 fail, 0 skipped**.
+
+| Mã | Trạng thái | Bằng chứng |
+|---|---|---|
+| G0-1 spike connector | **DONE** | [SPIKE-CONNECTOR.md](../review/ck-20260929/SPIKE-CONNECTOR.md) — 10/10 bước; chữ ký Devnet `2CX49yyc…wzFSpQ` đối chiếu trên chain |
+| G0-2 năm phép thử | **DONE một phần** | T1–T4 ĐẠT (Chromium, hai origin localhost). T5 (HTTPS công khai) chuyển sang B5 |
+| G0-3 ADR-0004 | **DONE** | [ADR-0004](../adr/0004-custos-trong-luong-ky-cua-vi.md) |
+| G0-4 hợp đồng ký | **DONE** | `ky.js`: `da_ky` chỉ khi có chữ ký ed25519 hợp lệ; 6 test đỏ trên mã cũ; đột biến tắt xác minh ⇒ 2 bài đỏ |
+| G0-5 journey 7 trạng thái | **DONE (bản gốc)** | ADR-0004 mục 3. Vai C còn chỉnh chữ ở C1 |
+| G0-6 người ngoài tự tích hợp | **WAIT_HUMAN** | Việc của vai D; Claude không làm thay được |
+| **Go/no-go 30/09** | **ĐẠT ⇒ nhánh Chuẩn** | Spike ĐẠT T2 và T4 (hai phép bắt buộc) |
+| B1 ví nhận giao dịch tổng quát | **DONE (đường connector)** | `cuaSoVi.ts` kiểm đúng bytes nhận được; test legacy, v0, ALT, nhiều người ký (giữ chữ ký của đồng ký) |
+| B2 connector | **DONE** | Kiểm origin + nguồn, requestId một lần, mọi promise có kết cục (kể cả chờ "sẵn sàng"), popup bị chặn |
+| B3 SolBonus trên wallet-adapter | **DONE** (Claude review 29/09: không thấy lỗi ở đường gửi/khoá/không-gửi-lại) | dApp độc lập, chỉ import connector; đọc DEMO và bằng chứng tạo phiên từ chain; có bản lành; [SolBonus HTTPS](https://solbonus-custos.vercel.app/tan-cong/) khác origin ví. [Biên bản B3](../review/ck-20260929/B3-SOLBONUS.md) |
+| B4 biên nhận khi dApp tự gửi | **DONE** | `bienNhan.ts`: so token (số dư, chủ) dự báo ↔ thực tế; SOL chỉ để xem; thiếu dự báo ⇒ không chấm "khớp" |
+| B5 probe hai origin công khai | **DONE** | Nhánh chặn + bản lành: Codex (`B3-HTTPS-*.json`). Nhánh **Vẫn ký bản độc** 29/09 (chủ dự án đồng ý): `solbonus-custos.vercel.app` ↔ `custos-solana.vercel.app`, trình chặn popup BẬT → Nguy hiểm hiện trước mọi `sendTransaction` → ký → SolBonus gửi đúng 1 lần → biên nhận ví **khớp dự báo 3/3 dòng chấm**; đối chiếu độc lập trên chain: `487z…` 499 → 249,5 DEMO, chủ `AqX3…` → `EicA…`, phí 5000. Chữ ký `LDxqW6gh…eroQ2`. [B5-VAN-KY.json](../review/ck-20260929/B5-VAN-KY.json) |
+| A1 một nguồn hợp đồng ký | **DONE (đường connector)** | Cửa sổ ký gọi `kySauKhiKiem`. `LiveSession` cũ vẫn giữ gate riêng (đối chứng) |
+| A2 test đối kháng | **DONE** | Bấm ký hai lần, ngắt khi đang chờ / đang ký, signer sửa object sau khi trả, trường lạ, batch, chain khác |
+| C1 chữ 7 trạng thái | **DONE (bản gốc)** | Cửa sổ ký tách "thiếu thông tin" với "phát hiện hành vi" (`chiLaThongTin`) |
+| Codex review GĐ0+GĐ1 | **DONE** | 4 finding mức trung bình, đã sửa cả 4, mỗi finding một test đỏ trước khi sửa |
+| A3, C2, C3, D1, D2 | TODO | GĐ2 |
 | [docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md) — đã thực hiện trước | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [docs/roadmap/ROADMAP-CLAUDE.md](../roadmap/ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |
 
