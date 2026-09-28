@@ -4,6 +4,7 @@ import { Keypair, PublicKey, SystemProgram, TransactionMessage, VersionedTransac
 import { AccountLayout, MintLayout, TOKEN_PROGRAM_ID, createTransferInstruction } from "@solana/spl-token";
 import { inspect } from "../src/inspect.ts";
 import { REASON } from "../src/constants.ts";
+import { caoBuocThua } from "./caoBuocThua.ts";
 import { dienGiaiKhongAI } from "../../ai/src/index.ts";
 
 /**
@@ -96,6 +97,7 @@ test("đối chứng: đọc được mint ⇒ giữ cảnh báo đóng băng v�
   assert.ok(r.reasonCodes.includes(REASON.FREEZE_AUTHORITY_CON_HIEU_LUC));
   assert.equal(dongSoDu(r)?.before, "500,0");
   assert.ok(!r.reasonCodes.includes(REASON.TRANG_THAI_DO_KHUYET), "đọc đủ thì không được kêu thiếu");
+  assert.deepEqual(caoBuocThua(r.reasonCodes), [], "ca đối chứng mang cáo buộc (CK-10)");
 });
 
 for (const cheDo of ["null", "hong", "nem"] as const) {
@@ -108,7 +110,10 @@ for (const cheDo of ["null", "hong", "nem"] as const) {
 }
 
 test("thiếu mint ⇒ số dư hiện ĐƠN VỊ GỐC có nhãn, không bịa decimals = 0", async () => {
-  const d = dongSoDu(await chay("null"));
+  const r = await chay("null");
+  // Thiếu dữ liệu là THÔNG TIN, không phải cáo buộc (CK-10).
+  assert.deepEqual(caoBuocThua(r.reasonCodes), [], "thiếu mint mà sinh cáo buộc");
+  const d = dongSoDu(r);
   assert.ok(d, "vẫn phải có dòng số dư — số lượng thô là dữ kiện đo được");
   assert.equal(d.before, "500.000.000 đơn vị gốc");
   assert.equal(d.soLieu, undefined, "`soLieu.decimals` là số — không biết thì không được ghi");

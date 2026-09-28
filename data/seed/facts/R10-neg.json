@@ -3,29 +3,10 @@
   "tuoiViNhan": {},
   "simulationOk": false,
   "simulationError": "{\"InsufficientFundsForRent\":{\"account_index\":2}}",
-  "accounts": [
-    {
-      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
-      "isSigner": true,
-      "programOwnerBefore": "11111111111111111111111111111111",
-      "programOwnerAfter": null,
-      "lamportsBefore": "4836092960n",
-      "lamportsAfter": "0n"
-    },
-    {
-      "address": "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T",
-      "isSigner": false,
-      "programOwnerBefore": null,
-      "programOwnerAfter": null,
-      "lamportsBefore": "0n",
-      "lamportsAfter": "0n"
-    }
-  ],
+  "accounts": [],
   "tokenAccounts": [],
   "mints": [],
-  "solDelta": {
-    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-4836092960n"
-  },
+  "solDelta": {},
   "instructions": [
     {
       "index": 0,
@@ -49,5 +30,9 @@
     "analyzed": 0,
     "total": 1,
     "unverifiedPrograms": 0
-  }
+  },
+  "accountKhongDoDuoc": [
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+    "AhrBeaTUjPtVonVNhdEz9BRqTL4keAdNTGAGHZWmFC2T"
+  ]
 }

@@ -3,41 +3,8 @@
   "tuoiViNhan": {},
   "simulationOk": false,
   "simulationError": "{\"InstructionError\":[0,\"MissingRequiredSignature\"]}",
-  "accounts": [
-    {
-      "address": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
-      "isSigner": true,
-      "programOwnerBefore": "11111111111111111111111111111111",
-      "programOwnerAfter": null,
-      "lamportsBefore": "4914255680n",
-      "lamportsAfter": "0n"
-    },
-    {
-      "address": "6GKSKEwGZ6VN32FMhkCmmffAEjhD9GPjqzNspYiBLLEa",
-      "isSigner": false,
-      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-      "programOwnerAfter": null,
-      "lamportsBefore": "2039280n",
-      "lamportsAfter": "0n"
-    }
-  ],
-  "tokenAccounts": [
-    {
-      "address": "6GKSKEwGZ6VN32FMhkCmmffAEjhD9GPjqzNspYiBLLEa",
-      "mint": "43JGWQPDygFB8FgQ1ifoLoCeKH75d6vMTAS88SBK4tjd",
-      "ownerBefore": "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
-      "ownerAfter": null,
-      "amountBefore": "500000000n",
-      "amountAfter": "0n",
-      "delegateBefore": null,
-      "delegateAfter": null,
-      "delegatedAmountAfter": "0n",
-      "closeAuthorityBefore": null,
-      "closeAuthorityAfter": null,
-      "programOwnerBefore": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-      "programOwnerAfter": null
-    }
-  ],
+  "accounts": [],
+  "tokenAccounts": [],
   "mints": [
     {
       "address": "43JGWQPDygFB8FgQ1ifoLoCeKH75d6vMTAS88SBK4tjd",
@@ -49,10 +16,7 @@
       "decimals": 6
     }
   ],
-  "solDelta": {
-    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF": "-4914255680n",
-    "6GKSKEwGZ6VN32FMhkCmmffAEjhD9GPjqzNspYiBLLEa": "-2039280n"
-  },
+  "solDelta": {},
   "instructions": [
     {
       "index": 0,
@@ -69,5 +33,9 @@
     "analyzed": 0,
     "total": 1,
     "unverifiedPrograms": 1
-  }
+  },
+  "accountKhongDoDuoc": [
+    "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF",
+    "6GKSKEwGZ6VN32FMhkCmmffAEjhD9GPjqzNspYiBLLEa"
+  ]
 }

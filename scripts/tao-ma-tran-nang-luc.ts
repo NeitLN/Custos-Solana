@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { tomTatNangLuc } from "../packages/core/src/l1/nang-luc.ts";
 import { VERIFIED_PROGRAMS } from "../packages/core/src/constants.ts";
@@ -49,6 +49,24 @@ const hang = t.danhSach
   )
   .join("\n");
 
+/*
+ * CẶP ĐỐI CHỨNG CK-10 — đọc từ manifest, không gõ tay. Test chạy engine trên từng ca:
+ * `apps/demo-wallet/test/doiChungCk10.test.ts`.
+ */
+type CapDoiChung = { id: string; dieuCanChungMinh: string; gioiHan: string; ca: Array<{ id: string; vaiTro: string; nguon: string }> };
+const DC = JSON.parse(readFileSync("data/doi-chung/ck10.json", "utf8")) as { nguoiGan: string; cap: CapDoiChung[] };
+const NGUON_CHU: Record<string, string> = {
+  "replay-devnet": "phát lại Devnet",
+  seed: "seed",
+  "fixture-test": "fixture trong test",
+  "devnet-mo-phong": "mô phỏng Devnet",
+};
+const caChu = (c: CapDoiChung, v: string) =>
+  c.ca.filter((x) => x.vaiTro === v).map((x) => `\`${x.id}\` (${NGUON_CHU[x.nguon] ?? x.nguon})`).join("<br>");
+const hangDoiChung = DC.cap
+  .map((c) => `| ${c.dieuCanChungMinh} | ${caChu(c, "kichHoat")} | ${caChu(c, "doiChung")} | ${c.gioiHan} |`)
+  .join("\n");
+
 const noiDung = `# Ma trận năng lực — Custos đọc hiểu được đến đâu
 
 > **TỆP NÀY ĐƯỢC SINH RA.** Sửa tay sẽ bị ghi đè ở lần chạy sau.
@@ -90,6 +108,15 @@ ${hang}
 | Chương trình **không biết** | Xem địa chỉ program đầy đủ trong phần chẩn đoán, tự tra trên explorer |
 | Chương trình **đọc được tên** | Đọc tên lệnh để đối chiếu với thứ dApp nói nó sẽ làm |
 | Lượt kiểm **thiếu dữ liệu RPC** | Kiểm lại khi mạng ổn định — đây là thiếu tạm thời, không phải chưa hỗ trợ |
+
+## Cặp đối chứng — hiểu hậu quả nghĩa là phân biệt được hai ca gần giống nhau
+
+Sinh từ \`data/doi-chung/ck10.json\`. Mỗi ca chạy được (phát lại, seed) được test so **cả mã
+thiếu lẫn cáo buộc thừa**; ca fixture trỏ tới test có thật. Nhãn do: ${DC.nguoiGan}.
+
+| Điều cần chứng minh | Ca kích hoạt | Ca đối chứng | Giới hạn |
+|---|---|---|---|
+${hangDoiChung}
 
 ## Ba điều bảng này KHÔNG nói
 
