@@ -22,10 +22,6 @@ body .app-shell {
   background: #f3f6f3;
 }
 body .app-shell::before { display: none; }
-.app-shell .scope-bar { background: #e8efe6; color: #365548; border-bottom: 1px solid #d6e1d8; }
-.app-shell .scope-bar__track { width: 100%; animation: none; }
-.app-shell .scope-bar__message { width: 100%; justify-content: center; text-align: center; padding: 8px 16px; font-size: 10px; letter-spacing: .12em; }
-.app-shell .scope-bar__message[aria-hidden="true"] { display: none; }
 .app-shell .wallet-header { background: transparent; border: 0; border-bottom: 1px solid #cfded2; box-shadow: none; border-radius: 0; padding: 12px 0 24px; }
 .app-shell .wallet-header::after { display: none; }
 .app-shell .wallet-brand__title { font-size: 24px; letter-spacing: -.045em; }

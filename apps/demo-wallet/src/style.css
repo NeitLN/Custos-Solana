@@ -145,32 +145,48 @@ button {
   mask-image: linear-gradient(to bottom, black, transparent 66%);
 }
 
-.scope-bar {
-  overflow: hidden;
-  color: #72510c;
-  background: #fff4d6;
-  border-bottom: 1px solid #edd99f;
+/*
+ * Dải phạm vi bản demo (`DaiPhamVi.tsx`) — một dòng tĩnh, nền hoà vào trang, chữ thường.
+ * Tương phản chữ #3f564b trên nền ≈ #edf2ec: ~7:1 (AA cho chữ nhỏ). Không animation (CK-12).
+ */
+.dai-pham-vi {
+  display: block;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+  text-align: center;
+  color: #3f564b;
+  background: #edf2ec;
+  border-bottom: 1px solid #dbe4d8;
 }
 
-.scope-bar__track {
-  display: flex;
-  width: max-content;
-  animation: scope-marquee 18s linear infinite;
+.dai-pham-vi__chu {
+  text-wrap: balance;
 }
 
-.scope-bar__message {
-  flex: none;
-  padding: 0.5rem max(1rem, 7vw) 0.5rem 1rem;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  line-height: 1.5;
-  text-transform: uppercase;
-  white-space: nowrap;
+.dai-pham-vi strong {
+  font-weight: 650;
+  color: #1d3a2e;
 }
 
-.scope-dot {
-  background: #a97508;
+@media (max-width: 480px) {
+  .dai-pham-vi {
+    padding: 6px 14px;
+    font-size: 11.5px;
+  }
+}
+
+.dai-pham-vi__cham {
+  display: inline-block;
+  margin-right: 0.5rem;
+  vertical-align: 0.12em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #3f8f5a;
+  box-shadow: 0 0 0 3px rgb(63 143 90 / 0.16);
 }
 
 .wallet-header {
@@ -674,6 +690,13 @@ button {
     transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Hai nút QUYẾT ĐỊNH của thẻ cảnh báo (huỷ / vẫn ký) — CK-12: "CTA đọc được trên máy chiếu".
+   Đo 28/09 trên cả ba engine: 13px, ở 1280×720 chiếu lên là chữ nhỏ nhất của thẻ trong khi
+   đây là hai nút quan trọng nhất. Chỉ lớp này lên 15px; các `.nut` khác giữ nguyên. */
+.nut-quyet-dinh {
+  font-size: 15px;
+}
+
 .nut:disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -833,10 +856,6 @@ button {
     animation: content-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .scope-dot {
-    animation: status-pulse 2.2s ease-in-out infinite;
-  }
-
   .scan-orbit::after {
     animation: orbit-pulse 2.4s ease-out infinite;
   }
@@ -936,16 +955,6 @@ button {
   }
 }
 
-@keyframes scope-marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 @keyframes orbit-pulse {
   0% {
     opacity: 0.7;
@@ -1000,18 +1009,4 @@ button {
     transition-duration: 0.01ms !important;
   }
 
-  .scope-bar__track {
-    width: 100%;
-    animation: none;
-  }
-
-  .scope-bar__message {
-    width: 100%;
-    padding-inline: 1rem;
-    text-align: center;
-  }
-
-  .scope-bar__message[aria-hidden="true"] {
-    display: none;
-  }
 }

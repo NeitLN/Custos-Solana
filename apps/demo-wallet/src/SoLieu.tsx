@@ -1,6 +1,7 @@
 import { ProductHeader } from "./ProductNavigation.tsx";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import type { docPhatLai, docThucThiLive, docAiThat } from "../../../scripts/bangChungChungKet.ts";
 
 /**
  * TRANG SỐ LIỆU CÔNG KHAI.
@@ -56,6 +57,10 @@ type SoLieu = {
     dat: boolean;
   } | null;
   evalAi: { soMau: number; soBay: number; soBayChanDuoc: number; moHinhThat: string | null } | null;
+  /** Vòng chung kết (CK-13): ba loại bằng chứng, ba artifact — xem `scripts/bangChungChungKet.ts`. */
+  phatLai?: ReturnType<typeof docPhatLai>;
+  thucThiLive?: ReturnType<typeof docThucThiLive>;
+  aiThat?: ReturnType<typeof docAiThat>;
   nguoiMua: number;
   soLuatCoCapDoiChung: number;
   soLuat: number;
@@ -63,6 +68,22 @@ type SoLieu = {
 };
 
 const ngay = (iso: string) => new Date(iso).toLocaleDateString("vi-VN");
+
+/* Chữ của chuỗi bằng chứng CK-13 — mã lạ thì hiện nguyên mã, không đoán nghĩa. */
+const LOAI_GD: Record<string, string> = {
+  transfer: "Chuyển token",
+  attack: "Giao dịch tấn công",
+  owner: "Chỉ đổi chủ tài khoản",
+  approve: "Cấp quyền sử dụng",
+  "delegate-transfer": "Ứng dụng dùng quyền",
+  revoke: "Thu hồi quyền",
+  extra: "Gửi kèm chuyển thêm",
+  "close-authority": "Trao quyền đóng tài khoản",
+  close: "Ứng dụng đóng tài khoản",
+};
+const MUC_L2: Record<string, string> = { safe: "An toàn", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
+const QUYET_DINH: Record<string, string> = { approve: "Ký", override: "Ký sau cảnh báo / đề nghị" };
+const DOI_CHIEU: Record<string, string> = { match: "Khớp", mismatch: "Lệch", unknown: "Chưa rõ" };
 
 /*
  * MỘT PHÉP ĐO = MỘT HÀNG, không phải một thẻ.
@@ -135,6 +156,9 @@ export function SoLieu() {
           {d.cohort && <a href="#du-lieu-cong-khai">Dữ liệu công khai</a>}
           {d.phongVan && <a href="#muc-do-hieu">Mức độ hiểu</a>}
           {d.tichHop && <a href="#tich-hop">Tích hợp SDK</a>}
+          {d.phatLai && <a href="#phat-lai">Phát lại</a>}
+          {d.thucThiLive && <a href="#thuc-thi-live">Giao dịch Devnet</a>}
+          {d.aiThat && <a href="#ai-that">AI mô hình thật</a>}
           {d.evalAi && <a href="#danh-gia-ai">Đánh giá AI</a>}
           <a href="#gioi-han">Chưa đo được</a><a href="#san-pham">Sản phẩm</a>
         </nav>
@@ -302,6 +326,145 @@ export function SoLieu() {
                 cachDo="Đo trên kịch bản tấn công thật: dApp khai 'nhận airdrop' nhưng rút token và đổi chủ tài khoản. Custos trả mức Nguy hiểm, đọc hiểu 2/2 lệnh."
               />
             </div>
+          </section>
+        )}
+
+        {/*
+          BA LOẠI BẰNG CHỨNG CỦA VÒNG CHUNG KẾT — CK-13. Phát lại, thực thi live và AI thật trả lời
+          ba câu hỏi khác nhau; gộp thành một con số "đã kiểm chứng" là nói quá. Mỗi mục một
+          artifact, một ngày đo, một giới hạn riêng.
+        */}
+        {d.phatLai && (
+          <section className="evidence-section mt-10" id="phat-lai">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">Phát lại kịch bản — không cần mạng</h2>
+            <p className="mt-1 text-[14px] text-chu-mo">engine hiện tại chạy lại trên phản hồi RPC đã ghi từ Devnet</p>
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.phatLai.soKichBan}`}
+                nhan="kịch bản có dữ liệu ghi đủ"
+                cachDo={`Mỗi kịch bản ghi từ MỘT nhà cung cấp RPC (${d.phatLai.nguon.join(", ")})${d.phatLai.ghiTu && d.phatLai.ghiDen ? (ngay(d.phatLai.ghiTu) === ngay(d.phatLai.ghiDen) ? `, ghi ngày ${ngay(d.phatLai.ghiTu)}` : `, trong khoảng ${ngay(d.phatLai.ghiTu)}–${ngay(d.phatLai.ghiDen)}`) : ""}, engine lúc ghi ${d.phatLai.engineLucGhi}. Khi phát lại, engine hiện tại chạy lại và nói ra nếu kết quả lệch lúc ghi.`}
+              />
+              {d.phatLai.doTre && (
+                <PhepDo
+                  so={`${d.phatLai.doTre.trungViMs} ms`}
+                  nhan="trung vị một lượt phát lại trong trình duyệt"
+                  cachDo={`${d.phatLai.doTre.soLuot} lượt, thấp nhất ${d.phatLai.doTre.thapNhatMs} ms, cao nhất ${d.phatLai.doTre.caoNhatMs} ms, đo ngày ${ngay(d.phatLai.doTre.doLuc)} trên bản production.`}
+                />
+              )}
+            </div>
+            <GioiHan tieuDe="Không phải giao dịch mới.">
+              Phát lại dùng kết quả mô phỏng của một lần chạy trong quá khứ; nó không chứng minh Devnet hôm nay trả
+              lời giống vậy.
+              {d.phatLai.doTre ? ` Giới hạn của phép đo độ trễ, ghi lúc đo ngày ${ngay(d.phatLai.doTre.doLuc)}: ${d.phatLai.doTre.gioiHan.join(" ")}` : ""}
+            </GioiHan>
+          </section>
+        )}
+
+        {d.thucThiLive && (
+          <section className="evidence-section mt-10" id="thuc-thi-live">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">Giao dịch thật trên Devnet</h2>
+            <p className="mt-1 text-[14px] text-chu-mo">ví demo cố định ký, chuỗi ghi nhận, đối chiếu dự báo với thực tế</p>
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.thucThiLive.soBienNhan}`}
+                nhan="giao dịch đã xác nhận trên Devnet có biên nhận"
+                cachDo={`Biên nhận ghi chữ ký, số dư Custos dự báo và số dư đọc lại sau khi chuỗi xác nhận: ${d.thucThiLive.soKhopSoDu}/${d.thucThiLive.soBienNhan} khớp số dư, ${d.thucThiLive.soLechSoDu} lệch${d.thucThiLive.soChuaRoSoDu ? `, ${d.thucThiLive.soChuaRoSoDu} chưa đọc lại được số dư sau giao dịch (không tính là khớp)` : ""}. Đếm theo chữ ký — một giao dịch chỉ tính một lần dù nhiều lượt kiểm ghi lại nó.`}
+              />
+              <PhepDo
+                so={`${d.thucThiLive.caDat.length}/${d.thucThiLive.caDat.length + d.thucThiLive.caChuaDat.length}`}
+                nhan="ca nghiệm thu đạt trong probe tự động"
+                cachDo={`Đạt: ${d.thucThiLive.caDat.join(", ")}.${d.thucThiLive.caChuaDat.length ? ` Chưa đạt: ${d.thucThiLive.caChuaDat.join(", ")}.` : ""}`}
+              />
+            </div>
+            {/*
+              CHUỖI BẰNG CHỨNG — CK-13: "ca → inspection → quyết định → chữ ký → đối chiếu". Mỗi
+              hàng là một giao dịch đã lên chuỗi; chữ ký mở thẳng Explorer để ai cũng tự kiểm.
+            */}
+            <details className="evidence-chain mt-4 rounded-xl border border-vien bg-white px-4 py-3">
+              <summary className="cursor-pointer text-[14px] font-medium text-chu">
+                Xem {d.thucThiLive.chuoi.length} giao dịch — từ lựa chọn tới chữ ký trên chuỗi
+              </summary>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full min-w-[640px] text-left text-[13px] text-chu-nhat">
+                  <thead className="text-[12px] text-chu-mo">
+                    <tr>
+                      <th scope="col" className="py-1.5 pr-3 font-medium">Giao dịch</th>
+                      <th scope="col" className="py-1.5 pr-3 font-medium">Custos</th>
+                      <th scope="col" className="py-1.5 pr-3 font-medium">Mức L2 lúc quyết</th>
+                      <th scope="col" className="py-1.5 pr-3 font-medium">Quyết định</th>
+                      <th scope="col" className="py-1.5 pr-3 font-medium">Chữ ký</th>
+                      <th scope="col" className="py-1.5 font-medium">Số dư: dự báo ↔ chuỗi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {d.thucThiLive.chuoi.map((x) => (
+                      <tr key={x.chuKy} className="border-t border-vien align-top">
+                        <td className="py-1.5 pr-3">{LOAI_GD[x.loai] ?? x.loai}</td>
+                        <td className="py-1.5 pr-3">{x.baoVe ? "Bật" : "Tắt"}</td>
+                        <td className="py-1.5 pr-3">
+                          {MUC_L2[x.mucL2] ?? x.mucL2}
+                          {x.maLyDo.length > 0 && (
+                            <span className="block font-mono text-[11px] text-chu-mo">{x.maLyDo.join(", ")}</span>
+                          )}
+                        </td>
+                        <td className="py-1.5 pr-3">{QUYET_DINH[x.quyetDinh] ?? x.quyetDinh}</td>
+                        <td className="py-1.5 pr-3">
+                          <a
+                            className="font-mono underline underline-offset-2"
+                            href={`https://explorer.solana.com/tx/${encodeURIComponent(x.chuKy)}?cluster=devnet`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {x.chuKy.slice(0, 8)}…{x.chuKy.slice(-6)}
+                            <span className="sr-only"> (mở Explorer trong tab mới)</span>
+                          </a>
+                        </td>
+                        <td className="py-1.5">{DOI_CHIEU[x.soDu] ?? x.soDu}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-2 text-[12.5px] text-chu-mo">
+                Huỷ không có chữ ký nên không có hàng nào — không có giao dịch để truy. "Chưa rõ" nghĩa là không
+                đọc lại được số dư sau giao dịch (ví dụ tài khoản đã bị đóng), không tính là khớp.
+              </p>
+            </details>
+            {d.thucThiLive.caChuaDat.length > 0 && (
+              <GioiHan tieuDe="Chưa đạt, nói thẳng.">
+                Mỗi ca chưa đạt có lý do riêng, ghi trong{" "}
+                <code className="font-mono text-[13px]">docs/review/ck-20260927/NGHIEM-THU-LIVE.md</code>: có ca dừng ở bước
+                chuẩn bị (chỉ đọc) vì RPC Devnet công cộng quá hạn khi đọc tài khoản; có ca giao dịch đã lên chuỗi nhưng biên
+                nhận tự động chưa đọc được, hoặc chưa quy được thay đổi quyền cho đúng giao dịch. Ca đối chiếu thủ công trên
+                chuỗi không được tính vào con số trên. Không giao dịch nào bị gửi lại.
+              </GioiHan>
+            )}
+          </section>
+        )}
+
+        {d.aiThat && (
+          <section className="evidence-section mt-10" id="ai-that">
+            <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">AI với mô hình thật</h2>
+            <p className="mt-1 text-[14px] text-chu-mo">
+              {d.aiThat.moHinh}, đo ngày {ngay(d.aiThat.doLuc)} — lời văn qua bộ soi đầu ra, mức cảnh báo vẫn do engine luật
+            </p>
+            <div className="mt-6">
+              <PhepDo
+                so={`${d.aiThat.giuLai.daRaViPham}/${d.aiThat.giuLai.soCa}`}
+                nhan="ca có vi phạm lọt tới người dùng — tập giữ lại"
+                cachDo={`${d.aiThat.giuLai.soCa} ca thuộc ${d.aiThat.giuLai.soHo} họ, dựng từ bộ phát lại của ví cố định, không trùng tập dùng để chỉnh prompt. ${d.aiThat.giuLai.luiVeCauMau}/${d.aiThat.giuLai.soCa} ca lùi về câu mẫu vì bộ soi không nhận câu của mô hình.`}
+              />
+              <PhepDo
+                so={`${d.aiThat.phatTrien.soMauViPham}/${d.aiThat.phatTrien.soMau}`}
+                nhan="mẫu có vi phạm lọt tới người dùng — tập phát triển"
+                cachDo={`Câu của mô hình được dùng ở ${Math.round(d.aiThat.phatTrien.tyLeDungCauMoHinh * 100)} % số mẫu, còn lại lùi về câu mẫu. Trễ trung vị ${(d.aiThat.phatTrien.treTrungViMs / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} giây. Hai lượt ghi dùng ${d.aiThat.tokenVao.toLocaleString("vi-VN")} token vào, ${d.aiThat.tokenRa.toLocaleString("vi-VN")} token ra.`}
+              />
+            </div>
+            <GioiHan tieuDe={d.aiThat.boChanDaDoi ? "Bộ soi đã sửa sau lượt đo này." : "Tự đánh giá, mẫu nhỏ."}>
+              {d.aiThat.boChanDaDoi ? "Số trên là của bộ soi lúc đo; chưa đo lại trên bản hiện tại. " : ""}
+              Người chấm là chính đội, và kiểm máy chỉ bắt được thứ máy kiểm được. Không có vi phạm lọt trên mẫu này
+              không chứng minh mô hình an toàn.
+            </GioiHan>
           </section>
         )}
 

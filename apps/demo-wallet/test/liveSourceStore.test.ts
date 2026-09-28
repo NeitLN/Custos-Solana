@@ -3,25 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { Keypair } from '@solana/web3.js';
 import { giaiDongBangFacts } from '../../../packages/core/src/facts-io.ts';
-import { dienGiaiKhongAI } from '@custos-solana/ai';
-import { trackedInterpreter } from '../src/live/interpreter.ts';
 import { parsePublicSession, PublicSessionCache, mayDiscardSession } from '../src/live/store.ts';
 const facts = giaiDongBangFacts(readFileSync('data/seed/facts/MN-01.json', 'utf8'));
-test('AI timeout labels final fallback; late model completion never changes the source', async () => {
-  const sources: string[] = [];
-  let finish!: (r: Awaited<ReturnType<typeof dienGiaiKhongAI>>) => void;
-  const base = await dienGiaiKhongAI(facts, [], 'vi');
-  const interpret = trackedInterpreter(() => new Promise(r => { finish = r; }), s => sources.push(s), 5);
-  assert.deepEqual(await interpret(facts, [], 'vi'), base);
-  assert.deepEqual(sources, ['moHinhLoi']);
-  finish({ ...base, explanation: 'late' }); await new Promise(r => setImmediate(r));
-  assert.deepEqual(sources, ['moHinhLoi']);
-});
-test('AI invalid output returning deterministic text is never labelled model prose', async () => {
-  const sources: string[] = [];
-  await trackedInterpreter(dienGiaiKhongAI, s => sources.push(s))(facts, [], 'vi');
-  assert.deepEqual(sources, ['moHinhLoi']);
-});
+// Hai bài nhãn nguồn diễn giải cũ chuyển sang `nguonDienGiai.test.ts` (CK-09), nay tách chặn / quá hạn / hỏng.
 test('public cache rejects wrong wallet, malformed addresses and forged observations', () => {
   const wallet = Keypair.generate().publicKey.toBase58();
   const base = { version: 2, cluster: 'devnet', wallet, accounts: null, setupPending: null, unresolved: false, receipts: [] };

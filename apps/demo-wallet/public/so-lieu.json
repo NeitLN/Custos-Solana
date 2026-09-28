@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-09-27T15:07:39.333Z",
+  "sinhLuc": "2026-09-28T13:33:45.209Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -33,8 +33,320 @@
     "soBayChanDuoc": 13,
     "soDoiChung": 3,
     "soDoiChungQua": 3,
-    "moHinhThat": "BLOCKED_BY_SECRET",
+    "moHinhThat": "đã đo",
     "liveGanNhat": "đã đo"
+  },
+  "phatLai": {
+    "soKichBan": 9,
+    "nguon": [
+      "devnet.rpcpool.com",
+      "solana-devnet.api.onfinality.io"
+    ],
+    "engineLucGhi": "0.2.0",
+    "ghiTu": "2026-09-26T18:45:20.394Z",
+    "ghiDen": "2026-09-27T14:31:57.887Z",
+    "doTre": {
+      "doLuc": "2026-09-26T19:26:47.899219+00:00",
+      "soLuot": 70,
+      "trungViMs": 4,
+      "thapNhatMs": 3,
+      "caoNhatMs": 39,
+      "gioiHan": [
+        "n=10 mỗi ca (<30) nên KHÔNG báo p95; chỉ trung vị và khoảng.",
+        "2/9 kịch bản (lanh-tinh, tan-cong-day-du) chưa đo: fixture còn khuyết một lời gọi, phát lại báo thiếu thay vì chạy.",
+        "Một máy, một trình duyệt; không phải máy trình diễn chính thức.",
+        "Lượt đầu gồm cả tải bộ dữ liệu JSON (~286 KB)."
+      ]
+    }
+  },
+  "thucThiLive": {
+    "cluster": "devnet",
+    "soBienNhan": 20,
+    "soKhopSoDu": 19,
+    "soChuaRoSoDu": 1,
+    "soLechSoDu": 0,
+    "caDat": [
+      "AC03",
+      "AC04",
+      "AC05",
+      "AC06",
+      "AC07",
+      "AC08",
+      "AC09",
+      "AC10",
+      "AC11",
+      "AC17",
+      "AC21",
+      "S06",
+      "S07"
+    ],
+    "caChuaDat": [],
+    "tu": "2026-09-27T13:32:03.370Z",
+    "den": "2026-09-28T13:21:40.064Z",
+    "chuoi": [
+      {
+        "chuKy": "5aemVamZdjR2Ye1ERopzLMYX94CD9W4rTpkXwrVesohHXDyP7bPAZXN8L7gQLqtGgXx4KZXtdvrvXwmwvVmSPEUF",
+        "loai": "transfer",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:32:03.370Z"
+      },
+      {
+        "chuKy": "5w8U8A4w3dDDoM1TSvDCmLRNdvArmV46FdvsDohCUsDqdDdisGjXzL9qfJiJavgP5fYnYJD8huRhH648w7wtKZnR",
+        "loai": "transfer",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:41:19.780Z"
+      },
+      {
+        "chuKy": "5EVuM7HzfEQsvMUBBucNbLgTMmK4FTet12angygYetdMztbH7szriiUR47ejGHSPMcYN4Gw5HDNPxnQwgGM4DPmb",
+        "loai": "transfer",
+        "baoVe": false,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:48:02.606Z"
+      },
+      {
+        "chuKy": "3i5ugJqWPhwqucv6HPvR6UZYdrjUsz1PtvtEifTVZMTMpimfoPZnVE1KQSEu2tqWmDMZJRU2DeuvdNSzHBm2mxZY",
+        "loai": "attack",
+        "baoVe": false,
+        "quyetDinh": "approve",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:49:22.530Z"
+      },
+      {
+        "chuKy": "4U83X3LNLKD3FVBTuBvG5RhfA3b2u9tDtUtArAn92PRqtcCWg2C5sdWnF4U25y5FEL82XPykvegbUN94vTgBwUfi",
+        "loai": "owner",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:53:01.127Z"
+      },
+      {
+        "chuKy": "5HgpYhyW44TW52VWhNLfHZzQRBzDyszYqdb8eVUeKqQVfrNJtFyGREmiQr4ovYkjhPYe9TubNMDzioW2SEWQ3Z4z",
+        "loai": "approve",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:54:00.675Z"
+      },
+      {
+        "chuKy": "4wMxmp7kqwvMCq6a6EnBhwo8oGSKi7xhFMWtxsZy5HYqYfCnQoTRsqEYheLjDNZMuKz2tGyZ4W92pqiYYWvbLa2t",
+        "loai": "delegate-transfer",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:55:33.666Z"
+      },
+      {
+        "chuKy": "4eYGwfSTrHTWf27PCVBi7YZt1UuKZQGYyhyq7FAh6bfp1qpau9sEx5YzftEosD6NU44bHmDe91RqqKzgfNq5i1zt",
+        "loai": "revoke",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T13:59:01.584Z"
+      },
+      {
+        "chuKy": "M41pnjcj3sqpPW5jF99yDjFwbnEmNGvAM7CoCwzbby3zP51rZEX5Dr2ey72jcT9KfGxcS7VSW446j3M7a2y49YH",
+        "loai": "extra",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T14:10:51.635Z"
+      },
+      {
+        "chuKy": "59ELRpRKYhS7uiWsUkxXHSV6Z6c13gJ46MBTB2i1DH1debmLLzGnjdzpp4kcMhnLwPQscYNwKHinGHoBTz7CjRsT",
+        "loai": "close-authority",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T14:15:59.897Z"
+      },
+      {
+        "chuKy": "43bLSz4SFxS3Ny7wzUF89VL25h3tUJ1oCd6du76FLYSTA8z4YsNXaB56ebVCYtV6ymWRow3tLWrehSqKo2hg3ii2",
+        "loai": "close-authority",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-27T15:16:10.334Z"
+      },
+      {
+        "chuKy": "3Mp6Mki4h6NrhhfYFqnNNAN8Bg3zcBkgrb1iB9HC8Vwgm7DDfyELdGpgYMjadH7hvi2H2osDoHaxei6VdSm66219",
+        "loai": "close-authority",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T12:20:00.600Z"
+      },
+      {
+        "chuKy": "UNU6qPRdWcDfVB1bQwGS5KG25RiVGWpLNC24pxWR6TzUjYcffVWfHPRsiVAZGL1duTDM8EQsZahosJgn6TS8ATr",
+        "loai": "transfer",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "warning",
+        "maLyDo": [
+          "VI_NHAN_MOI_TAO"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T12:20:14.268Z"
+      },
+      {
+        "chuKy": "2P1wbNYbhi49dWZby2mEsmfSfdE1NMu7EqghpkDVqBrGTutD22Nvmq3peLdTkGmYTSjUL3584YyQz25wsQt4cFWw",
+        "loai": "close-authority",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__CLOSE_OR_FREEZE"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T12:22:05.165Z"
+      },
+      {
+        "chuKy": "3DTkjg5PW8AE11Kha51gLWKfCMdczVSfRDhf5MgGyfmnuS9haETQKEX1fpv1FtEdRnCaQeLBWe3awL6KG4CuS1SR",
+        "loai": "transfer",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "warning",
+        "maLyDo": [
+          "VI_NHAN_MOI_TAO"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T12:22:18.878Z"
+      },
+      {
+        "chuKy": "3EC7RP5QMUpfxao85UQr4E8xt3HURcudtsjVof5abTr9DzGGjFt62QSXRMZgsZKdrRw2DaLBLyLKdTeNJg9tkprj",
+        "loai": "close",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "unknown",
+        "luc": "2026-09-28T12:22:31.524Z"
+      },
+      {
+        "chuKy": "484PWhGjHUsZrp9ddJMJ2VGnRMUVG7RhbzkUZCX8qf9ECXRkGaj9eouok6uqowZMBxjqcr4wthtRoBMkjejAPTyt",
+        "loai": "transfer",
+        "baoVe": true,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T13:20:21.513Z"
+      },
+      {
+        "chuKy": "952LoXHcH3tZsUmgdn7n9RjyK8PaVDQayVAZVCTG1oJiayrz8qV8zYaFW6vxLhrx8SmEyGJBFxCKkX7kXgU5MCG",
+        "loai": "attack",
+        "baoVe": true,
+        "quyetDinh": "override",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "VI_NHAN_MOI_TAO"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T13:20:49.553Z"
+      },
+      {
+        "chuKy": "24UBr7ketYezBvU38bXQK9Fxq8P7WmhdKha3KTPYb9CkCWzG6bLeDN8YTES2sgq4Ed8eJsxwL7oYzEW2VivrBxdV",
+        "loai": "transfer",
+        "baoVe": false,
+        "quyetDinh": "approve",
+        "mucL2": "safe",
+        "maLyDo": [],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T13:21:14.583Z"
+      },
+      {
+        "chuKy": "ej5pHnhzABMRYaUvrrfpeTUBRbAuYbiKRbmk4KPrsi8theiRRSxWERstbaebf9FkgeG7TMDKMMvvmfA144D5aV9",
+        "loai": "attack",
+        "baoVe": false,
+        "quyetDinh": "approve",
+        "mucL2": "danger",
+        "maLyDo": [
+          "SPL_SET_AUTHORITY__ACCOUNT_OWNER",
+          "VI_NHAN_MOI_TAO"
+        ],
+        "xacNhan": "confirmed",
+        "soDu": "match",
+        "luc": "2026-09-28T13:21:40.064Z"
+      }
+    ]
+  },
+  "aiThat": {
+    "moHinh": "claude-haiku-4-5-20251001",
+    "doLuc": "2026-09-28T12:44:29.541Z",
+    "giuLai": {
+      "soCa": 12,
+      "soHo": 8,
+      "daRaViPham": 0,
+      "luiVeCauMau": 2
+    },
+    "phatTrien": {
+      "soMau": 38,
+      "soMauViPham": 0,
+      "tyLeDungCauMoHinh": 0.6052631578947368,
+      "treTrungViMs": 2403,
+      "doLuc": "2026-09-28T12:46:16.346Z"
+    },
+    "tokenVao": 35369,
+    "tokenRa": 8645,
+    "boChanDaDoi": false
   },
   "nguoiMua": 0,
   "soLuatCoCapDoiChung": 14,
@@ -66,7 +378,7 @@
     }
   },
   "test": {
-    "pass": 1201,
+    "pass": 1251,
     "fail": 0
   },
   "hieuNang": {

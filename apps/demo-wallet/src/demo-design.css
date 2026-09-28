@@ -1,8 +1,5 @@
 /* Demo workspace. Scoped to this page; analysis semantics stay in CanhBao. */
 body .app-shell.demo-shell { font-family: "Custos UI",system-ui,sans-serif; background: #f2f5f1; }
-.demo-shell .scope-bar { background: #12382d; color: #d3e3cb; border: 0; }
-.demo-shell .scope-bar__message { font-size: .75rem; letter-spacing: .025em; padding-block: 7px; white-space: normal; text-wrap: balance; }
-.demo-shell .scope-dot { background: #c5e69d; }
 .demo-shell .wallet-header { padding-block: 0 20px; }
 .demo-shell .wallet-brand__title { display: flex; align-items: center; gap: 10px; font-size: 1.625rem; letter-spacing: -.035em; }
 .demo-brand-label { color: #45604f; font-size: .75rem; font-weight: 400; letter-spacing: 0; padding: 4px 8px; border: 1px solid #becfc0; border-radius: 5px; }

@@ -149,3 +149,34 @@ test("mục 5 · App dùng CÙNG một hàm chọn danh sách cho kịch bản l
   assert.ok(!/ketNoiDuPhong\(dsRpc\(htNay\)\)/.test(app), "yêu cầu từ dApp dùng dự phòng CHƯA xác minh genesis");
   assert.ok((app.match(/dsChoLuotKiem\(/g) ?? []).length >= 2, "kịch bản và yêu cầu dApp không đi chung một cửa chọn endpoint");
 });
+
+test("tồn đọng review · lọc genesis có NHỚ: hỏi mỗi endpoint một lần cho cả trang, lỗi thì không nhớ", async () => {
+  const { taoLocGenesisNho, GENESIS_DEVNET } = await import("../../../scripts/rpcDuPhong.ts");
+  let hoi = 0;
+  let hong = true;
+  const transport = (async (input: RequestInfo | URL) => {
+    hoi++;
+    if (hong) throw new TypeError("fetch failed");
+    const g = String(input).includes("sai") ? "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d" : GENESIS_DEVNET;
+    return new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: g }));
+  }) as typeof fetch;
+  const loc = taoLocGenesisNho({ transport, soLan: 1, msGianCach: 0 });
+  const ds = ["https://dung.example", "https://sai.example"];
+  // Chưa đo được: giữ cả hai (như locTheoGenesis) và KHÔNG nhớ — lần sau hỏi lại.
+  assert.deepEqual(await loc(ds), ds);
+  hong = false;
+  hoi = 0;
+  assert.deepEqual(await loc(ds), ["https://dung.example"]);
+  assert.equal(hoi, 2);
+  assert.deepEqual(await loc(ds), ["https://dung.example"]);
+  assert.equal(hoi, 2, "đã có kết quả mà vẫn hỏi lại genesis");
+});
+
+test("tồn đọng review · màn phỏng vấn và trang tấn công dựng connection từ danh sách ĐÃ lọc genesis", () => {
+  const doc = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), "utf8");
+  const pv = doc("../src/PhongVan.tsx");
+  assert.ok(!/ketNoiDuPhong\(dsRpc\(ht\)\)/.test(pv), "phỏng vấn dùng dự phòng chưa qua genesis");
+  assert.ok(/locGenesis\(/.test(pv));
+  const tc = doc("../../trang-tan-cong/src/App.tsx");
+  assert.ok(/locGenesis\(/.test(tc), "trang tấn công dùng dự phòng chưa qua genesis");
+});

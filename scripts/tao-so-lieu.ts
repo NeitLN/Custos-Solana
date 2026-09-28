@@ -18,6 +18,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { docBangChungTichHop, thoiDiem, trungVi } from "./bangChungTichHop.ts";
+import { docPhatLai, docThucThiLive, docAiThat } from "./bangChungChungKet.ts";
 
 const RA = "apps/demo-wallet/public/so-lieu.json";
 
@@ -355,6 +356,10 @@ const soLieu = {
   phongVan: docPhongVan(),
   tichHop: docTichHop(),
   evalAi: docEvalAi(),
+  // Ba loại bằng chứng vòng chung kết, mỗi loại một artifact (CK-13) — xem `bangChungChungKet.ts`.
+  phatLai: docPhatLai(),
+  thucThiLive: docThucThiLive(),
+  aiThat: docAiThat(),
   nguoiMua: docNguoiMua(),
   soLuatCoCapDoiChung: demCapDoiChung(),
   cohort: cohort && {

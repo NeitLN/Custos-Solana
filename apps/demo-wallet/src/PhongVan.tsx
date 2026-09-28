@@ -6,7 +6,10 @@ import { inspect } from "@custos-solana/core";
 import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 import { docNguonSong, dungTxTanCongSong } from "../../../scripts/hienTruongSong.ts";
 import { docHienTruong, dsRpc, type HienTruong } from "./hienTruong.ts";
-import { ketNoiDuPhong } from "../../../scripts/rpcDuPhong.ts";
+import { ketNoiDuPhong, taoLocGenesisNho } from "../../../scripts/rpcDuPhong.ts";
+
+// Genesis trước khi dùng dự phòng (tồn đọng review 27/09) — cùng quy tắc với Phòng phân tích.
+const locGenesis = taoLocGenesisNho({ soLan: 1, msHan: 4_000 });
 import { coHan } from "../../../scripts/coHan.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import {
@@ -113,7 +116,7 @@ export function PhongVan() {
   const [bamThat, setBamThat] = useState<"huy" | "ky" | null>(null);
 
   const dung = useCallback(async (ht: HienTruong) => {
-    const c = ketNoiDuPhong(dsRpc(ht));
+    const c = ketNoiDuPhong(await locGenesis(dsRpc(ht)));
     const { blockhash } = await c.getLatestBlockhash();
     /*
      * SỐ DƯ SỐNG — cùng hàm với trang tấn công và sổ kịch bản của ví.
