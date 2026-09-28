@@ -16,6 +16,8 @@ const TRANG: Array<[string, string]> = [
   ["phong-van.html", "PhongVan.tsx"],
   /* Landing: H1 nằm trong `Hero.tsx`, không phải component gốc `LandingPage.tsx`. */
   ["gioi-thieu.html", "landing/Hero.tsx"],
+  /* Cửa sổ ký của connector (ADR-0004): h1 là tên ví, tiêu đề yêu cầu là h2. */
+  ["ket-noi.html", "ket-noi.tsx"],
 ];
 
 test("QA · mỗi trang có đúng một h1, và h1 không rỗng", () => {

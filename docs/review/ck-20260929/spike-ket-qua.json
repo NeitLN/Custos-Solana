@@ -1,0 +1,74 @@
+{
+  "buoc": [
+    {
+      "ten": "T1 · wallet-adapter thấy 'Custos Demo Wallet'",
+      "ok": true,
+      "chiTiet": "['Custos Demo Wallet']"
+    },
+    {
+      "ten": "T2 · popup ví mở với trình chặn popup BẬT",
+      "ok": true,
+      "chiTiet": "http://localhost:5188/ket-noi.html"
+    },
+    {
+      "ten": "T2 · ví hiện đúng origin dApp (do trình duyệt cấp)",
+      "ok": true,
+      "chiTiet": "http://localhost:5190 muốn kết nối"
+    },
+    {
+      "ten": "T1 · dApp nhận tài khoản qua chuẩn",
+      "ok": true,
+      "chiTiet": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ"
+    },
+    {
+      "ten": "T3 · ví kiểm giao dịch legacy do dApp tự dựng",
+      "ok": true,
+      "chiTiet": "An toàn"
+    },
+    {
+      "ten": "T4 · Chặn ⇒ dApp nhận lỗi, KHÔNG có sendTransaction",
+      "ok": true,
+      "chiTiet": "03:17:35 · Gửi (legacy) thất bại — WalletSendTransactionError: Người dùng đã từ chối trong ví."
+    },
+    {
+      "ten": "T2 · đóng ví giữa chừng ⇒ dApp nhận 'Cửa sổ ví đã đóng'",
+      "ok": true,
+      "chiTiet": ""
+    },
+    {
+      "ten": "T4 · vẫn chưa có sendTransaction nào",
+      "ok": true,
+      "chiTiet": "[]"
+    },
+    {
+      "ten": "T3 · ví kiểm giao dịch v0 do dApp tự dựng",
+      "ok": true,
+      "chiTiet": "An toàn"
+    },
+    {
+      "ten": "G0-1 · dApp nhận chữ ký qua chuẩn và TỰ gửi",
+      "ok": true,
+      "chiTiet": "2CX49yycufPnmargHHcJY8nu7GGnL7uBKzu3yCWJmk62uTbJL7NYDjS4C2KKDZQV1M3rQ89roJtWQMMVuiwzFSpQ · gửi từ ['http://localhost:5190/']"
+    }
+  ],
+  "gui": [
+    "http://localhost:5190/"
+  ],
+  "chuKy": "2CX49yycufPnmargHHcJY8nu7GGnL7uBKzu3yCWJmk62uTbJL7NYDjS4C2KKDZQV1M3rQ89roJtWQMMVuiwzFSpQ",
+  "loiTrang": [],
+  "ngay": "2026-09-29",
+  "moiTruong": {
+    "vi": "http://localhost:5188/ket-noi.html (dev, RPC riêng qua VITE_RPC — chỉ ghi host)",
+    "dapp": "http://localhost:5190/ (dev, api.devnet.solana.com)",
+    "trinhDuyet": "Chromium (Playwright), trình chặn popup BẬT"
+  },
+  "doiChieuChain": {
+    "slot": 505277026,
+    "version": 0,
+    "err": null,
+    "fee": 5000,
+    "nguoiKy": "AqX3FmDzuU1a9FAPpmo9m52ckQFBeExcGhs8qbPEBCLZ",
+    "soDuTruoc": 19659759760,
+    "soDuSau": 19659754760
+  }
+}
