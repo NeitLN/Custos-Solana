@@ -22,6 +22,7 @@ docs
 site
 ban-trinh-dien
 goi-sdk
+build
 
 # ⚠️ `data/` KHÔNG được loại, dù trông như thứ chỉ dùng để kiểm thử.
 #

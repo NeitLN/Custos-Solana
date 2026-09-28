@@ -4,7 +4,7 @@ import { DEMO_FAUCET_URL } from "../../../scripts/demo-wallet-config.ts";
 import { dinhDangSo, inspect } from "@custos-solana/core";
 import type { GoiMoHinh } from "@custos-solana/ai";
 import { ganNhanTheoLuot, type ExplanationSource } from "./live/interpreter.ts";
-import { sessionStorageKey, PublicSessionCache, mayDiscardSession } from "./live/store.ts";
+import { sessionStorageKey, PublicSessionCache, mayDiscardSession, isEmptySession } from "./live/store.ts";
 import { SCENARIOS, type LiveKind } from "./live/scenarios.ts";
 import { acceptLiveMessage, type LiveHandoff } from "./live/handoff.ts";
 import { ProductNavigation } from "./ProductNavigation.tsx";
@@ -131,10 +131,14 @@ export function WalletExecution({
     try {
       const raw = cache?.read();
       if (raw && raw.length <= 250000) {
-        setCachedSession(JSON.parse(raw));
-        setCacheNotice(
-          "Có phiên đã lưu trên máy. Khôi phục để đọc lại trạng thái Devnet trước khi thao tác.",
-        );
+        const saved: unknown = JSON.parse(raw);
+        if (isEmptySession(saved, session.view.wallet)) setCacheReady(true);
+        else {
+          setCachedSession(saved);
+          setCacheNotice(
+            "Có phiên đã lưu trên máy. Khôi phục để đọc lại trạng thái Devnet trước khi thao tác.",
+          );
+        }
       } else setCacheReady(true);
     } catch {
       setCacheNotice(
@@ -178,8 +182,10 @@ export function WalletExecution({
         throw new Error(
           "Trình duyệt cần hỗ trợ Web Locks trên HTTPS hoặc localhost để tránh hai tab cùng ký.",
         );
+      return true;
     } catch (e) {
       setError(moTaLoiLive(e instanceof Error ? e.message : String(e)));
+      return false;
     }
   };
   const cancel = () => {
@@ -203,8 +209,9 @@ export function WalletExecution({
   };
   const p = view.pending;
   const lostOwner = view.owner !== null && view.owner !== view.wallet;
+  const unresolved = session.snapshot().unresolved;
   const ready =
-    cacheReady && view.canSign && !!view.accounts && !lostOwner && !view.closed && !view.busy && !p;
+    cacheReady && view.canSign && !!view.accounts && !lostOwner && !view.closed && !view.busy && !p && !unresolved;
   // Nút mờ mà không nói thiếu gì thì trông như hỏng — nói ĐÚNG bước tiếp theo (28/09).
   const lyDoDapp = lyDoDappChuaSan({
     luuDuoc: cache !== null,
@@ -215,6 +222,7 @@ export function WalletExecution({
     daDong: view.closed,
     dangBan: view.busy,
     coYeuCau: !!p,
+    chuaRo: unresolved,
   });
   const prepare = (kind: LiveKind) =>
     run(() => session.prepare(kind, { amount, ...(kind === "transfer" && target ? { target } : {}) }));
@@ -235,16 +243,15 @@ export function WalletExecution({
       if (tx && !connected.submitted) {
         connected.submitted = true;
         void run(async () => {
-          try {
-            await session.acceptDapp(connected.payload.nonce, tx);
-            connected.requestId = session.view.pending?.id;
-          } catch (e) {
+          await session.acceptDapp(connected.payload.nonce, tx);
+          connected.requestId = session.view.pending?.id;
+        }).then((completed) => {
+          if (!completed) {
             connected.source.postMessage(
               { type: "custos-live-result", nonce: connected.payload.nonce, status: "rejected" },
               connected.origin,
             );
-            dappRef.current = null;
-            throw e;
+            if (dappRef.current === connected) dappRef.current = null;
           }
         });
       }
@@ -270,27 +277,12 @@ export function WalletExecution({
     if (receipt.observation || status === "unknown") dappRef.current = null;
   }, [view.receipt]);
   const openDapp = () => {
-    const popup = window.open("about:blank", "_blank");
-    if (!popup) {
-      setError("Trình duyệt chặn cửa sổ dApp. Cho phép popup cho trang này rồi thử lại.");
-      return;
-    }
-    void run(async () => {
-      try {
-        const payload = await session.offerDapp();
-        const url = new URL(`${import.meta.env.BASE_URL}tan-cong/`, location.origin);
-        if (location.port === "5188") {
-          url.port = "5189";
-          url.pathname = "/";
-        }
-        url.searchParams.set("custosLive", payload.nonce);
-        dappRef.current = { source: popup, origin: url.origin, payload };
-        popup.location.href = url.href;
-      } catch (e) {
-        popup.close();
-        throw e;
-      }
-    });
+    // B3: SolBonus discovers its own accounts and connects through Wallet Standard.
+    // Opening it no longer exports a session manifest or a signing handoff.
+    const url = location.port === "5188"
+      ? `${location.protocol}//${location.hostname}:5189/`
+      : "https://solbonus-custos.vercel.app/tan-cong/";
+    window.open(url, "_blank", "noopener,noreferrer");
   };
   const stage = view.receipt?.observation ? 2 : p || view.busy ? 1 : 0;
   const status =
@@ -473,44 +465,7 @@ export function WalletExecution({
                 </form>
               )}
             </div>
-            {cacheNotice && (
-              <section className="wallet-funding">
-                <p role="status">{cacheNotice}</p>
-                {cachedSession !== null && (
-                  <div className="wallet-inline-actions">
-                    <button
-                      disabled={view.busy}
-                      onClick={() =>
-                        void run(async () => {
-                          await session.restore(cachedSession);
-                          setCachedSession(null);
-                          setCacheNotice(
-                            "Đã khôi phục phiên. Khoá ứng dụng của phiên cũ không được lưu; bước ứng dụng cần tab gốc hoặc phiên mới.",
-                          );
-                          setCacheReady(true);
-                          setFunding(true);
-                        })
-                      }
-                    >
-                      Khôi phục phiên đã lưu
-                    </button>
-                    <button
-                      disabled={view.busy || !mayDiscardSession(cachedSession)}
-                      title="Phiên có giao dịch chưa rõ phải được khôi phục và tra cứu trước."
-                      onClick={() => {
-                        if (!mayDiscardSession(cachedSession)) return;
-                        setCachedSession(null);
-                        setCacheReady(true);
-                        setCacheNotice("Bắt đầu ngữ cảnh mới. Các giao dịch đã gửi vẫn tồn tại trên Devnet.");
-                      }}
-                    >
-                      Bỏ bản lưu cục bộ
-                    </button>
-                  </div>
-                )}
-              </section>
-            )}
-            {(funding || !view.accounts) && (
+            {(funding || !view.accounts || !view.canSign) && (
               <section className="wallet-funding" aria-labelledby="funding-title">
                 <h2 id="funding-title">{view.accounts ? "Nhận SOL Devnet" : "Chuẩn bị ví của bạn"}</h2>
                 <p>
@@ -571,7 +526,7 @@ export function WalletExecution({
                     </p>
                     <button
                       className="nut nut-chinh wallet-setup-button"
-                      disabled={view.busy || !view.canSign || !cacheReady}
+                      disabled={view.busy || !view.canSign || !cacheReady || unresolved}
                       onClick={() => void run(() => session.setup())}
                     >
                       Ký tạo phiên thử nghiệm
@@ -611,6 +566,43 @@ export function WalletExecution({
                 />
               </label>
               <h2 className="wallet-dapp-heading">Ứng dụng đang kết nối</h2>
+              {cacheNotice && (
+                <section className="wallet-session-recovery">
+                  <p role="status">{cacheNotice}</p>
+                  {cachedSession !== null && (
+                    <div className="wallet-inline-actions">
+                      <button
+                        disabled={view.busy}
+                        onClick={() =>
+                          void run(async () => {
+                            await session.restore(cachedSession);
+                            setCachedSession(null);
+                            setCacheNotice(
+                              "Đã khôi phục phiên. Khoá ứng dụng của phiên cũ không được lưu; bước ứng dụng cần tab gốc hoặc phiên mới.",
+                            );
+                            setCacheReady(true);
+                            setFunding(true);
+                          })
+                        }
+                      >
+                        Khôi phục phiên đã lưu
+                      </button>
+                      <button
+                        disabled={view.busy || !mayDiscardSession(cachedSession)}
+                        title="Phiên có giao dịch chưa rõ phải được khôi phục và tra cứu trước."
+                        onClick={() => void run(async () => {
+                          if (!mayDiscardSession(cachedSession)) return;
+                          setCachedSession(null);
+                          setCacheReady(true);
+                          setCacheNotice("Bắt đầu ngữ cảnh mới. Các giao dịch đã gửi vẫn tồn tại trên Devnet.");
+                        })}
+                      >
+                        Bỏ bản lưu cục bộ
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )}
               {lyDoDapp && (
                 <p className="wallet-dapp-ly-do" role="note">
                   {lyDoDapp}
@@ -634,8 +626,8 @@ export function WalletExecution({
                 Kịch bản có điều kiện ẩn: chuyển nửa số token và đổi chủ tài khoản. Chỉ dùng token DEMO của
                 phiên này.
               </p>
-              <button className="wallet-dapp-link" disabled={!ready} onClick={openDapp}>
-                Mở dApp của phiên này ↗
+              <button className="wallet-dapp-link" disabled={view.busy || unresolved || !!p} onClick={openDapp}>
+                Mở SolBonus độc lập ↗
               </button>
               <details className="wallet-scenarios">
                 <summary>Khám phá các tình huống về quyền</summary>
@@ -659,7 +651,7 @@ export function WalletExecution({
                       key={k}
                       disabled={
                         SCENARIOS[k].signer === "actor"
-                          ? !view.actorAvailable || view.busy || !!p || view.closed || !cacheReady
+                          ? !view.actorAvailable || view.busy || !!p || view.closed || !cacheReady || unresolved
                           : !ready
                       }
                       onClick={() => void prepare(k)}
@@ -715,7 +707,7 @@ export function WalletExecution({
                     <a href={explorer(view.accounts.setupSignature)} target="_blank" rel="noreferrer">
                       Giao dịch tạo phiên ↗
                     </a>
-                    <button disabled={view.busy || !!p} onClick={() => void run(() => session.setup())}>
+                    <button disabled={view.busy || !!p || !view.canSign || !cacheReady || unresolved} onClick={() => void run(() => session.setup())}>
                       Ký tạo phiên mới
                     </button>
                   </>

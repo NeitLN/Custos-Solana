@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { Keypair } from '@solana/web3.js';
 import { giaiDongBangFacts } from '../../../packages/core/src/facts-io.ts';
-import { parsePublicSession, PublicSessionCache, mayDiscardSession } from '../src/live/store.ts';
+import { parsePublicSession, PublicSessionCache, mayDiscardSession, isEmptySession } from '../src/live/store.ts';
 const facts = giaiDongBangFacts(readFileSync('data/seed/facts/MN-01.json', 'utf8'));
 // Hai bài nhãn nguồn diễn giải cũ chuyển sang `nguonDienGiai.test.ts` (CK-09), nay tách chặn / quá hạn / hỏng.
 test('public cache rejects wrong wallet, malformed addresses and forged observations', () => {
@@ -37,4 +37,14 @@ test('discard cannot erase an unresolved transaction or pending setup', () => {
   assert.equal(mayDiscardSession({ unresolved: true, setupPending: null }), false);
   assert.equal(mayDiscardSession({ unresolved: false, setupPending: { setupSignature: 'pending' } }), false);
   assert.equal(mayDiscardSession({ unresolved: false, setupPending: null }), true);
+});
+
+test('only a validated empty session can bypass recovery after reload', () => {
+  const wallet = Keypair.generate().publicKey.toBase58();
+  const empty = { version: 2, cluster: 'devnet', wallet, accounts: null, setupPending: null, unresolved: false, receipts: [] };
+  assert.equal(isEmptySession(empty, wallet), true);
+  for (const value of [null, {}, { ...empty, wallet: 'bad' }, { ...empty, unresolved: true },
+    { ...empty, accounts: {} }, { ...empty, setupPending: {} }, { ...empty, receipts: [{}] }]) {
+    assert.equal(isEmptySession(value, wallet), false, 'never silently overwrite a nonempty or invalid cache');
+  }
 });

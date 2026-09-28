@@ -124,6 +124,15 @@ export function parsePublicSession(value: unknown, wallet: string): PublicSessio
   };
 }
 export const sessionStorageKey = (wallet: string) => `custos.session.v2.devnet.${wallet}`;
+/** Opening the wallet persists an empty snapshot, which needs no chain recovery. */
+export function isEmptySession(value: unknown, wallet: string): boolean {
+  try {
+    const saved = parsePublicSession(value, wallet);
+    return !saved.accounts && !saved.setupPending && !saved.unresolved && saved.receipts.length === 0;
+  } catch {
+    return false;
+  }
+}
 export function mayDiscardSession(value: unknown): boolean {
   return !obj(value) || (value.unresolved !== true && value.setupPending == null);
 }
