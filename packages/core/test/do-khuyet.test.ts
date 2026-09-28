@@ -6,6 +6,7 @@ import { extractFacts } from "../src/l1/fetch.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import { dungBangChenhLech } from "../src/diff.ts";
 import { REASON } from "../src/constants.ts";
+import { caoBuocThua } from "./caoBuocThua.ts";
 
 /**
  * PHÉP ĐO KHUYẾT — `Facts` phải phân biệt "đo được và bằng không" với "chưa đo được".
@@ -260,10 +261,16 @@ test("mô phỏng trả mảng NGẮN ⇒ đúng các vị trí bị cắt là c
   const f = await h.chay();
   assert.ok(hoi.length >= 2, "cần ít nhất hai account để có một vị trí bị cắt");
   assert.deepEqual(f.accountKhongDoDuoc, [hoi.at(-1)], "chỉ vị trí cuối bị cắt mới là chưa đo");
+  // Vị trí chưa đo KHÔNG được đọc thành mất mát ⇒ không cáo buộc nào (CK-10).
+  assert.deepEqual(caoBuocThua(danhGia(f).reasonCodes), [], "vị trí bị cắt sinh cáo buộc");
 });
 
 test("đối chứng: `null` CÓ MẶT đúng vị trí vẫn là tài khoản đã đóng, không phải thiếu", async () => {
   const h = hienTruongChuyenSol((s) => s.addresses.map((a, i) => (i === 0 ? null : thuongSau(1))));
   const f = await h.chay();
   assert.deepEqual(f.accountKhongDoDuoc, [], "mảng đủ độ dài thì không có gì là chưa đo");
+  // Ví người ký nằm ở vị trí 0 và `null` CÓ MẶT ⇒ ĐO ĐƯỢC là ví bị đóng ⇒ SOL rời ví có căn cứ.
+  // Đó đúng là khác biệt của cặp: vị trí VẮNG không sinh cáo buộc (bài trên), `null` có mặt thì
+  // sinh — và CHỈ cáo buộc đó (CK-10: không cáo buộc thừa).
+  assert.deepEqual(caoBuocThua(danhGia(f).reasonCodes, [REASON.SOL_ROI_VI]), [], "cáo buộc thừa (CK-10)");
 });

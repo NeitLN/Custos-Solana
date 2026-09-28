@@ -1,0 +1,229 @@
+{
+ "schema": "custos.doi-chung-ck10",
+ "phienBan": 1,
+ "moTa": "CK-10 — cặp đối chứng chiều sâu Solana. Mỗi cặp: một ca kích hoạt, một ca đối chứng gần giống. Ground truth gắn theo NGỮ NGHĨA giao dịch, không chép từ kết quả engine; test `apps/demo-wallet/test/doiChungCk10.test.ts` chạy engine và so CẢ mã thiếu LẪN cáo buộc thừa.",
+ "nguoiGan": "Claude Code (phiên 28/09/2026) theo ngữ nghĩa từng giao dịch; chủ dự án CHƯA duyệt từng nhãn",
+ "cap": [
+  {
+   "id": "han-muc-cung-delegate",
+   "dieuCanChungMinh": "Không chỉ xét địa chỉ delegate: cùng người được uỷ quyền mà hạn mức tăng vọt vẫn là mở rộng quyền rút.",
+   "ca": [
+    {
+     "id": "cung-delegate-1-len-max",
+     "vaiTro": "kichHoat",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/hanMucUyQuyen.test.ts",
+     "test": "cùng người được uỷ quyền, hạn mức 1 → MAX ⇒ Nguy hiểm, có mã và dòng hạn mức"
+    },
+    {
+     "id": "cung-delegate-giu-nguyen",
+     "vaiTro": "doiChung",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/hanMucUyQuyen.test.ts",
+     "test": "cùng người được uỷ quyền, hạn mức GIỮ NGUYÊN ⇒ không gắn cờ"
+    }
+   ],
+   "gioiHan": "Hai ca dựng bằng RPC giả trong test, không ghi từ Devnet."
+  },
+  {
+   "id": "chuyen-va-doi-chu",
+   "dieuCanChungMinh": "Phân biệt tài sản và quyền: chuyển token thường không bị cáo buộc; chuyển kèm đổi chủ tài khoản thì bị; chỉ đổi chủ thì không hiện số dư giảm.",
+   "ca": [
+    {
+     "id": "lanh-tinh",
+     "vaiTro": "doiChung",
+     "nguon": "replay-devnet",
+     "kyVong": {
+      "level": "safe",
+      "coMa": [],
+      "caoBuocChoPhep": []
+     }
+    },
+    {
+     "id": "tan-cong-day-du",
+     "vaiTro": "kichHoat",
+     "nguon": "replay-devnet",
+     "kyVong": {
+      "level": "danger",
+      "coMa": [
+       "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+      ],
+      "caoBuocChoPhep": [
+       "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+      ]
+     }
+    },
+    {
+     "id": "doi-chu-tai-khoan",
+     "vaiTro": "kichHoat",
+     "nguon": "replay-devnet",
+     "kyVong": {
+      "level": "danger",
+      "coMa": [
+       "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+      ],
+      "caoBuocChoPhep": [
+       "SPL_SET_AUTHORITY__ACCOUNT_OWNER"
+      ],
+      "khongGiamSoDu": true
+     }
+    }
+   ],
+   "gioiHan": "Phản hồi RPC ghi từ Devnet trên hiện trường của ví cố định; phát lại không phải giao dịch mới."
+  },
+  {
+   "id": "cap-quyen-gioi-han",
+   "dieuCanChungMinh": "Không gắn đỏ mọi approve: cấp quyền đúng bằng số dư là hành vi sàn giao dịch bình thường; vượt số dư mới là mở quyền rút không giới hạn thực tế.",
+   "ca": [
+    {
+     "id": "cap-quyen-vua-du",
+     "vaiTro": "doiChung",
+     "nguon": "replay-devnet",
+     "kyVong": {
+      "level": "safe",
+      "coMa": [],
+      "caoBuocChoPhep": []
+     }
+    },
+    {
+     "id": "cap-quyen-vuot-so-du",
+     "vaiTro": "kichHoat",
+     "nguon": "replay-devnet",
+     "kyVong": {
+      "level": "danger",
+      "coMa": [
+       "SPL_APPROVE_DELEGATE_LON"
+      ],
+      "caoBuocChoPhep": [
+       "SPL_APPROVE_DELEGATE_LON"
+      ]
+     }
+    },
+    {
+     "id": "R03-neg",
+     "vaiTro": "doiChung",
+     "nguon": "seed",
+     "kyVong": {
+      "level": "khong-phai-danger",
+      "coMa": [],
+      "khongCoMa": [
+       "SPL_APPROVE_DELEGATE_LON"
+      ]
+     }
+    },
+    {
+     "id": "R03-pos",
+     "vaiTro": "kichHoat",
+     "nguon": "seed",
+     "kyVong": {
+      "level": "danger",
+      "coMa": [
+       "SPL_APPROVE_DELEGATE_LON"
+      ]
+     }
+    }
+   ],
+   "gioiHan": "Ngưỡng 'vượt số dư' là quy ước của luật 3, không phải chân lý; seed R03 là tổng hợp."
+  },
+  {
+   "id": "cpi-lanh-va-nguy",
+   "dieuCanChungMinh": "Hậu quả lồng trong CPI có bằng chứng; CPI lành của chương trình đã xác minh không bị cáo buộc; thiếu stack thì không dựng cây giả.",
+   "ca": [
+    {
+     "id": "cpi-ata-devnet",
+     "vaiTro": "doiChung",
+     "nguon": "devnet-mo-phong",
+     "lenh": "npm run cpi-devnet",
+     "bienBan": "docs/review/ck-20260928/cpi-devnet.txt",
+     "kyVong": {
+      "level": "safe",
+      "coMa": [],
+      "caoBuocChoPhep": []
+     }
+    },
+    {
+     "id": "cpi-doi-chu-giau",
+     "vaiTro": "kichHoat",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/cpiDauCuoi.test.ts",
+     "test": "đổi chủ giấu trong CPI của chương trình lạ ⇒ Nguy hiểm, nêu đúng hậu quả"
+    },
+    {
+     "id": "cpi-la-chi-chuyen",
+     "vaiTro": "doiChung",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/cpiDauCuoi.test.ts",
+     "test": "đối chứng: cùng chương trình lạ, CPI chỉ chuyển 1 token ⇒ KHÔNG cáo buộc đổi chủ"
+    }
+   ],
+   "gioiHan": "Ca CPI NGUY HIỂM là fixture (RPC giả) — không viết chương trình on-chain đạo cụ (quyết định khoá số 5). Ca lành là mô phỏng Devnet thật, chạy tay, có biên bản."
+  },
+  {
+   "id": "thieu-mint-thieu-vi-tri",
+   "dieuCanChungMinh": "Thiếu mint hoặc thiếu vị trí account trong kết quả mô phỏng thì KHÔNG giả số 0 / decimals 0 và không bịa mất mát; mức không bao giờ An toàn.",
+   "ca": [
+    {
+     "id": "thieu-mint",
+     "vaiTro": "kichHoat",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/mintKhongDoc.test.ts",
+     "test": "thiếu mint ⇒ số dư hiện ĐƠN VỊ GỐC có nhãn, không bịa decimals = 0"
+    },
+    {
+     "id": "doc-duoc-mint",
+     "vaiTro": "doiChung",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/mintKhongDoc.test.ts",
+     "test": "đối chứng: đọc được mint ⇒ giữ cảnh báo đóng băng và số hiển thị đúng"
+    },
+    {
+     "id": "mang-mo-phong-ngan",
+     "vaiTro": "kichHoat",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/do-khuyet.test.ts",
+     "test": "mô phỏng trả mảng NGẮN ⇒ đúng các vị trí bị cắt là chưa đo, vị trí có mặt vẫn đo"
+    },
+    {
+     "id": "null-dung-vi-tri",
+     "vaiTro": "doiChung",
+     "nguon": "fixture-test",
+     "tep": "packages/core/test/do-khuyet.test.ts",
+     "test": "đối chứng: `null` CÓ MẶT đúng vị trí vẫn là tài khoản đã đóng, không phải thiếu"
+    }
+   ],
+   "gioiHan": "Lỗi RPC dựng trong test; chưa có fixture ghi từ một lượt RPC thật trả thiếu. Ca 'null-dung-vi-tri' mang cáo buộc SOL_ROI_VI CÓ CĂN CỨ: fixture đặt ví người ký ở vị trí 0 với `null` có mặt, tức đo được là ví bị đóng — đó chính là điều cặp này phân biệt (vị trí VẮNG ⇒ không cáo buộc; `null` CÓ MẶT ⇒ dữ kiện). Test tham chiếu cho phép đúng mã đó và chỉ mã đó."
+  },
+  {
+   "id": "alt-du-va-thieu",
+   "dieuCanChungMinh": "Address Lookup Table giải đủ thì định danh account đúng, không gắn cờ; giải không được thì coverage nói thật và chỉ cảnh báo, không cáo buộc.",
+   "ca": [
+    {
+     "id": "R10-neg",
+     "vaiTro": "doiChung",
+     "nguon": "seed",
+     "kyVong": {
+      "level": "khong-phai-danger",
+      "coMa": [],
+      "khongCoMa": [
+       "ALT_KHONG_GIAI_DUOC"
+      ],
+      "caoBuocChoPhep": []
+     }
+    },
+    {
+     "id": "R10-pos",
+     "vaiTro": "kichHoat",
+     "nguon": "seed",
+     "kyVong": {
+      "level": "warning",
+      "coMa": [
+       "ALT_KHONG_GIAI_DUOC"
+      ],
+      "caoBuocChoPhep": []
+     }
+    }
+   ],
+   "gioiHan": "Seed tổng hợp (synthetic-devnet); mô phỏng của CẢ HAI ca đều hỏng (R10-pos: bảng tra không tồn tại; R10-neg: InsufficientFundsForRent), nên cặp chỉ phân biệt ALT đủ/thiếu qua mã ALT_KHONG_GIAI_DUOC, không qua hậu quả. ALT là năng lực hợp lệ của giao thức — chỉ thiếu dữ liệu mới gắn cờ (quyết định khoá số 6). Lịch sử 28/09: bản đầu của manifest khai cáo buộc SOL_ROI_VI là 'đúng sự thật' — SAI. Giao dịch gốc chỉ chuyển 1000 lamport; con số ~4,84 SOL là số dư sau = 0 do L1 cũ bịa khi mô phỏng hỏng. Đã đưa 9 Facts seed về đúng bất biến L1 (scripts/ky-thuat/chuyen-facts-mo-phong-hong.ts, packages/core/test/seedBatBien.test.ts)."
+  }
+ ]
+}

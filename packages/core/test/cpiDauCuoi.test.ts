@@ -10,6 +10,7 @@ import {
 } from "@solana/spl-token";
 import { inspect } from "../src/inspect.ts";
 import { REASON } from "../src/constants.ts";
+import { caoBuocThua } from "./caoBuocThua.ts";
 import { dienGiaiKhongAI } from "../../ai/src/index.ts";
 
 /**
@@ -129,6 +130,7 @@ test("đổi chủ giấu trong CPI của chương trình lạ ⇒ Nguy hiểm, 
   assert.equal(dong.before, "Bạn");
   assert.ok(r.coverage.unverifiedPrograms >= 1, "phải nói có chương trình chưa xác minh");
   assert.match(r.explanation, /đổi chủ/);
+  assert.deepEqual(caoBuocThua(r.reasonCodes, [REASON.SET_AUTHORITY_ACCOUNT_OWNER]), [], "cáo buộc thừa (CK-10)");
 });
 
 test("đối chứng: cùng chương trình lạ, CPI chỉ chuyển 1 token ⇒ KHÔNG cáo buộc đổi chủ", async () => {
@@ -138,4 +140,5 @@ test("đối chứng: cùng chương trình lạ, CPI chỉ chuyển 1 token ⇒
   // Nhưng cũng KHÔNG được "Bình thường": chương trình chưa xác minh đang ghi vào tài sản người ký.
   assert.equal(r.level, "warning", "chương trình lạ chạm tài sản người ký ⇒ ít nhất Cần xem kỹ (fail-safe)");
   assert.ok(r.diff.some((d) => d.soLieu?.truoc === "500000000" && d.soLieu.sau === "499000000"), "bảng phải hiện số dư giảm đúng 1 token");
+  assert.deepEqual(caoBuocThua(r.reasonCodes), [], "ca đối chứng mang cáo buộc (CK-10)");
 });

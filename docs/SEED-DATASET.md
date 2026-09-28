@@ -430,6 +430,22 @@ Nghĩa là ở bản thi, nhóm A cần **9 ca dương tính** chứ không ph�
 
 ---
 
+## 0b6 · 9 Facts đóng băng sai bất biến L1 — sửa 28/09
+
+Facts của **MN-04, MN-07, MN-08, MN-09, MN-10, R09-pos, R09-neg, R10-pos, R10-neg** ghi TRƯỚC bản
+sửa L1 "mô phỏng lỗi thì mảng `accounts` không phải dữ liệu": mô phỏng HỎNG nhưng Facts vẫn có số
+dư sau = 0 cho mọi tài khoản. Luật 13 đọc thành "toàn bộ SOL rời ví" — 5 giao dịch mainnet LÀNH của
+tập âm bị gắn cáo buộc `SOL_ROI_VI` (MN-09 thêm `OUTFLOW_KHONG_KHOP`), và không bài nào đỏ vì kỳ
+vọng từng mẫu chỉ liệt kê mã cấm cụ thể.
+
+Đã đưa 9 tệp về đúng thứ L1 hiện tại sinh ra (`accounts`, `tokenAccounts`, `solDelta` rỗng; mọi
+tài khoản vào `accountKhongDoDuoc`) bằng `scripts/ky-thuat/chuyen-facts-mo-phong-hong.ts`. **Nhãn
+không đổi**, giao dịch gốc (`tx/*.base64`) giữ nguyên. Guard: `packages/core/test/seedBatBien.test.ts`
+— Facts mô phỏng hỏng không có trạng thái sau, và tập âm không mang cáo buộc thừa. Số "0 cáo buộc"
+của cohort (đo 24/08, TRƯỚC bản sửa L1 ngày 31/08) không bị ảnh hưởng vì một lý do khác:
+`do-cohort.ts` BỎ QUA mọi giao dịch mô phỏng hỏng trước khi đếm (11/20), nên cáo buộc chỉ được đếm
+trên 9 giao dịch mô phỏng được — đúng tập không mang số dư bịa.
+
 ## 0b5 · Neo lại cohort — 25/08, và một cáo buộc sai lộ ra
 
 Cohort neo ngày 21/08 rụng mẫu nhanh hơn dự kiến:

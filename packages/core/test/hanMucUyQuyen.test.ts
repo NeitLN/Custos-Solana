@@ -7,6 +7,7 @@ import {
 import { inspect } from "../src/inspect.ts";
 import { danhGia } from "../src/l2/evaluate.ts";
 import { REASON } from "../src/constants.ts";
+import { caoBuocThua } from "./caoBuocThua.ts";
 import { dienGiaiKhongAI } from "../../ai/src/index.ts";
 import type { Facts, TokenAccountFact } from "../src/facts.ts";
 
@@ -103,11 +104,13 @@ test("cùng người được uỷ quyền, hạn mức 1 → MAX ⇒ Nguy hiể
   assert.ok(dong, `thiếu dòng hạn mức: ${r.diff.map((d) => d.label).join(" | ")}`);
   assert.match(dong.before, /tới 1,0/, "phải thấy hạn mức CŨ để biết nó vừa tăng");
   assert.doesNotMatch(r.explanation, /Không thấy dấu hiệu/);
+  assert.deepEqual(caoBuocThua(r.reasonCodes, [REASON.APPROVE_DELEGATE_LON]), [], "cáo buộc thừa (CK-10)");
 });
 
 test("cùng người được uỷ quyền, hạn mức GIỮ NGUYÊN ⇒ không gắn cờ", async () => {
   const r = await hienTruong(MAX, MAX).chay();
   assert.ok(!r.reasonCodes.includes(REASON.APPROVE_DELEGATE_LON), r.reasonCodes.join(","));
+  assert.deepEqual(caoBuocThua(r.reasonCodes), [], "ca đối chứng mang cáo buộc (CK-10)");
 });
 
 test("cùng người được uỷ quyền, hạn mức GIẢM ⇒ không gắn cờ", async () => {

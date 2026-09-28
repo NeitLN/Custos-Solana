@@ -52,6 +52,20 @@ hiểu, và nó là phần lớn.
 | Chương trình **đọc được tên** | Đọc tên lệnh để đối chiếu với thứ dApp nói nó sẽ làm |
 | Lượt kiểm **thiếu dữ liệu RPC** | Kiểm lại khi mạng ổn định — đây là thiếu tạm thời, không phải chưa hỗ trợ |
 
+## Cặp đối chứng — hiểu hậu quả nghĩa là phân biệt được hai ca gần giống nhau
+
+Sinh từ `data/doi-chung/ck10.json`. Mỗi ca chạy được (phát lại, seed) được test so **cả mã
+thiếu lẫn cáo buộc thừa**; ca fixture trỏ tới test có thật. Nhãn do: Claude Code (phiên 28/09/2026) theo ngữ nghĩa từng giao dịch; chủ dự án CHƯA duyệt từng nhãn.
+
+| Điều cần chứng minh | Ca kích hoạt | Ca đối chứng | Giới hạn |
+|---|---|---|---|
+| Không chỉ xét địa chỉ delegate: cùng người được uỷ quyền mà hạn mức tăng vọt vẫn là mở rộng quyền rút. | `cung-delegate-1-len-max` (fixture trong test) | `cung-delegate-giu-nguyen` (fixture trong test) | Hai ca dựng bằng RPC giả trong test, không ghi từ Devnet. |
+| Phân biệt tài sản và quyền: chuyển token thường không bị cáo buộc; chuyển kèm đổi chủ tài khoản thì bị; chỉ đổi chủ thì không hiện số dư giảm. | `tan-cong-day-du` (phát lại Devnet)<br>`doi-chu-tai-khoan` (phát lại Devnet) | `lanh-tinh` (phát lại Devnet) | Phản hồi RPC ghi từ Devnet trên hiện trường của ví cố định; phát lại không phải giao dịch mới. |
+| Không gắn đỏ mọi approve: cấp quyền đúng bằng số dư là hành vi sàn giao dịch bình thường; vượt số dư mới là mở quyền rút không giới hạn thực tế. | `cap-quyen-vuot-so-du` (phát lại Devnet)<br>`R03-pos` (seed) | `cap-quyen-vua-du` (phát lại Devnet)<br>`R03-neg` (seed) | Ngưỡng 'vượt số dư' là quy ước của luật 3, không phải chân lý; seed R03 là tổng hợp. |
+| Hậu quả lồng trong CPI có bằng chứng; CPI lành của chương trình đã xác minh không bị cáo buộc; thiếu stack thì không dựng cây giả. | `cpi-doi-chu-giau` (fixture trong test) | `cpi-ata-devnet` (mô phỏng Devnet)<br>`cpi-la-chi-chuyen` (fixture trong test) | Ca CPI NGUY HIỂM là fixture (RPC giả) — không viết chương trình on-chain đạo cụ (quyết định khoá số 5). Ca lành là mô phỏng Devnet thật, chạy tay, có biên bản. |
+| Thiếu mint hoặc thiếu vị trí account trong kết quả mô phỏng thì KHÔNG giả số 0 / decimals 0 và không bịa mất mát; mức không bao giờ An toàn. | `thieu-mint` (fixture trong test)<br>`mang-mo-phong-ngan` (fixture trong test) | `doc-duoc-mint` (fixture trong test)<br>`null-dung-vi-tri` (fixture trong test) | Lỗi RPC dựng trong test; chưa có fixture ghi từ một lượt RPC thật trả thiếu. |
+| Address Lookup Table giải đủ thì định danh account đúng, không gắn cờ; giải không được thì coverage nói thật và chỉ cảnh báo, không cáo buộc. | `R10-pos` (seed) | `R10-neg` (seed) | Seed tổng hợp (synthetic-devnet). ALT là năng lực hợp lệ của giao thức — chỉ thiếu dữ liệu mới gắn cờ (quyết định khoá số 6). CẶP NÀY LẪN BIẾN: cả hai giao dịch chuyển ~4,84 SOL khỏi ví (dựng 21/08, trước khi có luật 13 ngày 03/09), nên cả hai mang cáo buộc SOL_ROI_VI đúng sự thật; cặp chỉ phân biệt ALT đủ/thiếu qua mã ALT_KHONG_GIAI_DUOC. Việc còn mở: một cặp ALT không chuyển SOL. |
+
 ## Ba điều bảng này KHÔNG nói
 
 1. **Không** nói program nào đáng tin. *Known program* ≠ *trusted program*.
