@@ -1,0 +1,2 @@
+# Script shell chạy trên Linux (Vercel/CI): dòng CRLF làm bash lỗi (ký tự CR thừa cuối mỗi lệnh).
+*.sh text eol=lf

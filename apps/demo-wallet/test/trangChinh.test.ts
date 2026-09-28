@@ -3,6 +3,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
+/** Lệnh dựng Vercel THẬT: `buildCommand` cộng nội dung script nó gọi (Vercel giới hạn 256 ký tự). */
+function lenhDungVercel(): string {
+  const v = JSON.parse(readFileSync("vercel.json", "utf8")) as { buildCommand: string };
+  const sh = v.buildCommand.match(/scripts\/[\w-]+\.sh/)?.[0];
+  return v.buildCommand + "\n" + (sh ? readFileSync(sh, "utf8") : "");
+}
+
 /*
  * TRANG CHÍNH TRÊN VERCEL = TRANG GIỚI THIỆU (chủ dự án, 28/09).
  *
@@ -51,8 +58,7 @@ test("không đặt biến (dev, probe, GitHub Pages) ⇒ không chuyển gì, k
 });
 
 test("chỉ bản Vercel bật biến; link tới ví trỏ thẳng index.html (không quay vòng về trang giới thiệu)", () => {
-  const v = JSON.parse(readFileSync("vercel.json", "utf8")) as { buildCommand: string };
-  assert.match(v.buildCommand, /VITE_TRANG_CHINH=gioi-thieu/);
+  assert.match(lenhDungVercel(), /VITE_TRANG_CHINH=gioi-thieu/);
   assert.doesNotMatch(readFileSync(".github/workflows/deploy.yml", "utf8"), /VITE_TRANG_CHINH/);
   assert.match(readFileSync("apps/demo-wallet/src/landing/links.ts", "utf8"), /viMau: noiBase\("index\.html"\)/);
   assert.match(readFileSync("apps/demo-wallet/src/ProductNavigation.tsx", "utf8"), /key: "demo", href: "index\.html"/);
