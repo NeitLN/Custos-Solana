@@ -15,6 +15,7 @@ import { WalletIcon, SendIcon, GiftIcon, ShieldIcon, CopyIcon } from "./Icons.ts
 import { coAiKhong, dungGoiQuaServer } from "./goiAiQuaServer.ts";
 import { LiveSession, canBoQua, datDuPhongLive } from "./live/session.ts";
 import { moTaLoiLive } from "./live/loiRpc.ts";
+import { lyDoDappChuaSan } from "./live/sanSangDapp.ts";
 import { docHienTruong } from "./hienTruong.ts";
 import { Receipt, token, short, explorer } from "./live/Receipt.tsx";
 
@@ -204,6 +205,17 @@ export function WalletExecution({
   const lostOwner = view.owner !== null && view.owner !== view.wallet;
   const ready =
     cacheReady && view.canSign && !!view.accounts && !lostOwner && !view.closed && !view.busy && !p;
+  // Nút mờ mà không nói thiếu gì thì trông như hỏng — nói ĐÚNG bước tiếp theo (28/09).
+  const lyDoDapp = lyDoDappChuaSan({
+    luuDuoc: cache !== null,
+    phienLuuChoXuLy: !cacheReady && cachedSession !== null,
+    canSign: view.canSign,
+    coPhien: !!view.accounts,
+    doiChu: lostOwner,
+    daDong: view.closed,
+    dangBan: view.busy,
+    coYeuCau: !!p,
+  });
   const prepare = (kind: LiveKind) =>
     run(() => session.prepare(kind, { amount, ...(kind === "transfer" && target ? { target } : {}) }));
   const needsOverride = !!p?.protected && canBoQua(p.result);
@@ -599,6 +611,11 @@ export function WalletExecution({
                 />
               </label>
               <h2 className="wallet-dapp-heading">Ứng dụng đang kết nối</h2>
+              {lyDoDapp && (
+                <p className="wallet-dapp-ly-do" role="note">
+                  {lyDoDapp}
+                </p>
+              )}
               <button
                 className="action-card action-card--primary wallet-gift"
                 disabled={!ready}
