@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createPrivateKey, sign as signEd25519 } from "node:crypto";
 import {
   Keypair, SystemProgram, TransactionMessage, VersionedTransaction,
 } from "@solana/web3.js";
@@ -52,8 +53,10 @@ function stub() {
   const lan: Array<{ bytes: Uint8Array }> = [];
   return {
     lan,
-    ky: (_t: unknown, bytes: Uint8Array) => {
+    // Ký THẬT bằng VI — từ G0-4, signer không trả giao dịch đã ký thì không có `da_ky`.
+    ky: (t: VersionedTransaction, bytes: Uint8Array) => {
       lan.push({ bytes });
+      return kyThat(t);
     },
   };
 }
@@ -409,7 +412,7 @@ test("ADR-0003 · double-click ⇒ signer chạy ĐÚNG MỘT LẦN", async () =
     quyetDinh: { cho: "ky" as const, lyDo: "khong_van_de" },
     tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
-    signer: () => { dem++; return Promise.resolve(); },
+    signer: () => { dem++; return Promise.resolve(kyThat(t)); },
   };
   const [a, b] = await Promise.all([kySauKhiKiem(co), kySauKhiKiem(co)]);
   assert.equal(dem, 1, "cùng một phiên mà signer chạy hai lần");
@@ -426,7 +429,7 @@ test("ADR-0003 · phiên đã tiêu KHÔNG tự mở lại", async () => {
     quyetDinh: { cho: "ky" as const, lyDo: "khong_van_de" },
     tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
-    signer: () => Promise.resolve(),
+    signer: () => Promise.resolve(kyThat(t)),
   };
   assert.equal((await kySauKhiKiem(co)).daKy, true);
   const lai = await kySauKhiKiem(co);
@@ -551,9 +554,112 @@ test("ADR-0003 · ĐỐI CHỨNG — signer bình thường vẫn ký được",
     quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
     tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
     ...chung,
-    signer: (tx2, bytes) => { s.ky(tx2, bytes); return Promise.resolve(); },
+    signer: (tx2, bytes) => Promise.resolve(s.ky(tx2, bytes)),
   });
   assert.equal(r.daKy, true, "signer bình thường mà không ký được — sửa quá tay");
   assert.equal(r.ketCuc, "da_ky");
   assert.equal(s.lan.length, 1);
+});
+
+/* ── G0-4 · "đã ký" phải có CHỮ KÝ THẬT — ROADMAP-SAU-MENTOR ─────────────────
+ *
+ * Codex phản biện 29/09, đã xác minh: signer resolve `undefined` (hoặc object không có
+ * `message`) thì phép đối chiếu bị BỎ QUA và hàm vẫn trả `daKy: true`. Tức ví dụ tích
+ * hợp khai đã ký khi không có bằng chứng nào của chữ ký. Với connector Wallet Standard,
+ * bytes trả về sẽ được dApp gửi đi — phải là đúng bytes đã kiểm, ký bởi đúng ví.
+ */
+
+/** Bản sao đã ký — không sửa tại chỗ tx đang được kiểm. */
+function kyThat(t: VersionedTransaction, kp: Keypair = VI): VersionedTransaction {
+  const b = VersionedTransaction.deserialize(t.serialize());
+  b.sign([kp]);
+  return b;
+}
+
+const moLuot = (t: VersionedTransaction, signer: (tx: VersionedTransaction, b: Uint8Array) => unknown) =>
+  kySauKhiKiem({
+    quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
+    tx: t, neo: neoKetQua(t.message.serialize(), chung.viNguoiDung, chung.cluster),
+    ...chung,
+    signer,
+  });
+
+test("G0-4 · signer resolve undefined ⇒ chua_ro, KHÔNG phải đã ký", async () => {
+  const r = await moLuot(tx(1000), () => Promise.resolve(undefined));
+  assert.equal(r.daKy, false, "không có chữ ký nào mà khai đã ký");
+  assert.equal(r.ketCuc, "chua_ro");
+  assert.equal(r.lyDo, "signer_khong_tra_chu_ky");
+});
+
+test("G0-4 · signer trả object lạ ⇒ chua_ro", async () => {
+  const r = await moLuot(tx(1000), () => ({ ok: true }));
+  assert.equal(r.ketCuc, "chua_ro");
+  assert.equal(r.lyDo, "signer_khong_tra_chu_ky");
+});
+
+test("G0-4 · signer trả đúng tx nhưng CHƯA ký (chữ ký toàn 0) ⇒ chua_ro", async () => {
+  const r = await moLuot(tx(1000), (t2) => VersionedTransaction.deserialize(t2.serialize()));
+  assert.equal(r.ketCuc, "chua_ro");
+  assert.equal(r.lyDo, "signer_khong_tra_chu_ky");
+});
+
+test("G0-4 · chữ ký THẬT của khoá khác, trên đúng bytes, đặt vào ô của ví ⇒ chua_ro", async () => {
+  /*
+   * Chữ ký hợp lệ về mặt ed25519 — chỉ là của LA chứ không phải của VI. Mảng 64 byte
+   * rác thì bản kiểm "độ dài" cũng bắt được; ca này chỉ bản kiểm ĐÚNG KHOÁ mới bắt.
+   * web3.js không cho `sign([LA])` vì LA không phải người ký, nên ký bằng node:crypto.
+   */
+  const khoaLA = createPrivateKey({
+    key: {
+      kty: "OKP", crv: "Ed25519",
+      d: Buffer.from(LA.secretKey.slice(0, 32)).toString("base64url"),
+      x: Buffer.from(LA.publicKey.toBytes()).toString("base64url"),
+    },
+    format: "jwk",
+  });
+  const r = await moLuot(tx(1000), (t2) => {
+    const b = VersionedTransaction.deserialize(t2.serialize());
+    b.signatures[0] = new Uint8Array(signEd25519(null, b.message.serialize(), khoaLA));
+    return b;
+  });
+  assert.equal(r.ketCuc, "chua_ro");
+  assert.equal(r.lyDo, "signer_khong_tra_chu_ky");
+});
+
+test("G0-4 · ví KHÔNG phải người ký bắt buộc ⇒ khong_ky, signer không được gọi", async () => {
+  const t = tx(1000);
+  let dem = 0;
+  const r = await kySauKhiKiem({
+    quyetDinh: { cho: "ky", lyDo: "khong_van_de" },
+    tx: t, neo: neoKetQua(t.message.serialize(), LA.publicKey.toBase58(), chung.cluster),
+    viNguoiDung: LA.publicKey.toBase58(), cluster: chung.cluster,
+    signer: () => { dem++; return kyThat(t); },
+  });
+  assert.equal(r.ketCuc, "khong_ky");
+  assert.equal(r.lyDo, "vi_khong_phai_nguoi_ky");
+  assert.equal(dem, 0);
+});
+
+test("G0-4 · ĐỐI CHỨNG — ký thật ⇒ da_ky và trả đúng giao dịch đã xác minh để gửi", async () => {
+  const t = tx(1000);
+  const r = await moLuot(t, (t2) => Promise.resolve(kyThat(t2)));
+  assert.equal(r.ketCuc, "da_ky", `ký thật mà không nhận: ${r.lyDo}`);
+  assert.ok(r.daKy && r.giaoDichDaKy, "phải trả giao dịch đã ký");
+  assert.deepEqual(r.giaoDichDaKy.message.serialize(), t.message.serialize());
+});
+
+test("Codex 29/09 · signer sửa object SAU khi trả về ⇒ thứ trả ra vẫn là đúng bytes đã kiểm", async () => {
+  const t = tx(1000);
+  let traVe: VersionedTransaction | null = null;
+  const r = await moLuot(t, (t2) => {
+    traVe = kyThat(t2);
+    // Sửa chính object vừa trả, trong lúc kySauKhiKiem đang await xác minh chữ ký.
+    setImmediate(() => { traVe!.message.recentBlockhash = LA.publicKey.toBase58(); });
+    return traVe;
+  });
+  await new Promise((r2) => setImmediate(r2));
+  assert.equal(r.ketCuc, "da_ky");
+  assert.ok(r.daKy);
+  assert.notEqual(r.giaoDichDaKy, traVe, "trả lại object của signer — signer vẫn sửa được");
+  assert.deepEqual(r.giaoDichDaKy.message.serialize(), t.message.serialize());
 });

@@ -50,7 +50,10 @@ function viGia(hanhVi: "ok" | "tuChoi" | "treo" | "txKhac" | "ngatKetNoi" = "ok"
     if (hanhVi === "treo") return new Promise(() => {}); // không bao giờ resolve
     // `lamports` khác ⇒ message bytes THẬT SỰ khác. Xem chú thích ở `tx()`.
     if (hanhVi === "txKhac") return tx(999_999);
-    return t;
+    // Ký THẬT — từ G0-4 trả giao dịch chưa ký thì không có `da_ky`.
+    const daKy = VersionedTransaction.deserialize(t.serialize());
+    daKy.sign([vi]);
+    return daKy;
   };
   return { dem, signer };
 }

@@ -99,3 +99,20 @@ khi khôi phục mã cũ**. Guard chỉ xanh thì không chứng minh gì.
 
 Đối chứng bắt buộc: signer resolve bình thường vẫn cho `da_ky` — sửa bốn chiều sai
 không được biến hàm thành "luôn từ chối", vì như thế cũng xanh hết mọi bài trên.
+
+## 5 · Bổ sung 29/09/2026 — "đã ký" phải có chữ ký (G0-4)
+
+Phản biện của Codex, đã xác minh: bước đối chiếu ở mục 4.3 chỉ chạy khi signer trả
+một object có `message`. Signer resolve `undefined` thì phép đối chiếu bị bỏ qua và
+hàm vẫn khai `da_ky`. Đó là lỗ hổng thứ năm cùng họ với A–D: **khai đã ký khi không
+có bằng chứng của chữ ký**.
+
+Sửa: `da_ky` chỉ khi giao dịch trả về trùng message với bản đã kiểm **và** có chữ ký
+ed25519 hợp lệ của `viNguoiDung` trên đúng các byte đó. Thiếu ⇒ `chua_ro`
+(`signer_khong_tra_chu_ky`), vì signer đã chạy và có thể đã ký một thứ gì đó. Ví
+không phải người ký bắt buộc ⇒ `khong_ky` trước khi gọi signer. Kết quả `da_ky` trả
+kèm `giaoDichDaKy` để người gọi gửi đúng thứ đã xác minh.
+
+Kiểm chứng: sáu bài `G0-4` trong `packages/core/test/kyHopDongI02.test.ts`, cả sáu
+đỏ trên mã cũ. Đột biến tắt phép xác minh ⇒ hai bài chữ ký đỏ lại. Đối chứng: ký
+thật vẫn ra `da_ky`.

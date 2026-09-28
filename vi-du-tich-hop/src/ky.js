@@ -23,6 +23,7 @@
  * Đây là TB-C06 áp ở tầng consumer. SDK cung cấp cơ chế; ví phải gọi nó.
  */
 import { khopNeo, quaCu } from "@custos-solana/core";
+import { VersionedTransaction } from "@solana/web3.js";
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -68,12 +69,13 @@ const HAN_SIGNER_MS = 60_000;
  *   ký — mặc định là `tx`. Truyền khác nhau để mô phỏng dApp tráo giao dịch.
  * @param {string} p.viNguoiDung  địa chỉ ví, lấy từ VÍ không lấy từ dApp
  * @param {"devnet"|"testnet"|"mainnet-beta"|"localnet"} p.cluster
- * @param {(tx: object, messageBytes: Uint8Array) => unknown} p.signer
+ * @param {(tx: object, messageBytes: Uint8Array) => unknown} p.signer  phải trả về
+ *   giao dịch ĐÃ KÝ; không có chữ ký hợp lệ của ví ⇒ `chua_ro` (G0-4)
  * @param {boolean} [p.nguoiDungDongY]  người dùng đã bấm đồng ý ở nhánh `hoi` chưa
  * @param {number} [p.msToiDa]  tuổi tối đa của kết quả kiểm
  * @param {number} [p.msChoSigner]  hạn chờ signer
  * @returns {Promise<{ daKy: boolean, ketCuc: "da_ky"|"tu_choi"|"chua_ro"|"khong_ky",
- *   lyDo: string, chiTiet?: string }>}
+ *   lyDo: string, chiTiet?: string, giaoDichDaKy?: object }>}
  */
 export async function kySauKhiKiem({
   quyetDinh,
@@ -114,6 +116,11 @@ export async function kySauKhiKiem({
 
   // (4) Kết quả quá cũ thì trạng thái account có thể đã đổi — kiểm lại, đừng ký.
   if (quaCu(neo, msToiDa)) return tuChoi("ket_qua_qua_cu", neo.kiemLuc);
+
+  // (4b) Ví không nằm trong danh sách người ký bắt buộc thì chữ ký của nó vô dụng, và
+  //      bước (8) không có ô nào để xác minh. Biết trước thì đừng hỏi ví.
+  const oChuKy = viTriNguoiKy(sapKy.message, viNguoiDung);
+  if (oChuKy < 0) return tuChoi("vi_khong_phai_nguoi_ky");
 
   /*
    * (5) KHOÁ PHIÊN — ĐỒNG BỘ, TRƯỚC MỌI AWAIT.
@@ -173,11 +180,14 @@ export async function kySauKhiKiem({
    * Signer có thể trả một transaction khác với thứ đưa vào. Khác bytes ⇒ không
    * chuyển tiếp để gửi, và cũng không gọi là đã ký: ta không biết ví đã ký cái gì.
    */
-  const traVe = ketQuaSigner.giaTri;
-  const byteTraVe =
-    traVe && typeof traVe === "object" && "message" in traVe
-      ? /** @type {any} */ (traVe).message?.serialize?.()
-      : null;
+  /*
+   * BẢN SAO ĐỘC LẬP, ĐỒNG BỘ — Codex review 29/09. Bước (8) có `await` (WebCrypto); trong
+   * lúc đó signer vẫn giữ object nó vừa trả và sửa được (đo được: đổi `recentBlockhash` bằng
+   * `setImmediate`, 20/20 lần hàm vẫn trả `da_ky` với message đã khác neo). Chụp bytes ngay
+   * dòng này rồi làm MỌI việc sau trên bản sao: đối chiếu, xác minh, và trả chính bản sao.
+   */
+  const banSao = saoDocLap(ketQuaSigner.giaTri);
+  const byteTraVe = banSao ? banSao.message.serialize() : null;
   if (byteTraVe && !bangNhau(byteTraVe, byteDaKiem)) {
     return {
       daKy: false,
@@ -187,7 +197,84 @@ export async function kySauKhiKiem({
     };
   }
 
-  return { daKy: true, ketCuc: /** @type {const} */ ("da_ky"), lyDo: "da_kiem_va_dong_y" };
+  /*
+   * (8) "ĐÃ KÝ" PHẢI CÓ CHỮ KÝ — G0-4, ROADMAP-SAU-MENTOR.
+   *
+   * Bản trước dừng ở (7): signer trả `undefined` hay một object không có `message` thì
+   * `byteTraVe = null`, phép đối chiếu bị bỏ qua, và hàm khai `da_ky`. Đo được: cả
+   * `Promise.resolve()` lẫn `{ ok: true }` đều ra `daKy: true`.
+   *
+   * Nay đòi đủ ba điều: trả về một giao dịch, message trùng byte với thứ đã kiểm, và ô
+   * chữ ký của `viNguoiDung` chứa chữ ký ed25519 HỢP LỆ của đúng khoá đó trên đúng
+   * các byte đó. Thiếu một ⇒ `chua_ro`, không phải `tu_choi`: signer đã chạy, có thể
+   * đã ký một thứ gì đó — không được coi là chưa ký rồi ký lại.
+   */
+  if (!banSao || !byteTraVe || !(await coChuKyHopLe(banSao, oChuKy, byteDaKiem))) {
+    return {
+      daKy: false,
+      ketCuc: /** @type {const} */ ("chua_ro"),
+      lyDo: "signer_khong_tra_chu_ky",
+      chiTiet: "signer không trả giao dịch mang chữ ký hợp lệ của ví trên đúng bytes đã kiểm — không gửi",
+    };
+  }
+
+  // Trả chính giao dịch đã xác minh: người gọi gửi ĐÚNG thứ này, không phải `tx` gốc.
+  return {
+    daKy: true,
+    ketCuc: /** @type {const} */ ("da_ky"),
+    lyDo: "da_kiem_va_dong_y",
+    giaoDichDaKy: banSao,
+  };
+}
+
+/**
+ * Bản sao không chia sẻ bộ nhớ với object của signer, hoặc `null` nếu không phải giao dịch
+ * serialize được. Không ném: thứ signer trả về là dữ liệu không đáng tin.
+ */
+function saoDocLap(x) {
+  try {
+    if (!x || typeof x !== "object" || typeof (/** @type {any} */ (x).serialize) !== "function") return null;
+    return VersionedTransaction.deserialize(/** @type {any} */ (x).serialize());
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Ô chữ ký của `viNguoiDung` trong message, hoặc -1 nếu ví không phải người ký bắt buộc.
+ * Quy ước Solana: `signatures[i]` ứng với `staticAccountKeys[i]`, với
+ * `i < header.numRequiredSignatures`.
+ */
+function viTriNguoiKy(message, viNguoiDung) {
+  const khoa = message?.staticAccountKeys ?? [];
+  const soNguoiKy = message?.header?.numRequiredSignatures ?? 0;
+  const i = khoa.findIndex((k) => k.toBase58() === viNguoiDung);
+  return i >= 0 && i < soNguoiKy ? i : -1;
+}
+
+/**
+ * Chữ ký ở ô `o` có phải chữ ký ed25519 hợp lệ của khoá ở ô đó, trên `bytes`, không.
+ *
+ * Dùng WebCrypto có sẵn (Node ≥ 20, trình duyệt hiện đại) thay vì thêm thư viện:
+ * thư mục này cố ý cài như người ngoài, mỗi phụ thuộc thêm là một thứ họ phải tin.
+ * Môi trường không có Ed25519 trong WebCrypto ⇒ ném ⇒ `false` ⇒ `chua_ro`. Fail-safe:
+ * không xác minh được thì không khai đã ký.
+ */
+async function coChuKyHopLe(tx, o, bytes) {
+  const chuKy = tx?.signatures?.[o];
+  if (!(chuKy instanceof Uint8Array) || chuKy.length !== 64) return false;
+  try {
+    const khoa = await globalThis.crypto.subtle.importKey(
+      "raw",
+      tx.message.staticAccountKeys[o].toBytes(),
+      { name: "Ed25519" },
+      false,
+      ["verify"],
+    );
+    return await globalThis.crypto.subtle.verify({ name: "Ed25519" }, khoa, chuKy, bytes);
+  } catch {
+    return false;
+  }
 }
 
 /** So hai mảng byte. Không dùng `join()` — chuỗi hoá rồi so là mời lỗi khác vào. */

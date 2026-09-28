@@ -39,7 +39,9 @@ export type LyDoKhongKy =
   | "giao_dich_da_doi"
   | "ket_qua_qua_cu"
   /** Phiên này đã tiêu chữ ký. Muốn ký lại thì kiểm lại — ADR-0003 mục 2.3. */
-  | "phien_da_dung";
+  | "phien_da_dung"
+  /** Ví không nằm trong danh sách người ký bắt buộc của message — G0-4. */
+  | "vi_khong_phai_nguoi_ky";
 
 /**
  * BA KẾT CỤC, KHÔNG PHẢI HAI — ADR-0003 mục 2.2.
@@ -54,10 +56,21 @@ export type LyDoKhongKy =
 export type KetCuc = "da_ky" | "tu_choi" | "chua_ro" | "khong_ky";
 
 /** Vì sao kết cục không rõ ràng. Không được hiểu thành "chưa ký". */
-export type LyDoChuaRo = "het_han_cho_signer" | "signer_tra_ve_tx_khac";
+export type LyDoChuaRo =
+  | "het_han_cho_signer"
+  | "signer_tra_ve_tx_khac"
+  /** Signer trả về mà không có chữ ký ed25519 hợp lệ của ví trên đúng bytes đã kiểm — G0-4. */
+  | "signer_khong_tra_chu_ky";
 
 export type KetQuaKy =
-  | { daKy: true; ketCuc: "da_ky"; lyDo: "da_kiem_va_dong_y"; chiTiet?: undefined }
+  | {
+      daKy: true;
+      ketCuc: "da_ky";
+      lyDo: "da_kiem_va_dong_y";
+      chiTiet?: undefined;
+      /** Giao dịch đã xác minh chữ ký — thứ DUY NHẤT được phép gửi đi. */
+      giaoDichDaKy: VersionedTransaction;
+    }
   | { daKy: false; ketCuc: "khong_ky"; lyDo: LyDoKhongKy; chiTiet?: string }
   | { daKy: false; ketCuc: "tu_choi"; lyDo: "vi_tu_choi"; chiTiet?: string }
   | { daKy: false; ketCuc: "chua_ro"; lyDo: LyDoChuaRo; chiTiet?: string };
@@ -73,7 +86,10 @@ export function kySauKhiKiem(p: {
   /** Địa chỉ ví, lấy từ VÍ không lấy từ dApp. */
   viNguoiDung: string;
   cluster: "devnet" | "testnet" | "mainnet-beta" | "localnet";
-  /** Hàm ký do ví truyền vào. KHÔNG được gọi ở bất kỳ nhánh từ chối nào. */
+  /**
+   * Hàm ký do ví truyền vào. KHÔNG được gọi ở bất kỳ nhánh từ chối nào. Phải trả về
+   * giao dịch ĐÃ KÝ (G0-4): trả `undefined` hay giao dịch chưa ký ⇒ `chua_ro`.
+   */
   signer: (tx: VersionedTransaction, messageBytes: Uint8Array) => unknown;
   /** Người dùng đã bấm đồng ý ở nhánh `hoi` chưa. Mặc định `false` — fail-safe. */
   nguoiDungDongY?: boolean;
