@@ -1,520 +1,164 @@
 import { useEffect, useRef, useState } from "react";
-import { chuoiBanGiao, dungTxTanCongSong, kiemSanSangTanCong, type SanSangTanCong } from "../../../scripts/hienTruongSong.ts";
-import { conDungDuoc, layBlockhash, HAN_LAY_BLOCKHASH_MS } from "./blockhash.ts";
-import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
-import { chonRpc, diaChiVi } from "../../../scripts/diaChiDemo.ts";
-import { danhSachRpc, duPhongTheoBan, ketNoiDuPhong, taoLocGenesisNho, LoiKhongCoRpcDung } from "../../../scripts/rpcDuPhong.ts";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { RewardArtwork } from "./RewardArtwork.tsx";
+import { VI_DEMO, capNhatDemo, docTrangThai, dungGiaoDich, kiemDevnet, kyVaGui, timDemo, type CheDo, type DemoToken, type Pending } from "./giaoDich.ts";
+import { URL_VI } from "./config.ts";
 
-/**
- * TRANG TẤN CÔNG GIẢ — đạo cụ demo.
- *
- * Đây là bên ĐỘC HẠI trong kịch bản: một trang web hứa hẹn quà tặng, nhưng
- * giao dịch nó đẩy sang ví lại chuyển tiền và đổi chủ tài khoản token.
- *
- * Nó chạy ở origin RIÊNG (cổng 5189) và đẩy giao dịch sang ví qua URL, đúng
- * cách một dApp thật giao tiếp với ví. Nhờ vậy demo cho thấy Custos nằm BÊN
- * TRONG ví, không phải một website đứng chắn giữa.
- *
- * Nó cũng khai `expectedAction: "airdrop"` — lời khai GIAN. Giao dịch thật sự
- * không hề là airdrop. Đây là để minh hoạ quy tắc bất đối xứng: ngữ cảnh do
- * dApp cung cấp không bao giờ được làm sản phẩm dễ dãi hơn.
- *
- * Giao diện giữ hình thức một trang nhận thưởng, cùng nhãn demo rõ ràng.
- * Số thưởng, đồng hồ và tuyên bố kiểm toán là đạo cụ hư cấu; phần giải thích
- * và FAQ đối chiếu lời hứa trên giao diện với hành vi giao dịch trong ví.
- * Băng cảnh báo luôn hiển thị. Không ký hay gửi giao dịch từ trang này.
- */
-
-type HienTruong = {
-  rpc: string; mint: string; kyHieu?: string; decimals: number;
-  nanNhan: string; taiKhoanNanNhan: string;
-  keTanCong: string; taiKhoanKeTanCong: string;
-  soLuong: string;
-};
-
-/*
- * Địa chỉ ví mẫu — quy tắc nằm ở `scripts/diaChiDemo.ts`, dùng chung với ví.
- *
- * Bản trước kiểm `location.hostname === "localhost"`. Mở cùng máy chủ đó bằng
- * `127.0.0.1:5189` thì nhánh ấy trượt, rơi xuống nhánh "thư mục cha", và ở gốc miền
- * thì thư mục cha CHÍNH LÀ NÓ. Bấm "Nhận quà tặng" tải lại trang tấn công: không
- * lỗi, không cảnh báo, không có gì xảy ra. `[::1]` và IP LAN (soi trên điện thoại
- * thật) hỏng y hệt.
- *
- * Nay hỏi CỔNG chứ không hỏi tên máy, và khi không suy ra được thì nói "không biết"
- * thay vì trỏ về chính mình.
- */
-const KL_VI = diaChiVi(location.href, import.meta.env["VITE_CUSTOS_VI"]);
-const VI = KL_VI.loai === "co" ? KL_VI.url : null;
-
-// `VITE_RPC` chỉ đọc khi DEV: bản dựng công khai không mang endpoint riêng của
-// máy đội. Cùng ràng buộc với ví — xem `hienTruong.ts`.
-const RPC_RIENG = import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefined;
-// Endpoint dự phòng: DEV đọc `VITE_RPC_DU_PHONG`; production chỉ đọc `rpcDuPhong` của
-// hiện trường đã lọc allowlist — cùng quy tắc với ví (`duPhongTheoBan`, CK-01).
-//
-// Genesis TRƯỚC khi dùng (tồn đọng review 27/09): dự phòng chứng minh là khác cluster thì bỏ,
-// không còn endpoint nào thì `ketNoiDuPhong` ném `LoiKhongCoRpcDung`. Một lượt 4 giây — trang
-// này đứng trên đường bấm của người xem; chưa đo được thì giữ endpoint, như ví.
-const locGenesis = taoLocGenesisNho({ soLan: 1, msHan: 4_000 });
-const ketNoi = async (ht: { rpc?: string | null; rpcDuPhong?: unknown }) =>
-  ketNoiDuPhong(
-    await locGenesis(danhSachRpc(
-      chonRpc(ht.rpc, RPC_RIENG),
-      // Chỉ sau `DEV ?` — xem chú thích cùng chỗ trong `hienTruong.ts` (khoá lọt bundle).
-      duPhongTheoBan(!!import.meta.env.DEV, import.meta.env.DEV ? import.meta.env["VITE_RPC_DU_PHONG"] : undefined, ht.rpcDuPhong),
-    )),
-  );
-
-/** Đếm ngược tới cuối ngày. Đồng hồ THẬT — không phải số đứng yên giả vờ chạy.
- *  Gấp gáp là đòn bẩy kinh điển của airdrop lừa đảo, và nó chỉ có tác dụng nếu
- *  con số thật sự nhúc nhích. */
-function dungDemNguoc(): string {
-  const gio = new Date();
-  const cuoiNgay = new Date(gio);
-  cuoiNgay.setHours(23, 59, 59, 999);
-  const con = Math.max(0, Math.floor((cuoiNgay.getTime() - gio.getTime()) / 1000));
-  const hai = (n: number) => String(n).padStart(2, "0");
-  return `${hai(Math.floor(con / 3600))}:${hai(Math.floor((con % 3600) / 60))}:${hai(con % 60)}`;
-}
-
-function rutGon(dc: string): string {
-  return dc.length > 12 ? `${dc.slice(0, 4)}…${dc.slice(-4)}` : dc;
+const CHO_GUI = "solbonus.pending.v1";
+const short = (s: string) => `${s.slice(0, 6)}…${s.slice(-6)}`;
+const amount = (n: bigint) => `${n / 1_000_000n},${(n % 1_000_000n).toString().padStart(6, "0").replace(/0+$/, "") || "0"}`;
+function docPending(): Pending | null {
+  try {
+    const p = JSON.parse(sessionStorage.getItem(CHO_GUI) ?? "null");
+    return p && /^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(p.signature) && Number.isSafeInteger(p.lastValidBlockHeight) ? p : null;
+  } catch { return null; }
 }
 
 export default function App() {
-  const [ht, setHt] = useState<HienTruong | null | undefined>(undefined);
-  const [loi, setLoi] = useState<string | null>(null);
-  const [dangGui, setDangGui] = useState(false);
-  const [demNguoc, setDemNguoc] = useState(dungDemNguoc);
-  /**
-   * BLOCKHASH LẤY SẴN — đây là bản vá cho một lỗi giết demo.
-   *
-   * Bản trước `await getLatestBlockhash()` RỒI mới `window.open()`. Trình duyệt chỉ
-   * cho mở tab mới khi lệnh đó chạy TRỰC TIẾP trong cử chỉ của người dùng; sau một
-   * `await` thì cử chỉ đã hết hiệu lực và Chrome/Safari chặn popup. Nghĩa là trên
-   * sân khấu, ví có thể không bao giờ bật lên — mà đó là toàn bộ phần demo.
-   *
-   * Lấy sẵn blockhash nền thì lúc bấm không còn `await` nào trước `window.open`,
-   * nên popup nằm gọn trong cử chỉ. Blockhash Solana sống khoảng 60–90 giây nên
-   * làm mới mỗi 30 giây là dư.
-   */
-  // Lưu kèm THỜI ĐIỂM lấy: xem `blockhash.ts` — `setInterval` bị trình duyệt bóp
-  // khi tab chạy nền, nên "đã lấy" không đồng nghĩa với "còn dùng được".
-  //
-  // Kèm `sanSang`: kết quả kiểm hiện trường cho CHÍNH blockhash này — số dư sống và
-  // preflight của đúng giao dịch sẽ bàn giao. Xem `hienTruongSong.ts`.
-  const blockhashRef = useRef<{ ma: string; luc: number; sanSang: SanSangTanCong } | null>(null);
-  /** URL bàn giao của lần bấm gần nhất — dùng cho đường lui khi ví không tự mở. */
-  const [urlLui, setUrlLui] = useState<string | null>(null);
-  /*
-   * Chặn setState sau khi component đã rời khỏi cây: lượt lấy blockhash có thể còn
-   * đang chạy khi người dùng rời trang.
-   *
-   * PHẢI đặt lại `false` lúc mount. StrictMode ở chế độ dev chạy effect hai lượt —
-   * mount, cleanup, rồi mount lại. Bản đầu của tôi chỉ có cleanup, nên sau lượt
-   * đầu `huyRef` mắc kẹt ở `true` và MỌI callback thoát sớm: bấm nút thì không có
-   * gì xảy ra, không lỗi, không cảnh báo. Đúng loại hỏng im lặng khó tìm nhất, và
-   * chỉ có bài kiểm trên trình duyệt mới thấy.
-   */
-  const huyRef = useRef(false);
-  useEffect(() => {
-    huyRef.current = false;
-    return () => {
-      huyRef.current = true;
-    };
-  }, []);
-
+  const { connection } = useConnection();
+  const { wallets, wallet, select, connect, disconnect, connected, connecting, publicKey, signTransaction } = useWallet();
+  const [mode, setMode] = useState<CheDo>("dieu-kien-an");
+  const [tokens, setTokens] = useState<DemoToken[]>([]);
+  const [selected, setSelected] = useState("");
+  const [scanned, setScanned] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState("Chọn ví, kết nối rồi gửi yêu cầu nhận quà.");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState<Pending | null>(docPending);
+  const [outcome, setOutcome] = useState<"cho" | "xong" | "loi" | "het-han">("cho");
+  const gate = useRef(false), generation = useRef(0), pendingRef = useRef(pending);
+  const address = publicKey?.toBase58();
+  const correct = connected && address === VI_DEMO.toBase58();
+  const unresolved = pending !== null && outcome === "cho";
+  const token = tokens.find(t => t.source.toBase58() === selected);
+  const walletSetup = new URL("/vi?thucThi=1", URL_VI).href;
 
   useEffect(() => {
-    fetch(`${VI}/hien-truong.json`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setHt)
-      .catch(() => setHt(null));
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => setDemNguoc(dungDemNguoc()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  // Lấy blockhash sẵn và làm mới định kỳ. Hỏng thì im lặng: lúc bấm còn đường lui.
-  useEffect(() => {
-    if (!ht) return;
-    let huy = false;
-    /*
-     * LẤY SẴN CẢ TRẠNG THÁI HIỆN TRƯỜNG, không chỉ blockhash — P0 rà soát 25/09.
-     *
-     * Bản trước chỉ lấy blockhash rồi dựng Transfer theo `ht.soLuong` = 500 000 000
-     * trong `hien-truong.json`. Tài khoản thật còn 490 000 000: mô phỏng trả
-     * `insufficient funds`, và ví hiện "Chưa đọc hiểu hết · 0/3" cho vụ tấn công
-     * chủ lực của buổi demo. Không có gì trên trang này báo điều đó.
-     *
-     * Nay mỗi lượt làm mới đọc số dư sống, dựng đúng giao dịch sẽ bàn giao, và chạy
-     * thử nó. Tất cả xảy ra NỀN, nên lúc bấm vẫn không có `await` nào trước
-     * `window.open` — ràng buộc về popup ở trên vẫn giữ nguyên.
-     */
-    const lay = () => {
-      ketNoi(ht)
-        .then(async (conn) => {
-          const { blockhash } = await conn.getLatestBlockhash();
-          const sanSang = await kiemSanSangTanCong(conn, ht, blockhash);
-          if (!huy) blockhashRef.current = { ma: blockhash, luc: Date.now(), sanSang };
-        })
-        // Lỗi MẠNG thì im lặng: lúc bấm còn đường nguội. Hiện trường hỏng KHÔNG đi
-        // vào đây — nó là giá trị `chuaSan`, không phải lỗi.
-        .catch(() => {});
-    };
-    lay();
-    const id = setInterval(lay, 30_000);
-    // Làm mới NGAY khi tab được nhìn lại. Đây là ca thật của buổi demo: mở trang,
-    // chuyển sang tab khác nói vài phút, rồi quay lại bấm. Suốt lúc chạy nền
-    // `setInterval` bị bóp, nên nếu chỉ dựa vào nó thì cái đang giữ là blockhash chết.
-    const khiHien = () => {
-      if (document.visibilityState === "visible") lay();
-    };
-    document.addEventListener("visibilitychange", khiHien);
-    return () => {
-      huy = true;
-      clearInterval(id);
-      document.removeEventListener("visibilitychange", khiHien);
-    };
-  }, [ht]);
-
-  /** Dựng URL bàn giao. Tách ra để cả đường chính lẫn đường lui dùng chung một chỗ. */
-  function dungUrl(blockhash: string, soDu: bigint): string {
-    // Cùng hàm với ví và màn phỏng vấn. Số lượng tính từ số dư SỐNG, không từ file.
-    const tx = dungTxTanCongSong(ht!, blockhash, soDu);
-    // Lời khai gian: trang nói đây là airdrop. Mã hoá nằm ở module chung để test
-    // hợp đồng hai app chạy đúng mã này — xem `apps/demo-wallet/test/hienTruongSong.test.ts`.
-    const hash = chuoiBanGiao(
-      tx,
-      { type: "airdrop" },
-      ht!.kyHieu ? { [ht!.mint]: ht!.kyHieu } : undefined,
-    );
-    // `VI` null nghĩa là không suy ra được ví ở đâu. Ghép chuỗi lúc này sinh ra
-    // "null/#tx=…" — một URL trông như thật, mở ra trang 404. Ném ở đây để lỗi
-    // hiện ngay chỗ gây ra nó, không phải ở tab vừa mở.
-    if (VI === null) throw new Error(KL_VI.loai === "khong" ? KL_VI.lyDo : "chưa biết ví ở đâu");
-    return `${VI}/#${hash}`;
-  }
-
-  /**
-   * KHÔNG `async`, và không có `await` nào trước `window.open`.
-   *
-   * Đó là toàn bộ điểm của hàm này. Blockhash đã lấy sẵn ở effect phía trên, nên
-   * lệnh mở tab chạy ngay trong cử chỉ bấm — trình duyệt không chặn.
-   *
-   * Giữ `noopener` để tab ví không cầm được `window.opener`. Đánh đổi: với
-   * `noopener` thì `window.open` luôn trả null, nên KHÔNG dò được popup có bị chặn
-   * hay không. Vì vậy lưới an toàn không phải là dò, mà là luôn hiện một đường lui
-   * bấm được — người trình bày không bao giờ đứng chết trên sân khấu.
-   */
-  /** Thông điệp khi hiện trường hỏng: nói đó là trạng thái của DEMO, không phải của ví. */
-  function chuaSan(lyDo: string): string {
-    return `Hiện trường demo trên Devnet chưa sẵn sàng: ${lyDo}. Trang này không bàn giao giao dịch hỏng sang ví.`;
-  }
-
-  function nhanQua() {
-    if (!ht || dangGui) return;
-    setLoi(null);
-
-    // Hỏi TUỔI, không hỏi "đã lấy chưa". Cache quá hạn thì bỏ, rơi xuống đường
-    // cùng-tab bên dưới — chậm hơn một nhịp, nhưng giao dịch còn sống.
-    const bh = blockhashRef.current;
-    if (bh && conDungDuoc(bh.luc)) {
-      // Hiện trường hỏng ⇒ KHÔNG bàn giao. Đẩy một giao dịch không chạy được sang ví
-      // là trình bày thất bại mô phỏng như thể đó là phân tích một vụ tấn công.
-      if (bh.sanSang.loai === "chuaSan") {
-        setLoi(chuaSan(bh.sanSang.lyDo));
-        return;
-      }
-      try {
-        const url = dungUrl(bh.ma, bh.sanSang.soDu);
-        setUrlLui(url);
-        window.open(url, "_blank", "noopener");
-      } catch (e) {
-        setLoi(e instanceof Error ? e.message : String(e));
-      }
-      return;
+    if (!wallet) {
+      const demo = wallets.find(w => w.adapter.name === "Custos Demo Wallet");
+      if (demo) select(demo.adapter.name);
     }
+  }, [wallets, wallet, select]);
+  useEffect(() => {
+    generation.current++;
+    setTokens([]); setSelected(""); setScanned(false);
+  }, [address]);
+  useEffect(() => {
+    if (!pending || outcome !== "cho") return;
+    let cancelled = false, timer: ReturnType<typeof setTimeout>;
+    const refresh = async () => {
+      try {
+        const result = await docTrangThai(connection, pending);
+        if (cancelled) return;
+        setOutcome(result);
+        if (result !== "cho") { sessionStorage.removeItem(CHO_GUI); return; }
+      } catch { /* Keep signature and submit lock when the RPC is unavailable. */ }
+      if (!cancelled) timer = setTimeout(() => void refresh(), 5000);
+    };
+    void refresh();
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [connection, pending, outcome]);
 
-    /*
-     * ĐƯỜNG NGUỘI: chưa kịp lấy blockhash (mới mở trang, RPC đang lỗi), hoặc cache
-     * đã quá hạn. Lúc này buộc phải chờ mạng, nên popup sẽ bị chặn — điều hướng
-     * CÙNG TAB thay vì mở tab mới. Cùng tab thì không trình duyệt nào chặn.
-     *
-     * Bản trước gọi `getLatestBlockhash()` ở đây mà KHÔNG có hạn nào. Devnet nhận
-     * kết nối rồi im lặng thì lời hứa treo tới lúc tầng mạng tự bỏ cuộc — khoảng
-     * 30 giây — và suốt lúc đó `urlLui` chưa được đặt nên ngay cả đường lui thủ
-     * công cũng chưa hiện. Người trình bày đứng chết, không có gì để bấm.
-     *
-     * Nay `layBlockhash` mang hạn 9 giây và KHÔNG bao giờ rơi về hash cũ khi lỗi:
-     * dùng hash chết thì Devnet từ chối giao dịch, và demo hỏng ở một chỗ khó hiểu
-     * hơn nhiều so với một thẻ lỗi nói thẳng.
-     */
-    setDangGui(true);
-    const connP = ketNoi(ht);
-    layBlockhash(async () => (await connP).getLatestBlockhash(), blockhashRef.current)
-      .then(async ({ ma }) => {
-        // Cùng hạn 9 giây cho chặng kiểm hiện trường: đường nguội không được treo.
-        const sanSang = await coHan(kiemSanSangTanCong(await connP, ht, ma), HAN_LAY_BLOCKHASH_MS);
-        if (huyRef.current) return;
-        blockhashRef.current = { ma, luc: Date.now(), sanSang };
-        if (sanSang.loai === "chuaSan") {
-          setLoi(chuaSan(sanSang.lyDo));
-          return;
-        }
-        const url = dungUrl(ma, sanSang.soDu);
-        setUrlLui(url);
-        window.location.href = url;
-      })
-      .catch((e: unknown) => {
-        if (huyRef.current) return;
-        setLoi(
-          e instanceof LoiQuaHan
-            ? "Devnet không trả lời trong 9 giây."
-            : e instanceof LoiKhongCoRpcDung
-            ? "Không endpoint RPC nào được xác nhận là Solana Devnet, nên trang không chuẩn bị giao dịch."
-            // Chặng hỏng có thể là blockhash HOẶC đọc hiện trường — nói điều cả hai chung.
-            : "Không kết nối được tới Devnet để chuẩn bị giao dịch.",
-        );
-      })
-      .finally(() => {
-        if (!huyRef.current) setDangGui(false);
-      });
+  async function run(task: () => Promise<void>) {
+    if (gate.current) return;
+    gate.current = true; setBusy(true); setError("");
+    try { await task(); }
+    catch (e) { setError(e instanceof Error ? e.message : "Không thực hiện được. Hãy thử lại."); }
+    finally { gate.current = false; setBusy(false); }
+  }
+  function scan() {
+    void run(async () => {
+      if (!correct || !publicKey) return;
+      const id = generation.current;
+      setTokens([]); setSelected(""); setScanned(false);
+      setStatus("Đang đọc tài khoản token trên Devnet…");
+      const found = await timDemo(connection, publicKey, text => { if (id === generation.current) setStatus(text); });
+      if (id !== generation.current) return;
+      setTokens(found); setSelected(found[0]?.source.toBase58() ?? ""); setScanned(true);
+      setStatus(found.length ? `Tìm thấy ${found.length} phiên DEMO từ dữ liệu chain (tối đa 5 phiên mỗi lượt).` : "Chưa tìm thấy phiên DEMO còn sử dụng được.");
+    });
+  }
+  function requestReward() {
+    void run(async () => {
+      if (!correct || !publicKey || !signTransaction || unresolved) return;
+      const id = generation.current;
+      pendingRef.current = null; setPending(null); setOutcome("cho");
+      setStatus("Đang cập nhật dữ liệu Devnet và chuẩn bị giao dịch…");
+      await kiemDevnet(connection);
+      const current = mode === "dieu-kien-an" && token ? await capNhatDemo(connection, token) : undefined;
+      const expiry = await connection.getLatestBlockhash("confirmed");
+      const tx = dungGiaoDich(publicKey, mode, expiry, current);
+      if (id !== generation.current) throw new Error("Ví đã đổi hoặc ngắt kết nối. Chưa gửi giao dịch.");
+      setStatus("Đang chờ quyết định trong cửa sổ ví. Hãy đọc kết quả trước khi ký.");
+      try {
+        await kyVaGui(tx, signTransaction, connection, signature => {
+          if (id !== generation.current) throw new Error("Ví đã ngắt kết nối. Chưa gửi giao dịch.");
+          const next = { signature, lastValidBlockHeight: expiry.lastValidBlockHeight };
+          sessionStorage.setItem(CHO_GUI, JSON.stringify(next));
+          pendingRef.current = next; setPending(next);
+          setStatus("Đã nhận chữ ký. SolBonus đang gửi đúng giao dịch đã ký lên Devnet…");
+        });
+        setStatus("Đã gửi lên Devnet. Đang kiểm tra xác nhận theo chữ ký.");
+      } catch (e) {
+        setStatus(pendingRef.current ? "Chưa rõ kết quả gửi. Đang tra cứu chữ ký; không tự gửi lại." : "Yêu cầu đã dừng tại ví. SolBonus chưa gửi giao dịch lên Devnet.");
+        throw e;
+      }
+    });
   }
 
-  return (
-    <div className="attack-page min-h-screen">
-      {/* Nhãn mô phỏng tĩnh, đọc được đầy đủ trên màn hình hẹp. */}
-      <div className="bang-that" role="status">
-        <div className="bang-that__track">
-          <span className="bang-that__message">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-          <span className="bang-that__message" aria-hidden="true">⚠️ Trang lừa đảo GIẢ — đạo cụ demo Custos · Solana Devnet</span>
-        </div>
+  return <div className="attack-page min-h-screen">
+    <aside className="bang-that" aria-label="Thông báo thử nghiệm"><div className="bang-that__track"><span className="bang-that__message">Trang nhận thưởng GIẢ · Đạo cụ demo Custos · Chỉ dùng Solana Devnet</span></div></aside>
+    <header className="attack-header mx-auto flex items-center justify-between gap-4">
+      <div className="flex items-center gap-2.5"><div className="solbonus-mark grid h-10 w-10 place-items-center" aria-hidden="true">✦</div><div><div>SolBonus</div><div>Rewards, reimagined.</div></div></div>
+      <nav className="attack-nav" aria-label="Điều hướng"><a href="#nhan-thuong">Nhận thưởng ↗</a><a href="#kich-ban">Về thử nghiệm</a></nav>
+    </header>
+    <main className="attack-main mx-auto"><div className="attack-hero">
+      <div className="attack-story"><p className="attack-eyebrow"><span /> SOLANA COMMUNITY REWARDS</p><h1>Một món quà.<br /><span>Một lần ký?</span></h1>
+        <p>Một trang tặng thưởng có thể trông rất thuyết phục. Hãy xem ví tích hợp Custos giải thích giao dịch này trước khi bạn quyết định.</p>
+        <RewardArtwork /><p className="attack-art-caption">↗ Lời hứa trên giao diện. Sự thật trong giao dịch.</p>
       </div>
-
-      <header className="attack-header mx-auto flex max-w-3xl items-center justify-between gap-4 px-5 py-5 sm:px-6">
-        <div className="flex items-center gap-2.5">
-          <div className="solbonus-mark grid h-10 w-10 shrink-0 place-items-center overflow-hidden" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none"><path d="M6 11h20v7H6zM8 18h16v11H8zM16 11v18M16 11C7 12 5 4 10 3c4-1 6 8 6 8Zm0 0c9 1 11-7 6-8-4-1-6 8-6 8Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>
-          </div>
-          <div>
-            <div className="text-[16px] font-semibold tracking-[-0.02em]">SolBonus</div>
-            <div className="text-[11.5px] text-muc-nhat">Tình huống demo của Custos</div>
-          </div>
-        </div>
-        <nav className="attack-nav gap-5 text-[13px] text-muc-nhat sm:flex" aria-label="Điều hướng">
-          <a href="#nhan-thuong">Nhận thưởng <span aria-hidden="true">↗</span></a>
-          <a href="#kich-ban">Về kịch bản</a>
-          <a href="#hoi-dap">Hỏi đáp</a>
-        </nav>
-      </header>
-
-      <main className="attack-main mx-auto max-w-3xl px-5 pb-16 sm:px-6">
-        <div className="attack-hero">
-        <div className="attack-story vao">
-          <p className="attack-eyebrow text-[12.5px] font-medium">
-            <span aria-hidden="true" />SolBonus · Community rewards
-          </p>
-          <h1 className="mt-2 text-[30px] font-semibold leading-[1.15] tracking-[-0.03em] sm:text-[38px]">
-            Một lời mời.<br /><span>Một phần thưởng.</span><br />Một chữ ký.
-          </h1>
-          <p className="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-muc-nhat">
-            Một trang tặng thưởng có thể trông rất thuyết phục. Hãy xem điều gì xảy ra khi yêu cầu nhận quà được mở trong ví tích hợp Custos.
-          </p>
-          <RewardArtwork />
-          <p className="attack-art-caption"><span aria-hidden="true">↗</span> Lời hứa trên giao diện. Sự thật trong giao dịch.</p>
-        </div>
-
-        <section className="the-thuong vao mt-7 overflow-hidden" id="nhan-thuong" aria-labelledby="reward-title">
-          <div className="reward-card-heading"><span>PHIẾU NHẬN THƯỞNG</span><span className="reward-demo-label">DEMO · DEVNET</span></div>
-          <div className="reward-allocation grid gap-5 p-5 sm:p-7">
-            <div>
-              <h2 id="reward-title" className="text-[12.5px] text-muc-nhat">“Ví của bạn đủ điều kiện nhận thưởng”</h2>
-              <div className="reward-amount mt-1.5 flex items-baseline gap-2">
-                <span className="text-[42px] font-semibold leading-none tracking-[-0.03em] tabular-nums sm:text-[52px]">
-                  1.000
-                </span>
-                <span className="text-[16px] font-medium text-muc-nhat">SOLB</span>
-              </div>
-              {ht && (
-                <div className="mt-2.5 inline-flex max-w-full items-center gap-2 rounded-full border border-vien-nhat bg-giay px-3 py-1.5">
-                  <span className="dau-tick text-[13px]" aria-hidden="true">✓</span>
-                  <span className="truncate font-mono text-[12px] text-muc-nhat" title={ht.nanNhan}>
-                    {rutGon(ht.nanNhan)}
-                  </span>
-                  <span className="text-[12px] text-muc-nhat">ví trong kịch bản</span>
-                </div>
-              )}
-            </div>
-
-            <div className="reward-countdown">
-              <div><span className="reward-clock" aria-hidden="true">◷</span><span>Đợt nhận đóng sau<small>Đồng hồ trong kịch bản</small></span></div>
-              <span className="reward-time font-mono text-[24px] font-semibold tabular-nums" aria-label={`Đếm ngược ${demNguoc}`}>{demNguoc}</span>
-            </div>
-          </div>
-
-          <div className="reward-action border-t border-vien-nhat p-5 sm:p-7">
-            <button
-              onClick={() => void nhanQua()}
-              disabled={!ht || dangGui}
-              className="nut-nhan w-full px-6 py-3.5 text-[15px] font-semibold"
-            >
-              {ht === undefined
-                ? "Đang tải…"
-                : ht === null
-                  ? "Chưa dựng hiện trường demo"
-                  : dangGui
-                    ? "Đang mở ví…"
-                    : "Nhận 1.000 SOLB"}
-            </button>
-            <p className="reward-action-note mt-2.5 text-center text-[12px] text-muc-nhat">
-              Mở yêu cầu trong ví demo để kiểm tra trước khi ký. SOLB là phần thưởng hư cấu.
-            </p>
-            {dangGui && <BaoCham />}
-
-            {/* ĐƯỜNG LUI CHO SÂN KHẤU.
-                Popup đã được vá để không bị chặn, nhưng trình duyệt lạ trên máy
-                chiếu vẫn có thể chặn cứng. Link này luôn hiện sau khi bấm, nên
-                người trình bày có một cú bấm để đi tiếp thay vì đứng chết. */}
-            {urlLui && (
-              <p className="mt-2.5 text-center text-[12px] text-muc-nhat">
-                Ví không tự mở?{" "}
-                <a href={urlLui} className="font-medium underline underline-offset-2" style={{ color: "var(--color-hieu)" }}>
-                  Mở ví thủ công
-                </a>
-              </p>
-            )}
-
-            {/*
-              THẺ LỖI — thay cho một dòng chữ đỏ.
-
-              `role="alert"` để trình đọc màn hình đọc ngay: người dùng vừa bấm và
-              đang chờ, im lặng ở đây là tệ nhất.
-
-              Ba thứ bắt buộc có mặt cùng lúc: nói CHUYỆN GÌ ĐÃ XẢY RA, một nút THỬ
-              LẠI thật sự gọi lại RPC, và một đường lui XEM DỮ LIỆU MẪU có nhãn rõ.
-              Đường lui đi tới `?mock=danger` — ví sẽ hiện một dải cảnh báo đỏ không
-              tắt được, nên không ai nhầm nó với kết quả Devnet thật.
-            */}
-            {loi && (
-              <div
-                role="alert"
-                className="mt-4 rounded-xl border border-[#e0b4b4] bg-[#fdf4f4] p-4 text-left"
-              >
-                <p className="text-[14px] font-semibold text-[#8a1c28]">{loi}</p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-[#7a4a4a]">
-                  Custos chưa dựng được giao dịch để gửi sang ví. Đây là lỗi kết nối
-                  Devnet, không phải kết luận gì về giao dịch.
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <button
-                    type="button"
-                    onClick={nhanQua}
-                    disabled={dangGui}
-                    className="nut-nhan min-h-[44px] px-4 text-[14px] font-semibold"
-                  >
-                    {dangGui ? "Đang thử lại…" : "Thử lại"}
-                  </button>
-                  <a
-                    href={`${VI}/?mock=danger`}
-                    className="min-h-[44px] text-[13px] font-medium underline underline-offset-4"
-                    style={{ color: "var(--color-hieu)" }}
-                  >
-                    Xem dữ liệu mẫu dự phòng
-                  </a>
-                </div>
-                <p className="mt-2 text-[12px] text-muc-nhat">
-                  Dữ liệu mẫu được ví dán nhãn rõ — <strong>không phải</strong> kết quả
-                  mô phỏng Devnet trực tiếp.
-                </p>
-              </div>
-            )}
-
-            {ht === null && (
-              <div className="mt-3">
-                <p className="text-[12.5px] text-muc-nhat">
-                  Hiện trường devnet chưa được dựng. Chạy lệnh này rồi tải lại trang:
-                </p>
-                <pre className="vien-dut mt-2 overflow-x-auto rounded-lg bg-giay p-3 font-mono text-[11.5px] text-muc-nhat">
-                  npm run hien-truong
-                </pre>
-              </div>
-            )}
-          </div>
-          <div className="reward-card-foot"><span aria-hidden="true">↗</span> Phần kiểm tra giao dịch nằm trong ví Custos.</div>
-        </section>
-        </div>
-
-        <section className="attack-signals" aria-labelledby="signals-title">
-        <h2 id="signals-title">Những tín hiệu dễ khiến bạn tin tưởng</h2>
-        <p>Chi tiết hư cấu được dùng làm đạo cụ trong tình huống này.</p>
-        <ul className="vao mt-6 grid gap-3 text-[13px] text-muc-nhat sm:grid-cols-3">
-          {[
-            ["12.847", "ví đã nhận thưởng"],
-            ["Đã kiểm toán", "bởi đối tác bảo mật"],
-            ["Không thu phí", "chỉ tốn phí mạng"],
-          ].map(([manh, mo]) => (
-            <li key={manh} className="rounded-xl border border-vien-nhat bg-white px-4 py-3">
-              <div className="text-[14px] font-semibold text-muc">{manh}</div>
-              <div className="mt-0.5">{mo}</div>
-            </li>
-          ))}
-        </ul>
-        </section>
-
-        {/* Lời thú nhận, đặt cuối trang — đúng chỗ một trang lừa đảo thật KHÔNG
-            bao giờ có. Nó ở đây vì đây là đạo cụ demo, không phải trang lừa thật. */}
-        <section id="kich-ban" className="attack-explainer mt-10 rounded-xl border border-vien-nhat bg-white p-4 sm:p-5">
-          <div className="attack-explainer__intro"><p className="attack-eyebrow">Bên dưới lời hứa</p><h2>Giao diện nói “nhận quà”.<br /><span>Giao dịch làm điều khác.</span></h2></div>
-          <div className="attack-explainer__body">
-          <p className="mt-1.5 text-[13px] leading-relaxed text-muc-nhat">
-            Không có SOLB nào cả. Mọi thứ phía trên — đủ điều kiện, đếm ngược, số ví đã
-            nhận, huy hiệu kiểm toán — là những đòn bẩy mà một trang lừa đảo thật dùng để
-            bạn bấm nhanh hơn suy nghĩ. Giao dịch nút kia đẩy sang ví sẽ chuyển toàn bộ
-            token demo đi và đổi chủ tài khoản, trong khi vẫn khai với ví rằng đó là
-            &quot;airdrop&quot;.
-          </p>
-          <p className="mt-2 text-[13px] leading-relaxed text-muc-nhat">
-            Đó chính là điểm: bạn không cần nhận ra trang này là giả. Custos đọc giao dịch
-            trước khi bạn ký, và nói cho bạn biết nó thật sự làm gì.
-          </p>
-          </div>
-        </section>
-        <section id="hoi-dap" className="attack-faq" aria-labelledby="faq-title">
-          <h2 id="faq-title">Hiểu đúng tình huống demo</h2>
-          <div>
-            <details><summary>Có phần thưởng SOLB thật không?</summary><p>Không. Số thưởng, lượt nhận và tuyên bố kiểm toán là chi tiết hư cấu phục vụ minh họa. Toàn bộ kịch bản dùng Solana Devnet.</p></details>
-            <details><summary>Nút nhận thưởng thực hiện điều gì?</summary><p>Nút dựng yêu cầu giao dịch trong kịch bản rồi mở ví demo. Trang này không tự ký hoặc gửi giao dịch lên mạng. Hãy đọc kết quả Custos và dùng thao tác huỷ trong ví.</p></details>
-            <details><summary>Nếu Devnet không phản hồi thì sao?</summary><p>Trang sẽ hiện lỗi, cho phép thử lại hoặc mở dữ liệu mẫu dự phòng có nhãn rõ. Dữ liệu mẫu không phải kết quả mô phỏng trực tiếp.</p></details>
-          </div>
-        </section>
-        <footer className="attack-footer"><span>SolBonus / đạo cụ trình diễn</span><span>Custos · Đọc giao dịch trước khi ký</span></footer>
-      </main>
+      <section className="the-thuong overflow-hidden" id="nhan-thuong" aria-labelledby="reward-title">
+        <div className="reward-card-heading"><span>PHIẾU NHẬN THƯỞNG</span><span className="reward-demo-label">DEMO · DEVNET</span></div>
+        <div className="reward-allocation"><h2 id="reward-title">“Ví của bạn đủ điều kiện nhận thưởng”</h2><div className="reward-amount flex items-baseline"><span>1.000</span><span>SOLB</span></div><p className="sb-small">Phần thưởng hư cấu · Không có SOLB thật</p></div>
+        <div className="reward-action sb-controls">
+          <fieldset disabled={busy || connecting || unresolved} className="sb-modes"><legend>Chọn phiên bản để đối chứng</legend>
+            <label><input type="radio" name="mode" checked={mode === "dieu-kien-an"} onChange={() => setMode("dieu-kien-an")} /> Có điều kiện ẩn</label>
+            <label><input type="radio" name="mode" checked={mode === "lanh"} onChange={() => setMode("lanh")} /> Phiên bản lành</label>
+          </fieldset>
+          {!connected ? <div className="sb-connect"><label htmlFor="sb-wallet">Ví dùng thử</label>
+            <select id="sb-wallet" value={wallet?.adapter.name ?? ""} disabled={busy || connecting} onChange={e => select(wallets.find(w => w.adapter.name === e.target.value)?.adapter.name ?? null)}>
+              <option value="" disabled>Chọn ví…</option>{wallets.map(w => <option key={w.adapter.name} value={w.adapter.name}>{w.adapter.name}</option>)}
+            </select>
+            <button className="nut-nhan" disabled={!wallet || busy || connecting} onClick={() => void run(async () => { setStatus("Hãy cho phép kết nối trong cửa sổ ví."); await connect(); setStatus("Đã kết nối. Chọn phiên bản và chuẩn bị yêu cầu."); })}>{connecting ? "Đang kết nối…" : "Kết nối ví"}</button>
+            <p className="sb-small">Chọn Custos Demo Wallet để thấy Custos kiểm trước khi ký. Giữ cửa sổ ví mở sau khi kết nối.</p>
+          </div> : <div className="sb-connected"><span title={address}>Đã kết nối: <code>{short(address!)}</code></span><button className="sb-link" disabled={busy} onClick={() => void run(async () => { await disconnect(); setStatus("Đã ngắt kết nối."); })}>Ngắt kết nối</button></div>}
+          {connected && !correct && <p role="alert">Bản thử nghiệm chỉ dùng ví <code className="sb-address">{VI_DEMO.toBase58()}</code>. Hãy ngắt kết nối và chọn đúng ví demo.</p>}
+          {correct && mode === "dieu-kien-an" && <div className="sb-tokens">
+            <button className="sb-secondary" disabled={busy || unresolved} onClick={scan}>{scanned ? "Quét lại token DEMO" : "Tìm token DEMO trên Devnet"}</button>
+            {tokens.length > 0 && <><label htmlFor="sb-token">Các phiên DEMO tìm thấy</label><select id="sb-token" value={selected} disabled={busy || unresolved} onChange={e => setSelected(e.target.value)}>{tokens.map(t => <option key={t.source.toBase58()} value={t.source.toBase58()}>{amount(t.amount)} DEMO · {short(t.mint.toBase58())}</option>)}</select></>}
+            {token && <p className="sb-small">Số dư khi quét: {amount(token.amount)} DEMO. <a href={`https://explorer.solana.com/tx/${token.setupSignature}?cluster=devnet`} target="_blank" rel="noreferrer">Xem giao dịch tạo phiên ↗</a></p>}
+            {scanned && !tokens.length && <p className="sb-small">Tạo phiên 500 DEMO trong <a href={walletSetup} target="_blank" rel="noreferrer">ví thử nghiệm ↗</a>, chờ xác nhận rồi quay lại quét. Lịch sử quá cũ hoặc RPC thiếu dữ liệu cũng có thể khiến phiên không được tìm thấy.</p>}
+          </div>}
+          <p className="sb-mode-note">{mode === "lanh" ? "Bản lành: giao dịch 0 lamport cho chính ví, chỉ trả phí mạng Devnet. Không chuyển token, không đổi quyền." : "Điều kiện ẩn trong kịch bản: chuyển nửa số DEMO và đổi chủ tài khoản token. Nếu vẫn ký, giao dịch có hiệu lực thật trên Devnet."}</p>
+          <button className="nut-nhan w-full" disabled={!correct || !signTransaction || busy || unresolved || (mode === "dieu-kien-an" && !token)} onClick={requestReward}>{busy ? "Đang xử lý…" : "Nhận 1.000 SOLB"}</button>
+          <p className="sb-status" role="status">{status}</p>{error && <p className="sb-error" role="alert">{error}</p>}
+          {pending && <div className="sb-receipt" data-outcome={outcome}><strong>{outcome === "xong" ? "Giao dịch đã xác nhận trên Devnet." : outcome === "loi" ? "Giao dịch thất bại trên chain." : outcome === "het-han" ? "Đã hết hạn; RPC không tìm thấy giao dịch." : "Đang tra cứu chữ ký. Không gửi lại."}</strong>
+            <a data-signature href={`https://explorer.solana.com/tx/${pending.signature}?cluster=devnet`} target="_blank" rel="noreferrer">{short(pending.signature)} · Xem Explorer ↗</a>
+            <p className="sb-small">{outcome === "xong" ? "Mở cửa sổ ví để xem biên nhận đối chiếu với dự báo Custos. Quét lại trước khi dùng phiên tiếp." : "Có thể tải lại trang; chữ ký chờ xác nhận được giữ trong tab này."}</p>
+          </div>}
+        </div><div className="reward-card-foot">↗ Kết quả Custos và quyết định ký nằm trong cửa sổ ví.</div>
+      </section>
     </div>
-  );
-}
-
-/** Chờ Devnet quá 4 giây thì nói ra, đừng im tới lúc hết hạn — review 26/09, mục 3.10. */
-function BaoCham() {
-  const [cham, setCham] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setCham(true), 4000);
-    return () => clearTimeout(t);
-  }, []);
-  if (!cham) return null;
-  return (
-    <p className="mt-2 text-center text-[12px] text-muc-nhat" role="status">
-      Devnet đang trả lời chậm. Trang vẫn chờ; nếu hết thời hạn sẽ có nút thử lại và dữ liệu mẫu dự phòng.
-    </p>
-  );
+    <section id="kich-ban" className="attack-explainer rounded-xl border border-vien-nhat bg-white p-5">
+      <div className="attack-explainer__intro"><p className="attack-eyebrow">Bên dưới lời hứa</p><h2>Giao diện nói “nhận quà”.<br /><span>Hãy đọc điều bạn sắp ký.</span></h2></div>
+      <div className="attack-explainer__body"><p>SolBonus tự đọc dữ liệu Devnet, dựng giao dịch và yêu cầu ví ký. Custos kiểm chính giao dịch đó bên trong ví. Nếu bạn huỷ, SolBonus không nhận được chữ ký để gửi.</p><p>Hai phiên bản dùng cùng giao diện và cùng luồng kết nối. Ở bản có điều kiện ẩn, nửa số DEMO được chuyển đi và phần còn lại thuộc quyền kiểm soát mới. Bản lành chỉ có phí mạng. Không phiên bản nào trả SOLB.</p></div>
+    </section>
+    <section className="attack-faq" aria-labelledby="faq-title"><h2 id="faq-title">Bắt đầu thử như thế nào?</h2><div>
+      <details><summary>Tôi cần chuẩn bị gì?</summary><p>Dùng ví demo cố định, nạp SOL Devnet để trả phí và tạo phiên 500 DEMO tại <a href={walletSetup} target="_blank" rel="noreferrer">ví thử nghiệm</a>. Trên SolBonus, kết nối Custos Demo Wallet và tìm token. File khoá chỉ được nạp trong cửa sổ ví; SolBonus không yêu cầu khoá.</p></details>
+      <details><summary>Ví không mở hoặc đã đóng?</summary><p>Cho phép cửa sổ bật lên của trang này rồi bấm Kết nối ví lại. Nếu đã đóng ví, kết nối lại trước khi gửi yêu cầu mới.</p></details>
+      <details><summary>Devnet không phản hồi?</summary><p>Trang hiển thị lỗi để bạn thử lại. Nếu đã nhận chữ ký, trang chỉ tra cứu chữ ký đó và giữ nút gửi khoá cho tới khi rõ kết quả. Không tự tạo giao dịch thay thế.</p></details>
+    </div></section>
+    <footer className="attack-footer"><span>SolBonus / đạo cụ trình diễn</span><span>Solana Devnet · Token thử nghiệm</span></footer>
+    </main>
+  </div>;
 }

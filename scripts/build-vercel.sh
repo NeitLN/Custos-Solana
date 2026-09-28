@@ -12,3 +12,5 @@ CUSTOS_GOC=1 VITE_CO_API_AI=1 VITE_TRANG_CHINH=gioi-thieu npm run build --worksp
 CUSTOS_GOC=1 npm run build -w @custos-solana/trang-tan-cong
 mkdir -p apps/demo-wallet/dist/tan-cong
 cp -r apps/trang-tan-cong/dist/. apps/demo-wallet/dist/tan-cong
+# Gate the actual combined deploy output, including the wallet-adapter dependencies.
+node scripts/soi-ro-ri-khoa.mjs apps/demo-wallet/dist
