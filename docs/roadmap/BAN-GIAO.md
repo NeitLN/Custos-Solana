@@ -123,8 +123,14 @@ S07, AC17, AC21 đạt; còn AC05 (biên nhận tự động) và AC06 chưa đ�
   đọc `.gitignore`). 12 deployment ngày 18/09 chứa `src/.devnet/{vi-demo.json,hien-truong.json}` (khi
   đó là ví cũ `2EjYM…`); 10 deployment 19–27/09 không đọc được cây nguồn (404) nên KHÔNG xác nhận
   được. Chỉ thành viên team Vercel xem được nguồn; khoá chỉ có SOL Devnet. Đã sửa `.vercelignore`
-  (+ guard `vercelIgnore.test.ts`); deployment mới quét lại: sạch. **Chờ chủ dự án quyết**: xoá các
-  deployment cũ chứa nguồn.
+  (+ guard `vercelIgnore.test.ts`); deployment mới quét lại: sạch. **Đã xoá 22 deployment cũ**
+  (18–27/09, chủ dự án giao quyền 28/09); còn 3 deployment sau bản sửa, quét: 0 chứa tệp bí mật.
+  Deployment trả 404 khi đọc cây nguồn là loại Vercel tự dựng từ Git — nguồn lấy từ repo (không có
+  `.devnet`), không có cây tệp tải lên.
+- **Chưa làm được, cần chủ dự án**: đặt hạn mức chi tiêu ở Anthropic Console cho workspace của khoá
+  trên Vercel — cần đăng nhập tài khoản Anthropic trên trình duyệt, không có API cho việc này.
+- Dải phạm vi demo (`DaiPhamVi.tsx`) thay dải chữ chạy: một dòng tĩnh, vẫn khai Devnet + không tài
+  sản thật (guard `daiPhamVi.test.ts`).
 - Kiểm tra quét nguồn deployment: script tạm (API Vercel, chỉ đọc) — xem phiên 28/09.
 
 **Codex review lần 4 (28/09 tối) — 5 mục P2, đóng hết** (Codex chạy được qua subagent lần này):
