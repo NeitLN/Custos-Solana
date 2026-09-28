@@ -22,8 +22,11 @@ function noiBase(duong: string): string {
 }
 
 export const LINK = {
-  /** Ví mẫu — vẫn là root, không đổi (mục 5). */
-  viMau: BASE,
+  /**
+   * Ví mẫu — tệp gốc `index.html`, gọi TƯỜNG MINH: bản Vercel đưa gốc trần sang trang giới thiệu
+   * (`index.html`, 28/09), nên link tới `BASE` trần sẽ quay vòng về chính trang này.
+   */
+  viMau: noiBase("index.html"),
   inspector: noiBase("soi.html"),
   soLieu: noiBase("so-lieu.html"),
 

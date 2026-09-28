@@ -11,6 +11,17 @@
       content="Ví mẫu tích hợp Custos — xem hậu quả trước khi ký, gửi token trên Solana Devnet và đối chiếu kết quả thực thi."
     />
     <title>Custos — Ví mẫu trên Solana Devnet</title>
+    <script>
+      // TRANG CHÍNH — chỉ bản Vercel (`VITE_TRANG_CHINH=gioi-thieu` trong vercel.json): mở GỐC TRẦN
+      // thì tới trang giới thiệu. Có hash (`#tx=…` bàn giao từ dApp) hoặc query (`?thucThi=1`), hay
+      // đường dẫn khác gốc (`/vi`, `/index.html`) ⇒ vẫn là ví. Không đặt biến ⇒ không làm gì.
+      (function () {
+        if ("%VITE_TRANG_CHINH%" !== "gioi-thieu") return;
+        var l = window.location;
+        if (l.hash || l.search || !/\/$/.test(l.pathname)) return;
+        l.replace(l.pathname + "gioi-thieu.html");
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

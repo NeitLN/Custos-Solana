@@ -3,6 +3,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 
+// Trang chính của bản Vercel (`index.html` → `gioi-thieu.html`). Chỉ vercel.json đặt biến này; mặc
+// định RỖNG để bản dev / GitHub Pages không chuyển trang và Vite không cảnh báo biến chưa khai.
+process.env["VITE_TRANG_CHINH"] ??= "";
+
 /**
  * `base` khác nhau giữa chạy dev và build:
  *
