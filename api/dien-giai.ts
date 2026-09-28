@@ -53,6 +53,72 @@ const MODEL_MAC_DINH = "claude-haiku-4-5-20251001";
 
 type Yeu = { system?: unknown; user?: unknown };
 
+/*
+ * KHÔNG PHẢI PROXY MỞ — 28/09. Endpoint này đã chạy công khai trên Vercel với khoá thật, và
+ * nhận `system`/`user` TUỲ Ý tới 20 000 ký tự: ai có URL cũng dùng được như một chatbot miễn
+ * phí trên khoá của đội (CORS không chặn `curl`). Ba lớp chặn, KHÔNG lớp nào gọi nhà cung cấp:
+ *
+ *   1. `system` phải ĐÚNG prompt của Custos — so bằng sha256 (`apiDienGiai.test.ts` bắt hash
+ *      khớp `SYSTEM_PROMPT`; sửa prompt mà quên hash thì đỏ).
+ *   2. `user` phải ĐÚNG khuôn dữ kiện đã lọc của `duLieuChoMoHinh` (5 khoá danh sách trắng,
+ *      mã lý do dạng hằng) và ngắn.
+ *   3. Trần mỗi phút theo IP và theo instance. Edge không có bộ nhớ chung giữa các instance,
+ *      nên đây là lớp GIẢM TỐC, không phải bảo đảm — bảo đảm là hạn mức chi tiêu đặt ở
+ *      Anthropic Console cho workspace của khoá.
+ */
+export const HASH_SYSTEM_PROMPT = "4894b861783a0a06010d67f732d6d1878f7594af6987ece6528f03520b662744";
+const KHOA_USER = ["coverage", "moPhongThanhCong", "reasonCodes", "soLenhChuaDocHieu", "thayDoiSoDu"];
+const TRAN_USER = 6_000;
+const TRAN_MOI_IP = 10;
+const TRAN_MOI_INSTANCE = 60;
+const CUA_SO_MS = 60_000;
+let theoIp = new Map<string, number[]>();
+let toanBo: number[] = [];
+
+/** Chỉ cho test: xoá bộ đếm trần giữa các ca. */
+export function datLaiGioiHan(): void {
+  theoIp = new Map();
+  toanBo = [];
+}
+
+async function sha256Hex(s: string): Promise<string> {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+/** `user` có đúng khuôn dữ kiện Custos gửi không — KHÔNG phải câu hỏi tự do. */
+function dungKhuonUser(user: string): boolean {
+  if (user.length > TRAN_USER) return false;
+  let j: unknown;
+  try {
+    j = JSON.parse(user);
+  } catch {
+    return false;
+  }
+  if (!j || typeof j !== "object" || Array.isArray(j)) return false;
+  const o = j as Record<string, unknown>;
+  if (Object.keys(o).sort().join() !== KHOA_USER.join()) return false;
+  if (!Array.isArray(o["reasonCodes"]) || o["reasonCodes"].length > 20) return false;
+  if (!o["reasonCodes"].every((m) => typeof m === "string" && /^[A-Z0-9_]{1,64}$/.test(m))) return false;
+  if (!Array.isArray(o["thayDoiSoDu"]) || o["thayDoiSoDu"].length > 50) return false;
+  return typeof o["moPhongThanhCong"] === "boolean" && typeof o["soLenhChuaDocHieu"] === "number";
+}
+
+/** Còn trong trần không; còn thì ghi nhận lượt này. */
+function conTrongTran(ip: string, bayGio = Date.now()): boolean {
+  const moi = (ds: number[]) => ds.filter((t) => bayGio - t < CUA_SO_MS);
+  toanBo = moi(toanBo);
+  const cuaIp = moi(theoIp.get(ip) ?? []);
+  if (cuaIp.length >= TRAN_MOI_IP || toanBo.length >= TRAN_MOI_INSTANCE) {
+    theoIp.set(ip, cuaIp);
+    return false;
+  }
+  cuaIp.push(bayGio);
+  toanBo.push(bayGio);
+  theoIp.set(ip, cuaIp);
+  return true;
+}
+
 /**
  * Origin được phép gọi. Rỗng nghĩa là chỉ cho cùng origin — mặc định chặt, và
  * bên triển khai phải chủ động nới ra, không phải chủ động siết vào.
@@ -133,6 +199,16 @@ export default async function handler(req: Request): Promise<Response> {
   }
   if (system.length + user.length > TRAN_VAO) {
     return traLoi({ loi: "đầu vào vượt trần" }, 413, origin);
+  }
+  if ((await sha256Hex(system)) !== HASH_SYSTEM_PROMPT) {
+    return traLoi({ loi: "KHONG_PHAI_CUSTOS", chiTiet: "chỉ nhận prompt diễn giải của Custos" }, 403, origin);
+  }
+  if (!dungKhuonUser(user)) {
+    return traLoi({ loi: "user không đúng khuôn dữ kiện của Custos" }, 400, origin);
+  }
+  const ip = (req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "?").split(",")[0]!.trim();
+  if (!conTrongTran(ip)) {
+    return traLoi({ loi: "QUA_NHIEU_YEU_CAU" }, 429, origin);
   }
 
   try {
