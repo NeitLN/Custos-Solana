@@ -31,7 +31,8 @@ export default function App() {
   const correct = connected && address === VI_DEMO.toBase58();
   const unresolved = pending !== null && outcome === "cho";
   const token = tokens.find(t => t.source.toBase58() === selected);
-  const walletSetup = new URL("/vi?thucThi=1", URL_VI).href;
+  // Tương đối với trang ví (không dùng "/vi"): rewrite đó chỉ có trên Vercel, base path khác thì 404.
+  const walletSetup = new URL("./?thucThi=1", URL_VI).href;
 
   useEffect(() => {
     if (!wallet) {

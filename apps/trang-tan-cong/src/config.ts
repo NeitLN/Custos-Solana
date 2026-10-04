@@ -5,5 +5,5 @@ export const RPC = (import.meta.env.DEV ? import.meta.env["VITE_RPC"] : undefine
 
 /** Bound each HTTP request so a failed public RPC doesn't leave the UI busy forever. */
 export const rpcFetch: typeof fetch = (input, init) => fetch(input, {
-  ...init, signal: AbortSignal.timeout(15_000),
+  ...init, signal: init?.signal ?? AbortSignal.timeout(15_000),
 });

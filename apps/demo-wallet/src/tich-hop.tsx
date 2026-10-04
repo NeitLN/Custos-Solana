@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client";
 import rawTichHop from "../../../vi-du-tich-hop/src/tich-hop.js?raw";
 import rawSolBonus from "../../trang-tan-cong/src/main.tsx?raw";
 import { ProductHeader } from "./ProductNavigation.tsx";
+import { LINK } from "./landing/links.ts";
 import { catDong, chayThu, demDongMa, doanTichHop, type KetQuaChayThu } from "./tichHop/tichHop.ts";
 import { docBoReplay } from "./replayKichBan.ts";
 import "./style.css";
@@ -19,7 +20,6 @@ const HAM = doanTichHop(rawTichHop);
 const SO_DONG = demDongMa(HAM);
 const DAPP = catDong(rawSolBonus, /registerCustosWallet/);
 const REPO = "https://github.com/NeitLN/Custos-Solana/blob/main";
-const SOLBONUS = "https://solbonus-custos.vercel.app/tan-cong/";
 
 const NHAN_CHO: Record<string, string> = { ky: "Cho ký", hoi: "Hỏi lại người dùng", chan: "Chặn" };
 const NHAN_MUC: Record<string, string> = { safe: "An toàn", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
@@ -124,7 +124,7 @@ function Trang() {
         <pre className="tich-hop-ma" tabIndex={0} aria-label="Mã đăng ký ví trong dApp"><code>{DAPP}</code></pre>
         <p>
           Mọi <code>signTransaction</code> đi vào cửa sổ ví ở origin riêng — Custos kiểm tại đó, người dùng quyết định.
-          Xem chạy thật: <a href={SOLBONUS}>SolBonus — dApp độc hại mô phỏng</a> (Devnet). Thiết kế:{" "}
+          Xem chạy thật: <a href={LINK.solBonus}>SolBonus — dApp độc hại mô phỏng</a> (Devnet). Thiết kế:{" "}
           <a href={`${REPO}/docs/adr/0004-custos-trong-luong-ky-cua-vi.md`}>ADR-0004</a>.
         </p>
       </section>

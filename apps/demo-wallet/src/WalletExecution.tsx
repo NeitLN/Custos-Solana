@@ -6,8 +6,8 @@ import type { GoiMoHinh } from "@custos-solana/ai";
 import { ganNhanTheoLuot, type ExplanationSource } from "./live/interpreter.ts";
 import { sessionStorageKey, PublicSessionCache, mayDiscardSession, isEmptySession } from "./live/store.ts";
 import { SCENARIOS, type LiveKind } from "./live/scenarios.ts";
-import { acceptLiveMessage, type LiveHandoff } from "./live/handoff.ts";
 import { ProductNavigation } from "./ProductNavigation.tsx";
+import { LINK } from "./landing/links.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { DaiPhamVi } from "./DaiPhamVi.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
@@ -76,13 +76,6 @@ export function WalletExecution({
   const [funding, setFunding] = useState(false);
   const [copied, setCopied] = useState(false);
   const requestRef = useRef<HTMLDivElement>(null);
-  const dappRef = useRef<{
-    source: Window;
-    origin: string;
-    payload: LiveHandoff;
-    requestId?: number;
-    submitted?: boolean;
-  } | null>(null);
   useEffect(
     () =>
       session.subscribe((v) => {
@@ -190,18 +183,6 @@ export function WalletExecution({
   };
   const cancel = () => {
     void run(async () => {
-      const connected = dappRef.current;
-      if (
-        connected &&
-        connected.requestId !== undefined &&
-        connected.requestId === session.view.pending?.id
-      ) {
-        connected.source.postMessage(
-          { type: "custos-live-result", nonce: connected.payload.nonce, status: "cancelled" },
-          connected.origin,
-        );
-        dappRef.current = null;
-      }
       session.cancel();
       setConsent(false);
       setConfirm(false);
@@ -228,60 +209,12 @@ export function WalletExecution({
     run(() => session.prepare(kind, { amount, ...(kind === "transfer" && target ? { target } : {}) }));
   const needsOverride = !!p?.protected && canBoQua(p.result);
   const chiDeNghi = needsOverride && p?.result?.level === "safe";
-  useEffect(() => {
-    const receive = (event: MessageEvent) => {
-      const connected = dappRef.current;
-      if (!connected || event.source !== connected.source || event.origin !== connected.origin) return;
-      if (event.data?.type === "custos-live-ready" && event.data?.nonce === connected.payload.nonce) {
-        connected.source.postMessage(
-          { type: "custos-live-manifest", payload: connected.payload },
-          connected.origin,
-        );
-        return;
-      }
-      const tx = acceptLiveMessage(event, { ...connected, nonce: connected.payload.nonce });
-      if (tx && !connected.submitted) {
-        connected.submitted = true;
-        void run(async () => {
-          await session.acceptDapp(connected.payload.nonce, tx);
-          connected.requestId = session.view.pending?.id;
-        }).then((completed) => {
-          if (!completed) {
-            connected.source.postMessage(
-              { type: "custos-live-result", nonce: connected.payload.nonce, status: "rejected" },
-              connected.origin,
-            );
-            if (dappRef.current === connected) dappRef.current = null;
-          }
-        });
-      }
-    };
-    window.addEventListener("message", receive);
-    return () => window.removeEventListener("message", receive);
-  }, [session, view.wallet]);
-  useEffect(() => {
-    const connected = dappRef.current,
-      receipt = view.receipt;
-    if (!connected?.requestId || receipt?.decision?.requestId !== connected.requestId) return;
-    const status = receipt.observation
-      ? receipt.observation.err === null
-        ? "confirmed"
-        : "failed"
-      : receipt.resolution === "expired-unobserved"
-        ? "unknown"
-        : "pending";
-    connected.source.postMessage(
-      { type: "custos-live-result", nonce: connected.payload.nonce, status, signature: receipt.signature },
-      connected.origin,
-    );
-    if (receipt.observation || status === "unknown") dappRef.current = null;
-  }, [view.receipt]);
   const openDapp = () => {
     // B3: SolBonus discovers its own accounts and connects through Wallet Standard.
     // Opening it no longer exports a session manifest or a signing handoff.
     const url = location.port === "5188"
       ? `${location.protocol}//${location.hostname}:5189/`
-      : "https://solbonus-custos.vercel.app/tan-cong/";
+      : LINK.solBonus;
     window.open(url, "_blank", "noopener,noreferrer");
   };
   const stage = view.receipt?.observation ? 2 : p || view.busy ? 1 : 0;

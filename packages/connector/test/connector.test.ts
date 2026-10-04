@@ -283,3 +283,55 @@ test("cửa sổ ví không bao giờ báo sẵn sàng ⇒ hết hạn chờ, co
   d.chayHen(HAN_SAN_SANG_MS);
   await assert.rejects(p, (e: LoiCustos) => e.ma === "vi-khong-phan-hoi");
 });
+
+// ── code-review 04/10 ────────────────────────────────────────────────────────
+
+test("giao dịch quá 1232 byte ⇒ từ chối NGAY, không gửi sang ví (trước đây treo 5 phút)", async () => {
+  const d = dung();
+  await ketNoi(d);
+  const truoc = d.gui.length;
+  await assert.rejects(
+    d.vi.features["solana:signTransaction"].signTransaction({
+      account: d.vi.accounts[0]!,
+      transaction: new Uint8Array(1233),
+    }),
+    (e: LoiCustos) => e.ma === "sai-yeu-cau",
+  );
+  assert.equal(d.gui.length, truoc);
+});
+
+test("cửa sổ cũ đã đóng nhưng chưa bị phát hiện ⇒ mở lại thì yêu cầu cũ kết thúc, handshake mới không bị hẹn giờ cũ huỷ", async () => {
+  type W = CuaSo & { closed: boolean };
+  const cuaSo: W[] = [];
+  let nghe: ((e: { data: unknown; origin: string; source: unknown }) => void) | null = null;
+  const hen: Array<{ fn: () => void; ms: number; huy: boolean }> = [];
+  const vi = new CustosWallet(URL_VI, {
+    mo: () => {
+      const w: W = { closed: false, focus() {}, postMessage() {} };
+      cuaSo.push(w);
+      return w;
+    },
+    nghe: (fn) => ((nghe = fn), () => {}),
+    hen: (fn, ms) => {
+      const h = { fn, ms, huy: false };
+      hen.push(h);
+      return h;
+    },
+    huyHen: (h) => void ((h as { huy: boolean }).huy = true),
+  });
+  // Lần 1: mở, chưa báo sẵn sàng; cửa sổ bị đóng nhưng vòng kiểm 500 ms chưa chạy.
+  const p1 = vi.features["standard:connect"].connect();
+  cuaSo[0]!.closed = true;
+  // Lần 2: bấm kết nối lại ngay.
+  const p2 = vi.features["standard:connect"].connect();
+  await assert.rejects(p1, (e: LoiCustos) => e.ma === "cua-so-dong");
+  assert.equal(cuaSo.length, 2, "phải mở cửa sổ mới");
+  // Hẹn giờ "sẵn sàng" của cửa sổ cũ (nếu còn) chạy ⇒ KHÔNG được huỷ handshake mới.
+  for (const h of hen.filter((x) => x.ms === HAN_SAN_SANG_MS).slice(0, 1)) if (!h.huy) h.fn();
+  let p2Xong = false;
+  void p2.then(() => (p2Xong = true), () => (p2Xong = true));
+  await new Promise((r) => setImmediate(r));
+  assert.equal(p2Xong, false, "handshake của cửa sổ mới bị hẹn giờ cũ huỷ");
+  nghe!({ data: { custos: 1, kieu: "san-sang" }, origin: ORIGIN_VI, source: cuaSo[1] });
+  void p2.catch(() => {});
+});

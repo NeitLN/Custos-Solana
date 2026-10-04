@@ -39,6 +39,7 @@ import {
   type SolanaSignTransactionMethod,
 } from "@solana/wallet-standard-features";
 import {
+  BYTE_TOI_DA,
   CAU_LOI,
   PHIEN_BAN,
   docThongDiepVi,
@@ -177,6 +178,10 @@ export class CustosWallet implements Wallet {
       this.#cuaSo.focus();
       return;
     }
+    // Cửa sổ cũ đã đóng nhưng vòng kiểm 500 ms chưa kịp thấy: kết thúc nó TRƯỚC khi mở cửa sổ
+    // mới — nếu không, yêu cầu cũ treo tới hết hạn, tài khoản cũ còn nguyên, và hẹn giờ
+    // "sẵn sàng" cũ có thể huỷ nhầm handshake của cửa sổ mới.
+    if (this.#cuaSo) this.#daDong();
     const w = this.#mt.mo(this.#url);
     if (!w) throw new LoiCustos("cua-so-bi-chan", CAU_CONNECTOR["cua-so-bi-chan"]);
     this.#cuaSo = w;
@@ -312,6 +317,10 @@ export class CustosWallet implements Wallet {
       throw new LoiCustos("chua-ket-noi", CAU_LOI["chua-ket-noi"]);
     if (i.chain !== undefined && i.chain !== CHUOI_DEVNET)
       throw new LoiCustos("sai-yeu-cau", "Ví mẫu Custos chỉ chạy trên Solana Devnet.");
+    // Quá cỡ thì cửa sổ ví loại thông điệp mà không trả lời (`docYeuCau` → null): dApp sẽ chờ
+    // trọn hạn rồi nhận "không rõ đã ký" — sai. Từ chối rõ ràng ngay tại đây.
+    if (i.transaction.length === 0 || i.transaction.length > BYTE_TOI_DA)
+      throw new LoiCustos("sai-yeu-cau", `Giao dịch phải dài 1–${BYTE_TOI_DA} byte.`);
     if (!this.#cuaSo || this.#cuaSo.closed) throw new LoiCustos("cua-so-dong", CAU_CONNECTOR["cua-so-dong"]);
     this.#cuaSo.focus();
     const kq = await this.#gui({ kieu: "ky", giaoDich: sangBase64(i.transaction) }, HAN_KY_MS);
