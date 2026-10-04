@@ -72,6 +72,8 @@ export default defineConfig(({ command, isPreview }) => ({
         gioiThieu: fileURLToPath(new URL("gioi-thieu.html", import.meta.url)),
         // Cửa sổ ký cho connector Wallet Standard — spike G0-1 (ROADMAP-SAU-MENTOR).
         ketNoi: fileURLToPath(new URL("ket-noi.html", import.meta.url)),
+        // Trang "Tích hợp" — A3, ROADMAP-SAU-MENTOR.
+        tichHop: fileURLToPath(new URL("tich-hop.html", import.meta.url)),
       },
     },
   },
