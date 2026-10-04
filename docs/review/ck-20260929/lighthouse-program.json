@@ -1,0 +1,21 @@
+{
+  "program": "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+  "luc": "2026-09-29T07:57:58.511Z",
+  "phuongPhap": "getAccountInfo(encoding base64, dataSlice 0/0) qua RPC công cộng",
+  "ketQua": {
+    "devnet": {
+      "rpc": "api.devnet.solana.com",
+      "slot": 505459347,
+      "tonTai": true,
+      "executable": true,
+      "owner": "BPFLoaderUpgradeab1e11111111111111111111111"
+    },
+    "mainnet-beta": {
+      "rpc": "api.mainnet-beta.solana.com",
+      "slot": 451581068,
+      "tonTai": true,
+      "executable": true,
+      "owner": "BPFLoaderUpgradeab1e11111111111111111111111"
+    }
+  }
+}
