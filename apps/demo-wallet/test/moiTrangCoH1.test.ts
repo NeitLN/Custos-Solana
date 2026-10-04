@@ -18,6 +18,7 @@ const TRANG: Array<[string, string]> = [
   ["gioi-thieu.html", "landing/Hero.tsx"],
   /* Cửa sổ ký của connector (ADR-0004): h1 là tên ví, tiêu đề yêu cầu là h2. */
   ["ket-noi.html", "ket-noi.tsx"],
+  ["tich-hop.html", "tich-hop.tsx"],
 ];
 
 test("QA · mỗi trang có đúng một h1, và h1 không rỗng", () => {
