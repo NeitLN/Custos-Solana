@@ -32,9 +32,14 @@ Cập nhật B3 29/09/2026. `npm run typecheck` đạt; `npm test`: **1341 test 
 | Codex review GĐ0+GĐ1 | **DONE** | 4 finding mức trung bình, đã sửa cả 4, mỗi finding một test đỏ trước khi sửa |
 | C2 trang giới thiệu theo hành trình | **DONE** | Dải "Custos nằm ở đâu khi bạn ký" ngay dưới hero, 4 bước dApp → ví → Custos trong ví → bạn quyết định, hai lối vào (SolBonus / Tích hợp), VI + EN. Chromium: 390px không tràn, axe 0 lỗi |
 | C3 nhãn SolBonus + Inspector | **DONE** | SolBonus: "dApp độc hại MÔ PHỎNG · Không gọi Custos". Inspector: "Công cụ nhà phát triển" + câu "người dùng cuối gặp Custos trong ví". Guard `nhanC3.test.ts` cấm câu ngụ ý Custos xét URL/tên miền |
-| A3 trang Tích hợp | **DONE** | `tich-hop.html`: mã cắt nguyên văn (`?raw`) từ `tich-hop.js` và SolBonus, số dòng máy đếm (23), nút chạy thử gọi CHÍNH `kiemTruocKhiKy` trên phát lại Devnet: tấn công ⇒ Chặn/`phat_hien`, lành ⇒ Cho ký. axe 0 lỗi |
+| A3 trang Tích hợp | **DONE** | `tich-hop.html`: mã cắt nguyên văn (`?raw`) từ `tich-hop.js` và SolBonus, số dòng máy đếm (31 — sau sửa Codex, đoạn gồm cả `HAN_MS`, `coHan`; khớp con số "31 dòng" công bố ở `vi-du-tich-hop/README.md`), nút chạy thử gọi CHÍNH `kiemTruocKhiKy` trên phát lại Devnet: tấn công ⇒ Chặn/`phat_hien`, lành ⇒ Cho ký. axe 0 lỗi |
 | D2 related work Lighthouse | **DONE** | [LIGHTHOUSE.md](../nghien-cuu/LIGHTHOUSE.md): nguồn chính thức Lighthouse + Phantom; bảng bổ trợ; vì sao chưa tích hợp |
 | D1 người ngoài tự tích hợp | **WAIT_HUMAN** | Cần người thật ngoài đội |
+| F1 đóng băng tính năng | **DONE (04/10)** | Sau mốc này chỉ sửa lỗi bảo mật/tính đúng/demo hỏng |
+| F2 review | **DONE** | Codex review theo từng giai đoạn (11 finding, đã sửa hết); sau đó không đổi mã |
+| F3 nghiệm thu live production | **DONE** | [NGHIEM-THU-CUOI.md](../review/ck-20261004/NGHIEM-THU-CUOI.md): 11/11 hạng mục, Vercel + Pages, hai origin HTTPS |
+| F4 đối chiếu tuyên bố | **DONE** | 1354 test (sinh từ đo), 31 dòng (máy đếm), "không gọi Custos", "chưa phải pilot", Lighthouse — đều có artifact |
+| F5 cập nhật tài liệu | **DONE** | CLAUDE.md (Đã có/Chưa có), BAN-GIAO.md, TIEN-DO.md |
 | Codex review GĐ2 | **DONE** | 7 finding (5 trung bình, 2 nhẹ), sửa cả 7: đoạn mã trang Tích hợp thiếu `HAN_MS`/`coHan` (test mới nạp CHÍNH đoạn hiển thị làm module riêng — đột biến về cách cắt cũ ⇒ `ReferenceError`), so với lúc ghi dùng `soVoiLucGhi`, câu "không biết Custos tồn tại"/"trước khi có chữ ký nào" sửa cho đúng, "không gọi mạng" nói rõ phạm vi, LIGHTHOUSE.md thêm điều kiện + artifact đo program (`lighthouse-program.json`). Build Pages `/Custos-Solana/` và Vercel `/` đều qua |
 | [docs/roadmap/ROADMAP-TECHNICAL-CUSTOS.md](../roadmap/ROADMAP-TECHNICAL-CUSTOS.md) — đã thực hiện trước | `TB-` | [Bảng Technical](#bảng-công-việc--roadmap-technical-tb) |
 | [docs/roadmap/ROADMAP-CLAUDE.md](../roadmap/ROADMAP-CLAUDE.md) — đã đóng phần khả dụng | R/U/I/S/D/A/B/P/V/H | [Bảng roadmap trước](#bảng-công-việc--roadmap-trước) |

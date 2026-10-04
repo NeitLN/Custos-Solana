@@ -51,9 +51,12 @@ Không cần xin duyệt để viết code nữa.
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
 hiện trường devnet thật · 38 mẫu dữ liệu · 1354 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
-bước chặn rò rỉ khoá.
+bước chặn rò rỉ khoá · **Custos trong luồng ký của ví** (ADR-0004, 29/09–04/10): connector Wallet
+Standard `@custos-solana/connector`, cửa sổ ký `ket-noi.html` kiểm đúng bytes dApp gửi, SolBonus là
+dApp độc hại mô phỏng trên wallet-adapter ở origin riêng, biên nhận dự báo ↔ thực tế, trang Tích hợp.
+Lộ trình: `docs/roadmap/ROADMAP-SAU-MENTOR.md`.
 
-**Chưa có:** video demo · phỏng vấn người mua · pilot bên thứ ba.
+**Chưa có:** video demo · phỏng vấn người mua · pilot bên thứ ba (D1 — cần người ngoài đội).
 
 > *Decoder cho chương trình DEX* từng nằm ở mục này. Số đo trên cohort nói khác:
 > hai DEX xuất hiện — Jupiter và Pump AMM — đều đã đọc hiểu được qua IDL công bố

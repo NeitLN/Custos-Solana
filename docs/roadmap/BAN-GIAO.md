@@ -4,6 +4,22 @@
 [tiến độ](TIEN-DO.md) trước khi làm. File này giữ ngữ cảnh có thể mất giữa các phiên;
 trạng thái từng thẻ chỉ sửa ở TIEN-DO.md.
 
+## Hiện trạng — 04/10/2026 (roadmap sau mentor, GĐ0 → GĐ3)
+
+Lộ trình: [ROADMAP-SAU-MENTOR.md](ROADMAP-SAU-MENTOR.md); trạng thái từng việc ở
+[TIEN-DO.md](TIEN-DO.md#bảng-công-việc--roadmap-sau-mentor); nghiệm thu cuối ở
+[`ck-20261004/NGHIEM-THU-CUOI.md`](../review/ck-20261004/NGHIEM-THU-CUOI.md).
+
+- **Đã commit và push** tới `22e04f9`; Vercel production + alias SolBonus trỏ deployment
+  `custos-solana-70j8wsfpf`. Deploy Vercel chạy từ một **git worktree sạch**, vì thư mục làm việc có
+  file cá nhân không thuộc dự án (`Q.html`, `Q_files/`). Chúng không được commit hay deploy.
+- **Sau mỗi `vercel deploy --prod`** phải gán lại alias SolBonus:
+  `vercel alias set <deployment> solbonus-custos.vercel.app` (xem `apps/trang-tan-cong/README.md`).
+- **Bài học CI 04/10**: `npm run check` ở máy local xanh nhưng CI đỏ, vì tài liệu còn ghi số test
+  cũ. Sau khi thêm test, phải chạy `npm run so-lieu && npm run release-notes` trước khi push.
+- **Còn mở, cần người:** D1 (người ngoài đội tự tích hợp theo `PILOT-TU-LAM.md`); đặt spend limit
+  Anthropic.
+
 ## Hiện trạng — 27/09/2026 (roadmap chung kết, lát cắt CK-00 → 04)
 
 Trạng thái từng thẻ: [TIEN-DO.md, bảng CK](TIEN-DO.md#bảng-công-việc--roadmap-chung-kết-ck).

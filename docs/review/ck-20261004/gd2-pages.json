@@ -1,0 +1,23 @@
+{
+  "base": "https://neitln.github.io/Custos-Solana/",
+  "buoc": {
+    "hanhTrinh": {
+      "h2": "Custos nằm ở đâu khi bạn ký",
+      "soBuoc": 4,
+      "link": [
+        "https://solbonus-custos.vercel.app/tan-cong/",
+        "/Custos-Solana/tich-hop.html"
+      ]
+    },
+    "tichHop": {
+      "h1": "Đặt Custos vào luồng ký.",
+      "ca": [
+        "Chặn · lý do phat_hien · mức Nguy hiểm · mã SPL_SET_AUTHORITY__ACCOUNT_OWNER |  | Đọc hiểu 2/3 lệnh. Phát lại dữ liệu Devnet ghi lúc 2026-09-27T14:31:57.887Z (tải từ tệp tĩnh của trang) bằng engine của bản đang chạy — phần phân tích không gọi RPC hay AI, không ký.",
+        "Cho ký · lý do khong_van_de · mức An toàn · mã không có |  | Đọc hiểu 1/1 lệnh. Phát lại dữ liệu Devnet ghi lúc 2026-09-27T14:31:47.807Z (tải từ tệp tĩnh của trang) bằng engine của bản đang chạy — phần phân tích không gọi RPC hay AI, không ký."
+      ]
+    }
+  },
+  "tranNgang390": false,
+  "axeTichHop": [],
+  "loiTrang": []
+}
