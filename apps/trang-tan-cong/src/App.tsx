@@ -107,7 +107,7 @@ export default function App() {
   }
 
   return <div className="attack-page min-h-screen">
-    <aside className="bang-that" aria-label="Thông báo thử nghiệm"><div className="bang-that__track"><span className="bang-that__message">Trang nhận thưởng GIẢ · Đạo cụ demo Custos · Chỉ dùng Solana Devnet</span></div></aside>
+    <aside className="bang-that" aria-label="Thông báo thử nghiệm"><div className="bang-that__track"><span className="bang-that__message">dApp độc hại MÔ PHỎNG · Không gọi Custos — chỉ kết nối ví qua chuẩn Wallet Standard · Solana Devnet</span></div></aside>
     <header className="attack-header mx-auto flex items-center justify-between gap-4">
       <div className="flex items-center gap-2.5"><div className="solbonus-mark grid h-10 w-10 place-items-center" aria-hidden="true">✦</div><div><div>SolBonus</div><div>Rewards, reimagined.</div></div></div>
       <nav className="attack-nav" aria-label="Điều hướng"><a href="#nhan-thuong">Nhận thưởng ↗</a><a href="#kich-ban">Về thử nghiệm</a></nav>

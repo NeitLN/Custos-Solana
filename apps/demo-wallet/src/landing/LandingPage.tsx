@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { NOI_DUNG, type Ngon } from "./content.ts";
 import { SiteHeader } from "./SiteHeader.tsx";
 import { Hero, HangThongTin } from "./Hero.tsx";
+import { HanhTrinh } from "./HanhTrinh.tsx";
 import { ScenarioExplorer } from "./ScenarioExplorer.tsx";
 import { useSectionMotion } from "./useSectionMotion.ts";
 import { CINEMA, CinematicBridge } from "./CinematicScene.tsx";
@@ -110,6 +111,7 @@ export function LandingPage() {
       <main id="noi-dung">
         <Hero t={t} ngon={ngon} paused={paused} />
         <HangThongTin t={t} />
+        <HanhTrinh t={t} />
         <ScenarioExplorer t={t} ngon={ngon} />
         <CinematicBridge ngon={ngon} />
         <PipelineSection t={t} />

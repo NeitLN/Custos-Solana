@@ -77,6 +77,23 @@ export const VI = {
     { manh: "Bằng chứng", phu: "Xem dữ kiện và giới hạn" },
   ],
 
+  /* C2, ROADMAP-SAU-MENTOR: mentor 29/09 — người xem tưởng Custos soi đường dẫn web. Dải này nói
+     Custos nằm Ở ĐÂU trong hành trình ký, ngay dưới hero (ADR-0004). */
+  hanhTrinh: {
+    h2: "Custos nằm ở đâu khi bạn ký",
+    moTa: "Custos không kiểm đường link hay tên miền. Nó chạy bên trong ví, trên đúng giao dịch mà dApp gửi tới — trước khi ví của bạn ký.",
+    buoc: [
+      { tieuDe: "dApp dựng giao dịch", moTa: "Một trang bất kỳ — kể cả trang độc hại — gửi yêu cầu ký qua chuẩn ví của Solana." },
+      { tieuDe: "Ví nhận yêu cầu", moTa: "Ví của bạn chưa ký. Ví đã tích hợp Custos giữ giao dịch lại để kiểm." },
+      { tieuDe: "Custos kiểm trong ví", moTa: "Mô phỏng chính giao dịch đó, áp bộ luật, và giải thích hậu quả bằng tiếng Việt." },
+      { tieuDe: "Bạn quyết định", moTa: "Chặn thì không có gì được gửi. Vẫn ký thì ví đối chiếu kết quả thật với dự báo." },
+    ],
+    ctaNguoiDung: "Thử như người dùng: mở SolBonus",
+    ghiChuNguoiDung: "dApp độc hại mô phỏng trên Devnet — không gọi Custos, chỉ xin chữ ký qua chuẩn Wallet Standard.",
+    ctaNhaPhatTrien: "Tích hợp vào ví của bạn",
+    ghiChuNhaPhatTrien: "npm install, một hàm, và chạy thử ngay trên trang.",
+  },
+
   pipeline: {
     h2: "Cách Custos kiểm một giao dịch.",
     moTa: "Ba bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.",
@@ -364,6 +381,21 @@ export const EN: NoiDung = {
     { manh: "Inspector", phu: "Check a transaction" },
     { manh: "Evidence", phu: "See the data and limits" },
   ],
+
+  hanhTrinh: {
+    h2: "Where Custos sits when you sign",
+    moTa: "Custos does not check links or domains. It runs inside the wallet, on the exact transaction a dApp sends — before your wallet signs.",
+    buoc: [
+      { tieuDe: "A dApp builds a transaction", moTa: "Any site — including a malicious one — requests a signature through the Solana wallet standard." },
+      { tieuDe: "The wallet receives it", moTa: "Your wallet has not signed. A wallet that integrates Custos holds the transaction for inspection." },
+      { tieuDe: "Custos inspects in the wallet", moTa: "It simulates that exact transaction, applies its rules, and explains the consequences." },
+      { tieuDe: "You decide", moTa: "Block, and nothing is sent. Sign anyway, and the wallet compares the real outcome with the prediction." },
+    ],
+    ctaNguoiDung: "Try it as a user: open SolBonus",
+    ghiChuNguoiDung: "A simulated malicious dApp on Devnet — it never calls Custos; it only requests a signature through the Wallet Standard.",
+    ctaNhaPhatTrien: "Integrate it into your wallet",
+    ghiChuNhaPhatTrien: "npm install, one function, and a live run on the page.",
+  },
 
   pipeline: {
     h2: "How Custos checks a transaction.",
