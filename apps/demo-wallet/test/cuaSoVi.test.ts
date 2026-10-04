@@ -429,3 +429,12 @@ test("lỗi do chính ví soạn (LoiHienThiDuoc) vẫn hiện nguyên câu", as
   const dc = d.cs.trangThai.dangCho;
   assert.ok(dc?.kieu === "ky" && /không phải Solana Devnet/.test(dc.loi ?? ""));
 });
+
+test("code-review 04/10 · dApp ngắt khi lời xin kết nối còn chờ ⇒ bỏ ghim origin, origin khác lại xin được", () => {
+  const d = dung();
+  d.tuDapp({ custos: 1, kieu: "ket-noi", id: d.id() });
+  d.tuDapp({ custos: 1, kieu: "ngat", id: d.id() });
+  assert.equal(d.cs.trangThai.originDapp, null, "giữ ghim origin của một kết nối chưa từng được cho phép");
+  d.tuDapp({ custos: 1, kieu: "ket-noi", id: d.id() }, "https://dapp-khac.example");
+  assert.equal(d.cs.trangThai.dangCho?.origin, "https://dapp-khac.example");
+});

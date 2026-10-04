@@ -18,6 +18,7 @@ import type { GiaoDichRpc } from "./ketNoi/bienNhan.ts";
 import { DEVNET_GENESIS, LIVE_RPC } from "./live/session.ts";
 import { liveRpcFetch } from "./live/rpc.ts";
 import { DEFAULT_DEMO_WALLET } from "../../../scripts/demo-wallet-config.ts";
+import { coHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 
 /** Một endpoint cho cả lượt kiểm — không trộn nguồn (xem `LiveSession`). */
 const connection = new Connection(LIVE_RPC, {
@@ -40,14 +41,11 @@ function xacMinhDevnet(): Promise<void> {
   });
 }
 
-function coHan<T>(p: Promise<T>, ms: number): Promise<T> {
-  let h: ReturnType<typeof setTimeout> | undefined;
-  return Promise.race([
-    p,
-    new Promise<never>((_, loi) => {
-      h = setTimeout(() => loi(new LoiHienThiDuoc(`Custos chưa kiểm xong sau ${ms / 1000} giây.`)), ms);
-    }),
-  ]).finally(() => clearTimeout(h));
+/** Hẹn giờ dùng chung (`scripts/coHan.ts`); quá hạn đổi thành câu ví tự soạn, hiển thị được. */
+function coHanHienThi<T>(p: Promise<T>, ms: number): Promise<T> {
+  return coHan(p, ms).catch((e) => {
+    throw e instanceof LoiQuaHan ? new LoiHienThiDuoc(`Custos chưa kiểm xong sau ${ms / 1000} giây.`) : e;
+  });
 }
 
 async function kiem(tx: VersionedTransaction): Promise<{ ketQua: InspectResult; facts?: Facts }> {
@@ -55,7 +53,7 @@ async function kiem(tx: VersionedTransaction): Promise<{ ketQua: InspectResult; 
   // Diễn giải KHÔNG dùng AI (L3 dự phòng): bản cửa sổ ký chưa gọi mô hình. Bọc lại để giữ Facts
   // của CHÍNH lượt này cho biên nhận — cùng cách `LiveSession` làm.
   let facts: Facts | undefined;
-  const ketQua = await coHan(
+  const ketQua = await coHanHienThi(
     inspect(
       {
         connection,

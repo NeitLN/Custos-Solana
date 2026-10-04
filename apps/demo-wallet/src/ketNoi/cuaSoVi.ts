@@ -154,7 +154,9 @@ export class CuaSoVi {
       const dangKy = dc?.kieu === "ky" && dc.pha === "dang-ky";
       if (dc && !dangKy) {
         this.#loi(dc.id, "chua-ket-noi", dc.origin);
-        this.#dat({ dangCho: null });
+        // Huỷ một lời xin kết nối chưa được cho phép ⇒ bỏ ghim như `tuChoi`, không giữ origin
+        // của một kết nối chưa từng có.
+        this.#dat({ dangCho: null, ...(dc.kieu === "ket-noi" ? { originDapp: null } : {}) });
       }
       this.#dat({ daChoKetNoi: false });
       this.#p.gui({ custos: PHIEN_BAN, kieu: "tra-loi", id: yc.id, ok: true, ketQua: null }, e.origin);
