@@ -1248,6 +1248,37 @@
   }
 }
 
+/* ══ Hành trình ký — C2, ROADMAP-SAU-MENTOR ══════════════════════════════════ */
+
+/* Bốn bước thay vì ba; bước "Custos kiểm trong ví" là bước duy nhất mang màu thương hiệu —
+   đó là chỗ người xem cần nhìn thấy Custos NẰM TRONG ví. */
+.lg-pipeline--bon {
+  grid-template-columns: repeat(4, 1fr);
+}
+.lg-buoc--custos {
+  border-top-color: var(--custos-brand);
+}
+.lg-hanh-trinh__loi-vao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lg-s5);
+  margin-top: var(--lg-s6);
+}
+.lg-hanh-trinh__loi-vao .lg-caption {
+  margin-top: var(--lg-s2);
+  max-width: 36ch;
+}
+@media (max-width: 1080px) {
+  .lg-pipeline--bon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .lg-pipeline--bon {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ══ Developer ════════════════════════════════════════════════════════════ */
 
 .lg-dev {

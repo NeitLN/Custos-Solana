@@ -28,6 +28,13 @@ export const LINK = {
    */
   viMau: noiBase("index.html"),
   inspector: noiBase("soi.html"),
+  /** Trang "Tích hợp" — A3, ROADMAP-SAU-MENTOR. */
+  tichHop: noiBase("tich-hop.html"),
+  /**
+   * SolBonus — dApp độc hại mô phỏng, origin RIÊNG (project Vercel `solbonus-custos`, B3). Đã kiểm
+   * 29/09: trả 200 và trỏ ví tới `custos-solana.vercel.app/ket-noi.html`.
+   */
+  solBonus: "https://solbonus-custos.vercel.app/tan-cong/",
   soLieu: noiBase("so-lieu.html"),
 
   repo: "https://github.com/NeitLN/Custos-Solana",

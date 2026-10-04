@@ -176,11 +176,17 @@ export function Inspector() {
     <main className="app-shell inspector-shell mx-auto max-w-3xl px-4 py-8">
       <ProductHeader active="inspector" label="Inspector" />
       <header className="inspector-heading">
-      <p className="inspector-eyebrow">Phân tích trước khi ký · Solana Devnet</p>
+      <p className="inspector-eyebrow">Công cụ nhà phát triển · Solana Devnet</p>
       <h1 className="text-[22px] font-semibold text-chu">Đọc giao dịch.<br /><span>Trước khi đặt niềm tin.</span></h1>
       <p className="mt-2 text-[14px] leading-relaxed text-chu-mo">
         Dán chuỗi base64 của một giao dịch <strong>chưa ký</strong>, hoặc chọn tệp. Custos
         mô phỏng nó trên Devnet rồi cho biết nó làm gì với tài sản của bạn.
+      </p>
+      {/* C3, ROADMAP-SAU-MENTOR: trang này là công cụ cho người TÍCH HỢP — không phải cách người
+          dùng cuối gặp Custos. Người dùng gặp Custos trong ví, lúc ký (ADR-0004). */}
+      <p className="mt-2 text-[13px] leading-relaxed text-chu-mo">
+        Người dùng cuối không cần trang này: Custos chạy <strong>bên trong ví</strong>, trên đúng giao dịch sắp
+        ký. Custos không kiểm đường link hay tên miền.
       </p>
       </header>
 
