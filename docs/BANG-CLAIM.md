@@ -29,7 +29,7 @@ Không phải vì chúng sai, mà vì tiếng Việt cho phép đọc chúng r�
 | **13/13 + 3/3** | chặn hết đầu ra xấu **và** cho đầu ra tốt đi qua | ~~"13/13"~~ một mình — bộ chắn vứt sạch cũng cho 13/13 |
 | **lớp AI** | một lớp diễn giải **tuỳ chọn**, đã đo là chưa thêm được gì đo được | ~~"AI giúp người dùng hiểu hơn"~~ — chưa đo; trên thước nêu-coverage nó **ngang** câu mẫu (13–14/16 so 14/16), không hơn |
 
-Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`docs/SEED-DATASET.md`](docs/SEED-DATASET.md)
+Chi tiết ba chữ *cáo buộc · gắn cờ · báo nhầm*: [`docs/SEED-DATASET.md`](SEED-DATASET.md)
 mục 0b3 và 0b4.
 
 ---

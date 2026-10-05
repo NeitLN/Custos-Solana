@@ -112,7 +112,7 @@ Signature điểm nhấn:
 
 ## Chạy lại
 
-[Hướng dẫn trình diễn](../../CHAY-DEMO-GIAO-DICH-THAT.md).
+[Hướng dẫn trình diễn](../../demo/CHAY-DEMO-GIAO-DICH-THAT.md).
 Giữ câu chuyện ngắn: gửi bình thường → đỏ/huỷ → **đỏ/vẫn ký khi Custos bật** → Explorer.
 Các ca quyền dành cho phần giám khảo hỏi sâu. Không gọi khả năng phân tích là bảo đảm
 ngăn mọi mất mát.

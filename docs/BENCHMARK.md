@@ -9,7 +9,7 @@ Trang này trả lời một câu hỏi mà bảng số liệu không trả lờ
 Câu trả lời trung thực là: **chưa đo được, và trang này giải thích vì sao — cùng với
 những thứ đã đo được thay cho nó.**
 
-Đọc kèm [`docs/SEED-DATASET.md`](docs/SEED-DATASET.md) (quy cách từng mẫu) và
+Đọc kèm [`docs/SEED-DATASET.md`](SEED-DATASET.md) (quy cách từng mẫu) và
 [`BANG-CLAIM.md`](BANG-CLAIM.md) (mọi claim → nguồn → phạm vi).
 
 ---

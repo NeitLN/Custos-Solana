@@ -8,7 +8,7 @@
 - Script dùng ví mặc định sẽ dừng khi thiếu/sai keypair. Các fixture/replay cũ chưa được dựng lại; không lấy địa chỉ mới thay vào bằng chứng cũ.
 - `default-wallet-check.log`: **1063/1063 pass**. Build pass; scanner không thấy khoá trong 24 file. `default-wallet/browser.json`: mở keypair khớp, reload giữ địa chỉ và bỏ quyền ký; desktop/mobile axe pass, không tràn ngang; 0 request gửi/airdrop. Chưa chạy lại các giao dịch on-chain bằng ví mới vì chưa có SOL tại lần kiểm tra.
 
-**Bản hiện tại đã tích hợp vào Ví mẫu (`index.html`) theo yêu cầu làm rõ của chủ dự án.** Đã bỏ HTML/entry `thuc-chien.html` và mục điều hướng “Giao dịch thật”. Hướng dẫn vận hành: [CHAY-DEMO-GIAO-DICH-THAT.md](../../CHAY-DEMO-GIAO-DICH-THAT.md).
+**Bản hiện tại đã tích hợp vào Ví mẫu (`index.html`) theo yêu cầu làm rõ của chủ dự án.** Đã bỏ HTML/entry `thuc-chien.html` và mục điều hướng “Giao dịch thật”. Hướng dẫn vận hành: [CHAY-DEMO-GIAO-DICH-THAT.md](../../demo/CHAY-DEMO-GIAO-DICH-THAT.md).
 
 ## Nghiệm thu bản tích hợp Ví mẫu
 

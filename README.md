@@ -9,12 +9,12 @@
 SDK phân tích giao dịch trước khi ký cho ví và dApp Solana.<br>
 **Thấy thay đổi tài sản. Hiểu quyền được trao. Kiểm tra bằng chứng.**
 
-[![CI](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml/badge.svg)](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml)
+[![CI / GitHub Pages](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml/badge.svg)](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-163E32)](LICENSE)
 ![Network: Solana Devnet](https://img.shields.io/badge/Solana-Devnet-C5DE97)
 ![Track: Best Technical Build](https://img.shields.io/badge/UniHackfest_2026-Best_Technical_Build-163E32)
 
-[**Mở demo**](https://neitln.github.io/Custos-Solana/) · [**Xem video**](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [**Tích hợp SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
+[**Mở demo**](https://custos-solana.vercel.app) · [**Thử như người dùng: SolBonus**](https://solbonus-custos.vercel.app/tan-cong/) · [**Trang Tích hợp**](https://custos-solana.vercel.app/tich-hop.html) · [**SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
 
 </div>
 
@@ -38,14 +38,19 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 
 ## Khám phá sản phẩm
 
+**Custos nằm trong ví, không phải trang quét link.** Một dApp bất kỳ xin chữ ký qua chuẩn Wallet Standard. Ví đã tích hợp Custos mô phỏng **đúng giao dịch đó**, giải thích hậu quả và để người dùng quyết định trước khi ví ký ([ADR-0004](docs/adr/0004-custos-trong-luong-ky-cua-vi.md)).
+
 | Bạn muốn… | Mở tại đây |
 |---|---|
-| Hiểu sản phẩm trước khi thử | [Website giới thiệu](https://neitln.github.io/Custos-Solana/gioi-thieu.html) |
-| Chạy tình huống và đọc kết quả | [Ví demo](https://neitln.github.io/Custos-Solana/) |
-| Xem luồng yêu cầu từ một dApp giả lập | [Trang tấn công minh họa](https://neitln.github.io/Custos-Solana/tan-cong/) |
-| Kiểm tra transaction | [Inspector](https://neitln.github.io/Custos-Solana/soi.html) |
-| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://neitln.github.io/Custos-Solana/so-lieu.html) |
-| Xem bản ghi không phụ thuộc RPC | [Video demo](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
+| Hiểu sản phẩm trước khi thử | [Trang giới thiệu](https://custos-solana.vercel.app) |
+| Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus-custos.vercel.app/tan-cong/). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
+| Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-solana.vercel.app/tich-hop.html) |
+| Chạy các tình huống và đọc kết quả | [Ví demo](https://custos-solana.vercel.app/vi) |
+| Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-solana.vercel.app/soi.html) |
+| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-solana.vercel.app/so-lieu.html) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
+| Xem bản ghi không phụ thuộc RPC | [Video demo (bản trước luồng Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
+
+Bản phụ trên GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/).
 
 **Luồng nên thử:** đổi chủ tài khoản → mở dữ kiện trước/sau → cấp quyền vượt số dư → so với ca đối chứng. Danh sách đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
 
@@ -65,6 +70,7 @@ Bản công khai không nhúng khóa ký. Tình trạng AI phụ thuộc cấu h
 - **Nói rõ phần chưa hiểu:** trả coverage và giới hạn phân tích để người dùng biết phạm vi kết quả.
 - **Diễn giải bằng tiếng Việt:** dùng câu tất định hoặc mô hình ngôn ngữ tùy chọn qua adapter.
 - **Tích hợp trước bước ký:** SDK phục vụ đội ví/dApp; người hưởng lợi là người ký giao dịch.
+- **Nằm trong luồng ký của ví:** connector Wallet Standard ([`packages/connector`](packages/connector/)) đưa yêu cầu `signTransaction` của mọi dApp vào cửa sổ ví. Ở đó Custos kiểm trước, người dùng quyết định, và ví đối chiếu kết quả thật với dự báo sau khi giao dịch chạy.
 
 ## Kiến trúc: quan sát → đánh giá → diễn giải
 

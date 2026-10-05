@@ -31,10 +31,10 @@ tiếp tục được ngay. Chỉ nói đã sửa/xong khi đã kiểm chứng �
 
 Tài liệu đi kèm:
 
-- [TIEN-DO.md](docs/roadmap/TIEN-DO.md): trạng thái duy nhất của từng mã công việc.
-- [BAN-GIAO.md](docs/roadmap/BAN-GIAO.md): việc đang làm, kết quả gần nhất, trở ngại và bước kế tiếp.
-- [Báo cáo đánh giá nguồn](docs/review/DANH-GIA-08-09-2026.md): lỗi F01–F11 và bằng chứng ban đầu.
-- [docs/CUSTOS.md](docs/CUSTOS.md), [docs/DAC-TA-CORE.md](docs/DAC-TA-CORE.md), [docs/DAC-TA-L3.md](docs/DAC-TA-L3.md): ràng buộc sản phẩm và kiến trúc.
+- [TIEN-DO.md](TIEN-DO.md): trạng thái duy nhất của từng mã công việc.
+- [BAN-GIAO.md](BAN-GIAO.md): việc đang làm, kết quả gần nhất, trở ngại và bước kế tiếp.
+- [Báo cáo đánh giá nguồn](../review/DANH-GIA-08-09-2026.md): lỗi F01–F11 và bằng chứng ban đầu.
+- [docs/CUSTOS.md](../CUSTOS.md), [docs/DAC-TA-CORE.md](../DAC-TA-CORE.md), [docs/DAC-TA-L3.md](../DAC-TA-L3.md): ràng buộc sản phẩm và kiến trúc.
 
 ## 2. Nguyên tắc điều hành
 

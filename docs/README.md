@@ -1,6 +1,6 @@
 # Mục lục tài liệu
 
-Thư mục này có hơn 80 tài liệu. Trang này nói **đọc cái nào trước**.
+Thư mục này có hơn 100 tài liệu. Trang này nói **đọc cái nào trước**.
 
 ---
 
@@ -12,6 +12,8 @@ Thư mục này có hơn 80 tài liệu. Trang này nói **đọc cái nào trư
 | 2 | [**adr/0001**](adr/0001-doi-huong-technical-build.md) | Vì sao đổi hướng Technical Build, bằng chứng theo từng mục rubric — và **năm điều ADR đó KHÔNG làm** |
 | 3 | [**bao-mat/THREAT-MODEL.md**](bao-mat/THREAT-MODEL.md) | Ai nói dối được với Custos — 8 rủi ro, và **6 điều SDK không kiểm soát** |
 | 4 | [**BENCHMARK.md**](BENCHMARK.md) | **Vì sao chưa có confusion matrix**, ba corpus và ba phạm vi |
+| 5 | [**adr/0004**](adr/0004-custos-trong-luong-ky-cua-vi.md) | Custos nằm **trong luồng ký của ví** qua Wallet Standard — dApp không có trường nào để tắt bước kiểm |
+| 6 | [**review/ck-20261004/NGHIEM-THU-CUOI.md**](review/ck-20261004/NGHIEM-THU-CUOI.md) | Nghiệm thu cuối trên production: hai origin HTTPS, chặn ⇒ 0 giao dịch gửi, đối chiếu chain |
 
 Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/l2/rules.ts) — 14 luật, trái tim sản phẩm.
 
@@ -20,6 +22,8 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | Tài liệu | Vai trò |
 |---|---|
 | [`packages/core/README.md`](../packages/core/README.md) | **Tài liệu tích hợp chính.** Ví dụ trong đó có test chạy thật |
+| [Trang Tích hợp](https://custos-solana.vercel.app/tich-hop.html) | Mã nguyên văn, số dòng máy đếm, nút chạy thử chính hàm `kiemTruocKhiKy` |
+| [`packages/connector`](../packages/connector/) | Connector Wallet Standard: dApp chỉ gọi `registerCustosWallet()` |
 | [PILOT-TU-LAM.md](PILOT-TU-LAM.md) | Từ thư mục trống tới `inspect()` đầu tiên, bốn đường lỗi |
 | [NGAN-SACH-RPC.md](NGAN-SACH-RPC.md) | Bảy chặng RPC — và vì sao **ngừng chờ ≠ huỷ request** |
 
@@ -34,7 +38,8 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | [CUSTOS.md](CUSTOS.md) | Nguồn quyết định duy nhất về sản phẩm |
 | [DAC-TA-CORE.md](DAC-TA-CORE.md) | Trình tự L1, ranh giới L2/L3, luật theo nguồn dữ liệu |
 | [DAC-TA-L3.md](DAC-TA-L3.md) | Đặc tả L3 và toàn bộ chữ tiếng Việt: từ vựng chốt, prompt |
-| [adr/](adr/) | Ba quyết định kiến trúc, mỗi cái ghi rõ điều nó **không** làm |
+| [adr/](adr/) | Bốn quyết định kiến trúc, mỗi cái ghi rõ điều nó **không** làm |
+| [nghien-cuu/LIGHTHOUSE.md](nghien-cuu/LIGHTHOUSE.md) | Lighthouse (Phantom dùng) là công cụ bổ trợ, không thay thế — và vì sao chưa tích hợp |
 
 **Bảo mật**
 
@@ -69,9 +74,9 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | [PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md) | Cấu trúc pitch, câu hỏi khó — và **danh sách câu không được nói** |
 | [nop-bai/](nop-bai/) | Hồ sơ nộp: deck, video demo, ảnh, logo |
 
-**Đang làm — vòng toàn quốc:** [review/national-20260925/FINDINGS.md](review/national-20260925/FINDINGS.md) bảng finding trước/sau · [MENTOR-28-09.md](review/national-20260925/MENTOR-28-09.md) gói mentor · lịch ở [cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+**Đang làm — vòng toàn quốc:** [roadmap/ROADMAP-SAU-MENTOR.md](roadmap/ROADMAP-SAU-MENTOR.md) lộ trình sau mentor 1:1 · [review/national-20260925/FINDINGS.md](review/national-20260925/FINDINGS.md) bảng finding trước/sau · lịch ở [cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
 
-**Lưu trữ** — không cần đọc: [review/](review/) 96 biên bản qua các phiên · [roadmap/](roadmap/) trạng thái từng việc.
+**Lưu trữ** — không cần đọc: [review/](review/) biên bản review và nghiệm thu theo từng phiên · [roadmap/](roadmap/) trạng thái từng việc.
 
 ---
 

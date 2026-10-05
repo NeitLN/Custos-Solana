@@ -134,7 +134,7 @@ type Facts = {
 - `analyzed` = số instruction có `programId` nằm trong danh sách đã xác minh **và** `decoded != null`
 - `unverifiedPrograms` = số program ID **khác nhau** không nằm trong danh sách xác minh
 
-**Danh sách program đã xác minh:** xem [`docs/MA-TRAN-NANG-LUC.md`](docs/MA-TRAN-NANG-LUC.md) — **sinh từ registry**, không gõ tay ở đây.
+**Danh sách program đã xác minh:** xem [`docs/MA-TRAN-NANG-LUC.md`](MA-TRAN-NANG-LUC.md) — **sinh từ registry**, không gõ tay ở đây.
 
 > **Dòng này từng nói sai theo CẢ HAI hướng.** Nó liệt kê 6 program và có *SPL Memo*;
 > registry thật có **13 program** và **không có Memo**. Thiếu 7 cái có thật, thừa 1
