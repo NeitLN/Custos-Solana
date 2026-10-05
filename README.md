@@ -48,7 +48,7 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 | Chạy các tình huống và đọc kết quả | [Ví mẫu Custos](https://custos-solana.vercel.app/vi) |
 | Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-solana.vercel.app/soi.html) |
 | Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-solana.vercel.app/so-lieu.html) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
-| Xem bản ghi không phụ thuộc RPC | [Video demo (bản trước luồng Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
+| Xem bản ghi không phụ thuộc RPC | [Video luồng dApp → ví → Chặn (50 s, có phụ đề)](docs/nop-bai/video/CUSTOS-LUONG-KY.mp4) · [Video cũ (trước Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
 
 Bản phụ trên GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/).
 

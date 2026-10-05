@@ -117,7 +117,7 @@ xong phải gán lại alias SolBonus.
 | Việc | Ai | Tác động ước lượng |
 |---|---|---|
 | Đoạn nói 45 giây cho tiêu chí smart contract: vì sao không có contract, kiến trúc on/off-chain nằm ở đâu, Lighthouse bổ trợ ra sao. Không claim "on-chain guard" | D (pitch) | Kiến trúc +0,5 |
-| Quay video mới cho luồng Wallet Standard (SolBonus → kết nối → Nguy hiểm → Chặn → 0 gửi → biên nhận B5), làm dự phòng khi RPC trên sân khấu chậm | D | Demo +0,4 |
+| Quay video mới cho luồng Wallet Standard (SolBonus → kết nối → Nguy hiểm → Chặn → 0 gửi → biên nhận B5), làm dự phòng khi RPC trên sân khấu chậm. **Đã có bản ghi dự phòng 05/10** (`docs/nop-bai/video/CUSTOS-LUONG-KY.mp4`, 50 s, hai cửa sổ cạnh nhau, phụ đề, 0 gửi); bản có thuyết minh vẫn là việc của D | D | Demo +0,4 |
 | Tập trả lời 6 câu hỏi ở trên, đúng các bằng chứng đã dẫn | cả đội | Giữ điểm, tránh bị trừ vì nói quá |
 
 ## Phương án tổng hợp và điểm kỳ vọng
