@@ -152,27 +152,44 @@ trong đó vẫn sẽ không chạy được vì account không tồn tại ở 
 
 #### Tầng `l1-replay` — đã chạy 29/29. Việc TB-B02.
 
-> **26/09/2026:** 10 mẫu mainnet (`MN-01…10`) được capture bằng endpoint **mainnet** (chỉ đọc và mô phỏng, chủ dự án cho phép). Bốn mẫu (`MN-01`, `03`, `05`, `06`) nay mô phỏng HỎNG vì Address Lookup Table của chúng đã bị đóng trên mainnet sau 21/08 — fixture ghi đúng sự thật đó, replay tái lập nó, và phép kiểm độ nhạy chạm được qua thông điệp lỗi của `simulateTransaction`. Phần mô tả bên dưới về "19" là bối cảnh lúc chỉ có fixture devnet.
-
 Runner offline: `npm run replay-rpc`. Nó đọc fixture RPC đã ghi ở
 [`data/benchmark/rpc/`](../data/benchmark/rpc) và chạy qua **`extractFacts` sản
 xuất**, không qua một bản sao dựng riêng — một replay đi đường riêng chỉ chứng minh
 đường riêng đó đúng.
 
-**Vì sao 29 → 19 lần nữa, và lần này là một từ chối cố ý.** Mười mẫu `real-mainnet`
+Kết quả **đo lại 06/10/2026**: **29/29 đạt · 0 hỏng · 0 chưa có fixture** (19 mẫu devnet
++ 10 mẫu mainnet `MN-01…10`), mỗi mẫu đo hai tính chất —
+
+| Tính chất | Nghĩa | Kết quả |
+|---|---|---|
+| **Tất định** | cùng fixture, hai lượt chạy giống nhau từng bit | 29/29 |
+| **Nhạy fixture** | đổi một dữ kiện trong fixture ⇒ Facts đổi theo | 29/29 |
+
+**Mười mẫu mainnet đều mô phỏng HỎNG trong fixture — đo 06/10, sửa ghi chú 26/09.**
+Ghi chú 26/09 chỉ nêu bốn mẫu (`MN-01`, `03`, `05`, `06`: Address Lookup Table đã đóng).
+Chạy `inspect()` đầy đủ trên fixture thì **cả 10/10** ra `MO_PHONG_HONG`, đọc hiểu 0 lệnh:
+sáu mẫu còn lại hỏng vì `AccountNotFound` (`MN-02`, `04`, `08`, `10`) hoặc lỗi chương trình
+(`MN-07`, `09`). Đây là giao dịch đã thực thi từ 21/08, mô phỏng lại một tháng sau — trạng
+thái chuỗi đã đi qua. Fixture ghi đúng sự thật đó, replay tái lập nó, và phép kiểm độ nhạy
+chạm được qua `simulateTransaction.err` hoặc thông điệp lỗi. Hai tính chất ở bảng trên vẫn
+đúng; điều KHÔNG suy ra được từ 10 mẫu này là khả năng đọc hiểu giao dịch mainnet. Bằng
+chứng cho điều đó là bộ **ghi vài giây sau khi giao dịch thực thi**:
+[`apps/demo-wallet/public/replay/mainnet.json`](../apps/demo-wallet/public/replay/mainnet.json)
+(R0-3, `scripts/capture-mainnet-phat-lai.ts`, guard `apps/demo-wallet/test/mainnetPhatLai.test.ts`).
+
+<details>
+<summary>Lịch sử: vì sao tầng này từng dừng ở 19 mẫu (trước 26/09)</summary>
+
+**Vì sao 29 → 19, và đó là một từ chối cố ý.** Trước 26/09, mười mẫu `real-mainnet`
 **chưa có fixture**. `capture-rpc.ts` không cho ghi fixture cho mẫu mainnet bằng
 endpoint devnet: ALT và account của chúng không tồn tại ở đó, nên fixture sinh ra sẽ
 ghi **một sự thật của devnet** rồi dán nhãn mẫu mainnet. Replay từ nó vẫn tái lập
 được — tái lập đúng một kết quả sai. Đó là kiểu hỏng tệ nhất của một benchmark: nó
 xanh, nó ổn định, và nó nói dối. Mười mẫu đó chờ một endpoint mainnet, không chờ
-thêm code.
+thêm code — và 26/09 đã được capture bằng endpoint mainnet. Bảng lúc đó: 19/19 tất
+định, 19/19 nhạy fixture.
 
-Kết quả 19 mẫu đã chạy: **19/19 đạt · 0 hỏng**, mỗi mẫu đo hai tính chất —
-
-| Tính chất | Nghĩa | Kết quả |
-|---|---|---|
-| **Tất định** | cùng fixture, hai lượt chạy giống nhau từng bit | 19/19 |
-| **Nhạy fixture** | đổi một dữ kiện trong fixture ⇒ Facts đổi theo | 19/19 |
+</details>
 
 Tính chất thứ hai là thứ phân biệt một replay thật với một replay trả kết quả dựng
 sẵn — thiếu nó thì một adapter bỏ qua hoàn toàn dữ liệu vẫn xanh và vẫn tất định.
@@ -194,8 +211,8 @@ mỗi lượt chạy, nhưng để **báo cáo**, không làm runner đỏ.
 
 **Giới hạn còn lại của tầng này:** fixture **thừa** chưa bị phát hiện. Adapter đếm
 được bản ghi nào đã dùng (`daDung()`), nhưng runner chưa đối chiếu, nên một fixture
-ghi dư bản ghi sẽ không làm gì đỏ. Điều này không ảnh hưởng tính đúng của 19 mẫu đã
-chạy — ghi ở đây để không ai đọc *"19/19 đạt"* thành *"fixture đã được kiểm toàn
+ghi dư bản ghi sẽ không làm gì đỏ. Điều này không ảnh hưởng tính đúng của 29 mẫu đã
+chạy — ghi ở đây để không ai đọc *"29/29 đạt"* thành *"fixture đã được kiểm toàn
 diện"*.
 
 > **Điều tầng `l2-facts` KHÔNG chứng minh:** rằng L1 đã giải mã đúng. Ở tầng này Facts

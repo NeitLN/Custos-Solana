@@ -26,6 +26,11 @@
       "scroll": 1425
     },
     {
+      "name": "laptop-1366-768",
+      "client": 1366,
+      "scroll": 1351
+    },
+    {
       "name": "safe-390",
       "client": 390,
       "scroll": 375
@@ -57,6 +62,11 @@
     },
     {
       "name": "rpc-error",
+      "client": 1440,
+      "scroll": 1425
+    },
+    {
+      "name": "wallet-execution",
       "client": 1440,
       "scroll": 1425
     }
@@ -95,7 +105,15 @@
       "violations": []
     },
     {
+      "name": "replay-library",
+      "violations": []
+    },
+    {
       "name": "rpc-error",
+      "violations": []
+    },
+    {
+      "name": "wallet-execution",
       "violations": []
     },
     {
@@ -106,8 +124,12 @@
   "errors": [],
   "checks": [
     "Idle state at 5 viewport widths; single h1; RPC unavailable remains explicit",
+    "Both guided scenario buttons fully visible on a 1366x768 laptop",
     "Explicit mock safe/warning/danger at desktop/mobile; cancel confirms and resets step",
+    "All 9 library scenarios run through engine replay, explicit replay label and current selection",
+    "Result motion is enabled normally and disabled with reduced motion",
     "Keyboard toggles protection; RPC failure yields visible error without signing",
+    "Wallet surface switches correctly; execution view checked without loading a signing key",
     "Loading, missing configuration and invalid configuration remain distinct"
   ]
 }

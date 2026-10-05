@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-18T14:30:45.096613+00:00",
-  "sourceCommit": "b6d66b1b909d1bb9083c903a658cc498689f89f3",
+  "doLuc": "2026-10-05T20:41:18.332930+00:00",
+  "sourceCommit": "bf8e41c20cb7c64e05da13ee3b2fa4deec22c51a",
   "dauVet": {
-    "bam": "d527b0c149a4efad",
-    "soFile": 61
+    "bam": "c3be855f6af017f1",
+    "soFile": 138
   },
   "khung": {
     "rong": 375,
@@ -14,118 +14,356 @@
     "khuyenNghi": 44,
     "wcag22aa": 24
   },
-  "soMuc": 27,
+  "soMuc": 75,
   "soViPham": 0,
   "soCanSua": 0,
   "muc": [
     {
       "trang": "ví",
+      "chu": "Giới thiệu",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Ví Custos",
+      "rong": 74,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Tích hợp",
+      "rong": 68,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Inspector",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
       "chu": "Số liệu",
-      "rong": 44,
+      "rong": 56,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví",
-      "chu": "2EjYM…bCpAF",
-      "rong": 150,
+      "chu": "Phòng phân tích",
+      "rong": 160,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví",
-      "chu": "Nhận quà tặngGiao dịch giả mạo",
+      "chu": "Ví của bạn",
+      "rong": 160,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "AqX3F…EBCLZ",
+      "rong": 133,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Gửi 10 token cho bạn bè.Giao dịch ",
+      "rong": 144,
+      "cao": 150,
+      "caoThat": 150.95
+    },
+    {
+      "trang": "ví",
+      "chu": "Nhận quà tặng — ký để nhận.Tấn côn",
+      "rong": 144,
+      "cao": 168,
+      "caoThat": 168.7
+    },
+    {
+      "trang": "ví",
+      "chu": "Mở dữ kiện của kết quả đang xem",
+      "rong": 202,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Nhận thưởng nhưng token rời víNhận",
       "rong": 301,
-      "cao": 110,
-      "caoThat": 110.25
+      "cao": 135,
+      "caoThat": 135
     },
     {
       "trang": "ví",
-      "chu": "Gửi 10 tokenGiao dịch bình thường",
+      "chu": "Chuyển thêm ngoài hành động chínhG",
       "rong": 301,
-      "cao": 110,
-      "caoThat": 110.25
+      "cao": 135,
+      "caoThat": 135
     },
     {
       "trang": "ví",
-      "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
+      "chu": "Đổi chủ tài khoản tokenNâng cấp ví",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Cấp quyền rút vượt số dưCho phép s",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Đối chiếu với: Cấp quyền rút vượt ",
+      "rong": 301,
+      "cao": 150,
+      "caoThat": 150
+    },
+    {
+      "trang": "ví",
+      "chu": "Trao quyền đóng tài khoảnDọn dẹp t",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Tấn công đầy đủ — chuyển tiền và đ",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Không rõ đang bảo vệ aiChưa đủ dữ ",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch lành tính — đối chứngGia",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví",
+      "chu": "Kiểm tra sẵn sàng Devnet",
+      "rong": 156,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví",
+      "chu": "Giao dịch thành côngLDxqW6gh5e…2er",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví",
-      "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
+      "chu": "Giao dịch thành công47mVVpPEto…59y",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví",
-      "chu": "Giao dịch thành công3y73mnA2N1…WTn",
+      "chu": "Giao dịch thành công2ShXkgu95B…3Yy",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví",
-      "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
+      "chu": "Giao dịch thành công2CX49yycuf…wzF",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giới thiệu",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Ví Custos",
+      "rong": 74,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Tích hợp",
+      "rong": 68,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Inspector",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Số liệu",
-      "rong": 44,
+      "rong": 56,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "2EjYM…bCpAF",
-      "rong": 150,
+      "chu": "Phòng phân tích",
+      "rong": 160,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Nhận quà tặngGiao dịch giả mạo",
+      "chu": "Ví của bạn",
+      "rong": 160,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "AqX3F…EBCLZ",
+      "rong": 133,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Gửi 10 token cho bạn bè.Giao dịch ",
+      "rong": 144,
+      "cao": 168,
+      "caoThat": 168.7
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Nhận quà tặng — ký để nhận.Tấn côn",
+      "rong": 144,
+      "cao": 168,
+      "caoThat": 168.7
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Mở dữ kiện của kết quả đang xem",
+      "rong": 202,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Nhận thưởng nhưng token rời víNhận",
       "rong": 301,
-      "cao": 110,
-      "caoThat": 110.25
+      "cao": 135,
+      "caoThat": 135
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Gửi 10 tokenGiao dịch bình thường",
+      "chu": "Chuyển thêm ngoài hành động chínhG",
       "rong": 301,
-      "cao": 110,
-      "caoThat": 110.25
+      "cao": 135,
+      "caoThat": 135
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Giao dịch thành công3qGygfzzUH…JJ4",
+      "chu": "Đổi chủ tài khoản tokenNâng cấp ví",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Cấp quyền rút vượt số dưCho phép s",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Đối chiếu với: Cấp quyền rút vượt ",
+      "rong": 301,
+      "cao": 150,
+      "caoThat": 150
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Trao quyền đóng tài khoảnDọn dẹp t",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Tấn công đầy đủ — chuyển tiền và đ",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Không rõ đang bảo vệ aiChưa đủ dữ ",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch lành tính — đối chứngGia",
+      "rong": 301,
+      "cao": 135,
+      "caoThat": 135
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Kiểm tra sẵn sàng Devnet",
+      "rong": 156,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Giao dịch thành côngLDxqW6gh5e…2er",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Giao dịch thành công5F8d6Pn7vh…xN2",
+      "chu": "Giao dịch thành công47mVVpPEto…59y",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Giao dịch thành công3y73mnA2N1…WTn",
+      "chu": "Giao dịch thành công2ShXkgu95B…3Yy",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Giao dịch thành công4pfWPz8xrc…vjJ",
+      "chu": "Giao dịch thành công2CX49yycuf…wzF",
       "rong": 317,
       "cao": 56,
       "caoThat": 56
@@ -133,77 +371,175 @@
     {
       "trang": "ví · có kết quả",
       "chu": "Thu gọn",
-      "rong": 66,
+      "rong": 70,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Sao chép",
+      "rong": 86,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Explorer (mở tab mới)",
+      "rong": 78,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Sao chép",
+      "rong": 86,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Explorer (mở tab mới)",
+      "rong": 78,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Sao chép",
+      "rong": 86,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "ví · có kết quả",
+      "chu": "Explorer (mở tab mới)",
+      "rong": 78,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Ẩn chi tiết kỹ thuật",
-      "rong": 141,
+      "rong": 155,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
       "chu": "SPL_SET_AUTHORITY__ACCOUNT_OWNERlu",
-      "rong": 275,
+      "rong": 271,
       "cao": 52,
       "caoThat": 52.38
     },
     {
       "trang": "ví · có kết quả",
       "chu": "Chặn & huỷ giao dịch",
-      "rong": 275,
+      "rong": 271,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "ví · có kết quả",
-      "chu": "Vẫn ký — tôi hiểu rủi ro",
-      "rong": 275,
+      "chu": "Vẫn tiếp tục — xem điều sẽ xảy ra",
+      "rong": 271,
+      "cao": 62,
+      "caoThat": 62
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Custos Nghiên cứu",
+      "rong": 221,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
-      "chu": "← Ví mẫu",
-      "rong": 69,
+      "chu": "Giới thiệu",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Ví Custos",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Tích hợp",
+      "rong": 68,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Inspector",
+      "rong": 73,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Số liệu",
+      "rong": 56,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Xem chi tiết",
-      "rong": 91,
+      "rong": 101,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Sao chép",
+      "rong": 86,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Sao chép",
+      "rong": 86,
+      "cao": 44,
+      "caoThat": 44
+    },
+    {
+      "trang": "phỏng vấn",
+      "chu": "Sao chép",
+      "rong": 86,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Chi tiết kỹ thuật",
-      "rong": 119,
+      "rong": 133,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Chặn & huỷ giao dịch",
-      "rong": 267,
+      "rong": 275,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Đã chép xong → chấm",
-      "rong": 165,
+      "rong": 176,
       "cao": 44,
       "caoThat": 44
     },
     {
       "trang": "phỏng vấn",
       "chu": "Sao chép toàn bộ (JSON)",
-      "rong": 181,
+      "rong": 198,
       "cao": 44,
       "caoThat": 44
     }
