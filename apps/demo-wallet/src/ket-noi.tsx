@@ -138,7 +138,7 @@ const BIEN_BAN_KY_THAT =
   "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/ck-20260929/B5-VAN-KY.json";
 
 const NHAN_MUC: Record<InspectResult["level"], string> = {
-  safe: "An toàn",
+  safe: "Bình thường",
   warning: "Cần xem kỹ",
   danger: "Nguy hiểm",
 };
@@ -179,14 +179,14 @@ function Trang() {
   return (
     <main className="kn">
       <header className="kn-dau">
-        <h1>Ví mẫu Custos</h1>
+        <h1>Ví Custos</h1>
         <span>Solana Devnet · cửa sổ ký</span>
       </header>
 
       {!opener && (
         <p className="kn-note">
-          Trang này là cửa sổ ký của Ví mẫu Custos. Nó chỉ hoạt động khi được một ứng dụng (dApp) mở — trong danh
-          sách ví của dApp, ví này có tên “Custos Demo Wallet”.
+          Trang này là cửa sổ ký của Ví Custos. Nó chỉ hoạt động khi được một ứng dụng (dApp) mở — trong danh
+          sách ví của dApp, ví này có tên “Custos Wallet”.
         </p>
       )}
 
@@ -207,7 +207,7 @@ function Trang() {
             thay vì làm thứ nổi bật nhất cửa sổ. Ô file giữ id `kn-khoa` (các probe nạp khoá qua nó). */}
         {!coKhoa && (
           <details className="kn-khoa" open={!!loiKhoa}>
-            <summary>Tôi có file khoá của ví demo (đội phát triển)</summary>
+            <summary>Tôi có file khoá của ví thử nghiệm (đội phát triển)</summary>
             <input ref={file} id="kn-khoa" type="file" accept=".json,application/json" hidden
               onChange={(e) => e.target.files?.[0] && void napKhoa(e.target.files[0])} />
             <button type="button" className="phu" onClick={() => file.current?.click()}>Chọn file khoá (.json)…</button>

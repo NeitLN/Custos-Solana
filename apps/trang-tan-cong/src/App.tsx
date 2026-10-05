@@ -36,7 +36,7 @@ export default function App() {
 
   useEffect(() => {
     if (!wallet) {
-      const demo = wallets.find(w => w.adapter.name === "Custos Demo Wallet");
+      const demo = wallets.find(w => w.adapter.name === "Custos Wallet");
       if (demo) select(demo.adapter.name);
     }
   }, [wallets, wallet, select]);
@@ -108,19 +108,21 @@ export default function App() {
   }
 
   return <div className="attack-page min-h-screen">
-    <aside className="bang-that" aria-label="Thông báo thử nghiệm"><div className="bang-that__track"><span className="bang-that__message">dApp độc hại MÔ PHỎNG · Không gọi Custos — chỉ kết nối ví qua chuẩn Wallet Standard · Solana Devnet</span></div></aside>
+    {/* R0-4 (ROADMAP-GIONG-THAT): nhãn mô phỏng — mentor yêu cầu — LUÔN nhìn thấy (cố định đáy màn hình, mọi vị trí
+        cuộn), nhưng không còn chiếm dòng đầu trang như một banner sân khấu. */}
+    <aside className="bang-mo-phong" aria-label="Thông báo thử nghiệm"><span>dApp độc hại MÔ PHỎNG · Không gọi Custos, chỉ xin chữ ký qua chuẩn ví · Solana Devnet</span> <a href="#kich-ban">Về thử nghiệm</a></aside>
     <header className="attack-header mx-auto flex items-center justify-between gap-4">
       <div className="flex items-center gap-2.5"><div className="solbonus-mark grid h-10 w-10 place-items-center" aria-hidden="true">✦</div><div><div>SolBonus</div><div>Rewards, reimagined.</div></div></div>
       <nav className="attack-nav" aria-label="Điều hướng"><a href="#nhan-thuong">Nhận thưởng ↗</a><a href="#kich-ban">Về thử nghiệm</a></nav>
     </header>
     <main className="attack-main mx-auto"><div className="attack-hero">
       <div className="attack-story"><p className="attack-eyebrow"><span /> SOLANA COMMUNITY REWARDS</p><h1>Một món quà.<br /><span>Một lần ký?</span></h1>
-        <p>Một trang tặng thưởng có thể trông rất thuyết phục. Hãy xem ví tích hợp Custos giải thích giao dịch này trước khi bạn quyết định.</p>
+        <p>Ví của bạn nằm trong đợt thưởng cộng đồng Solana tuần này. Kết nối ví và ký một lần để nhận phần thưởng — không mất phí nền tảng.</p>
         <RewardArtwork /><p className="attack-art-caption">↗ Lời hứa trên giao diện. Sự thật trong giao dịch.</p>
       </div>
       <section className="the-thuong overflow-hidden" id="nhan-thuong" aria-labelledby="reward-title">
-        <div className="reward-card-heading"><span>PHIẾU NHẬN THƯỞNG</span><span className="reward-demo-label">DEMO · DEVNET</span></div>
-        <div className="reward-allocation"><h2 id="reward-title">“Ví của bạn đủ điều kiện nhận thưởng”</h2><div className="reward-amount flex items-baseline"><span>1.000</span><span>SOLB</span></div><p className="sb-small">Phần thưởng hư cấu · Không có SOLB thật</p></div>
+        <div className="reward-card-heading"><span>PHIẾU NHẬN THƯỞNG</span><span className="reward-demo-label">DEVNET</span></div>
+        <div className="reward-allocation"><h2 id="reward-title">“Ví của bạn đủ điều kiện nhận thưởng”</h2><div className="reward-amount flex items-baseline"><span>1.000</span><span>SOLB</span></div><p className="sb-small">SOLB hư cấu · không có giá trị · Devnet</p></div>
         <div className="reward-action sb-controls">
           <fieldset disabled={busy || connecting || unresolved} className="sb-modes"><legend>Chọn phiên bản để đối chứng</legend>
             <label><input type="radio" name="mode" checked={mode === "dieu-kien-an"} onChange={() => setMode("dieu-kien-an")} /> Có điều kiện ẩn</label>
@@ -131,7 +133,7 @@ export default function App() {
               <option value="" disabled>Chọn ví…</option>{wallets.map(w => <option key={w.adapter.name} value={w.adapter.name}>{w.adapter.name}</option>)}
             </select>
             <button className="nut-nhan" disabled={!wallet || busy || connecting} onClick={() => void run(async () => { setStatus("Hãy cho phép kết nối trong cửa sổ ví."); await connect(); setStatus("Đã kết nối. Chọn phiên bản và chuẩn bị yêu cầu."); })}>{connecting ? "Đang kết nối…" : "Kết nối ví"}</button>
-            <p className="sb-small">Chọn “Custos Demo Wallet” — tên của Ví mẫu Custos trong danh sách ví — để thấy Custos kiểm trước khi ký. Giữ cửa sổ ví mở sau khi kết nối.</p>
+            <p className="sb-small">Chọn “Custos Wallet” để thấy Custos kiểm giao dịch trước khi ký. Giữ cửa sổ ví mở sau khi kết nối.</p>
           </div> : <div className="sb-connected"><span title={address}>Đã kết nối: <code>{short(address!)}</code></span><button className="sb-link" disabled={busy} onClick={() => void run(async () => { await disconnect(); setStatus("Đã ngắt kết nối."); })}>Ngắt kết nối</button></div>}
           {connected && !correct && <p role="alert">Bản thử nghiệm chỉ dùng ví <code className="sb-address">{VI_DEMO.toBase58()}</code>. Hãy ngắt kết nối và chọn đúng ví demo.</p>}
           {correct && mode === "dieu-kien-an" && <div className="sb-tokens">
@@ -155,7 +157,7 @@ export default function App() {
       <div className="attack-explainer__body"><p>SolBonus tự đọc dữ liệu Devnet, dựng giao dịch và yêu cầu ví ký. Custos kiểm chính giao dịch đó bên trong ví. Nếu bạn huỷ, SolBonus không nhận được chữ ký để gửi.</p><p>Hai phiên bản dùng cùng giao diện và cùng luồng kết nối. Ở bản có điều kiện ẩn, nửa số DEMO được chuyển đi và phần còn lại thuộc quyền kiểm soát mới. Bản lành chỉ có phí mạng. Không phiên bản nào trả SOLB.</p></div>
     </section>
     <section className="attack-faq" aria-labelledby="faq-title"><h2 id="faq-title">Bắt đầu thử như thế nào?</h2><div>
-      <details><summary>Tôi cần chuẩn bị gì?</summary><p>Dùng ví demo cố định, nạp SOL Devnet để trả phí và tạo phiên 500 DEMO tại <a href={walletSetup} target="_blank" rel="noreferrer">ví thử nghiệm</a>. Trên SolBonus, kết nối Custos Demo Wallet và tìm token. File khoá chỉ được nạp trong cửa sổ ví; SolBonus không yêu cầu khoá.</p></details>
+      <details><summary>Tôi cần chuẩn bị gì?</summary><p>SOLB là phần thưởng hư cấu: không có token SOLB thật, và không phiên bản nào trả SOLB. Dùng ví thử nghiệm cố định, nạp SOL Devnet để trả phí và tạo phiên 500 DEMO tại <a href={walletSetup} target="_blank" rel="noreferrer">ví thử nghiệm</a>. Trên SolBonus, kết nối Custos Wallet và tìm token. File khoá chỉ được nạp trong cửa sổ ví; SolBonus không yêu cầu khoá.</p></details>
       <details><summary>Ví không mở hoặc đã đóng?</summary><p>Cho phép cửa sổ bật lên của trang này rồi bấm Kết nối ví lại. Nếu đã đóng ví, kết nối lại trước khi gửi yêu cầu mới.</p></details>
       <details><summary>Devnet không phản hồi?</summary><p>Trang hiển thị lỗi để bạn thử lại. Nếu đã nhận chữ ký, trang chỉ tra cứu chữ ký đó và giữ nút gửi khoá cho tới khi rõ kết quả. Không tự tạo giao dịch thay thế.</p></details>
     </div></section>

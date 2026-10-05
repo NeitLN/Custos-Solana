@@ -2,7 +2,7 @@
  * VÍ MẪU CUSTOS THEO WALLET STANDARD — spike G0-1.
  *
  * dApp gọi `registerCustosWallet({ url })` MỘT lần. Từ đó mọi thứ đi qua chuẩn: wallet-adapter
- * thấy "Custos Demo Wallet" trong danh sách ví, gọi `connect` / `signTransaction` như với bất
+ * thấy "Custos Wallet" trong danh sách ví, gọi `connect` / `signTransaction` như với bất
  * kỳ ví nào. dApp KHÔNG gọi `inspect()`, không import mã ví, không có đường nào lấy chữ ký mà
  * không qua cửa sổ ví — nơi Custos kiểm và người dùng quyết định.
  *
@@ -121,7 +121,7 @@ type Cho = { resolve: (v: KetQuaKetNoi | KetQuaKy | null) => void; reject: (e: E
 
 export class CustosWallet implements Wallet {
   readonly version = "1.0.0" as const;
-  readonly name = "Custos Demo Wallet";
+  readonly name = "Custos Wallet";
   readonly icon = ICON;
   readonly chains = [CHUOI_DEVNET] as const;
 
@@ -311,12 +311,12 @@ export class CustosWallet implements Wallet {
 
   #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
     if (inputs.length !== 1)
-      throw new LoiCustos("sai-yeu-cau", "Ví mẫu Custos chỉ ký MỘT giao dịch mỗi lần — mỗi giao dịch được kiểm riêng.");
+      throw new LoiCustos("sai-yeu-cau", "Ví Custos chỉ ký MỘT giao dịch mỗi lần — mỗi giao dịch được kiểm riêng.");
     const [i] = inputs;
     if (!i || !this.#accounts.some((a) => a.address === i.account.address))
       throw new LoiCustos("chua-ket-noi", CAU_LOI["chua-ket-noi"]);
     if (i.chain !== undefined && i.chain !== CHUOI_DEVNET)
-      throw new LoiCustos("sai-yeu-cau", "Ví mẫu Custos chỉ chạy trên Solana Devnet.");
+      throw new LoiCustos("sai-yeu-cau", "Ví Custos chỉ chạy trên Solana Devnet.");
     // Quá cỡ thì cửa sổ ví loại thông điệp mà không trả lời (`docYeuCau` → null): dApp sẽ chờ
     // trọn hạn rồi nhận "không rõ đã ký" — sai. Từ chối rõ ràng ngay tại đây.
     if (i.transaction.length === 0 || i.transaction.length > BYTE_TOI_DA)

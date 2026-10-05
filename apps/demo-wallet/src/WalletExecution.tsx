@@ -16,7 +16,8 @@ import { coAiKhong, dungGoiQuaServer } from "./goiAiQuaServer.ts";
 import { LiveSession, canBoQua, datDuPhongLive } from "./live/session.ts";
 import { moTaLoiLive } from "./live/loiRpc.ts";
 import { lyDoDappChuaSan } from "./live/sanSangDapp.ts";
-import { docHienTruong } from "./hienTruong.ts";
+import { chonRpc, docHienTruong, type HienTruong } from "./hienTruong.ts";
+import { HoatDong } from "./HoatDong.tsx";
 import { Receipt, token, short, explorer } from "./live/Receipt.tsx";
 
 const STORAGE = "custos.live-receipt.v1";
@@ -49,10 +50,14 @@ export function WalletExecution({
     () => new LiveSession(undefined, gan.bocInspect(inspect), undefined, (...args) => gan.interpreter()(...args)),
   );
   const [view, setView] = useState(session.view);
+  const [ht, setHt] = useState<HienTruong | null>(null);
   // RPC dự phòng của hiện trường (CK-01) — chỉ cho lệnh ĐỌC; gửi vẫn đi endpoint chính.
   useEffect(() => {
     // Kể cả khi không tải được hiện trường: bản DEV vẫn có `VITE_RPC_DU_PHONG` để kiểm.
-    void docHienTruong().then((ht) => datDuPhongLive(ht?.rpcDuPhong));
+    void docHienTruong().then((h) => {
+      setHt(h);
+      datDuPhongLive(h?.rpcDuPhong);
+    });
   }, []);
   const [cache] = useState(() => {
     try {
@@ -166,7 +171,7 @@ export function WalletExecution({
             );
           if (!cache)
             throw new Error(
-              "Cần cho phép lưu trạng thái công khai trên trình duyệt trước khi dùng ví demo. Khoá ký không được lưu.",
+              "Cần cho phép lưu trạng thái công khai trên trình duyệt trước khi dùng ví thử nghiệm. Khoá ký không được lưu.",
             );
           cache.assertCurrent();
           await fn();
@@ -252,10 +257,96 @@ export function WalletExecution({
     await session.refresh();
   };
 
+  /*
+   * R0-5 (ROADMAP-GIONG-THAT): khối thiết lập — nạp SOL, mở quyền ký bằng file khoá, tạo phiên. Có khoá
+   * (người trình diễn) thì nó đứng ở chỗ cũ, ngay trên các hành động. KHÔNG có khoá (giám khảo, người
+   * thử) thì nó xuống cuối thẻ, dưới tên "Dành cho người trình diễn": màn đầu phải là một việc làm được.
+   * Không thu vào <details>: probe gọi `Ký tạo phiên thử nghiệm` theo vai trò trước khi nạp khoá, và
+   * phần tử trong <details> đóng không có trong cây trợ năng.
+   */
+  const khoiThietLap = (funding || !view.accounts || !view.canSign) && (
+              <section className="wallet-funding" aria-labelledby="funding-title">
+                <h2 id="funding-title">
+                  {!view.canSign ? "Dành cho người trình diễn" : view.accounts ? "Nhận SOL Devnet" : "Chuẩn bị ví của bạn"}
+                </h2>
+                {!view.canSign && (
+                  <p className="wallet-presenter-note">
+                    Phần này cần file khoá của ví thử nghiệm — đội phát triển giữ. Không có khoá, bạn vẫn xem và
+                    chặn được yêu cầu ký của SolBonus ở trên khi ví còn phiên DEMO trên Devnet.
+                  </p>
+                )}
+                <p>
+                  Địa chỉ này cố định qua các lần mở trang. Giữ file keypair trên máy để dùng lại. Nạp tối
+                  thiểu 0,012 SOL Devnet để tạo 500 DEMO.
+                </p>
+                <label htmlFor="live-wallet-address">Địa chỉ nhận SOL Devnet</label>
+                <input id="live-wallet-address" value={view.wallet} readOnly />
+                <div className="wallet-inline-actions">
+                  <button disabled={view.busy} onClick={() => void copy()}>
+                    Sao chép
+                  </button>
+                  <a href={DEMO_FAUCET_URL} target="_blank" rel="noreferrer">
+                    Mở Solana Faucet ↗
+                  </a>
+                  <button disabled={view.busy} onClick={() => void run(() => session.refresh())}>
+                    Cập nhật số dư
+                  </button>
+                </div>
+                {!view.canSign && (
+                  <div className="wallet-unlock">
+                    <p className="wallet-unlock-title">Mở quyền ký bằng keypair của ví mặc định</p>
+                    {/* Điều khiển gốc của trình duyệt hiện "Choose File / No file chosen" giữa giao
+                        diện tiếng Việt (review 26/09, mục 3.11). Input vẫn giữ nguyên để bàn phím
+                        và trình đọc màn hình dùng được; nó chỉ ẩn về thị giác, nhãn ngay sau nó
+                        làm nút và nhận viền focus. */}
+                    <input
+                      id="demo-keypair"
+                      className="wallet-file-input"
+                      type="file"
+                      accept=".json,application/json"
+                      disabled={view.busy}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        e.target.value = "";
+                        if (file) void run(() => unlockFile(file));
+                      }}
+                    />
+                    <label htmlFor="demo-keypair" className="wallet-file-btn">
+                      Chọn file khoá (.json)…
+                    </label>
+                    <p>
+                      Chọn .devnet/vi-demo.json trên máy. File được đọc tại trình duyệt, không gửi lên server
+                      hoặc lưu vào localStorage.
+                    </p>
+                    <p className="wallet-unlock-warning" role="note">
+                      <strong>Chỉ dùng với ví Devnet cố định của bản thử nghiệm.</strong> Không bao giờ nạp khoá
+                      riêng của ví thật vào một trang web — kể cả trang này.
+                    </p>
+                  </div>
+                )}
+                {view.canSign && <p>Đã mở quyền ký đúng ví mặc định.</p>}
+                {!view.accounts && (
+                  <>
+                    <p>
+                      Thao tác tạo mint, ba tài khoản token và cấp 0,001 SOL Devnet cho ứng dụng thử nghiệm
+                      trả phí bước sau. Không thể hoàn tác giao dịch đã gửi.
+                    </p>
+                    <button
+                      className="nut nut-chinh wallet-setup-button"
+                      disabled={view.busy || !view.canSign || !cacheReady || unresolved}
+                      onClick={() => void run(() => session.setup())}
+                    >
+                      Ký tạo phiên thử nghiệm
+                    </button>
+                  </>
+                )}
+              </section>
+  );
+
   return (
     <div className="app-shell demo-shell wallet-execution min-h-screen bg-nen text-chu">
       <DaiPhamVi nhan="Mạng thử nghiệm">
-        <strong>Solana Devnet</strong> · ví demo cố định · token không có giá trị tiền thật
+        <strong>Solana Devnet</strong> · ví thử nghiệm cố định · token không có giá trị tiền thật
       </DaiPhamVi>
       <div className="wallet-container">
         <header className="wallet-header flex items-center justify-between gap-4">
@@ -266,9 +357,9 @@ export function WalletExecution({
             <img src={`${import.meta.env.BASE_URL}brand/custos-symbol.svg`} alt="" width="40" height="40" />
             <div>
               <p className="wallet-brand__title">
-                Custos <span className="demo-brand-label">Demo</span>
+                Custos <span className="demo-brand-label">Devnet</span>
               </p>
-              <p className="wallet-brand__subtitle">Ví mẫu tích hợp Custos SDK</p>
+              <p className="wallet-brand__subtitle">Ví tham chiếu tích hợp Custos SDK</p>
             </div>
           </a>
           <div className="wallet-header__actions">
@@ -299,6 +390,29 @@ export function WalletExecution({
         </section>
         <main className="demo-workspace grid items-start">
           <section className="wallet-card overflow-hidden">
+            {/* Chưa có khoá ⇒ việc làm được đứng ĐẦU thẻ, cả về DOM lẫn hiển thị: đổi thứ tự bằng CSS
+                `order` từng làm focus đi qua số dư và ba nút nhanh trước (WCAG 2.4.3, Codex review 06/10). */}
+            {!view.canSign && (
+              <section className="wallet-start" aria-labelledby="wallet-start-title">
+                <h2 id="wallet-start-title">Mở một ứng dụng để thử</h2>
+                <p>
+                  SolBonus là một dApp độc hại <strong>mô phỏng</strong>. Nó kết nối với Ví Custos qua chuẩn ví và
+                  dựng một yêu cầu ký từ phiên token DEMO của ví này trên Devnet; Custos kiểm đúng giao dịch đó
+                  trong cửa sổ ký. Xem cảnh báo và chặn không cần file khoá — chỉ ký thật mới cần.
+                </p>
+                <button
+                  type="button"
+                  className="nut nut-chinh wallet-start__mo"
+                  disabled={view.busy || unresolved || !!p}
+                  onClick={openDapp}
+                >
+                  Mở SolBonus ↗
+                </button>
+                <p className="wallet-start__phu">
+                  Chỉ muốn đọc phân tích? Chuyển sang <strong>Phòng phân tích</strong> ở thanh phía trên.
+                </p>
+              </section>
+            )}
             <div className="wallet-card__top">
               <div className="wallet-identity flex items-center justify-between gap-3">
                 <div className="wallet-profile flex items-center gap-3">
@@ -322,7 +436,11 @@ export function WalletExecution({
               <div className="wallet-balance">
                 <p className="wallet-balance__label">Số dư tài khoản DEMO</p>
                 <div className="wallet-balance__amount flex items-baseline gap-3">
-                  <span className="balance-number">{token(view.balance)}</span>
+                  {/* Chưa đọc số dư: giữ chữ nhưng ở cỡ trạng thái — con số khổng lồ "Chưa đo" chiếm chỗ đẹp
+                      nhất mà không nói gì (redesign 06/10). */}
+                  <span className={`balance-number${view.balance === null ? " balance-number--chua-do" : ""}`}>
+                    {token(view.balance)}
+                  </span>
                   <span className="balance-unit">DEMO</span>
                 </div>
                 <p className="wallet-balance__note text-chu-mo">
@@ -398,76 +516,7 @@ export function WalletExecution({
                 </form>
               )}
             </div>
-            {(funding || !view.accounts || !view.canSign) && (
-              <section className="wallet-funding" aria-labelledby="funding-title">
-                <h2 id="funding-title">{view.accounts ? "Nhận SOL Devnet" : "Chuẩn bị ví của bạn"}</h2>
-                <p>
-                  Địa chỉ này cố định qua các lần mở trang. Giữ file keypair trên máy để dùng lại. Nạp tối
-                  thiểu 0,012 SOL Devnet để tạo 500 DEMO.
-                </p>
-                <label htmlFor="live-wallet-address">Địa chỉ nhận SOL Devnet</label>
-                <input id="live-wallet-address" value={view.wallet} readOnly />
-                <div className="wallet-inline-actions">
-                  <button disabled={view.busy} onClick={() => void copy()}>
-                    Sao chép
-                  </button>
-                  <a href={DEMO_FAUCET_URL} target="_blank" rel="noreferrer">
-                    Mở Solana Faucet ↗
-                  </a>
-                  <button disabled={view.busy} onClick={() => void run(() => session.refresh())}>
-                    Cập nhật số dư
-                  </button>
-                </div>
-                {!view.canSign && (
-                  <div className="wallet-unlock">
-                    <p className="wallet-unlock-title">Mở quyền ký bằng keypair của ví mặc định</p>
-                    {/* Điều khiển gốc của trình duyệt hiện "Choose File / No file chosen" giữa giao
-                        diện tiếng Việt (review 26/09, mục 3.11). Input vẫn giữ nguyên để bàn phím
-                        và trình đọc màn hình dùng được; nó chỉ ẩn về thị giác, nhãn ngay sau nó
-                        làm nút và nhận viền focus. */}
-                    <input
-                      id="demo-keypair"
-                      className="wallet-file-input"
-                      type="file"
-                      accept=".json,application/json"
-                      disabled={view.busy}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        e.target.value = "";
-                        if (file) void run(() => unlockFile(file));
-                      }}
-                    />
-                    <label htmlFor="demo-keypair" className="wallet-file-btn">
-                      Chọn file khoá (.json)…
-                    </label>
-                    <p>
-                      Chọn .devnet/vi-demo.json trên máy. File được đọc tại trình duyệt, không gửi lên server
-                      hoặc lưu vào localStorage.
-                    </p>
-                    <p className="wallet-unlock-warning" role="note">
-                      <strong>Chỉ dùng với ví Devnet cố định của bản demo.</strong> Không bao giờ nạp khoá
-                      riêng của ví thật vào một trang web — kể cả trang này.
-                    </p>
-                  </div>
-                )}
-                {view.canSign && <p>Đã mở quyền ký đúng ví mặc định.</p>}
-                {!view.accounts && (
-                  <>
-                    <p>
-                      Thao tác tạo mint, ba tài khoản token và cấp 0,001 SOL Devnet cho ứng dụng thử nghiệm
-                      trả phí bước sau. Không thể hoàn tác giao dịch đã gửi.
-                    </p>
-                    <button
-                      className="nut nut-chinh wallet-setup-button"
-                      disabled={view.busy || !view.canSign || !cacheReady || unresolved}
-                      onClick={() => void run(() => session.setup())}
-                    >
-                      Ký tạo phiên thử nghiệm
-                    </button>
-                  </>
-                )}
-              </section>
-            )}
+            {view.canSign && khoiThietLap}
             <div className="wallet-actions">
               <label
                 className={`protection-switch flex items-center justify-between gap-4 ${view.protected ? "is-on" : "is-off"}`}
@@ -647,7 +696,17 @@ export function WalletExecution({
                 )}
               </details>
             </div>
-            <section className="wallet-history" aria-labelledby="history-title">
+            {/* Phiên chưa ký gì ⇒ đọc giao dịch THẬT gần nhất của chính ví này từ Devnet (R0-5). Không dùng
+                lớp `.wallet-history`: đó là lịch sử biên nhận của PHIÊN, probe đếm nó bằng 0 với ví mới. */}
+            {history.length === 0 && visible && (
+              <HoatDong
+                rpc={chonRpc(ht)}
+                diaChi={view.wallet}
+                tieuDe="Giao dịch gần đây của ví này trên Devnet"
+                khiRong="Ví này chưa có giao dịch nào trên Devnet. Người trình diễn có thể ký thử bằng file khoá."
+              />
+            )}
+            <section className="wallet-history" aria-labelledby="history-title" hidden={history.length === 0}>
               <h2 id="history-title">Lịch sử giao dịch</h2>
               {history.length === 0 ? (
                 <p>Chưa có giao dịch được ký. Huỷ trước khi ký không tạo giao dịch trên chuỗi.</p>
@@ -681,6 +740,7 @@ export function WalletExecution({
                 </ul>
               )}
             </section>
+            {!view.canSign && khoiThietLap}
           </section>
           {/* Trên điện thoại cột này xếp DƯỚI cột ví dài. Khi có yêu cầu ký hay kết quả, CSS đưa
               nó lên đầu (`data-noi-bat`) — đó là thứ người dùng phải đọc trước khi quyết định.
@@ -885,7 +945,7 @@ export function WalletExecution({
         <footer className="wallet-footer">
           Custos phân tích. Bạn quyết định. Ví ký và gửi trên Solana Devnet.
           <br />
-          Các kịch bản nâng cao nằm trong “Phòng phân tích” ở đầu trang.
+          Các tình huống nâng cao nằm trong “Phòng phân tích” ở đầu trang.
         </footer>
       </div>
     </div>

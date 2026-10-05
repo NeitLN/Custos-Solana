@@ -52,7 +52,7 @@ with sync_playwright() as pw:
     try:
         page.goto(args.url, wait_until='networkidle')
         wallet = page.locator('#live-wallet-address').input_value()
-        assert page.get_by_role('link', name='Ví mẫu', exact=True).get_attribute('aria-current') == 'page'
+        assert page.get_by_role('link', name='Ví Custos', exact=True).get_attribute('aria-current') == 'page'
         assert page.get_by_role('link', name='Giao dịch thật', exact=True).count() == 0
         page.locator('#demo-keypair').set_input_files('.devnet/vi-demo.json')
         page.get_by_text('Đã mở quyền ký đúng ví mặc định.',exact=True).wait_for()

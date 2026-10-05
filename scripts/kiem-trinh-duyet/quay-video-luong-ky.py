@@ -2,7 +2,7 @@
 QUAY VIDEO DỰ PHÒNG — luồng dApp → ví → Custos → Chặn, trên production. Đánh giá giám khảo 05/10:
 "quay video mới cho luồng Wallet Standard, làm dự phòng khi RPC trên sân khấu chậm".
 
-Playwright quay HAI cửa sổ (SolBonus và cửa sổ ký của Ví mẫu Custos), ghi mốc thời gian từng bước,
+Playwright quay HAI cửa sổ (SolBonus và cửa sổ ký của Ví Custos), ghi mốc thời gian từng bước,
 rồi ffmpeg ghép thành MỘT video cạnh nhau, đồng bộ, có phụ đề tiếng Việt. Không có file khoá, KHÔNG ký,
 KHÔNG gửi giao dịch nào — luồng kết thúc bằng "Chặn giao dịch". Lượt ký thật được dẫn bằng link ở cuối.
 
@@ -44,7 +44,7 @@ with sync_playwright() as pw:
     t_vi = round(time.time() - t0, 2)
     vi.set_viewport_size({"width": W_VI, "height": H})
     vi.wait_for_load_state("networkidle")
-    ghi("Bấm Kết nối ví → cửa sổ Ví mẫu Custos mở ở origin riêng")
+    ghi("Bấm Kết nối ví → cửa sổ Ví Custos mở ở origin riêng")
     vi.wait_for_timeout(2500)
     vi.get_by_role("button", name="Cho kết nối").click()
     ghi("Cho kết nối: ứng dụng chỉ thấy địa chỉ ví")

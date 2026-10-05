@@ -67,11 +67,11 @@ export default function App() {
    * chỉ có một. Giờ header giống nhau ở mọi trang; đây là bộ chuyển trong trang.
    */
   const chuyenMan = (
-    <nav className="wallet-surface-bar" aria-label="Không gian ví mẫu">
+    <nav className="wallet-surface-bar" aria-label="Không gian Ví Custos">
       {/* Phân tích đứng trước và là mặc định: chạy được với mọi người, không cần khoá. */}
       <button aria-pressed={surface === "analysis"} disabled={walletBusy} onClick={() => setSurface("analysis")}>Phòng phân tích</button>
       <button aria-pressed={surface === "wallet"} disabled={walletBusy} onClick={() => setSurface("wallet")}>Ví của bạn</button>
-      <span>{surface === "wallet" ? "Ký và thực thi trên Devnet" : "Phân tích các kịch bản trên hiện trường mẫu"}</span>
+      <span>{surface === "wallet" ? "Ký và thực thi trên Devnet" : "Thử các yêu cầu ký và đọc phân tích của Custos"}</span>
     </nav>
   );
   return <>
@@ -131,6 +131,20 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
     o.scrollIntoView({ behavior: itChuyenDong ? "auto" : "smooth", block: "start" });
     o.focus({ preventScroll: true });
   }, [ketQua]);
+  /*
+   * DI ĐỘNG: CUỘN TỚI KHUNG KIỂM NGAY KHI BẤM (redesign 06/10). Ở màn hẹp, khung kết quả nằm dưới cột kịch
+   * bản (~2000 px); một lượt Devnet mất ~4 s, và trong lúc đó người bấm thấy màn hình không đổi gì. Cuộn tới
+   * khung đang mô phỏng ngay lúc bắt đầu; khi kết quả về, đoạn cuộn tới kết quả ở trên vẫn chạy như cũ.
+   * Màn rộng có hai cột cạnh nhau nên không cuộn.
+   */
+  const oKiem = useRef<HTMLElement | null>(null);
+  const cuonToiKhungKiem = useCallback(() => {
+    const o = oKiem.current;
+    if (!o || !(window.matchMedia?.("(max-width: 1023px)").matches ?? false)) return;
+    if (o.getBoundingClientRect().top < window.innerHeight * 0.4) return; // đã trong tầm nhìn
+    const itChuyenDong = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    o.scrollIntoView({ behavior: itChuyenDong ? "auto" : "smooth", block: "start" });
+  }, []);
   // Nhịp 1 của kịch bản demo, dựng lại KHÔNG cần khoá ký — xem HauQua.tsx.
   const [hauQua, setHauQua] = useState<InspectResult | null>(null);
   const [kichCuoi, setKichCuoi] = useState<Kich>("tan-cong-day-du");
@@ -754,7 +768,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
   return (
     <div className="app-shell demo-shell min-h-screen bg-nen text-chu">
       <DaiPhamVi>
-        Bản trình diễn trên <strong>Solana Devnet</strong> · không dùng tài sản thật
+        <strong>Solana Devnet</strong> · môi trường thử nghiệm, không dùng tài sản thật
       </DaiPhamVi>
 
       {cheDo?.loai === "mock" && (
@@ -769,7 +783,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         </div>
       )}
 
-      <div className="relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
+      <div className="demo-container relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
         <header className="wallet-header flex items-center justify-between gap-4">
           <div className="wallet-brand flex min-w-0 items-center gap-3">
             <div className="brand-mark grid h-11 w-11 shrink-0 place-items-center" aria-hidden="true">
@@ -783,7 +797,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
             </div>
             <div className="wallet-brand__copy min-w-0">
               <p className="wallet-brand__title text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
-                Custos <span className="demo-brand-label">Demo</span>
+                Custos <span className="demo-brand-label">Devnet</span>
               </p>
               {/* CUSTOS KHÔNG BÁN VÍ. Custos bán SDK cho ví.
                   "Custos Wallet" + "Ví Devnet · kiểm tra giao dịch trước khi ký" đọc
@@ -800,7 +814,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   để nói lại điều mà banner trên đầu và chip bên cạnh đã nói. Ba lần
                   cùng một chữ không làm ai tin hơn, chỉ làm dòng bị gãy. */}
               <p className="wallet-brand__subtitle mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
-                Ví mẫu tích hợp Custos SDK
+                Ví tham chiếu tích hợp Custos SDK
               </p>
             </div>
           </div>
@@ -813,9 +827,9 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
 
         <section className="demo-intro" aria-labelledby="demo-title">
           <div>
-            <p className="demo-eyebrow">Không gian trải nghiệm</p>
-            <h1 id="demo-title">Một giao dịch.<br /><span>Nhìn rõ trước khi ký.</span></h1>
-            <p className="demo-intro__description">Chọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được.</p>
+            <p className="demo-eyebrow"><ShieldIcon className="h-4 w-4" /> Trải nghiệm Custos SDK</p>
+            <h1 id="demo-title">Biết điều gì sẽ đổi.<br /><span>Trước khi bạn ký.</span></h1>
+            <p className="demo-intro__description">Một chữ ký có thể đổi cả tài sản lẫn quyền kiểm soát. Custos giúp bạn nhìn rõ hậu quả — và phần chưa đọc hiểu.</p>
           </div>
           <ol className="demo-steps" aria-label="Các bước trải nghiệm">
             {["Chọn tình huống", "Custos phân tích", "Đọc kết quả"].map((label, i) => {
@@ -873,7 +887,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       <WalletIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-[15px] font-semibold text-chu">Custos Demo 01</div>
+                      <div className="truncate text-[15px] font-semibold text-chu">Tài khoản thử nghiệm</div>
                       <div className="text-[12px] text-chu-mo">Ví thử nghiệm của bạn</div>
                     </div>
                   </div>
@@ -890,7 +904,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
 
                 <div className="wallet-balance mt-7">
                   <div className="wallet-balance__label flex items-center gap-2 text-[12px] text-chu-mo">
-                    Tổng tài sản thử nghiệm
+                    Số dư token thử nghiệm
                     <span className="token-badge rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-chu-nhat">SPL</span>
                   </div>
                   <div className="wallet-balance__amount mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -904,9 +918,27 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
               </div>
 
               <div className="wallet-actions border-t px-5 py-5 sm:px-6">
-                <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
-                  <span className="demo-section-number">01</span> Chọn một giao dịch để thử
-                </h2>
+                <div className="demo-scenario-heading">
+                  <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
+                    <span className="demo-section-number">01</span> Thử một yêu cầu ký
+                  </h2>
+                  <span className="demo-scenario-source">Nguồn: {nguonKiem === "trucTiep" ? "Devnet trực tiếp" : "Dữ liệu đã ghi"}</span>
+                </div>
+                <PhongKichBan
+                  dangChay={dangChay}
+                  kichDangXem={ketQua || hauQua || dangChay || loi ? kichCuoi : undefined}
+                  onChon={(id) => {
+                    setDaChay((d) => new Set(d).add(id));
+                    cuonToiKhungKiem();
+                    void bam(id);
+                  }}
+                  daChay={daChay}
+                  coKetQua={!!ketQua}
+                  onMoBangChung={() => {
+                    ghi("mở dữ kiện của kết quả đang xem");
+                    setMoBangChung((n) => n + 1);
+                  }}
+                />
                 {/*
                   CHẾ ĐỘ DIỄN GIẢI, NÓI RA TRƯỚC KHI AI BẤM GÌ.
                   Nhãn dưới câu giải thích chỉ hiện SAU một lượt kiểm; người trình bày
@@ -914,7 +946,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   "AI thật" trên một bản không có máy chủ. Nhãn nói về CÂU CHỮ, không
                   về verdict — mức cảnh báo luôn do engine luật quyết.
                 */}
-                <p className="mb-3 text-[12px] leading-relaxed text-chu-mo" data-che-do-ai={coAi === null ? "dang-kiem" : coAi ? "mo-hinh" : "tat-dinh"}>
+                <p className="demo-interpreter-note mb-3 text-[12px] leading-relaxed text-chu-mo" data-che-do-ai={coAi === null ? "dang-kiem" : coAi ? "mo-hinh" : "tat-dinh"}>
                   {coAi === null
                     ? "Đang kiểm máy chủ diễn giải…"
                     : coAi
@@ -931,6 +963,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   NGUỒN DỮ LIỆU — CK-01/CK-02. Người xem CHỌN, không có gì tự đổi nguồn
                   sau lưng họ: live lỗi thì thẻ lỗi ĐỀ NGHỊ phát lại, không tự chuyển.
                 */}
+                {/* R0-2 (ROADMAP-GIONG-THAT): bộ chọn nguồn thu vào "Tuỳ chọn" — chip "Nguồn: …" ở đầu mục vẫn
+                    luôn nói đang dùng nguồn nào, nên thu gọn không giấu gì khỏi người xem. */}
+                <details className="nguon-tuy-chon mb-3">
+                <summary>Tuỳ chọn nguồn dữ liệu</summary>
                 <fieldset className="nguon-kiem mb-3 rounded-xl border border-vien p-3" data-chon-nguon={nguonKiem}>
                   <legend className="px-1 text-[12px] font-semibold text-chu">Nguồn dữ liệu</legend>
                   <div className="flex flex-wrap gap-2">
@@ -976,19 +1012,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     </div>
                   )}
                 </fieldset>
-                <PhongKichBan
-                  dangChay={dangChay}
-                  onChon={(id) => {
-                    setDaChay((d) => new Set(d).add(id));
-                    void bam(id);
-                  }}
-                  daChay={daChay}
-                  coKetQua={!!ketQua}
-                  onMoBangChung={() => {
-                    ghi("mở dữ kiện của kết quả đang xem");
-                    setMoBangChung((n) => n + 1);
-                  }}
-                />
+                </details>
 
                 <label className={`protection-switch mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-4 ${batCustos ? "is-on" : "is-off"}`}>
                   <span className="flex min-w-0 items-center gap-3">
@@ -1019,7 +1043,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
               <HoatDong rpc={chonRpc(ht)} diaChi={ht.nanNhan} />
             </section>
 
-            <section className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
+            <section ref={oKiem} className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
               <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
                 <div>
                   <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu"><span className="demo-section-number">02</span> Kiểm tra trước khi ký</h2>
@@ -1055,10 +1079,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <div className="demo-empty-heading flex items-start gap-3.5">
                       <div>
                         <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-chu">
-                          Giao dịch chưa ký. Quyết định vẫn ở bạn.
+                          Đằng sau một lời mời ký là gì?
                         </h3>
                         <p className="mt-1 text-[13px] leading-relaxed text-chu-mo">
-                          Bấm “Tấn công đầy đủ” (lời mời “Nhận quà tặng”) hoặc “Giao dịch lành tính” (gửi 10 token) ở cột trái để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.
+                          Thử “Gửi 10 token” rồi “Nhận quà tặng” để đối chiếu. Custos sẽ cho bạn thấy những thay đổi trước khi quyết định ký.
                         </p>
                       </div>
                     </div>
@@ -1071,8 +1095,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                           viDu: "Trước → Sau",
                         },
                         {
-                          tieuDe: "Vì sao nguy hiểm, bằng tiếng Việt",
-                          mo: "Một câu nói rõ hậu quả, không phải mã lỗi.",
+                          tieuDe: "Hiểu lý do bằng tiếng Việt",
+                          mo: "Giải thích hậu quả từ dữ kiện đã phân tích.",
                           viDu: "Lý do cảnh báo",
                         },
                         {
@@ -1110,14 +1134,16 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       <div className="scanner-ring absolute inset-0 rounded-full" />
                       <ShieldIcon className="h-9 w-9 text-nhan" />
                     </div>
-                    <h3 className="mt-6 text-[18px] font-semibold text-chu">Đang mô phỏng giao dịch</h3>
+                    <h3 className="mt-6 text-[18px] font-semibold text-chu">{nguonKiem === "trucTiep" ? "Đang mô phỏng giao dịch" : "Đang phân tích dữ liệu đã ghi"}</h3>
                     <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
-                      Custos đang đọc từng lệnh trong giao dịch và đối chiếu thay đổi tài sản trên Devnet.
+                      {nguonKiem === "trucTiep"
+                        ? "Custos đang đọc từng lệnh trong giao dịch và đối chiếu thay đổi tài sản trên Devnet."
+                        : "Custos đang chạy engine trên phản hồi RPC đã ghi. Không gọi mạng, không ký."}
                     </p>
                     <div className="mt-6 w-full max-w-xs space-y-2">
                       <div className="scan-line h-1.5 overflow-hidden rounded-full"><span /></div>
                       <div className="flex justify-between text-[12px] text-chu-mo">
-                        <span>Đang mô phỏng trên Devnet</span>
+                        <span>{nguonKiem === "trucTiep" ? "Đang mô phỏng trên Devnet" : "Đang chạy trên dữ liệu đã ghi"}</span>
                         <span aria-hidden="true">…</span>
                       </div>
                     </div>
@@ -1221,7 +1247,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       không phải kết luận giao dịch an toàn.
                     </p>
                     <p className="mt-1 text-chu-mo">
-                      Hãy quay lại ứng dụng và tạo yêu cầu mới, hoặc thử một kịch bản bên dưới.
+                      Hãy quay lại ứng dụng và tạo yêu cầu mới, hoặc thử một tình huống bên dưới.
                     </p>
                   </div>
                 )}
@@ -1231,7 +1257,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <div className="font-semibold text-chu">Đã huỷ yêu cầu</div>
                     <p className="mt-1 text-chu-mo">
                       Giao dịch này <strong>chưa được gửi</strong> và sẽ không được gửi. Bạn có thể
-                      chạy lại một kịch bản bên dưới để thử tiếp.
+                      chạy lại một tình huống bên dưới để thử tiếp.
                     </p>
                   </div>
                 )}
@@ -1336,7 +1362,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         )}
 
         <footer className="mt-5 flex flex-col gap-2 px-1 text-[10.5px] leading-relaxed text-chu-mo sm:flex-row sm:items-center sm:justify-between">
-          <span>Ví mẫu minh hoạ cách tích hợp Custos · Không phải sản phẩm lưu ký tài sản.</span>
+          <span>Ví tham chiếu cho nhà phát triển tích hợp Custos · Không lưu ký tài sản.</span>
           <span className="text-chu-nhat">Engine luật quyết định mức cảnh báo · AI không được đổi mức</span>
         </footer>
       </div>
@@ -1367,7 +1393,7 @@ function BaoCham({ trucTiep }: { trucTiep: boolean }) {
       Devnet đang trả lời chậm hơn thường lệ. Custos vẫn chờ; nếu hết thời hạn, bạn sẽ được báo và có thể thử lại.
       {trucTiep && (
         <>
-          {" "}Muốn xem ngay: chọn <strong>Dữ liệu đã ghi</strong> ở cột trái rồi bấm lại — phát lại dữ liệu Devnet đã
+          {" "}Muốn xem ngay: mở <strong>Tuỳ chọn nguồn dữ liệu</strong>, chọn <strong>Dữ liệu đã ghi</strong> rồi bấm lại — phát lại dữ liệu Devnet đã
           ghi, không cần mạng.
         </>
       )}

@@ -31,7 +31,18 @@ function khoangCach(luc: number | null): string {
   return `${Math.floor(gio / 24)} ngày trước`;
 }
 
-export function HoatDong({ rpc, diaChi }: { rpc: string; diaChi: string }) {
+export function HoatDong({
+  rpc,
+  diaChi,
+  tieuDe = "Hoạt động gần đây",
+  khiRong = "Ví này chưa có giao dịch nào trên Devnet. Thử một kịch bản ở trên để tạo giao dịch đầu tiên.",
+}: {
+  rpc: string;
+  diaChi: string;
+  tieuDe?: string;
+  /** Câu khi ví chưa có giao dịch — tuỳ màn: người xem tab Ví không có khoá thì không tự tạo được giao dịch. */
+  khiRong?: string;
+}) {
   const [tt, setTt] = useState<TrangThai>({ loai: "dangTai" });
 
   useEffect(() => {
@@ -56,7 +67,7 @@ export function HoatDong({ rpc, diaChi }: { rpc: string; diaChi: string }) {
 
   return (
     <section className="border-t border-vien px-5 py-5 sm:px-6">
-      <h2 className="mb-3 text-[13.5px] font-semibold text-chu">Hoạt động gần đây</h2>
+      <h2 className="mb-3 text-[13.5px] font-semibold text-chu">{tieuDe}</h2>
 
       {tt.loai === "dangTai" && (
         <ul className="space-y-2.5" aria-busy="true" aria-label="Đang tải hoạt động">
@@ -78,8 +89,7 @@ export function HoatDong({ rpc, diaChi }: { rpc: string; diaChi: string }) {
 
       {tt.loai === "xong" && tt.muc.length === 0 && (
         <p className="text-[12.5px] leading-relaxed text-chu-mo">
-          Ví này chưa có giao dịch nào trên Devnet. Thử một kịch bản ở trên để tạo giao dịch
-          đầu tiên.
+          {khiRong}
         </p>
       )}
 

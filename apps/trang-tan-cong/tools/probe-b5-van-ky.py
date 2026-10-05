@@ -1,7 +1,7 @@
 """
 B5 · nhánh "Vẫn ký" trên HAI ORIGIN HTTPS CÔNG KHAI — chủ dự án đồng ý 29/09/2026.
 
-SolBonus (solbonus-custos.vercel.app) → Custos Demo Wallet (custos-solana.vercel.app/ket-noi.html)
+SolBonus (solbonus-custos.vercel.app) → Custos Wallet (custos-solana.vercel.app/ket-noi.html)
 → Nguy hiểm → người dùng vẫn ký → SolBonus tự gửi → ví đối chiếu dự báo ↔ thực tế trên chain.
 
 Chỉ ví demo cố định, chỉ token DEMO của phiên, Devnet. Trình chặn popup BẬT. Khoá chỉ được nạp

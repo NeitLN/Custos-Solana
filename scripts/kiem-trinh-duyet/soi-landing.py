@@ -304,7 +304,7 @@ async def main() -> None:
         for duong, ten, mong in [
             # Neo vào chữ của khung làm việc, không vào tiêu đề thương hiệu: cả hai đã
             # đổi theo đợt thiết kế ("Custos Wallet", "Kiểm một giao dịch").
-            ("/", "ví mẫu", "Ví mẫu tích hợp Custos SDK"),
+            ("/", "ví mẫu", "Ví tham chiếu tích hợp Custos SDK"),
             ("/soi.html", "Inspector", "Giao dịch cần kiểm tra"),
             ("/so-lieu.html", "số liệu", "Custos"),
         ]:

@@ -17,7 +17,7 @@
  */
 import type { ReactNode } from "react";
 import { KICH_BAN, timKichBan, type KichBan, type NhomRuiRo } from "./kichBan.ts";
-import { ArrowIcon, GiftIcon, SendIcon } from "./Icons.tsx";
+import { ArrowIcon, CheckIcon, GiftIcon, SendIcon } from "./Icons.tsx";
 
 /** Ba chặng của luồng hướng dẫn — ID lấy từ sổ, lời mời lấy từ sổ. */
 export const CHANG_HUONG_DAN = [
@@ -28,7 +28,7 @@ export const CHANG_HUONG_DAN = [
   },
   {
     kich: "tan-cong-day-du",
-    ten: "Một lời mời ký — mất cả tài sản lẫn quyền",
+    ten: "Lời mời nhận quà",
     yNghia: "Token rời ví VÀ tài khoản token đổi chủ. Bảng số dư thường chỉ thấy vế đầu.",
   },
 ] as const;
@@ -49,6 +49,8 @@ function NutKichBan({
   onChon,
   nhan,
   hienLoiMoi = false,
+  daXem = false,
+  dangXem = false,
 }: {
   kb: KichBan;
   dangChay: boolean;
@@ -56,6 +58,8 @@ function NutKichBan({
   nhan?: ReactNode;
   /** Luồng hướng dẫn luôn hiện LỜI MỜI — câu trang độc hại (hay bạn bè) sẽ nói. */
   hienLoiMoi?: boolean;
+  daXem?: boolean;
+  dangXem?: boolean;
 }) {
   const nhe = kb.nhom === "doiChung" || kb.nhom === "thieuDuLieu";
   return (
@@ -63,6 +67,7 @@ function NutKichBan({
       type="button"
       onClick={() => onChon(kb.id)}
       disabled={dangChay}
+      aria-current={dangXem ? "true" : undefined}
       title={kb.tienDieuKien}
       className={`action-card group flex min-h-[102px] flex-col items-start justify-between rounded-2xl p-4 text-left disabled:cursor-not-allowed disabled:opacity-45${
         nhe ? "" : " action-card--primary"
@@ -76,14 +81,14 @@ function NutKichBan({
         >
           {nhe ? <SendIcon className="h-5 w-5" /> : <GiftIcon className="h-5 w-5" />}
         </span>
-        <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />
+        {daXem && !dangXem ? <CheckIcon className="h-4 w-4 text-chu-mo" /> : <ArrowIcon className="h-4 w-4 text-chu-mo transition-transform group-hover:translate-x-0.5" />}
       </div>
       <span>
         {nhan && <span className="block text-[11px] font-semibold uppercase tracking-wide text-chu-mo">{nhan}</span>}
-        <span className="block text-[14px] font-semibold text-chu">{kb.tieuDe}</span>
+        <span className="block text-[14px] font-semibold text-chu">{hienLoiMoi ? kb.loiMoi : kb.tieuDe}</span>
         <span className="mt-0.5 block text-[11.5px] text-chu-mo">
           {hienLoiMoi
-            ? kb.loiMoi
+            ? kb.tieuDe
             : kb.nhom === "doiChung"
             ? "Giao dịch tương tự để đối chiếu"
             : kb.nhom === "thieuDuLieu"
@@ -112,6 +117,7 @@ export function PhongKichBan({
   daChay,
   coKetQua,
   onMoBangChung,
+  kichDangXem,
 }: {
   dangChay: boolean;
   onChon: (id: string) => void;
@@ -119,6 +125,7 @@ export function PhongKichBan({
   daChay: ReadonlySet<string>;
   coKetQua: boolean;
   onMoBangChung: () => void;
+  kichDangXem?: string | undefined;
 }) {
   // Ca đối chiếu CHƯA được đặt cạnh ca nguy hiểm nào (vd. ca lành tính gốc) — vẫn phải dễ tìm.
   const daDat = new Set(NHOM.flatMap((g) => xepNhom(g.nhom).map((x) => x.kb.id)));
@@ -128,9 +135,9 @@ export function PhongKichBan({
     <div className="phong-kich-ban">
       <section aria-labelledby="huong-dan-tieu-de" className="huong-dan mb-3 rounded-xl border border-vien p-3">
         <h3 id="huong-dan-tieu-de" className="text-[13px] font-semibold text-chu">
-          Thử có hướng dẫn — 3 bước
+          Bắt đầu với hai tình huống
         </h3>
-        <ol className="mt-2 grid gap-2.5 sm:grid-cols-2">
+        <ol className="demo-guided-cases mt-2 grid gap-2.5 sm:grid-cols-2">
           {CHANG_HUONG_DAN.map((c, i) => {
             const kb = timKichBan(c.kich)!;
             return (
@@ -140,19 +147,15 @@ export function PhongKichBan({
                     Bước {i + 1} · {c.ten}
                     {daChay.has(c.kich) ? " — đã xem" : ""}
                   </span>
-                  <br />
-                  {c.yNghia}
                 </p>
-                <NutKichBan kb={kb} dangChay={dangChay} onChon={onChon} hienLoiMoi />
+                <NutKichBan kb={kb} dangChay={dangChay} onChon={onChon} hienLoiMoi daXem={daChay.has(c.kich)} dangXem={kichDangXem === c.kich} />
+                <p className="demo-case-context">{c.yNghia}</p>
               </li>
             );
           })}
         </ol>
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="text-[12px] text-chu-mo">
-            <span className="font-semibold text-chu">Bước 3 · Đọc dữ kiện</span> — kết quả đến từ lệnh, chương
-            trình và tài khoản nào.
-          </p>
+        <div className="demo-evidence-link mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <p className="text-[12px] text-chu-mo"><span className="font-semibold text-chu">Bước 3 · Kiểm chứng kết quả</span></p>
           <button
             type="button"
             className="lien-ket min-h-[44px] text-[12.5px] font-medium text-chu underline underline-offset-4 disabled:opacity-45"
@@ -179,6 +182,7 @@ export function PhongKichBan({
                   kb={kb}
                   dangChay={dangChay}
                   onChon={onChon}
+                  dangXem={kichDangXem === kb.id}
                   {...(laDoiChieuCua ? { nhan: `Đối chiếu với: ${laDoiChieuCua}` } : {})}
                 />
               ))}
@@ -191,7 +195,7 @@ export function PhongKichBan({
             <p className="mb-2 text-[11.5px] text-chu-mo">Custos nên cho kết quả bình thường ở đây — nếu không, nó đang gắn cờ quá tay.</p>
             <div className="grid gap-2.5 sm:grid-cols-2">
               {doiChieuRieng.map((kb) => (
-                <NutKichBan key={kb.id} kb={kb} dangChay={dangChay} onChon={onChon} />
+                <NutKichBan key={kb.id} kb={kb} dangChay={dangChay} onChon={onChon} dangXem={kichDangXem === kb.id} />
               ))}
             </div>
           </section>

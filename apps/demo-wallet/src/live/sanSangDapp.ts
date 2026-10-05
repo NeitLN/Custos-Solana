@@ -22,7 +22,9 @@ export function lyDoDappChuaSan(t: {
   if (t.phienLuuChoXuLy)
     return "Khôi phục phiên đã lưu để tiếp tục dùng ứng dụng. Nếu không còn giao dịch đang chờ, bạn cũng có thể bỏ bản lưu và tạo phiên mới.";
   if (t.chuaRo) return "Giao dịch trước chưa rõ kết quả. Tra cứu giao dịch trong khung xác nhận trước khi thử tiếp; không gửi lại.";
-  if (!t.canSign) return "Bước 1: bấm “Chọn file khoá (.json)…” ở trên và chọn .devnet/vi-demo.json của ví demo.";
+  // Chưa có khoá ⇒ khối nạp khoá nằm CUỐI thẻ ví, mục "Dành cho người trình diễn" (R0-5) — không phải "ở trên".
+  if (!t.canSign)
+    return "Bước 1 (người trình diễn): bấm “Chọn file khoá (.json)…” trong mục “Dành cho người trình diễn” bên dưới và chọn .devnet/vi-demo.json.";
   if (!t.coPhien) return "Bước 2: bấm “Ký tạo phiên thử nghiệm” — tạo token DEMO trên Devnet cho ứng dụng dùng.";
   if (t.doiChu)
     return "Tài khoản token của phiên này đã đổi chủ ở lượt trước — tạo phiên mới trong “Cài đặt và dữ kiện của phiên”.";

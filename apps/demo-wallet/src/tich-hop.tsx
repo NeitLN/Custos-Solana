@@ -22,7 +22,7 @@ const DAPP = catDong(rawSolBonus, /registerCustosWallet/);
 const REPO = "https://github.com/NeitLN/Custos-Solana/blob/main";
 
 const NHAN_CHO: Record<string, string> = { ky: "Cho ký", hoi: "Hỏi lại người dùng", chan: "Chặn" };
-const NHAN_MUC: Record<string, string> = { safe: "An toàn", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
+const NHAN_MUC: Record<string, string> = { safe: "Bình thường", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
 
 const CA = [
   { id: "tan-cong-day-du", nhan: "Giao dịch “nhận quà” đã ghi (chuyển tiền + đổi chủ)" },
@@ -118,8 +118,8 @@ function Trang() {
         <h2>2 · dApp dùng một ví đã tích hợp Custos</h2>
         <p>
           dApp không gọi <code>inspect()</code> và không import mã ví. Nó dùng <code>@solana/wallet-adapter</code> như với
-          mọi ví; hai dòng dưới đây (nguyên văn từ SolBonus) chỉ để “Custos Demo Wallet” hiện trong danh sách ví theo
-          chuẩn Wallet Standard. <code>URL_VI</code> là địa chỉ trang ký của ví mẫu (<code>…/ket-noi.html</code>).
+          mọi ví; hai dòng dưới đây (nguyên văn từ SolBonus) chỉ để “Custos Wallet” hiện trong danh sách ví theo
+          chuẩn Wallet Standard. <code>URL_VI</code> là địa chỉ trang ký của Ví Custos (<code>…/ket-noi.html</code>).
         </p>
         <pre className="tich-hop-ma" tabIndex={0} aria-label="Mã đăng ký ví trong dApp"><code>{DAPP}</code></pre>
         <p>
@@ -132,7 +132,7 @@ function Trang() {
       <section className="tich-hop-muc">
         <h2>Giới hạn, nói trước</h2>
         <ul>
-          <li>Chỉ Solana Devnet. Ví mẫu là ví web tham chiếu, không phải Phantom.</li>
+          <li>Chỉ Solana Devnet. Ví Custos là ví web tham chiếu, không phải Phantom.</li>
           <li>Ví và dApp mẫu đều do đội tự viết — đây là tích hợp tham chiếu, chưa phải pilot của bên thứ ba.</li>
           <li>Custos không gửi giao dịch và không ghi gì lên chain.</li>
         </ul>

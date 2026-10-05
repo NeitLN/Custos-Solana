@@ -16,7 +16,7 @@ npm run vi
 npm run tan-cong
 ```
 
-Mở `http://localhost:5189/`, chọn **Custos Demo Wallet → Kết nối ví → Cho kết nối**.
+Mở `http://localhost:5189/`, chọn **Custos Wallet → Kết nối ví → Cho kết nối**.
 Giữ cửa sổ ví ở cổng 5188 mở.
 
 - **Có điều kiện ẩn:** bấm **Tìm token DEMO trên Devnet**, chọn phiên, bấm nhận thưởng.

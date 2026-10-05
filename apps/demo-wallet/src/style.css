@@ -1166,3 +1166,26 @@ button {
   line-height: 1.5;
   color: #2f4a3c;
 }
+
+/*
+ * VÙNG BẤM CỦA DÒNG ĐỊA CHỈ ĐẦY ĐỦ (`DiaChiDong` trong CanhBao — dùng ở ví, phỏng vấn, Inspector).
+ * `soi-vung-bam.py` 06/10: "Sao chép" 82×23 và "Explorer" 62×17 — dưới mức tối thiểu 24 px của WCAG 2.5.8.
+ * Có từ khi thêm địa chỉ đầy đủ (27/09), không phải do redesign; sửa ở đây vì thành phần dùng chung.
+ */
+.dia-chi-day-du :is(a, .dia-chi-nut) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding-block: 3px;
+}
+/* Màn cảm ứng: ngưỡng UX 44 px của dự án (`soi-vung-bam.py`). Desktop giữ dòng địa chỉ gọn. */
+@media (pointer: coarse) {
+  .dia-chi-day-du :is(a, .dia-chi-nut) {
+    min-height: 44px;
+    padding-inline: 8px;
+  }
+}
+
+/* Đầu thẻ phán quyết: nhãn dài ("Phạm vi còn khuyết") từng ép tiêu đề thành cột một chữ ở 390 px.
+   Cho nhãn xuống dòng khi không đủ chỗ — tiêu đề giữ bề rộng tự nhiên. */
+.result-card > header { flex-wrap: wrap; row-gap: 10px; }

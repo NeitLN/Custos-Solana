@@ -17,7 +17,11 @@ const tatCa = (thuMuc: string) =>
     .map((f) => ({ f: join(thuMuc, f), s: doc(join(thuMuc, f)) }));
 
 test("SolBonus tự nhận là dApp độc hại MÔ PHỎNG, không gọi Custos", () => {
-  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /dApp độc hại MÔ PHỎNG · Không gọi Custos/);
+  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /<aside className="bang-mo-phong"[^>]*><span>dApp độc hại MÔ PHỎNG · Không gọi Custos/);
+  // R0-4: nhãn rời đầu trang nhưng phải LUÔN nhìn thấy — dải cố định đáy màn hình.
+  assert.match(doc("apps/trang-tan-cong/src/attack-design.css"), /\.bang-mo-phong \{\s*position: fixed;/);
+  // SOLB hư cấu vẫn phải được nói rõ ở đâu đó trên trang.
+  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /SOLB là phần thưởng hư cấu/);
 });
 
 test("Inspector là công cụ nhà phát triển, và nói người dùng cuối gặp Custos trong ví", () => {

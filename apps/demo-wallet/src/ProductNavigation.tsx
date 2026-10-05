@@ -5,7 +5,7 @@ export function ProductNavigation({ active }: { active: ProductPage }) {
   const base = import.meta.env.BASE_URL;
   const links = [
     { key: "intro", href: "gioi-thieu.html", label: "Giới thiệu" },
-    { key: "demo", href: "index.html", label: "Ví mẫu" },
+    { key: "demo", href: "index.html", label: "Ví Custos" },
     { key: "integration", href: "tich-hop.html", label: "Tích hợp" },
     { key: "inspector", href: "soi.html", label: "Inspector" },
     { key: "evidence", href: "so-lieu.html", label: "Số liệu" },

@@ -33,7 +33,15 @@ def ck(ten: str, dat: bool, chi_tiet: str = "") -> None:
     print(f"  {'PASS' if dat else 'FAIL'}  {ten}" + (f"   ({chi_tiet})" if chi_tiet else ""))
 
 
+async def mo_nguon(pg) -> None:
+    """R0-2: bộ chọn nguồn nằm trong <details> "Tuỳ chọn nguồn dữ liệu" mặc định đóng."""
+    tom = pg.locator("details.nguon-tuy-chon:not([open]) > summary")
+    if await tom.count():
+        await tom.click()
+
+
 async def ca_phat_lai(pg) -> bool:
+    await mo_nguon(pg)
     await pg.get_by_text("Dữ liệu đã ghi", exact=True).click()
     await pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first.click()
     await pg.wait_for_selector(".dia-chi-day-du, [role=alert]", timeout=20000)
@@ -88,6 +96,7 @@ async def main() -> None:
         ck("mất mạng: phát lại vẫn ra kết quả", await ca_phat_lai(pg))
         await pg.reload(wait_until="domcontentloaded")
         await pg.wait_for_timeout(1000)
+        await mo_nguon(pg)
         await pg.get_by_text("Devnet trực tiếp", exact=True).click()
         t0 = asyncio.get_event_loop().time()
         await pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first.click()
