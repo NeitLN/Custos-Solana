@@ -241,5 +241,5 @@ npm audit                      # lỗ hổng phụ thuộc
 
 Tài liệu liên quan: [BAO-CAO-TONG.md](BAO-CAO-TONG.md) (tổng quan) ·
 [AI-EVALUATION.md](AI-EVALUATION.md) (bốn lớp neo và cách chúng bị phá) ·
-[docs/SEED-DATASET.md](docs/SEED-DATASET.md) (vì sao không được gọi kết quả trên tập âm
+[docs/SEED-DATASET.md](SEED-DATASET.md) (vì sao không được gọi kết quả trên tập âm
 là tỉ lệ false positive).

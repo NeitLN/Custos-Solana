@@ -43,10 +43,10 @@ Rà soát mã đang có trong workspace; HEAD ghi nhận `e4973af` nhưng nhiề
 
 **Nguồn nội bộ phải đọc:**
 
-- [Báo cáo live](review/live-devnet/BAO-CAO.md), đặc biệt phân biệt lượt cũ và ví mặc định mới.
+- [Báo cáo live](../review/live-devnet/BAO-CAO.md), đặc biệt phân biệt lượt cũ và ví mặc định mới.
 - [Hướng dẫn vận hành](CHAY-DEMO-GIAO-DICH-THAT.md).
 - [Đặc tả thực thi trước đây](DEMO-DEVNET-THUC-THI-VA-DOI-CHIEU.md).
-- [Sản phẩm](CUSTOS.md), [threat model](bao-mat/THREAT-MODEL.md), `AGENTS.md`.
+- [Sản phẩm](../CUSTOS.md), [threat model](../bao-mat/THREAT-MODEL.md), `AGENTS.md`.
 - `apps/demo-wallet/src/{WalletExecution,App,CanhBao,kichBan,yeuCauNgoai,gui}.tsx/ts` và `src/live/`.
 - `apps/demo-wallet/tools/probe-live-demo.py`, `probe-default-wallet.py`, `probe-live-receipt.py`.
 
@@ -491,7 +491,7 @@ Lời dẫn sau thực thi:
 ## 18. Prompt giao Claude triển khai
 
 ```text
-Hãy triển khai docs/DAC-TA-DEMO-CUSTOS-CHAN-THAT.md trong repository hiện tại.
+Hãy triển khai docs/demo/DAC-TA-DEMO-CUSTOS-CHAN-THAT.md trong repository hiện tại.
 
 Mục tiêu: nâng cấp Ví mẫu hiện có thành trải nghiệm có quyết định ký và hậu quả
 Devnet thật. Không tạo một trang giao dịch thật riêng, không thay toàn bộ thiết kế.

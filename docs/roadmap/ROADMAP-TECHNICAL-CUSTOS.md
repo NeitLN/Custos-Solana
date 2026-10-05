@@ -37,15 +37,15 @@ Buyer interview, usability vòng 2, partner pilot, TAM/SAM/SOM và xác nhận w
 
 | Nguồn hiện có | Dùng để |
 |---|---|
-| [CLAUDE.md](CLAUDE.md), [docs/CUSTOS.md](docs/CUSTOS.md) | Quy tắc repo và quyết định sản phẩm; kiểm tra phần trạng thái đã cũ |
-| [Đặc tả Core](docs/DAC-TA-CORE.md), [đặc tả L3](docs/DAC-TA-L3.md) | Hợp đồng dữ liệu, ranh giới trách nhiệm |
-| [Review Technical 12/09](docs/review/DANH-GIA-TECHNICAL-12-09-2026.md) | T01–T04, baseline, giới hạn kết luận |
-| [Roadmap trước](docs/roadmap/ROADMAP-CLAUDE.md), [tiến độ](docs/roadmap/TIEN-DO.md), [bàn giao](docs/roadmap/BAN-GIAO.md) | Kế thừa việc đã làm; không thực hiện lại chỉ vì đổi track |
-| [Benchmark](docs/BENCHMARK.md), [seed dataset](docs/SEED-DATASET.md) | Corpus, provenance, hạn chế ground truth |
-| [Hiệu năng](docs/HIEU-NANG.md), [phụ thuộc](docs/PHU-THUOC.md) | Phép đo cũ và rủi ro chưa loại bỏ |
-| [Decoder tiếp theo](docs/DECODER-TIEP-THEO.md) | Đường IDL đã có, tránh đề xuất lại thứ đã làm |
-| [Thể lệ](docs/cuoc-thi/Thể%20lệ%20UniHackfest%202026.md) | Rubric thực tế của track |
-| [Thông tin vòng hiện tại](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md) | Nguồn duy nhất về lịch và yêu cầu BTC |
+| [CLAUDE.md](../../CLAUDE.md), [docs/CUSTOS.md](../CUSTOS.md) | Quy tắc repo và quyết định sản phẩm; kiểm tra phần trạng thái đã cũ |
+| [Đặc tả Core](../DAC-TA-CORE.md), [đặc tả L3](../DAC-TA-L3.md) | Hợp đồng dữ liệu, ranh giới trách nhiệm |
+| [Review Technical 12/09](../review/DANH-GIA-TECHNICAL-12-09-2026.md) | T01–T04, baseline, giới hạn kết luận |
+| [Roadmap trước](ROADMAP-CLAUDE.md), [tiến độ](TIEN-DO.md), [bàn giao](BAN-GIAO.md) | Kế thừa việc đã làm; không thực hiện lại chỉ vì đổi track |
+| [Benchmark](../BENCHMARK.md), [seed dataset](../SEED-DATASET.md) | Corpus, provenance, hạn chế ground truth |
+| [Hiệu năng](../HIEU-NANG.md), [phụ thuộc](../PHU-THUOC.md) | Phép đo cũ và rủi ro chưa loại bỏ |
+| [Decoder tiếp theo](../DECODER-TIEP-THEO.md) | Đường IDL đã có, tránh đề xuất lại thứ đã làm |
+| [Thể lệ](../cuoc-thi/Thể%20lệ%20UniHackfest%202026.md) | Rubric thực tế của track |
+| [Thông tin vòng hiện tại](../cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md) | Nguồn duy nhất về lịch và yêu cầu BTC |
 
 Các đường dẫn ghi **tạo mới** bên dưới là đầu ra cần làm, chưa phải file/lệnh đã tồn tại. Nếu repo đã có đầu ra tương đương, mở rộng nó và ghi mapping trong sổ tiến độ thay vì dựng hệ thống trùng lặp.
 

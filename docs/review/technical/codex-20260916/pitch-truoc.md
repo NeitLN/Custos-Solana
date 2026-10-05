@@ -138,7 +138,7 @@ Thể lệ BTC có **ba** định dạng khác nhau, và chúng khác nhau ở c
 | Chung kết | **5 phút** | **3 phút** · đèn vàng phút 4, đèn đỏ phút 5 | Thể lệ, mục chung kết |
 
 > ⚠️ Vòng của hạn hiện tại **chưa xác nhận** dùng định dạng nào. Kiểm
-> [`docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md)
+> [`docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`](../../../cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md)
 > **trước khi tập theo đồng hồ**. Đừng suy từ vòng khác.
 
 #### Bản 4 phút là bản GỐC. Hai bản kia dựng từ nó.
@@ -207,7 +207,7 @@ xin lỗi và không vội chữa.
 > ⚠️ **Viết lại sau B04.** Bản trước trả lời *"startup trả theo lượt kiểm tra"*. Câu đó
 > **mâu thuẫn với chính phép đo của đội**: chi phí RPC một lượt là $0,0000325, nên bán
 > theo lượt là cạnh tranh với gần bằng không — và thua, vì khách tự chạy được. Xem
-> [`docs/MO-HINH-DOANH-THU.md`](docs/MO-HINH-DOANH-THU.md).
+> [`docs/MO-HINH-DOANH-THU.md`](../../../MO-HINH-DOANH-THU.md).
 
 > "Ví và dApp, không phải người dùng cuối — người dùng cuối không bao giờ trả tiền cho bảo mật.
 > SDK của chúng em là **MIT, đã lên npm**, nên bản thân nó không bán được — ai cũng fork được. Thứ bán được là thứ **không fork đi cùng repo**: luật được cập nhật khi Solana đổi, decoder cho chương trình riêng, và có người chịu trách nhiệm trả lời khi tích hợp hỏng.

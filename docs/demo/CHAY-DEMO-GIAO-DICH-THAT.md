@@ -95,7 +95,7 @@ thứ hai chạy lại engine thật trên phản hồi RPC đã ghi, không c�
 Chưa tích hợp Phantom/Solflare.
 
 > Nội dung cũ của mục này (ví khách `?guest=1`, tải keypair ví khách) là **lịch sử** —
-> xem `git log -- docs/CHAY-DEMO-GIAO-DICH-THAT.md`.
+> xem `git log --follow -- docs/demo/CHAY-DEMO-GIAO-DICH-THAT.md`.
 
 ## Phục hồi và lỗi
 
@@ -117,7 +117,7 @@ Chưa tích hợp Phantom/Solflare.
 L2 quyết level; AI chỉ diễn giải. Timeout/output bị SDK từ chối ghi nhãn dự phòng.
 Build được kiểm trong lượt này dùng tất định, không phải bằng chứng gọi model thật.
 
-[Báo cáo và bằng chứng](review/live-devnet/BAO-CAO-CHAN-THAT.md).
+[Báo cáo và bằng chứng](../review/live-devnet/BAO-CAO-CHAN-THAT.md).
 
 ```powershell
 npm run check
