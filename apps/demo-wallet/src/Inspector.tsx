@@ -12,6 +12,12 @@ import { CanhBao } from "./CanhBao.tsx";
 import { locDongNhatKy } from "./locNhatKy.ts";
 import { docBoReplay } from "./replayKichBan.ts";
 import { dungMau, type MauInspector } from "./mauInspector.ts";
+import { dienGiaiKhongAI } from "@custos-solana/ai";
+import { soVoiLucGhi } from "./replayKichBan.ts";
+import {
+  connMainnet, docBoMainnet, explorerTx, lyDoBoNgan, tomTatBo, TUY_CHON_MAINNET,
+  type BoReplayMainnet, type MauReplayMainnet,
+} from "./replayMainnet.ts";
 
 /**
  * CU-08 — INSPECTOR: kiểm một giao dịch BẤT KỲ, ngoài hai kịch bản demo.
@@ -39,9 +45,32 @@ type TrangThai =
   | { pha: "dang-kiem" }
   | { pha: "da-huy" }
   | { pha: "loi-rpc"; câu: string }
-  | { pha: "xong"; ketQua: InspectResult; soByte: number; daKy: boolean };
+  | {
+      pha: "xong";
+      ketQua: InspectResult;
+      soByte: number;
+      daKy: boolean;
+      /** Dòng chân kết quả: kết quả đến từ đâu — live hay phát lại. */
+      nguonKq: string;
+      /** R0-3: lượt phát lại một giao dịch mainnet thật — nhãn và link gốc đi theo kết quả. */
+      mainnet?: { mau: MauReplayMainnet; bo: BoReplayMainnet; lech: string | null };
+    };
 
 const RPC_MAC_DINH = "https://api.devnet.solana.com";
+
+/** Giờ Việt Nam, cố định múi — cùng một dữ liệu đã ghi thì mọi máy hiện cùng một giờ. */
+const gioVN = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour12: false }) + " (giờ VN)"
+    : "không rõ";
+const rutGon = (s: string) => `${s.slice(0, 6)}…${s.slice(-6)}`;
+/*
+ * Độ trễ "thực thi → mô phỏng lại" tính từ `blockTime` (giờ mạng ƯỚC TÍNH cho khối) và đồng hồ máy
+ * ghi — hai đồng hồ lệch nhau vài giây (đo 06/10: máy ghi chậm ~3 s). Nên không in hai mốc giây
+ * cạnh nhau (trông như ghi TRƯỚC khi thực thi); nói theo khoảng.
+ */
+const khoangTre = (giay: number | null) =>
+  giay === null ? "sau một khoảng không rõ" : giay <= 5 ? "trong vài giây" : `khoảng ${giay} giây`;
 
 export function Inspector() {
   const [tho, setTho] = useState("");
@@ -94,6 +123,15 @@ export function Inspector() {
   const [loiMau, setLoiMau] = useState<string | null>(null);
   const dangDungMau = mau !== null && tho.trim() === mau.b64;
 
+  /*
+   * GIAO DỊCH MAINNET THẬT — PHÁT LẠI (R0-3). Bộ ~1,4 MB nén nên chỉ tải khi người xem mở mục.
+   * Cùng quy tắc với giao dịch mẫu: còn hiệu lực chừng nào ô base64 còn đúng chuỗi của mẫu.
+   */
+  const [boMn, setBoMn] = useState<BoReplayMainnet | null>(null);
+  const [loiMn, setLoiMn] = useState<string | null>(null);
+  const [mauMn, setMauMn] = useState<MauReplayMainnet | null>(null);
+  const dangDungMn = mauMn !== null && boMn !== null && tho.trim() === mauMn.b64;
+
   const doiDauVao = useCallback((s: string) => {
     setTho(s);
     // Đổi đầu vào ⇒ kết quả cũ không còn nói về thứ đang hiển thị. Bỏ ngay.
@@ -119,6 +157,33 @@ export function Inspector() {
     ghi(`đọc được giao dịch ${d.soByte} byte, ${d.daKy ? "ĐÃ ký" : "chưa ký"}`);
 
     try {
+      if (dangDungMn && mauMn && boMn) {
+        // Phát lại mainnet: Connection từ fixture, KHÔNG gọi mạng; tuỳ chọn và diễn giải đúng như lúc ghi.
+        boHuy.current = null;
+        ghi(`giao dịch mainnet thật ${mauMn.id} — phát lại dữ liệu ghi lúc ${mauMn.captureLuc}, không gọi mạng`);
+        const { conn, thieu } = connMainnet(mauMn);
+        const r = await inspect({ connection: conn, interpret: dienGiaiKhongAI }, d.tx, TUY_CHON_MAINNET);
+        if (!conDung()) return;
+        // `extractFacts` nuốt lời gọi thiếu thành "mô phỏng hỏng" — đọc hộp này SAU khi chạy, không tin kết quả.
+        if (thieu().length > 0) {
+          setTt({
+            pha: "loi-rpc",
+            câu: "Dữ liệu đã ghi thiếu một lời gọi RPC, và phát lại không gọi mạng bù. Đây KHÔNG phải kết luận về giao dịch.",
+          });
+          return;
+        }
+        const ss = soVoiLucGhi(r, mauMn.ketQuaLucGhi);
+        ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}${ss.khop ? ", khớp lúc ghi" : ", KHÁC lúc ghi"}`);
+        setTt({
+          pha: "xong",
+          ketQua: r,
+          soByte: d.soByte,
+          daKy: d.daKy,
+          nguonKq: `phát lại dữ liệu RPC mainnet ghi từ ${boMn.nguonGhi[0]}`,
+          mainnet: { mau: mauMn, bo: boMn, lech: ss.khop ? null : ss.moTa },
+        });
+        return;
+      }
       let c: Connection;
       let tuyChon: Parameters<typeof inspect>[2];
       if (dangDungMau && mau) {
@@ -139,7 +204,13 @@ export function Inspector() {
       const r = await inspect({ connection: c }, d.tx, tuyChon);
       if (!conDung()) return;
       ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
-      setTt({ pha: "xong", ketQua: r, soByte: d.soByte, daKy: d.daKy });
+      setTt({
+        pha: "xong",
+        ketQua: r,
+        soByte: d.soByte,
+        daKy: d.daKy,
+        nguonKq: dangDungMau ? "phát lại dữ liệu Devnet đã ghi" : `mô phỏng trên ${rpc.trim() || RPC_MAC_DINH}`,
+      });
     } catch (e) {
       if (!conDung()) return;
       /*
@@ -163,7 +234,36 @@ export function Inspector() {
           "KHÔNG phải kết luận về giao dịch.",
       });
     }
-  }, [tho, vi, rpc, ghi, dangDungMau, mau]);
+  }, [tho, vi, rpc, ghi, dangDungMau, mau, dangDungMn, mauMn, boMn]);
+
+  const moMucMainnet = useCallback(async () => {
+    if (boMn) return;
+    setLoiMn(null);
+    const b = await docBoMainnet();
+    if ("loi" in b) setLoiMn(`Chưa dùng được bộ giao dịch mainnet: ${b.loi}`);
+    else setBoMn(b.bo);
+  }, [boMn]);
+
+  /*
+   * Bấm một giao dịch = nạp VÀ phát lại ngay: danh sách nằm giữa ô nhập và nút Kiểm, bắt người xem cuộn
+   * qua mười dòng mới tới nút là thêm một bước không mang thông tin. Chạy trong effect để `kiem` đọc
+   * đúng ô base64 vừa nạp, không phải bản của lượt render trước.
+   */
+  const [chayMn, setChayMn] = useState(0);
+  const chonMainnet = useCallback(
+    (m: MauReplayMainnet) => {
+      setMauMn(m);
+      doiDauVao(m.b64);
+      // Không ai trong đội là chủ các giao dịch này — phân tích theo người trả phí, như lúc ghi.
+      setVi("");
+      setChayMn((n) => n + 1);
+    },
+    [doiDauVao],
+  );
+  useEffect(() => {
+    if (chayMn > 0 && dangDungMn) void kiem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy khi người xem vừa chọn một giao dịch
+  }, [chayMn]);
 
   const dungGiaoDichMau = useCallback(async () => {
     setLoiMau(null);
@@ -275,7 +375,71 @@ export function Inspector() {
           {mau.captureLuc} — không gọi mạng, không ký. Sửa ô trên thì quay về kiểm trực tiếp.
         </p>
       )}
+      {dangDungMn && mauMn && (
+        <p className="mt-2 text-[12px] text-chu-mo" data-mau-mainnet>
+          Đang dùng giao dịch mainnet thật {mauMn.id} ({rutGon(mauMn.chuKy)}), bản chưa ký. Bấm Kiểm sẽ{" "}
+          <strong>phát lại</strong> dữ liệu RPC ghi lúc {gioVN(mauMn.captureLuc)} — không gọi mạng, không ký. Sửa ô trên
+          thì quay về kiểm trực tiếp trên Devnet.
+        </p>
+      )}
       {loiMau && <p className="mt-2 text-[12px]" role="alert">{loiMau}</p>}
+
+      {/*
+        R0-3 · GIAO DỊCH MAINNET THẬT — PHÁT LẠI. Luật chọn mẫu và số đếm của CẢ bộ đứng trước danh
+        sách: người xem phải thấy các thẻ không được chọn riêng vì đẹp (Codex review 06/10).
+      */}
+      <details
+        className="inspector-mainnet mt-4"
+        onToggle={(e) => {
+          if ((e.currentTarget as HTMLDetailsElement).open) void moMucMainnet();
+        }}
+      >
+        <summary>Giao dịch mainnet thật — phát lại</summary>
+        <div className="inspector-mainnet__than">
+          <p>
+            Giao dịch <strong>đã thực thi trên mainnet</strong> trước khi Custos nhìn thấy. Custos dựng lại bản chưa ký,
+            mô phỏng lại trong vài giây đến vài chục giây sau đó (chỉ đọc) và ghi phản hồi RPC. Bấm một giao dịch để phát lại ngay trên dữ liệu đã ghi —
+            không gọi mạng, <strong>không phải trạng thái chuỗi hiện tại</strong>, không phải luồng ký mainnet. Luồng ký
+            của Custos chỉ chạy Devnet.
+          </p>
+          {loiMn && <p role="alert">{loiMn}</p>}
+          {!boMn && !loiMn && <p role="status">Đang tải bộ dữ liệu đã ghi…</p>}
+          {boMn && (() => {
+            const t = tomTatBo(boMn);
+            return (
+              <>
+                <p data-luat-chon>
+                  {boMn.mau.length} giao dịch thành công đầu tiên của chương trình SPL Token lúc{" "}
+                  {gioVN(boMn.cachChon.layLuc)}, theo thứ tự — không chọn theo kết quả. Lúc ghi: {t.safe} Bình thường ·{" "}
+                  {t.warning} Cần xem kỹ ({t.moPhongHong} vì mô phỏng hỏng) · {t.danger} Nguy hiểm.
+                  {boMn.boQua.length > 0 &&
+                    ` Bỏ qua ${boMn.boQua.length} giao dịch vì lý do kỹ thuật: ${[...new Set(boMn.boQua.map((b) => lyDoBoNgan(b.lyDo)))].join("; ")}.`}
+                </p>
+                <ul className="inspector-mainnet__ds">
+                  {boMn.mau.map((m) => (
+                    <li key={m.id}>
+                      <button
+                        type="button"
+                        aria-pressed={dangDungMn && mauMn?.id === m.id}
+                        aria-label={`Phát lại giao dịch ${m.id}, chữ ký ${rutGon(m.chuKy)}`}
+                        disabled={tt.pha === "dang-kiem"}
+                        onClick={() => chonMainnet(m)}
+                      >
+                        <span className="inspector-mainnet__id">{m.id}</span>
+                        <code>{rutGon(m.chuKy)}</code>
+                        <span>mô phỏng lại {khoangTre(m.treGiay)} sau khi thực thi</span>
+                      </button>
+                      <a href={explorerTx(m.chuKy)} target="_blank" rel="noreferrer" aria-label={`Xem giao dịch ${m.id} trên Explorer`}>
+                        Explorer ↗
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            );
+          })()}
+        </div>
+      </details>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
@@ -374,8 +538,38 @@ export function Inspector() {
               `onKy` vẫn phải truyền vì kiểu đòi, nhưng nó không bao giờ chạy — và
               nếu có ai gỡ `choPhepKy` ra thì nó ném, chứ không âm thầm ký.
             */}
+            {tt.mainnet && (
+              <div className="inspector-mainnet-nhan mb-3" data-nguon="mainnet-phat-lai">
+                <p>
+                  <strong>Giao dịch mainnet thật · phát lại dữ liệu đã ghi.</strong> Đã thực thi ở slot{" "}
+                  {tt.mainnet.mau.slotThucThi.toLocaleString("vi-VN")}, lúc {gioVN(tt.mainnet.mau.thucThiLuc)}; Custos mô
+                  phỏng lại {khoangTre(tt.mainnet.mau.treGiay)} sau đó và ghi phản hồi RPC. Không phải trạng thái chuỗi
+                  hiện tại, không phải luồng ký mainnet. Phân tích theo người trả phí.
+                </p>
+                {tt.ketQua.reasonCodes.includes("MO_PHONG_HONG") && (
+                  <p>
+                    Mô phỏng lại hỏng vì trạng thái chuỗi đã đổi sau khi giao dịch thực thi (số dư đã chuyển, giá đã
+                    trượt…). Custos báo thiếu dữ liệu thay vì đoán — vì vậy không bao giờ ra mức Bình thường.
+                  </p>
+                )}
+                {tt.mainnet.lech && <p role="alert">Engine đang chạy cho kết quả KHÁC lúc ghi. {tt.mainnet.lech}</p>}
+                <a href={explorerTx(tt.mainnet.mau.chuKy)} target="_blank" rel="noreferrer">
+                  Xem giao dịch gốc trên Explorer ↗
+                </a>
+              </div>
+            )}
             <CanhBao
               ketQua={tt.ketQua}
+              {...(tt.mainnet
+                ? {
+                    boiCanh: {
+                      cluster: tt.mainnet.bo.cluster,
+                      nguon: tt.mainnet.bo.nguonGhi[0]!,
+                      kieu: "replay" as const,
+                      ghiLuc: tt.mainnet.mau.captureLuc,
+                    },
+                  }
+                : {})}
               choPhepKy={false}
               onHuy={() => {
                 luot.current++;
@@ -386,8 +580,7 @@ export function Inspector() {
               }}
             />
             <p className="mt-3 text-[12px] text-chu-mo">
-              Đọc {tt.soByte} byte · mô phỏng trên {rpc.trim() || RPC_MAC_DINH} ·
-              Custos không ký và không gửi gì.
+              Đọc {tt.soByte} byte · {tt.nguonKq} · Custos không ký và không gửi gì.
             </p>
 
             {/*

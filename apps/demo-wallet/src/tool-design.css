@@ -123,3 +123,20 @@ body .app-shell.evidence-shell,body .app-shell.interview-shell { background: #f2
   .product-navigation a { transition: none; }
   .inspector-progress > span { animation: none; }
 }
+
+/* R0-3 · Giao dịch mainnet thật — phát lại. Thu gọn mặc định; danh sách là hàng chọn, không phải thẻ. */
+.inspector-mainnet { border-top: 1px solid #dbe5d6; padding-top: 4px; }
+.inspector-mainnet > summary { min-height: 44px; padding-block: 12px; line-height: 20px; cursor: pointer; font-size: 14px; font-weight: 600; color: #30543f; }
+.inspector-mainnet__than { display: grid; gap: 12px; padding-bottom: 8px; font-size: 13px; line-height: 1.7; color: #3f5643; }
+.inspector-mainnet__ds { display: grid; gap: 6px; }
+.inspector-mainnet__ds li { display: flex; align-items: center; gap: 8px; }
+.inspector-mainnet__ds button { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 12px; text-align: left; border: 1px solid #c9d6c4; border-radius: 8px; background: #fff; color: #1f3a27; transition: background-color 160ms cubic-bezier(.22,1,.36,1), border-color 160ms cubic-bezier(.22,1,.36,1); }
+.inspector-mainnet__ds button:hover { background: #f3f7f0; }
+.inspector-mainnet__ds button[aria-pressed=true] { border-color: #416b36; background: #eef5e8; box-shadow: 0 0 0 1px #416b36; }
+.inspector-mainnet__ds code { font-size: 12px; color: #30543f; }
+.inspector-mainnet__ds button > span:last-child { font-size: 12px; color: #526955; }
+.inspector-mainnet__id { font-weight: 600; font-variant-numeric: tabular-nums; }
+.inspector-mainnet__ds a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 6px; font-size: 12.5px; color: #30543f; white-space: nowrap; }
+.inspector-mainnet-nhan { display: grid; gap: 8px; padding: 14px 16px; border: 1px solid #c9d6c4; border-radius: 10px; background: #f3f7f0; font-size: 13px; line-height: 1.7; color: #1f3a27; }
+.inspector-mainnet-nhan a { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: #30543f; text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .inspector-mainnet__ds button { transition: none; } }
