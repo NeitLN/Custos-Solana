@@ -81,7 +81,7 @@ const LOAI_GD: Record<string, string> = {
   "close-authority": "Trao quyền đóng tài khoản",
   close: "Ứng dụng đóng tài khoản",
 };
-const MUC_L2: Record<string, string> = { safe: "An toàn", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
+const MUC_L2: Record<string, string> = { safe: "Bình thường", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
 const QUYET_DINH: Record<string, string> = { approve: "Ký", override: "Ký sau cảnh báo / đề nghị" };
 const DOI_CHIEU: Record<string, string> = { match: "Khớp", mismatch: "Lệch", unknown: "Chưa rõ" };
 
@@ -150,7 +150,7 @@ export function SoLieu() {
         {d && <div className="evidence-stamp"><span>Dữ liệu được sinh từ phép đo</span><time dateTime={d.sinhLuc}>Cập nhật {ngay(d.sinhLuc)}</time></div>}
         </header>
         {d === undefined && <div className="evidence-status" role="status">Đang tải hồ sơ kiểm chứng…</div>}
-        {d === null && <div className="evidence-status" role="alert"><h2>Chưa tải được số liệu.</h2><p>Hiện chưa có dữ liệu để hiển thị. Hãy thử tải lại trang hoặc quay về ví mẫu.</p><button className="nut nut-chinh" type="button" onClick={() => window.location.reload()}>Tải lại trang</button></div>}
+        {d === null && <div className="evidence-status" role="alert"><h2>Chưa tải được số liệu.</h2><p>Hiện chưa có dữ liệu để hiển thị. Hãy thử tải lại trang hoặc quay về Ví Custos.</p><button className="nut nut-chinh" type="button" onClick={() => window.location.reload()}>Tải lại trang</button></div>}
         {d && <>
         <nav className="evidence-index" aria-label="Các phần bằng chứng">
           {d.cohort && <a href="#du-lieu-cong-khai">Dữ liệu công khai</a>}

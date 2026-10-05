@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Trace } from "./Trace.tsx";
 import type { InspectResult } from "@custos-solana/types";
 import { chiLaThongTin } from "@custos-solana/core";
@@ -165,10 +166,15 @@ function DiaChiDong({ d, cluster }: { d: DongDiff; cluster: string | undefined }
 }
 
 /** Một dòng hậu quả — y như bảng cũ, chỉ tách ra để hai khối dùng chung. */
-function DongHauQua({ d, cluster }: { d: DongDiff; cluster: string | undefined }) {
+function DongHauQua({ d, cluster, thuTu }: { d: DongDiff; cluster: string | undefined; thuTu?: number }) {
   const mau = MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700";
   return (
-    <div className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5">
+    // `--dong`: thứ tự TOÀN CỤC của dòng qua mọi nhóm — chỉ để hiện lần lượt (demo-thiet-ke.css), không đổi nội dung.
+    <div
+      data-dong-hau-qua
+      style={thuTu === undefined ? undefined : ({ "--dong": thuTu } as CSSProperties)}
+      className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5"
+    >
       <span className={`text-[13px] ${mau}`}>{d.label}</span>
       <span className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${mau}`}>
         {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
@@ -448,7 +454,7 @@ export function CanhBao({
                 ["TÀI SẢN", hq.taiSan, taiSanDoi(hq.taiSan) ? null : "Không thấy số dư token hay SOL nào đổi trong phần đã đọc hiểu, ngoài phí."],
                 ["QUYỀN KIỂM SOÁT", hq.quyen, "Không thấy quyền nào đổi trong phần đã đọc hiểu."],
               ] as const
-            ).map(([ten, dong, khiTrong]) => (
+            ).map(([ten, dong, khiTrong], nhom) => (
               <section key={ten} aria-label={`Hậu quả nếu ký — ${ten.toLowerCase()}`} className="border-t border-slate-100">
                 <h4 className="px-4 pt-2.5 text-[11px] font-semibold tracking-wide text-slate-500 sm:px-5">{ten}</h4>
                 {khiTrong && (dong.length === 0 || ten === "TÀI SẢN") && (
@@ -456,7 +462,7 @@ export function CanhBao({
                 )}
                 <div className="divide-y divide-slate-100">
                   {dong.map((d, i) => (
-                    <DongHauQua key={i} d={d} cluster={clusterExplorer} />
+                    <DongHauQua key={i} d={d} cluster={clusterExplorer} thuTu={(nhom === 0 ? 0 : hq.taiSan.length) + i} />
                   ))}
                 </div>
               </section>
@@ -464,7 +470,7 @@ export function CanhBao({
             {hq.khac.length > 0 && (
               <section aria-label="Hậu quả nếu ký — phần khác" className="divide-y divide-slate-100 border-t border-slate-100">
                 {hq.khac.map((d, i) => (
-                  <DongHauQua key={i} d={d} cluster={clusterExplorer} />
+                  <DongHauQua key={i} d={d} cluster={clusterExplorer} thuTu={hq.taiSan.length + hq.quyen.length + i} />
                 ))}
               </section>
             )}
@@ -572,7 +578,7 @@ export function CanhBao({
                       {boiCanh.kieu === "live"
                         ? "chạy thật — vừa gọi RPC"
                         : boiCanh.kieu === "replay"
-                          ? `phát lại — engine vừa chạy trên phản hồi RPC ghi lúc ${boiCanh.ghiLuc ?? "?"}; KHÔNG phải giao dịch Devnet mới`
+                          ? `phát lại — engine vừa chạy trên phản hồi RPC ghi lúc ${boiCanh.ghiLuc ?? "?"}; ${boiCanh.cluster === "devnet" ? "KHÔNG phải giao dịch Devnet mới" : "KHÔNG phải trạng thái chuỗi hiện tại"}`
                           : `dữ liệu mock “${boiCanh.tenMock ?? "?"}” — KHÔNG phải kết quả thật`}
                     </dd>
                   </div>
@@ -614,7 +620,7 @@ export function CanhBao({
                   trị để đối chiếu. Cùng khung xám nhưng khác kiểu chữ để mắt biết
                   ngay dòng nào là dữ liệu, dòng nào là lời giải thích. */}
               <p className="mo-ra mt-2 rounded-xl bg-slate-50 p-3 text-[11.5px] leading-relaxed text-slate-600">
-                Đây là ví mẫu tích hợp Custos SDK, không phải sản phẩm ví. Nguồn câu
+                Đây là ví tham chiếu tích hợp Custos SDK, không phải sản phẩm ví. Nguồn câu
                 giải thích được ghi ở phần nội dung phía trên: câu tất định hoặc mô hình
                 ngôn ngữ khi đã cấu hình. Lớp AI là tuỳ chọn và chỉ được phép đề nghị
                 kiểm tra thủ công — không tạo và không sửa mức cảnh báo.

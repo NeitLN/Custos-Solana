@@ -1,0 +1,925 @@
+/*
+ * REDESIGN TRANG DEMO (Ví mẫu) — 06/10/2026, nạp SAU CÙNG trong `main.tsx`.
+ *
+ * Vì sao một file riêng thay vì sửa 6 file CSS cũ: đang đóng băng trước chung kết 10/10. Một lớp phủ duy
+ * nhất, chỉ chạm trình bày, review được trong một diff và gỡ được bằng một dòng import.
+ *
+ * Ba quyết định:
+ *   1. MÀU THEO THƯƠNG HIỆU. Bề mặt sáng từng dùng một họ xanh ô-liu gõ cứng (#e6ece2, #31513d, #456139…)
+ *      lệch khỏi `landing/brand-tokens.css`. Giờ hành động/tiêu điểm dùng teal `--custos-brand`; thẻ ví tối
+ *      giữ đúng cặp xanh đậm + xanh chanh của hero trang giới thiệu (cinematic.css) để hai trang là một.
+ *   2. PHẲNG. Cột trái bỏ hộp-trong-hộp: nguồn dữ liệu thành bộ chọn phân đoạn, hướng dẫn và thư viện kịch
+ *      bản thành vùng ngăn bằng đường kẻ, không viền bao.
+ *   3. MỘT KHOẢNH KHẮC CHUYỂN ĐỘNG: phán quyết hiện ra sau khi mô phỏng (thẻ mở bằng clip-path, các dòng hậu
+ *      quả lần lượt, thanh độ phủ chạy). Mọi chuyển động khác ≤ 220 ms và chỉ báo trạng thái. Không đếm số
+ *      (CK-12), không nảy, có bản `prefers-reduced-motion`.
+ *
+ * Không đổi nhãn, id, data-* hay vai trò ARIA nào — test và probe đọc chúng.
+ */
+
+.app-shell.demo-shell {
+  --dm-bg: var(--custos-bg, #f5f8f7);
+  --dm-surface: var(--custos-surface, #fff);
+  --dm-ink: var(--custos-text, #142c2a);
+  --dm-muted: var(--custos-muted, #526865);
+  --dm-line: var(--custos-border, #d6e3df);
+  --dm-control: var(--custos-control-border, #6e8f88);
+  --dm-brand: var(--custos-brand, #146c60);
+  --dm-brand-hover: var(--custos-brand-hover, #10584f);
+  --dm-brand-soft: #e3f3ee;
+  --dm-sunken: #eef4f2;
+  /* Thẻ ví tối: cùng cặp màu với hero trang giới thiệu. */
+  --dm-dark: #102f28;
+  --dm-dark-2: #17403a;
+  --dm-dark-line: #2c5a52;
+  --dm-on-dark: #eef6f2;
+  --dm-on-dark-muted: #b9d3cc;
+  --dm-lime: #c5e69d;
+  --dm-ease: cubic-bezier(0.25, 1, 0.5, 1); /* ease-out-quart */
+  --dm-ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--dm-bg);
+  color: var(--dm-ink);
+}
+
+/* ── Đầu trang và bộ chuyển màn ─────────────────────────────────────────────────────────── */
+
+.app-shell.demo-shell .demo-brand-label {
+  color: var(--dm-brand);
+  border-color: color-mix(in srgb, var(--dm-brand) 35%, transparent);
+  background: var(--dm-brand-soft);
+}
+
+/* Bộ chuyển màn là điều hướng chính của trang, không phải một ghi chú: segmented control rõ ràng, chỉ báo
+   trượt bằng nền của nút đang chọn. */
+.app-shell.demo-shell .wallet-surface-bar {
+  background: var(--dm-sunken);
+  border: 1px solid var(--dm-line);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px 12px;
+  color: var(--dm-muted);
+  margin: 6px 0 20px;
+}
+.app-shell.demo-shell .wallet-surface-bar button {
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 9px;
+  color: var(--dm-muted);
+  font-size: 0.8125rem;
+  transition: background-color 180ms var(--dm-ease), color 180ms var(--dm-ease), box-shadow 180ms var(--dm-ease);
+}
+.app-shell.demo-shell .wallet-surface-bar button:hover:not(:disabled):not([aria-pressed="true"]) {
+  color: var(--dm-ink);
+  background: color-mix(in srgb, var(--dm-surface) 55%, transparent);
+}
+.app-shell.demo-shell .wallet-surface-bar button[aria-pressed="true"] {
+  background: var(--dm-surface);
+  color: var(--dm-ink);
+  box-shadow: 0 1px 2px rgba(18, 58, 53, 0.08), 0 0 0 1px var(--dm-line);
+}
+.app-shell.demo-shell .wallet-surface-bar span {
+  color: var(--dm-muted);
+  font-size: 0.75rem;
+  padding-right: 8px;
+}
+.app-shell.demo-shell .wallet-surface-bar :focus-visible {
+  outline: 2px solid var(--dm-brand);
+  outline-offset: 2px;
+}
+
+/* ── Phần mở đầu: gọn lại — đây là công cụ, người xem vào để bấm ──────────────────────────── */
+
+.app-shell.demo-shell .demo-intro {
+  padding: 18px 0 24px;
+  gap: 40px;
+}
+.app-shell.demo-shell .demo-eyebrow {
+  color: var(--dm-brand);
+  margin-bottom: 8px;
+}
+.app-shell.demo-shell .demo-intro h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  color: var(--dm-ink);
+  text-wrap: balance;
+}
+.app-shell.demo-shell .demo-intro h1 span {
+  color: var(--dm-brand);
+}
+.app-shell.demo-shell .demo-intro__description {
+  color: var(--dm-muted);
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+/* Tiến trình 3 bước: đường nối tô dần theo bước hiện tại (báo trạng thái, không trang trí). */
+.app-shell.demo-shell .demo-steps li {
+  color: var(--dm-muted);
+}
+.app-shell.demo-shell .demo-steps li:not(:last-child)::after {
+  background: var(--dm-line);
+  transition: background-color 240ms var(--dm-ease);
+}
+.app-shell.demo-shell .demo-steps__number {
+  border-color: var(--dm-control);
+  background: var(--dm-bg);
+  color: var(--dm-muted);
+  transition: background-color 220ms var(--dm-ease), color 220ms var(--dm-ease), border-color 220ms var(--dm-ease),
+    box-shadow 220ms var(--dm-ease);
+}
+.app-shell.demo-shell .demo-steps li[aria-current="step"] {
+  color: var(--dm-ink);
+}
+.app-shell.demo-shell .demo-steps li[aria-current="step"] .demo-steps__number {
+  background: var(--dm-brand);
+  border-color: var(--dm-brand);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--dm-brand-soft);
+}
+/* Các bước đã qua: đường nối và số mang màu thương hiệu nhạt. */
+.app-shell.demo-shell .demo-steps li:has(~ li[aria-current="step"])::after {
+  background: var(--dm-brand);
+}
+.app-shell.demo-shell .demo-steps li:has(~ li[aria-current="step"]) .demo-steps__number {
+  border-color: var(--dm-brand);
+  color: var(--dm-brand);
+}
+
+/* ── Hai cột ───────────────────────────────────────────────────────────────────────────── */
+
+.app-shell.demo-shell .wallet-card,
+.app-shell.demo-shell .review-card {
+  border-color: var(--dm-line);
+  box-shadow: none;
+}
+
+/* Thẻ ví tối */
+.app-shell.demo-shell .wallet-card__top {
+  background: var(--dm-dark);
+}
+.app-shell.demo-shell .wallet-card__top .text-chu {
+  color: var(--dm-on-dark);
+}
+.app-shell.demo-shell .wallet-card__top .text-chu-mo,
+.app-shell.demo-shell .wallet-balance__label,
+.app-shell.demo-shell .balance-unit {
+  color: var(--dm-on-dark-muted);
+}
+.app-shell.demo-shell .wallet-identity .avatar {
+  background: var(--dm-dark-2);
+  border-color: var(--dm-dark-line);
+  color: var(--dm-lime);
+}
+.app-shell.demo-shell .address-pill {
+  background: var(--dm-dark-2);
+  border-color: var(--dm-dark-line);
+  color: var(--dm-on-dark);
+  transition: background-color 160ms var(--dm-ease);
+}
+.app-shell.demo-shell .address-pill:hover {
+  background: #22524b;
+  color: #fff;
+}
+.app-shell.demo-shell .wallet-balance {
+  border-top-color: var(--dm-dark-line);
+}
+.app-shell.demo-shell .token-badge {
+  background: var(--dm-dark-2);
+  border-color: var(--dm-dark-line);
+  color: var(--dm-on-dark);
+}
+.app-shell.demo-shell .wallet-balance .balance-number {
+  color: var(--dm-lime);
+}
+.app-shell.demo-shell .wallet-balance .balance-number--chua-do {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dm-on-dark-muted);
+}
+
+/* Ba nút nhanh trong thẻ tối (màn Ví của bạn): cùng cặp xanh đậm + xanh chanh. */
+.app-shell.demo-shell .wallet-quick-actions button {
+  background: var(--dm-dark-2);
+  border-color: var(--dm-dark-line);
+  color: var(--dm-on-dark);
+  transition: background-color 160ms var(--dm-ease), transform 120ms var(--dm-ease);
+}
+.app-shell.demo-shell .wallet-quick-actions button:first-child {
+  background: var(--dm-lime);
+  border-color: var(--dm-lime);
+  color: var(--dm-dark);
+}
+.app-shell.demo-shell .wallet-quick-actions button:hover:not(:disabled) {
+  background: #22524b;
+}
+.app-shell.demo-shell .wallet-quick-actions button:first-child:hover:not(:disabled) {
+  background: #d4eeb2;
+}
+.app-shell.demo-shell .wallet-quick-actions button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.app-shell.demo-shell .wallet-quick-actions button:focus-visible {
+  outline-color: var(--dm-lime);
+}
+
+/* Cột thao tác: phẳng, nhịp bằng đường kẻ */
+.app-shell.demo-shell .wallet-actions {
+  background: var(--dm-surface);
+}
+.app-shell.demo-shell .demo-section-number {
+  color: var(--dm-brand);
+  font-weight: 600;
+}
+
+/* Nguồn dữ liệu → bộ chọn phân đoạn (cùng ngôn ngữ với bộ chuyển màn). */
+.app-shell.demo-shell .nguon-kiem {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+}
+.app-shell.demo-shell .nguon-kiem legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  color: var(--dm-muted);
+}
+.app-shell.demo-shell .nguon-kiem > div:first-of-type {
+  gap: 4px;
+  padding: 4px;
+  background: var(--dm-sunken);
+  border: 1px solid var(--dm-line);
+  border-radius: 12px;
+}
+.app-shell.demo-shell .nguon-kiem label {
+  min-width: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  transition: background-color 180ms var(--dm-ease), box-shadow 180ms var(--dm-ease);
+}
+.app-shell.demo-shell .nguon-kiem label:has(input:checked) {
+  background: var(--dm-surface);
+  box-shadow: 0 1px 2px rgba(18, 58, 53, 0.08), 0 0 0 1px var(--dm-line);
+}
+.app-shell.demo-shell .nguon-kiem input[type="radio"] {
+  accent-color: var(--dm-brand);
+}
+.app-shell.demo-shell .nguon-kiem label:focus-within {
+  outline: 2px solid var(--dm-brand);
+  outline-offset: 1px;
+}
+
+/* Hướng dẫn 3 bước: bỏ hộp, giữ thứ tự — đây là một chuỗi thật nên số có ý nghĩa. */
+.app-shell.demo-shell .huong-dan {
+  border: 0;
+  padding: 0;
+  margin-bottom: 16px;
+}
+.app-shell.demo-shell .huong-dan h3 {
+  font-size: 0.8125rem;
+  color: var(--dm-ink);
+}
+
+/* Thẻ kịch bản: thẻ là affordance đúng ở đây (bấm được), nhưng không lồng trong hộp nào nữa. */
+.app-shell.demo-shell .action-card {
+  border-color: var(--dm-line);
+  background: var(--dm-surface);
+  border-radius: 12px;
+  transition: border-color 180ms var(--dm-ease), box-shadow 180ms var(--dm-ease), transform 180ms var(--dm-ease),
+    background-color 180ms var(--dm-ease);
+}
+.app-shell.demo-shell .action-card--primary {
+  background: var(--dm-brand-soft);
+  border-color: color-mix(in srgb, var(--dm-brand) 40%, var(--dm-line));
+}
+.app-shell.demo-shell .action-icon {
+  background: var(--dm-sunken);
+  color: var(--dm-brand);
+}
+.app-shell.demo-shell .action-card--primary .action-icon {
+  background: var(--dm-surface);
+}
+.app-shell.demo-shell .action-card:hover:not(:disabled) {
+  border-color: var(--dm-brand);
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+.app-shell.demo-shell .action-card:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+  transition-duration: 80ms;
+}
+.app-shell.demo-shell .action-card:focus-visible {
+  outline: 2px solid var(--dm-brand);
+  outline-offset: 2px;
+}
+
+/* Thư viện kịch bản: vùng mở rộng ngăn bằng đường kẻ, không viền bao. */
+.app-shell.demo-shell .thu-vien {
+  border: 0;
+  border-top: 1px solid var(--dm-line);
+  border-radius: 0;
+  padding: 4px 0 0;
+}
+.app-shell.demo-shell .thu-vien > summary {
+  color: var(--dm-ink);
+}
+.app-shell.demo-shell .thu-vien[open] > summary ~ * {
+  animation: dm-mo 200ms var(--dm-ease) both;
+}
+
+.app-shell.demo-shell .protection-switch {
+  border-top-color: var(--dm-line);
+}
+.app-shell.demo-shell .is-on .toggle-track {
+  background: var(--dm-brand);
+  border-color: var(--dm-brand);
+}
+.app-shell.demo-shell .toggle-track,
+.app-shell.demo-shell .toggle-thumb {
+  transition: background-color 180ms var(--dm-ease), transform 200ms var(--dm-ease);
+}
+.app-shell.demo-shell .wallet-card > section {
+  border-top-color: var(--dm-line);
+  background: color-mix(in srgb, var(--dm-sunken) 60%, var(--dm-surface));
+}
+
+/* Cột kết quả */
+.app-shell.demo-shell .review-header {
+  border-color: var(--dm-line);
+}
+.app-shell.demo-shell .review-header p {
+  margin-left: 0;
+}
+.app-shell.demo-shell .scanning-panel {
+  background: color-mix(in srgb, var(--dm-brand-soft) 55%, var(--dm-surface));
+  border-color: color-mix(in srgb, var(--dm-brand) 30%, var(--dm-line));
+}
+.app-shell.demo-shell .technical-log {
+  background: var(--dm-sunken);
+  border-color: var(--dm-line);
+}
+.app-shell.demo-shell .demo-findings li > span {
+  background: var(--dm-brand-soft);
+  color: var(--dm-brand);
+}
+
+/* Tiêu điểm thống nhất một màu thương hiệu trên toàn trang. */
+.app-shell.demo-shell :is(a, button, input, summary):focus-visible {
+  outline: 2px solid var(--dm-brand);
+  outline-offset: 3px;
+}
+.app-shell.demo-shell .wallet-card__top :is(a, button):focus-visible {
+  outline-color: var(--dm-lime);
+}
+
+/* ── Màn Ví của bạn ────────────────────────────────────────────────────────────────────── */
+
+.app-shell.demo-shell.wallet-execution .wallet-rights,
+.app-shell.demo-shell.wallet-execution .wallet-expectations {
+  background: var(--dm-sunken);
+  border-color: var(--dm-line);
+  color: var(--dm-ink);
+}
+.app-shell.demo-shell.wallet-execution .wallet-setup-button:not(:disabled),
+.app-shell.demo-shell.wallet-execution .wallet-file-btn {
+  transition: background-color 160ms var(--dm-ease), transform 120ms var(--dm-ease);
+}
+.app-shell.demo-shell.wallet-execution .wallet-setup-button:not(:disabled) {
+  background: var(--dm-brand);
+  color: #fff;
+}
+.app-shell.demo-shell.wallet-execution .wallet-setup-button:not(:disabled):hover {
+  background: var(--dm-brand-hover);
+}
+/* Nút bị khoá vẫn phải đọc được (trước đây chữ trắng trên xanh nhạt, độ tương phản thấp). */
+.app-shell.demo-shell.wallet-execution .wallet-setup-button:disabled {
+  opacity: 1; /* `.nut:disabled` (style.css) hạ còn 0.5 → ~2:1; trạng thái khoá phải tự đọc được */
+  background: var(--dm-sunken);
+  color: var(--dm-muted);
+  border: 1px dashed var(--dm-control);
+}
+.app-shell.demo-shell.wallet-execution .wallet-dapp-ly-do {
+  background: var(--dm-brand-soft);
+  border-color: color-mix(in srgb, var(--dm-brand) 30%, var(--dm-line));
+  color: var(--dm-ink);
+}
+
+/* ── KHOẢNH KHẮC CHÍNH: phán quyết hiện ra ─────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Thẻ phán quyết mở từ trên xuống bằng clip-path — đọc như "kết quả vừa được in ra" — thay cho
+     trượt-mờ chung chung. Nội dung đã có sẵn trong DOM (không chờ class mới hiện). */
+  .app-shell.demo-shell .result-card {
+    animation: dm-phan-quyet 240ms var(--dm-ease-expo) both;
+  }
+  /* Biểu tượng mức cảnh báo: phóng vào, KHÔNG nảy quá (bản cũ vượt 1.06). */
+  .app-shell.demo-shell .status-icon--danger {
+    animation: dm-bieu-tuong 220ms var(--dm-ease) 140ms both;
+  }
+  /* Các dòng hậu quả hiện lần lượt THEO THỨ TỰ TOÀN CỤC (`--dong` do CanhBao gắn, qua mọi nhóm):
+     40 ms mỗi dòng, chặn ở dòng thứ 8 (tổng trễ ≤ 520 ms). */
+  .app-shell.demo-shell .result-card [data-dong-hau-qua] {
+    animation: dm-dong 200ms var(--dm-ease) both;
+    animation-delay: calc(200ms + min(var(--dong, 0), 8) * 40ms);
+  }
+  /* Thanh độ phủ: bản cũ chạy 620 ms; giữ ý nghĩa "đã đọc tới đâu" nhưng ≤ 250 ms. */
+  .app-shell.demo-shell .coverage-fill {
+    animation-duration: 240ms;
+    animation-timing-function: var(--dm-ease);
+  }
+  /* Chuyển màn (Phòng phân tích ↔ Ví của bạn): mờ chéo ngắn. */
+  .app-shell.demo-shell .demo-workspace {
+    animation: dm-mo 220ms var(--dm-ease) both;
+  }
+}
+
+@keyframes dm-phan-quyet {
+  from {
+    opacity: 0.001;
+    clip-path: inset(0 0 100% 0 round 16px);
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 16px);
+    transform: none;
+  }
+}
+@keyframes dm-bieu-tuong {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dm-dong {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dm-mo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell.demo-shell *,
+  .app-shell.demo-shell *::before,
+  .app-shell.demo-shell *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Di động ───────────────────────────────────────────────────────────────────────────── */
+
+/* Bàn kiểm tra giao dịch. Nội dung thật là điểm nhấn; sắc teal dành cho thao tác. */
+.app-shell.demo-shell .demo-container {
+  max-width: 1440px;
+  padding-inline: 40px;
+  padding-top: 20px;
+}
+.app-shell.demo-shell .demo-container .wallet-header {
+  padding-block: 0 18px;
+}
+.app-shell.demo-shell .demo-container .wallet-surface-bar {
+  display: inline-flex;
+  margin-block: 14px 0;
+}
+.app-shell.demo-shell .demo-intro {
+  padding-block: 28px 30px;
+  align-items: center;
+  gap: 32px;
+}
+.app-shell.demo-shell .demo-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+}
+.app-shell.demo-shell .demo-intro h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+}
+.app-shell.demo-shell .demo-intro__description {
+  max-width: 60ch;
+  font-size: 0.875rem;
+  margin-top: 12px;
+}
+.app-shell.demo-shell .demo-steps {
+  gap: 26px;
+  padding: 22px 0 22px 30px;
+  border-inline-start: 1px solid var(--dm-line);
+}
+.app-shell.demo-shell .demo-steps li {
+  gap: 12px;
+  max-width: none;
+  font-size: 0.75rem;
+}
+.app-shell.demo-shell .demo-steps__number {
+  width: 34px;
+  height: 34px;
+}
+.app-shell.demo-shell .demo-steps li:not(:last-child)::after {
+  left: 42px;
+  top: 17px;
+  width: 64px;
+}
+.app-shell.demo-shell .demo-container .demo-workspace {
+  grid-template-columns: minmax(340px, 0.76fr) minmax(0, 1.24fr);
+  gap: 24px;
+  align-items: start;
+}
+.app-shell.demo-shell .wallet-card,
+.app-shell.demo-shell .review-card {
+  border-radius: 16px;
+}
+.app-shell.demo-shell .demo-container .wallet-card__top {
+  padding: 22px 24px;
+}
+.app-shell.demo-shell .demo-container .wallet-balance {
+  margin-top: 18px;
+  padding-top: 16px;
+}
+.app-shell.demo-shell .demo-container .wallet-balance .balance-number {
+  font-size: 2.375rem;
+  letter-spacing: -0.025em;
+}
+.app-shell.demo-shell .wallet-balance__note {
+  margin-top: 10px;
+}
+.app-shell.demo-shell .demo-container .wallet-actions {
+  padding: 22px 24px;
+}
+.app-shell.demo-shell .wallet-actions h2 {
+  margin-bottom: 14px;
+}
+.app-shell.demo-shell .demo-scenario-source {
+  display: block;
+  margin-top: -6px;
+  margin-bottom: 12px;
+  font-size: 0.6875rem;
+  color: var(--dm-muted);
+}
+.app-shell.demo-shell .huong-dan h3 {
+  color: var(--dm-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.app-shell.demo-shell .demo-guided-cases {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 14px;
+  gap: 12px;
+}
+.app-shell.demo-shell .demo-guided-cases > li > p:first-child {
+  font-size: 0.6875rem;
+  min-height: 18px;
+}
+.app-shell.demo-shell .demo-guided-cases .action-card {
+  flex: 1;
+  min-height: 136px;
+  gap: 12px;
+  padding: 14px;
+}
+.app-shell.demo-shell .action-card[aria-current="true"] {
+  border-color: var(--dm-brand);
+  background: var(--dm-brand-soft);
+  outline: 1px solid var(--dm-brand);
+  outline-offset: -2px;
+}
+.app-shell.demo-shell .demo-guided-cases .action-card > span > span:first-child {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+.app-shell.demo-shell .demo-guided-cases .action-card > span > span:last-child {
+  font-size: 0.6875rem;
+  line-height: 1.65;
+}
+.app-shell.demo-shell .demo-case-context {
+  margin-top: 4px;
+  color: var(--dm-muted);
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+.app-shell.demo-shell .demo-evidence-link {
+  gap: 0 8px;
+  margin-top: 14px;
+}
+.app-shell.demo-shell .demo-evidence-link .lien-ket {
+  font-size: 0.75rem;
+  text-decoration-color: var(--dm-control);
+}
+.app-shell.demo-shell .demo-interpreter-note {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--dm-line);
+  font-size: 0.6875rem;
+  line-height: 1.75;
+}
+.app-shell.demo-shell .nguon-kiem {
+  margin-bottom: 0;
+}
+.app-shell.demo-shell .nguon-kiem label {
+  padding: 9px;
+  gap: 6px;
+}
+.app-shell.demo-shell .nguon-kiem label span span:first-child {
+  font-size: 0.75rem;
+}
+.app-shell.demo-shell .nguon-kiem label span span:last-child {
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+.app-shell.demo-shell .nguon-kiem .lien-ket {
+  font-size: 0.75rem;
+}
+.app-shell.demo-shell .review-card {
+  position: sticky;
+  top: 24px;
+}
+.app-shell.demo-shell .review-header {
+  padding: 22px 26px;
+}
+.app-shell.demo-shell .review-header h2 {
+  font-size: 1rem;
+}
+.app-shell.demo-shell .review-body {
+  padding: 24px 26px;
+}
+.app-shell.demo-shell .empty-review {
+  padding: 0;
+}
+.app-shell.demo-shell .demo-empty-heading h3 {
+  font-size: 1.375rem;
+  line-height: 1.5;
+}
+.app-shell.demo-shell .demo-empty-heading p {
+  max-width: 52ch;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+.app-shell.demo-shell .demo-findings {
+  margin-top: 28px;
+  padding-top: 0;
+}
+.app-shell.demo-shell .demo-findings li {
+  padding-block: 18px;
+  border-top-color: var(--dm-line);
+}
+.app-shell.demo-shell .demo-findings li > div > p:first-child {
+  font-size: 0.875rem;
+}
+.app-shell.demo-shell .demo-findings li > div > p:last-child {
+  font-size: 0.75rem;
+}
+.app-shell.demo-shell .demo-findings li > span {
+  border-radius: 5px;
+  font-size: 0.6875rem;
+}
+
+/* Một chữ ký → nhiều hậu quả. Sơ đồ minh hoạ, không dựng số liệu. */
+.demo-inspection-map {
+  display: grid;
+  grid-template-columns: 112px 20px minmax(106px, 1fr) 20px 160px;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 32px;
+  min-height: 192px;
+  padding: 24px 18px;
+  border-radius: 12px;
+  background: var(--dm-sunken);
+  color: var(--dm-brand);
+}
+.inspection-caption {
+  display: block;
+  color: var(--dm-muted);
+  font-size: 0.6875rem;
+  margin-bottom: 10px;
+}
+.inspection-document {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px 12px;
+  background: var(--dm-surface);
+  border: 1px solid var(--dm-control);
+  border-radius: 8px;
+}
+.inspection-document > span {
+  font-size: 0.6875rem;
+  color: var(--dm-ink);
+}
+.inspection-document i {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--dm-line);
+}
+.inspection-document i:last-child { width: 60%; }
+.inspection-engine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.inspection-engine__mark {
+  display: grid;
+  place-items: center;
+  height: 76px;
+  width: 76px;
+  background: var(--dm-dark);
+  border-radius: 16px;
+}
+.inspection-engine > span {
+  font-size: 0.9375rem;
+  color: var(--dm-ink);
+  font-weight: 600;
+}
+.inspection-engine small {
+  font-size: 0.625rem;
+  color: var(--dm-muted);
+  line-height: 1.65;
+  max-width: 15ch;
+}
+.inspection-output > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--dm-line);
+  color: var(--dm-ink);
+  font-size: 0.6875rem;
+}
+.inspection-output > div:last-child { border-bottom: 0; }
+.inspection-node {
+  height: 8px;
+  width: 8px;
+  background: var(--dm-brand);
+  border-radius: 50%;
+  margin-inline: 3px;
+  flex-shrink: 0;
+}
+.inspection-node--open {
+  border: 1px solid var(--dm-brand);
+  background: transparent;
+}
+.app-shell.demo-shell .scanning-panel {
+  min-height: 450px;
+  border-radius: 12px;
+}
+.app-shell.demo-shell .result-card {
+  box-shadow: none;
+  border-radius: 12px;
+}
+.app-shell.demo-shell .result-card > header h3 {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+.app-shell.demo-shell .result-card [data-dong-hau-qua] > span {
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+.app-shell.demo-shell .result-card [data-dong-hau-qua] > span:nth-child(2) {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.app-shell.demo-shell .result-card .text-rose-700 {
+  color: var(--custos-danger, #b4233c);
+}
+.app-shell.demo-shell .result-card .status-icon--danger {
+  color: var(--custos-danger, #b4233c);
+  background: var(--dm-surface);
+  border-color: #e3a9b4;
+}
+.app-shell.demo-shell .result-card .nut {
+  box-shadow: none;
+}
+.app-shell.demo-shell .scanner {
+  background: var(--dm-surface);
+  border: 1px solid var(--dm-control);
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell.demo-shell .action-card[aria-current="true"] .action-icon {
+    animation: dm-bieu-tuong 180ms var(--dm-ease-expo) both;
+  }
+}
+@media (min-width: 1024px) and (max-height: 850px) {
+  .app-shell.demo-shell .demo-container { padding-top: 16px; }
+  .app-shell.demo-shell .demo-container .wallet-header { padding-bottom: 12px; }
+  .app-shell.demo-shell .demo-container .wallet-surface-bar { margin-top: 10px; }
+  .app-shell.demo-shell .demo-intro { padding-block: 14px; }
+  .app-shell.demo-shell .demo-intro h1 { font-size: 2rem; }
+  .app-shell.demo-shell .demo-container .wallet-card__top { padding-block: 16px; }
+  .app-shell.demo-shell .demo-container .wallet-balance { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; padding-top: 12px; }
+  .app-shell.demo-shell .demo-container .wallet-balance__amount { margin-top: 0; }
+  .app-shell.demo-shell .demo-container .wallet-balance .balance-number { font-size: 1.75rem; }
+  .app-shell.demo-shell .wallet-balance__note { display: none; }
+  .app-shell.demo-shell .demo-container .wallet-actions { padding-top: 18px; }
+  .app-shell.demo-shell .demo-guided-cases .action-card { min-height: 112px; padding: 12px; }
+  .app-shell.demo-shell .demo-guided-cases .action-card > span > span:last-child { display: none; }
+  .app-shell.demo-shell .demo-case-context { font-size: 0.625rem; }
+  .demo-inspection-map { min-height: 172px; margin-bottom: 24px; padding-block: 18px; }
+}
+@media (max-width: 1199px) {
+  .app-shell.demo-shell .demo-container { padding-inline: 24px; }
+  .app-shell.demo-shell .demo-intro h1 { font-size: 2.125rem; }
+  .app-shell.demo-shell .demo-steps { gap: 18px; padding-left: 20px; }
+  .app-shell.demo-shell .demo-steps li:not(:last-child)::after { width: 52px; }
+  .demo-inspection-map {
+    grid-template-columns: 88px 14px minmax(76px, 1fr) 14px 128px;
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  .inspection-engine__mark { width: 64px; height: 64px; }
+}
+@media (max-width: 1023px) {
+  .app-shell.demo-shell .demo-container .demo-workspace { grid-template-columns: 1fr; }
+  .app-shell.demo-shell .demo-intro { align-items: flex-start; flex-direction: column; gap: 22px; }
+  .app-shell.demo-shell .demo-steps { border: 0; padding: 0; }
+  .app-shell.demo-shell .demo-steps li { flex-direction: row; align-items: center; }
+  .app-shell.demo-shell .demo-steps li::after { display: none; }
+  .app-shell.demo-shell .review-card { position: static; }
+  .app-shell.demo-shell .demo-guided-cases .action-card { min-height: 116px; }
+  .app-shell.demo-shell .demo-container .wallet-card__top { display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+  .app-shell.demo-shell .demo-container .wallet-balance { border: 0; margin: 0; padding: 0; }
+  .app-shell.demo-shell .wallet-identity { flex-wrap: wrap; }
+  .demo-inspection-map { grid-template-columns: 112px 20px minmax(90px, 1fr) 20px 150px; gap: 16px; padding-inline: 24px; }
+}
+@media (max-width: 650px) {
+  .app-shell.demo-shell .demo-container { padding-inline: 16px; padding-top: 18px; }
+  .app-shell.demo-shell .demo-container .wallet-surface-bar { display: flex; }
+  .app-shell.demo-shell .demo-container .wallet-surface-bar span { display: none; }
+  .app-shell.demo-shell .demo-intro { padding-block: 24px; gap: 20px; }
+  .app-shell.demo-shell .demo-intro h1 { font-size: 1.875rem; }
+  .app-shell.demo-shell .demo-intro__description { font-size: 0.8125rem; }
+  .app-shell.demo-shell .demo-steps { justify-content: space-between; gap: 12px; }
+  .app-shell.demo-shell .demo-steps li { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 0.6875rem; }
+  .app-shell.demo-shell .demo-container .wallet-card__top { display: block; padding: 20px; }
+  .app-shell.demo-shell .demo-container .wallet-balance { border-top: 1px solid var(--dm-dark-line); margin-top: 18px; padding-top: 16px; }
+  .app-shell.demo-shell .demo-container .wallet-actions { padding: 20px; }
+  .app-shell.demo-shell .demo-case-context { display: none; }
+  .app-shell.demo-shell .demo-guided-cases .action-card { padding: 12px; min-height: 146px; }
+  .app-shell.demo-shell .demo-guided-cases .action-card > span > span:first-child { font-size: 0.8125rem; }
+  .app-shell.demo-shell .review-header { padding: 18px; }
+  .app-shell.demo-shell .review-body { padding: 20px 18px; }
+  .app-shell.demo-shell .demo-empty-heading h3 { font-size: 1.125rem; }
+  .demo-inspection-map { grid-template-columns: 76px 18px minmax(0, 1fr); gap: 12px; padding: 20px 16px; margin-top: 0; min-height: 170px; }
+  .inspection-input, .inspection-input + .inspection-arrow { display: none; }
+  .inspection-caption, .inspection-output > div { font-size: 0.6875rem; }
+  .inspection-output > div { gap: 6px; }
+  .inspection-engine__mark { height: 60px; width: 60px; border-radius: 12px; }
+  .inspection-engine__mark img { width: 40px; height: 40px; }
+  .inspection-engine > span { font-size: 0.75rem; }
+  .inspection-engine small { font-size: 0.625rem; }
+  .inspection-arrow { width: 18px; }
+}
+
+@media (max-width: 650px) {
+  .app-shell.demo-shell .demo-intro {
+    padding-top: 10px;
+  }
+  .app-shell.demo-shell .wallet-surface-bar {
+    width: 100%;
+  }
+  .app-shell.demo-shell .wallet-surface-bar button {
+    flex: 1;
+  }
+}
+
+/* R0-2 · "Tuỳ chọn nguồn dữ liệu" — thu gọn, cùng nhịp với thư viện tình huống. */
+.app-shell.demo-shell .nguon-tuy-chon > summary {
+  /* Giữ display: list-item để còn tam giác ▶ như "Tự chọn tình huống"; 12 + 20 + 12 = 44 px. */
+  padding-block: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dm-muted);
+  border-radius: 8px;
+}
+.app-shell.demo-shell .nguon-tuy-chon > summary:focus-visible {
+  outline: 2px solid var(--dm-brand);
+  outline-offset: 2px;
+}
+.app-shell.demo-shell .nguon-tuy-chon[open] > summary {
+  color: var(--dm-ink);
+}
+.app-shell.demo-shell .nguon-tuy-chon[open] > summary ~ * {
+  animation: dm-mo 200ms var(--dm-ease) both;
+}

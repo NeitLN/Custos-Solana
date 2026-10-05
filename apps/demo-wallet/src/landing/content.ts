@@ -203,7 +203,7 @@ export const VI = {
       "SDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.",
     codeTieuDe: "Ví dụ phân tích một giao dịch",
     codeGhiChu:
-      "Ví dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói công khai trên npm là 0.1.1 và chưa có mọi thay đổi trong mã nguồn.",
+      "Ví dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói @custos-solana/core trên npm là 0.2.0, cùng phiên bản với mã nguồn; connector Wallet Standard chưa phát hành lên npm.",
     lien: [
       { nhan: "Đọc hướng dẫn SDK", khoa: "sdkDocs" },
       { nhan: "Mở Inspector", khoa: "inspector" },
@@ -246,7 +246,7 @@ export const VI = {
     muc: [
       {
         hoi: "Custos có phải một ví mới không?",
-        dap: "Custos tập trung vào phân tích giao dịch trước ký. Dự án có ví mẫu để trình diễn cách tích hợp; mục tiêu không phải yêu cầu người dùng chuyển tài sản sang một ví mới.",
+        dap: "Custos tập trung vào phân tích giao dịch trước ký. Dự án có Ví Custos — một ví tham chiếu trên Devnet — để trình diễn cách tích hợp; mục tiêu không phải yêu cầu người dùng chuyển tài sản sang một ví mới.",
       },
       {
         hoi: "Tôi có cần nhập seed phrase hoặc dùng tài sản thật để thử không?",
@@ -262,7 +262,7 @@ export const VI = {
       },
       {
         hoi: "Tôi có thể thử transaction khác không?",
-        dap: "Có thể dùng Inspector với đầu vào và mạng nằm trong phạm vi được công cụ hỗ trợ. Inspector phân tích transaction; không nhập khóa riêng và không coi kết quả là bảo đảm an toàn.",
+        dap: "Có thể dùng Inspector với đầu vào và mạng nằm trong phạm vi được công cụ hỗ trợ. Inspector còn có 10 giao dịch mainnet thật, ghi vài giây sau khi chúng thực thi, để phát lại không cần mạng — đó là dữ liệu đã ghi, không phải trạng thái chuỗi hiện tại hay luồng ký mainnet. Không nhập khóa riêng và không coi kết quả là bảo đảm an toàn.",
       },
       {
         hoi: "Website đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?",
@@ -288,7 +288,7 @@ export const VI = {
   footer: {
     dinhVi: "Phân tích giao dịch Solana trước khi ký.",
     lien: [
-      { nhan: "Demo ví mẫu", khoa: "viMau" },
+      { nhan: "Ví Custos", khoa: "viMau" },
       { nhan: "Inspector", khoa: "inspector" },
       { nhan: "Tài liệu SDK", khoa: "sdkDocs" },
       { nhan: "GitHub", khoa: "repo" },
@@ -507,7 +507,7 @@ export const EN: NoiDung = {
       "The SDK provides analysis. The consumer is responsible for binding it to the correct transaction and enforcing signing conditions.",
     codeTieuDe: "Example: analyzing one transaction",
     codeGhiChu:
-      "Analysis example; read the consumer guide before wiring this into a signing step. The published npm package is 0.1.1 and does not yet include every change in the source.",
+      "Analysis example; read the consumer guide before wiring this into a signing step. @custos-solana/core on npm is 0.2.0, the same version as the source; the Wallet Standard connector is not yet published to npm.",
     lien: [
       { nhan: "Read the SDK guide", khoa: "sdkDocs" },
       { nhan: "Open Inspector", khoa: "inspector" },
@@ -550,7 +550,7 @@ export const EN: NoiDung = {
     muc: [
       {
         hoi: "Is Custos a new wallet?",
-        dap: "Custos focuses on transaction analysis before signing. The project includes a demo wallet to show integration; it does not ask you to move assets into a new wallet.",
+        dap: "Custos focuses on transaction analysis before signing. The project includes Custos Wallet — a reference wallet on Devnet — to show integration; it does not ask you to move assets into a new wallet.",
       },
       {
         hoi: "Do I need a seed phrase or real assets to try it?",
@@ -566,7 +566,7 @@ export const EN: NoiDung = {
       },
       {
         hoi: "Can I inspect another transaction?",
-        dap: "Use Inspector for inputs and networks within its supported scope. Its analysis is not a guarantee of safety, and it does not need your private key.",
+        dap: "Use Inspector for inputs and networks within its supported scope. It also includes 10 real mainnet transactions, recorded seconds after they executed, that replay offline — recorded data, not the current chain state or a mainnet signing flow. Its analysis is not a guarantee of safety, and it does not need your private key.",
       },
       {
         hoi: "Is this page running a live check or showing a sample?",
@@ -592,7 +592,7 @@ export const EN: NoiDung = {
   footer: {
     dinhVi: "Solana transaction analysis before signing.",
     lien: [
-      { nhan: "Demo wallet", khoa: "viMau" },
+      { nhan: "Custos Wallet", khoa: "viMau" },
       { nhan: "Inspector", khoa: "inspector" },
       { nhan: "SDK guide", khoa: "sdkDocs" },
       { nhan: "GitHub", khoa: "repo" },

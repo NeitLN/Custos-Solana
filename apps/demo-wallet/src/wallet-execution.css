@@ -28,3 +28,12 @@
 /* Điện thoại: yêu cầu ký/kết quả lên trước cột ví; lúc rảnh bỏ hình trang trí cho trang ngắn lại. */
 @media(max-width:650px){.wallet-execution .review-card[data-noi-bat="1"]{order:-1}.wallet-execution .review-card:not([data-noi-bat]) .demo-scan-art{display:none}}
 @media(max-width:650px){.wallet-execution .review-card:not([data-noi-bat]) .wallet-expectations{display:none}}
+
+/* R0-5 · Màn đầu khi chưa có khoá: một việc làm được, trước mọi thiết lập. */
+.wallet-start{padding:22px 24px;border-bottom:1px solid #dce5d8}
+.wallet-start h2{font-size:15px;font-weight:600}
+.wallet-start p{font-size:12.5px;color:#3f5545;line-height:1.8;margin:8px 0 16px}
+.wallet-start .wallet-start__mo{width:100%;min-height:48px}
+.wallet-start .wallet-start__phu{font-size:12px;color:#526456;margin:12px 0 0}
+.wallet-presenter-note{font-size:12px;color:#526456;line-height:1.8}
+@media(max-width:650px){.wallet-start{padding:20px}}

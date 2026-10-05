@@ -47,8 +47,8 @@ with sync_playwright() as pw:
 
     # T1 — wallet-adapter tự nhận ví qua Wallet Standard
     ten_vi = [x.inner_text().strip() for x in dapp.locator("[data-khoi=vi] button").all()]
-    ghi("T1 · wallet-adapter thấy 'Custos Demo Wallet'", any("Custos Demo Wallet" in t for t in ten_vi), str(ten_vi))
-    dapp.get_by_role("button", name=re.compile("Custos Demo Wallet")).click()
+    ghi("T1 · wallet-adapter thấy 'Custos Wallet'", any("Custos Wallet" in t for t in ten_vi), str(ten_vi))
+    dapp.get_by_role("button", name=re.compile("Custos Wallet")).click()
 
     # T2 — cửa sổ ví mở trong thao tác bấm, KHÔNG bị trình chặn popup chặn
     try:
@@ -102,7 +102,7 @@ with sync_playwright() as pw:
     if GUI_THAT:
         # Kết nối lại rồi ký thật một lần. Cửa sổ ví đóng ⇒ connector báo mất tài khoản ⇒
         # wallet-adapter BỎ CHỌN ví (hành vi của adapter, đo được lượt chạy đầu) ⇒ chọn lại.
-        dapp.get_by_role("button", name=re.compile("Custos Demo Wallet")).click()
+        dapp.get_by_role("button", name=re.compile("Custos Wallet")).click()
         with ctx.expect_page(timeout=10000) as moi:
             dapp.get_by_role("button", name="Kết nối", exact=True).click()
         vi = moi.value

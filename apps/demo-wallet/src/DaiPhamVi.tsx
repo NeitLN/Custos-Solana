@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
  * CK-12 cấm chuyển động nền cạnh đoạn cảnh báo đang đọc. Nay: một dòng, chữ thường, nền hoà vào
  * trang, chấm xanh nhỏ báo mạng. `aside` có tên để trình đọc màn hình nhảy tới được (axe `region`).
  */
-export function DaiPhamVi({ nhan = "Phạm vi bản demo", children }: { nhan?: string; children: ReactNode }) {
+export function DaiPhamVi({ nhan = "Phạm vi thử nghiệm", children }: { nhan?: string; children: ReactNode }) {
   return (
     <aside className="dai-pham-vi" aria-label={nhan}>
       {/* Chấm nằm TRONG dòng chữ: xuống dòng thì nó vẫn đi liền chữ đầu, không đứng lẻ bên trái. */}

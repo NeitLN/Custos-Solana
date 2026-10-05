@@ -33,13 +33,26 @@ KHO = [(320, 800), (390, 844), (640, 800), (768, 1024), (1024, 768), (1280, 720)
 NUT_HUY = re.compile("Chặn & huỷ giao dịch")
 
 
+async def mo_nguon(pg) -> None:
+    """R0-2: bộ chọn nguồn nằm trong <details> "Tuỳ chọn nguồn dữ liệu" mặc định đóng."""
+    tom = pg.locator("details.nguon-tuy-chon:not([open]) > summary")
+    if await tom.count():
+        await tom.click()
+
+
 async def chay_ca(pg, ban_phim: bool) -> None:
     """Chọn phát lại và chạy ca tấn công; `ban_phim` ⇒ chỉ dùng phím."""
     if not ban_phim:
+        await mo_nguon(pg)
         await pg.get_by_text("Dữ liệu đã ghi", exact=True).click()
         await pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first.click()
     else:
         radio = pg.get_by_role("radio", name=re.compile("Dữ liệu đã ghi"))
+        for _ in range(80):
+            await pg.keyboard.press("Tab")
+            if await pg.evaluate("document.activeElement?.matches('details.nguon-tuy-chon > summary')"):
+                break
+        await pg.keyboard.press("Enter")  # mở "Tuỳ chọn nguồn dữ liệu" bằng phím
         for _ in range(80):
             await pg.keyboard.press("Tab")
             if await pg.evaluate("document.activeElement?.name === 'nguon-kiem'"):
@@ -48,8 +61,10 @@ async def chay_ca(pg, ban_phim: bool) -> None:
         if not await radio.is_checked():
             await pg.keyboard.press("ArrowRight")
         nut = pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first
+        # Bộ chọn nguồn nằm SAU thẻ tình huống (R0-2) ⇒ lùi bằng Shift+Tab như người dùng bàn phím
+        # thật; Tab tiến phải vòng qua cuối trang, và Firefox headless không vòng lại.
         for _ in range(80):
-            await pg.keyboard.press("Tab")
+            await pg.keyboard.press("Shift+Tab")
             if await nut.evaluate("e => e === document.activeElement"):
                 break
         await pg.keyboard.press("Enter")
