@@ -64,7 +64,11 @@ Simulation không broadcast và dùng trạng thái quan sát. State, blockhash 
 
 ### T7. Tại sao không có smart contract riêng?
 
-Trách nhiệm hiện tại là kiểm trước ký từ phía ví. Thêm contract không tự khiến lớp đọc đáng tin hơn và còn mở thêm bề mặt lỗi. Rubric có mục smart contract; nhóm đang chờ xác nhận cách áp cho SDK. **Nguồn:** `docs/adr/0001-doi-huong-technical-build.md`, TB-H01. Không khẳng định chắc chắn được tối đa 25%.
+Nói thẳng: rubric có mục smart contract, và Custos **không có**. Đó là quyết định, không phải thiếu sót. Rủi ro Custos xử lý xảy ra **trước khi người dùng ký**, ngay trong ví: dApp xin chữ ký cho một giao dịch làm nhiều hơn điều nó hứa. Contract không đọc được giao dịch trước khi giao dịch tồn tại, và một lớp bảo vệ tự giữ tài sản thì lại thành mục tiêu tấn công.
+
+Phần on-chain nằm ở chỗ khác. Custos mô phỏng chính bytes sắp ký trên Solana, đọc trạng thái trước và sau, và sau khi giao dịch chạy thì đối chiếu kết quả trên chain với dự báo: lượt ký thật 29/09 khớp 3/3 trường. Lớp cưỡng chế lúc thực thi (Lighthouse, Phantom dùng) là **bổ trợ**: nó chặn được khi trạng thái đổi giữa lúc xem và lúc chạy, nhưng không giải thích được cho người dùng. Custos **chưa tích hợp** Lighthouse.
+
+**Nguồn:** `docs/adr/0001-doi-huong-technical-build.md`, `docs/adr/0004-custos-trong-luong-ky-cua-vi.md`, `docs/nghien-cuu/LIGHTHOUSE.md`, `docs/review/ck-20260929/B5-VAN-KY.json`. **Không nói:** "chặn on-chain", "bảo vệ on-chain", "đã tích hợp Lighthouse". Không khẳng định được tối đa điểm mục 25 %.
 
 ### T8. AI đóng góp được gì?
 
@@ -337,7 +341,8 @@ xin lỗi và không vội chữa.
 ### 9. "Sao không có smart contract? Vậy có phải Web3 không?"
 
 > "Là lựa chọn có chủ đích. Custos không giữ tài sản, không có smart contract, nên không có bề mặt tấn công on-chain nào. Một lớp bảo mật mà bản thân nó thành mục tiêu tấn công thì hỏng.
-> Chúng tôi từng thiết kế một registry on-chain có đặt cọc và đã **bỏ** — nó làm sản phẩm phức tạp hơn mà không giải quyết bài toán chính."
+> Chúng tôi từng thiết kế một registry on-chain có đặt cọc và đã **bỏ** — nó làm sản phẩm phức tạp hơn mà không giải quyết bài toán chính.
+> Phần Web3 nằm ở chỗ Custos ngồi: trong luồng ký của ví, qua chuẩn Wallet Standard. dApp xin chữ ký, ví mô phỏng đúng giao dịch đó trên Solana, và sau khi chạy thì đối chiếu kết quả trên chain với dự báo." (Chi tiết: mục T7.)
 
 ---
 
@@ -456,20 +461,20 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
-### 14. "1357 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "1370 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 1357 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 1370 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (1357)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (1370)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1357 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1370 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*
