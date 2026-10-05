@@ -56,7 +56,7 @@ Standard `@custos-solana/connector`, cửa sổ ký `ket-noi.html` kiểm đúng
 dApp độc hại mô phỏng trên wallet-adapter ở origin riêng, biên nhận dự báo ↔ thực tế, trang Tích hợp.
 Lộ trình: `docs/roadmap/ROADMAP-SAU-MENTOR.md`.
 
-**Chưa có:** video cho luồng ký Wallet Standard mới (video cũ: `docs/nop-bai/video/CUSTOS-DEMO.mp4`) · phỏng vấn người mua · pilot bên thứ ba (D1 — cần người ngoài đội).
+**Chưa có:** video thuyết minh cho luồng ký Wallet Standard (đã có bản ghi dự phòng không lời, có phụ đề: `docs/nop-bai/video/CUSTOS-LUONG-KY.mp4`, quay tự động trên production 05/10 bằng `scripts/kiem-trinh-duyet/quay-video-luong-ky.py`) · phỏng vấn người mua · pilot bên thứ ba (D1 — cần người ngoài đội).
 
 > *Decoder cho chương trình DEX* từng nằm ở mục này. Số đo trên cohort nói khác:
 > hai DEX xuất hiện — Jupiter và Pump AMM — đều đã đọc hiểu được qua IDL công bố

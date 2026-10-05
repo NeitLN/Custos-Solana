@@ -1,0 +1,143 @@
+[
+  {
+    "url": "https://custos-solana.vercel.app/gioi-thieu.html",
+    "giay": 2.6,
+    "h1": "Hiểu điều bạn sắp ký.",
+    "lienKetDauTien": [
+      [
+        "Thử như người dùng",
+        "https://solbonus-custos.vercel.app/tan-cong/"
+      ],
+      [
+        "Mở phòng phân tích →",
+        "/index.html"
+      ],
+      [
+        "A B ! Xem tình huống A/B Cùng số dư. Khác quy",
+        "#trai-nghiem"
+      ],
+      [
+        "Xem đối chiếu và bằng chứng →",
+        "#trai-nghiem"
+      ],
+      [
+        "Cuộn để khám phá ↓",
+        "#trai-nghiem"
+      ],
+      [
+        "Solana Devnet Môi trường thử nghiệm",
+        "/index.html"
+      ],
+      [
+        "SDK Dành cho ví và dApp",
+        "#nha-phat-trien"
+      ],
+      [
+        "Inspector Kiểm tra transaction",
+        "/soi.html"
+      ]
+    ],
+    "buoc": "1 trang chủ"
+  },
+  {
+    "nhan": "Thử như người dùng",
+    "href": "https://solbonus-custos.vercel.app/tan-cong/",
+    "buoc": "2a CTA hero"
+  },
+  {
+    "url": "https://solbonus-custos.vercel.app/tan-cong/",
+    "h1": "Một món quà. Một lần ký?",
+    "nut": [
+      "Kết nối ví",
+      "Nhận 1.000 SOLB"
+    ],
+    "buoc": "2 bấm CTA hero (tab mới)"
+  },
+  {
+    "giay": 1.3,
+    "h1": "Một món quà. Một lần ký?",
+    "nut": [
+      "Kết nối ví",
+      "Nhận 1.000 SOLB"
+    ],
+    "chu": "dApp độc hại MÔ PHỎNG · Không gọi Custos — chỉ kết nối ví qua chuẩn Wallet Standard · Solana Devnet | ✦ | SolBonus | Rewards, reimagined. | Nhận thưởng ↗ | Về thử nghiệm |  | SOLANA COMMUNITY REWARDS |  | Một món quà. | Một lần ký? |  | Một trang tặng thưởng có thể trông rất thuyết phục. Hãy xem ví tích hợp Custos giải thích giao dịch này trước khi bạn quyết định. |  | ↗ Lời hứa trên giao diện. Sự thật trong giao dịch. |  | PHIẾU NHẬN THƯỞNG | DEMO · DEVNET | “Ví của bạn đủ điều kiện nhận thưởng” | 1.000 | SOLB |  | Phần thưởng hư cấu · Không có SOLB thật |  | Chọn phiên bản để đối chứng | Có điều kiện ẩn | Phiên bản lành | Ví dùng thử | Chọn ví… | Custos Demo Wallet | Kết nối ví |  | Chọn “Custos Demo Wallet” — tên của Ví mẫu Custos trong danh sách ví — để thấy Custos kiểm trước khi ký. Giữ cửa sổ ví mở sau khi kết nối. |  | Điều kiện ẩn trong kịch bản: chuyển nửa số DEMO và đổi chủ tài khoản token. Nếu vẫn ký, giao dịch có hiệu lực thật trên Devnet. |  | N",
+    "buoc": "3 SolBonus mở"
+  },
+  {
+    "h1": "Ví mẫu Custos",
+    "nut": [
+      "Từ chối",
+      "Cho kết nối"
+    ],
+    "chu": "Ví mẫu Custos | Solana Devnet · cửa sổ ký | Ví | AqX3Fm…PEBCLZ | Ứng dụng | https://solbonus-custos.vercel.app | Custos đọc chain qua | api.devnet.solana.com | Tôi có file khoá của ví demo (đội phát triển) | https://solbonus-custos.vercel.app muốn kết nối |  | Ứng dụng sẽ thấy địa chỉ ví. Mỗi giao dịch nó gửi sau đó đều được Custos kiểm tại đây trước khi bạn ký. |  | Từ chối | Cho kết nối",
+    "buoc": "4 cửa sổ ví (xin kết nối)"
+  },
+  {
+    "giay": 6.1,
+    "trangThai": "Tìm thấy 5 phiên DEMO từ dữ liệu chain (tối đa 5 phiên mỗi lượt).",
+    "coChon": 1,
+    "buoc": "5 tìm token"
+  },
+  {
+    "giay": 2.4,
+    "nut": [
+      "Chặn giao dịch",
+      "Vẫn ký"
+    ],
+    "vanKyBat": false,
+    "chu": "Ví mẫu Custos | Solana Devnet · cửa sổ ký | Ví | AqX3Fm…PEBCLZ | Ứng dụng | https://solbonus-custos.vercel.app | Custos đọc chain qua | api.devnet.solana.com | Tôi có file khoá của ví demo (đội phát triển) | https://solbonus-custos.vercel.app yêu cầu ký một giao dịch |  | Nguy hiểm |  | Custos phát hiện hành vi cụ thể trong chính giao dịch này. Đọc bảng bên dưới trước khi quyết định. |  | Hành động chính được nhận diện: chuyển DEMO đi. Nhưng giao dịch còn đổi chủ tài khoản token sang 7oGP…AQFm — việc này không phục vụ chuyển DEMO đi. |  | Số dư DEMO sau khi ký | 500,0 → 250,0 | Chủ sở hữu tài khoản DEMO | Bạn → 7oGP…AQFm | Phí mạng | — → 0,000005 SOL |  | Mã lý do: SPL_SET_AUTHORITY__ACCOUNT_OWNER · phủ 2/2 lệnh |  | Tôi đã đọc cảnh báo và vẫn muốn ký | Chặn giao dịch | Vẫn ký |  | Không có file khoá? Bạn vẫn chặn được: bấm Chặn giao dịch — ứng dụng sẽ không nhận được chữ ký nào. Ký thật cần khoá của đội; xem một lượt đã ký thật trên Explorer và biên nhận đối chiếu với chain. |  | Đã cho https://solbonus-custos.vercel.app xem địa chỉ ví.",
+    "buoc": "6 cảnh báo trong ví"
+  },
+  {
+    "trangThai": "Yêu cầu đã dừng tại ví. SolBonus chưa gửi giao dịch lên Devnet.",
+    "buoc": "7 sau khi chặn (SolBonus)"
+  },
+  {
+    "giay": 0.9,
+    "kq": "Chạy kiemTruocKhiKy — Giao dịch “nhận quà” đã ghi (chuyển tiền + đổi chủ) |  | Chặn · lý do phat_hien · mức Nguy hiểm · mã SPL_SET_AUTHORITY__ACCOUNT_OWNER |  | Đọc hiể",
+    "buoc": "8.0 chạy thử Tích hợp"
+  },
+  {
+    "giay": 0.1,
+    "kq": "Chạy kiemTruocKhiKy — Giao dịch lành tính đã ghi (đối chứng) |  | Cho ký · lý do khong_van_de · mức An toàn · mã không có |  | Đọc hiểu 1/1 lệnh. Phát lại dữ liệu Devne",
+    "buoc": "8.1 chạy thử Tích hợp"
+  },
+  {
+    "giay": 3.0,
+    "url": "https://custos-solana.vercel.app/vi",
+    "h1": "Một giao dịch. Nhìn rõ trước khi ký.",
+    "nut": [
+      "Phòng phân tích",
+      "Ví của bạn",
+      "AqX3F…EBCLZ",
+      "Kiểm tra sẵn sàng Devnet",
+      "Giao dịch lành tính — đối chứng Gửi 10 token cho b",
+      "Tấn công đầy đủ — chuyển tiền và đổi chủ Nhận quà ",
+      "Mở dữ kiện của kết quả đang xem"
+    ],
+    "chu": "Bản trình diễn trên Solana Devnet · không dùng tài sản thật |  | Custos | Demo |  | Ví mẫu tích hợp Custos SDK |  | Giới thiệu | Ví mẫu | Tích hợp | Inspector | Số liệu | Phòng phân tích | Ví của bạn | Phân tích các kịch bản trên hiện trường mẫu |  | Không gian trải nghiệm |  | Một giao dịch. | Nhìn rõ trước khi ký. |  | Chọn một tình huống để xem Custos phân tích tài sản, quyền kiểm soát và những phần chưa đọc được. |  | 01 | Chọn tình huống | 02 | Custos phân tích | 03 | Đọc kết quả | Custos Demo 01 | Ví thử nghiệm của bạn | AqX3F…EBCLZ | Tổng tài sản thử nghiệm | SPL | 500 | USDC-demo |  | Token thử nghiệm trên Devnet · không có giá trị quy đổi |  | 01 Chọn một giao dịch để thử |  | Diễn giải: mô hình ngôn ngữ qua máy chủ, có đường lui tất định. Mức cảnh báo vẫn do engine luật quyết. |  | Nguồn dữ liệu | Devnet trực tiếp | Mô phỏng ngay trên Solana Devnet — cần mạng. | Dữ liệu đã ghi | Engine chạy lại trên phản hồi RPC đã ghi — không cần mạng. | Kiểm tra sẵn sàng Devnet | Thử có h",
+    "buoc": "9 ví demo"
+  },
+  {
+    "h1": "Đọc giao dịch. Trước khi đặt niềm tin.",
+    "nut": [
+      "Dùng giao dịch mẫu đã ghi",
+      "",
+      "Kiểm giao dịch"
+    ],
+    "coMau": true,
+    "buoc": "10 inspector"
+  },
+  {
+    "h1": "Có số liệu. Có cả giới hạn.",
+    "buoc": "11 số liệu"
+  },
+  {
+    "tranNgang": false,
+    "buoc": "12 mobile"
+  },
+  {
+    "loi": [],
+    "buoc": "loi trang"
+  }
+]

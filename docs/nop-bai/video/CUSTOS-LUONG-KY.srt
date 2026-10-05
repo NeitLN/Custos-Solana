@@ -1,0 +1,35 @@
+1
+00:00:01,500 --> 00:00:15,730
+SolBonus: dApp độc hại MÔ PHỎNG trên Devnet — không gọi Custos, chỉ xin chữ ký qua chuẩn ví
+
+2
+00:00:15,730 --> 00:00:18,289
+Bấm Kết nối ví → cửa sổ Ví mẫu Custos mở ở origin riêng
+
+3
+00:00:18,289 --> 00:00:20,320
+Cho kết nối: ứng dụng chỉ thấy địa chỉ ví
+
+4
+00:00:20,320 --> 00:00:28,710
+SolBonus tự đọc chain, tìm token DEMO của ví
+
+5
+00:00:28,710 --> 00:00:31,019
+Bấm Nhận quà → yêu cầu ký đi vào ví; Custos mô phỏng ĐÚNG giao dịch đó
+
+6
+00:00:31,019 --> 00:00:38,049
+Nguy hiểm: chuyển nửa số DEMO VÀ đổi chủ tài khoản token — trước khi có chữ ký nào của ví
+
+7
+00:00:38,049 --> 00:00:40,549
+Chặn giao dịch: ví không tạo chữ ký
+
+8
+00:00:40,549 --> 00:00:44,549
+SolBonus không nhận được chữ ký — chưa gửi gì lên Devnet
+
+9
+00:00:44,549 --> 00:00:49,549
+Lượt đã ký thật 29/09: explorer.solana.com/tx/LDxqW6…eroQ2 (cluster devnet) — biên nhận khớp 3/3
