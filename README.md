@@ -45,14 +45,22 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 | Hiểu sản phẩm trước khi thử | [Trang giới thiệu](https://custos-solana.vercel.app) |
 | Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus-custos.vercel.app/tan-cong/). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
 | Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-solana.vercel.app/tich-hop.html) |
-| Chạy các tình huống và đọc kết quả | [Ví mẫu Custos](https://custos-solana.vercel.app/vi) |
+| Chạy các tình huống và đọc kết quả | [Ví Custos](https://custos-solana.vercel.app/vi) |
 | Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-solana.vercel.app/soi.html) |
+| Xem Custos đọc **giao dịch mainnet thật** | Inspector → mục *Giao dịch mainnet thật — phát lại*: 10 giao dịch ghi vài giây sau khi thực thi, phát lại không cần mạng. Dữ liệu đã ghi, không phải luồng ký mainnet |
 | Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-solana.vercel.app/so-lieu.html) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
 | Xem bản ghi không phụ thuộc RPC | [Video luồng dApp → ví → Chặn (50 s, có phụ đề)](docs/nop-bai/video/CUSTOS-LUONG-KY.mp4) · [Video cũ (trước Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
 
 Bản phụ trên GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/).
 
-**Luồng nên thử:** đổi chủ tài khoản → mở dữ kiện trước/sau → cấp quyền vượt số dư → so với ca đối chứng. Danh sách đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
+**Luồng nên thử — 2 phút, không cần khoá:**
+
+1. Mở [SolBonus](https://solbonus-custos.vercel.app/tan-cong/) → **Kết nối ví**. Cửa sổ Ví Custos bật lên; bấm **Cho kết nối** và giữ cửa sổ đó mở.
+2. Ở SolBonus, bấm **Tìm token DEMO trên Devnet**, rồi **Nhận 1.000 SOLB**. Cửa sổ ký của Ví Custos mô phỏng đúng giao dịch SolBonus gửi và hiện **Nguy hiểm**: một nửa token rời đi, và chủ tài khoản token đổi sang địa chỉ khác.
+3. Bấm **Chặn giao dịch** — SolBonus không nhận được chữ ký nào.
+4. Mở [Phòng phân tích](https://custos-solana.vercel.app/vi) để so các tình huống bên dưới, và [Inspector](https://custos-solana.vercel.app/soi.html) để xem 10 giao dịch mainnet thật.
+
+Danh sách tình huống đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
 
 | Tình huống | Điều cần quan sát |
 |---|---|
@@ -109,7 +117,7 @@ Dùng **Node 24.12.x** và **npm 11.6.2** theo [.nvmrc](.nvmrc) và [package.jso
 git clone https://github.com/NeitLN/Custos-Solana.git
 cd Custos-Solana
 npx npm@11.6.2 ci
-npx npm@11.6.2 run check # typecheck + 1370 test
+npx npm@11.6.2 run check # typecheck + 1382 test
 npm run vi
 ```
 
@@ -159,17 +167,19 @@ Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng h
 | Phạm vi | Kết quả đã lưu |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **1370**, chạy trong `npm run check` |
+| Test | **1382**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
+| Giao dịch mainnet thật, phát lại | **10** giao dịch SPL Token thành công liên tiếp, ghi 06/10/2026 vài giây sau khi thực thi, không chọn theo kết quả: **4** Bình thường (không cờ trong phần đọc được) · **6** Cần xem kỹ (**4** vì mô phỏng lại hỏng — fail-safe, không bao giờ trả `safe`) · **0** Nguy hiểm. [Dữ liệu](apps/demo-wallet/public/replay/mainnet.json) · [cách ghi](scripts/capture-mainnet-phat-lai.ts) |
 
 <details>
 <summary><strong>Đọc sâu: bằng chứng, hiệu năng và phạm vi từng phép đo</strong></summary>
 
 | Bằng chứng | Chứng minh trong phạm vi nào? | Chưa chứng minh |
 |---|---|---|
-| **1370 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
+| **1382 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
 | **38 mẫu** đã gắn nhãn | Ca kích hoạt và đối chứng của luật | Khả năng khái quát sang tập độc lập |
 | **Cohort công khai lưu offline** | Hành vi trên response đã lưu | Precision/recall; cohort chưa có ground truth |
+| **10 giao dịch mainnet phát lại** | Engine đọc message mainnet thật; thiếu trạng thái thì báo, không đoán | Luồng ký hay bảo vệ tài sản trên mainnet; tỉ lệ phát hiện — 10 mẫu, chưa có nhãn |
 | **Ví dụ tích hợp** | Consumer do nhóm dựng dùng SDK ngoài monorepo | Adoption hoặc nhu cầu bên thứ ba |
 | **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | Bộ guard qua các ca đối kháng đã lưu; có đánh giá với mô hình thật | Mọi câu diễn giải đều đúng hoặc dễ hiểu hơn template |
 
@@ -177,7 +187,7 @@ Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-b
 
 | Nhóm tiêu chí | Bằng chứng và nguồn |
 |---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2 · **1370** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **30 %** độ khó và chiều sâu | **14** luật L2 · **1382** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
 | **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
 | **25 %** Solana stack · hiệu năng | `inspect()` **639 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | FCP **88 ms** · bấm→thẻ **n=30**, trung vị **890 ms**, p95 quan sát **6005 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
@@ -192,13 +202,13 @@ Số giao diện được đo trên Chromium headless; không suy rộng sang th
 
 Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
 
-Measured, not estimated: **1370 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
+Measured, not estimated: **1382 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
 </details>
 
 ## Giới hạn hiện tại
 
-- **Devnet-only:** runtime/demo hiện dành cho thử nghiệm; không tuyên bố sẵn sàng bảo vệ tài sản mainnet.
+- **Devnet-only:** runtime/demo hiện dành cho thử nghiệm; không tuyên bố sẵn sàng bảo vệ tài sản mainnet. Mục mainnet trong Inspector là dữ liệu đã ghi, phát lại offline — ví không mở kết nối mainnet nào.
 - **Phạm vi đọc hiểu chưa đầy đủ:** decoder và Token-2022 còn giới hạn. Coverage là phạm vi phân tích, không phải xác suất giao dịch an toàn.
 - **Mô phỏng có giới hạn:** chỉ phản ánh dữ kiện quan sát được; trạng thái chain có thể thay đổi trước khi gửi giao dịch.
 - **Tích hợp quyết định hiệu lực:** SDK không thể cưỡng chế một consumer cố ý bỏ qua kết quả hoặc ký nội dung khác.
@@ -224,10 +234,11 @@ Xem [artifact kiểm phụ thuộc](data/seed/lo-hong.json) để biết gói v�
 
 ```text
 apps/
-  demo-wallet/       Ví mẫu, Inspector, website và trang số liệu
-  trang-tan-cong/    dApp minh họa các tình huống đánh lừa người ký
+  demo-wallet/       Ví Custos (ví tham chiếu) và cửa sổ ký, Inspector, website, trang số liệu
+  trang-tan-cong/    SolBonus — dApp độc hại mô phỏng, xin chữ ký qua Wallet Standard
 packages/
   core/             Mô phỏng, facts, engine luật và API inspect
+  connector/        Connector Wallet Standard: đưa yêu cầu ký của dApp vào cửa sổ Ví Custos
   ai/               Diễn giải tất định, adapter mô hình và kiểm đầu ra
   types/            Hợp đồng dữ liệu dùng chung
 vi-du-tich-hop/     Consumer kiểm tích hợp ngoài monorepo
@@ -257,6 +268,8 @@ Custos phát triển cho **UniHackfest 2026 · Best Technical Build**, theo lự
 ## English overview
 
 **Custos is a pre-signing transaction-intelligence SDK for Solana wallets and dApps.** It simulates transactions, surfaces asset and permission changes, and returns rule-based findings with supporting evidence and analysis coverage.
+
+A Wallet Standard connector puts Custos inside the signing flow: any dApp's `signTransaction` request opens the Custos Wallet window, which simulates that exact transaction before the user decides. Inspector also replays 10 real mainnet transactions recorded seconds after execution (offline, recorded data — not a mainnet signing flow).
 
 The deterministic engine owns the verdict. An optional language model explains structured facts; a deterministic explanation path remains available. The integrating application handles policy, consent and signing. Current runtime and demo scope is **Solana Devnet**, with no Custos smart contract and no claim of complete threat detection or confirmed third-party adoption.
 

@@ -27,7 +27,8 @@ có trên sơ đồ.
    (chính) và dApp (phụ). Người dùng cuối không mở Custos; họ được bảo vệ vì ví của họ đã tích
    hợp. Custos không phải trang quét link và không xét URL hay tên miền.
 2. **Bằng chứng tích hợp là một ví Wallet Standard.**
-   - `@custos-solana/connector` đăng ký "Custos Demo Wallet".
+   - `@custos-solana/connector` đăng ký "Custos Demo Wallet" (từ 06/10/2026 đổi tên hiển thị thành
+     "Custos Wallet" — R0-1, `ROADMAP-GIONG-THAT.md`).
    - dApp dùng wallet-adapter như với mọi ví khác. Mã Custos duy nhất phía dApp là lệnh
      `registerCustosWallet({ url })`.
    - Cửa sổ ví (`ket-noi.html`, origin riêng) kiểm đúng bytes nhận được, rồi để người dùng
@@ -85,7 +86,7 @@ nguy hiểm"** (`danger` có mã cáo buộc). Gộp hai thứ đó là nói sai
 - **Không** đổi `InspectResult`, luật L2, hay quyền của AI. `level` vẫn chỉ do L2 tạo.
 - **Không** cho Custos gửi giao dịch hay ghi lên chain. Ví ký; dApp gửi.
 - **Không** hứa bảo vệ người dùng của ví không tích hợp Custos. Connector chỉ có tác dụng khi
-  người dùng chọn "Custos Demo Wallet".
+  người dùng chọn "Custos Demo Wallet" (nay là "Custos Wallet").
 - **Không** gọi đây là pilot bên thứ ba. Ví mẫu và dApp thử đều do đội tự viết; bằng chứng bên
   thứ ba là việc D1.
 - **Không** bỏ luồng live cũ ngay. `LiveSession` giữ vai đối chứng cho tới khi B1–B5 xong.
