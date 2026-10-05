@@ -10,6 +10,8 @@ import type { InspectResult } from "@custos-solana/types";
 import { docTx, kiemVi, GIOI_HAN_BYTE } from "./soiTx.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { locDongNhatKy } from "./locNhatKy.ts";
+import { docBoReplay } from "./replayKichBan.ts";
+import { dungMau, type MauInspector } from "./mauInspector.ts";
 
 /**
  * CU-08 — INSPECTOR: kiểm một giao dịch BẤT KỲ, ngoài hai kịch bản demo.
@@ -84,6 +86,14 @@ export function Inspector() {
     setNhatKy((cu) => [...cu.slice(-40), locDongNhatKy(d)]);
   }, []);
 
+  /*
+   * GIAO DỊCH MẪU (đánh giá giám khảo 05/10). Còn hiệu lực chừng nào ô base64 còn đúng chuỗi mẫu; sửa ô ⇒
+   * quay về kiểm live như mọi giao dịch khác.
+   */
+  const [mau, setMau] = useState<MauInspector | null>(null);
+  const [loiMau, setLoiMau] = useState<string | null>(null);
+  const dangDungMau = mau !== null && tho.trim() === mau.b64;
+
   const doiDauVao = useCallback((s: string) => {
     setTho(s);
     // Đổi đầu vào ⇒ kết quả cũ không còn nói về thứ đang hiển thị. Bỏ ngay.
@@ -109,17 +119,24 @@ export function Inspector() {
     ghi(`đọc được giao dịch ${d.soByte} byte, ${d.daKy ? "ĐÃ ký" : "chưa ký"}`);
 
     try {
-      const k = ketNoiCoHuy();
-      boHuy.current = k;
-      const c = new Connection(rpc.trim() || RPC_MAC_DINH, {
-        commitment: "confirmed",
-        fetch: k.fetch,
-      });
-      const r = await inspect(
-        { connection: c },
-        d.tx,
-        { locale: "vi", chanDoan: true, ...(vi.trim() ? { nguoiDung: vi.trim() } : {}) },
-      );
+      let c: Connection;
+      let tuyChon: Parameters<typeof inspect>[2];
+      if (dangDungMau && mau) {
+        // Phát lại: Connection từ fixture, KHÔNG gọi mạng; tuỳ chọn đúng như lúc ghi.
+        boHuy.current = null;
+        c = await mau.taoKetNoi();
+        tuyChon = mau.tuyChon;
+        ghi(`giao dịch mẫu — phát lại dữ liệu Devnet ghi lúc ${mau.captureLuc}, không gọi mạng`);
+      } else {
+        const k = ketNoiCoHuy();
+        boHuy.current = k;
+        c = new Connection(rpc.trim() || RPC_MAC_DINH, {
+          commitment: "confirmed",
+          fetch: k.fetch,
+        });
+        tuyChon = { locale: "vi", chanDoan: true, ...(vi.trim() ? { nguoiDung: vi.trim() } : {}) };
+      }
+      const r = await inspect({ connection: c }, d.tx, tuyChon);
       if (!conDung()) return;
       ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
       setTt({ pha: "xong", ketQua: r, soByte: d.soByte, daKy: d.daKy });
@@ -146,7 +163,21 @@ export function Inspector() {
           "KHÔNG phải kết luận về giao dịch.",
       });
     }
-  }, [tho, vi, rpc, ghi]);
+  }, [tho, vi, rpc, ghi, dangDungMau, mau]);
+
+  const dungGiaoDichMau = useCallback(async () => {
+    setLoiMau(null);
+    try {
+      const b = await docBoReplay();
+      if ("loi" in b) throw new Error(b.loi);
+      const m = await dungMau(b.bo);
+      setMau(m);
+      doiDauVao(m.b64);
+      setVi(m.viBaoVe);
+    } catch (e) {
+      setLoiMau(`Chưa dùng được giao dịch mẫu: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }, [doiDauVao]);
 
   const huy = useCallback(() => {
     luot.current++;
@@ -220,6 +251,9 @@ export function Inspector() {
       />
 
       <div className="mt-2 flex flex-wrap items-center gap-3">
+        <button type="button" className="nut text-[13px]" onClick={() => void dungGiaoDichMau()}>
+          Dùng giao dịch mẫu đã ghi
+        </button>
         <label
           className="nut lien-ket cursor-pointer text-[13px] underline"
           htmlFor="tx-tep"
@@ -234,6 +268,14 @@ export function Inspector() {
           onChange={(e) => void doiTep(e.target.files?.[0])}
         />
       </div>
+
+      {dangDungMau && mau && (
+        <p className="mt-2 text-[12px] text-chu-mo" data-mau>
+          Đang dùng giao dịch mẫu “{mau.tieuDe}”. Bấm Kiểm sẽ <strong>phát lại</strong> dữ liệu Devnet ghi lúc{" "}
+          {mau.captureLuc} — không gọi mạng, không ký. Sửa ô trên thì quay về kiểm trực tiếp.
+        </p>
+      )}
+      {loiMau && <p className="mt-2 text-[12px]" role="alert">{loiMau}</p>}
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
