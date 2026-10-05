@@ -1058,7 +1058,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                           Giao dịch chưa ký. Quyết định vẫn ở bạn.
                         </h3>
                         <p className="mt-1 text-[13px] leading-relaxed text-chu-mo">
-                          Chọn “Nhận quà tặng” hoặc “Gửi 10 token” để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.
+                          Bấm “Tấn công đầy đủ” (lời mời “Nhận quà tặng”) hoặc “Giao dịch lành tính” (gửi 10 token) ở cột trái để bắt đầu. Kết quả phân tích sẽ xuất hiện tại đây.
                         </p>
                       </div>
                     </div>
@@ -1121,7 +1121,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         <span aria-hidden="true">…</span>
                       </div>
                     </div>
-                    <BaoCham />
+                    <BaoCham trucTiep={nguonKiem === "trucTiep"} />
                   </div>
                 )}
 
@@ -1351,16 +1351,26 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
  * mới biết mạng hỏng. Sau 4 giây, một dòng trạng thái cho biết đây là Devnet chậm, không
  * phải Custos treo. Component riêng để timer tự dọn khi thẻ chờ biến mất.
  */
-function BaoCham() {
+/**
+ * Báo chậm, kèm LỐI THOÁT khi đang chạy trực tiếp (đánh giá giám khảo 05/10). Ngưỡng 6 s: một lượt Devnet bình
+ * thường mất ~4 s (đo 05/10: 3,9–4,4 s), ngưỡng 4 s cũ khiến câu "chậm hơn thường lệ" hiện gần như mọi lượt.
+ */
+function BaoCham({ trucTiep }: { trucTiep: boolean }) {
   const [cham, setCham] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setCham(true), 4000);
+    const t = setTimeout(() => setCham(true), 6000);
     return () => clearTimeout(t);
   }, []);
   if (!cham) return null;
   return (
     <p className="mt-4 max-w-[40ch] text-[12.5px] leading-relaxed text-chu-mo">
       Devnet đang trả lời chậm hơn thường lệ. Custos vẫn chờ; nếu hết thời hạn, bạn sẽ được báo và có thể thử lại.
+      {trucTiep && (
+        <>
+          {" "}Muốn xem ngay: chọn <strong>Dữ liệu đã ghi</strong> ở cột trái rồi bấm lại — phát lại dữ liệu Devnet đã
+          ghi, không cần mạng.
+        </>
+      )}
     </p>
   );
 }
