@@ -131,7 +131,7 @@ export default function App() {
               <option value="" disabled>Chọn ví…</option>{wallets.map(w => <option key={w.adapter.name} value={w.adapter.name}>{w.adapter.name}</option>)}
             </select>
             <button className="nut-nhan" disabled={!wallet || busy || connecting} onClick={() => void run(async () => { setStatus("Hãy cho phép kết nối trong cửa sổ ví."); await connect(); setStatus("Đã kết nối. Chọn phiên bản và chuẩn bị yêu cầu."); })}>{connecting ? "Đang kết nối…" : "Kết nối ví"}</button>
-            <p className="sb-small">Chọn Custos Demo Wallet để thấy Custos kiểm trước khi ký. Giữ cửa sổ ví mở sau khi kết nối.</p>
+            <p className="sb-small">Chọn “Custos Demo Wallet” — tên của Ví mẫu Custos trong danh sách ví — để thấy Custos kiểm trước khi ký. Giữ cửa sổ ví mở sau khi kết nối.</p>
           </div> : <div className="sb-connected"><span title={address}>Đã kết nối: <code>{short(address!)}</code></span><button className="sb-link" disabled={busy} onClick={() => void run(async () => { await disconnect(); setStatus("Đã ngắt kết nối."); })}>Ngắt kết nối</button></div>}
           {connected && !correct && <p role="alert">Bản thử nghiệm chỉ dùng ví <code className="sb-address">{VI_DEMO.toBase58()}</code>. Hãy ngắt kết nối và chọn đúng ví demo.</p>}
           {correct && mode === "dieu-kien-an" && <div className="sb-tokens">
@@ -147,7 +147,7 @@ export default function App() {
             <a data-signature href={`https://explorer.solana.com/tx/${pending.signature}?cluster=devnet`} target="_blank" rel="noreferrer">{short(pending.signature)} · Xem Explorer ↗</a>
             <p className="sb-small">{outcome === "xong" ? "Mở cửa sổ ví để xem biên nhận đối chiếu với dự báo Custos. Quét lại trước khi dùng phiên tiếp." : "Có thể tải lại trang; chữ ký chờ xác nhận được giữ trong tab này."}</p>
           </div>}
-        </div><div className="reward-card-foot">↗ Kết quả Custos và quyết định ký nằm trong cửa sổ ví.</div>
+        </div><div className="reward-card-foot">↗ Kết quả Custos và quyết định ký nằm trong cửa sổ ví. Không có khoá vẫn chặn được; lượt đã ký thật: <a href="https://explorer.solana.com/tx/LDxqW6gh5euJWtypEA95yPzUVEZoPGDv2p3ZovrSDRcVcFrw2gUNd7qbZHfDjmNg3PdwwA1FU9iDR5pfg2eroQ2?cluster=devnet" target="_blank" rel="noreferrer">Explorer</a> · <a href="https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/ck-20260929/B5-VAN-KY.json" target="_blank" rel="noreferrer">biên nhận</a>.</div>
       </section>
     </div>
     <section id="kich-ban" className="attack-explainer rounded-xl border border-vien-nhat bg-white p-5">

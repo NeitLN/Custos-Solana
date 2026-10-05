@@ -15,6 +15,7 @@ import type { InspectResult } from "@custos-solana/types";
 import { PHIEN_BAN } from "@custos-solana/connector/giao-thuc";
 import { CuaSoVi, LoiHienThiDuoc, type TrangThaiCuaSo } from "./ketNoi/cuaSoVi.ts";
 import type { GiaoDichRpc } from "./ketNoi/bienNhan.ts";
+import { timMintDemo } from "./ketNoi/nhanDemo.ts";
 import { DEVNET_GENESIS, LIVE_RPC } from "./live/session.ts";
 import { liveRpcFetch } from "./live/rpc.ts";
 import { DEFAULT_DEMO_WALLET } from "../../../scripts/demo-wallet-config.ts";
@@ -53,6 +54,9 @@ async function kiem(tx: VersionedTransaction): Promise<{ ketQua: InspectResult; 
   // Diễn giải KHÔNG dùng AI (L3 dự phòng): bản cửa sổ ký chưa gọi mô hình. Bọc lại để giữ Facts
   // của CHÍNH lượt này cho biên nhận — cùng cách `LiveSession` làm.
   let facts: Facts | undefined;
+  // Nhãn "DEMO" chỉ khi chain chứng minh mint thuộc phiên thử nghiệm của ví cố định (best-effort, có hạn,
+  // không bao giờ ném). Chỉ đổi CHỮ hiển thị — `level` vẫn do L2 quyết. Xem `ketNoi/nhanDemo.ts`.
+  const kyHieuToken = await timMintDemo(connection, tx, DEFAULT_DEMO_WALLET);
   const ketQua = await coHanHienThi(
     inspect(
       {
@@ -63,7 +67,7 @@ async function kiem(tx: VersionedTransaction): Promise<{ ketQua: InspectResult; 
         },
       },
       tx,
-      { nguoiDung: DEFAULT_DEMO_WALLET, locale: "vi" },
+      { nguoiDung: DEFAULT_DEMO_WALLET, locale: "vi", ...(Object.keys(kyHieuToken).length ? { kyHieuToken } : {}) },
     ),
     HAN_KIEM_MS,
   );
@@ -123,6 +127,16 @@ function cauLoaiCo(r: InspectResult): string | null {
     : "Custos phát hiện hành vi cụ thể trong chính giao dịch này. Đọc bảng bên dưới trước khi quyết định.";
 }
 
+/**
+ * Lượt "Vẫn ký" thật qua chính luồng này — SolBonus ↔ cửa sổ ký, hai origin HTTPS, 29/09/2026 (B5): biên nhận
+ * khớp dự báo 3/3, chain xác nhận 499 → 249,5 DEMO và đổi chủ. KHÔNG trỏ trang Số liệu: dữ liệu ở đó là lượt
+ * CK-05 của luồng cũ, dùng làm bằng chứng cho luồng này là nói sai nguồn (đánh giá giám khảo 05/10).
+ */
+const GIAO_DICH_DA_KY_THAT =
+  "https://explorer.solana.com/tx/LDxqW6gh5euJWtypEA95yPzUVEZoPGDv2p3ZovrSDRcVcFrw2gUNd7qbZHfDjmNg3PdwwA1FU9iDR5pfg2eroQ2?cluster=devnet";
+const BIEN_BAN_KY_THAT =
+  "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/ck-20260929/B5-VAN-KY.json";
+
 const NHAN_MUC: Record<InspectResult["level"], string> = {
   safe: "An toàn",
   warning: "Cần xem kỹ",
@@ -171,7 +185,8 @@ function Trang() {
 
       {!opener && (
         <p className="kn-note">
-          Trang này là cửa sổ ký. Nó chỉ hoạt động khi được một ứng dụng (dApp) mở qua “Custos Demo Wallet”.
+          Trang này là cửa sổ ký của Ví mẫu Custos. Nó chỉ hoạt động khi được một ứng dụng (dApp) mở — trong danh
+          sách ví của dApp, ví này có tên “Custos Demo Wallet”.
         </p>
       )}
 
@@ -188,14 +203,17 @@ function Trang() {
           <span>Custos đọc chain qua</span>
           <code>{HOST_RPC}</code>
         </div>
+        {/* Đánh giá giám khảo 05/10: người xem KHÔNG có khoá — nạp khoá là việc của đội, nên thu gọn lại
+            thay vì làm thứ nổi bật nhất cửa sổ. Ô file giữ id `kn-khoa` (các probe nạp khoá qua nó). */}
         {!coKhoa && (
-          <div className="kn-khoa">
+          <details className="kn-khoa" open={!!loiKhoa}>
+            <summary>Tôi có file khoá của ví demo (đội phát triển)</summary>
             <input ref={file} id="kn-khoa" type="file" accept=".json,application/json" hidden
               onChange={(e) => e.target.files?.[0] && void napKhoa(e.target.files[0])} />
-            <button type="button" onClick={() => file.current?.click()}>Chọn file khoá (.json)…</button>
-            <small>Cần để ký. Chọn .devnet/vi-demo.json — khoá chỉ nằm trong tab này.</small>
+            <button type="button" className="phu" onClick={() => file.current?.click()}>Chọn file khoá (.json)…</button>
+            <small>Chỉ cần để ký thật. Khoá chỉ nằm trong tab này, không gửi đi đâu.</small>
             {loiKhoa && <p role="alert">{loiKhoa}</p>}
-          </div>
+          </details>
         )}
       </section>
 
@@ -256,7 +274,14 @@ function Trang() {
                   {ketQua.level === "safe" ? "Ký" : "Vẫn ký"}
                 </button>
               </div>
-              {!coKhoa && <small>Nạp file khoá ở trên để ký.</small>}
+              {!coKhoa && (
+                <p className="kn-khong-khoa">
+                  Không có file khoá? Bạn vẫn chặn được: bấm <strong>Chặn giao dịch</strong> — ứng dụng sẽ không
+                  nhận được chữ ký nào. Ký thật cần khoá của đội; xem{" "}
+                  <a href={GIAO_DICH_DA_KY_THAT} target="_blank" rel="noreferrer">một lượt đã ký thật trên Explorer</a>{" "}
+                  và <a href={BIEN_BAN_KY_THAT} target="_blank" rel="noreferrer">biên nhận đối chiếu với chain</a>.
+                </p>
+              )}
             </>
           )}
         </section>
@@ -330,6 +355,10 @@ css.textContent = `
   button.phu { background:transparent; color:var(--chu); border-color:var(--vien); }
   button:disabled { opacity:.45; cursor:not-allowed; }
   .kn-xac-nhan { display:flex; gap:8px; align-items:center; font-size:14px; }
+  .kn-khoa summary { cursor:pointer; font-size:13px; opacity:.8; }
+  .kn-khoa[open] { display:grid; gap:6px; }
+  .kn-khong-khoa { margin:0; font-size:13px; line-height:1.55; padding:8px 10px; border-radius:8px; background:color-mix(in srgb, var(--nhan) 10%, transparent); }
+  .kn-khong-khoa a { color:inherit; }
   .kn-note { margin:0; font-size:14px; }
   .kn-loai { margin:0; font-size:14px; }
   .kn-bien-nhan h2 { font-size:15px; margin:0; }

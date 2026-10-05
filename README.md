@@ -45,7 +45,7 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 | Hiểu sản phẩm trước khi thử | [Trang giới thiệu](https://custos-solana.vercel.app) |
 | Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus-custos.vercel.app/tan-cong/). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
 | Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-solana.vercel.app/tich-hop.html) |
-| Chạy các tình huống và đọc kết quả | [Ví demo](https://custos-solana.vercel.app/vi) |
+| Chạy các tình huống và đọc kết quả | [Ví mẫu Custos](https://custos-solana.vercel.app/vi) |
 | Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-solana.vercel.app/soi.html) |
 | Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-solana.vercel.app/so-lieu.html) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
 | Xem bản ghi không phụ thuộc RPC | [Video demo (bản trước luồng Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
@@ -109,7 +109,7 @@ Dùng **Node 24.12.x** và **npm 11.6.2** theo [.nvmrc](.nvmrc) và [package.jso
 git clone https://github.com/NeitLN/Custos-Solana.git
 cd Custos-Solana
 npx npm@11.6.2 ci
-npx npm@11.6.2 run check # typecheck + 1357 test
+npx npm@11.6.2 run check # typecheck + 1370 test
 npm run vi
 ```
 
@@ -159,7 +159,7 @@ Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng h
 | Phạm vi | Kết quả đã lưu |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **1357**, chạy trong `npm run check` |
+| Test | **1370**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 
 <details>
@@ -167,7 +167,7 @@ Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng h
 
 | Bằng chứng | Chứng minh trong phạm vi nào? | Chưa chứng minh |
 |---|---|---|
-| **1357 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
+| **1370 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
 | **38 mẫu** đã gắn nhãn | Ca kích hoạt và đối chứng của luật | Khả năng khái quát sang tập độc lập |
 | **Cohort công khai lưu offline** | Hành vi trên response đã lưu | Precision/recall; cohort chưa có ground truth |
 | **Ví dụ tích hợp** | Consumer do nhóm dựng dùng SDK ngoài monorepo | Adoption hoặc nhu cầu bên thứ ba |
@@ -177,7 +177,7 @@ Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-b
 
 | Nhóm tiêu chí | Bằng chứng và nguồn |
 |---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2 · **1357** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **30 %** độ khó và chiều sâu | **14** luật L2 · **1370** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
 | **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
 | **25 %** Solana stack · hiệu năng | `inspect()` **639 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | FCP **88 ms** · bấm→thẻ **n=30**, trung vị **890 ms**, p95 quan sát **6005 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
@@ -192,7 +192,7 @@ Số giao diện được đo trên Chromium headless; không suy rộng sang th
 
 Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
 
-Measured, not estimated: **1357 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
+Measured, not estimated: **1370 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
 </details>
 

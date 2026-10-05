@@ -39,11 +39,16 @@ export function Hero({ t, ngon, paused }: { t: NoiDung; ngon: Ngon; paused: bool
           <p className="lg-lead lg-prose lg-muted lg-hero__mota">{t.hero.moTa}</p>
 
           <div className="lg-hero__nut">
-            <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
-              {t.chung.moDemo}
+            {/* Nút chính: luồng dApp → ví → Custos (SolBonus, origin riêng). Phòng phân tích là lối phụ. */}
+            <a className="lg-btn lg-btn--primary" href={LINK.solBonus} target="_blank" rel="noreferrer">
+              {t.chung.thuNguoiDung}
               <span className="cine-action-arrow"><DesignIcon kind="arrow" /></span>
             </a>
-            <p className="lg-caption lg-hero__ghichu">{t.hero.ghiChu}</p>
+            <p className="lg-caption lg-hero__ghichu">
+              {t.hero.ghiChu}
+              <br />
+              <a className="lg-link" href={LINK.viMau}>{t.chung.moDemo} →</a>
+            </p>
           </div>
           <div className="cine-preview">
             <a className="lg-lien-cta" href="#trai-nghiem">

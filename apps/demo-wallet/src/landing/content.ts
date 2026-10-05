@@ -20,7 +20,10 @@ export const VI = {
 
   chung: {
     boQuaToiNoiDung: "Bỏ qua, tới nội dung chính",
-    moDemo: "Mở demo Custos",
+    /* Đánh giá giám khảo 05/10: nút chính phải dẫn vào luồng dApp → ví (SolBonus); phòng phân tích là
+       lối phụ và phải được gọi đúng tên. */
+    thuNguoiDung: "Thử như người dùng",
+    moDemo: "Mở phòng phân tích",
     xemCachHoatDong: "Xem cách hoạt động",
     moMenu: "Mở menu",
     dongMenu: "Đóng menu",
@@ -325,7 +328,8 @@ export const EN: NoiDung = {
 
   chung: {
     boQuaToiNoiDung: "Skip to main content",
-    moDemo: "Open the Custos demo",
+    thuNguoiDung: "Try it as a user",
+    moDemo: "Open the analysis room",
     xemCachHoatDong: "See how it works",
     moMenu: "Open menu",
     dongMenu: "Close menu",

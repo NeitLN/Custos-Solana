@@ -85,8 +85,8 @@ export function SiteHeader({
           {/* Ở ≤640px cụm này bị ẩn bằng CSS và bản trong menu tiếp quản. */}
           <BoChonNgon t={t} ngon={ngon} doiNgon={doiNgon} />
 
-          <a className="lg-btn lg-btn--primary lg-header__cta" href={LINK.viMau}>
-            {t.chung.moDemo}
+          <a className="lg-btn lg-btn--primary lg-header__cta" href={LINK.solBonus} target="_blank" rel="noreferrer">
+            {t.chung.thuNguoiDung}
           </a>
 
           {/*
@@ -121,7 +121,12 @@ export function SiteHeader({
                 </li>
               ))}
               <li>
-                <a className="lg-menu__lien lg-menu__lien--cta" href={LINK.viMau}>
+                <a className="lg-menu__lien lg-menu__lien--cta" href={LINK.solBonus} target="_blank" rel="noreferrer">
+                  {t.chung.thuNguoiDung}
+                </a>
+              </li>
+              <li>
+                <a className="lg-menu__lien" href={LINK.viMau}>
                   {t.chung.moDemo}
                 </a>
               </li>
