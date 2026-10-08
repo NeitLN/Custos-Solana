@@ -71,9 +71,9 @@ if (EV?.moHinhThat?.trangThai && EV.moHinhThat.trangThai !== "đã đo") {
 if (EV?.boChan?.soBayCanNguoiCham) {
   gioiHan.push(`**${EV.boChan.soBayCanNguoiCham} lớp bẫy AI máy không bắt được** (sai ngữ nghĩa, không sai giá trị) — cần người chấm, rubric ở \`docs/AI-EVALUATION.md\`.`);
 }
-gioiHan.push(`**Coverage ${S.cohort.coveragePhanTram} %** trên ${S.cohort.mauDoDuoc}/${S.cohort.mauTrongCohort} giao dịch còn mô phỏng được. Chưa có decoder cho chương trình DEX.`);
+gioiHan.push(`**Coverage ${S.cohort.coveragePhanTram} %** trên ${S.cohort.mauDoDuoc}/${S.cohort.mauTrongCohort} giao dịch còn mô phỏng được. Hai DEX xuất hiện trong cohort — Jupiter và Pump AMM — đọc hiểu qua IDL công bố trên chuỗi (xem docs/DECODER-TIEP-THEO.md); chương trình khác vẫn có thể nằm ngoài phạm vi.`);
 gioiHan.push(`**${S.soLuatCoCapDoiChung}/${S.soLuat} luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong \`packages/core/test/capLuat.test.ts\`.`);
-gioiHan.push("**Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet.");
+gioiHan.push("**Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet. Mục *Giao dịch mainnet thật — phát lại* trong Inspector cũng là dữ liệu đã ghi, phát lại offline — không phải luồng ký mainnet.");
 
 const noi = `# Custos — release candidate
 

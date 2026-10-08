@@ -7,7 +7,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 | Sản phẩm chạy được | Link demo live hoặc devnet truy cập được | ✅ `neitln.github.io/Custos-Solana` |
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
 | **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
-| **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | Có [MP4 khoảng 80 giây](video/CUSTOS-DEMO.mp4), thao tác mô phỏng thật và RPC fault injection có nhãn |
+| **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | Có [MP4 50 giây — luồng dApp → ví → Chặn](video/CUSTOS-LUONG-KY.mp4), quay tự động trên production 05/10, có phụ đề, không lời — **ngắn hơn khung 60–90 giây của thể lệ**. Bản cũ trước Wallet Standard: [MP4 khoảng 80 giây](video/CUSTOS-DEMO.mp4) |
 | **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | Form 24/08 nộp theo track Best Product & Business; đội chuyển sang **Best Technical Build** từ 12/09 — **chủ dự án xác nhận 25/09/2026** đội thi track Technical và đã vào chung kết. Xem [ADR-0001](../adr/0001-doi-huong-technical-build.md) và TB-H01 |
 
 ---
@@ -87,11 +87,11 @@ thì sửa lại là phá liên kết của họ. Ba điều nên xong trước 
 ## Việc còn lại
 
 > Mục này từng ghi *"chỉ còn video"*. Không còn đúng: bên dưới là các cổng thật
-> còn mở, cập nhật 05/09.
+> còn mở, cập nhật 05/09; dòng video cập nhật 09/10.
 
 | Việc | Ai làm được | Trạng thái |
 |---|---|---|
-| Video demo dự phòng | người | **chưa có** — thể lệ BTC ghi là BẮT BUỘC |
+| Video demo dự phòng | người | **có** — `video/CUSTOS-LUONG-KY.mp4` (50 giây, phụ đề, không lời; khung thể lệ 60–90 giây) và bản cũ `video/CUSTOS-DEMO.mp4` (~80 giây, trước Wallet Standard). **Chưa có** bản thuyết minh |
 | Phát hành bản vá lên npm | người (cần đăng nhập npm) | **xong** — `@custos-solana/ai@0.2.0`, đã kiểm ngược từ registry: 10/10 bẫy bị chặn, 0 đổi `level` (`data/registry/ket-qua.json`, 06/09) |
 | Phỏng vấn người mua (ví, dApp) | người | **0** — bộ câu hỏi ở `docs/PHONG-VAN-NGUOI-MUA.md` |
 | Usability vòng 2 trên giao diện hiện tại | người | **chưa chạy** — giao thức đã khoá |
