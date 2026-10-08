@@ -39,7 +39,7 @@ function chay(bien: string, url: string): string | null {
 
 test("bản Vercel: gốc trần ⇒ trang giới thiệu", () => {
   assert.ok(script, "index.html thiếu đoạn chuyển trang chính");
-  assert.equal(chay("gioi-thieu", "https://custos-solana.vercel.app/"), "/gioi-thieu.html");
+  assert.equal(chay("gioi-thieu", "https://custos-solana.vercel.app/"), "/gioi-thieu");
 });
 
 test("bản Vercel: bàn giao dApp, màn thực thi, /vi, /index.html VẪN vào ví", () => {

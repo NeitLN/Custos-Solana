@@ -19,7 +19,7 @@
         if ("%VITE_TRANG_CHINH%" !== "gioi-thieu") return;
         var l = window.location;
         if (l.hash || l.search || !/\/$/.test(l.pathname)) return;
-        l.replace(l.pathname + "gioi-thieu.html");
+        l.replace(l.pathname + "gioi-thieu"); // URL gọn — vercel.json rewrite tới gioi-thieu.html
       })();
     </script>
   </head>

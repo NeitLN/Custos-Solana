@@ -6,8 +6,34 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/nhan-thuong",
+      "has": [
+        {
+          "type": "host",
+          "value": "solbonus.vercel.app"
+        }
+      ],
+      "destination": "/tan-cong/index.html"
+    },
+    {
+      "source": "/gioi-thieu",
+      "destination": "/gioi-thieu.html"
+    },
+    {
       "source": "/vi",
       "destination": "/index.html"
+    },
+    {
+      "source": "/inspector",
+      "destination": "/soi.html"
+    },
+    {
+      "source": "/so-lieu",
+      "destination": "/so-lieu.html"
+    },
+    {
+      "source": "/tich-hop",
+      "destination": "/tich-hop.html"
     }
   ],
   "redirects": [
@@ -19,7 +45,54 @@
           "value": "solbonus.vercel.app"
         }
       ],
-      "destination": "/tan-cong/",
+      "destination": "/nhan-thuong",
+      "permanent": false
+    },
+    {
+      "source": "/tan-cong",
+      "has": [
+        {
+          "type": "host",
+          "value": "solbonus.vercel.app"
+        }
+      ],
+      "destination": "/nhan-thuong",
+      "permanent": false
+    },
+    {
+      "source": "/tan-cong/",
+      "has": [
+        {
+          "type": "host",
+          "value": "solbonus.vercel.app"
+        }
+      ],
+      "destination": "/nhan-thuong",
+      "permanent": false
+    },
+    {
+      "source": "/gioi-thieu.html",
+      "destination": "/gioi-thieu",
+      "permanent": false
+    },
+    {
+      "source": "/index.html",
+      "destination": "/vi",
+      "permanent": false
+    },
+    {
+      "source": "/soi.html",
+      "destination": "/inspector",
+      "permanent": false
+    },
+    {
+      "source": "/so-lieu.html",
+      "destination": "/so-lieu",
+      "permanent": false
+    },
+    {
+      "source": "/tich-hop.html",
+      "destination": "/tich-hop",
       "permanent": false
     }
   ]

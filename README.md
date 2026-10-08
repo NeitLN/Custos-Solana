@@ -14,7 +14,7 @@ SDK phân tích giao dịch trước khi ký cho ví và dApp Solana.<br>
 ![Network: Solana Devnet](https://img.shields.io/badge/Solana-Devnet-C5DE97)
 ![Track: Best Technical Build](https://img.shields.io/badge/UniHackfest_2026-Best_Technical_Build-163E32)
 
-[**Mở demo**](https://custos-sdk.vercel.app) · [**Thử như người dùng: SolBonus**](https://solbonus.vercel.app) · [**Trang Tích hợp**](https://custos-sdk.vercel.app/tich-hop.html) · [**SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
+[**Mở demo**](https://custos-sdk.vercel.app) · [**Thử như người dùng: SolBonus**](https://solbonus.vercel.app/nhan-thuong) · [**Trang Tích hợp**](https://custos-sdk.vercel.app/tich-hop) · [**SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
 
 </div>
 
@@ -43,22 +43,22 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 | Bạn muốn… | Mở tại đây |
 |---|---|
 | Hiểu sản phẩm trước khi thử | [Trang giới thiệu](https://custos-sdk.vercel.app) |
-| Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus.vercel.app). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
-| Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-sdk.vercel.app/tich-hop.html) |
+| Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus.vercel.app/nhan-thuong). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
+| Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-sdk.vercel.app/tich-hop) |
 | Chạy các tình huống và đọc kết quả | [Ví Custos](https://custos-sdk.vercel.app/vi) |
-| Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-sdk.vercel.app/soi.html) |
+| Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-sdk.vercel.app/inspector) |
 | Xem Custos đọc **giao dịch mainnet thật** | Inspector → mục *Giao dịch mainnet thật — phát lại*: 10 giao dịch ghi vài giây sau khi thực thi, phát lại không cần mạng. Dữ liệu đã ghi, không phải luồng ký mainnet |
-| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-sdk.vercel.app/so-lieu.html) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
+| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-sdk.vercel.app/so-lieu) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
 | Xem bản ghi không phụ thuộc RPC | [Video luồng dApp → ví → Chặn (50 s, có phụ đề)](docs/nop-bai/video/CUSTOS-LUONG-KY.mp4) · [Video cũ (trước Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
 
 Bản phụ trên GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/). Địa chỉ cũ `custos-solana.vercel.app` và `solbonus-custos.vercel.app/tan-cong/` vẫn chạy song song.
 
 **Luồng nên thử — 2 phút, không cần khoá:**
 
-1. Mở [SolBonus](https://solbonus.vercel.app) → **Kết nối ví**. Cửa sổ Ví Custos bật lên; bấm **Cho kết nối** và giữ cửa sổ đó mở.
+1. Mở [SolBonus](https://solbonus.vercel.app/nhan-thuong) → **Kết nối ví**. Cửa sổ Ví Custos bật lên; bấm **Cho kết nối** và giữ cửa sổ đó mở.
 2. Ở SolBonus, bấm **Tìm token DEMO trên Devnet**, rồi **Nhận 1.000 SOLB**. Cửa sổ ký của Ví Custos mô phỏng đúng giao dịch SolBonus gửi và hiện **Nguy hiểm**: một nửa token rời đi, và chủ tài khoản token đổi sang địa chỉ khác.
 3. Bấm **Chặn giao dịch** — SolBonus không nhận được chữ ký nào.
-4. Mở [Phòng phân tích](https://custos-sdk.vercel.app/vi) để so các tình huống bên dưới, và [Inspector](https://custos-sdk.vercel.app/soi.html) để xem 10 giao dịch mainnet thật.
+4. Mở [Phòng phân tích](https://custos-sdk.vercel.app/vi) để so các tình huống bên dưới, và [Inspector](https://custos-sdk.vercel.app/inspector) để xem 10 giao dịch mainnet thật.
 
 Danh sách tình huống đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
 
