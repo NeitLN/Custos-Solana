@@ -24,6 +24,8 @@ export const VI = {
        lối phụ và phải được gọi đúng tên. */
     thuNguoiDung: "Thử như người dùng",
     moDemo: "Mở phòng phân tích",
+    /** Lối vào ứng dụng trên header desktop — cùng tên với thanh điều hướng trong ứng dụng. */
+    moVi: "Ví Custos",
     xemCachHoatDong: "Xem cách hoạt động",
     moMenu: "Mở menu",
     dongMenu: "Đóng menu",
@@ -50,9 +52,9 @@ export const VI = {
   },
 
   hero: {
-    kicker: "Kiểm tra giao dịch Solana trước ký",
+    kicker: "SDK kiểm tra giao dịch Solana trước khi ký",
     h1: "Hiểu điều bạn sắp ký.",
-    moTa: "Xem thay đổi tài sản và quyền kiểm soát trong giao dịch Solana, cùng dữ kiện đứng sau mỗi cảnh báo.",
+    moTa: "Custos chạy trong ví đã tích hợp SDK: mô phỏng đúng giao dịch dApp gửi tới và chỉ ra thay đổi tài sản, quyền kiểm soát — trước khi bạn ký. Custos kiểm chính giao dịch, không kiểm đường link hay tên miền.",
     ctaPhu: "Xem tình huống A/B",
     goiMoAB: "Cùng số dư. Khác quyền kiểm soát.",
     ghiChu: "Bản thử nghiệm Devnet · Không dùng tài sản thật",
@@ -67,7 +69,7 @@ export const VI = {
       nhanQuyen: "Chủ tài khoản token",
       chuBan: "Bạn",
       diaChiKhac: "địa chỉ khác",
-      cauCanhBao: "Có thao tác đổi chủ trong transaction mẫu.",
+      cauCanhBao: "Giao dịch mẫu có thao tác đổi chủ tài khoản token.",
       xemDoiChieu: "Xem đối chiếu và bằng chứng",
       caption: "Minh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.",
     },
@@ -76,7 +78,7 @@ export const VI = {
   dai: [
     { manh: "Solana Devnet", phu: "Môi trường thử nghiệm" },
     { manh: "SDK", phu: "Dành cho ví và dApp" },
-    { manh: "Inspector", phu: "Kiểm tra transaction" },
+    { manh: "Inspector", phu: "Có 10 giao dịch mainnet đã ghi" },
     { manh: "Bằng chứng", phu: "Xem dữ kiện và giới hạn" },
   ],
 
@@ -84,17 +86,17 @@ export const VI = {
      Custos nằm Ở ĐÂU trong hành trình ký, ngay dưới hero (ADR-0004). */
   hanhTrinh: {
     h2: "Custos nằm ở đâu khi bạn ký",
-    moTa: "Custos không kiểm đường link hay tên miền. Nó chạy bên trong ví, trên đúng giao dịch mà dApp gửi tới — trước khi ví của bạn ký.",
+    moTa: "Custos không kiểm đường link hay tên miền. Nó chạy bên trong ví đã tích hợp SDK, trên đúng giao dịch mà dApp gửi tới — trước khi ví của bạn ký.",
     buoc: [
       { tieuDe: "dApp dựng giao dịch", moTa: "Một trang bất kỳ — kể cả trang độc hại — gửi yêu cầu ký qua chuẩn ví của Solana." },
       { tieuDe: "Ví nhận yêu cầu", moTa: "Ví của bạn chưa ký. Ví đã tích hợp Custos giữ giao dịch lại để kiểm." },
       { tieuDe: "Custos kiểm trong ví", moTa: "Mô phỏng chính giao dịch đó, áp bộ luật, và giải thích hậu quả bằng tiếng Việt." },
-      { tieuDe: "Bạn quyết định", moTa: "Chặn thì không có gì được gửi. Vẫn ký thì ví đối chiếu kết quả thật với dự báo." },
+      { tieuDe: "Bạn quyết định", moTa: "Chặn thì không có gì được gửi. Vẫn ký thì Ví Custos trên Devnet đối chiếu kết quả thật với dự báo." },
     ],
     ctaNguoiDung: "Thử như người dùng: mở SolBonus",
     ghiChuNguoiDung: "dApp độc hại mô phỏng trên Devnet — không gọi Custos, chỉ xin chữ ký qua chuẩn Wallet Standard.",
     ctaNhaPhatTrien: "Tích hợp vào ví của bạn",
-    ghiChuNhaPhatTrien: "npm install, một hàm, và chạy thử ngay trên trang.",
+    ghiChuNhaPhatTrien: "Xem cách gọi SDK và nối vào luồng ký — chạy thử trên dữ liệu Devnet đã ghi ngay tại trang.",
   },
 
   pipeline: {
@@ -102,16 +104,16 @@ export const VI = {
     moTa: "Ba bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.",
     buoc: [
       {
-        tieuDe: "Nhận transaction chưa ký",
-        moTa: "Ví hoặc dApp đưa giao dịch vào trước bước ký. Custos không cần khóa riêng.",
+        tieuDe: "L1 · Mô phỏng và đọc dữ kiện",
+        moTa: "Mô phỏng đúng giao dịch chưa ký, đọc thay đổi số dư, chủ sở hữu và quyền. Custos không cần khóa riêng.",
       },
       {
-        tieuDe: "Mô phỏng và phân tích",
-        moTa: "Chạy mô phỏng trên mạng, đọc thay đổi tài khoản, rồi áp bộ luật phát hiện.",
+        tieuDe: "L2 · 14 luật đưa ra kết luận",
+        moTa: "Bộ luật tất định đưa ra kết luận. Mô phỏng lỗi hoặc thiếu dữ kiện cần thiết để kiểm hậu quả thì mức tối thiểu là “Cần xem kỹ”, không bao giờ “Bình thường”.",
       },
       {
-        tieuDe: "Trả kết quả kèm dữ kiện",
-        moTa: "Kết quả đi cùng dữ kiện liên quan và phạm vi đã đọc hiểu được.",
+        tieuDe: "L3 · Giải thích bằng tiếng Việt",
+        moTa: "Câu giải thích tất định, hoặc mô hình ngôn ngữ nếu bên tích hợp bật. AI chỉ diễn giải dữ kiện và đề nghị kiểm tra thủ công; không xác nhận an toàn, không kết luận nguy hiểm, không đổi mức cảnh báo.",
       },
     ],
     ghiChu: "Ví hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.",
@@ -205,6 +207,7 @@ export const VI = {
     codeGhiChu:
       "Ví dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói @custos-solana/core trên npm là 0.2.0, cùng phiên bản với mã nguồn; connector Wallet Standard chưa phát hành lên npm.",
     lien: [
+      { nhan: "Mở trang Tích hợp", khoa: "tichHop" },
       { nhan: "Đọc hướng dẫn SDK", khoa: "sdkDocs" },
       { nhan: "Mở Inspector", khoa: "inspector" },
       { nhan: "Xem hướng dẫn CLI", khoa: "cliDocs" },
@@ -222,7 +225,7 @@ export const VI = {
       },
       {
         tieuDe: "Số liệu kèm cách đo",
-        moTa: "Các con số của dự án, kèm lệnh và điều kiện đã dùng để đo.",
+        moTa: "14 luật, mỗi luật có ca kích hoạt và ca đối chứng gần giống. Số test, cohort và lệnh tự kiểm đều ở trang Số liệu.",
         khoa: "soLieu",
       },
       {
@@ -234,6 +237,11 @@ export const VI = {
         tieuDe: "Tình huống minh họa",
         moTa: "Artifact gốc của hai tình huống A/B trên trang này.",
         khoa: "nguonMau",
+      },
+      {
+        tieuDe: "Giao dịch mainnet thật — phát lại",
+        moTa: "10 giao dịch SPL Token thành công liên tiếp, ghi vài giây sau khi thực thi, không chọn theo kết quả. Phát lại trong Inspector không cần mạng — dữ liệu đã ghi, không phải luồng ký mainnet.",
+        khoa: "inspector",
       },
     ],
     gioiHan:
@@ -261,8 +269,12 @@ export const VI = {
         dap: "Kết luận của lớp luật tất định được tách khỏi phần diễn giải. Nếu dùng AI để hỗ trợ giải thích, phần đó không được tự thay verdict hoặc sáng tạo dữ kiện.",
       },
       {
-        hoi: "Tôi có thể thử transaction khác không?",
-        dap: "Có thể dùng Inspector với đầu vào và mạng nằm trong phạm vi được công cụ hỗ trợ. Inspector còn có 10 giao dịch mainnet thật, ghi vài giây sau khi chúng thực thi, để phát lại không cần mạng — đó là dữ liệu đã ghi, không phải trạng thái chuỗi hiện tại hay luồng ký mainnet. Không nhập khóa riêng và không coi kết quả là bảo đảm an toàn.",
+        hoi: "Tôi có thể thử giao dịch khác không?",
+        dap: "Có thể dùng Inspector với đầu vào và mạng nằm trong phạm vi được công cụ hỗ trợ. Inspector nhận giao dịch base64 bạn dán vào, và còn có 10 giao dịch mainnet thật, ghi vài giây sau khi chúng thực thi, để phát lại không cần mạng — đó là dữ liệu đã ghi, không phải trạng thái chuỗi hiện tại hay luồng ký mainnet. Không nhập khóa riêng và không coi kết quả là bảo đảm an toàn.",
+      },
+      {
+        hoi: "Custos có chạy trên mainnet không?",
+        dap: "Luồng ký và gửi của bản thử nghiệm chỉ chạy trên Solana Devnet. Riêng engine phân tích đã được kiểm trên 10 giao dịch mainnet thật, ghi lại ngay sau khi chúng thực thi và phát lại trong Inspector. Đó là dữ liệu đã ghi — không phải luồng ký mainnet, cũng không phải lời hứa bảo vệ tài sản mainnet.",
       },
       {
         hoi: "Website đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?",
@@ -280,8 +292,8 @@ export const VI = {
   },
 
   cuoi: {
-    h2: "Xem giao dịch bằng một góc nhìn khác.",
-    moTa: "Bắt đầu từ một tình huống mẫu, rồi mở dữ kiện đứng sau cảnh báo.",
+    h2: "Thử một lời mời ký độc hại trên Devnet.",
+    moTa: "SolBonus là dApp độc hại mô phỏng: nó xin chữ ký qua chuẩn ví, Custos kiểm đúng giao dịch đó trong cửa sổ ký, còn bạn quyết định chặn hay ký. Không cần khóa để xem cảnh báo và chặn.",
     lienPhu: "Đọc tài liệu tích hợp",
   },
 
@@ -330,6 +342,7 @@ export const EN: NoiDung = {
     boQuaToiNoiDung: "Skip to main content",
     thuNguoiDung: "Try it as a user",
     moDemo: "Open the analysis room",
+    moVi: "Custos Wallet",
     xemCachHoatDong: "See how it works",
     moMenu: "Open menu",
     dongMenu: "Close menu",
@@ -356,9 +369,9 @@ export const EN: NoiDung = {
   },
 
   hero: {
-    kicker: "Solana transaction checks before signing",
+    kicker: "An SDK that checks Solana transactions before signing",
     h1: "Understand what you’re about to sign.",
-    moTa: "Review changes to assets and account control in a Solana transaction, with evidence behind each warning.",
+    moTa: "Custos runs inside wallets that integrate it: it simulates the exact transaction a dApp sends and shows what changes to assets and account control — before you sign. It checks transactions, not links.",
     ctaPhu: "Explore the A/B example",
     goiMoAB: "Same balance. Different account control.",
     ghiChu: "Devnet prototype · Do not use real assets",
@@ -373,7 +386,7 @@ export const EN: NoiDung = {
       nhanQuyen: "Token account owner",
       chuBan: "You",
       diaChiKhac: "another address",
-      cauCanhBao: "The sample transaction changes the account owner.",
+      cauCanhBao: "The sample transaction changes the token account owner.",
       xemDoiChieu: "See the comparison and evidence",
       caption: "Based on a recorded Devnet simulation. No transaction was broadcast.",
     },
@@ -382,23 +395,23 @@ export const EN: NoiDung = {
   dai: [
     { manh: "Solana Devnet", phu: "Test environment" },
     { manh: "SDK", phu: "For wallets and dApps" },
-    { manh: "Inspector", phu: "Check a transaction" },
+    { manh: "Inspector", phu: "Includes 10 recorded mainnet transactions" },
     { manh: "Evidence", phu: "See the data and limits" },
   ],
 
   hanhTrinh: {
     h2: "Where Custos sits when you sign",
-    moTa: "Custos does not check links or domains. It runs inside the wallet, on the exact transaction a dApp sends — before your wallet signs.",
+    moTa: "Custos does not check links or domains. It runs inside wallets that integrate it, on the exact transaction a dApp sends — before your wallet signs.",
     buoc: [
       { tieuDe: "A dApp builds a transaction", moTa: "Any site — including a malicious one — requests a signature through the Solana wallet standard." },
       { tieuDe: "The wallet receives it", moTa: "Your wallet has not signed. A wallet that integrates Custos holds the transaction for inspection." },
       { tieuDe: "Custos inspects in the wallet", moTa: "It simulates that exact transaction, applies its rules, and explains the consequences." },
-      { tieuDe: "You decide", moTa: "Block, and nothing is sent. Sign anyway, and the wallet compares the real outcome with the prediction." },
+      { tieuDe: "You decide", moTa: "Block, and nothing is sent. Sign anyway, and Custos Wallet on Devnet compares the real outcome with the prediction." },
     ],
     ctaNguoiDung: "Try it as a user: open SolBonus",
     ghiChuNguoiDung: "A simulated malicious dApp on Devnet — it never calls Custos; it only requests a signature through the Wallet Standard.",
     ctaNhaPhatTrien: "Integrate it into your wallet",
-    ghiChuNhaPhatTrien: "npm install, one function, and a live run on the page.",
+    ghiChuNhaPhatTrien: "See how to call the SDK and wire it into signing — run it on recorded Devnet data on the page.",
   },
 
   pipeline: {
@@ -406,16 +419,16 @@ export const EN: NoiDung = {
     moTa: "These three steps are the real path of a check, not an illustrative diagram.",
     buoc: [
       {
-        tieuDe: "Receive an unsigned transaction",
-        moTa: "A wallet or dApp passes the transaction in before signing. Custos never needs a private key.",
+        tieuDe: "L1 · Simulate and read the facts",
+        moTa: "Simulate the exact unsigned transaction and read balance, owner and permission changes. Custos never needs a private key.",
       },
       {
-        tieuDe: "Simulate and analyze",
-        moTa: "Run the simulation, read account changes, then apply the detection rules.",
+        tieuDe: "L2 · 14 rules reach the verdict",
+        moTa: "Deterministic rules reach the verdict. A failed simulation or missing facts needed to assess consequences yields at least “warning”, never “safe”.",
       },
       {
-        tieuDe: "Return the result with evidence",
-        moTa: "The result comes with the relevant data and the scope that was analyzed.",
+        tieuDe: "L3 · Explain in Vietnamese",
+        moTa: "A deterministic explanation, or a language model if the integrator enables one. AI only explains facts and may request a manual review; it cannot declare a transaction safe or dangerous, or change the verdict.",
       },
     ],
     ghiChu: "The wallet or dApp that integrates Custos decides how to use the result in its signing flow.",
@@ -509,6 +522,7 @@ export const EN: NoiDung = {
     codeGhiChu:
       "Analysis example; read the consumer guide before wiring this into a signing step. @custos-solana/core on npm is 0.2.0, the same version as the source; the Wallet Standard connector is not yet published to npm.",
     lien: [
+      { nhan: "Open the Integration page", khoa: "tichHop" },
       { nhan: "Read the SDK guide", khoa: "sdkDocs" },
       { nhan: "Open Inspector", khoa: "inspector" },
       { nhan: "View CLI documentation", khoa: "cliDocs" },
@@ -526,7 +540,7 @@ export const EN: NoiDung = {
       },
       {
         tieuDe: "Numbers with their methods",
-        moTa: "Project measurements, with the commands and conditions used to produce them.",
+        moTa: "14 rules, each with a triggering case and a near-identical control case. Test counts, the cohort and the commands to re-check them are on the Numbers page.",
         khoa: "soLieu",
       },
       {
@@ -538,6 +552,11 @@ export const EN: NoiDung = {
         tieuDe: "Recorded scenarios",
         moTa: "The source artifact for the two A/B scenarios on this page.",
         khoa: "nguonMau",
+      },
+      {
+        tieuDe: "Real mainnet transactions — replay",
+        moTa: "10 consecutive successful SPL Token transactions, recorded seconds after they executed and not chosen by result. They replay in Inspector without a network — recorded data, not a mainnet signing flow.",
+        khoa: "inspector",
       },
     ],
     gioiHan:
@@ -569,6 +588,10 @@ export const EN: NoiDung = {
         dap: "Use Inspector for inputs and networks within its supported scope. It also includes 10 real mainnet transactions, recorded seconds after they executed, that replay offline — recorded data, not the current chain state or a mainnet signing flow. Its analysis is not a guarantee of safety, and it does not need your private key.",
       },
       {
+        hoi: "Does Custos run on mainnet?",
+        dap: "The signing and sending flow of this test build runs only on Solana Devnet. The analysis engine itself has been checked on 10 real mainnet transactions, recorded right after they executed and replayed in Inspector. That is recorded data — not a mainnet signing flow, and not a promise to protect mainnet assets.",
+      },
+      {
         hoi: "Is this page running a live check or showing a sample?",
         dap: "The product preview and A/B section show labeled, recorded samples. The demo button opens the application for further checks. Live and replay modes must be labeled where results appear.",
       },
@@ -584,8 +607,8 @@ export const EN: NoiDung = {
   },
 
   cuoi: {
-    h2: "Take another look before you sign.",
-    moTa: "Start with a sample scenario, then inspect the data behind the warning.",
+    h2: "Try a malicious signing request on Devnet.",
+    moTa: "SolBonus is a simulated malicious dApp: it asks for a signature through the wallet standard, Custos checks that exact transaction in the signing window, and you decide to block or sign. No key needed to see the warning and block it.",
     lienPhu: "Read the integration guide",
   },
 

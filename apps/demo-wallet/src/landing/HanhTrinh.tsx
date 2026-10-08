@@ -18,7 +18,7 @@ export function HanhTrinh({ t }: { t: NoiDung }) {
           {h.buoc.map((b, i) => (
             <li key={b.tieuDe} className={`lg-buoc${i === 2 ? " lg-buoc--custos" : ""}`}>
               <div className="lg-step-visual" aria-hidden="true">
-                <DesignIcon kind={i === 0 ? "transaction" : i === 2 ? "scan" : "evidence"} />
+                <DesignIcon kind={i === 0 ? "transaction" : i === 1 ? "wallet" : i === 2 ? "scan" : "evidence"} />
                 <span className="lg-buoc__so">{String(i + 1).padStart(2, "0")}</span>
               </div>
               <h3 className="lg-h3">{b.tieuDe}</h3>

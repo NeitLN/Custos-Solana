@@ -6,6 +6,16 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "solbonus.vercel.app"
+        }
+      ],
+      "destination": "/tan-cong/index.html"
+    },
+    {
       "source": "/vi",
       "destination": "/index.html"
     }

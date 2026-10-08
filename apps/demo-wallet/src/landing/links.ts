@@ -31,10 +31,11 @@ export const LINK = {
   /** Trang "Tích hợp" — A3, ROADMAP-SAU-MENTOR. */
   tichHop: noiBase("tich-hop.html"),
   /**
-   * SolBonus — dApp độc hại mô phỏng, origin RIÊNG (project Vercel `solbonus-custos`, B3). Đã kiểm
-   * 29/09: trả 200 và trỏ ví tới `custos-solana.vercel.app/ket-noi.html`.
+   * SolBonus — dApp độc hại mô phỏng, origin RIÊNG (B3). Từ 09/10 ở tên miền riêng `solbonus.vercel.app`
+   * (trang gốc rewrite tới `/tan-cong/`, xem vercel.json) và trỏ ví tới `custos-sdk.vercel.app/ket-noi.html`.
+   * Tên cũ `solbonus-custos.vercel.app/tan-cong/` vẫn chạy — deck và video in tên đó.
    */
-  solBonus: "https://solbonus-custos.vercel.app/tan-cong/",
+  solBonus: "https://solbonus.vercel.app/",
   soLieu: noiBase("so-lieu.html"),
 
   repo: "https://github.com/NeitLN/Custos-Solana",

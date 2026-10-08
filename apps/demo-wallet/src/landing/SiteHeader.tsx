@@ -85,6 +85,11 @@ export function SiteHeader({
           {/* Ở ≤640px cụm này bị ẩn bằng CSS và bản trong menu tiếp quản. */}
           <BoChonNgon t={t} ngon={ngon} doiNgon={doiNgon} />
 
+          {/* Lối vào ứng dụng (Phòng phân tích / Ví của bạn). Trước đây chỉ menu mobile có link này —
+              trên desktop, nút duy nhất dẫn sang SolBonus và không còn chỗ vào ứng dụng (phản hồi 09/10). */}
+          <a className="lg-btn lg-header__ung-dung" href={LINK.viMau}>
+            {t.chung.moVi}
+          </a>
           <a className="lg-btn lg-btn--primary lg-header__cta" href={LINK.solBonus} target="_blank" rel="noreferrer">
             {t.chung.thuNguoiDung}
           </a>
