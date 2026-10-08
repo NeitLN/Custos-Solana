@@ -4,7 +4,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 
 | Hạng mục | Yêu cầu | Trạng thái |
 |---|---|---|
-| Sản phẩm chạy được | Link demo live hoặc devnet truy cập được | ✅ `neitln.github.io/Custos-Solana` |
+| Sản phẩm chạy được | Link demo live hoặc devnet truy cập được | ✅ `custos-sdk.vercel.app` (chính, có máy chủ diễn giải) · SolBonus `solbonus.vercel.app` · bản phụ `neitln.github.io/Custos-Solana` |
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
 | **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
 | **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | Có [MP4 50 giây — luồng dApp → ví → Chặn](video/CUSTOS-LUONG-KY.mp4), quay tự động trên production 05/10, có phụ đề, không lời — **ngắn hơn khung 60–90 giây của thể lệ**. Bản cũ trước Wallet Standard: [MP4 khoảng 80 giây](video/CUSTOS-DEMO.mp4) |
