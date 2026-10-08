@@ -256,3 +256,27 @@ tại.
 `docs/review/technical/codex-20260916/audit.json`. Các test phơi nhiễm nằm trong lượt
 check mới đã đạt. Giữ quyết định chấp nhận có điều kiện ở mục 3.5; chưa có kết luận
 rằng 5 high đã vá hoặc không thể khai thác. Xem lại trước nộp nếu phụ thuộc thay đổi.
+
+### Đo lại trước chung kết — 09/10/2026
+
+`npm audit` trước khi vá: **1 critical** · 19 high · 0 moderate. Phụ thuộc đã đổi sau 16/09
+(Wallet Standard, 29/09–04/10), nên số không còn khớp mục đầu trang.
+
+**Critical — đã vá.** `shell-quote` 1.10.0 (GHSA-pqg4-j6r4-53mv, chèn lệnh qua `quote()`),
+đường đi: `apps/thu-ket-noi` → `@solana/wallet-adapter-react` → `@solana-mobile/wallet-adapter-mobile`
+→ `react-native` → `react-devtools-core` → `shell-quote`. Nâng trong dải semver bằng
+`npm update shell-quote` (npm 11.6.2) → **1.12.0**; lockfile đổi đúng gói đó, không gói nào khác.
+Sau vá: **0 critical · 19 high · 0 moderate**; 1382 test đạt; hai app build được.
+
+**19 high — phân theo đường phụ thuộc (tra bằng `npm ls`, không suy từ tên gói trong bundle
+đã minify):**
+
+| Nhóm | Đường vào | Có trong bản deploy? |
+|---|---|---|
+| `react-native`, `metro*`, `braces`, `micromatch`, `@react-native/*`, `@solana-mobile/*` | chỉ qua `apps/thu-ket-noi` (dApp spike của connector) | **Không** — `scripts/build-vercel.sh` và CI chỉ build `demo-wallet` và `trang-tan-cong` |
+| `source-map-js` | `vite`, `@tailwindcss/vite` của `demo-wallet` | Chỉ lúc build, trên máy đội và CI |
+| `bigint-buffer` qua `@solana/spl-token` | runtime | Như mục 3.1 — đã có xử trí |
+| `image-size` qua `pptxgenjs` | script dựng deck | Như mục 3.3 — chỉ ở máy đội |
+
+Chưa nâng `react-native` hay `@solana/spl-token`: bản vá là đổi phiên bản lớn, không làm trong
+ngày đóng băng. Không kết luận 19 high "không thể khai thác" — chỉ ghi đường đi và phạm vi.

@@ -217,7 +217,7 @@ Measured, not estimated: **1382 tests** and **38 labelled samples** in the store
 
 ### Phụ thuộc và an toàn
 
-`npm audit` ngày 13/09/2026: **5 lỗ hổng — 5 high · 0 moderate** trong snapshot đã lưu.
+`npm audit` ngày 09/10/2026: **19 lỗ hổng — 19 high · 0 moderate · 0 critical** trong snapshot đã lưu (critical duy nhất, `shell-quote`, đã vá cùng ngày). Phần lớn đi vào qua dApp spike `apps/thu-ket-noi`, không nằm trong bản deploy — đường đi từng nhóm ở [xử trí phụ thuộc](docs/PHU-THUOC.md).
 
 Xem [artifact kiểm phụ thuộc](data/seed/lo-hong.json) để biết gói và thời điểm đo; đây không phải kết quả audit mới. Chạy `node scripts/do-lo-hong.mjs` để cập nhật phép đo. Xem [tài liệu bảo mật](docs/bao-mat/) để hiểu các giới hạn trước khi tích hợp. Không đưa khóa ký hoặc khóa API vào frontend, ảnh chụp hay issue công khai.
 
