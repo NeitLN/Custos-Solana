@@ -280,19 +280,14 @@ async def main() -> None:
         await pg.wait_for_load_state("networkidle")
         await pg.wait_for_timeout(3500)
         await soi_axe(pg, "trang tấn công")
+        # B3 (29/09, ADR-0004): SolBonus KHÔNG còn chuyển giao dịch sang ví qua URL `#tx=` — nó xin
+        # chữ ký qua Wallet Standard. Bản trước của mục này kiểm đúng luồng đã gỡ đó nên đỏ 5 ô
+        # (đo 09/10). Luồng mới (kết nối → Nguy hiểm → chặn, 0 gửi) do `probe-solbonus.py` canh;
+        # ở đây chỉ canh BẤT BIẾN của B3: bấm nút không đẩy giao dịch nào ra URL.
         await pg.evaluate("() => { window.__u=null; window.open=(u)=>{window.__u=u; return null;}; }")
         await pg.locator("button.nut-nhan").first.click()
-        url = await pg.evaluate("() => window.__u")  # đọc NGAY: có await nào trước là null
-        ck("window.open gọi ĐỒNG BỘ trong cử chỉ bấm", bool(url))
-        ck("URL mang giao dịch + lời khai airdrop", bool(url and "#tx=" in url and "airdrop" in url))
-        if url:
-            pg2 = await ctx.new_page()
-            await pg2.goto(url)
-            await pg2.wait_for_load_state("networkidle")
-            ok = await cho_ket_qua(pg2)
-            t2 = await pg2.locator("body").inner_text() if ok else ""
-            ck("ví nhận và ra Nguy hiểm", "Nguy hiểm" in t2)
-            ck("bắt được lời khai gian", "một đằng" in t2 or "airdrop" in t2.lower())
+        url = await pg.evaluate("() => window.__u")
+        ck("không chuyển giao dịch qua URL #tx= (B3: chỉ Wallet Standard)", not (url and "#tx=" in url))
         await ctx.close()
 
         # ── D · Devnet treo → thẻ lỗi → thử lại ─────────────────────────────
@@ -311,11 +306,25 @@ async def main() -> None:
             else:
                 await route.continue_()
 
-        await pg.route("**://api.devnet.solana.com/**", chan)
-        await pg.goto(TC)
+        # Treo MỌI lời gọi JSON-RPC (POST ra ngoài localhost) — endpoint lấy từ hiện trường, không
+        # gõ cứng host. Đo trên Phòng phân tích, nguồn "Devnet trực tiếp": sau B3 trang tấn công
+        # không còn tự mở ví với giao dịch, nên đường lỗi được đo tại chỗ người xem gặp nó.
+        async def chan_rpc(route):
+            if route.request.method == "POST" and "localhost" not in route.request.url:
+                await chan(route)
+            else:
+                await route.continue_()
+
+        await pg.route("**/*", chan_rpc)
+        await pg.goto(VI)
+        await pg.wait_for_load_state("domcontentloaded")
         await pg.wait_for_timeout(2000)
+        tom = pg.locator("details.nguon-tuy-chon:not([open]) > summary")
+        if await tom.count():
+            await tom.click()
+        await pg.get_by_text("Devnet trực tiếp", exact=True).click()
         t0 = time.time()
-        await pg.locator("button.nut-nhan").first.click()
+        await pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first.click()
         hien = False
         try:
             await pg.wait_for_selector('[role="alert"]', timeout=25000)
@@ -324,23 +333,22 @@ async def main() -> None:
             pass
         giay = round(time.time() - t0, 1)
         ck(f"thẻ lỗi hiện ra ({giay}s)", hien)
-        ck(f"dừng theo hạn ~9s, không chờ ~30s", hien and 8.0 <= giay <= 14.0, f"{giay}s")
+        # Ngân sách hiện hành (docs/NGAN-SACH-RPC.md): mỗi lượt gọi 6 s (`msMoiLuot`, rpcDuPhong.ts),
+        # cả lượt kiểm 12 s (`HAN_MS`, App.tsx). Không có RPC dự phòng ⇒ dừng sau lượt đầu ~6 s; có
+        # dự phòng ⇒ tới 12 s. Sàn 5 s: đã thật sự chờ, không báo lỗi tức thì. Trần 14 s: không treo.
+        # Bản cũ ghi sàn 8 s theo ngân sách ~9 s trước đây — đo 09/10 ra 6,4 s, đúng thiết kế mới.
+        ck(f"dừng theo hạn (6 s mỗi lượt, tối đa 12 s), không chờ ~30s", hien and 5.0 <= giay <= 14.0, f"{giay}s")
         if hien:
             t = await pg.locator('[role="alert"]').inner_text()
-            ck("nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch", "không phải kết luận" in t)
+            ck("nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch", "chưa thể kết luận" in t)
             # CK-02: đường lui là PHÁT LẠI đúng kịch bản trên dữ liệu đã ghi, có nhãn riêng —
             # không còn là thẻ mock cố định (mock kể một câu chuyện khác ca đang chọn).
             ck("có đường lui dữ liệu đã ghi CÓ NHÃN", "dữ liệu đã ghi" in t.lower() and "phát lại" in t.lower())
-            await soi_axe(pg, "trang tấn công · trạng thái lỗi")
+            await soi_axe(pg, "phòng phân tích · trạng thái lỗi")
             treo["bat"] = False
-            await pg.locator('[role="alert"] button').first.click()
-            di = False
-            for _ in range(40):
-                if "localhost:5188" in pg.url:
-                    di = True
-                    break
-                await pg.wait_for_timeout(300)
-            ck("thử lại gọi lại RPC và đi tiếp được", di, pg.url[:60])
+            await pg.get_by_role("button", name="Thử lại", exact=True).click()
+            di = await cho_ket_qua(pg, 40)
+            ck("thử lại gọi lại RPC và đi tiếp được", di)
         await ctx.close()
 
         # ── E · giảm chuyển động ────────────────────────────────────────────
