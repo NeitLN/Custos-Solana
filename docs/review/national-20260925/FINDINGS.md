@@ -1,6 +1,6 @@
 # Bảng finding — lượt triển khai sau rà soát 25/09/2026
 
-Thực hiện theo [`BAO-CAO.md`](BAO-CAO.md) và [`PROMPT-CLAUDE-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md`](../../PROMPT-CLAUDE-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md).
+Thực hiện theo [`BAO-CAO.md`](BAO-CAO.md) và `PROMPT-CLAUDE-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md` (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git).
 Baseline: HEAD `0c1b96d`, cây bẩn lúc bắt đầu: `package.json` (script `mau-inspector`), `AGENTS.md`,
 tài liệu Codex vừa thêm, `scripts/ky-thuat/mau-cho-inspector.ts`. **Chưa commit/push** — chủ nhóm tự làm.
 

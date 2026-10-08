@@ -10,7 +10,7 @@ Technical. Lịch sử quyết định: [ADR-0001](docs/adr/0001-doi-huong-techn
 **Đã đạt giải Nhất vòng cấp trường và đã vào vòng cuối** — chủ dự án cung cấp.
 **Hạn tiếp theo: 10/10/2026** — chung kết toàn quốc. Giờ, địa điểm, hình thức CHƯA xác nhận.
 Lịch nằm ở `docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md`, không ghi ngày ở chỗ khác.
-Việc đang làm: `docs/PROMPT-CLAUDE-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md`, bảng finding ở
+Lộ trình hiện hành: `docs/roadmap/ROADMAP-SAU-MENTOR.md`, bảng finding ở
 `docs/review/national-20260925/FINDINGS.md`.
 
 ## Tài liệu
@@ -49,7 +49,7 @@ Cổng 1 (`CHỐT Ý TƯỞNG`) và cổng 2 (`DUYỆT KẾ HOẠCH – BẮT Đ
 Không cần xin duyệt để viết code nữa.
 
 **Đã có:** L1 bóc tách + L2 mười bốn luật + SDK **đóng gói được** (`scripts/dong-goi-sdk.mjs`) · ví mẫu · trang tấn công giả ·
-hiện trường devnet thật · 38 mẫu dữ liệu · 1398 test · lớp mô hình ngôn ngữ cho
+hiện trường devnet thật · 38 mẫu dữ liệu · 1397 test · lớp mô hình ngôn ngữ cho
 L3 (bên tích hợp tự cắm mô hình) · CI deploy công khai lên GitHub Pages kèm
 bước chặn rò rỉ khoá · **Custos trong luồng ký của ví** (ADR-0004, 29/09–04/10): connector Wallet
 Standard `@custos-solana/connector`, cửa sổ ký `ket-noi.html` kiểm đúng bytes dApp gửi, SolBonus là

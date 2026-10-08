@@ -32,7 +32,7 @@ npm run tan-cong        # cổng 5189
 | Chuẩn bị sẵn **hai tab**: `localhost:5189` và `localhost:5188` | Không phải gõ URL trong lúc quay |
 
 > **Kiểm tra trước khi quay:** bấm thử một lượt từ đầu tới cuối. Nếu devnet chậm
-> hoặc `429`, cắm RPC riêng (`docs/VIEC-CUA-BAN.md` mục 4) rồi hãy quay.
+> hoặc `429`, cắm RPC riêng (`docs/NGAN-SACH-RPC.md` mục 8) rồi hãy quay.
 
 ---
 

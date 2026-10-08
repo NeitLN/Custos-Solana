@@ -117,5 +117,5 @@ cái con số đọc trong video:
 
 **Chốt cái này trước, rồi mới quay.** Quay trước rồi đổi giao dịch sau là quay lại từ đầu.
 
-Và cắm **RPC key riêng** trước khi bấm quay (`docs/VIEC-CUA-BAN.md` mục 4) — endpoint
+Và cắm **RPC key riêng** trước khi bấm quay (`docs/NGAN-SACH-RPC.md` mục 8) — endpoint
 công khai chặn tốc độ `429` giữa chừng là hỏng cả lượt quay.

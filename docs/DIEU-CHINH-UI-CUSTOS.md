@@ -6,7 +6,7 @@ Baseline đã chạy: `b6d66b1` — trang giới thiệu WEB-00 đến WEB-07. N
 
 **Không tiếp tục dùng UI của nhóm khác làm thiết kế cho Custos.** Trang hiện tại đã triển khai theo đặc tả trước, nhưng hướng tím đậm–lilac–lime, nền kem và bóng đổ cứng bám mẫu quá sát. Cần tạo nhận diện riêng từ công dụng kiểm tra giao dịch, mascot Custos và cấu trúc bằng chứng của sản phẩm.
 
-Tài liệu này **thay thế các yêu cầu về art direction, palette, hero, nhịp section, card, button, shadow và motion** trong [đặc tả website trước](WEBSITE-CUSTOS-DESIGN-VA-TRIEN-KHAI.md). Các yêu cầu về provenance, VI/EN, route, privacy, accessibility và tích hợp đúng chức năng vẫn có hiệu lực nếu không được sửa rõ tại đây.
+Tài liệu này **thay thế các yêu cầu về art direction, palette, hero, nhịp section, card, button, shadow và motion** trong đặc tả website trước (`WEBSITE-CUSTOS-DESIGN-VA-TRIEN-KHAI.md`, đã gỡ khỏi HEAD 09/10, còn trong lịch sử git). Các yêu cầu về provenance, VI/EN, route, privacy, accessibility và tích hợp đúng chức năng vẫn có hiệu lực nếu không được sửa rõ tại đây.
 
 - Không dùng hình, mascot, logo, copy hoặc bố cục đặc trưng của N.E.D làm mục tiêu tái tạo.
 - Không chỉ đổi `lilac` thành xanh rồi giữ nguyên toàn bộ cấu trúc và bóng đổ cứng.

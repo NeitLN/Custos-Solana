@@ -13,7 +13,8 @@ const NGUON = "docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md";
  * LỊCH THI CHỈ ĐƯỢC GHI Ở MỘT NƠI.
  *
  * Hạn đổi từ 05/09 sang 19/09, và lúc đó có SÁU file đang nói ngày cũ: README,
- * CLAUDE.md, docs/CUSTOS.md, PITCH, ROADMAP-DEVNET, VIEC-CUA-BAN. Mỗi file là một bản
+ * CLAUDE.md, docs/CUSTOS.md, PITCH, ROADMAP-DEVNET, VIEC-CUA-BAN (hai file sau đã rời
+ * HEAD 09/10, còn trong lịch sử git). Mỗi file là một bản
  * sao của cùng một sự thật, nên đổi một lần là phải sửa sáu chỗ — và bỏ sót chỗ nào
  * thì chỗ đó nói với người đọc rằng dự án đã hết hạn.
  *
@@ -162,27 +163,6 @@ test("không tài liệu nào đặt cửa/hạn bằng một ngày gõ cứng",
     "Một cái cửa gắn với ngày gõ tay sẽ hết hiệu lực trong im lặng khi lịch đổi.\n" +
       `Trỏ về ${NGUON}, hoặc phát biểu cửa theo SỰ KIỆN ("khi chốt hồ sơ nộp"):\n` +
       lech.join("\n"),
-  );
-});
-
-test("kế hoạch viết cho hạn cũ đều mang nhãn lịch sử", () => {
-  // Không xoá kế hoạch cũ — chúng là dấu vết quá trình, và BTC yêu cầu repo thể hiện
-  // quá trình build thật. Nhưng người đọc phải biết ngay chúng thuộc về hạn nào.
-  const thieuNhan: string[] = [];
-  for (const f of [
-    "docs/KE-HOACH-11-NGAY-CUOI.md",
-    "docs/ROADMAP-DEVNET.md",
-    "docs/VIEC-CUA-BAN.md",
-  ]) {
-    const dau = doc(f).split("\n").slice(0, 12).join("\n");
-    if (!/TÀI LIỆU LỊCH SỬ/.test(dau)) thieuNhan.push(f);
-    else if (!dau.includes(NGUON)) thieuNhan.push(`${f} — có nhãn nhưng không trỏ về nguồn`);
-  }
-  assert.deepEqual(
-    thieuNhan,
-    [],
-    "Kế hoạch của hạn cũ phải nói rõ nó là lịch cũ, ngay trong 12 dòng đầu:\n" +
-      thieuNhan.join("\n"),
   );
 });
 

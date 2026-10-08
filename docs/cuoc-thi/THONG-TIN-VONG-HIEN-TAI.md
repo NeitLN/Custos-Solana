@@ -92,8 +92,8 @@ Cả hai đều **sau** 19/09. Suy ra hai điều đội phải xử lý:
 |---|---|
 | 19/09 — hạn trình bày vòng loại cấp trường (chủ dự án cung cấp 05/09) | **Đã qua.** Đội đạt giải Nhất cấp trường |
 | 05/09/2026 08:00, phòng J.5.3, Đại học Văn Lang | Vòng loại cấp trường. **Không còn là mốc hiện tại.** |
-| `docs/KE-HOACH-11-NGAY-CUOI.md` | Kế hoạch viết cho hạn 05/09. Giữ nguyên nội dung. |
-| `docs/ROADMAP-DEVNET.md` | Lịch viết 31/08 cho hạn 05/09. Giữ nguyên nội dung. |
+| `docs/KE-HOACH-11-NGAY-CUOI.md` | Kế hoạch viết cho hạn 05/09 (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git). |
+| `docs/ROADMAP-DEVNET.md` | Lịch viết 31/08 cho hạn 05/09 (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git). |
 
 Các file đó **không được sửa ngày**: chúng đúng tại thời điểm viết, và sửa lại là
 viết đè lên một bản ghi đã đóng. Chúng chỉ được gắn thêm dòng đầu nói rõ chúng thuộc
