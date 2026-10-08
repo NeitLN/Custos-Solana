@@ -48,6 +48,9 @@ const KQ_TH = JSON.parse(readFileSync("data/tich-hop/ket-qua.json", "utf8"));
 // để bắt, và nó tự mắc.
 const TH_SHA = (KQ_TH.lastAttempt?.sourceCommit ?? "").slice(0, 7);
 const TH_DAT = KQ_TH.lastAttempt?.dat === true;
+// Đọc trạng thái cây TỪ ARTIFACT — câu "cây làm việc sạch" từng được gõ cứng trong khi lượt
+// đo ghi `dirtyWorktree: true` (Codex review 09/10, P2).
+const TH_CAY = KQ_TH.lastAttempt?.dirtyWorktree === false ? "cây làm việc sạch" : "cây có thay đổi chưa commit lúc đo";
 const SO_LUOT = S.tichHop?.soLuotDo ?? 1;
 // Chuỗi đo trải qua nhiều bản dựng thì phải nói ra — gộp im lặng là ngụ ý cùng một bản.
 const SO_COMMIT = S.tichHop?.soCommitDo ?? 1;
@@ -513,7 +516,7 @@ thayDong("docs/BAO-CAO-KIEM-CHUNG.md", [
   [
     /^- Bằng chứng tích hợp đo tại: /,
     () =>
-      `- Bằng chứng tích hợp đo tại: \`${TH_SHA}\`, cây làm việc sạch — lượt gần nhất ${
+      `- Bằng chứng tích hợp đo tại: \`${TH_SHA}\`, ${TH_CAY} — lượt gần nhất ${
         TH_DAT ? "PASS" : "**HỎNG**"
       }`,
   ],

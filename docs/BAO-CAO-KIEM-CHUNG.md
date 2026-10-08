@@ -11,7 +11,7 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
   sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `e4973af`, cây làm việc sạch — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `e4973af`, cây có thay đổi chưa commit lúc đo — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -36,7 +36,7 @@ API, hay ví có tiền.
 
 | Số | Giá trị | Kiểm bằng |
 |---|---|---|
-| Test tự động | **1382** pass · 0 fail | `npm run check` |
+| Test tự động | **1398** pass · 0 fail | `npm run check` |
 | Luật tất định | **14** | `npm run check` — `capLuat.test.ts` |
 | Mẫu kiểm thử gắn nhãn | **38** | `ls data/seed/facts \| wc -l` |
 | Luật có ca đối chứng gần giống | **14/14** | `npm run check` — mỗi cặp lệch đúng MỘT điều kiện quyết định |
@@ -49,7 +49,7 @@ API, hay ví có tiền.
 | Phỏng vấn người dùng **thật** | **20** — 13 đúng · 5 một phần · 2 sai | `data/seed/` + `docs/BIEN-BAN-PHONG-VAN.md` |
 | Phỏng vấn **người mua** | **0** | — |
 | Bên thứ ba tích hợp | **0** | `data/tich-hop/ket-qua.json` → `doiTac: null` |
-| Lỗ hổng phụ thuộc | **11** — 5 high · 6 moderate | `npm audit` |
+| Lỗ hổng phụ thuộc | **19** — 19 high · 0 moderate · 0 critical (đo 09/10; đường đi từng nhóm ở `docs/PHU-THUOC.md`) | `npm audit` |
 | Checklist nộp bài (strict) | **Mọi ô máy-kiểm đã đạt.** Các ô còn lại cần người hoặc bên ngoài — xem mục 7 | `npm run nop-bai -- --strict` |
 
 ### Ba chữ không được dùng lẫn
@@ -189,7 +189,7 @@ chạy thật thứ vừa viết, khi đóng vai người ngoài, và khi mở a
 
 Đọc kỹ mục này trước khi tin bất kỳ con số nào ở mục 2.
 
-- **1382 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
+- **1398 test chứng minh code có kỷ luật, KHÔNG chứng minh độ chính xác ngoài đời.**
   Bốn loại bằng chứng trong repo trả lời bốn câu hỏi khác nhau và không được gộp.
 - **Cohort công khai lưu offline chưa có ground truth** — nên không có precision,
   recall, hay tỉ lệ báo nhầm. Coverage 82 % là trên **9/20** mẫu còn mô phỏng được.

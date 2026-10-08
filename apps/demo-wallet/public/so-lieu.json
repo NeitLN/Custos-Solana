@@ -1,5 +1,5 @@
 {
-  "sinhLuc": "2026-10-05T20:34:38.390Z",
+  "sinhLuc": "2026-10-08T21:10:08.343Z",
   "phongVan": {
     "n": 20,
     "khoangPhongVan": "29/08 và 30/08/2026",
@@ -346,7 +346,7 @@
     },
     "tokenVao": 35369,
     "tokenRa": 8645,
-    "boChanDaDoi": false
+    "boChanDaDoi": true
   },
   "nguoiMua": 0,
   "soLuatCoCapDoiChung": 14,
@@ -378,7 +378,7 @@
     }
   },
   "test": {
-    "pass": 1382,
+    "pass": 1398,
     "fail": 0
   },
   "hieuNang": {
