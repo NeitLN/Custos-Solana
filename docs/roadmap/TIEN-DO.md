@@ -5,8 +5,28 @@ File này là **nguồn trạng thái công việc duy nhất** cho cả hai roa
 
 | Roadmap | Tiền tố mã | Bảng |
 |---|---|---|
+| [docs/roadmap/ROADMAP-GIONG-THAT.md](ROADMAP-GIONG-THAT.md) — Giai đoạn 0 **xong 06/10**; đóng băng 09/10 | `R0-` | [Bảng giống thật](#bảng-công-việc--roadmap-giống-thật) |
 | [docs/roadmap/ROADMAP-SAU-MENTOR.md](ROADMAP-SAU-MENTOR.md) — **đang thực hiện (29/09)** | `G0-`, `B`, `A`, `C`, `D`, `F` | [Bảng sau mentor](#bảng-công-việc--roadmap-sau-mentor) |
 | [docs/roadmap/ROADMAP-CUSTOS-CHUNG-KET.md](ROADMAP-CUSTOS-CHUNG-KET.md) — đang thực hiện (27/09) | `CK-` | [Bảng chung kết](#bảng-công-việc--roadmap-chung-kết-ck) |
+
+## Bảng công việc — roadmap giống thật
+
+Cập nhật 09/10/2026. HEAD `3a472e1` (06/10) đã deploy Vercel + GitHub Pages; `npm run check`: **1382 test pass, 0 fail**.
+Mỗi việc qua Codex review (read-only) rồi sửa theo.
+
+| Mã | Trạng thái | Bằng chứng |
+|---|---|---|
+| R0-1 bỏ "Demo" khỏi thương hiệu | **DONE** | "Custos Wallet" / "Ví Custos" ở connector, cửa sổ ký, nav, metadata, probe; ADR-0004 chú thích tên mới |
+| R0-2 ngôn ngữ phòng thí nghiệm | **DONE** | "Thử một yêu cầu ký"; nguồn dữ liệu trong "Tuỳ chọn nguồn dữ liệu", chip "Nguồn: …" luôn hiện; `soi-ck12` 3 trình duyệt, `soi-ck14` 9/9 |
+| R0-3 giao dịch mainnet thật — phát lại | **DONE, đổi nguồn** | MN-01…10 cũ: 10/10 hỏng mô phỏng ⇒ bộ mới `apps/demo-wallet/public/replay/mainnet.json`: 10 giao dịch liên tiếp, 4 Bình thường · 6 Cần xem kỹ (4 fail-safe) · 0 Nguy hiểm, 2 bỏ (v1); `mainnetPhatLai.test.ts` |
+| R0-4 SolBonus bớt sân khấu | **DONE** | dải MÔ PHỎNG cố định đáy màn hình; thẻ thưởng "SOLB hư cấu · không có giá trị"; probe production: 0 gửi, axe 0 |
+| R0-5 ví mở đầu bằng hành trình | **DONE** | "Mở một ứng dụng để thử" đứng đầu DOM (thứ tự focus đúng); thiết lập ở "Dành cho người trình diễn"; `viMoDau.test.ts` |
+| R0-6 làm gọn BENCHMARK | **DONE** | `l1-replay` đo lại 29/29; sửa ghi chú 26/09 (10/10 mẫu MN hỏng, không phải 4) |
+| Nhãn mức `safe` | **DONE** | "Bình thường" ở mọi màn (thẻ kết quả, cửa sổ ký, Số liệu, Tích hợp) |
+| 09/10 · kiểm trước chung kết | **DONE** | `probe-giam-khao` trên production: SolBonus tìm 5 phiên DEMO → Nguy hiểm → Chặn, 0 lỗi trang; ví cố định 19,66 SOL Devnet; `/api/dien-giai` trả 400 (server chạy, đã cấu hình khoá) |
+| 09/10 · lỗ hổng phụ thuộc | **DONE** | critical `shell-quote` (qua `apps/thu-ket-noi`) vá lên 1.12.0; còn 19 high, đường đi từng nhóm ở [`PHU-THUOC.md`](../PHU-THUOC.md) |
+
+Còn mở, cần người: video có thuyết minh (bản dự phòng 50 giây, ngắn hơn khung 60–90 giây) · báo mentor về dải MÔ PHỎNG · giờ/địa điểm/hình thức chung kết · phỏng vấn người mua · pilot bên thứ ba. `probe-live-handoff.py` còn nhãn trước B3 — chưa sửa vì probe gửi giao dịch Devnet thật.
 
 ## Bảng công việc — roadmap sau mentor
 

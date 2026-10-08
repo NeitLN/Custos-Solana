@@ -9,7 +9,7 @@
 | Phần | Nội dung nói | Bằng chứng mở khi cần |
 |---|---|---|
 | Vấn đề | Một giao dịch có thể đổi quyền tài khoản mà số dư không đổi; chỉ nhìn số tiền chưa đủ để ra quyết định. | Ca đổi owner trong `scripts/ky-thuat/so-baseline-b06.ts` |
-| Demo ca khó | Mở ví mẫu; chạy Nhận quà tặng. Chỉ vào chuyển token và đổi chủ như hai hậu quả khác nhau. Đọc đúng coverage trên màn hình. | `apps/demo-wallet/public/hien-truong.json`; log TB-B07 |
+| Demo ca khó | Mở Ví Custos (Phòng phân tích); chạy Nhận quà tặng. Chỉ vào chuyển token và đổi chủ như hai hậu quả khác nhau. Đọc đúng coverage trên màn hình. | `apps/demo-wallet/public/hien-truong.json`; log TB-B07 |
 | Pipeline | RPC trả trạng thái account và simulation. L1 dựng Facts; L2 áp luật; bảng chênh lệch và trace nối cảnh báo tới dữ kiện. L3 chỉ diễn giải. | `packages/core/src/l1/fetch.ts`, `l2/evaluate.ts`, `inspect.ts` |
 | Ranh giới tin cậy | SDK không tự cấm blockchain nhận giao dịch. Ví phải áp policy trước signer; payload của dApp và lời AI không được giảm cảnh báo. | `vi-du-tich-hop/src/ky.js`; `docs/bao-mat/THREAT-MODEL.md` |
 | So sánh thành phần | B06 so đọc top-level, balance delta và engine đầy đủ trên cùng Facts. Chỉ nêu phần mỗi cách bỏ sót; không tuyên bố thắng các ví thương mại. | `npm run so-baseline`; `docs/BENCHMARK.md` |
@@ -461,6 +461,21 @@ Một giám khảo kỹ tính sẽ bắt đúng chỗ này. Cả hai đều đú
 > 2 bình thường**. Cohort chưa có ground truth độc lập, nên đây **không phải** phép đo
 > false positive, precision hay recall — nó là một quan sát."
 
+Nếu giám khảo hỏi tiếp *"vậy Custos đọc được giao dịch mainnet không?"* — trả lời bằng mục
+**Giao dịch mainnet thật — phát lại** trong Inspector (R0-3, ghi 06/10):
+
+> "Luồng ký và gửi của bản thi chỉ chạy Devnet. Riêng engine thì có phép kiểm trên mainnet:
+> đội lấy **10 giao dịch SPL Token thành công liên tiếp**, không chọn theo kết quả, mô phỏng
+> lại vài giây sau khi chúng thực thi và ghi phản hồi RPC. Phát lại không cần mạng: **4 Bình
+> thường · 6 Cần xem kỹ — 4 trong đó vì mô phỏng lại hỏng nên Custos báo thiếu dữ liệu, không
+> bao giờ trả `safe` · 0 Nguy hiểm**; 2 giao dịch bị bỏ vì là giao dịch v1 mà web3.js chưa
+> đọc, lý do ghi trong file. Đây là bằng chứng engine đọc được message mainnet thật và
+> fail-safe khi thiếu trạng thái — **không phải** luồng ký mainnet, **không phải** bảo vệ tài
+> sản mainnet."
+
+⚠️ Không nói "Custos đã chạy trên mainnet" hay "mainnet-ready". Nói "phát lại dữ liệu mainnet
+đã ghi".
+
 ### 14. "1382 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
 Cái bẫy tự khen. 1382 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
@@ -618,7 +633,7 @@ trở lên. Đội nói ra chuyện đó thay vì lờ đi.
 
 **Có, và số đó nằm ngay trong README.**
 
-`npm audit` cho 5 lỗ hổng (5 high, 0 moderate) tính tới ngày đo gần nhất. Chia hai
+`npm audit` cho 19 lỗ hổng (19 high, 0 moderate) tính tới ngày đo gần nhất. Chia hai
 nhóm, vì hậu quả khác hẳn nhau: **9 trong nhánh `@solana/web3.js` v1** — nằm trong
 đường chạy của SDK — và **2 từ `pptxgenjs`**, công cụ dựng deck, chỉ là
 devDependency nên không vào sản phẩm.

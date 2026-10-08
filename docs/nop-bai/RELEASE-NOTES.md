@@ -1,6 +1,6 @@
 # Custos — release candidate
 
-**Commit:** `191ec9f51b65723ededb6f833274081cae2d1212`
+**Commit:** `3a472e1695b5830e45b4c5fb638457e9fe437e43`
 **Gói:** `@custos-solana/core` · `@custos-solana/ai@0.3.0` · `@custos-solana/types`
 
 Custos đọc một giao dịch Solana **trước khi người dùng ký**, mô phỏng hậu quả, và
@@ -29,9 +29,9 @@ ngôn ngữ chỉ viết lời giải thích và **không bao giờ** được t
 - **Chưa phỏng vấn người mua nào.** Custos bán cho ví và dApp; đội mới hỏi người dùng cuối. Câu *"ai trả tiền"* chưa có dữ liệu.
 - **Chưa bên thứ ba nào tích hợp.** Ví dụ ở `vi-du-tich-hop/` do chính đội dựng — nó đo ma sát tích hợp, không đo nhu cầu thị trường.
 - **Số hiểu 13/20 đo trên giao diện lúc 29/08 và 30/08/2026**, đã thiết kế lại sau đó. Vòng 2 chưa chạy.
-- **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được. Chưa có decoder cho chương trình DEX.
+- **Coverage 82 %** trên 9/20 giao dịch còn mô phỏng được. Hai DEX xuất hiện trong cohort — Jupiter và Pump AMM — đọc hiểu qua IDL công bố trên chuỗi (xem docs/DECODER-TIEP-THEO.md); chương trình khác vẫn có thể nằm ngoài phạm vi.
 - **14/14 luật** có ca đối chứng gần giống; năm luật còn lại kê tên trong `packages/core/test/capLuat.test.ts`.
-- **Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet.
+- **Runtime và demo chỉ chạy Devnet.** Cohort là dữ liệu công khai lưu offline, không phải runtime gọi Mainnet. Mục *Giao dịch mainnet thật — phát lại* trong Inspector cũng là dữ liệu đã ghi, phát lại offline — không phải luồng ký mainnet.
 
 ## Bảo mật
 

@@ -2,6 +2,9 @@
 
 **Việc V02 của [`docs/roadmap/ROADMAP-CLAUDE.md`](roadmap/ROADMAP-CLAUDE.md).** Lập ngày **09/09/2026**.
 
+> **Biên bản lịch sử 09/09** — số test, trạng thái video và hồ sơ bên dưới là của ngày đó. Trạng thái
+> hiện hành ở [`roadmap/TIEN-DO.md`](roadmap/TIEN-DO.md); hồ sơ nộp ở [`nop-bai/README.md`](nop-bai/README.md).
+
 Trang này tách bốn thứ mà một bảng "tiến độ" gộp lại sẽ nói sai:
 
 | Nhóm | Trạng thái |
