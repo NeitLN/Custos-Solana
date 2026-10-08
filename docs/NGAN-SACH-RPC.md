@@ -210,3 +210,33 @@ phần đội **kiểm soát được**.
 | Replay 19 fixture | 19/29 đạt · 0 hỏng | **19/29 đạt · 0 hỏng** |
 | `so-baseline` verdict | lệch kỳ vọng người gán **0/5** ca | **0/5** |
 | Bộ test | xanh | xanh |
+
+## 8 · Chạy demo trên máy với RPC riêng
+
+Endpoint công cộng `api.devnet.solana.com` có giới hạn tốc độ. Đo ngày 31/08 (8 lượt):
+trung vị **973 ms**, nhưng p95 **9,2 giây** — một lượt dính `429` rồi backoff
+0,5→1→2→4 s. Phần đuôi đó là endpoint chặn tốc độ, không phải Custos chậm. RPC riêng
+bỏ được phần đuôi này.
+
+**Lấy key:** tạo key Solana Devnet ở một nhà cung cấp RPC (ví dụ Helius, gói miễn phí
+đủ cho demo). URL có dạng `https://devnet.helius-rpc.com/?api-key=...` — **khoá nằm
+trong chính URL**, nên mọi chỗ ghi URL đó ra file đều là công khai khoá.
+
+**Chỗ đúng duy nhất:** `apps/demo-wallet/.env.development.local`, một dòng
+`VITE_RPC=<url>`, rồi `npm run vi` trên máy mình.
+
+| Chỗ KHÔNG được đặt | Chuyện gì xảy ra |
+|---|---|
+| `.env.local` | Vite nạp file này ở **mọi** chế độ, kể cả `build` → khoá bị nhúng vào JS công khai |
+| `$env:CUSTOS_RPC` rồi `npm run hien-truong` | Biến đó **từng** bị ghi thẳng vào `public/hien-truong.json` — file được commit và deploy (đã sửa 30/08) |
+| Dán thẳng vào code | — |
+
+Ba lớp chặn đã có sẵn trong repo, không phụ thuộc trí nhớ của người chạy:
+
+| Lớp | Ở đâu | Chặn gì |
+|---|---|---|
+| 1 | `scripts/dung-hien-truong.ts` | Lọc phần query khỏi URL trước khi ghi bản công khai; bản đầy đủ chỉ nằm ở `.devnet/` (gitignore) |
+| 2 | `apps/demo-wallet/src/hienTruong.ts` — `chonRpc()` | `VITE_RPC` chỉ đọc ở chế độ dev; đặt key vào `.env.production.local` rồi build → **không** lọt vào `dist/` |
+| 3 | `scripts/soi-ro-ri-khoa.mjs` | Bắt `api-key=` trong URL, `sk-ant-…`, URL có mật khẩu. Chạy trong CI trước mỗi lần deploy, **không in giá trị khoá ra log** |
+
+Bản deploy công khai không nhúng khoá RPC nào.

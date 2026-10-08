@@ -51,7 +51,7 @@ Tài liệu đi kèm:
 - Bộ kiểm ở phiên đánh giá có 403 unit test, 14 kiểm tích hợp tất định và 40 kiểm trình duyệt. Đây là các tập khác nhau; không cộng chúng thành một chỉ số độ chính xác.
 - AI từng có biên bản thử mô hình thật trong `docs/bao-mat/`; artifact eval hiện hành lại chưa có đủ phép đo mô hình thật. Phải phân biệt thử nghiệm lịch sử với benchmark hiện tại, không viết “chưa từng chạy AI thật”.
 - Đã có nhận diện cấu trúc một số chương trình DEX qua IDL. Đọc `docs/DECODER-TIEP-THEO.md` trước khi đề xuất decoder.
-- Tài liệu nộp cũ ghi phiên bản AI chưa phát hành; có nguồn mới hơn ở `docs/PHAT-HANH-0.2.0.md`. Kiểm registry khi có mạng thay vì phát hành lại theo tài liệu cũ.
+- Tài liệu nộp cũ ghi phiên bản AI chưa phát hành; có nguồn mới hơn ở `docs/PHAT-HANH-0.2.0.md` (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git). Kiểm registry khi có mạng thay vì phát hành lại theo tài liệu cũ.
 - Ngưỡng usability trong giao thức vòng 2 đã chốt; không thay bằng một mục tiêu phần trăm trong báo cáo góp ý.
 
 ### 2.2. Bất biến phải giữ

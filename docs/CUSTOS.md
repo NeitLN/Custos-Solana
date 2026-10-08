@@ -637,7 +637,7 @@ nó chưa hiểu.**
 
 > **Sửa lại 23/08.** Bảng cũ tự chấm **8,8/10** ở giai đoạn còn là ý tưởng. Chấm lại
 > theo trạng thái đo được thì ra **6,95** (bản chấm chi tiết nằm trong lịch sử git,
-> `docs/CHAM-DIEM-GIA-DINH.md`, và bản mới hơn ở `docs/MENTOR-REVIEW-25-08.md`). Giữ con số
+> `docs/CHAM-DIEM-GIA-DINH.md`, và bản mới hơn ở `docs/MENTOR-REVIEW-25-08.md`, đã gỡ khỏi HEAD 09/10, còn trong lịch sử git). Giữ con số
 > cũ trong một repo public là rủi ro lớn hơn 1,85 điểm: **nó làm mọi con số khác
 > trong tài liệu này mất giá**, kể cả những con số đội đo rất cẩn thận.
 
@@ -651,7 +651,7 @@ nó chưa hiểu.**
 
 **Khoảng cách 1,45 điểm giữa hôm nay và trần không phải khoảng cách kỹ năng.** Nó là
 bốn buổi tối làm việc không giống lập trình: hỏi 12 người dùng, nhắn 8 ví/dApp, quay
-video, tập nói. Xem `docs/VIEC-CUA-BAN.md`.
+video, tập nói. Danh sách việc khi đó: `docs/VIEC-CUA-BAN.md` (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git).
 
 ---
 

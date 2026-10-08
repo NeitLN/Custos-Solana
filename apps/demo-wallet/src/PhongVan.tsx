@@ -30,7 +30,7 @@ import {
 } from "./phongVan.ts";
 
 /**
- * BỘ ĐO PHỎNG VẤN — `docs/VIEC-CUA-BAN.md` mục 2.
+ * BỘ ĐO PHỎNG VẤN — giao thức ở `docs/GIAO-THUC-PHONG-VAN-VONG-2.md`.
  *
  * Phép đo: chiếu màn hình, KHÔNG giải thích gì, hỏi "nếu bạn bấm ký thì chuyện gì
  * xảy ra với ví của bạn", chấm ĐÚNG / MỘT PHẦN / SAI — rồi hỏi tiếp họ sẽ ký, huỷ
