@@ -50,7 +50,8 @@ export type InstructionFact = {
    * account — hiện là các lệnh chuyển/đốt của SPL Token. Vắng mặt nghĩa là chưa
    * bóc được, KHÔNG có nghĩa là "không có ai". Luật phải xử lý hai chuyện đó khác nhau.
    */
-  decoded: { kind: string; authority?: string } | null;
+  /** `nguon`: tài khoản token NGUỒN của lệnh chuyển/đốt SPL (vị trí 0) — cùng điều kiện với `authority`. */
+  decoded: { kind: string; authority?: string; nguon?: string } | null;
   fromLookupTable: boolean;
   /** Lệnh này có ghi vào tài khoản nào thuộc người ký không?
    *  Không đọc hiểu một lệnh chỉ đáng lo khi lệnh đó CHẠM ĐƯỢC vào tài sản
