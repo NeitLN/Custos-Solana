@@ -80,13 +80,13 @@ Nó kiểm hành vi theo đặc tả và hồi quy trên phạm vi đã công b�
 
 ### T10. Chưa hỗ trợ gì?
 
-Trace hiện có rule/reason; liên kết dữ kiện có cấu trúc chỉ phủ 2/14 luật. Ca demo đổi owner hiện phát luật 1 chưa có `bangChung` chi tiết, nên không hứa đường truy dữ kiện đầy đủ cho ca này.
+Trace hiện có rule/reason; liên kết dữ kiện có cấu trúc (`bangChung`) phủ **13/14** luật, gồm luật 1 của ca demo đổi owner — luật 14 ("không rõ đang bảo vệ ai") chưa khai, vì nó nói về danh sách người ký chứ không trỏ vào một dữ kiện cụ thể (đếm từ `packages/core/src/l2/rules.ts`, 09/10).
 
 Không phải mọi program/extension đều có semantics được hiểu; live smoke suite không phủ toàn bộ manifest. UI mới kiểm Chromium giả lập, chưa thiết bị thật hoặc mọi trình duyệt. Đăng ký track và CI remote mới chưa được xác nhận. **Nguồn:** sổ tiến độ, B07 và báo cáo nghiệm thu hiện hành.
 
 ### T11. Advisory còn lại xử lý thế nào?
 
-Phân biệt số advisory với đường có thể khai thác; sáu moderate đã được xử lý bằng dependency overrides, còn năm high có phân tích phơi nhiễm và điều kiện xem lại. Không gọi đã vá hoặc rủi ro bằng 0. **Nguồn:** `docs/PHU-THUOC.md`, `data/seed/lo-hong.json`, test phơi nhiễm.
+Phân biệt số advisory với đường có thể khai thác. Đo 09/10: **0 critical** (critical duy nhất, `shell-quote`, đã vá cùng ngày) · **19 high** · 0 moderate. Phần lớn 19 high đi vào qua dApp spike `apps/thu-ket-noi`, không nằm trong bản deploy; `bigint-buffer` có trong runtime và có phân tích phơi nhiễm, điều kiện xem lại. Không gọi đã vá hết hoặc rủi ro bằng 0. **Nguồn:** `docs/PHU-THUOC.md`, `data/seed/lo-hong.json`, test phơi nhiễm.
 
 ## 4. Cách dùng deck và tránh phát biểu quá mức
 
@@ -476,20 +476,20 @@ Nếu giám khảo hỏi tiếp *"vậy Custos đọc được giao dịch mainn
 ⚠️ Không nói "Custos đã chạy trên mainnet" hay "mainnet-ready". Nói "phát lại dữ liệu mainnet
 đã ghi".
 
-### 14. "1382 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "1398 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 1382 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 1398 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (1382)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (1398)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1382 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1398 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*

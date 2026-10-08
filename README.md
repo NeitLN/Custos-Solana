@@ -117,7 +117,7 @@ Dùng **Node 24.12.x** và **npm 11.6.2** theo [.nvmrc](.nvmrc) và [package.jso
 git clone https://github.com/NeitLN/Custos-Solana.git
 cd Custos-Solana
 npx npm@11.6.2 ci
-npx npm@11.6.2 run check # typecheck + 1382 test
+npx npm@11.6.2 run check # typecheck + 1398 test
 npm run vi
 ```
 
@@ -167,7 +167,7 @@ Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng h
 | Phạm vi | Kết quả đã lưu |
 |---|---|
 | Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **1382**, chạy trong `npm run check` |
+| Test | **1398**, chạy trong `npm run check` |
 | Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
 | Giao dịch mainnet thật, phát lại | **10** giao dịch SPL Token thành công liên tiếp, ghi 06/10/2026 vài giây sau khi thực thi, không chọn theo kết quả: **4** Bình thường (không cờ trong phần đọc được) · **6** Cần xem kỹ (**4** vì mô phỏng lại hỏng — fail-safe, không bao giờ trả `safe`) · **0** Nguy hiểm. [Dữ liệu](apps/demo-wallet/public/replay/mainnet.json) · [cách ghi](scripts/capture-mainnet-phat-lai.ts) |
 
@@ -176,7 +176,7 @@ Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng h
 
 | Bằng chứng | Chứng minh trong phạm vi nào? | Chưa chứng minh |
 |---|---|---|
-| **1382 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
+| **1398 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
 | **38 mẫu** đã gắn nhãn | Ca kích hoạt và đối chứng của luật | Khả năng khái quát sang tập độc lập |
 | **Cohort công khai lưu offline** | Hành vi trên response đã lưu | Precision/recall; cohort chưa có ground truth |
 | **10 giao dịch mainnet phát lại** | Engine đọc message mainnet thật; thiếu trạng thái thì báo, không đoán | Luồng ký hay bảo vệ tài sản trên mainnet; tỉ lệ phát hiện — 10 mẫu, chưa có nhãn |
@@ -187,7 +187,7 @@ Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-b
 
 | Nhóm tiêu chí | Bằng chứng và nguồn |
 |---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2 · **1382** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **30 %** độ khó và chiều sâu | **14** luật L2 · **1398** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
 | **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
 | **25 %** Solana stack · hiệu năng | `inspect()` **639 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo và trình bày | FCP **88 ms** · bấm→thẻ **n=30**, trung vị **890 ms**, p95 quan sát **6005 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
@@ -202,7 +202,7 @@ Số giao diện được đo trên Chromium headless; không suy rộng sang th
 
 Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
 
-Measured, not estimated: **1382 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
+Measured, not estimated: **1398 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
 </details>
 
