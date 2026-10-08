@@ -27,7 +27,7 @@ Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Tron
 **Custos đưa những thay đổi đó đến trước bước ký.** Ví hoặc dApp gọi SDK; người dùng nhận được thay đổi tài sản, thay đổi quyền, lý do cảnh báo và phạm vi đã phân tích. Dữ kiện có thể mở để kiểm tra thêm.
 
 <p align="center">
-  <a href="https://neitln.github.io/Custos-Solana/">
+  <a href="https://custos-sdk.vercel.app/vi">
     <img src="docs/readme/transaction-review.png" width="100%" alt="Custos trên Devnet: số dư 490 token, cảnh báo đổi chủ tài khoản và bảng quyền trước–sau">
   </a>
   <br>

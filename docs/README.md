@@ -15,6 +15,8 @@ Thư mục này có hơn 100 tài liệu. Trang này nói **đọc cái nào tr�
 | 5 | [**adr/0004**](adr/0004-custos-trong-luong-ky-cua-vi.md) | Custos nằm **trong luồng ký của ví** qua Wallet Standard — dApp không có trường nào để tắt bước kiểm |
 | 6 | [**review/ck-20261004/NGHIEM-THU-CUOI.md**](review/ck-20261004/NGHIEM-THU-CUOI.md) | Nghiệm thu cuối trên production: hai origin HTTPS, chặn ⇒ 0 giao dịch gửi, đối chiếu chain |
 
+Muốn thử trước khi đọc: [SolBonus](https://solbonus.vercel.app/nhan-thuong) (dApp độc hại mô phỏng, 2 phút, không cần khoá) · [Ví Custos](https://custos-sdk.vercel.app/vi) · [Inspector](https://custos-sdk.vercel.app/inspector) · [Số liệu](https://custos-sdk.vercel.app/so-lieu).
+
 Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/l2/rules.ts) — 14 luật, trái tim sản phẩm.
 
 ## Nếu bạn muốn tích hợp SDK
@@ -22,7 +24,7 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | Tài liệu | Vai trò |
 |---|---|
 | [`packages/core/README.md`](../packages/core/README.md) | **Tài liệu tích hợp chính.** Ví dụ trong đó có test chạy thật |
-| [Trang Tích hợp](https://custos-solana.vercel.app/tich-hop.html) | Mã nguyên văn, số dòng máy đếm, nút chạy thử chính hàm `kiemTruocKhiKy` |
+| [Trang Tích hợp](https://custos-sdk.vercel.app/tich-hop) | Mã nguyên văn, số dòng máy đếm, nút chạy thử chính hàm `kiemTruocKhiKy` |
 | [`packages/connector`](../packages/connector/) | Connector Wallet Standard: dApp chỉ gọi `registerCustosWallet()` |
 | [PILOT-TU-LAM.md](PILOT-TU-LAM.md) | Từ thư mục trống tới `inspect()` đầu tiên, bốn đường lỗi |
 | [NGAN-SACH-RPC.md](NGAN-SACH-RPC.md) | Bảy chặng RPC — và vì sao **ngừng chờ ≠ huỷ request** |
@@ -74,7 +76,7 @@ Muốn xem thẳng code: [`packages/core/src/l2/rules.ts`](../packages/core/src/
 | [PITCH-VA-PHAN-BIEN.md](PITCH-VA-PHAN-BIEN.md) | Cấu trúc pitch, câu hỏi khó — và **danh sách câu không được nói** |
 | [nop-bai/](nop-bai/) | Hồ sơ nộp: deck, video demo, ảnh, logo |
 
-**Đang làm — vòng toàn quốc:** [roadmap/ROADMAP-SAU-MENTOR.md](roadmap/ROADMAP-SAU-MENTOR.md) lộ trình sau mentor 1:1 · [review/national-20260925/FINDINGS.md](review/national-20260925/FINDINGS.md) bảng finding trước/sau · lịch ở [cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+**Đang làm — vòng toàn quốc:** [roadmap/ROADMAP-SAU-MENTOR.md](roadmap/ROADMAP-SAU-MENTOR.md) lộ trình sau mentor 1:1 · [roadmap/ROADMAP-GIONG-THAT.md](roadmap/ROADMAP-GIONG-THAT.md) từ demo sang sản phẩm · [review/national-20260925/FINDINGS.md](review/national-20260925/FINDINGS.md) bảng finding trước/sau · lịch ở [cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
 
 **Lưu trữ** — không cần đọc: [review/](review/) biên bản review và nghiệm thu theo từng phiên · [roadmap/](roadmap/) trạng thái từng việc.
 
