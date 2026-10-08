@@ -1,9 +1,9 @@
 {
-  "doLuc": "2026-09-24T20:17:40.853658+00:00",
-  "sourceCommit": "8cba3decc473c6f2605efd5a4f909dd3a3d54d7b",
+  "doLuc": "2026-10-08T21:04:03.053669+00:00",
+  "sourceCommit": "c7bb4a4dfedb461de51f85d949f05216ffa6367b",
   "dauVet": {
-    "bam": "d39867accab6e5d5",
-    "soFile": 98
+    "bam": "e3c2192a9f1277bd",
+    "soFile": 138
   },
   "boCongCu": {
     "chromium": "149.0.7827.55",
@@ -22,8 +22,8 @@
       "cao": 900
     }
   ],
-  "soKiem": 45,
-  "soDat": 45,
+  "soKiem": 42,
+  "soDat": 42,
   "soHong": 0,
   "viPham": [],
   "kiem": [
@@ -128,32 +128,17 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "window.open gọi ĐỒNG BỘ trong cử chỉ bấm",
+      "ten": "không chuyển giao dịch qua URL #tx= (B3: chỉ Wallet Standard)",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "URL mang giao dịch + lời khai airdrop",
+      "ten": "thẻ lỗi hiện ra (6.4s)",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "ví nhận và ra Nguy hiểm",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "bắt được lời khai gian",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "thẻ lỗi hiện ra (9.1s)",
-      "dat": true,
-      "chiTiet": "đạt"
-    },
-    {
-      "ten": "dừng theo hạn ~9s, không chờ ~30s",
+      "ten": "dừng theo hạn (6 s mỗi lượt, tối đa 12 s), không chờ ~30s",
       "dat": true,
       "chiTiet": "đạt"
     },
@@ -163,12 +148,12 @@
       "chiTiet": "đạt"
     },
     {
-      "ten": "có đường lui dữ liệu mẫu CÓ NHÃN",
+      "ten": "có đường lui dữ liệu đã ghi CÓ NHÃN",
       "dat": true,
       "chiTiet": "đạt"
     },
     {
-      "ten": "axe · trang tấn công · trạng thái lỗi",
+      "ten": "axe · phòng phân tích · trạng thái lỗi",
       "dat": true,
       "chiTiet": "đạt"
     },

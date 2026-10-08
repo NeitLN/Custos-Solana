@@ -139,6 +139,18 @@ export function Inspector() {
     setTt({ pha: "rong" });
   }, []);
 
+  /*
+   * Ví cần bảo vệ và máy chủ RPC cũng là ĐẦU VÀO của lượt kiểm (Codex review 09/10, P2): kết quả
+   * phân tích theo ví A không nói gì về ví B. Bản trước chỉ cập nhật ô — kết quả cũ, hay lượt
+   * đang bay, vẫn hiện dưới tham số mới. Nay đổi một trong hai = bỏ kết quả và CẮT request đang chạy.
+   */
+  const doiThamSo = useCallback((datGiaTri: () => void) => {
+    datGiaTri();
+    luot.current++;
+    boHuy.current?.huy();
+    setTt({ pha: "rong" });
+  }, []);
+
   const kiem = useCallback(async () => {
     const d = docTx(tho);
     if (!d.ok) {
@@ -451,7 +463,7 @@ export function Inspector() {
             className="mt-1 w-full rounded-xl border border-slate-300 p-2 font-mono text-[12px]"
             placeholder="địa chỉ ví cần bảo vệ"
             value={vi}
-            onChange={(e) => setVi(e.target.value)}
+            onChange={(e) => doiThamSo(() => setVi(e.target.value))}
             spellCheck={false}
           />
           {/*
@@ -470,7 +482,7 @@ export function Inspector() {
             id="rpc"
             className="mt-1 w-full rounded-xl border border-slate-300 p-2 font-mono text-[12px]"
             value={rpc}
-            onChange={(e) => setRpc(e.target.value)}
+            onChange={(e) => doiThamSo(() => setRpc(e.target.value))}
             spellCheck={false}
           />
         </div>
