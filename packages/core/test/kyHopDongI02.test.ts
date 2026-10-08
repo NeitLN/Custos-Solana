@@ -254,10 +254,12 @@ test("signer nhận bytes của tx SẮP KÝ, không phải của tx đã kiểm
     /khopNeo\(neo, byteDaKiem,/,
     "khopNeo phải dùng chính bytes sẽ đưa cho signer",
   );
+  // 09/10: signer nhận BẢN SAO của chính biến đó — cùng bytes, nhưng signer không sửa được chuẩn
+  // đối chiếu (xem bài "signer GHI ĐÈ mảng bytes" bên dưới).
   assert.match(
     ma,
-    /signer\(sapKy, byteDaKiem\)/,
-    "signer phải nhận chính bytes đã khớp neo, không serialize lại lần hai",
+    /signer\(sapKy, Uint8Array\.from\(byteDaKiem\)\)/,
+    "signer phải nhận bản sao của chính bytes đã khớp neo, không serialize lại lần hai",
   );
 });
 
@@ -662,4 +664,41 @@ test("Codex 29/09 · signer sửa object SAU khi trả về ⇒ thứ trả ra v
   assert.ok(r.daKy);
   assert.notEqual(r.giaoDichDaKy, traVe, "trả lại object của signer — signer vẫn sửa được");
   assert.deepEqual(r.giaoDichDaKy.message.serialize(), t.message.serialize());
+});
+
+test("signer GHI ĐÈ mảng bytes được đưa cho ⇒ vẫn bị bắt (Codex review 09/10, P2)", async () => {
+  /*
+   * Signer độc hại ký một giao dịch KHÁC rồi sửa tại chỗ mảng bytes nó nhận cho khớp. Bản trước
+   * đưa chính mảng đối chiếu cho signer, nên mảng đó bị đổi và cả (7) lẫn (8) đều so với bản đã
+   * sửa ⇒ khai `da_ky`. Nay signer chỉ nhận bản sao: chuẩn đối chiếu không đổi được từ bên ngoài.
+   */
+  const t = tx(1000);
+  const tKhac = tx(999);
+  const r = await moLuot(t, (_t: VersionedTransaction, bytes: Uint8Array) => {
+    bytes.set(tKhac.message.serialize());
+    return kyThat(tKhac);
+  });
+  assert.equal(r.daKy, false, "signer tráo giao dịch bằng cách sửa mảng đối chiếu mà vẫn được tính là đã ký");
+  assert.equal(r.ketCuc, "chua_ro");
+});
+
+test("signer GHI ĐÈ bytes của message LEGACY (Buffer) ⇒ vẫn bị bắt (Codex xác minh lần 2, 09/10)", async () => {
+  // Message legacy serialize ra `Buffer`; `Buffer.slice()` là view chia sẻ bộ nhớ — bản sao giả.
+  const legacy = (lamports: number) =>
+    new VersionedTransaction(
+      new TransactionMessage({
+        payerKey: VI.publicKey,
+        recentBlockhash: BLOCKHASH,
+        instructions: [SystemProgram.transfer({ fromPubkey: VI.publicKey, toPubkey: LA.publicKey, lamports })],
+      }).compileToLegacyMessage(),
+    );
+  const t = legacy(1000);
+  const tKhac = legacy(999);
+  assert.ok(Buffer.isBuffer(t.message.serialize()), "tiền đề: message legacy serialize ra Buffer");
+  const r = await moLuot(t, (_t: VersionedTransaction, bytes: Uint8Array) => {
+    bytes.set(tKhac.message.serialize());
+    return kyThat(tKhac);
+  });
+  assert.equal(r.daKy, false, "signer tráo giao dịch legacy bằng cách sửa mảng đối chiếu");
+  assert.equal(r.ketCuc, "chua_ro");
 });

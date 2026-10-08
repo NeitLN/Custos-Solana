@@ -583,3 +583,45 @@ test("neo đủ: từng loại hậu quả có cách nhắc riêng", async () =>
   assert.equal(boSotHauQua("Tài khoản đổi​ chủ.", ["doi_chu"]), false);
   assert.equal(boSotHauQua("Không có gì.", []), false, "không có hậu quả nào thì không có gì để thiếu");
 });
+
+// ── Phủ định hậu quả đã đo (Codex review 09/10, gpt-6.1-sol, P2) ─────────────────
+test("mô hình NHẮC hậu quả để PHỦ ĐỊNH nó ⇒ lùi về câu mẫu tất định", async () => {
+  // Có chữ "đổi chủ" nên `boSotHauQua` cho qua — nhưng câu nói ngược dữ kiện.
+  const cau = "Token rời khỏi ví bạn, tài khoản không đổi chủ.";
+  const r = await dienGiaiBangMoHinh(
+    moHinhTraVe(JSON.stringify({ detectedPrimaryAction: null, explanation: cau, aiAdvisory: null })),
+  )(factsTanCong(), [REASON.SET_AUTHORITY_ACCOUNT_OWNER], "vi");
+  assert.notEqual(r.explanation, cau, "câu phủ định hậu quả có thật lọt bộ chắn");
+});
+
+test("phủ định hậu quả: bắt đúng dạng phủ định, không bắt câu khẳng định", async () => {
+  const { phuDinhHauQua } = await import("../src/moHinh.ts");
+  assert.equal(phuDinhHauQua("Tài khoản không bị đổi chủ.", ["doi_chu"]), true);
+  assert.equal(phuDinhHauQua("Ví lạ không được phép rút token.", ["cap_quyen_rut"]), true);
+  // "không CÒN quyền kiểm soát" là KHẲNG ĐỊNH hậu quả — phải đi qua.
+  assert.equal(phuDinhHauQua("Bạn sẽ không còn quyền kiểm soát tài khoản này.", ["doi_chu"]), false);
+  assert.equal(phuDinhHauQua("Một ví khác sẽ có quyền đóng tài khoản này.", ["trao_quyen_dong"]), false);
+  // Chỉ xét hậu quả lõi ĐÃ thấy: phủ định một thứ không xảy ra là câu đúng.
+  assert.equal(phuDinhHauQua("Tài khoản không đổi chủ.", ["cap_quyen_rut"]), false);
+  // Codex xác minh lần 2 (09/10): nhiều trợ từ, và chủ thể đứng trước phủ định.
+  assert.equal(phuDinhHauQua("Token rời khỏi ví bạn, tài khoản không hề bị đổi chủ.", ["doi_chu"]), true);
+  assert.equal(phuDinhHauQua("Token rời khỏi ví bạn, quyền sở hữu không thay đổi.", ["doi_chu"]), true);
+  assert.equal(phuDinhHauQua("Chủ tài khoản vẫn không đổi.", ["doi_chu"]), true);
+  assert.equal(phuDinhHauQua("Quyền sở hữu tài khoản không thay đổi.", ["doi_chu"]), true);
+  assert.equal(phuDinhHauQua("Chủ sở hữu của tài khoản này vẫn không đổi.", ["doi_chu"]), true);
+  // Khẳng định hậu quả vẫn đi qua.
+  assert.equal(phuDinhHauQua("Chủ tài khoản sẽ đổi sang một ví lạ.", ["doi_chu"]), false);
+  assert.equal(phuDinhHauQua("Quyền sở hữu tài khoản chuyển sang ví lạ; bạn không còn kiểm soát nó.", ["doi_chu"]), false);
+});
+
+test("hai câu phủ định Codex tìm ra đi qua TOÀN BỘ interpreter ⇒ lùi về câu mẫu", async () => {
+  for (const cau of [
+    "Token rời khỏi ví bạn, tài khoản không hề bị đổi chủ.",
+    "Token rời khỏi ví bạn, quyền sở hữu không thay đổi.",
+  ]) {
+    const r = await dienGiaiBangMoHinh(
+      moHinhTraVe(JSON.stringify({ detectedPrimaryAction: null, explanation: cau, aiAdvisory: null })),
+    )(factsTanCong(), [REASON.SET_AUTHORITY_ACCOUNT_OWNER], "vi");
+    assert.notEqual(r.explanation, cau, `lọt bộ chắn: ${cau}`);
+  }
+});

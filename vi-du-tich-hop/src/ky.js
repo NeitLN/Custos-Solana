@@ -146,7 +146,11 @@ export async function kySauKhiKiem({
   let ketQuaSigner;
   try {
     ketQuaSigner = await choSigner(
-      () => signer(sapKy, byteDaKiem),
+      // BẢN SAO, không phải mảng gốc (Codex review 09/10, P2): `byteDaKiem` là chuẩn đối chiếu
+      // ở (7) và (8). Đưa chính mảng đó cho signer thì signer sửa giao dịch, ghi đè luôn mảng
+      // cho khớp, và vượt được phép đối chiếu. `Uint8Array.from`, KHÔNG `.slice()`: message legacy
+      // trả `Buffer`, và `Buffer.slice()` là view CHIA SẺ bộ nhớ (Codex xác minh lần 2, 09/10).
+      () => signer(sapKy, Uint8Array.from(byteDaKiem)),
       msChoSigner,
     );
   } catch (e) {

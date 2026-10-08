@@ -446,6 +446,34 @@ export function boSotHauQua(loiVan: string, cacLoai: HauQuaLech["loai"][]): bool
   return cacLoai.some((l) => !CACH_NHAC[l].test(s));
 }
 
+/*
+ * PHỦ ĐỊNH HẬU QUẢ ĐÃ ĐO (Codex review 09/10, gpt-6.1-sol, P2). `boSotHauQua` chỉ hỏi lời văn
+ * CÓ NHẮC hậu quả không — "Token rời khỏi ví bạn, tài khoản không đổi chủ." có chữ "đổi chủ"
+ * nên qua, trong khi tài khoản thật sự đổi chủ. Chặn phủ định đứng NGAY trước cụm hậu quả
+ * (cho phép "hề/bị/có/được" xen giữa). "không CÒN quyền kiểm soát" khẳng định đúng hậu quả nên
+ * không bị bắt. Bị chặn thì lùi về câu mẫu tất định — người dùng không mất gì.
+ */
+// Tối đa hai trợ từ xen giữa: "không HỀ BỊ đổi chủ" (Codex xác minh lần 2, 09/10).
+const PHU_DINH_TRUOC = String.raw`(?:không|chẳng|chưa)\s+(?:(?:hề|bị|có|được|hề bị)\s+){0,2}`;
+const PHU_DINH_HAU_QUA: Record<HauQuaLech["loai"], RegExp> = {
+  // Hai dạng: phủ định đứng TRƯỚC cụm hậu quả ("không đổi chủ"), và cụm chủ thể đứng trước rồi
+  // mới phủ định ("quyền sở hữu không thay đổi", "chủ tài khoản vẫn không đổi").
+  doi_chu: new RegExp(
+    `${PHU_DINH_TRUOC}(?:đổi chủ|thay đổi chủ|chuyển quyền sở hữu|mất quyền sở hữu)` +
+      String.raw`|(?:chủ sở hữu|quyền sở hữu|chủ tài khoản)(?:\s+(?:của\s+)?tài khoản(?:\s+này)?)?\s+(?:vẫn\s+)?(?:không|chẳng|chưa)\s+(?:(?:hề|bị)\s+){0,2}(?:thay\s+)?đổi`,
+    "i",
+  ),
+  cap_quyen_rut: new RegExp(`${PHU_DINH_TRUOC}(?:cấp quyền rút|quyền rút|được phép rút|uỷ quyền|ủy quyền)`, "i"),
+  trao_quyen_dong: new RegExp(`${PHU_DINH_TRUOC}(?:trao quyền đóng|quyền đóng|đóng được tài khoản)`, "i"),
+  doi_chuong_trinh: new RegExp(`${PHU_DINH_TRUOC}(?:đổi chương trình|chuyển sang chương trình|giao cho chương trình)`, "i"),
+};
+
+/** `true` khi lời văn PHỦ ĐỊNH ít nhất một hậu quả lõi tất định đã xác định. */
+export function phuDinhHauQua(loiVan: string, cacLoai: HauQuaLech["loai"][]): boolean {
+  const s = chuanHoaDeSoi(loiVan);
+  return cacLoai.some((l) => PHU_DINH_HAU_QUA[l].test(s));
+}
+
 export function neoHanhDong(
   hd: PrimaryAction | null,
   duLieuGui: string,
@@ -568,6 +596,8 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
     const { hanhDong, lech } = nhanDien(facts, options?.kyHieuToken);
     // Và không được BỎ SÓT hậu quả nào lõi đã thấy — xem `boSotHauQua`.
     if (boSotHauQua(ra.explanation, lech.map((l) => l.loai))) return nen;
+    // Nhắc tới mà để PHỦ ĐỊNH cũng là bỏ sót — xem `phuDinhHauQua`.
+    if (phuDinhHauQua(ra.explanation, lech.map((l) => l.loai))) return nen;
 
     return {
       // Lõi tất định đúng hơn mô hình vì nó đọc thẳng từ chênh lệch số dư. Chỉ
