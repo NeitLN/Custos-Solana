@@ -1,7 +1,7 @@
 import type { Level } from "@custos-solana/types";
 import { quyenRutMoRong, type Facts } from "../facts.ts";
 import { REASON, VERIFIED_PROGRAMS, NGUONG_SOL_PHAN_TRAM } from "../constants.ts";
-import { tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
+import { phiNguoiDungTra, tinhSolNguoiDung, tinhTienDatCoc } from "../sol.ts";
 
 /** System Program. Đích của mọi lệnh đóng tài khoản token. */
 const SYSTEM_PROGRAM = "11111111111111111111111111111111";
@@ -183,6 +183,22 @@ export const luat12: Rule = {
       const laDongTaiKhoan = a.programOwnerAfter === SYSTEM_PROGRAM && a.lamportsAfter === 0n;
       if (laDongTaiKhoan) continue;
 
+      // ACCOUNT CỦA MỘT NGƯỜI KÝ KHÁC (Codex review 09/10, P2). `System.assign` chỉ chạy khi
+      // chính account đó ký — một đồng ký X đổi chương trình sở hữu account CỦA X là X tự đồng ý,
+      // không phải tài sản của người được bảo vệ. Chỉ bỏ qua khi ví/dApp ĐÃ CHỈ ĐỊNH người dùng:
+      // không chỉ định thì Custos không biết ai là "người khác", nên giữ Đỏ (fail-safe).
+      // Account không ký (vd. tài khoản token bị giao cho chương trình lạ) vẫn Đỏ như cũ.
+      //
+      // Tra `nguoiKy`, KHÔNG `a.isSigner`: L1 chỉ đặt `isSigner` cho người được bảo vệ (fetch.ts),
+      // nên bản đầu của nhánh này không bao giờ chạy trên Facts thật (Codex xác minh lần 2, 09/10).
+      //
+      // KHÔNG BAO GIỜ miễn cho tài khoản token CỦA NGƯỜI DÙNG, dù địa chỉ đó có ký: kẻ giữ keypair
+      // của một tài khoản token thường (không phải ATA) đóng nó, nạp lại lamport rồi `assign` sang
+      // chương trình của mình — tài khoản là của người dùng, chữ ký là của kẻ tấn công (Codex
+      // xác minh lần 3, 09/10).
+      const cuaNguoiDung = f.tokenAccounts.some((t) => t.address === a.address && t.ownerBefore === f.signer);
+      if (f.nguoiDungDuocChiDinh && a.address !== f.signer && !cuaNguoiDung && (f.nguoiKy ?? []).includes(a.address)) continue;
+
       hits.push({
         ruleId: 12,
         level: "danger",
@@ -241,12 +257,18 @@ export const luat4: Rule = {
       // Điều kiện là `authority` của lệnh phải ĐÚNG BẰNG permanent delegate.
       // `authority` vắng mặt nghĩa là chưa bóc được — và khi đó luật GIỮ NGUYÊN
       // mức Vàng thay vì đoán. Đây là chính sách đã chốt, không phải thiếu sót.
-      const raTay = f.instructions.some(
-        (ix) =>
-          ix.decoded !== null &&
-          ix.decoded.authority !== undefined &&
-          ix.decoded.authority === m.permanentDelegate,
-      );
+      //
+      // Và lệnh đó phải chạm token CỦA CHÍNH MINT NÀY. X là permanent delegate của mint A mà
+      // trong cùng giao dịch ký một lệnh chuyển mint B thì không phải "quyền của A ra tay" —
+      // cáo buộc Đỏ cho A là cáo buộc không có căn cứ (Codex review 09/10, P2). Tài khoản nguồn
+      // không tra được mint ⇒ chưa chứng minh ⇒ giữ Vàng. Facts cũ thiếu `nguon` (seed đóng
+      // băng trước 09/10) giữ cách tính cũ; runtime luôn ghi `nguon` khi có `authority`.
+      const raTay = f.instructions.some((ix) => {
+        const d = ix.decoded;
+        if (d === null || d.authority === undefined || d.authority !== m.permanentDelegate) return false;
+        if (d.nguon === undefined) return true;
+        return f.tokenAccounts.some((t) => t.address === d.nguon && t.mint === m.address);
+      });
       // Không tính khi chính người dùng lại là permanent delegate của mint mình giữ.
       if (!raTay || m.permanentDelegate === f.signer) continue;
 
@@ -558,7 +580,8 @@ export const luat13: Rule = {
 
     // Trừ cả phí lẫn tiền đặt cọc: cả hai đều không phải "mất tiền". Đặt cọc
     // chỉ được trừ khi tài khoản mới THUỘC VỀ người dùng — xem tinhTienDatCoc.
-    const khongPhaiMat = (f.phiUocTinh ?? 0n) + tinhTienDatCoc(f);
+    // Phí chỉ được trừ khi người được bảo vệ CHÍNH LÀ người trả phí — xem phiNguoiDungTra.
+    const khongPhaiMat = phiNguoiDungTra(f) + tinhTienDatCoc(f);
     if (roi <= khongPhaiMat) return [];
 
     const chuyenDi = roi - khongPhaiMat;

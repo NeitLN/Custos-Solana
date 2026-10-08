@@ -74,6 +74,22 @@ export function tinhSolNguoiDung(facts: Facts): SolNguoiDung {
  *
  * Có test riêng cho đúng cái bẫy đó.
  */
+/**
+ * Phần phí mạng do CHÍNH người được bảo vệ trả.
+ *
+ * Phí luôn do người trả phí (`nguoiKy[0]` = `staticAccountKeys[0]`) trả, kể cả phí ưu tiên.
+ * Khi giao dịch được bên khác tài trợ phí, người dùng KHÔNG trả lamport nào cho phí — trừ
+ * `phiUocTinh` khỏi khoản họ mất là che mất đúng chừng đó SOL: kẻ trả phí đặt phí ưu tiên cao
+ * là giấu được một khoản rút ngang mức phí (Codex review 09/10, gpt-6.1-sol, P1).
+ *
+ * Facts cũ thiếu `nguoiKy` (seed đóng băng trước F1b) giữ cách tính cũ: runtime luôn có trường này.
+ */
+export function phiNguoiDungTra(facts: Facts): bigint {
+  const nguoiTraPhi = facts.nguoiKy?.[0];
+  if (nguoiTraPhi !== undefined && nguoiTraPhi !== facts.signer) return 0n;
+  return facts.phiUocTinh ?? 0n;
+}
+
 export function tinhTienDatCoc(facts: Facts): bigint {
   let tong = 0n;
   for (const t of facts.tokenAccounts) {

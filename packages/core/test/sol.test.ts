@@ -402,3 +402,27 @@ test("SOL · rút sạch mà KHÔNG nhận lại gì ⇒ VẪN gắn cờ", () =
   });
   assert.ok(danhGia(f).reasonCodes.includes(REASON.SOL_ROI_VI));
 });
+
+// ── Phí do bên tài trợ trả không được che khoản người dùng mất (Codex review 09/10, P1) ──
+//
+// Bản trước trừ TOÀN BỘ `phiUocTinh` khỏi khoản mất của người được bảo vệ, kể cả khi họ
+// không trả phí. Kẻ trả phí đặt phí ưu tiên 0,002 SOL ⇒ khoản rút 0,001 SOL (100 % số dư)
+// chìm dưới "phí", verdict `safe`, bảng không có dòng SOL.
+test("SOL · tài trợ phí: phí của người khác KHÔNG che khoản rút của người dùng", () => {
+  const f = facts({
+    ...viCua(1_000_000n, 0n),
+    nguoiKy: [LA, TOI], // LA trả phí, TOI là người được bảo vệ
+    nguoiDungDuocChiDinh: true,
+    phiUocTinh: 2_000_000n,
+  });
+  const r = danhGia(f);
+  assert.ok(r.reasonCodes.includes(REASON.SOL_ROI_VI), "mất 100 % SOL mà không gắn cờ");
+  assert.notEqual(r.level, "safe");
+  assert.ok(dong(f, "SOL"), "bảng phải hiện dòng SOL của người dùng");
+});
+
+test("SOL · người dùng tự trả phí: phí vẫn được trừ như cũ (đối chứng)", () => {
+  const f = facts({ ...viCua(1_000_000n, 1_000_000n - 2_000n), phiUocTinh: 2_000n });
+  const r = danhGia(f);
+  assert.ok(!r.reasonCodes.includes(REASON.SOL_ROI_VI), "trả đúng phí của mình không phải mất tiền");
+});

@@ -70,12 +70,16 @@ async function getManyAccounts(conn: Connection, keys: PublicKey[]) {
 function themAuthority(
   doc: { kind: string } | null,
   layDiaChi: (viTri: number) => string | undefined,
-): { kind: string; authority?: string } | null {
+): { kind: string; authority?: string; nguon?: string } | null {
   if (doc === null) return null;
   const viTri = VI_TRI_AUTHORITY[doc.kind];
   if (viTri === undefined) return doc;
   const dc = layDiaChi(viTri);
-  return dc ? { ...doc, authority: dc } : doc;
+  if (!dc) return doc;
+  // Tài khoản NGUỒN ở vị trí 0 của cả bốn lệnh (xem VI_TRI_AUTHORITY) — để luật 4 biết lệnh
+  // chạm token của MINT NÀO, không chỉ ai ký (Codex review 09/10, P2).
+  const nguon = layDiaChi(0);
+  return nguon ? { ...doc, authority: dc, nguon } : { ...doc, authority: dc };
 }
 
 export async function extractFacts(

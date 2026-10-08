@@ -155,3 +155,31 @@ test("L1 bóc được authority từ lệnh SPL Token Transfer", async () => {
     "authority phải lấy từ DANH SÁCH ACCOUNT, không phải từ dữ liệu lệnh",
   );
 });
+
+// ── Lệnh của permanent delegate phải chạm token CỦA CHÍNH MINT ĐÓ (Codex review 09/10, P2) ──
+const lenhTransferTu = (authority: string, nguon: string): InstructionFact => ({
+  index: 0, programId: TOKEN22, isInner: false, parentIndex: null,
+  decoded: { kind: "transfer", authority, nguon },
+  fromLookupTable: false, chamTaiSanNguoiKy: true,
+});
+const MINT_KHAC = "MintKhac1111111111111111111111111111111111111";
+
+test("PD · ra tay trên ĐÚNG mint (nguồn là tài khoản của mint đó) ⇒ Đỏ", () => {
+  const r = danhGia(facts({ instructions: [lenhTransferTu(NHA_PHAT_HANH, "ata1")] }));
+  assert.equal(r.level, "danger");
+  assert.ok(r.reasonCodes.includes(REASON.PERMANENT_DELEGATE_RA_TAY));
+});
+
+test("PD · cùng authority nhưng chuyển MINT KHÁC ⇒ chỉ Vàng, không cáo buộc mint này", () => {
+  const r = danhGia(facts({
+    tokenAccounts: [ta(), ta({ address: "ataKhac", mint: MINT_KHAC, ownerBefore: NHA_PHAT_HANH, ownerAfter: NHA_PHAT_HANH })],
+    instructions: [lenhTransferTu(NHA_PHAT_HANH, "ataKhac")],
+  }));
+  assert.ok(!r.reasonCodes.includes(REASON.PERMANENT_DELEGATE_RA_TAY), `cáo buộc nhầm mint: ${r.reasonCodes.join(", ")}`);
+  assert.ok(r.reasonCodes.includes(REASON.TOKEN2022_PERMANENT_DELEGATE), "sự tồn tại của quyền vẫn được báo");
+});
+
+test("PD · nguồn không tra được mint ⇒ chưa chứng minh ⇒ chỉ Vàng", () => {
+  const r = danhGia(facts({ instructions: [lenhTransferTu(NHA_PHAT_HANH, "khongBiet")] }));
+  assert.ok(!r.reasonCodes.includes(REASON.PERMANENT_DELEGATE_RA_TAY));
+});

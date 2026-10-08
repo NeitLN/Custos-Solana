@@ -1,7 +1,7 @@
 import type { DiffEntry } from "@custos-solana/types";
 import { quyenRutMoRong, type Facts } from "./facts.ts";
 import type { RuleHit, BangChung } from "./l2/rules.ts";
-import { tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
+import { phiNguoiDungTra, tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
 
 const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)}` : a);
 
@@ -275,8 +275,11 @@ export function dungBangChenhLech(
   // đi" là số dư → mức thay đổi, dòng phí là số 0 giả → mức thay đổi.
   const sol = tinhSolNguoiDung(facts);
   const phi = facts.phiUocTinh ?? 0n;
+  // Ngưỡng ẩn dòng SOL là phí CHÍNH người dùng trả — phí do bên tài trợ trả không được che
+  // khoản người dùng mất (Codex review 09/10, P1). Dòng "Phí mạng" bên dưới vẫn hiện phí của giao dịch.
+  const phiCuaNguoiDung = phiNguoiDungTra(facts);
 
-  if (doDuocHauQua && sol.roi !== 0n && (sol.roi > phi || sol.roi < 0n)) {
+  if (doDuocHauQua && sol.roi !== 0n && (sol.roi > phiCuaNguoiDung || sol.roi < 0n)) {
     /*
      * Màu lấy từ BẰNG CHỨNG, không dò chuỗi và không theo số hiệu luật.
      *

@@ -36,11 +36,19 @@ const TOI_DA = 300;
  * đâu, bỏ toàn bộ phần sau host vì đó là chỗ credential nằm. Danh sách "tên tham số
  * nào là secret" sẽ luôn thiếu — mỗi nhà cung cấp đặt một kiểu.
  */
-const QUY_TAC: Array<{ tim: RegExp; thay: string }> = [
-  // URL có credential trong query hoặc path: giữ host, bỏ phần còn lại.
-  { tim: /\bhttps?:\/\/([^\s/]+)\/\S*/gi, thay: "$1/…" },
-  // URL chỉ có host — vẫn giữ, nó không phải secret.
-  { tim: /\bhttps?:\/\/([^\s/]+)\b/gi, thay: "$1" },
+const QUY_TAC: Array<{ tim: RegExp; thay: string | ((...m: string[]) => string) }> = [
+  /*
+   * URL: CHỈ giữ `host[:port]`. Bỏ userinfo (`user:pass@`), path, query và fragment — đó là ba
+   * chỗ credential nằm. Codex review 09/10 (P2): hai quy tắc cũ giữ `user:pass@host`, và giữ
+   * nguyên `host?api-key=…` khi URL không có dấu `/` (quy tắc "chỉ có host" nuốt cả query).
+   * Có phần nào bị bỏ thì đánh dấu `/…` để người đọc biết đã che.
+   */
+  {
+    // Userinfo khớp THAM tới dấu `@` CUỐI CÙNG trước host — mật khẩu có thể chứa `@`
+    // (`https://u:pa@SECRET@host/` từng ra `SECRET/…`, Codex xác minh lần 2, 09/10).
+    tim: /\bhttps?:\/\/(?:[^\s/?#]*@)?([^\s/?#@]+)(\S*)/gi,
+    thay: (_m, host, conLai) => (conLai ? `${host}/…` : host!),
+  },
   /*
    * Thẻ HTML, khai báo doctype và comment — xoá hẳn, không escape. Nhật ký kỹ thuật
    * không có lý do gì mang thẻ.
@@ -93,7 +101,7 @@ const QUY_TAC: Array<{ tim: RegExp; thay: string }> = [
  */
 export function locDongNhatKy(s: string): string {
   let ra = s;
-  for (const { tim, thay } of QUY_TAC) ra = ra.replace(tim, thay);
+  for (const { tim, thay } of QUY_TAC) ra = typeof thay === "string" ? ra.replace(tim, thay) : ra.replace(tim, thay);
   // Gộp khoảng trắng: sau khi xoá thẻ HTML thường còn lại hàng loạt dấu cách.
   ra = ra.replace(/\s+/g, " ").trim();
   if (ra.length > TOI_DA) ra = `${ra.slice(0, TOI_DA)}… (đã cắt ${ra.length - TOI_DA} ký tự)`;

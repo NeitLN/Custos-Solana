@@ -37,6 +37,12 @@ test("URL có credential ⇒ giữ host, bỏ phần sau", () => {
     ["lỗi tại https://mainnet.helius-rpc.com/?api-key=abc123secret", "abc123secret"],
     ["lỗi tại https://tên-riêng.quiknode.pro/9f8e7d6c5b4a/", "9f8e7d6c5b4a"],
     ["gửi tới https://rpc.example.com/v1/TOKEN_BI_MAT rồi lỗi", "TOKEN_BI_MAT"],
+    // Codex review 09/10 (P2): userinfo trong URL, và query khi URL KHÔNG có dấu `/`.
+    ["lỗi tại https://nguoidung:MAT_KHAU_BI_MAT@rpc.example.com/v1", "MAT_KHAU_BI_MAT"],
+    ["lỗi tại https://rpc.example.com?api-key=KHOA_KHONG_GACH", "KHOA_KHONG_GACH"],
+    ["lỗi tại https://rpc.example.com#frag=KHOA_FRAGMENT", "KHOA_FRAGMENT"],
+    ["lỗi tại https://nguoidung:pa@MAT_KHAU_CO_A_CONG@rpc.example.com/x", "MAT_KHAU_CO_A_CONG"],
+    ["lỗi tại HTTPS://U:MAT_KHAU_HOA@RPC.EXAMPLE.COM/x", "MAT_KHAU_HOA"],
   ] as const) {
     const ra = locDongNhatKy(vao);
     assert.ok(!ra.includes(khongDuocCo), `còn rò "${khongDuocCo}" trong: ${ra}`);

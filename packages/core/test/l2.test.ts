@@ -459,3 +459,42 @@ test("LUẬT 10 lấp chỗ trống của fail-safe 3 — trước đây Vàng m
   const r = danhGia(facts({ lookupTables: [{ address: "ALT1", resolved: false }] }));
   assert.ok(r.reasonCodes.length > 0, "cảnh báo không có mã lý do là cảnh báo người dùng không hành động được");
 });
+
+// ── Luật 12 · account của MỘT NGƯỜI KÝ KHÁC (Codex review 09/10, P2) ─────────────
+const DONG_KY = "DongKy11111111111111111111111111111111111111";
+
+test("LUẬT 12 — đồng ký tự đổi program của account CỦA HỌ, người dùng đã chỉ định ⇒ không Đỏ", () => {
+  // `System.assign` đòi chính account ký: X đổi account của X là X tự đồng ý, không chạm tài sản của TOI.
+  const r = danhGia(facts({
+    nguoiKy: [TOI, DONG_KY], nguoiDungDuocChiDinh: true,
+    accounts: [acc({ address: DONG_KY, isSigner: false, programOwnerAfter: PROG_LA })], // như L1 thật: isSigner chỉ cho người được bảo vệ
+  }));
+  assert.ok(!r.reasonCodes.includes(REASON.SYSTEM_ASSIGN_DOI_OWNER), `cáo buộc account của người khác: ${r.reasonCodes.join(", ")}`);
+});
+
+test("LUẬT 12 — cùng ca nhưng CHƯA chỉ định người dùng ⇒ vẫn Đỏ (không biết ai là 'người khác')", () => {
+  const r = danhGia(facts({
+    nguoiKy: [TOI, DONG_KY], nguoiDungDuocChiDinh: false,
+    accounts: [acc({ address: DONG_KY, isSigner: false, programOwnerAfter: PROG_LA })], // như L1 thật: isSigner chỉ cho người được bảo vệ
+  }));
+  assert.ok(r.reasonCodes.includes(REASON.SYSTEM_ASSIGN_DOI_OWNER));
+});
+
+test("LUẬT 12 — ví CỦA NGƯỜI DÙNG bị đổi program ⇒ vẫn Đỏ dù đã chỉ định", () => {
+  const r = danhGia(facts({
+    nguoiKy: [DONG_KY, TOI], nguoiDungDuocChiDinh: true,
+    accounts: [acc({ address: TOI, isSigner: true, programOwnerAfter: PROG_LA })],
+  }));
+  assert.equal(r.level, "danger");
+  assert.ok(r.reasonCodes.includes(REASON.SYSTEM_ASSIGN_DOI_OWNER));
+});
+
+test("LUẬT 12 — tài khoản token CỦA NGƯỜI DÙNG mà địa chỉ cũng ký ⇒ vẫn Đỏ (Codex xác minh lần 3)", () => {
+  // Kẻ giữ keypair của tài khoản token thường (không phải ATA): đóng, nạp lại lamport, assign.
+  const r = danhGia(facts({
+    nguoiKy: [TOI, DONG_KY], nguoiDungDuocChiDinh: true,
+    tokenAccounts: [ta({ address: DONG_KY, ownerBefore: TOI, ownerAfter: null })],
+    accounts: [acc({ address: DONG_KY, isSigner: false, programOwnerAfter: PROG_LA })],
+  }));
+  assert.ok(r.reasonCodes.includes(REASON.SYSTEM_ASSIGN_DOI_OWNER), `miễn nhầm tài khoản của người dùng: ${r.reasonCodes.join(", ")}`);
+});
