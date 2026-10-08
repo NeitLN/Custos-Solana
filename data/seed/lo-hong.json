@@ -1,13 +1,37 @@
 {
-  "ngayDo": "2026-09-12T20:17:30.969Z",
-  "tong": 5,
+  "ngayDo": "2026-10-08T20:15:48.332Z",
+  "tong": 19,
   "theoMucDo": {
     "low": 0,
     "moderate": 0,
-    "high": 5,
+    "high": 19,
     "critical": 0
   },
   "goi": [
+    {
+      "ten": "@react-native/community-cli-plugin",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@react-native/virtualized-lists",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana-mobile/mobile-wallet-adapter-protocol",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana-mobile/mobile-wallet-adapter-protocol-web3js",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana-mobile/wallet-adapter-mobile",
+      "mucDo": "high"
+    },
+    {
+      "ten": "@solana-mobile/wallet-standard-mobile",
+      "mucDo": "high"
+    },
     {
       "ten": "@solana/buffer-layout-utils",
       "mucDo": "high"
@@ -21,11 +45,43 @@
       "mucDo": "high"
     },
     {
+      "ten": "braces",
+      "mucDo": "high"
+    },
+    {
       "ten": "image-size",
       "mucDo": "high"
     },
     {
+      "ten": "metro",
+      "mucDo": "high"
+    },
+    {
+      "ten": "metro-config",
+      "mucDo": "high"
+    },
+    {
+      "ten": "metro-file-map",
+      "mucDo": "high"
+    },
+    {
+      "ten": "metro-transform-worker",
+      "mucDo": "high"
+    },
+    {
+      "ten": "micromatch",
+      "mucDo": "high"
+    },
+    {
       "ten": "pptxgenjs",
+      "mucDo": "high"
+    },
+    {
+      "ten": "react-native",
+      "mucDo": "high"
+    },
+    {
+      "ten": "source-map-js",
       "mucDo": "high"
     }
   ]
