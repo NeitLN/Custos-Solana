@@ -245,3 +245,76 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
   .cinematic *, .cinematic *::before, .cinematic *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .cinematic .lg-phieu,.cine-card-stage,.cine-orbits { transform: none !important; }
 }
+
+/* ═══ Critique 09/10 (Claude + Codex + máy dò) — chỉnh rủi ro thấp trước chung kết ═══════════════ */
+
+/* Tương phản: "Mở phòng phân tích" ở hero là teal #146c60 trên nền #061f1b — 2,74:1, lỗi AA duy nhất
+   đo được. Lime của thương hiệu ~12:1. Và bỏ 21ch: chữ "Devnet ·" từng rơi lẻ cuối dòng 1. */
+.cinematic .lg-hero__ghichu { max-width: 26ch; text-wrap: balance; } /* ngắt sau dấu ·, không để chữ lẻ */
+@media (max-width: 760px) { .custos-landing.cinematic .lg-hero__ghichu { max-width: none; } }
+.cinematic .lg-hero__ghichu .lg-link { color: #c5e69d; text-underline-offset: 3px; }
+.cinematic .lg-hero__ghichu .lg-link:hover { color: #dcf2be; }
+
+/* Hành trình: bước "Custos kiểm trong ví" là thông điệp chính của section — nhấn nó. Quy tắc cũ
+   `.lg-buoc--custos { border-top-color }` thua `.custos-landing .lg-buoc { border: 0 }` nên mất lặng lẽ. */
+.custos-landing .lg-buoc--custos .lg-step-visual { border-bottom: 2px solid #146c60; }
+.custos-landing .lg-buoc--custos .lg-buoc__so,
+.custos-landing .lg-buoc--custos .lg-step-visual svg { color: #146c60; }
+/* Nút phụ "Tích hợp vào ví của bạn" từng trắng không viền trên nền sáng — đọc như một nhãn. */
+.custos-landing #hanh-trinh .lg-btn:not(.lg-btn--primary) { border: 1px solid #9fb8ac; }
+
+/* Cùng một quy trình từng được vẽ bốn lần (hành trình, cầu nối, pipeline, sơ đồ dev). Bỏ danh
+   sách lặp ở cầu nối và hàng ba ô giá trị lặp lại pipeline; giữ tiêu đề cầu nối làm khoảng lặng. */
+.custos-landing .cine-journey,
+.custos-landing .lg-giatri { display: none; }
+
+/* Chuyển động: dừng các vòng lặp trang trí cạnh tranh với dữ kiện — nhất là vệt quét chạy mãi trên
+   một KẾT QUẢ MẪU ĐÃ LƯU, dễ gợi cảm giác trang đang phân tích live. Giữ nền, logo và cổng. */
+.cinematic .lg-phieu__dau::after,
+.custos-landing .cine-card-halo,
+.custos-landing .inspection-lens__signal,
+.custos-landing .cine-resource__scan { animation: none; }
+.cinematic .lg-phieu__dau::after { opacity: .5; }
+
+/* Một khoảnh khắc đặc trưng: gạch chân chạy MỘT lần dưới "địa chỉ khác" — tiền còn, quyền đã khác.
+   Mặc định hiện sẵn (tĩnh); chỉ khi được phép chuyển động mới vẽ từ trái sang. */
+.custos-landing .lg-owner-node--changed { position: relative; }
+.custos-landing .lg-owner-node--changed::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 4px; height: 2px; border-radius: 2px;
+  background: #a2263b; transform-origin: left center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cinematic[data-motion="running"] .lg-owner-node--changed::after {
+    animation: cine-gach-quyen 520ms cubic-bezier(.25, 1, .5, 1) 1.1s both;
+  }
+}
+@keyframes cine-gach-quyen { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+
+/* Bằng chứng: link mục cao 32px (dưới 44px) — và khoảng thở giữa tiêu đề với đoạn dẫn. */
+.custos-landing .lg-bcs__lien { min-height: 44px; }
+.custos-landing .lg-proof-heading .lg-h2 + p,
+.custos-landing .lg-faq .lg-h2 + p { margin-top: 20px; }
+/* Đoạn giới hạn là lời hứa trung thực của trang — không để nó đọc như chữ in nhỏ. */
+.custos-landing .lg-gioihan { font-size: 15px; line-height: 1.7; color: #3f5545; }
+
+/* Trang Tích hợp là nút quan trọng nhất với nhà phát triển: đứng đầu và nổi bật. */
+.custos-landing .lg-dev__lien li:first-child .lg-btn { background: #c5e69d; border-color: #c5e69d; color: #0f2a23; }
+
+/* Nút "Đã giảm chuyển động" bị vô hiệu (người dùng bật reduced-motion) chỉ là vật cản cố định. */
+.custos-landing .cine-motion-control:disabled { display: none; }
+
+/* Viền focus trên hero và header nền tối: teal #146c60 chỉ ~2,7:1 trên nền gần đen (axe không đo
+   outline). Lime của thương hiệu cho bàn phím thấy rõ đang ở đâu. */
+.custos-landing.cinematic .lg-hero :focus-visible,
+.custos-landing.cinematic .lg-header__in :focus-visible { outline-color: #c5e69d; }
+
+/* Lối vào ứng dụng trên header desktop (09/10) — nút viền, nhường nút lime cho SolBonus. Ở ≤1024px
+   header thu vào menu, nơi đã có link này, nên ẩn như `.lg-header__cta`. */
+.custos-landing .lg-header__ung-dung {
+  background: transparent; border: 1px solid #688e78; color: #f5f7f4; white-space: nowrap;
+}
+.custos-landing .lg-header__ung-dung:hover { background: #1b4839; border-color: #9fc4ad; color: #fff; }
+@media (max-width: 1024px) { .custos-landing .lg-header__ung-dung { display: none; } }
+
+/* Lối phụ vào Phòng phân tích ở cuối trang — dưới hai nút chính, đủ vùng bấm. */
+.custos-landing .lg-cta__phu { display: inline-flex; align-items: center; min-height: 44px; flex-basis: 100%; }

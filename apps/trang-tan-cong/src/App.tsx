@@ -33,6 +33,8 @@ export default function App() {
   const token = tokens.find(t => t.source.toBase58() === selected);
   // Tương đối với trang ví (không dùng "/vi"): rewrite đó chỉ có trên Vercel, base path khác thì 404.
   const walletSetup = new URL("./?thucThi=1", URL_VI).href;
+  // Trang giới thiệu Custos — cùng origin với ví, nên đúng cả local (5188) lẫn production.
+  const trangCustos = new URL("./gioi-thieu.html", URL_VI).href;
 
   useEffect(() => {
     if (!wallet) {
@@ -110,7 +112,7 @@ export default function App() {
   return <div className="attack-page min-h-screen">
     {/* R0-4 (ROADMAP-GIONG-THAT): nhãn mô phỏng — mentor yêu cầu — LUÔN nhìn thấy (cố định đáy màn hình, mọi vị trí
         cuộn), nhưng không còn chiếm dòng đầu trang như một banner sân khấu. */}
-    <aside className="bang-mo-phong" aria-label="Thông báo thử nghiệm"><span>dApp độc hại MÔ PHỎNG · Không gọi Custos, chỉ xin chữ ký qua chuẩn ví · Solana Devnet</span> <a href="#kich-ban">Về thử nghiệm</a></aside>
+    <aside className="bang-mo-phong" aria-label="Thông báo thử nghiệm"><span>dApp độc hại MÔ PHỎNG · Không gọi Custos, chỉ xin chữ ký qua chuẩn ví · Solana Devnet</span> <a href="#kich-ban">Về thử nghiệm</a> <a href={trangCustos}>Về Custos</a></aside>
     <header className="attack-header mx-auto flex items-center justify-between gap-4">
       <div className="flex items-center gap-2.5"><div className="solbonus-mark grid h-10 w-10 place-items-center" aria-hidden="true">✦</div><div><div>SolBonus</div><div>Rewards, reimagined.</div></div></div>
       <nav className="attack-nav" aria-label="Điều hướng"><a href="#nhan-thuong">Nhận thưởng ↗</a><a href="#kich-ban">Về thử nghiệm</a></nav>

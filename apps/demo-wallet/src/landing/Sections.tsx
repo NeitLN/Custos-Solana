@@ -207,18 +207,18 @@ export function CtaCuoi({ t }: { t: NoiDung }) {
           <h2 className="lg-h2">{t.cuoi.h2}</h2>
           <p className="lg-muted lg-ab__mota">{t.cuoi.moTa}</p>
         </div>
+        {/* Kết trang bằng ĐÚNG hành động chủ lực của hero và hành trình (critique 09/10): trước đây nút
+            chính dẫn vào phòng phân tích — thứ chính trang này gọi là lối phụ. */}
         <div className="lg-cta__nut">
-          <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
-            {t.chung.moDemo}
-          </a>
-          <a
-            className="lg-btn lg-btn--outline"
-            href={LINK.sdkDocs}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            {t.cuoi.lienPhu}
+          <a className="lg-btn lg-btn--primary" href={LINK.solBonus} target="_blank" rel="noreferrer noopener">
+            {t.hanhTrinh.ctaNguoiDung}
             <span className="lg-sr"> ({t.chung.moTabMoi})</span>
+          </a>
+          <a className="lg-btn lg-btn--outline" href={LINK.tichHop}>
+            {t.hanhTrinh.ctaNhaPhatTrien}
+          </a>
+          <a className="lg-link lg-cta__phu" href={LINK.viMau}>
+            {t.chung.moDemo} →
           </a>
         </div>
       </div>

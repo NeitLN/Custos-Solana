@@ -190,3 +190,21 @@
 @media (prefers-reduced-motion: reduce) {
   .custos-landing .lg-btn:hover, .custos-landing .lg-btn:hover svg { transform: none; }
 }
+
+/*
+ * Phiếu "Phân tích giao dịch" ở hero — nhịp khoảng cách (09/10). Quy tắc `margin: 0 24px 20px` phía
+ * trên đặt lề TRÊN của nhóm về 0, nên nhãn "TÀI SẢN" dính sát đường kẻ dưới "Chuyển 10 token"
+ * trong khi "QUYỀN KIỂM SOÁT" có khoảng thở — hai nhóm lệch nhịp. Nay: cùng một nhịp 20/22px, và
+ * tiêu đề, hai nhóm cùng một mép trái 24px (16px ở màn hẹp).
+ */
+.custos-landing .lg-phieu__hanhdong { padding: 22px 24px 18px; }
+.custos-landing .lg-phieu__nhom { margin: 20px 24px 0; }
+.custos-landing .lg-phieu__nhom + .lg-phieu__nhom { margin-top: 22px; }
+.custos-landing .lg-phieu__lien { margin-top: 22px; }
+.custos-landing .lg-phieu__nhan-nhom { color: #4f6a5d; }
+@media (max-width: 960px) {
+  .custos-landing .lg-phieu__hanhdong { padding: 18px 16px 16px; }
+  .custos-landing .lg-phieu__nhom { margin: 16px 16px 0; }
+  .custos-landing .lg-phieu__nhom + .lg-phieu__nhom { margin-top: 18px; }
+  .custos-landing .lg-phieu__lien { margin-top: 18px; }
+}
