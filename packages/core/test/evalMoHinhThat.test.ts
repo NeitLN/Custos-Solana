@@ -56,6 +56,8 @@ const TUNG_DO = DA_DO || EV.liveGanNhat?.trangThai === "đã đo";
 
 /** Cụm khẳng định CHƯA chạy lượt live. Đây là thứ phải biến mất khi đã TỪNG đo. */
 const CHUA_DO = /chưa (đo|chạy|từng chạy)[^.\n]{0,40}(với )?mô hình (ngôn ngữ )?thật/i;
+/** Bản tiếng Anh của `CHUA_DO`, cho README.md gốc. */
+const CHUA_DO_EN = /not (yet )?(been )?(measured|run|evaluated|tested)[^.\n]{0,40}(with|against|on) (a )?real (language )?model/i;
 
 test("artifact eval có trường trạng thái đọc được — nếu không, ba bài dưới vô nghĩa", () => {
   /*
@@ -192,15 +194,18 @@ test("README bảng bốn loại bằng chứng nói cùng chiều với artifac
    */
   const dong = doc("README.md")
     .split("\n")
-    .find((d) => /^\| \*\*Đánh giá AI\*\*/.test(d));
-  assert.ok(dong, "README mất dòng `| **Đánh giá AI**` — mốc đồng bộ cũng gãy theo");
+    .find((d) => /^\| \*\*AI evaluation\*\*/.test(d));
+  assert.ok(dong, "README mất dòng `| **AI evaluation**` — mốc đồng bộ cũng gãy theo");
 
   if (TUNG_DO) {
-    assert.doesNotMatch(
-      dong,
-      CHUA_DO,
-      'artifact còn bằng chứng lượt live mà dòng README vẫn ghi "chưa đo với mô hình thật"',
-    );
+    // README gốc nay viết tiếng Anh — canh cả câu "chưa đo" tiếng Việt lẫn tiếng Anh.
+    for (const moc of [CHUA_DO, CHUA_DO_EN]) {
+      assert.doesNotMatch(
+        dong,
+        moc,
+        'artifact còn bằng chứng lượt live mà dòng README vẫn ghi "chưa đo với mô hình thật"',
+      );
+    }
   }
 });
 

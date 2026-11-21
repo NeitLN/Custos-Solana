@@ -47,9 +47,10 @@ test("README và BOI-CANH-DU-AN.md ghi CẢ HAI: track đăng ký ban đầu và
     const s = doc(f);
     assert.match(s, /Best Product & Business/, `${f} phải còn nêu track ĐĂNG KÝ`);
     assert.match(s, /Best Technical Build/, `${f} phải nêu hướng PHÁT TRIỂN`);
+    // README.md viết tiếng Anh ("The track registered…"), BOI-CANH-DU-AN.md tiếng Việt.
     assert.match(
       s,
-      /Track đăng ký|track đăng ký/,
+      /Track đăng ký|track đăng ký|track registered|registered track/i,
       `${f} phải gọi tên rõ đâu là đăng ký, không để hai tên track trần trụi cạnh nhau`,
     );
   }

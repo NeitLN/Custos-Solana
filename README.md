@@ -1,285 +1,285 @@
 <div align="center">
 
-<img src="docs/nop-bai/logo/custos-logo-nen-xanh.png" width="88" alt="Logo Custos">
+<img src="docs/nop-bai/logo/custos-logo-nen-xanh.png" width="88" alt="Custos logo">
 
 # Custos
 
-### Hiểu điều bạn sắp ký.
+### Understand what you are about to sign.
 
-SDK phân tích giao dịch trước khi ký cho ví và dApp Solana.<br>
-**Thấy thay đổi tài sản. Hiểu quyền được trao. Kiểm tra bằng chứng.**
+A pre-signing transaction analysis SDK for Solana wallets and dApps.<br>
+**See asset changes. Understand the permissions you grant. Check the evidence.**
 
 [![CI / GitHub Pages](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml/badge.svg)](https://github.com/NeitLN/Custos-Solana/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-163E32)](LICENSE)
 ![Network: Solana Devnet](https://img.shields.io/badge/Solana-Devnet-C5DE97)
 ![Track: Best Technical Build](https://img.shields.io/badge/UniHackfest_2026-Best_Technical_Build-163E32)
 
-[**Mở demo**](https://custos-sdk.vercel.app) · [**Thử như người dùng: SolBonus**](https://solbonus.vercel.app/nhan-thuong) · [**Trang Tích hợp**](https://custos-sdk.vercel.app/tich-hop) · [**SDK**](packages/core/README.md) · [**Tài liệu**](docs/README.md)
+[**Open the demo**](https://custos-sdk.vercel.app) · [**Try it as a user: SolBonus**](https://solbonus.vercel.app/nhan-thuong) · [**Integration page**](https://custos-sdk.vercel.app/tich-hop) · [**SDK**](packages/core/README.md) · [**Docs**](docs/README.md)
 
 </div>
 
 ---
 
-## Số dư chưa đổi. Quyền kiểm soát có thể đã khác.
+## The balance has not changed. Control may already have.
 
-Một giao dịch không cần chuyển token ngay để tạo ra rủi ro. Trong ca đổi chủ nhóm dựng trên Devnet, tài khoản vẫn có **490 token**, nhưng mô phỏng cho thấy quyền chủ tài khoản sẽ chuyển sang địa chỉ khác nếu giao dịch được thực thi.
+A transaction does not have to move tokens right away to create risk. In the owner-change case the team set up on Devnet, the account still holds **490 tokens**, but the simulation shows that ownership of the token account would move to another address if the transaction were executed.
 
-**Custos đưa những thay đổi đó đến trước bước ký.** Ví hoặc dApp gọi SDK; người dùng nhận được thay đổi tài sản, thay đổi quyền, lý do cảnh báo và phạm vi đã phân tích. Dữ kiện có thể mở để kiểm tra thêm.
+**Custos brings those changes to the moment before signing.** The wallet or dApp calls the SDK; the user gets the asset changes, the permission changes, the reasons for the warning and the coverage of the analysis. The underlying facts can be opened for further checking.
 
 <p align="center">
   <a href="https://custos-sdk.vercel.app/vi">
-    <img src="docs/readme/transaction-review.png" width="100%" alt="Custos trên Devnet: số dư 490 token, cảnh báo đổi chủ tài khoản và bảng quyền trước–sau">
+    <img src="docs/readme/transaction-review.png" width="100%" alt="Custos on Devnet: a 490-token balance, an account owner change warning and a before–after permission table">
   </a>
   <br>
-  <em>Ảnh từ buổi demo local kết nối Devnet. Chỉ mô phỏng; không ký hoặc gửi giao dịch trong buổi quay.</em>
+  <em>Screenshot from a local demo session connected to Devnet. Simulation only; no transaction was signed or sent during the recording.</em>
 </p>
 
-> **Bản thử nghiệm Devnet.** Kết quả mô phỏng phụ thuộc dữ kiện, trạng thái chain và phạm vi hỗ trợ. Không có cờ đỏ không phải bảo đảm an toàn.
+> **Devnet test build.** Simulation results depend on the available facts, chain state and supported scope. No red flags is not a guarantee of safety.
 
-## Thử trong 2 phút — không cần cài, không cần khoá
+## Try it in 2 minutes — no install, no keys
 
-**Custos nằm trong ví, không phải trang quét link.** Một dApp bất kỳ xin chữ ký qua chuẩn Wallet Standard. Ví đã tích hợp Custos mô phỏng **đúng giao dịch đó**, giải thích hậu quả và để người dùng quyết định trước khi ví ký ([ADR-0004](docs/adr/0004-custos-trong-luong-ky-cua-vi.md)).
+**Custos lives inside the wallet, not on a link-scanning page.** Any dApp requests a signature through the Wallet Standard. A wallet that integrates Custos simulates **that exact transaction**, explains the consequences and lets the user decide before the wallet signs ([ADR-0004](docs/adr/0004-custos-trong-luong-ky-cua-vi.md)).
 
-1. Mở [SolBonus](https://solbonus.vercel.app/nhan-thuong) → **Kết nối ví**. Cửa sổ Ví Custos bật lên; bấm **Cho kết nối** và giữ cửa sổ đó mở.
-2. Ở SolBonus, bấm **Tìm token DEMO trên Devnet**, rồi **Nhận 1.000 SOLB**. Cửa sổ ký của Ví Custos mô phỏng đúng giao dịch SolBonus gửi và hiện **Nguy hiểm**: một nửa token rời đi, và chủ tài khoản token đổi sang địa chỉ khác.
-3. Bấm **Chặn giao dịch** — SolBonus không nhận được chữ ký nào.
-4. Mở [Phòng phân tích](https://custos-sdk.vercel.app/vi) để so các tình huống bên dưới, và [Inspector](https://custos-sdk.vercel.app/inspector) để xem 10 giao dịch mainnet thật.
+1. Open [SolBonus](https://solbonus.vercel.app/nhan-thuong) → **Connect wallet**. The Custos Wallet window pops up; click **Allow connection** and keep that window open.
+2. In SolBonus, click **Find DEMO tokens on Devnet**, then **Claim 1,000 SOLB**. The Custos Wallet signing window simulates exactly the transaction SolBonus sent and shows **Danger**: half of the tokens leave, and the token account owner changes to another address.
+3. Click **Block transaction** — SolBonus receives no signature.
+4. Open the [Analysis Room](https://custos-sdk.vercel.app/vi) to compare the scenarios below, and the [Inspector](https://custos-sdk.vercel.app/inspector) to see 10 real mainnet transactions.
 
-Danh sách tình huống đầy đủ nằm trong [registry kịch bản](apps/demo-wallet/src/kichBan.ts).
+The full list of scenarios is in the [scenario registry](apps/demo-wallet/src/kichBan.ts).
 
-| Tình huống | Điều cần quan sát |
+| Scenario | What to look for |
 |---|---|
-| Đổi chủ tài khoản token | Quyền thay đổi dù token chưa rời tài khoản |
-| Approve 1.010 token, số dư 490 | Luật vượt số dư kích hoạt |
-| Approve 250 token, số dư 490 | Ca đối chứng không kích hoạt luật vượt số dư; vẫn cần xét ý định người ký |
-| Thiếu dữ kiện hoặc RPC lỗi | Hiển thị trạng thái không kiểm tra đủ; bên tích hợp không được tự chuyển sang ký |
+| Token account owner change | Control changes even though no token has left the account |
+| Approve 1,010 tokens, balance 490 | The over-balance rule fires |
+| Approve 250 tokens, balance 490 | Control case: the over-balance rule does not fire; the signer's intent still needs review |
+| Missing facts or RPC error | Shows a "could not fully check" state; the integrator must not fall through to signing |
 
-## Mọi bề mặt của sản phẩm
+## Every surface of the product
 
-| Bạn muốn… | Mở tại đây |
+| You want to… | Open here |
 |---|---|
-| Hiểu sản phẩm trước khi thử | [Trang giới thiệu](https://custos-sdk.vercel.app) |
-| Thử như người dùng: một dApp độc hại xin chữ ký | [SolBonus, dApp độc hại mô phỏng](https://solbonus.vercel.app/nhan-thuong). Origin riêng, không gọi Custos, chỉ kết nối ví qua chuẩn |
-| Xem cách tích hợp và chạy thử chính hàm SDK | [Trang Tích hợp](https://custos-sdk.vercel.app/tich-hop) |
-| Chạy các tình huống và đọc kết quả | [Ví Custos](https://custos-sdk.vercel.app/vi) |
-| Kiểm một transaction bất kỳ (công cụ nhà phát triển) | [Inspector](https://custos-sdk.vercel.app/inspector) |
-| Xem Custos đọc **giao dịch mainnet thật** | Inspector → mục *Giao dịch mainnet thật — phát lại*: 10 giao dịch ghi vài giây sau khi thực thi, phát lại không cần mạng. Dữ liệu đã ghi, không phải luồng ký mainnet |
-| Xem số liệu và phạm vi đo | [Trang bằng chứng](https://custos-sdk.vercel.app/so-lieu) · [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
-| Xem bản ghi không phụ thuộc RPC | [Video luồng dApp → ví → Chặn (50 s, có phụ đề)](docs/nop-bai/video/CUSTOS-LUONG-KY.mp4) · [Video cũ (trước Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Bộ nộp bài](docs/nop-bai/README.md) |
+| Understand the product before trying it | [About page](https://custos-sdk.vercel.app) |
+| Try it as a user: a malicious dApp asks for a signature | [SolBonus, a SIMULATED malicious dApp](https://solbonus.vercel.app/nhan-thuong). Separate origin, does not call Custos, only connects to the wallet through the standard |
+| See how to integrate and run the SDK function itself | [Integration page](https://custos-sdk.vercel.app/tich-hop) |
+| Run the scenarios and read the results | [Custos Wallet](https://custos-sdk.vercel.app/vi) |
+| Check any transaction (developer tool) | [Inspector](https://custos-sdk.vercel.app/inspector) |
+| See Custos read **real mainnet transactions** | Inspector → section *Real mainnet transactions — replay*: 10 transactions recorded seconds after execution, replayed without network access. Recorded data, not a mainnet signing flow |
+| See the numbers and what each one measures | [Evidence page](https://custos-sdk.vercel.app/so-lieu) · [Final acceptance](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
+| See a recording that does not depend on RPC | [Video: dApp → wallet → Block (50 s, subtitled)](docs/nop-bai/video/CUSTOS-LUONG-KY.mp4) · [Older video (before Wallet Standard)](docs/nop-bai/video/CUSTOS-DEMO.mp4) · [Submission pack](docs/nop-bai/README.md) |
 
-Bản phụ trên GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/). Địa chỉ cũ `custos-solana.vercel.app` và `solbonus-custos.vercel.app/tan-cong/` vẫn chạy song song.
+Mirror on GitHub Pages: [neitln.github.io/Custos-Solana](https://neitln.github.io/Custos-Solana/). The older addresses `custos-solana.vercel.app` and `solbonus-custos.vercel.app/tan-cong/` still run in parallel.
 
-Bản công khai không nhúng khóa ký. Tình trạng AI phụ thuộc cấu hình backend của từng bản triển khai: lượt AI thật trong bản ghi local không đồng nghĩa mọi demo public đều đã bật AI. Giao diện phân biệt nguồn diễn giải; khi không dùng mô hình, có câu tất định dự phòng.
+The public build embeds no signing key. Whether the optional language model is active depends on each deployment's backend configuration: a real model run in a local recording does not mean every public demo has the model turned on. The interface shows where each explanation came from; when no model is used, a deterministic fallback explanation is shown.
 
-## Custos làm gì?
+## What does Custos do?
 
-- **Phân tích hậu quả:** đọc thay đổi số dư, owner, delegate và các dữ kiện hỗ trợ từ mô phỏng.
-- **Cảnh báo có lý do:** engine luật trả mức cảnh báo, mã lý do và bằng chứng liên quan.
-- **Nói rõ phần chưa hiểu:** trả coverage và giới hạn phân tích để người dùng biết phạm vi kết quả.
-- **Diễn giải bằng tiếng Việt:** dùng câu tất định hoặc mô hình ngôn ngữ tùy chọn qua adapter.
-- **Tích hợp trước bước ký:** SDK phục vụ đội ví/dApp; người hưởng lợi là người ký giao dịch.
-- **Nằm trong luồng ký của ví:** connector Wallet Standard ([`packages/connector`](packages/connector/)) đưa yêu cầu `signTransaction` của mọi dApp vào cửa sổ ví. Ở đó Custos kiểm trước, người dùng quyết định, và ví đối chiếu kết quả thật với dự báo sau khi giao dịch chạy.
+- **Consequence analysis:** reads balance, owner and delegate changes and other supporting facts from the simulation.
+- **Warnings with reasons:** the rule engine returns a warning level, reason codes and the related evidence.
+- **Says what it did not understand:** returns coverage and analysis limits so the user knows how far the result reaches.
+- **Plain-language explanation:** Vietnamese or English (`locale: "vi"` / `"en"`), from deterministic sentences or an optional language model through an adapter. In `"en"` the explanation is always deterministic; the model path is not used.
+- **Integration before signing:** the SDK serves wallet/dApp teams; the person who benefits is the one signing the transaction.
+- **Inside the wallet's signing flow:** a Wallet Standard connector ([`packages/connector`](packages/connector/)) routes every dApp's `signTransaction` request into the wallet window. There Custos checks first, the user decides, and after the transaction runs the wallet compares the actual result with the prediction.
 
-## Kiến trúc: quan sát → đánh giá → diễn giải
+## Architecture: observe → evaluate → explain
 
 ```mermaid
 flowchart LR
-    TX["Giao dịch chưa ký"] --> L1["L1 · Mô phỏng và đọc trạng thái"]
+    TX["Unsigned transaction"] --> L1["L1 · Simulate and read state"]
     RPC["Solana Devnet RPC"] --> L1
-    L1 --> F["Facts · thay đổi và phạm vi"]
-    F --> L2["L2 · Engine luật"]
+    L1 --> F["Facts · changes and coverage"]
+    F --> L2["L2 · Rule engine"]
     L2 --> V["Verdict · reason codes · evidence"]
-    F --> L3["L3 · Diễn giải"]
+    F --> L3["L3 · Explanation"]
     L2 --> L3
-    AI["Mô hình tùy chọn"] -.-> L3
-    V --> UI["Giao diện review"]
+    AI["Optional model"] -.-> L3
+    V --> UI["Review interface"]
     L3 --> UI
-    UI --> C["Ứng dụng tích hợp · chính sách và consent"]
-    C --> S["Signer của ví"]
+    UI --> C["Integrating app · policy and consent"]
+    C --> S["Wallet signer"]
 ```
 
-| Thành phần | Trách nhiệm |
+| Component | Responsibility |
 |---|---|
-| [Core / L1](packages/core/src/l1/) | Mô phỏng qua RPC, bóc tách dữ kiện trong phạm vi hỗ trợ |
-| [Core / L2](packages/core/src/l2/) | Áp luật để sinh `level`, lý do và bằng chứng |
-| [AI / L3](packages/ai/) | Diễn giải facts; có câu tất định khi không dùng mô hình |
-| [Ứng dụng tích hợp](vi-du-tich-hop/) | Hiển thị, áp chính sách, lấy xác nhận và kiểm nội dung trước khi gọi signer |
+| [Core / L1](packages/core/src/l1/) | Simulates through RPC, extracts facts within the supported scope |
+| [Core / L2](packages/core/src/l2/) | Applies the rules to produce `level`, reasons and evidence |
+| [AI / L3](packages/ai/) | Explains the facts; deterministic sentences when no model is used |
+| [Integrating app](vi-du-tich-hop/) | Displays, applies policy, obtains confirmation and checks the content before calling the signer |
 
-**AI không tạo hoặc sửa `level`.** Ranh giới được thể hiện trong hợp đồng dữ liệu, cách ghép kết quả và các kiểm tra đầu ra; không chỉ dựa vào prompt. Phần diễn giải vẫn có thể sai và cần được đánh giá riêng.
+**The AI does not create or modify `level`.** The boundary is enforced in the data contract, in how results are assembled and in output checks; it does not rely on the prompt alone. The explanation can still be wrong and needs to be evaluated separately.
 
-**Vì sao Solana?** Custos cần hiểu account, instruction và quyền SPL Token mà giao dịch tác động tới. Solana cung cấp trạng thái và môi trường thực thi; Custos dùng RPC simulation để quan sát trước khi broadcast. Phân tích chạy off-chain, hiện không có smart contract Custos riêng.
+**Why Solana?** Custos needs to understand the accounts, instructions and SPL Token permissions a transaction touches. Solana provides the state and the execution environment; Custos uses RPC simulation to observe before broadcast. The analysis runs off-chain; there is currently no Custos smart contract.
 
-## Điểm kỹ thuật đáng xem
+## Technical points worth a look
 
-Mỗi dòng trỏ tới chỗ trong mã để tự kiểm, không cần tin lời mô tả.
+Each row points to a place in the code so you can check it yourself instead of trusting the description.
 
-| Điểm | Ở đâu trong mã | Kiểm bằng |
+| Point | Where in the code | Check with |
 |---|---|---|
-| **Verdict tất định.** `level` chỉ do engine luật L2 sinh ra; kiểu dữ liệu L3 trả về không có trường `level` | [`l2/rules.ts`](packages/core/src/l2/rules.ts) · [`inspect.ts`](packages/core/src/inspect.ts) | `npm run check` |
-| **Fail-safe.** Mô phỏng hỏng, account không đo được, hoặc lệnh không đọc hiểu chạm tài sản người ký thì tối thiểu *Cần xem kỹ*, không bao giờ `safe` | [`l2/evaluate.ts`](packages/core/src/l2/evaluate.ts) | [`failsafe.test.ts`](packages/core/test/failsafe.test.ts) |
-| **AI có rào.** Câu diễn giải qua bộ kiểm đầu ra; AI không đổi được mức cảnh báo, có câu tất định khi không dùng mô hình | [`packages/ai/src/moHinh.ts`](packages/ai/src/moHinh.ts) | [Đánh giá AI](docs/AI-EVALUATION.md) |
-| **Kiểm đúng giao dịch dApp gửi.** Connector Wallet Standard đưa `signTransaction` vào cửa sổ ví; ví mô phỏng chính giao dịch đó trước khi người dùng quyết định | [`packages/connector`](packages/connector/src/index.ts) · [`ket-noi.tsx`](apps/demo-wallet/src/ket-noi.tsx) | Luồng SolBonus ở trên |
-| **Dự báo ↔ thực tế.** Sau khi ký trên Devnet, ví đối chiếu thay đổi thật trên chain với điều Custos đã dự báo | [`live/receipt.ts`](apps/demo-wallet/src/live/receipt.ts) | [Nghiệm thu cuối](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
-| **Replay không cần mạng.** Phản hồi RPC đã lưu chạy lại L1 tất định; mainnet chỉ phát lại dữ liệu đã ghi | [`chay-replay.ts`](scripts/ky-thuat/chay-replay.ts) | `npm run replay-rpc` |
-| **Không lộ khoá.** CI quét bundle tìm khoá API và URL có credential trước mỗi lần deploy | [`soi-ro-ri-khoa.mjs`](scripts/soi-ro-ri-khoa.mjs) · [`deploy.yml`](.github/workflows/deploy.yml) | Tab Actions |
+| **Deterministic verdict.** `level` is produced only by the L2 rule engine; the data type L3 returns has no `level` field | [`l2/rules.ts`](packages/core/src/l2/rules.ts) · [`inspect.ts`](packages/core/src/inspect.ts) | `npm run check` |
+| **Fail-safe.** A failed simulation, an account that could not be measured, or an unread instruction touching the signer's assets gives at least *Review carefully*, never `safe` | [`l2/evaluate.ts`](packages/core/src/l2/evaluate.ts) | [`failsafe.test.ts`](packages/core/test/failsafe.test.ts) |
+| **Fenced AI.** Explanations pass an output checker; the AI cannot change the warning level, and there is a deterministic sentence when no model is used | [`packages/ai/src/moHinh.ts`](packages/ai/src/moHinh.ts) | [AI evaluation](docs/AI-EVALUATION.md) |
+| **Checks exactly what the dApp sent.** The Wallet Standard connector routes `signTransaction` into the wallet window; the wallet simulates that very transaction before the user decides | [`packages/connector`](packages/connector/src/index.ts) · [`ket-noi.tsx`](apps/demo-wallet/src/ket-noi.tsx) | The SolBonus flow above |
+| **Predicted vs. actual.** After signing on Devnet, the wallet compares the real on-chain changes with what Custos predicted | [`live/receipt.ts`](apps/demo-wallet/src/live/receipt.ts) | [Final acceptance](docs/review/ck-20261004/NGHIEM-THU-CUOI.md) |
+| **Replay without network.** Saved RPC responses rerun L1 deterministically; mainnet is only a replay of recorded data | [`chay-replay.ts`](scripts/ky-thuat/chay-replay.ts) | `npm run replay-rpc` |
+| **No leaked keys.** CI scans the bundle for API keys and URLs with credentials before every deploy | [`soi-ro-ri-khoa.mjs`](scripts/soi-ro-ri-khoa.mjs) · [`deploy.yml`](.github/workflows/deploy.yml) | Actions tab |
 
-## Chạy tại máy
+## Run locally
 
-Dùng **Node 24.12.x** và **npm 11.6.2** theo [.nvmrc](.nvmrc) và [package.json](package.json). Trên Windows, có thể chọn Node bằng trình quản lý phiên bản bạn đang dùng; `nvm use 24.12.0` nếu dùng nvm-windows.
+Use **Node 24.12.x** and **npm 11.6.2** as pinned in [.nvmrc](.nvmrc) and [package.json](package.json). On Windows, pick the Node version with whichever version manager you use; `nvm use 24.12.0` if you use nvm-windows.
 
 ```bash
 git clone https://github.com/NeitLN/Custos-Solana.git
 cd Custos-Solana
 npx npm@11.6.2 ci
-npx npm@11.6.2 run check # typecheck + 1397 test
+npx npm@11.6.2 run check # typecheck + 1421 tests
 npm run vi
 ```
 
-Mở **http://localhost:5188**. Trong terminal thứ hai, chạy trang dApp minh họa:
+Open **http://localhost:5188**. In a second terminal, run the demo dApp page:
 
 ```bash
 npm run tan-cong
 ```
 
-Mở **http://localhost:5189**. Địa chỉ hiện trường Devnet có sẵn trong [hien-truong.json](apps/demo-wallet/public/hien-truong.json); không cần khóa API mô hình để chạy luồng diễn giải tất định.
+Open **http://localhost:5189**. The Devnet setup addresses are already in [hien-truong.json](apps/demo-wallet/public/hien-truong.json); no model API key is needed to run the deterministic explanation path.
 
-| Lệnh | Mục đích | Cần mạng? |
+| Command | Purpose | Needs network? |
 |---|---|---|
-| `npm run check` | Typecheck và bộ test | Có với một số ca CLI gọi RPC; các ca còn lại chạy cục bộ |
-| `npm run replay-rpc` | Kiểm L1 bằng phản hồi RPC đã lưu | Không |
-| `npm run doi-khang` | Các probe đối kháng | Không |
-| `npm run thu-tich-hop:deterministic` | Kiểm consumer với fixture | Không |
-| `npm run mo-phong-kichban` | Mô phỏng các kịch bản trên Devnet | Có, RPC |
-| `npm run thu-tich-hop:devnet` | Kiểm lượt tích hợp live | Có, RPC |
-| `npm run thu-goi` | Đóng gói và cài SDK từ ngoài monorepo | Có, npm registry |
+| `npm run check` | Typecheck and the test suite | Yes for a few CLI cases that call RPC; the rest run locally |
+| `npm run replay-rpc` | Check L1 against saved RPC responses | No |
+| `npm run doi-khang` | Adversarial probes | No |
+| `npm run thu-tich-hop:deterministic` | Check the consumer with fixtures | No |
+| `npm run mo-phong-kichban` | Simulate the scenarios on Devnet | Yes, RPC |
+| `npm run thu-tich-hop:devnet` | Check a live integration run | Yes, RPC |
+| `npm run thu-goi` | Pack the SDK and install it from outside the monorepo | Yes, npm registry |
 
-RPC công cộng có thể chậm hoặc giới hạn yêu cầu. Một lượt live lỗi mạng không tự chứng minh engine phát hiện sai; kiểm nguyên nhân và đối chiếu với replay offline.
+Public RPC can be slow or rate-limited. A live run that fails on the network does not by itself prove the engine detected wrongly; check the cause and compare with the offline replay.
 
-## Tích hợp SDK
+## SDK integration
 
-Bắt đầu từ [hướng dẫn Core](packages/core/README.md) và [consumer mẫu](vi-du-tich-hop/). Đoạn dưới minh họa lời gọi phân tích, **không phải luồng ký hoàn chỉnh**:
+Start from the [Core guide](packages/core/README.md) and the [sample consumer](vi-du-tich-hop/). The snippet below illustrates the analysis call, **not a complete signing flow**:
 
 ```ts
 import { inspect } from "@custos-solana/core";
 import { boiThoiHan, dienGiaiKhongAI } from "@custos-solana/ai";
 
-// connection: kết nối Devnet; transaction: giao dịch chưa ký.
-// Lấy địa chỉ người dùng từ ví, không tin giá trị dApp tự khai.
+// connection: a Devnet connection; transaction: the unsigned transaction.
+// Take the user's address from the wallet; do not trust a value the dApp declares.
 const result = await inspect(
   { connection, interpret: boiThoiHan(dienGiaiKhongAI) },
   transaction,
-  { locale: "vi", nguoiDung: walletPublicKey.toBase58() },
+  { locale: "en", nguoiDung: walletPublicKey.toBase58() },
 );
 ```
 
-Trước khi nối với signer, ứng dụng phải xử lý timeout/lỗi, mức cảnh báo, `aiAdvisory`, coverage và việc giao dịch có thay đổi sau khi kiểm hay không. Không tự động ký chỉ vì `result.level === "safe"`. Xem [hợp đồng ký trong consumer](vi-du-tich-hop/src/ky.js) và [threat model](docs/bao-mat/THREAT-MODEL.md).
+Before wiring this to a signer, the app must handle timeouts/errors, the warning level, `aiAdvisory`, coverage, and whether the transaction changed after it was checked. Do not sign automatically just because `result.level === "safe"`. See the [signing contract in the consumer](vi-du-tich-hop/src/ky.js) and the [threat model](docs/bao-mat/THREAT-MODEL.md).
 
-## Bằng chứng kỹ thuật
+## Technical evidence
 
-Các số sau là **snapshot đã lưu**, không phải cam kết hiệu năng hay độ chính xác trên mọi giao dịch. Nguồn: [so-lieu.json](apps/demo-wallet/public/so-lieu.json), [báo cáo kiểm chứng](docs/BAO-CAO-KIEM-CHUNG.md) và [quy cách dataset](docs/SEED-DATASET.md).
+The numbers below are a **stored snapshot**, not a promise of performance or accuracy on every transaction. Sources: [so-lieu.json](apps/demo-wallet/public/so-lieu.json), the [verification report](docs/BAO-CAO-KIEM-CHUNG.md) and the [dataset spec](docs/SEED-DATASET.md).
 
-| Phạm vi | Kết quả đã lưu |
+| Scope | Stored result |
 |---|---|
-| Luật đã chạy | **14** — 12 theo đặc tả, cộng 2 luật sinh từ audit bảo mật |
-| Test | **1397**, chạy trong `npm run check` |
-| Mẫu trong bộ dữ liệu | **38** — cả 14 luật đều có mẫu kích hoạt; **cả 14 luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |
-| Giao dịch mainnet thật, phát lại | **10** giao dịch SPL Token thành công liên tiếp, ghi 06/10/2026 vài giây sau khi thực thi, không chọn theo kết quả: **4** Bình thường (không cờ trong phần đọc được) · **6** Cần xem kỹ (**4** vì mô phỏng lại hỏng — fail-safe, không bao giờ trả `safe`) · **0** Nguy hiểm. [Dữ liệu](apps/demo-wallet/public/replay/mainnet.json) · [cách ghi](scripts/capture-mainnet-phat-lai.ts) |
+| Rules in production | **14** — 12 from the spec, plus 2 rules that came out of the security audit |
+| Tests | **1421**, run by `npm run check` |
+| Samples in the dataset | **38** — all 14 rules have a triggering sample; **all 14 rules** also have a near-identical control case that differs only in the deciding condition |
+| Real mainnet transactions, replayed | **10** consecutive successful SPL Token transactions, recorded on 2026-10-06 seconds after execution, not selected by outcome: **4** Normal (no flags in the parts we could read) · **6** Review carefully (**4** because the re-simulation failed — fail-safe, never returns `safe`) · **0** Danger. [Data](apps/demo-wallet/public/replay/mainnet.json) · [how it was recorded](scripts/capture-mainnet-phat-lai.ts) |
 
 <details>
-<summary><strong>Đọc sâu: bằng chứng, hiệu năng và phạm vi từng phép đo</strong></summary>
+<summary><strong>Deep dive: evidence, performance and the scope of each measurement</strong></summary>
 
-| Bằng chứng | Chứng minh trong phạm vi nào? | Chưa chứng minh |
+| Evidence | What it shows, and within what scope | Not yet shown |
 |---|---|---|
-| **1397 test** tự động | Các hành vi và bất biến trong bộ kiểm | Chất lượng phát hiện trên traffic thực tế |
-| **38 mẫu** đã gắn nhãn | Ca kích hoạt và đối chứng của luật | Khả năng khái quát sang tập độc lập |
-| **Cohort công khai lưu offline** | Hành vi trên response đã lưu | Precision/recall; cohort chưa có ground truth |
-| **10 giao dịch mainnet phát lại** | Engine đọc message mainnet thật; thiếu trạng thái thì báo, không đoán | Luồng ký hay bảo vệ tài sản trên mainnet; tỉ lệ phát hiện — 10 mẫu, chưa có nhãn |
-| **Ví dụ tích hợp** | Consumer do nhóm dựng dùng SDK ngoài monorepo | Adoption hoặc nhu cầu bên thứ ba |
-| **Đánh giá AI** — 13/13 bẫy bị chặn, 3/3 câu đúng đi qua | Bộ guard qua các ca đối kháng đã lưu; có đánh giá với mô hình thật | Mọi câu diễn giải đều đúng hoặc dễ hiểu hơn template |
+| **1421 tests** automated | The behaviours and invariants in the test suite | Detection quality on real-world traffic |
+| **38 samples** labelled | Triggering and control cases for the rules | Generalisation to an independent set |
+| **Public cohort stored offline** | Behaviour on stored responses | Precision/recall; the cohort has no ground truth yet |
+| **10 replayed mainnet transactions** | The engine reads real mainnet messages; when state is missing it says so instead of guessing | A signing flow or asset protection on mainnet; a detection rate — 10 samples, unlabelled |
+| **Integration example** | A consumer built by the team uses the SDK from outside the monorepo | Adoption or third-party demand |
+| **AI evaluation** — 13/13 traps blocked, 3/3 correct sentences passed | The guard set across stored adversarial cases; evaluated with a real model | That every explanation is correct or easier to understand than the template |
 
-Bảng đối chiếu rubric theo [ADR-0001](docs/adr/0001-doi-huong-technical-build.md); trọng số là cách tài liệu đó tổ chức bằng chứng, không phải điểm BGK đã chấm.
+Rubric mapping per [ADR-0001](docs/adr/0001-doi-huong-technical-build.md); the weights are how that document organises the evidence, not scores awarded by the judges.
 
-| Nhóm tiêu chí | Bằng chứng và nguồn |
+| Criterion group | Evidence and source |
 |---|---|
-| **30 %** độ khó và chiều sâu | **14** luật L2 · **1397** test trong bộ kiểm, một số ca CLI cần RPC · [ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
-| **25 %** kiến trúc on-chain/off-chain | L1/L2/L3; engine giữ verdict, ứng dụng tích hợp giữ trách nhiệm ký; chưa có contract riêng |
-| **25 %** Solana stack · hiệu năng | `inspect()` **639 ms** trong phép đo tích hợp đã lưu; [ngân sách RPC](docs/NGAN-SACH-RPC.md) |
-| **20 %** demo và trình bày | FCP **88 ms** · bấm→thẻ **n=30**, trung vị **890 ms**, p95 quan sát **6005 ms** · [môi trường và cách đo](docs/HIEU-NANG.md) |
+| **30 %** difficulty and depth | **14** L2 rules · **1421** tests in the suite, a few CLI cases need RPC · [behaviour matrix](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **25 %** on-chain/off-chain architecture | L1/L2/L3; the engine owns the verdict, the integrating app owns signing; no dedicated contract yet |
+| **25 %** Solana stack · performance | `inspect()` **639 ms** in the stored integration measurement; [RPC budget](docs/NGAN-SACH-RPC.md) |
+| **20 %** demo and presentation | FCP **88 ms** · click→card **n=30**, median **890 ms**, observed p95 **6005 ms** · [environment and method](docs/HIEU-NANG.md) |
 
-Số giao diện được đo trên Chromium headless; không suy rộng sang thiết bị thật hoặc mọi trình duyệt.
+Interface numbers were measured on headless Chromium; do not extrapolate them to real devices or every browser.
 
-| Đo trên Devnet, 25/09/2026 — lượt pass gần nhất | |
+| Measured on Devnet, 2026-09-25 — latest passing run | |
 |---|---|
-| Cài đặt → kết quả đầu tiên | **8,4 giây** — trung vị 10 lượt trên 9 bản dựng, dải 6,6–13,2 |
-| Dòng mã tích hợp | **31** |
-| Một lượt kiểm tra | **639 ms** — trung vị 10 lượt trên 9 bản dựng |
+| Install → first result | **8.4 seconds** — median of 10 runs across 9 builds, range 6.6–13.2 |
+| Lines of integration code | **31** |
+| One check | **639 ms** — median of 10 runs across 9 builds |
 
-Consumer này do nhóm dựng; kết quả đo ma sát tích hợp không chứng minh có khách hàng hay đối tác.
+This consumer was built by the team; the integration-friction measurement does not prove there is a customer or partner.
 
-Measured, not estimated: **1397 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
+Measured, not estimated: **1421 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
 </details>
 
-## Giới hạn hiện tại
+## Current limits
 
-- **Devnet-only:** runtime/demo hiện dành cho thử nghiệm; không tuyên bố sẵn sàng bảo vệ tài sản mainnet. Mục mainnet trong Inspector là dữ liệu đã ghi, phát lại offline — ví không mở kết nối mainnet nào.
-- **Phạm vi đọc hiểu chưa đầy đủ:** decoder và Token-2022 còn giới hạn. Coverage là phạm vi phân tích, không phải xác suất giao dịch an toàn.
-- **Mô phỏng có giới hạn:** chỉ phản ánh dữ kiện quan sát được; trạng thái chain có thể thay đổi trước khi gửi giao dịch.
-- **Tích hợp quyết định hiệu lực:** SDK không thể cưỡng chế một consumer cố ý bỏ qua kết quả hoặc ký nội dung khác.
-- **AI là tùy chọn:** có đường tất định dự phòng; chưa có dữ liệu được nhóm xác nhận để kết luận AI cải thiện mức hiểu của người dùng.
-- **Chưa có validation thị trường được xác nhận:** README không sử dụng số phỏng vấn trong tài liệu lịch sử làm traction. Chưa có bên thứ ba tích hợp được xác nhận.
+- **Devnet-only:** the runtime/demo is for testing; we make no claim of readiness to protect mainnet assets. The mainnet section in Inspector is recorded data replayed offline — the wallet opens no mainnet connection.
+- **Incomplete read coverage:** the decoders and Token-2022 support are still limited. Coverage is the scope of the analysis, not a probability that the transaction is safe.
+- **Simulation has limits:** it reflects only the facts it could observe; chain state can change before the transaction is sent.
+- **The integration decides enforcement:** the SDK cannot force a consumer that deliberately ignores the result or signs different content.
+- **AI is optional:** there is a deterministic fallback path; the team has no validated data yet to conclude that the AI improves user understanding.
+- **No validated market evidence yet:** this README does not use interview numbers from historical documents as traction. No third party has a confirmed integration yet.
 
-### Phụ thuộc và an toàn
+### Dependencies and safety
 
-`npm audit` ngày 09/10/2026: **19 lỗ hổng — 19 high · 0 moderate · 0 critical** trong snapshot đã lưu (critical duy nhất, `shell-quote`, đã vá cùng ngày). Phần lớn đi vào qua dApp spike `apps/thu-ket-noi`, không nằm trong bản deploy — đường đi từng nhóm ở [xử trí phụ thuộc](docs/PHU-THUOC.md).
+`npm audit` on 2026-10-09: **19 vulnerabilities — 19 high · 0 moderate · 0 critical** in the stored snapshot (the only critical one, `shell-quote`, was patched the same day). Most come in through the spike dApp `apps/thu-ket-noi`, which is not part of the deployed build — the path of each group is in [dependency handling](docs/PHU-THUOC.md).
 
-Xem [artifact kiểm phụ thuộc](data/seed/lo-hong.json) để biết gói và thời điểm đo; đây không phải kết quả audit mới. Chạy `node scripts/do-lo-hong.mjs` để cập nhật phép đo. Xem [tài liệu bảo mật](docs/bao-mat/) để hiểu các giới hạn trước khi tích hợp. Không đưa khóa ký hoặc khóa API vào frontend, ảnh chụp hay issue công khai.
+See the [dependency check artifact](data/seed/lo-hong.json) for the packages and the measurement time; this is not a fresh audit result. Run `node scripts/do-lo-hong.mjs` to update the measurement. Read the [security docs](docs/bao-mat/) to understand the limits before integrating. Never put signing keys or API keys in a frontend, a screenshot or a public issue.
 
-## Bước tiếp theo
+## Next steps
 
-- Đánh giá trên tập giao dịch độc lập có nhãn; đo riêng ca bỏ sót và cảnh báo không cần thiết.
-- Củng cố endpoint, xử lý lỗi và khả năng quan sát khi chạy live.
-- Mở rộng khả năng phân tích theo các ca còn thiếu bằng chứng.
-- Tìm đội ví/dApp thử tích hợp và kiểm chứng cách người ký hiểu cảnh báo.
+- Evaluate on an independent labelled set of transactions; measure missed cases and unnecessary warnings separately.
+- Harden the endpoint, error handling and observability for live runs.
+- Extend analysis to the cases that still lack evidence.
+- Find wallet/dApp teams to trial an integration and verify how signers understand the warnings.
 
-Đây là kế hoạch phát triển, chưa phải cam kết pilot hoặc partnership.
+This is a development plan, not a pilot or partnership commitment.
 
-## Bản đồ repository
+## Repository map
 
 ```text
 apps/
-  demo-wallet/       Ví Custos (ví tham chiếu) và cửa sổ ký, Inspector, website, trang số liệu
-  trang-tan-cong/    SolBonus — dApp độc hại mô phỏng, xin chữ ký qua Wallet Standard
+  demo-wallet/       Custos Wallet (reference wallet) and signing window, Inspector, website, Evidence page
+  trang-tan-cong/    SolBonus — SIMULATED malicious dApp, requests signatures through Wallet Standard
 packages/
-  core/             Mô phỏng, facts, engine luật và API inspect
-  connector/        Connector Wallet Standard: đưa yêu cầu ký của dApp vào cửa sổ Ví Custos
-  ai/               Diễn giải tất định, adapter mô hình và kiểm đầu ra
-  types/            Hợp đồng dữ liệu dùng chung
-vi-du-tich-hop/     Consumer kiểm tích hợp ngoài monorepo
-scripts/           Kiểm thử, replay, benchmark và đóng gói
-data/              Dataset và bằng chứng kỹ thuật
-docs/              Đặc tả, threat model, báo cáo và tài liệu pitch
+  core/             Simulation, facts, rule engine and the inspect API
+  connector/        Wallet Standard connector: routes dApp signing requests into the Custos Wallet window
+  ai/               Deterministic explanation, model adapter and output checks
+  types/            Shared data contract
+vi-du-tich-hop/     Consumer that checks integration from outside the monorepo
+scripts/           Testing, replay, benchmark and packaging
+data/              Dataset and technical evidence
+docs/              Specs, threat model, reports and pitch material (mostly in Vietnamese)
 ```
 
-## Tài liệu theo nhu cầu
+## Docs by reader
 
-| Người đọc | Bắt đầu từ |
+| Reader | Start from |
 |---|---|
-| Ban giám khảo | [Mục lục — phần cho người chấm](docs/README.md) · [Báo cáo kiểm chứng](docs/BAO-CAO-KIEM-CHUNG.md) · [Bộ nộp bài](docs/nop-bai/README.md) |
-| Đội ví/dApp | [Tích hợp Core](packages/core/README.md) · [Consumer mẫu](vi-du-tich-hop/README.md) |
-| Người review kỹ thuật | [Đặc tả Core](docs/DAC-TA-CORE.md) · [Threat model](docs/bao-mat/THREAT-MODEL.md) · [Ma trận hành vi](docs/bao-mat/MA-TRAN-HANH-VI.md) |
-| Người đóng góp | [Mục lục tài liệu](docs/README.md) · [Issues](https://github.com/NeitLN/Custos-Solana/issues) |
+| Judges | [Index — section for judges](docs/README.md) · [Verification report](docs/BAO-CAO-KIEM-CHUNG.md) · [Submission pack](docs/nop-bai/README.md) |
+| Wallet/dApp teams | [Core integration](packages/core/README.md) · [Sample consumer](vi-du-tich-hop/README.md) |
+| Technical reviewers | [Core spec](docs/DAC-TA-CORE.md) · [Threat model](docs/bao-mat/THREAT-MODEL.md) · [Behaviour matrix](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| Contributors | [Docs index](docs/README.md) · [Issues](https://github.com/NeitLN/Custos-Solana/issues) |
 
-Khi báo lỗi, kèm bước tái hiện, commit, kịch bản, môi trường và kết quả mong đợi/thực tế. Không đính kèm khóa, token truy cập hoặc dữ liệu ví riêng tư.
+When reporting a bug, include the steps to reproduce, commit, scenario, environment and expected/actual result. Do not attach keys, access tokens or private wallet data.
 
 <details>
-<summary>Bối cảnh cuộc thi và lịch sử track</summary>
+<summary>Competition context and track history</summary>
 
-Custos phát triển cho **UniHackfest 2026 · Best Technical Build**, theo lựa chọn đã được chủ dự án xác nhận. Track đăng ký trên form lịch sử ngày 24/08 là **Best Product & Business**; giữ thông tin này để người đọc phân biệt hồ sơ cũ với hướng trình bày hiện tại. Xem [ADR đổi hướng](docs/adr/0001-doi-huong-technical-build.md) và [thông tin vòng thi](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md) để đối chiếu hồ sơ, không suy tình trạng cập nhật biểu mẫu từ README.
+Custos is developed for **UniHackfest 2026 · Best Technical Build**, a choice confirmed by the project owner. The track registered on the historical form of 24 Aug is **Best Product & Business**; we keep this so readers can tell the older submission apart from the current direction. See the [change-of-direction ADR](docs/adr/0001-doi-huong-technical-build.md) and the [round information](docs/cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md) to cross-check the submission; do not infer the form's update status from this README.
 
 </details>
 
-## English overview
+## In short
 
 **Custos is a pre-signing transaction-intelligence SDK for Solana wallets and dApps.** It simulates transactions, surfaces asset and permission changes, and returns rule-based findings with supporting evidence and analysis coverage.
 

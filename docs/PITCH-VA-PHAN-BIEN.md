@@ -1,6 +1,6 @@
 # Pitch Technical Build và bộ phản biện
 
-**Bản hiện hành:** TB-D02, chuẩn bị cho Best Technical Build. Đăng ký BTC vẫn là Best Product & Business theo form cũ; chưa có xác nhận biểu mẫu đã đổi. **Thời lượng vòng hiện tại chưa xác nhận**: bản tập dưới dùng 4 phút làm tham chiếu, không phải lịch BTC đã chốt. Nguồn: [thông tin vòng hiện tại](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
+**Bản hiện hành:** TB-D02, chuẩn bị cho Best Technical Build. Đăng ký BTC vẫn là Best Product & Business theo form cũ; chưa có xác nhận biểu mẫu đã đổi. **Thời lượng Demo Day BTC đã công bố: 4 phút thuyết trình (gồm demo) + 3 phút hỏi đáp**; nhánh Technical bắt buộc link GitHub. Nguồn: [thông tin vòng hiện tại](cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
 
 ## 1. Luận điểm và mạch nói hiện hành
 
@@ -16,7 +16,7 @@
 | Hoàn thiện | Gói SDK cài từ tarball ngoài monorepo; replay, ca đối kháng và Devnet kiểm riêng. Test không đồng nghĩa accuracy ngoài thị trường. | `data/tich-hop/ket-qua.json`; `data/benchmark/` |
 | Kết | Điểm Custos muốn chứng minh là một kết luận truy được tới dữ kiện, và một giới hạn không bị giấu đi. | Rule/reason; trace dữ kiện mới phủ một phần; cảnh báo khuyết dữ liệu |
 
-**Nhịp tập tham chiếu:** 25 giây vấn đề, 60 giây demo, 45 giây pipeline/trust boundary, 40 giây so sánh, 45 giây tích hợp/giới hạn, 25 giây kết. Nếu BTC cho ít thời gian hơn, giữ demo + ranh giới + kết luận, chuyển benchmark chi tiết sang Q&A. Không nói phần marketing của phụ lục lịch sử trong mạch chính.
+**Nhịp Demo Day (deck 13 slide, 09/10):** 20 giây mở đầu, 30 giây vấn đề, 20 giây giải pháp, **90 giây demo live** (SolBonus → Ví Custos → Chặn), 35 giây kiến trúc, 30 giây bằng chứng, 15 giây kết — đúng 4:00. Lời nói từng slide nằm trong ghi chú của deck. Nếu BTC cho ít thời gian hơn, giữ demo + ranh giới + kết luận, chuyển benchmark chi tiết sang Q&A. Không nói phần marketing của phụ lục lịch sử trong mạch chính.
 
 ## 2. Sơ đồ kiến trúc để giải thích
 
@@ -90,7 +90,7 @@ Phân biệt số advisory với đường có thể khai thác. Đo 09/10: **0 
 
 ## 4. Cách dùng deck và tránh phát biểu quá mức
 
-- Slide 1–10 là mạch Technical; slide 11–12 là dự phòng Q&A. Nội dung thị trường/giá trong phụ lục chỉ là lịch sử hoặc giả thuyết.
+- Slide 1–7 là mạch 4 phút; slide 8–13 là dự phòng Q&A (smart contract, AI, RPC và mô phỏng, khi bị bỏ qua, phát lại mainnet và ý nghĩa của số test, ai trả tiền). Slide giá vẫn mang chữ GIẢ ĐỊNH ngay trên mặt slide.
 - Số động lấy từ `apps/demo-wallet/public/so-lieu.json`; dựng lại bằng `node scripts/tao-deck.cjs docs/nop-bai/CUSTOS-PITCH.pptx apps/demo-wallet/public/so-lieu.json`.
 - Video ghi thao tác thật với mô phỏng Devnet chưa ký; không gọi đó là giao dịch đã broadcast.
 - Phần lịch sử bên dưới giữ các neo đồng bộ của repo và xuất xứ dữ liệu. Nó không xác nhận thông tin đối thủ/giá/lịch cũ còn hiện hành; không đọc nguyên văn trên sân khấu.
@@ -476,20 +476,20 @@ Nếu giám khảo hỏi tiếp *"vậy Custos đọc được giao dịch mainn
 ⚠️ Không nói "Custos đã chạy trên mainnet" hay "mainnet-ready". Nói "phát lại dữ liệu mainnet
 đã ghi".
 
-### 14. "1397 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
+### 14. "1421 test chứng minh Custos chính xác chứ?" — ĐỪNG gật
 
-Cái bẫy tự khen. 1397 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
+Cái bẫy tự khen. 1421 test chứng minh **code có kỷ luật**, KHÔNG chứng minh precision/
 recall. Gộp hai thứ là mất liêm chính. Tách rõ **bốn loại bằng chứng, đo bốn thứ khác
 nhau**:
 
 | Loại | Đo cái gì | KHÔNG đo cái gì |
 |---|---|---|
-| **Unit/integration (1397)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
+| **Unit/integration (1421)** | Code chạy đúng đặc tả | Không đo độ chính xác trên đời thật |
 | **Tấn công tổng hợp** | Luật ĐÃ BIẾT có bắt được ca dựng sẵn | Không đo ca chưa nghĩ tới |
 | **Cohort giao dịch công khai lưu offline (9 mô phỏng được)** | Thăm dò — Custos xử lý giao dịch thật ra sao | **Không có ground truth**, nên KHÔNG phải precision/recall/tỉ lệ báo nhầm |
 | **User test (nếu có)** | Người thật có hiểu cảnh báo không | Không đo thị trường |
 
-> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1397 test
+> Câu nói được: *"Chúng em có bốn loại bằng chứng cho bốn câu hỏi khác nhau. 1421 test
 > cho code, tấn công tổng hợp cho luật đã biết, cohort công khai lưu offline là thăm dò **chưa gán
 > nhãn** nên chưa phải số accuracy, và user test cho mức độ hiểu. Chúng em không gộp
 > chúng lại thành một con số đẹp."*

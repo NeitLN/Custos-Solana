@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 // Phủ định phải NEO vào cụm bị cấm. Bản trước tự viết mệnh đề miễn trừ ở mỗi file
 // và cả hai đều tha mọi dòng chứa chữ "không" — xem `ngonNgu.ts`.
-import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
+import { laLoiDan, viPhamCum, laLoiDanEn, viPhamCumEn } from "./ngonNgu.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -82,6 +82,18 @@ const CUM_GIA_TRACTION: Array<[string, RegExp]> = [
   ["gọi ví dụ tự dựng là bằng chứng bên ngoài", /bên thứ ba (đã )?(chọn|dùng|xác nhận)/i],
 ];
 
+/*
+ * BẢN TIẾNG ANH — README.md gốc và packages/core/README.md nay viết tiếng Anh, nên các
+ * mẫu tiếng Việt ở trên không còn chạm được hai file đó. Cùng ba ý, cùng quy tắc phủ
+ * định neo (`viPhamCumEn`): "No third party has integrated…" là lời thừa nhận, không phải claim.
+ */
+const CUM_GIA_TRACTION_EN: Array<[string, RegExp]> = [
+  ["says an external dApp has integrated", /\b(third[- ]party|external|outside) (dapps?|wallets?|teams?|partners?|integrators?)\b[^.]{0,40}\b(has |have )?integrated\b/i],
+  ["says the SDK already has users", /\b(we|custos|the sdk) (already )?(have|has) (paying )?(customers?|partners?|integrators?|pilots?)\b/i],
+  ["presents the self-built example as outside evidence", /\bthird[- ]part(y|ies) (has |have )?(chosen|chose|adopted|confirmed|uses|use)\b/i],
+];
+const FILE_TIENG_ANH = ["README.md", "packages/core/README.md"];
+
 
 test("không mô tả tích hợp tự dựng như là bên thứ ba đã dùng", () => {
   const coDoiTac =
@@ -95,6 +107,11 @@ test("không mô tả tích hợp tự dựng như là bên thứ ba đã dùng"
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_GIA_TRACTION) {
         if (viPhamCum(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+      }
+      if (FILE_TIENG_ANH.includes(f) && !laLoiDanEn(d)) {
+        for (const [ten, moc] of CUM_GIA_TRACTION_EN) {
+          if (viPhamCumEn(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+        }
       }
     }
   }
@@ -145,9 +162,10 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
   const k = { ...bcK, msMotLuotKiem: cb.msMotLuot };
   const rd = doc("README.md");
 
-  const giay = cb.giay;
+  // README gốc viết tiếng Anh: dấu chấm thập phân và "seconds" (`8.4 seconds`).
+  const giay = cb.giay.replace(",", ".");
   const lech: string[] = [];
-  if (!rd.includes(`${giay} giây`)) lech.push(`README thiếu "${giay} giây" (từ msDenKetQuaDauTien)`);
+  if (!rd.includes(`${giay} seconds`)) lech.push(`README thiếu "${giay} seconds" (từ msDenKetQuaDauTien)`);
   /*
    * Kiểm cả SỐ CŨ CÒN SÓT, không chỉ số đúng có mặt.
    *
@@ -155,9 +173,9 @@ test("số tích hợp trong README khớp file đo, không gõ tay", boQuaKhiDo
    * vẫn mang "10,9 giây" ở một dòng khác — số đúng có mặt, số cũ cũng có mặt, và
    * người đọc gặp cái nào trước thì tin cái đó.
    */
-  for (const m of rd.matchAll(/([\d,]+) giây từ `npm install`|Cài đặt → kết quả đầu tiên \| \*\*([\d,]+) giây/g)) {
+  for (const m of rd.matchAll(/([\d.,]+) seconds from `npm install`|Install → first result \| \*\*([\d.,]+) seconds/g)) {
     const thay = m[1] ?? m[2];
-    if (thay !== giay) lech.push(`README còn số cũ "${thay} giây" — số đo hiện tại là ${giay}`);
+    if (thay !== giay) lech.push(`README còn số cũ "${thay} seconds" — số đo hiện tại là ${giay}`);
   }
   if (!rd.includes(`**${k.dongMaTichHop}**`)) {
     lech.push(`README thiếu số dòng mã **${k.dongMaTichHop}**`);

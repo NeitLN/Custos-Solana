@@ -6,7 +6,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 |---|---|---|
 | Sản phẩm chạy được | Link demo live hoặc devnet truy cập được | ✅ `custos-sdk.vercel.app` (chính, có máy chủ diễn giải) · SolBonus `solbonus.vercel.app` · bản phụ `neitln.github.io/Custos-Solana` |
 | Mã nguồn | Repo public, có lịch sử commit thể hiện quá trình build thật | ✅ `github.com/NeitLN/Custos-Solana` |
-| **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` |
+| **Slide pitch** | Nộp trước để BTC load sẵn theo thứ tự | ✅ `CUSTOS-PITCH.pptx` · bản PDF dự phòng `CUSTOS-PITCH.pdf` |
 | **Video demo dự phòng** | 60–90 giây, quay màn hình thao tác live, không mockup | Có [MP4 50 giây — luồng dApp → ví → Chặn](video/CUSTOS-LUONG-KY.mp4), quay tự động trên production 05/10, có phụ đề, không lời — **ngắn hơn khung 60–90 giây của thể lệ**. Bản cũ trước Wallet Standard: [MP4 khoảng 80 giây](video/CUSTOS-DEMO.mp4) |
 | **Thông tin đăng ký** | Track chính, chủ đề, danh sách thành viên | Form 24/08 nộp theo track Best Product & Business; đội chuyển sang **Best Technical Build** từ 12/09 — **chủ dự án xác nhận 25/09/2026** đội thi track Technical và đã vào chung kết. Xem [ADR-0001](../adr/0001-doi-huong-technical-build.md) và TB-H01 |
 
@@ -14,7 +14,7 @@ Thể lệ: *"Nộp đầy đủ trước hạn BTC công bố. **Hồ sơ thi�
 
 ## Deck và gói review hiện hành
 
-`CUSTOS-PITCH.pptx`: 12 slide, Calibri, chữ và hình khối native; slide 1–10 là mạch Technical, 11–12 dành Q&A. Thời lượng vòng hiện tại chưa được BTC xác nhận. Deck đã render bằng PowerPoint trên máy này và đạt kiểm cấu trúc OOXML.
+`CUSTOS-PITCH.pptx`: 13 slide cho Demo Day 10/10 (4 phút thuyết trình + 3 phút hỏi đáp). Slide 1–7 là mạch 4 phút, có demo live dApp → ví → Chặn ở slide 4; slide 8–13 là dự phòng Q&A, mỗi slide một câu hỏi khó. Ghi chú từng slide có lời nói và mốc thời gian. Ảnh trên slide chụp từ production bằng `python scripts/chup-anh-deck.py` (dừng ở bước Chặn, 0 giao dịch gửi), lưu ở `anh-deck/`. `CUSTOS-PITCH.pdf` là bản xuất từ PowerPoint, dùng khi máy BTC mở pptx lệch font.
 
 `CUSTOS-REVIEW.zip`: demo độc lập, deck, video và manifest SHA-256. Đây là gói review do TB-V01 còn PARTIAL; chưa phải bản phát hành đã chốt. Xem [báo cáo](../review/technical/kiem-dinh-20260916/BAO-CAO.md).
 

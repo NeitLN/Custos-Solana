@@ -72,14 +72,16 @@ test("tài liệu đang dùng không nói một hạn khác với nguồn", () =
   // Không cấm nhắc ngày — cấm nhắc SAI ngày. BOI-CANH-DU-AN.md nêu hạn là hợp lý vì nó
   // được nạp mỗi phiên; nó chỉ không được nêu một ngày khác nguồn.
   const han = hanHienTai();
-  const ngayKhac = /(\d{2}\/\d{2}\/20\d{2})/g;
+  // README.md viết tiếng Anh và dùng ngày ISO (`2026-10-10`): nhận cả hai dạng.
+  const ngayKhac = /(\d{2}\/\d{2}\/20\d{2})|(20\d{2})-(\d{2})-(\d{2})/g;
   const lech: string[] = [];
 
   for (const f of ["README.md", "BOI-CANH-DU-AN.md", "docs/CUSTOS.md", "docs/PITCH-VA-PHAN-BIEN.md"]) {
     for (const [i, d] of doc(f).split("\n").entries()) {
-      if (!/hạn tiếp theo|hạn cứng|hạn nộp|giờ thi|vòng loại|chung kết/i.test(d)) continue;
+      if (!/hạn tiếp theo|hạn cứng|hạn nộp|giờ thi|vòng loại|chung kết|deadline|qualifying round|national final|final round/i.test(d)) continue;
       for (const m of d.matchAll(ngayKhac)) {
-        if (m[1] !== han) lech.push(`${f}:${i + 1} — nói hạn ${m[1]}, nguồn nói ${han}`);
+        const ngay = m[1] ?? `${m[4]}/${m[3]}/${m[2]}`;
+        if (ngay !== han) lech.push(`${f}:${i + 1} — nói hạn ${ngay}, nguồn nói ${han}`);
       }
     }
   }

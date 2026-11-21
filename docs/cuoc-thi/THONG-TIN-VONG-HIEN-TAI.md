@@ -3,7 +3,7 @@
 > Mọi tài liệu khác **trỏ về file này**, không tự ghi ngày. Ba bản sao của cùng một
 > ngày thì sớm muộn cũng lệch, và lệch ở đây nghĩa là cả đội chuẩn bị sai vòng.
 >
-> Cập nhật lần cuối: **25/09/2026** · Guard: `packages/core/test/lichThi.test.ts`
+> Cập nhật lần cuối: **09/10/2026** · Guard: `packages/core/test/lichThi.test.ts`
 
 ## 1. Mốc hiện tại — đội đã vào CHUNG KẾT
 
@@ -12,8 +12,9 @@
 | **Hạn tiếp theo** | **10/10/2026** — chung kết toàn quốc. Chủ dự án xác nhận 25/09/2026, khớp Learning Hub |
 | Track | **Best Technical Build** — Chủ dự án cung cấp và xác nhận 25/09/2026 |
 | Vòng loại | **Đã qua** — chủ dự án báo 25/09/2026 đội đã vào chung kết |
-| Giờ · địa điểm | **chưa xác nhận** |
-| Hình thức theo thể lệ | Thể lệ (BTC cập nhật 21/07) ghi nguyên văn: *"pitch 5 phút + Q&A 3 phút trên sân khấu chính (đèn vàng phút 4, đèn đỏ phút 5). Đội trực booth trong giờ Expo để giám khảo và khách trải nghiệm sản phẩm chạy thật; điểm Expo cộng vào tiêu chí sản phẩm tương ứng."* **Chưa xác nhận** còn áp dụng nguyên cho 10/10 |
+| Giờ · địa điểm | **chưa xác nhận** — theo thông báo của BTC |
+| **Hình thức Demo Day (BTC công bố)** | Trực tiếp (offline); đội online thuyết trình và hỏi đáp qua phòng họp trực tuyến. **7 phút/đội: 4 phút thuyết trình (gồm demo sản phẩm hoặc phát video) + 3 phút hỏi đáp.** Hết 4 phút thì dừng, chuyển sang hỏi đáp. Chuẩn bị slide, link sản phẩm hoặc video demo. **Nhánh Best Technical Build bắt buộc có link GitHub.** Đội online kiểm đường truyền, micro, camera, chia sẻ màn hình trước lượt thi |
+| Hình thức theo thể lệ cũ | Thay bằng dòng Demo Day ở trên. Thể lệ (BTC cập nhật 21/07) ghi nguyên văn: *"pitch 5 phút + Q&A 3 phút trên sân khấu chính (đèn vàng phút 4, đèn đỏ phút 5). Đội trực booth trong giờ Expo để giám khảo và khách trải nghiệm sản phẩm chạy thật; điểm Expo cộng vào tiêu chí sản phẩm tương ứng."* **Chưa xác nhận** còn áp dụng nguyên cho 10/10 |
 
 > **Ngày chung kết đã rõ: 10/10.** Thể lệ 21/07 mục *Final Demo Day* ghi 26/09 tại SIHUB; Learning Hub
 > ghi 10/10. Chủ dự án xác nhận 25/09 là **10/10**. Ngày 26/09 trong thể lệ coi là lịch cũ. **Hình thức**
@@ -80,9 +81,9 @@ Cả hai đều **sau** 19/09. Suy ra hai điều đội phải xử lý:
 - [x] ~~19/09/2026 là hạn của vòng nào?~~ → **vòng loại cấp trường, hạn trình bày**. Đội đạt giải Nhất (chủ dự án báo 25/09).
 - [x] ~~Form chấm của đội hiện thuộc track nào?~~ → **Best Technical Build** (chủ dự án xác nhận 25/09).
 - [ ] Đội vào thẳng chung kết, hay vẫn thi vòng loại toàn quốc 03/10?
-- [ ] Chung kết 10/10: giờ, địa điểm, thời lượng pitch/Q&A, có Expo booth không?
+- [ ] Chung kết 10/10: giờ, địa điểm, có Expo booth không? (thời lượng đã có: 4 + 3 phút)
 - [ ] Mấy giờ, và hình thức gì (online Zoom / offline) — cho vòng loại toàn quốc?
-- [ ] Thời lượng pitch và Q&A có còn 4+2+1 như thể lệ không?
+- [x] ~~Thời lượng pitch và Q&A có còn 4+2+1 như thể lệ không?~~ → Demo Day: **4 phút thuyết trình + 3 phút hỏi đáp** (BTC công bố).
 - [ ] Deliverable bắt buộc: video dự phòng, deck, repo/tag, booth?
 - [ ] Ngày 23/09 (UEF) và 26/09 (SIHUB) trong văn bản cũ nay còn ý nghĩa gì, khi Learning Hub ghi chung kết 10/10?
 

@@ -1,45 +1,45 @@
-# Custos Core — tích hợp vào ví hoặc dApp Solana
+# Custos Core — integrating into a Solana wallet or dApp
 
-Lớp phân tích giao dịch: mô phỏng giao dịch **trước khi người dùng ký**, chỉ ra những hậu quả **không thuộc về hành động chính**, và giải thích bằng tiếng Việt.
+The transaction analysis layer: it simulates a transaction **before the user signs**, points out the consequences that **do not belong to the primary action**, and explains them in plain language (Vietnamese or English).
 
-> **Devnet only.** Bản này chưa dùng cho mainnet — xem mục [Giới hạn hiện tại](#giới-hạn-hiện-tại) trước khi quyết định.
+> **Devnet only.** This build is not for mainnet yet — read [Current limits](#current-limits) before deciding.
 
 ---
 
-## Cài đặt
+## Installation
 
 ```bash
 npm install @custos-solana/core @custos-solana/ai
 ```
 
-Chạy được bằng `node` thường, không cần cờ nào — gói đã publish chứa `.js` và `.d.ts`
-biên dịch sẵn.
+Runs with plain `node`, no flags needed — the published package ships precompiled `.js` and
+`.d.ts`.
 
-> **Đừng dùng `0.1.0`.** Bản đó lên registry với `main` trỏ vào TypeScript nguồn nên
-> không cài được từ JavaScript. Dùng **`0.1.1` trở lên** (`@custos-solana/ai` từ `0.1.2`).
+> **Do not use `0.1.0`.** That version reached the registry with `main` pointing at TypeScript
+> source, so it cannot be installed from JavaScript. Use **`0.1.1` or later** (`@custos-solana/ai` from `0.1.2`).
 
-`@custos-solana/types` được kéo theo tự động; chỉ cài riêng khi bạn cần gõ kiểu mà
-không dùng tới engine.
+`@custos-solana/types` is pulled in automatically; install it separately only if you need the
+types without the engine.
 
-### Dựng tarball từ nguồn
+### Building a tarball from source
 
-Cần bản chưa publish, hoặc muốn kiểm bằng mã nguồn trước mắt:
+When you need an unpublished version, or want to check against the source yourself:
 
 ```bash
 git clone https://github.com/NeitLN/Custos-Solana && cd Custos-Solana
 npx npm@11.6.2 ci
 node scripts/dong-goi-sdk.mjs goi-sdk
-npm install /duong-dan/Custos-Solana/goi-sdk/*.tgz
+npm install /path/to/Custos-Solana/goi-sdk/*.tgz
 ```
 
-> Trong repo, `exports` của ba gói trỏ thẳng vào `.ts` để vòng lặp dev không có bước
-> build. Người ngoài không dùng được cách đó — Node từ chối bóc kiểu TypeScript cho file
-> trong `node_modules`. Vì vậy cả tarball lẫn gói trên npm đều được dựng từ một thư mục
-> dàn có `package.json` viết lại trỏ `dist`; xem đầu `scripts/dong-goi-sdk.mjs`.
+> Inside the repo, the `exports` of the three packages point straight at `.ts` so the dev loop
+> has no build step. Outside users cannot do that — Node refuses to strip TypeScript types for files
+> inside `node_modules`. So both the tarball and the npm package are built from a staging
+> directory whose `package.json` is rewritten to point at `dist`; see the top of `scripts/dong-goi-sdk.mjs`.
 
 ---
 
-## Tích hợp — một lần gọi
+## Integration — one call
 
 ```ts
 import { inspect } from "@custos-solana/core";
@@ -47,28 +47,31 @@ import { dienGiaiKhongAI, boiThoiHan } from "@custos-solana/ai";
 
 const ketQua = await inspect(
   { connection, interpret: boiThoiHan(dienGiaiKhongAI) },
-  transaction,          // VersionedTransaction CHƯA ký
+  transaction,          // UNSIGNED VersionedTransaction
   {
-    locale: "vi",
-    nguoiDung: viNguoiDung.toBase58(),   // ← ĐỪNG BỎ, xem ngay dưới
+    locale: "en",
+    nguoiDung: viNguoiDung.toBase58(),   // ← DO NOT OMIT, see right below
   },
 );
 
 if (ketQua.level !== "safe" || ketQua.aiAdvisory) {
-  hienCanhBao(ketQua);  // ví tự quyết định hiển thị thế nào
+  hienCanhBao(ketQua);  // the wallet decides how to display it
 }
 ```
 
-### Nhưng đoạn trên CHƯA đủ để đưa vào ví
+`locale` is `"vi"` or `"en"`. With `"en"`, labels and the explanation are English and the
+explanation is always the deterministic one — the language-model path is not used for English.
 
-Nó thiếu đúng thứ quan trọng nhất: **`inspect()` ném lỗi thì sao?**
+### But the snippet above is NOT enough to ship in a wallet
 
-`inspect()` gọi RPC. RPC chậm, mất mạng, hoặc mô phỏng hỏng đều làm nó ném hoặc treo.
-Nếu chỗ gọi không bắt, luồng ký của ví rơi vào nhánh xử lý lỗi chung — và ở phần lớn
-ví, nhánh đó **không** chặn nút Ký. Một lớp bảo mật im lặng khi hỏng là một lớp bảo
-mật không có.
+It is missing the most important thing: **what if `inspect()` throws?**
 
-Đây mới là đoạn dùng được. Toàn bộ phần tích hợp của dApp mẫu nằm gọn trong nó:
+`inspect()` calls RPC. Slow RPC, a lost connection or a failed simulation all make it throw or hang.
+If the call site does not catch it, the wallet's signing flow falls into its generic error branch — and in most
+wallets that branch does **not** block the Sign button. A security layer that goes silent when it breaks is a
+security layer you do not have.
+
+This is the snippet you can actually use. The sample dApp's entire integration fits inside it:
 
 ```ts
 const HAN_MS = 12_000;
@@ -76,7 +79,7 @@ const HAN_MS = 12_000;
 function coHan<T>(viec: Promise<T>, ms: number): Promise<T> {
   let dongHo: ReturnType<typeof setTimeout>;
   const chuong = new Promise<never>((_, tuChoi) => {
-    dongHo = setTimeout(() => tuChoi(new Error(`Custos quá hạn sau ${ms} ms`)), ms);
+    dongHo = setTimeout(() => tuChoi(new Error(`Custos timed out after ${ms} ms`)), ms);
   });
   return Promise.race([viec, chuong]).finally(() => clearTimeout(dongHo));
 }
@@ -86,25 +89,25 @@ async function kiemTruocKhiKy({ connection, tx, viNguoiDung, dAppKhai }) {
   try {
     r = await coHan(
       inspect({ connection, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
-        locale: "vi",
+        locale: "en",
         nguoiDung: viNguoiDung.toBase58(),
         ...(dAppKhai ? { expectedAction: dAppKhai } : {}),
       }),
       HAN_MS,
     );
   } catch (e) {
-    // FAIL CLOSED. Không kiểm được thì HỎI người dùng, không bao giờ ký thẳng.
+    // FAIL CLOSED. If it could not be checked, ASK the user; never sign straight through.
     return { cho: "chan", lyDo: "khong_kiem_duoc", ketQua: null, loi: String(e) };
   }
 
   if (r.level === "danger") return { cho: "chan", lyDo: "phat_hien", ketQua: r, loi: null };
   if (r.level === "warning") return { cho: "hoi", lyDo: "phat_hien", ketQua: r, loi: null };
 
-  // `safe` mà đọc hiểu chưa hết lệnh thì vẫn nên hỏi lại.
+  // `safe` with instructions not fully understood should still ask again.
   if (r.coverage.analyzed < r.coverage.total) {
     return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
-  // Custos đề nghị kiểm tra thủ công: không đổi `level`, nhưng không được ký thẳng.
+  // Custos recommends a manual check: `level` does not change, but do not sign straight through.
   if (r.aiAdvisory === "review_required") {
     return { cho: "hoi", lyDo: "de_nghi_kiem_tra", ketQua: r, loi: null };
   }
@@ -112,40 +115,40 @@ async function kiemTruocKhiKy({ connection, tx, viNguoiDung, dAppKhai }) {
 }
 ```
 
-### Các trạng thái, và vì sao `lyDo` tách khỏi `cho`
+### The states, and why `lyDo` is separate from `cho`
 
-`cho` trả lời *ví phải làm gì*. `lyDo` trả lời *vì sao*. Hai câu đó **không suy ra
-được từ nhau**, và gộp chúng lại là lỗi thật đã xảy ra trong chính repo này.
+`cho` answers *what the wallet must do* (`ky` = sign, `hoi` = ask, `chan` = block). `lyDo` answers *why*.
+The two **cannot be derived from each other**, and merging them is a real bug that happened in this very repo.
 
-| `cho` | `lyDo` | Nghĩa | Ví nên hiện gì |
+| `cho` | `lyDo` | Meaning | What the wallet should show |
 |---|---|---|---|
-| `ky` | `khong_van_de` | Đã kiểm hết, không thấy gì | Luồng ký bình thường |
-| `hoi` | `phat_hien` | Có phát hiện mức Vàng | Cảnh báo kèm bảng chênh lệch |
-| `hoi` | `de_nghi_kiem_tra` | Không thấy gì, nhưng **Custos đề nghị kiểm tra thủ công** (`aiAdvisory`) — lớp diễn giải thấy hậu quả lạ, hoặc dApp khai một đằng làm một nẻo | Hiện đề nghị kèm bảng chênh lệch; cho ký nếu người dùng xác nhận đã xem |
-| `hoi` | `coverage_khuyet` | Không thấy gì, **nhưng chưa đọc hết lệnh** | *"Custos đọc hiểu 1/3 lệnh"* — đừng nói an toàn |
-| `chan` | `phat_hien` | Phát hiện mức Đỏ | Cảnh báo nguy hiểm |
-| `chan` | `khong_kiem_duoc` | **Hạ tầng hỏng**, chưa kiểm được gì | *"Chưa kiểm tra được"* — **đừng** hiện cảnh báo nguy hiểm |
+| `ky` | `khong_van_de` | Fully checked, nothing found | Normal signing flow |
+| `hoi` | `phat_hien` | A Yellow-level finding | Warning with the before → after table |
+| `hoi` | `de_nghi_kiem_tra` | Nothing found, but **Custos recommends a manual check** (`aiAdvisory`) — the explanation layer saw an unusual consequence, or the dApp declared one thing and did another | Show the recommendation with the before → after table; allow signing if the user confirms they reviewed it |
+| `hoi` | `coverage_khuyet` | Nothing found, **but not every instruction was read** | *"Custos understood 1 of 3 instructions"* — do not say safe |
+| `chan` | `phat_hien` | A Red-level finding | Danger warning |
+| `chan` | `khong_kiem_duoc` | **Infrastructure failed**, nothing could be checked | *"Could not check"* — **do not** show a danger warning |
 
-Hai dòng cuối cùng cho `chan`, và đó là chủ ý: cả hai đều không được ký. Nhưng hiện
-chúng giống nhau thì người dùng học được rằng Custos hay báo bừa — vì phần lớn lần
-gặp màu đỏ của họ thật ra chỉ là Devnet chậm. Khi ấy cảnh báo THẬT cũng bị bỏ qua.
+The last two rows both give `chan`, on purpose: neither may be signed. But if they look the same,
+users learn that Custos cries wolf — because most of the red they see is really just slow Devnet.
+Then the REAL warnings get ignored too.
 
-Bản đầy đủ, có chú thích từng dòng: [`vi-du-tich-hop/src/tich-hop.js`](https://github.com/NeitLN/Custos-Solana/blob/main/vi-du-tich-hop/src/tich-hop.js) — 31 dòng mã, chạy thật trên Devnet.
+Full version, annotated line by line: [`vi-du-tich-hop/src/tich-hop.js`](https://github.com/NeitLN/Custos-Solana/blob/main/vi-du-tich-hop/src/tich-hop.js) — 31 lines of code, running for real on Devnet.
 
-> ### ⚠️ `nguoiDung` — trường dễ bỏ nhất, và bỏ là hỏng
+> ### ⚠️ `nguoiDung` — the easiest field to omit, and omitting it breaks things
 >
-> Không truyền `nguoiDung` thì Custos bảo vệ **người trả phí** của giao dịch. Trong một
-> dApp trả phí hộ, người trả phí là **dApp** — nghĩa là bảng chênh lệch, luật SOL và
-> toàn bộ verdict đang tính trên **ví sai**.
+> Without `nguoiDung`, Custos protects the transaction's **fee payer**. In a dApp that
+> pays fees on the user's behalf, the fee payer is the **dApp** — meaning the before → after table, the SOL rule and
+> the entire verdict are computed for the **wrong wallet**.
 >
-> Ví luôn biết địa chỉ của chính nó, nên nó phải nói ra. Custos **không** suy ra được
-> điều này, và cố ý không đoán.
+> The wallet always knows its own address, so it has to say it. Custos **cannot** infer this,
+> and deliberately does not guess.
 
-Custos **không** hiển thị gì cả. Nó trả dữ liệu; ví toàn quyền quyết định giao diện.
+Custos does **not** display anything. It returns data; the wallet has full control over the interface.
 
 ---
 
-## Kết quả trả về
+## Return value
 
 ```ts
 type InspectResult = {
@@ -157,9 +160,9 @@ type InspectResult = {
     before: string;
     after: string;
     severity: string;
-    /** Địa chỉ ĐẦY ĐỦ, chỉ có mặt khi `before`/`after` là địa chỉ đã rút gọn.
-     *  Rút gọn giữ 4 ký tự đầu + 4 cuối, mà kẻ tấn công mài được địa chỉ vanity
-     *  khớp đúng 8 ký tự đó. Hiện bản đầy đủ ở mức kỹ thuật để người dùng đối chiếu. */
+    /** FULL address, present only when `before`/`after` is a shortened address.
+     *  Shortening keeps the first 4 + last 4 characters, and an attacker can grind a vanity
+     *  address matching exactly those 8 characters. Show the full one at the technical level so users can compare. */
     truocDayDu?: string;
     sauDayDu?: string;
   }>;
@@ -170,27 +173,27 @@ type InspectResult = {
 };
 ```
 
-| Trường | Dùng để |
+| Field | Used for |
 |---|---|
-| `level` | Quyết định chặn hay cho qua. **Chỉ engine luật sinh ra giá trị này** |
-| `diff` | Bảng "trước → sau" cho người dùng. Dữ liệu đo được, không phải phỏng đoán |
-| `coverage` | Hiển thị *"đã đọc hiểu 2 trên 3 lệnh"* — đọc đúng số đang có. Xem [Vì sao phải hiển thị](#vì-sao-phải-hiển-thị-coverage) |
-| `reasonCodes` | Mã ổn định để ví tự phân loại, ghi log, hoặc dịch sang ngôn ngữ khác |
-| `explanation` | Câu tiếng Việt sẵn dùng |
-| `aiAdvisory` | Đề nghị người dùng kiểm tra thủ công. **Không** phải verdict |
-| `loiKhaiLech` | Chỉ có mặt khi ngữ cảnh dApp khai **lệch** với hành động được nhận diện |
+| `level` | Deciding whether to block or let through. **Only the rule engine produces this value** |
+| `diff` | The "before → after" table for the user. Measured data, not guesswork |
+| `coverage` | Displaying *"understood 2 of 3 instructions"* — read exactly the numbers you have. See [Why coverage must be shown](#why-coverage-must-be-shown) |
+| `reasonCodes` | Stable codes for the wallet to classify, log, or translate into another language |
+| `explanation` | A ready-to-use sentence in the requested `locale` |
+| `aiAdvisory` | Recommends that the user check manually. **Not** a verdict |
+| `loiKhaiLech` | Present only when the context the dApp declared **mismatches** the detected action |
 
-### Ba mức, và nhãn nên dùng
+### Three levels, and the labels to use
 
-| `level` | Nhãn tiếng Việt | Nghĩa |
-|---|---|---|
-| `danger` | **Nguy hiểm** | Có hậu quả xác định: đổi chủ tài khoản, cấp quyền rút, đổi chương trình điều khiển |
-| `warning` | **Cần xem kỹ** *hoặc* **Chưa đọc hiểu hết** | Xem mục dưới |
-| `safe` | **Bình thường** | ⚠️ Đừng dùng chữ *"an toàn"* |
+| `level` | English label | Vietnamese label (`locale: "vi"`) | Meaning |
+|---|---|---|---|
+| `danger` | **Danger** | **Nguy hiểm** | A definite consequence: account owner change, withdrawal permission granted, controlling program changed |
+| `warning` | **Review carefully** *or* **Not fully understood** | **Cần xem kỹ** *hoặc* **Chưa đọc hiểu hết** | See the section below |
+| `safe` | **Normal** | **Bình thường** | ⚠️ Do not use the word *"safe"* |
 
-> **Không bao giờ hiển thị chữ "an toàn".** Custos không có thẩm quyền tuyên bố một giao dịch an toàn — nó chỉ nói *không tìm thấy dấu hiệu nào trong danh sách nó biết kiểm tra*. Đây là vấn đề trách nhiệm pháp lý cho cả ví lẫn chúng tôi.
+> **Never display the word "safe".** Custos has no authority to declare a transaction safe — it only says *it found no sign from the list it knows how to check*. This is a liability issue for both the wallet and us.
 
-### Hai loại `warning` rất khác nhau
+### Two very different kinds of `warning`
 
 ```ts
 import { chiLaThongTin } from "@custos-solana/core";
@@ -200,87 +203,87 @@ const chiLaChuaHieu =
   (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
 ```
 
-| Nguồn | Nên hiển thị | Giọng |
+| Source | Should display | Tone |
 |---|---|---|
-| Có luật hành vi kích hoạt | **Cần xem kỹ** | cảnh báo |
-| Chỉ là thuộc tính token / chưa đọc hiểu hết | **Chưa đọc hiểu hết** | thông tin |
+| A behaviour rule fired | **Review carefully** | warning |
+| Only a token property / not everything understood | **Not fully understood** | informational |
 
-Đo trên cohort 20 giao dịch công khai **lưu offline** để kiểm engine (không phải runtime — demo chạy hoàn toàn trên Devnet): **19/20 rơi vào loại thứ hai**. Báo động cho cả hai là cách nhanh nhất dạy người dùng bỏ qua cảnh báo — và lúc nguy hiểm thật thì họ cũng bỏ qua nốt.
+Measured on a cohort of 20 public transactions **stored offline** to test the engine (not the runtime — the demo runs entirely on Devnet): **19/20 fall into the second kind**. Raising the alarm for both is the fastest way to teach users to ignore warnings — and when the danger is real, they ignore that too.
 
 ---
 
-## Ngữ cảnh từ dApp — quy tắc bất đối xứng
+## Context from the dApp — the asymmetry rule
 
-dApp có thể khai nó đang làm gì:
+A dApp can declare what it is doing:
 
 ```ts
 await inspect(deps, tx, {
-  locale: "vi",
+  locale: "en",
   expectedAction: { type: "swap", from: "SOL", to: "USDC" },
 });
 ```
 
-| Tình huống | Custos làm gì |
+| Situation | What Custos does |
 |---|---|
-| Khai **lệch** với hành động nhận diện | Nâng nghi ngờ, trả `loiKhaiLech` |
-| Khai **khớp** | **Không giảm verdict. Không tắt cảnh báo nào** |
+| Declaration **mismatches** the detected action | Raises suspicion, returns `loiKhaiLech` |
+| Declaration **matches** | **Does not lower the verdict. Does not turn off any warning** |
 
-Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại. **Ngữ cảnh chỉ được làm Custos thận trọng hơn, không bao giờ dễ dãi hơn.**
+A malicious dApp can perfectly well declare the truth to look harmless. **Context may only make Custos more cautious, never more lenient.**
 
-**Khai bằng chữ nào.** `detectedPrimaryAction.type` là tiếng Việt; lời khai được so theo bảng một chiều:
+**Which words to declare with.** `detectedPrimaryAction.type` is Vietnamese with `locale: "vi"` and English with `locale: "en"`; the declaration is compared through a one-way table:
 
-| dApp khai `type` | Khớp với hành động nhận diện |
+| dApp declares `type` | Matches the detected action |
 |---|---|
-| `transfer` | `chuyển token` hoặc `chuyển SOL` |
+| `transfer` | `chuyển token` / `transfer token` or `chuyển SOL` / `transfer SOL` |
 | `swap` | `swap` |
-| `receive` | `nhận token` |
-| `approve` | `cấp quyền rút` |
-| đúng chữ tiếng Việt ở cột phải | chính chữ đó |
+| `receive` | `nhận token` / `receive token` |
+| `approve` | `cấp quyền rút` / `approve delegate` |
+| exactly a detected-action name from the right-hand column | that same name |
 
-Chữ khác (`airdrop`, `claim`, `cleanup`…) so nguyên văn, nên gần như luôn bị ghi là lệch — cố ý: Custos không đoán hộ dApp. Hàm quyết định là `cungLoaiHanhDong(khai, nhanDien)`, xuất từ `@custos-solana/core`.
-
----
-
-## Vì sao phải hiển thị `coverage`
-
-```
-Đã đọc hiểu 10 trên 11 lệnh. 1 chương trình chưa xác minh.
-```
-
-Coinspect từng công bố một ca mô phỏng giao dịch **bỏ lọt** instruction `assign` chuyển quyền sở hữu tài khoản. Khi kẻ tấn công ghép nó với một vế trông hợp lệ, ví chỉ hiển thị vế hợp lệ và **im lặng về phần nó không hiểu**. Khuyến nghị của nhóm nghiên cứu: ví phải có phương án dự phòng khi mô phỏng thất bại.
-
-`coverage` chính là phương án đó. **Hiển thị nó, kể cả khi nó xấu.** Một lớp bảo vệ im lặng về giới hạn của mình còn nguy hiểm hơn không có lớp nào.
+Any other word (`airdrop`, `claim`, `cleanup`…) is compared verbatim, so it is almost always recorded as a mismatch — on purpose: Custos does not guess on the dApp's behalf. The deciding function is `cungLoaiHanhDong(khai, nhanDien)`, exported from `@custos-solana/core`.
 
 ---
 
-## Khi Custos hỏng
+## Why coverage must be shown
 
-Ba đường xuống cấp, không đường nào làm sập luồng ký của ví:
+```
+Understood 10 of 11 instructions. 1 unverified program.
+```
 
-| Hỏng ở đâu | Hậu quả |
+Coinspect once published a case where transaction simulation **missed** an `assign` instruction that transferred account ownership. When an attacker paired it with a legitimate-looking leg, the wallet showed only the legitimate leg and **stayed silent about the part it did not understand**. The researchers' recommendation: wallets must have a fallback when simulation fails.
+
+`coverage` is that fallback. **Show it, even when it looks bad.** A protection layer that is silent about its own limits is more dangerous than no layer at all.
+
+---
+
+## When Custos breaks
+
+Three degradation paths, none of which crashes the wallet's signing flow:
+
+| Where it breaks | Consequence |
 |---|---|
-| Lớp diễn giải quá hạn hoặc lỗi | `explanation` rơi về câu mẫu cứng. `level` **không đổi** |
-| Mô phỏng thất bại | `level` tối thiểu là `warning`, `coverage.analyzed = 0` |
-| `inspect()` ném lỗi | Ví tự quyết định — chúng tôi khuyên **chặn và báo không kiểm tra được**, không cho qua âm thầm |
+| The explanation layer times out or errors | `explanation` falls back to a fixed template sentence. `level` **does not change** |
+| Simulation fails | `level` is at least `warning`, `coverage.analyzed = 0` |
+| `inspect()` throws | The wallet decides — we recommend **blocking and reporting that it could not check**, never letting it through silently |
 
 ```ts
 try {
-  const kq = await inspect(deps, tx, { locale: "vi" });
+  const kq = await inspect(deps, tx, { locale: "en" });
   if (kq.level !== "safe" || kq.aiAdvisory) hienCanhBao(kq);
 } catch {
-  hienKhongKiemTraDuoc();   // đừng im lặng cho qua
+  hienKhongKiemTraDuoc();   // do not let it through silently
 }
 ```
 
-Lớp diễn giải có thời hạn mặc định **4 giây** (`boiThoiHan(fn, ms)`).
+The explanation layer has a default timeout of **4 seconds** (`boiThoiHan(fn, ms)`).
 
 ---
 
-## Cắm mô hình ngôn ngữ — tuỳ chọn, và có ranh giới cứng
+## Plugging in a language model — optional, with hard boundaries
 
-Custos **không nhúng SDK của nhà cung cấp nào và không giữ khoá API nào.** Bạn
-đưa vào một hàm gọi mô hình, tự chọn mô hình, tự quyết định chạy ở đâu và trả
-tiền thế nào:
+Custos **embeds no provider SDK and holds no API keys.** You
+pass in a function that calls a model, choose the model yourself, and decide where it runs and how
+you pay for it:
 
 ```ts
 import { inspect } from "@custos-solana/core";
@@ -288,138 +291,141 @@ import { dienGiaiBangMoHinh, boiThoiHan } from "@custos-solana/ai";
 
 const interpret = boiThoiHan(
   dienGiaiBangMoHinh(async ({ system, user }) => {
-    const r = await goiMoHinhCuaBan(system, user);   // hàm của bạn
-    return r;                                        // trả về chuỗi thô
+    const r = await goiMoHinhCuaBan(system, user);   // your function
+    return r;                                        // return the raw string
   }),
-  4000,                                              // thời hạn, ms
+  4000,                                              // timeout, ms
 );
 
 const ketQua = await inspect({ connection, interpret }, tx, { locale: "vi" });
 ```
 
-Không cắm gì thì `inspect()` dùng lõi xác định và **vẫn chạy đầy đủ** — chỉ khác
-ở chỗ câu chữ cứng hơn. `level`, `diff`, `reasonCodes`, `coverage` không phụ
-thuộc vào mô hình.
+The model path applies to `locale: "vi"`; with `locale: "en"` the explanation stays deterministic
+even if a model is plugged in.
 
-### Mô hình được viết chữ, không được quyết định gì
+Plug in nothing and `inspect()` uses the deterministic core and **still runs fully** — the only difference
+is that the wording is more rigid. `level`, `diff`, `reasonCodes` and `coverage` do not depend
+on the model.
 
-Bốn ràng buộc, tất cả đều có test:
+### The model may write words, not decide anything
 
-| Ràng buộc | Cưỡng chế bằng gì |
+Four constraints, all of them tested:
+
+| Constraint | Enforced by |
 |---|---|
-| Không chạm được `level` | Kiểu `Interpreter` không có trường đó — trình biên dịch chặn |
-| Không xác nhận giao dịch an toàn | Đầu ra bị soi; câu trấn an bị từ chối và rơi về lõi xác định |
-| Không hạ được mức nghi ngờ | `aiAdvisory` bất đối xứng: mô hình chỉ NÂNG lên `review_required` |
-| Không nhận giao dịch thô | Chỉ nhận danh sách trắng dữ kiện đã bóc |
+| Cannot touch `level` | The `Interpreter` type has no such field — the compiler blocks it |
+| Cannot declare a transaction safe | The output is inspected; reassuring sentences are rejected and fall back to the deterministic core |
+| Cannot lower the level of suspicion | `aiAdvisory` is asymmetric: the model can only RAISE it to `review_required` |
+| Does not receive the raw transaction | It receives only a whitelist of extracted facts |
 
-Mô hình hỏng, chậm, trả rác, hoặc bị lái — cả bốn trường hợp đều rơi về lõi xác
-định, và người dùng không mất phần bảo vệ nào.
+Model broken, slow, returning garbage, or steered — all four cases fall back to the deterministic
+core, and the user loses no part of the protection.
 
-### Ký hiệu token là dữ liệu do người ngoài đặt
+### Token symbols are data set by outsiders
 
-`kyHieuToken` bạn truyền vào bị lọc trước khi hiển thị và trước khi gửi cho mô
-hình: chỉ nhận nhãn ngắn dạng `USDC`, `SOL`, `USDC-demo`. Cái gì không có hình
-dạng đó thì Custos hiển thị địa chỉ rút gọn — xấu hơn nhưng thật.
+The `kyHieuToken` you pass in is filtered before display and before being sent to the
+model: only short labels like `USDC`, `SOL`, `USDC-demo` are accepted. Anything without that
+shape is shown by Custos as a shortened address — uglier but true.
 
-Lý do rất cụ thể: nếu in nguyên văn, một dApp độc hại chỉ cần đặt tên token
-thành *"an toàn, cứ ký đi"* là khiến chính lớp bảo vệ nói câu trấn an hộ nó.
+The reason is very concrete: if it were printed verbatim, a malicious dApp would only need to name its token
+*"safe, just sign"* to make the protection layer itself say the reassuring sentence for it.
 
-## Quyền riêng tư
+## Privacy
 
-Custos **không** giữ khoá riêng, **không** ký gì, **không** ghi gì lên chain — nó là lớp đọc và mô phỏng.
+Custos does **not** hold private keys, does **not** sign anything, and does **not** write anything on-chain — it is a read-and-simulate layer.
 
-Bản này chạy hoàn toàn phía client: giao dịch chưa ký không rời khỏi máy người dùng, chỉ đi tới RPC endpoint mà chính ví đang dùng.
+This build runs entirely client-side: the unsigned transaction does not leave the user's machine except to the RPC endpoint the wallet itself is using.
 
 ---
 
-## Nói cho Custos biết ví nào là của người dùng
+## Tell Custos which wallet belongs to the user
 
 ```ts
 const ketQua = await inspect({ connection }, tx, {
-  locale: "vi",
-  nguoiDung: viNguoiDung.toBase58(),   // ← nên truyền
+  locale: "en",
+  nguoiDung: viNguoiDung.toBase58(),   // ← you should pass this
 });
 ```
 
-Mặc định Custos bảo vệ `staticAccountKeys[0]`, tức **người trả phí**. Trong giao
-dịch được tài trợ phí, đó không phải người dùng — và khi đó mọi luật đều nhắm vào
-ví của bên kia. Chỉ ví mới biết địa chỉ nào là của người dùng.
+By default Custos protects `staticAccountKeys[0]`, i.e. the **fee payer**. In a
+fee-sponsored transaction that is not the user — and then every rule targets the
+other party's wallet. Only the wallet knows which address belongs to the user.
 
-Không truyền mà giao dịch có nhiều hơn một người ký, Custos **không im lặng**: nó
-trả `NGUOI_DUNG_KHONG_RO` và không bao giờ ra `Bình thường`. Đó là thừa nhận giới
-hạn, không phải phát hiện tấn công — nó chỉ nói *"tôi có thể đang xem nhầm ví"*.
+If it is not passed and the transaction has more than one signer, Custos **does not stay silent**: it
+returns `NGUOI_DUNG_KHONG_RO` and never yields `Normal`. That is an admission of a
+limit, not an attack detection — it only says *"I might be looking at the wrong wallet"*.
 
-Địa chỉ truyền vào mà **không phải người ký giao dịch** thì bị bỏ qua: nếu không,
-một dApp độc hại chỉ cần khai bừa một địa chỉ để Custos nhìn sang chỗ khác.
+An address passed in that **is not a signer of the transaction** is ignored: otherwise
+a malicious dApp would only need to declare some random address to make Custos look elsewhere.
 
-## Giới hạn hiện tại
+## Current limits
 
-Nói thẳng để bên tích hợp tự quyết định:
+Stated plainly so integrators can decide for themselves:
 
-| Giới hạn | Chi tiết |
+| Limit | Details |
 |---|---|
-| **Coverage chưa đủ trên DeFi** | **trung bình 82 %** trên 9/20 giao dịch còn mô phỏng được của cohort neo lại 2026-08-24 (lưu offline); riêng lệnh chạm được tài sản của bạn: **65 % (13/20)**. Con số dao động mạnh theo mẻ mẫu. Chưa có decoder cho các chương trình DEX không công bố IDL trên chuỗi |
-| **Phí mạng là ƯỚC TÍNH** | Phí cơ bản 5000 lamport mỗi chữ ký thì chắc chắn; phí ưu tiên chỉ tính được khi giao dịch có cả `setComputeUnitPrice` lẫn `setComputeUnitLimit`. Nhãn ghi rõ "(ước tính)" |
-| **SOL: chỉ bắt theo tỉ lệ** | Luật 13 kích hoạt khi phần SOL rời ví vượt 50 % số dư. Khoản nhỏ vẫn hiện trong bảng chênh lệch nhưng không gắn cờ. Rent tạo/đóng account chưa tách riêng khỏi khoản chuyển |
-| **Ký hiệu token đọc từ chuỗi** | Custos tự đọc ký hiệu từ Metaplex và extension metadata của Token-2022 — không cần khoá của nhà cung cấp nào. Token không công bố metadata thì hiển thị địa chỉ rút gọn. `kyHieuToken` bạn truyền vào vẫn được ưu tiên trước |
-| **Không đo được thì nói ra** | Account vượt trần 100 của RPC, hoặc RPC không trả dữ liệu, sẽ thành `TRANG_THAI_DO_KHUYET` và verdict không bao giờ là `Bình thường` |
-| **14 luật** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
-| **Token-2022: đọc được 2/26 extension** | Chỉ `PermanentDelegate` và `TransferHook`. 23 extension còn lại **không bị từ chối an toàn** — mint mang chúng vẫn cho ra `MintFact` hợp lệ trông y hệt mint trơn, và `coverage` chỉ đếm instruction nên không hạ. Nghĩa là một mint có `TransferFeeConfig` hay `PausableConfig` đi qua mà verdict không biết. Danh sách đầy đủ và lý do chưa vá: [ma trận hành vi](../../docs/bao-mat/MA-TRAN-HANH-VI.md) mục 2.3 |
-| **6 chương trình đọc hiểu được** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Mọi chương trình khác đều bị đánh dấu chưa xác minh |
-| **Chỉ tiếng Việt** | `locale` mới có `"vi"` |
-| **Chưa kiểm chứng quy mô** | Chưa chạy trên lưu lượng ví thật |
-| **Luật 4 không phân biệt được authority** | Permanent delegate luôn ở mức Vàng, vì `Facts` chưa bóc trường `authority` của lệnh Transfer |
-| **Adapter Anthropic gây cảnh báo lúc build web** | Entry mặc định của `@custos-solana/ai` xuất `dungGoiAnthropic`, nên bundler thấy `@anthropic-ai/sdk` trong đồ thị module và cảnh báo `node:fs`/`node:path` bị externalize. **Đã đo: SDK KHÔNG nằm trong bundle** — tree-shake sạch, `dist` không chứa chuỗi `anthropic` nào. Đây là tiếng ồn build, không phải chuyện đẩy SDK tới người xem. Cách dứt điểm là tách `@custos-solana/ai/anthropic` thành subpath riêng; hoãn sau cuộc thi vì thêm entry point là thêm đúng bề mặt đã làm hỏng bản 0.1.0 |
+| **Coverage on DeFi is still incomplete** | **average 82 %** across the 9/20 transactions still simulatable in the cohort re-anchored on 2026-08-24 (stored offline); for instructions that can touch your assets: **65 % (13/20)**. The number swings strongly between sample batches. No decoder yet for DEX programs that do not publish an IDL on-chain |
+| **Network fee is an ESTIMATE** | The base fee of 5000 lamports per signature is certain; the priority fee can only be computed when the transaction has both `setComputeUnitPrice` and `setComputeUnitLimit`. The label clearly says "(estimate)" |
+| **SOL: proportional detection only** | Rule 13 fires when the SOL leaving the wallet exceeds 50 % of the balance. Small amounts still show in the before → after table but are not flagged. Rent for creating/closing accounts is not yet separated from transfers |
+| **Token symbols read from the chain** | Custos reads symbols itself from Metaplex and Token-2022 metadata extensions — no provider key needed. Tokens that publish no metadata show a shortened address. A `kyHieuToken` you pass in still takes priority |
+| **What cannot be measured is said out loud** | Accounts over the RPC's cap of 100, or RPC returning no data, become `TRANG_THAI_DO_KHUYET` and the verdict is never `Normal` |
+| **14 rules** | SPL Token, Token-2022 (permanent delegate, transfer hook), System Program, Address Lookup Table |
+| **Token-2022: 2/26 extensions read** | Only `PermanentDelegate` and `TransferHook`. The other 23 extensions are **not safely rejected** — a mint carrying them still yields a valid `MintFact` that looks exactly like a plain mint, and `coverage` counts only instructions so it does not drop. That means a mint with `TransferFeeConfig` or `PausableConfig` passes without the verdict knowing. Full list and why it is not patched yet: [behaviour matrix](../../docs/bao-mat/MA-TRAN-HANH-VI.md) section 2.3 |
+| **6 programs understood** | System, SPL Token, Token-2022, ATA, Compute Budget, Orca Whirlpool. Every other program is marked unverified |
+| **Two languages, English is deterministic only** | `locale` is `"vi"` or `"en"`. The optional language-model explanation is used only for `"vi"`; `"en"` always returns the deterministic explanation |
+| **Not verified at scale** | Not yet run on real wallet traffic |
+| **Rule 4 cannot distinguish the authority** | A permanent delegate is always Yellow, because `Facts` does not yet extract the `authority` field of a Transfer instruction |
+| **The Anthropic adapter causes warnings in web builds** | The default entry of `@custos-solana/ai` exports `dungGoiAnthropic`, so bundlers see `@anthropic-ai/sdk` in the module graph and warn that `node:fs`/`node:path` were externalized. **Measured: the SDK is NOT in the bundle** — it tree-shakes cleanly, `dist` contains no `anthropic` string. This is build noise, not shipping the SDK to viewers. The definitive fix is splitting `@custos-solana/ai/anthropic` into its own subpath; postponed until after the competition because adding an entry point adds exactly the surface that broke version 0.1.0 |
 
-**Đã đo được:** trên 9 giao dịch công khai còn mô phỏng được (cohort 20 giao dịch, **lưu offline** để kiểm engine — runtime của demo chạy hoàn toàn trên Devnet), **0 lần gắn mã cáo buộc**. Cohort chưa gán nhãn ground truth, nên đây KHÔNG phải tỉ lệ false positive: không có cáo buộc nghĩa là không luật buộc tội nào bật, không chứng minh cả 9 giao dịch đều lành.
+**Measured:** across the 9 public transactions still simulatable (a cohort of 20 transactions, **stored offline** to test the engine — the demo runtime runs entirely on Devnet), **0 accusation codes were raised**. The cohort has no ground truth labels yet, so this is NOT a false positive rate: no accusation means no accusing rule fired; it does not prove all 9 transactions are benign.
 
 ---
 
-## Biên lai, chạy lại, và quy tắc của ví
+## Receipts, replay, and wallet rules
 
-Bốn nhóm hàm dưới đây là tuỳ chọn — `inspect()` không cần chúng. Chúng dành cho ví
-muốn xuất bằng chứng, kiểm lại một lượt cũ, hoặc áp quy tắc riêng.
+The four groups of functions below are optional — `inspect()` does not need them. They are for wallets
+that want to export evidence, re-check an old run, or apply their own rules.
 
-### Xuất biên lai
+### Exporting a receipt
 
 ```ts
 import { dungReceipt, receiptRaJson, docReceipt } from "@custos-solana/core";
 
-// `chiaSe` — đưa cho người khác. KHÔNG mang Facts, nên KHÔNG chạy lại được.
+// `chiaSe` (share) — to hand to someone else. Carries NO Facts, so it CANNOT be replayed.
 const bienLai = dungReceipt(ketQua, "chiaSe");
 const json = receiptRaJson(bienLai);
 
-// Đọc lại, và biết nó có bị sửa hay không.
+// Read it back, and know whether it was altered.
 const doc = docReceipt(json);
-if (doc.ok && !doc.toanVen) console.warn("biên lai đã bị sửa kể từ lúc xuất");
+if (doc.ok && !doc.toanVen) console.warn("receipt was altered after export");
 ```
 
-Ba điều biên lai **không** làm, và nó tự ghi vào chính mình:
+Three things a receipt does **not** do, and it records them in itself:
 
-- `hash` chứng minh **nội dung không đổi kể từ lúc xuất**. Nó không phải chữ ký,
-  không chứng minh ai xuất, và không chứng minh RPC đã nói thật.
-- Che dữ liệu **không phải ẩn danh**. Địa chỉ ví là dữ liệu công khai trên chuỗi.
-- Không có raw transaction và không có chữ ký, ở mọi chế độ. Không có cờ để bật.
+- `hash` proves **the content has not changed since export**. It is not a signature,
+  does not prove who exported it, and does not prove the RPC told the truth.
+- Masking data is **not anonymity**. Wallet addresses are public on-chain data.
+- No raw transaction and no signature, in any mode. There is no flag to turn them on.
 
-Chế độ `rieng` mang theo `Facts` nên chạy lại được — nhưng `Facts` chứa toàn bộ
-trạng thái tài khoản đã đọc, nên đừng gửi nó cho người lạ.
+The `rieng` (private) mode carries `Facts`, so it can be replayed — but `Facts` contains the entire
+account state that was read, so do not send it to strangers.
 
-### Chạy lại một lượt cũ, không cần mạng
+### Replaying an old run, no network needed
 
 ```ts
 import { chayLaiTuJson } from "@custos-solana/core";
 
 const r = chayLaiTuJson(json);
 if (!r.ok) {
-  // Bản `chiaSe` bị TỪ CHỐI ở đây, thay vì bịa Facts rỗng rồi chạy.
-  console.log("không chạy lại được:", r.loi);
+  // A `chiaSe` receipt is REJECTED here, instead of making up empty Facts and running.
+  console.log("cannot replay:", r.loi);
 } else if (r.engineDaDoi) {
-  // Hai verdict khác nhau nghĩa là ENGINE đã đổi, KHÔNG phải dữ liệu sai.
-  console.log("lúc xuất:", r.nguyenVan.level, "· engine hôm nay:", r.chayLai.level);
+  // Two different verdicts mean the ENGINE changed, NOT that the data is wrong.
+  console.log("at export:", r.nguyenVan.level, "· engine today:", r.chayLai.level);
 }
 ```
 
-### Quy tắc của ví — tách khỏi engine
+### Wallet rules — separate from the engine
 
 ```ts
 import { danhGiaPolicy, PROFILE_MAC_DINH } from "@custos-solana/core";
@@ -431,65 +437,65 @@ const qd = danhGiaPolicy(
 // qd.quyetDinh: "allow" | "review" | "block"
 ```
 
-**Policy chỉ được thận trọng hơn engine, không bao giờ nới.** `level: "danger"`
-không có đường nào thành `allow`, kể cả với profile lỏng nhất. Nếu ví nới được kết
-luận engine thì kẻ tấn công chỉ cần làm ví nạp một profile dễ dãi.
+**Policy may only be more cautious than the engine, never looser.** `level: "danger"`
+has no path to `allow`, even with the loosest profile. If a wallet could loosen the engine's
+conclusion, an attacker would only need to make the wallet load a lenient profile.
 
-Profile là **tham số riêng**, không đọc từ giao dịch: một dApp không được tự khai
-quy tắc của ví bạn.
+The profile is a **separate parameter**, not read from the transaction: a dApp may not declare
+your wallet's rules for it.
 
-### Kiểm nhiều giao dịch một lượt
+### Checking several transactions at once
 
 ```ts
 import { xetLo } from "@custos-solana/core";
 
-const lo = xetLo(danhSach); // mỗi phần tử: { cluster, soByte, ketQua }
-// lo.tongKet là mức NẶNG NHẤT, và MỘT phần tử chưa kiểm được đủ làm cả lô
-// thành "khong_ket_luan_duoc". Không có badge xanh tổng.
+const lo = xetLo(danhSach); // each element: { cluster, soByte, ketQua }
+// lo.tongKet is the MOST SEVERE level, and ONE element that could not be checked is enough to make
+// the whole batch "khong_ket_luan_duoc" (inconclusive). There is no overall green badge.
 ```
 
-Mỗi giao dịch được mô phỏng **độc lập** trên trạng thái hiện tại — không phải trên
-trạng thái sau khi giao dịch trước đã chạy. Đừng cộng các mức thay đổi độc lập rồi
-gọi đó là số dư cuối của cả chuỗi.
+Each transaction is simulated **independently** against the current state — not against the
+state after the previous transaction has run. Do not add up independent changes and
+call that the final balance of the whole sequence.
 
 ---
 
-## Hàm bậc thấp — chỉ cần khi bạn tự dựng đường ống
+## Low-level functions — only needed when you build your own pipeline
 
-`inspect()` đã trả sẵn `diff` và `coverage`, nên **hầu hết bên tích hợp không cần
-mục này**. Nó dành cho ai đã có Facts từ nguồn khác và muốn chạy từng tầng riêng.
+`inspect()` already returns `diff` and `coverage`, so **most integrators do not need
+this section**. It is for those who already have Facts from another source and want to run each layer separately.
 
 ```ts
 import { danhGia, dungBangChenhLech, computeCoverage } from "@custos-solana/core";
 
-const { level, reasonCodes, hits } = danhGia(facts);        // L2 — nơi DUY NHẤT sinh level
-const bang = dungBangChenhLech(facts, hits);                // cần `hits`, không chỉ facts
-const phu = computeCoverage(facts.instructions);            // nhận MẢNG LỆNH, không nhận Facts
+const { level, reasonCodes, hits } = danhGia(facts);        // L2 — the ONLY place that produces level
+const bang = dungBangChenhLech(facts, hits);                // needs `hits`, not just facts
+const phu = computeCoverage(facts.instructions);            // takes the INSTRUCTION ARRAY, not Facts
 ```
 
-Hai chữ ký cuối dễ đoán nhầm, và đoán nhầm thì lỗi báo rất tối (`Cannot read
-properties of undefined`). `dungBangChenhLech` cố ý đòi `hits` để bảng chênh lệch
-luôn khớp phán quyết vừa sinh ra, thay vì được dựng độc lập rồi nói khác.
+The last two signatures are easy to guess wrong, and a wrong guess gives a very opaque error (`Cannot read
+properties of undefined`). `dungBangChenhLech` deliberately requires `hits` so the before → after table
+always matches the verdict just produced, instead of being built independently and saying something else.
 
 ---
 
-## Chạy thử tại chỗ
+## Try it locally
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 1397 test, chạy offline
-npm run thu-goi              # cài tarball vào project trống NGOÀI repo rồi chạy thật
+npx npm@11.6.2 run check     # 1421 tests, run offline
+npm run thu-goi              # install the tarball into an empty project OUTSIDE the repo and run it for real
 
-node --experimental-strip-types scripts/dung-hien-truong.ts   # dựng hiện trường devnet
-npm run vi                   # ví mẫu      → localhost:5188
-npm run tan-cong             # trang lừa đảo → localhost:5189
+node --experimental-strip-types scripts/dung-hien-truong.ts   # build the Devnet setup
+npm run vi                   # sample wallet      → localhost:5188
+npm run tan-cong             # simulated scam page → localhost:5189
 ```
 
-Bấm **Nhận 1.000 SOLB** ở trang 5189: nó đẩy một giao dịch thật sang ví, và ví hiển thị màn chặn.
+Click **Claim 1,000 SOLB** on the 5189 page: it pushes a real transaction to the wallet, and the wallet shows the block screen.
 
-Bộ kiểm thử gồm **33 mẫu gắn nhãn**: 23 ca tự dựng phủ **cả 14 luật** (mỗi luật có ca
-kích hoạt, và 9 luật có thêm ca ĐỐI CHỨNG khác đúng một điều), cùng 10 giao dịch
-công khai lưu offline làm tập âm (kỳ vọng *không phải* Đỏ) — `data/seed/`.
+The test suite includes **38 labelled samples**: 28 hand-built cases covering **all 14 rules** (each rule has a
+triggering case and a CONTROL case that differs in exactly one thing), plus 10 public
+transactions stored offline as a negative set (expected *not* to be Red) — `data/seed/`.
 
-> Câu "phủ cả 14 luật" ở trên **có test canh giữ**: `dataset.test.ts` sẽ đỏ ngay khi
-> một luật mất mẫu, nên tài liệu không thể trôi khỏi dữ liệu.
+> The claim "covers all 14 rules" above **is guarded by a test**: `dataset.test.ts` goes red as soon as
+> a rule loses its sample, so the documentation cannot drift away from the data.

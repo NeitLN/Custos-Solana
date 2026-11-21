@@ -169,12 +169,19 @@ toàn bộ kết quả mô phỏng, tức kiểm soát mọi thứ Custos nói.
 gốc**, không phải phụ thuộc của `@custos-solana/core`, `ai` hay `types` — người cài
 SDK không nhận nó.
 
-Đường khai thác cần một **file ảnh độc hại** đi vào bước dựng deck. Deck hiện không
-nhúng ảnh nào từ bên ngoài; đầu vào là `so-lieu.json` do chính repo sinh.
+Đường khai thác cần một **file ảnh độc hại** ở định dạng ICNS, JXL hoặc HEIF đi vào
+bước dựng deck.
+
+**Cập nhật 09/10 — deck Demo Day bắt đầu nhúng ảnh.** Chỉ PNG, và chỉ ảnh do chính
+đội sinh: `scripts/chup-anh-deck.py` chụp bản production của Custos/SolBonus (dừng ở
+bước Chặn, 0 giao dịch gửi) và sinh QR tại máy, lưu ở `docs/nop-bai/anh-deck/`. Không
+có ảnh nào do người ngoài cung cấp.
 
 - **Quyết định:** chấp nhận rủi ro.
-- **Điều kiện xem lại:** nếu deck bắt đầu nhúng ảnh do người ngoài cung cấp — ảnh
-  chụp màn hình từ pilot chẳng hạn — mục này phải đánh giá lại trước.
+- **Điều kiện xem lại:** nếu deck nhúng ảnh do người ngoài cung cấp — ảnh chụp màn
+  hình từ pilot chẳng hạn — hoặc một định dạng khác PNG, mục này phải đánh giá lại
+  trước. Test canh: ảnh chỉ vào qua một lời gọi từ `anh-deck/`, mọi file là PNG thật
+  (đọc chữ ký file) và có tên trong script chụp.
 - **Ghi nhận trung thực:** hai advisory high này **do chính đội tạo ra** khi thêm
   `pptxgenjs` để sinh deck từ dữ liệu. Đổi lại, deck không còn mang số gõ tay.
 
@@ -192,7 +199,7 @@ một bài kiểm đỏ. Nên bốn điều kiện quan trọng nhất nằm ở
 |---|---|---|
 | 3.1 | buffer dị dạng bị từ chối trước lớp giải mã | ai đó nới lỏng `parseTokenAccount` |
 | 3.1 | không nguồn nào import thẳng `bigint-buffer` / `@solana/buffer-layout-utils` | ai đó thêm decoder layout **động** |
-| 3.3 | `tao-deck.cjs` không gọi API nhúng ảnh | deck bắt đầu nhận file ảnh |
+| 3.3 | Deck chỉ nhúng PNG do `chup-anh-deck.py` sinh, qua một lời gọi từ `anh-deck/` | có ảnh lạ, ảnh không phải PNG, hoặc lời gọi nhúng ảnh thứ hai |
 | 3.3 | `pptxgenjs`/`image-size` không vào `dependencies` của gói phát hành | công cụ slide rơi vào SDK |
 
 Cả bốn đã được **kiểm phủ định**: phá đúng thứ chúng canh thì chúng đỏ, và chỉ đúng

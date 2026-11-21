@@ -47,14 +47,14 @@ test("đoạn mã tích hợp trong README chạy được", async () => {
   const ketQua = await inspect(
     { connection: rpc, interpret: boiThoiHan(dienGiaiKhongAI) },
     tx(),
-    { locale: "vi" },
+    { locale: "en" },
   );
   assert.deepEqual(validateInspectResult(ketQua), []);
   assert.ok(ketQua.level !== "safe" || ketQua.aiAdvisory !== null);
 });
 
 test("đoạn mã phân biệt hai loại warning trong README chạy được", async () => {
-  const ketQua = await inspect({ connection: rpc, interpret: dienGiaiKhongAI }, tx(), { locale: "vi" });
+  const ketQua = await inspect({ connection: rpc, interpret: dienGiaiKhongAI }, tx(), { locale: "en" });
   const chiLaChuaHieu =
     ketQua.level === "warning" &&
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
@@ -85,33 +85,35 @@ test("đoạn mã hàm bậc thấp trong README chạy được", () => {
 test("README KHÔNG hướng dẫn hiển thị chữ 'an toàn' cho mức safe", () => {
   // Nhãn đúng là "Bình thường". Tài liệu phải dạy đúng ngay từ đầu, vì bên
   // tích hợp sẽ chép nguyên nhãn trong tài liệu vào giao diện của họ.
+  // README nay viết tiếng Anh nhưng giữ CẢ HAI nhãn (SDK có `locale: "vi"` và `"en"`).
   assert.match(README, /Bình thường/);
-  assert.match(README, /Không bao giờ hiển thị chữ "an toàn"/);
+  assert.match(README, /\| `safe` \| \*\*Normal\*\* \|/, "nhãn tiếng Anh cho `safe` phải là Normal");
+  assert.match(README, /Never display the word "safe"/);
 });
 
 test("README nêu rõ giới hạn thay vì chỉ khoe điểm mạnh", () => {
-  assert.match(README, /Giới hạn hiện tại/);
+  assert.match(README, /Current limits/);
   // Kiểm NỘI DUNG chứ không kiểm một cụm từ cố định: phải có một con số coverage
   // đo được, và phải nói thẳng là chưa có decoder cho DEX. Bản trước khoá cứng
   // chuỗi "3–10 %" nên khi coverage tăng thật, test đỏ vì lý do sai — và cách
   // sửa dễ nhất lại là xoá luôn câu thú nhận, đúng thứ nó sinh ra để giữ.
   assert.match(README, /Coverage/, "phải có mục nói về coverage");
-  assert.match(README, /\*\*trung bình \d+ ?%\*\*/, "phải công bố một con số coverage đo được");
-  assert.match(README, /Chưa có decoder cho các chương trình DEX/, "phải nói thẳng phần chưa làm được");
+  assert.match(README, /\*\*average \d+ ?%\*\*/, "phải công bố một con số coverage đo được");
+  assert.match(README, /No decoder yet for DEX programs/, "phải nói thẳng phần chưa làm được");
   assert.match(README, /Devnet only/i);
 });
 
 test("README nêu quy tắc bất đối xứng của expectedAction", () => {
-  assert.match(README, /Không giảm verdict/);
-  assert.match(README, /thận trọng hơn, không bao giờ dễ dãi hơn/);
+  assert.match(README, /Does not lower the verdict/);
+  assert.match(README, /more cautious, never more lenient/);
 });
 
 test("README nêu ranh giới của lớp mô hình ngôn ngữ", () => {
   // Bên tích hợp phải biết chính xác mô hình được phép làm gì trước khi cắm
   // nó vào luồng ký. Đây là câu hỏi đầu tiên một đội bảo mật sẽ hỏi.
-  assert.match(README, /không giữ khoá API nào/);
-  assert.match(README, /Không chạm được `level`/);
-  assert.match(README, /chỉ NÂNG lên `review_required`/);
+  assert.match(README, /holds no API keys/);
+  assert.match(README, /Cannot touch `level`/);
+  assert.match(README, /can only RAISE it to `review_required`/);
 });
 
 /*
@@ -129,7 +131,7 @@ const HAN_MS_README = 12_000;
 function coHanReadme<T>(viec: Promise<T>, ms: number): Promise<T> {
   let dongHo: ReturnType<typeof setTimeout>;
   const chuong = new Promise<never>((_, tuChoi) => {
-    dongHo = setTimeout(() => tuChoi(new Error(`Custos quá hạn sau ${ms} ms`)), ms);
+    dongHo = setTimeout(() => tuChoi(new Error(`Custos timed out after ${ms} ms`)), ms);
   });
   return Promise.race([viec, chuong]).finally(() => clearTimeout(dongHo!));
 }
@@ -139,7 +141,7 @@ async function kiemTruocKhiKyReadme(conn: unknown, hanMs = HAN_MS_README) {
   try {
     r = await coHanReadme(
       inspect({ connection: conn as never, interpret: boiThoiHan(dienGiaiKhongAI) }, tx(), {
-        locale: "vi",
+        locale: "en",
         nguoiDung: Keypair.generate().publicKey.toBase58(),
       }),
       hanMs,
@@ -186,7 +188,7 @@ test("đoạn fail-closed trong README: RPC treo ⇒ quá hạn rồi CHẶN", a
   const q = await kiemTruocKhiKyReadme(rpcTreo, 30);
   assert.equal(q.cho, "chan");
   assert.equal(q.lyDo, "khong_kiem_duoc");
-  assert.match(q.loi ?? "", /quá hạn/);
+  assert.match(q.loi ?? "", /timed out/);
 });
 
 test("đoạn fail-closed trong README: mô phỏng khuyết ⇒ HỎI, không nói an toàn", async () => {
@@ -202,7 +204,7 @@ test("README dạy fail-closed, không chỉ dạy lời gọi trần", () => {
   // không bắt lỗi, bài này đỏ trước khi người tích hợp chép phải nó.
   assert.match(README, /FAIL CLOSED/, "README phải nêu quy tắc fail-closed");
   assert.match(README, /khong_kiem_duoc/, "README phải phân biệt chặn-vì-hỏng với chặn-vì-phát-hiện");
-  assert.match(README, /quá hạn sau/, "README phải chỉ cách đặt hạn cho `inspect()`");
+  assert.match(README, /timed out after/, "README phải chỉ cách đặt hạn cho `inspect()`");
 });
 
 /* ── CU-25 · mục API mới trong README phải chạy thật ────────────────────────── */
@@ -289,8 +291,8 @@ test("CU-25 · README khai ĐÚNG những gì biên lai KHÔNG làm", () => {
    * Ba câu phủ định trong README là phần dễ trôi nhất: chúng đúng lúc viết, và
    * không có gì nhắc khi sản phẩm đổi. Bài này neo chúng vào chính mã nguồn.
    */
-  assert.match(README, /không phải chữ ký/i, "README bỏ mất câu `hash` không phải chữ ký");
-  assert.match(README, /không phải ẩn danh/i, "README bỏ mất câu che dữ liệu không phải ẩn danh");
-  assert.match(README, /chỉ được thận trọng hơn|không bao giờ nới/i, "README bỏ mất ranh giới của policy");
-  assert.match(README, /độc lập/i, "README bỏ mất câu mô phỏng độc lập của lô");
+  assert.match(README, /is not a signature/i, "README bỏ mất câu `hash` không phải chữ ký");
+  assert.match(README, /not anonymity/i, "README bỏ mất câu che dữ liệu không phải ẩn danh");
+  assert.match(README, /may only be more cautious than the engine, never looser/i, "README bỏ mất ranh giới của policy");
+  assert.match(README, /simulated \*\*independently\*\*/i, "README bỏ mất câu mô phỏng độc lập của lô");
 });

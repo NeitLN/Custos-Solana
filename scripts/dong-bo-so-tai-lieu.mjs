@@ -60,6 +60,16 @@ const DAI =
     ? `${String(S.tichHop.giayThapNhat).replace(".", ",")}–${String(S.tichHop.giayCaoNhat).replace(".", ",")}`
     : null;
 
+// README.md gốc (và packages/core/README.md) nay viết tiếng Anh: số thập phân dùng dấu
+// chấm, ngày dùng ISO. Các tài liệu tiếng Việt khác vẫn giữ `8,4 giây` và `dd/mm/yyyy`.
+const GIAY_EN = String(S.tichHop?.giayDenKetQuaDau ?? "");
+const CUM_LUOT_EN = SO_COMMIT > 1 ? `${SO_LUOT} runs across ${SO_COMMIT} builds` : `${SO_LUOT} runs`;
+const DAI_EN =
+  S.tichHop?.giayThapNhat != null && S.tichHop?.giayCaoNhat != null
+    ? `${S.tichHop.giayThapNhat}–${S.tichHop.giayCaoNhat}`
+    : null;
+const NGAY_PASS_ISO = S.tichHop?.ngayPass ? S.tichHop.ngayPass.slice(0, 10) : null;
+
 const NGAY_PASS = (() => {
   const t = S.tichHop?.ngayPass;
   if (!t) return null;
@@ -145,23 +155,23 @@ if (TH) {
   // README gốc công bố CÙNG ba con số ở hai chỗ. Bản trước sửa tay và lệch lại sau
   // mỗi lượt đo — hai lần liên tiếp. Số đo thì đổi mỗi lần chạy; chỗ duy nhất được
   // phép gõ tay là không chỗ nào.
-  const giay = String(TH.giayDenKetQuaDau).replace(".", ",");
+  // README gốc viết tiếng Anh: `8.4 seconds`, `median of N runs across M builds`.
   thayDong("README.md", [
-    [/^\| Cài đặt → kết quả đầu tiên \|/, (d) => d.replace(/\*\*[\d,]+ giây\*\*/, `**${giay} giây**`)],
+    [/^\| Install → first result \|/, (d) => d.replace(/\*\*[\d.]+ seconds\*\*/, `**${TH.giayDenKetQuaDau} seconds**`)],
     // README chỉ giữ bảng tích hợp; câu hỏi cũ lặp số đã được bỏ.
-    [/^\| Một lượt kiểm tra \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — trung vị ${CUM_LUOT} `)],
-    [/^\| Dòng mã tích hợp \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
+    [/^\| One check \|/, (d) => d.replace(/\*\*\d+ ms\*\*[^|]*/, `**${TH.msMotLuot} ms** — median of ${CUM_LUOT_EN} `)],
+    [/^\| Lines of integration code \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${TH.dongMa}**`)],
   ]);
 }
 
 thayDong("README.md", [
-  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# typecheck \+ \d+ test/, `# typecheck + ${S.test.pass} test`)],
-  [/^\| Test \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
-  [/^\| Mẫu trong bộ dữ liệu \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
+  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# typecheck \+ \d+ tests/, `# typecheck + ${S.test.pass} tests`)],
+  [/^\| Tests \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.test.pass}**`)],
+  [/^\| Samples in the dataset \|/, (d) => d.replace(/\*\*\d+\*\*/, `**${S.soMau}**`)],
   // Bảng "bốn loại bằng chứng" nhắc lại hai con số. Không neo thì chúng trôi, và
   // một README nói 330 test ở chỗ này, 412 ở chỗ kia là README không đáng đọc.
-  [/^\| \*\*\d+ test\*\* tự động \|/, (d) => d.replace(/\*\*\d+ test\*\*/, `**${S.test.pass} test**`)],
-  [/^\| \*\*\d+ mẫu\*\* đã gắn nhãn \|/, (d) => d.replace(/\*\*\d+ mẫu\*\*/, `**${S.soMau} mẫu**`)],
+  [/^\| \*\*\d+ tests\*\* automated \|/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`)],
+  [/^\| \*\*\d+ samples\*\* labelled \|/, (d) => d.replace(/\*\*\d+ samples\*\*/, `**${S.soMau} samples**`)],
   // README còn công bố "6/6 bẫy" trong khi artifact, trang số liệu, release notes và
   // hai báo cáo đều ghi 13/13. 6/6 là bộ bẫy của một lượt đo CŨ; để nguyên thì người
   // đọc README tưởng bộ đối kháng nhỏ hơn thực tế hơn gấp đôi.
@@ -172,11 +182,11 @@ thayDong("README.md", [
    * vứt sạch mọi đầu ra mô hình — cả hai cùng cho 13/13, và con số ấy xanh NHẤT đúng
    * lúc lớp AI hỏng nhất. Đối chứng dương phải đi kèm ở mọi chỗ công bố.
    */
-  [/^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn/, (d) =>
+  [/^\| \*\*AI evaluation\*\* — \d+\/\d+ traps blocked/, (d) =>
     d
-      .replace(/\d+\/\d+ bẫy bị chặn(, \d+\/\d+ câu đúng đi qua)?/,
-        `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} bẫy bị chặn` +
-        (S.evalAi.soDoiChung ? `, ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} câu đúng đi qua` : ""))],
+      .replace(/\d+\/\d+ traps blocked(, \d+\/\d+ correct sentences passed)?/,
+        `${S.evalAi.soBayChanDuoc}/${S.evalAi.soBay} traps blocked` +
+        (S.evalAi.soDoiChung ? `, ${S.evalAi.soDoiChungQua}/${S.evalAi.soDoiChung} correct sentences passed` : ""))],
   /*
    * BẢNG RUBRIC TECHNICAL nhắc lại `inspect()` một lần nữa — và nó ĐÃ TRÔI.
    *
@@ -188,7 +198,7 @@ thayDong("README.md", [
    * Thêm mốc riêng thay vì gộp: dòng 30 % và dòng 25 % mang những con số khác nhau,
    * và một `.replace` chung sẽ phải đoán con số nào thuộc dòng nào.
    */
-  [/^\| \*\*25 %\*\* Solana stack · hiệu năng \|/, (d) =>
+  [/^\| \*\*25 %\*\* Solana stack · performance \|/, (d) =>
     d.replace(/`inspect\(\)` \*\*\d+ ms\*\*/, `\`inspect()\` **${S.tichHop.msMotLuot} ms**`)],
   [/^\*\*330 tests\*\*|^Measured, not estimated/, (d) => d.replace(/\*\*\d+ tests\*\*/, `**${S.test.pass} tests**`).replace(/\*\*\d+ labelled samples\*\*/, `**${S.soMau} labelled samples**`)],
 ]);
@@ -213,12 +223,12 @@ if (S.hieuNang) {
     [/^\| Dao động \(max\/min\) \|/, (d) => d.replace(/\*\*[\d,]+×\*\*/, `**${vi(H.daoDong)}×**`)],
   ]);
   thayDong("README.md", [
-    [/^\| \*\*20 %\*\* demo và trình bày \|/, (d) =>
+    [/^\| \*\*20 %\*\* demo and presentation \|/, (d) =>
       d
         .replace(/FCP \*\*\d+ ms\*\*/, `FCP **${H.fcpNguoiMs} ms**`)
-        .replace(/bấm→thẻ \*\*n=\d+\*\*/, `bấm→thẻ **n=${H.soMau}**`)
-        .replace(/trung vị \*\*[\d.]+ ms\*\*/, `trung vị **${H.trungViMs} ms**`)
-        .replace(/p95 quan sát \*\*[\d.]+ ms\*\*/, `p95 quan sát **${H.p95QuanSatMs} ms**`)],
+        .replace(/click→card \*\*n=\d+\*\*/, `click→card **n=${H.soMau}**`)
+        .replace(/median \*\*[\d.]+ ms\*\*/, `median **${H.trungViMs} ms**`)
+        .replace(/observed p95 \*\*[\d.]+ ms\*\*/, `observed p95 **${H.p95QuanSatMs} ms**`)],
   ]);
   thayDong("docs/adr/0001-doi-huong-technical-build.md", [
     [/^\| Bấm → thẻ kết quả \|/, (d) =>
@@ -339,9 +349,9 @@ if (TH?.dongMa) {
  * `NEO_DONG_BO` của `claim.test.ts`, thì lần sau nó tự đổi.
  */
 thayDong("README.md", [
-  [/^\| \*\*30 %\*\* độ khó và chiều sâu \|/, (d) =>
-    d.replace(/\*\*\d+\*\* test(?: offline)?/, `**${S.test.pass}** test`)
-     .replace(/\*\*\d+\*\* luật L2/, `**${S.soLuat}** luật L2`)],
+  [/^\| \*\*30 %\*\* difficulty and depth \|/, (d) =>
+    d.replace(/\*\*\d+\*\* tests(?: offline)?/, `**${S.test.pass}** tests`)
+     .replace(/\*\*\d+\*\* L2 rules/, `**${S.soLuat}** L2 rules`)],
 ]);
 
 /*
@@ -390,11 +400,11 @@ thayDong("docs/BANG-CLAIM.md", [
  * con số trần không kèm ngày đọc như hằng số của sản phẩm, trong khi nó là một lần
  * rút thăm. `ngayPass` đến từ lượt PASS gần nhất trong bằng chứng tích hợp.
  */
-if (NGAY_PASS) {
+if (NGAY_PASS_ISO) {
   thayDong("README.md", [
     [
-      /^\| Đo trên Devnet, /,
-      (d) => d.replace(/Đo trên Devnet, \d{2}\/\d{2}\/\d{4}/, `Đo trên Devnet, ${NGAY_PASS}`),
+      /^\| Measured on Devnet, /,
+      (d) => d.replace(/Measured on Devnet, \d{4}-\d{2}-\d{2}/, `Measured on Devnet, ${NGAY_PASS_ISO}`),
     ],
   ]);
 }
@@ -409,12 +419,12 @@ if (NGAY_PASS) {
 if (GIAY && DAI) {
   thayDong("README.md", [
     [
-      /^\| Cài đặt → kết quả đầu tiên \|/,
-      () => `| Cài đặt → kết quả đầu tiên | **${GIAY} giây** — trung vị ${CUM_LUOT}, dải ${DAI} |`,
+      /^\| Install → first result \|/,
+      () => `| Install → first result | **${GIAY_EN} seconds** — median of ${CUM_LUOT_EN}, range ${DAI_EN} |`,
     ],
     [
-      /^\| Một lượt kiểm tra \|/,
-      () => `| Một lượt kiểm tra | **${S.tichHop.msMotLuot} ms** — trung vị ${CUM_LUOT} |`,
+      /^\| One check \|/,
+      () => `| One check | **${S.tichHop.msMotLuot} ms** — median of ${CUM_LUOT_EN} |`,
     ],
   ]);
   thayDong("vi-du-tich-hop/README.md", [
@@ -431,12 +441,12 @@ if (GIAY && DAI) {
 
 thayDong("README.md", [
   [
-    /^\| Mẫu trong bộ dữ liệu \|/,
+    /^\| Samples in the dataset \|/,
     () =>
-      `| Mẫu trong bộ dữ liệu | **${S.soMau}** — cả ${S.soLuat} luật đều có mẫu kích hoạt; ` +
+      `| Samples in the dataset | **${S.soMau}** — all ${S.soLuat} rules have a triggering sample; ` +
       (THIEU_CAP === 0
-        ? `**cả ${CAP} luật** đều có thêm ca đối chứng gần giống, chỉ khác đúng điều kiện quyết định |`
-        : `**${CAP} luật** có thêm ca đối chứng gần giống. ${THIEU_CAP} luật còn thiếu được kê tên kèm lý do trong \`packages/core/test/capLuat.test.ts\` |`),
+        ? `**all ${CAP} rules** also have a near-identical control case that differs only in the deciding condition |`
+        : `**${CAP} rules** also have a near-identical control case. The ${THIEU_CAP} rules still missing one are named, with reasons, in \`packages/core/test/capLuat.test.ts\` |`),
   ],
 ]);
 
@@ -460,16 +470,17 @@ thayDong("docs/BAO-CAO-TONG.md", [
   ],
 ]);
 
+// packages/core/README.md nay viết tiếng Anh.
 thayDong("packages/core/README.md", [
   [
-    /Coverage chưa đủ trên DeFi/,
+    /Coverage on DeFi is still incomplete/,
     (d) =>
       d
-        .replace(/trung bình \d+ ?%/, `trung bình ${COV} %`)
-        .replace(/trên \d+\/\d+ giao dịch/, `trên ${DO}/${TONG} giao dịch`)
+        .replace(/average \d+ ?%/, `average ${COV} %`)
+        .replace(/across the \d+\/\d+ transactions/, `across the ${DO}/${TONG} transactions`)
         .replace(/\*\*\d+ ?% \(\d+\/\d+\)\*\*/, `**${CT_PT} % (${CT.hieu}/${CT.tong})**`),
   ],
-  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# \d+ test/, `# ${S.test.pass} test`)],
+  [/^npx npm@[\d.]+ run check /, (d) => d.replace(/# \d+ tests/, `# ${S.test.pass} tests`)],
 ]);
 
 /*

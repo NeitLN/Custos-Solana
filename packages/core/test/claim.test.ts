@@ -78,11 +78,11 @@ function soTrenDong(vanBan: string, moc: RegExp): number[] {
 test("README công bố đúng số test và số mẫu của lần đo hiện tại", boQuaKhiDo, () => {
   const r = doc("README.md");
   assert.ok(
-    soTrenDong(r, /^\| Test \|/).includes(SO_TEST),
+    soTrenDong(r, /^\| Tests \|/).includes(SO_TEST),
     `README nói số test khác so-lieu.json (${SO_TEST}). Chạy: node --experimental-strip-types scripts/tao-so-lieu.ts rồi cập nhật README.`,
   );
   assert.ok(
-    soTrenDong(r, /^\| Mẫu trong bộ dữ liệu \|/).includes(SO_LIEU.soMau),
+    soTrenDong(r, /^\| Samples in the dataset \|/).includes(SO_LIEU.soMau),
     `README nói số mẫu khác so-lieu.json (${SO_LIEU.soMau}).`,
   );
 });
@@ -105,7 +105,7 @@ test("PITCH không giữ số test cũ", boQuaKhiDo, () => {
 });
 
 test("README gói core công bố coverage của cohort hiện tại, kèm mẫu số", boQuaKhiDo, () => {
-  const so = soTrenDong(doc("packages/core/README.md"), /Coverage chưa đủ trên DeFi/);
+  const so = soTrenDong(doc("packages/core/README.md"), /Coverage on DeFi is still incomplete/);
   const { coveragePhanTram, mauDoDuoc, mauTrongCohort, chamTaiSan } = SO_LIEU.cohort;
   const camTaiSanPhanTram = Math.round((chamTaiSan.hieu * 100) / chamTaiSan.tong);
   for (const [ten, n] of [
@@ -140,7 +140,7 @@ test("README công bố đúng số lỗ hổng của lần đo gần nhất", (
     tong: number;
     theoMucDo: Record<string, number>;
   };
-  const so = soTrenDong(doc("README.md"), /^`npm audit` ngày/);
+  const so = soTrenDong(doc("README.md"), /^`npm audit` on /);
   assert.ok(
     so.includes(lh.tong),
     `README nói ${so.join("/")} còn data/seed/lo-hong.json đo được ${lh.tong} lỗ hổng. ` +
@@ -223,7 +223,8 @@ function quetSo(moc: RegExp, dung: number, ten: string): string[] {
 
 test("MỌI claim 'N test' trong tài liệu hiện hành đều là số của lần đo này", boQuaKhiDo, () => {
   assert.deepEqual(
-    quetSo(/(\d+)\s+test\b/g, SO_TEST, "số test"),
+    // `tests?`: README.md và packages/core/README.md viết tiếng Anh ("1398 tests").
+    quetSo(/(\d+)\s+tests?\b/g, SO_TEST, "số test"),
     [],
     `Còn số test cũ. Chạy \`node scripts/dong-bo-so-tai-lieu.mjs\`, hoặc nếu đó là con số LỊCH SỬ có chủ đích thì đánh dấu dòng đó bằng ${DAU_LICH_SU}.`,
   );
@@ -253,19 +254,27 @@ test("MỌI claim 'N test' trong tài liệu hiện hành đều là số của 
  */
 const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["README.md", /^npx npm@[\d.]+ run check /],
-  ["README.md", /^\| Test \|/],
-  ["README.md", /^\| Mẫu trong bộ dữ liệu \|/],
-  ["README.md", /^`npm audit` ngày/],
+  ["README.md", /^\| Tests \|/],
+  ["README.md", /^\| Samples in the dataset \|/],
+  ["README.md", /^`npm audit` on /],
   ["BOI-CANH-DU-AN.md", /^hiện trường devnet thật ·/],
   ["docs/PITCH-VA-PHAN-BIEN.md", /Unit\/integration \(\d+\)/],
   ["docs/PITCH-VA-PHAN-BIEN.md", /^### \d+\. ".* test chứng minh/],
   ["docs/PITCH-VA-PHAN-BIEN.md", /^Cái bẫy tự khen\./],
   ["docs/PITCH-VA-PHAN-BIEN.md", /^> Câu nói được: \*"Chúng em có bốn loại/],
-  ["README.md", /^\| \*\*Đánh giá AI\*\* — \d+\/\d+ bẫy bị chặn/],
-  ["README.md", /^\| \*\*30 %\*\* độ khó và chiều sâu \|/],
+  ["README.md", /^\| \*\*AI evaluation\*\* — \d+\/\d+ traps blocked/],
+  ["README.md", /^\| \*\*30 %\*\* difficulty and depth \|/],
   // Dòng 25 % nhắc lại `inspect()` và đã trôi một lần: sáu chỗ ghi 656 ms trong khi
   // nó giữ 664 — cùng file, cách dòng đúng của nó 49 dòng.
-  ["README.md", /^\| \*\*25 %\*\* Solana stack · hiệu năng \|/],
+  ["README.md", /^\| \*\*25 %\*\* Solana stack · performance \|/],
+  // Bảng tích hợp của README gốc — ba mốc mà script đồng bộ ghi lại cả dòng.
+  ["README.md", /^\| Install → first result \|/],
+  ["README.md", /^\| One check \|/],
+  ["README.md", /^\| Lines of integration code \|/],
+  ["README.md", /^\| Measured on Devnet, /],
+  ["README.md", /^\| \*\*\d+ tests\*\* automated \|/],
+  ["README.md", /^\| \*\*\d+ samples\*\* labelled \|/],
+  ["README.md", /^Measured, not estimated/],
   ["docs/adr/0001-doi-huong-technical-build.md", /^\| Test tự động, offline \|/],
   ["docs/adr/0002-chan-doan-tuy-chon.md", /^\| Bộ test \|/],
   ["docs/adr/0001-doi-huong-technical-build.md", /^\| Một lượt `inspect\(\)` \|/],
@@ -273,7 +282,7 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["docs/BAO-CAO-TONG.md", /^\| Bẫy đối kháng AI bị chặn \|/],
   ["docs/SEED-DATASET.md", /^> hiện tại có \*\*\d+ mẫu\*\*/],
   ["docs/SEED-DATASET.md", /^> \*"\d+ luật, \d+ mẫu kiểm thử/],
-  ["packages/core/README.md", /Coverage chưa đủ trên DeFi/],
+  ["packages/core/README.md", /Coverage on DeFi is still incomplete/],
   ["packages/core/README.md", /^npx npm@[\d.]+ run check /],
   /*
    * BA MỐC CỦA `vi-du-tich-hop/README.md` — thiếu chúng đã gây một lỗi thật.
@@ -298,7 +307,7 @@ const NEO_DONG_BO: Array<[string, RegExp]> = [
   ["docs/HIEU-NANG.md", /^\| \*\*Percentile 95 quan sát\*\* \|/],
   ["docs/HIEU-NANG.md", /^\| Cao nhất \|/],
   ["docs/HIEU-NANG.md", /^\| Dao động \(max\/min\) \|/],
-  ["README.md", /^\| \*\*20 %\*\* demo và trình bày \|/],
+  ["README.md", /^\| \*\*20 %\*\* demo and presentation \|/],
   ["docs/adr/0001-doi-huong-technical-build.md", /^\| Bấm → thẻ kết quả \|/],
 ];
 

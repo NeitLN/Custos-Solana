@@ -42,7 +42,7 @@ export const LINK = {
   /** Tài liệu tích hợp SDK — file có thật, đã kiểm. */
   sdkDocs: "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md",
   /** Hướng dẫn CLI nằm trong chính tài liệu SDK; anchor trỏ tới mục có thật. */
-  cliDocs: "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md#c%C3%A0i-%C4%91%E1%BA%B7t",
+  cliDocs: "https://github.com/NeitLN/Custos-Solana/blob/main/packages/core/README.md#installation",
   /** Nguồn dữ liệu A/B trên trang này. */
   nguonMau:
     "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/demo-wow-20260918/scenarios.json",

@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 // Phủ định phải NEO vào cụm bị cấm. Bản trước tự viết mệnh đề miễn trừ ở mỗi file
 // và cả hai đều tha mọi dòng chứa chữ "không" — xem `ngonNgu.ts`.
-import { laLoiDan, viPhamCum } from "./ngonNgu.ts";
+import { laLoiDan, viPhamCum, laLoiDanEn, viPhamCumEn } from "./ngonNgu.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
 const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
@@ -41,6 +41,23 @@ const CUM_TRACTION: Array<[string, RegExp]> = [
 ];
 
 
+/** Bản tiếng Anh của `CUM_TRACTION`, cho README.md gốc. */
+const CUM_TRACTION_EN: Array<[string, RegExp]> = [
+  ["says there are customers", /\b(we|custos) (already )?(have|has) (paying )?(customers?|buyers?)\b/i],
+  ["says a pilot is running", /\b(running|ran|have|has|started) (a |our )?pilots?\b/i],
+  ["says a wallet/dApp has committed", /\b(wallets?|dapps?)\b[^.]{0,30}\b(has |have )?committed\b/i],
+  ["says buyers were interviewed", /\binterview(ed|s)?\b[^.]{0,20}\b(buyers?|wallets?|dapps?)\b/i],
+];
+
+test("EN · mẫu traction tiếng Anh bắt được claim và tha lời thừa nhận — đối chứng", () => {
+  const bat = (c: string) => CUM_TRACTION_EN.some(([, m]) => viPhamCumEn(c, m));
+  assert.ok(bat("We already have paying customers."));
+  assert.ok(bat("Custos is running a pilot with a wallet team."));
+  assert.ok(bat("Two wallets have committed to integrate."));
+  assert.ok(!bat("This is a development plan, not a pilot or partnership commitment."));
+  assert.ok(!bat("No third party has a confirmed integration yet."));
+});
+
 test("không công bố người mua / pilot khi chưa hỏi ai", () => {
   if (soNguoiMua() > 0) return; // có dữ liệu thật rồi thì đây không còn là claim sai
 
@@ -50,6 +67,12 @@ test("không công bố người mua / pilot khi chưa hỏi ai", () => {
       if (laLoiDan(d)) continue;
       for (const [ten, moc] of CUM_TRACTION) {
         if (viPhamCum(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+      }
+      // README.md viết tiếng Anh — mẫu tiếng Việt không chạm được nó.
+      if (f === "README.md" && !laLoiDanEn(d)) {
+        for (const [ten, moc] of CUM_TRACTION_EN) {
+          if (viPhamCumEn(d, moc)) pham.push(`${f}:${i + 1} — ${ten}\n      ${d.trim().slice(0, 100)}`);
+        }
       }
     }
   }
