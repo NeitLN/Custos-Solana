@@ -119,7 +119,7 @@ export function hostCuaRpc(url: string): string {
   try {
     return new URL(url).host;
   } catch {
-    return "(không đọc được endpoint)";
+    return "(unreadable endpoint)";
   }
 }
 
@@ -249,7 +249,7 @@ export function fetchDuPhong(dsUrl: string[], tuyChon: TuyChonDuPhong = {}): typ
       return transport(input, huy.length ? { ...init, signal: AbortSignal.any(huy) } : init);
     }
 
-    let loiCuoi: unknown = new Error("không có endpoint RPC nào");
+    let loiCuoi: unknown = new Error("no RPC endpoint available");
     // Mọi endpoint cùng trả 429/5xx thì TRẢ LẠI phản hồi đó thay vì ném: web3.js tự chờ
     // rồi thử lại khi gặp 429, và ném lỗi ở đây sẽ tước mất cơ chế đó.
     let phanHoiCuoi: Response | null = null;
@@ -352,7 +352,7 @@ export function ketNoiDuPhong(
  */
 export class LoiKhongCoRpcDung extends Error {
   constructor() {
-    super("không endpoint RPC nào được xác nhận là Solana Devnet — mọi endpoint cấu hình thuộc mạng khác");
+    super("no RPC endpoint was confirmed to be Solana Devnet — every configured endpoint belongs to another network");
     this.name = "LoiKhongCoRpcDung";
   }
 }
@@ -367,7 +367,7 @@ export class LoiKhongCoRpcDung extends Error {
 export class LoiNguonTron extends Error {
   readonly nguon: string[];
   constructor(nguon: string[]) {
-    super(`lượt đọc trộn ${nguon.length} nhà cung cấp RPC (${nguon.join(" + ")})`);
+    super(`this read mixed ${nguon.length} RPC providers (${nguon.join(" + ")})`);
     this.nguon = nguon;
     this.name = "LoiNguonTron";
   }

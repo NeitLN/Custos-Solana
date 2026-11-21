@@ -10,13 +10,14 @@
  * đổi hợp đồng `InspectResult` — diff vẫn là mảng dòng như cũ, chỉ cách XẾP khác.
  * Nhãn lạ không bị nhét bừa vào một khối: nó ra khối "khác" để vẫn hiện nguyên.
  */
-import { NHAN } from "@custos-solana/core";
+import { NHAN, NHAN_EN } from "@custos-solana/core";
 import type { InspectResult } from "@custos-solana/types";
 
 export type DongDiff = InspectResult["diff"][number];
 
-const TAI_SAN = [NHAN.SO_DU, NHAN.SO_DU_SOL, NHAN.DAT_COC, NHAN.PHI, NHAN.PHI_UOC];
-const QUYEN = [NHAN.CHU_SO_HUU, NHAN.DUOC_PHEP_RUT, NHAN.QUYEN_DONG, NHAN.CHUONG_TRINH];
+// Ví gọi `inspect()` với `locale: "en"` nên nhận cả hai bộ nhãn (tiếng Việt vẫn giữ cho kết quả cũ / fixture).
+const TAI_SAN = [NHAN, NHAN_EN].flatMap((b) => [b.SO_DU, b.SO_DU_SOL, b.DAT_COC, b.PHI, b.PHI_UOC]);
+const QUYEN = [NHAN, NHAN_EN].flatMap((b) => [b.CHU_SO_HUU, b.DUOC_PHEP_RUT, b.QUYEN_DONG, b.CHUONG_TRINH]);
 
 export function nhomHauQua(diff: readonly DongDiff[]): { taiSan: DongDiff[]; quyen: DongDiff[]; khac: DongDiff[] } {
   const taiSan: DongDiff[] = [];
@@ -36,6 +37,7 @@ export function nhomHauQua(diff: readonly DongDiff[]): { taiSan: DongDiff[]; quy
  */
 export function taiSanDoi(taiSan: readonly DongDiff[]): boolean {
   return taiSan.some(
-    (d) => (d.label.startsWith(NHAN.SO_DU) || d.label === NHAN.SO_DU_SOL) && d.before !== d.after,
+    (d) =>
+      [NHAN, NHAN_EN].some((b) => d.label.startsWith(b.SO_DU) || d.label === b.SO_DU_SOL) && d.before !== d.after,
   );
 }

@@ -53,7 +53,7 @@ export function theoDoiDienGiai(
       const r = await Promise.race([
         dienGiaiBangMoHinh(goiGhi)(...args),
         new Promise<never>((_, tuChoi) => {
-          dongHo = setTimeout(() => tuChoi(new Error("L3 quá hạn")), hanMs);
+          dongHo = setTimeout(() => tuChoi(new Error("L3 timed out")), hanMs);
         }),
       ]);
       // Câu trùng câu mẫu ⇒ bộ soi đã lùi (hoặc mô hình chép câu mẫu): không nhận là của AI.
@@ -128,28 +128,28 @@ export function ganNhanTheoLuot(
 /** Câu nhãn hiển thị ngay dưới câu diễn giải — một chỗ cho cả Phòng phân tích và màn thực thi. */
 export const NHAN_NGUON: Record<ExplanationSource, { ngan: string; dai: string }> = {
   moHinh: {
-    ngan: "AI đã diễn giải",
-    dai: "Câu trên do mô hình ngôn ngữ viết, đã qua bộ soi đầu ra. Mức cảnh báo vẫn do engine luật quyết.",
+    ngan: "AI explanation",
+    dai: "The text above was written by a language model and passed the output filter. The warning level is still decided by the rule engine.",
   },
   tatDinh: {
-    ngan: "Câu mẫu tất định",
-    dai: "Câu trên do lõi xác định viết, không gọi mô hình ngôn ngữ.",
+    ngan: "Deterministic explanation",
+    dai: "The text above was written by the deterministic core, without calling a language model.",
   },
   moHinhBiChan: {
-    ngan: "Câu mẫu tất định",
-    dai: "Mô hình có trả lời nhưng bộ soi đầu ra không nhận câu đó, nên câu trên là câu tất định. Mức cảnh báo không đổi.",
+    ngan: "Deterministic explanation",
+    dai: "The model answered but the output filter rejected it, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   moHinhQuaHan: {
-    ngan: "AI không phản hồi, đang dùng câu mẫu",
-    dai: "Mô hình chưa trả lời trong hạn nên câu trên là câu tất định. Mức cảnh báo không đổi.",
+    ngan: "AI did not respond, using the deterministic explanation",
+    dai: "The model did not answer in time, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   moHinhLoi: {
-    ngan: "AI không phản hồi, đang dùng câu mẫu",
-    dai: "Mô hình không trả lời được nên câu trên là câu tất định. Mức cảnh báo không đổi.",
+    ngan: "AI did not respond, using the deterministic explanation",
+    dai: "The model could not answer, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   chuaCauHinh: {
-    ngan: "Câu mẫu tất định",
-    dai: "Bản này chưa cấu hình mô hình ngôn ngữ nên câu trên là câu tất định. Mức cảnh báo không đổi.",
+    ngan: "Deterministic explanation",
+    dai: "This build has no language model configured, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
 };
 
@@ -159,10 +159,10 @@ export const NHAN_NGUON: Record<ExplanationSource, { ngan: string; dai: string }
  * `duLieuChoMoHinh` (packages/ai); `nguonDienGiai.test.ts` bắt hai bên khớp nhau.
  */
 export const DU_LIEU_GUI_MO_HINH: Record<string, string> = {
-  reasonCodes: "mã lý do của engine luật",
-  coverage: "số lệnh đã và chưa đọc hiểu",
-  moPhongThanhCong: "mô phỏng có thành công không",
+  reasonCodes: "the rule engine's reason codes",
+  coverage: "the number of instructions understood and not understood",
+  moPhongThanhCong: "whether the simulation succeeded",
   thayDoiSoDu:
-    "các thay đổi số dư và chủ tài khoản token (số đã quy đổi, ký hiệu token đã lọc, địa chỉ vừa được cấp quyền rút nếu có)",
-  soLenhChuaDocHieu: "số lệnh chưa đọc hiểu",
+    "balance and token-account-owner changes (converted amounts, filtered token symbols, the newly approved delegate address if any)",
+  soLenhChuaDocHieu: "the number of instructions not understood",
 };

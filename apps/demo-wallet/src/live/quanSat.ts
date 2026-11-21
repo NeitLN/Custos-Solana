@@ -82,7 +82,7 @@ export async function dungQuanSat(
 ): Promise<Observation> {
   // Không có metadata thì không có gì để quan sát — bên gọi phải xử lý trước (đọc lại sau).
   const meta = data.meta;
-  if (!meta) throw new Error("giao dịch chưa có metadata — chưa quan sát được");
+  if (!meta) throw new Error("the transaction has no metadata yet — not observed");
   const message = data.transaction.message;
   const keys = message.getAccountKeys({ accountKeysFromLookups: meta.loadedAddresses });
   let owner: string | null = null;

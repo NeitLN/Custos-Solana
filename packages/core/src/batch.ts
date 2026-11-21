@@ -86,14 +86,48 @@ export type VaoLo = {
  * (có thể song song, có thể huỷ giữa chừng) rồi đưa kết quả vào đây. Tách như vậy
  * để hàm này kiểm được offline và không giấu một vòng lặp gọi RPC.
  */
-export function xetLo(vao: VaoLo[], profile?: ProfileVi, gioiHan = GIOI_HAN): KetQuaLo {
-  if (vao.length === 0) return { ok: false, loi: "lô rỗng" };
+/** Chữ hiển thị của lô, theo ngôn ngữ. Mã trạng thái (`trangThai`, `tongKet`) không dịch. */
+const CHU_LO = {
+  vi: {
+    rong: "lô rỗng",
+    quaSoLuong: (n: number, g: number) => `lô ${n} giao dịch, vượt giới hạn ${g}`,
+    quaByte: (n: number, g: number) => `lô ${n} byte, vượt giới hạn ${g}`,
+    nhieuCluster: (n: number, ds: string) => `lô khai ${n} cluster khác nhau: ${ds}`,
+    phuThuoc: (k: number) => `phụ thuộc giao dịch #${k}, chưa chạy nên chưa mô phỏng được`,
+    chung: "Mỗi giao dịch được mô phỏng ĐỘC LẬP trên trạng thái hiện tại, không phải trên trạng thái sau khi giao dịch trước đã chạy.",
+    khongKetLuan: (h: number, n: number) => `${h}/${n} giao dịch chưa kiểm được — KHÔNG kết luận được về cả lô.`,
+    nguyHiem: (n: number) => `Có giao dịch nguy hiểm trong lô ${n} giao dịch.`,
+    canXemKy: (n: number) => `Có giao dịch cần xem kỹ trong lô ${n} giao dịch.`,
+    khongThay: (n: number) => `Không thấy dấu hiệu nguy hiểm trong ${n} giao dịch, TRONG PHẠM VI đọc được.`,
+  },
+  en: {
+    rong: "empty batch",
+    quaSoLuong: (n: number, g: number) => `batch of ${n} transactions exceeds the limit of ${g}`,
+    quaByte: (n: number, g: number) => `batch of ${n} bytes exceeds the limit of ${g}`,
+    nhieuCluster: (n: number, ds: string) => `batch declares ${n} different clusters: ${ds}`,
+    phuThuoc: (k: number) => `depends on transaction #${k}, which has not run yet, so it could not be simulated`,
+    chung: "Each transaction is simulated INDEPENDENTLY on the current state, not on the state after the previous transaction has run.",
+    khongKetLuan: (h: number, n: number) => `${h}/${n} transactions could not be checked — NO conclusion can be drawn about the whole batch.`,
+    nguyHiem: (n: number) => `A transaction rated Danger is in this batch of ${n} transactions.`,
+    canXemKy: (n: number) => `A transaction rated Review carefully is in this batch of ${n} transactions.`,
+    khongThay: (n: number) => `No danger signs found in ${n} transactions, WITHIN the parts we could read.`,
+  },
+} as const;
+
+export function xetLo(
+  vao: VaoLo[],
+  profile?: ProfileVi,
+  gioiHan = GIOI_HAN,
+  locale: "vi" | "en" = "vi",
+): KetQuaLo {
+  const c = CHU_LO[locale];
+  if (vao.length === 0) return { ok: false, loi: c.rong };
   if (vao.length > gioiHan.soLuong) {
-    return { ok: false, loi: `lô ${vao.length} giao dịch, vượt giới hạn ${gioiHan.soLuong}` };
+    return { ok: false, loi: c.quaSoLuong(vao.length, gioiHan.soLuong) };
   }
   const tongByte = vao.reduce((t, v) => t + v.soByte, 0);
   if (tongByte > gioiHan.tongByte) {
-    return { ok: false, loi: `lô ${tongByte} byte, vượt giới hạn ${gioiHan.tongByte}` };
+    return { ok: false, loi: c.quaByte(tongByte, gioiHan.tongByte) };
   }
 
   /*
@@ -105,7 +139,7 @@ export function xetLo(vao: VaoLo[], profile?: ProfileVi, gioiHan = GIOI_HAN): Ke
    */
   const cluster = new Set(vao.map((v) => v.cluster));
   if (cluster.size > 1) {
-    return { ok: false, loi: `lô khai ${cluster.size} cluster khác nhau: ${[...cluster].join(", ")}` };
+    return { ok: false, loi: c.nhieuCluster(cluster.size, [...cluster].join(", ")) };
   }
 
   const phanTu: PhanTuLo[] = vao.map((v, i) => {
@@ -119,7 +153,7 @@ export function xetLo(vao: VaoLo[], profile?: ProfileVi, gioiHan = GIOI_HAN): Ke
         trangThai: "phu_thuoc_chua_giai_duoc",
         ketQua: v.ketQua,
         policy: null,
-        lyDo: `phụ thuộc giao dịch #${v.phuThuocViTri + 1}, chưa chạy nên chưa mô phỏng được`,
+        lyDo: c.phuThuoc(v.phuThuocViTri + 1),
       };
     }
     if (v.ketQua === null) {
@@ -138,6 +172,7 @@ export function xetLo(vao: VaoLo[], profile?: ProfileVi, gioiHan = GIOI_HAN): Ke
       policy: danhGiaPolicy(
         { level: v.ketQua.level, coverage: v.ketQua.coverage, phienConDung: true },
         profile,
+        locale,
       ),
     };
   });
@@ -148,7 +183,7 @@ export function xetLo(vao: VaoLo[], profile?: ProfileVi, gioiHan = GIOI_HAN): Ke
     phanTu,
     chuKy: chuKyLo(vao),
     tongKet,
-    cau: cauTong(tongKet, phanTu),
+    cau: cauTong(tongKet, phanTu, locale),
   };
 }
 
@@ -165,16 +200,14 @@ function gopMuc(phanTu: PhanTuLo[]): Exclude<KetQuaLo & { ok: true }, { ok: fals
   return "an_toan_trong_pham_vi";
 }
 
-function cauTong(muc: string, phanTu: PhanTuLo[]): string {
+function cauTong(muc: string, phanTu: PhanTuLo[], locale: "vi" | "en"): string {
+  const c = CHU_LO[locale];
   const n = phanTu.length;
   const hong = phanTu.filter((p) => p.trangThai !== "da_kiem").length;
-  const chung = "Mỗi giao dịch được mô phỏng ĐỘC LẬP trên trạng thái hiện tại, không phải trên trạng thái sau khi giao dịch trước đã chạy.";
-  if (muc === "khong_ket_luan_duoc") {
-    return `${hong}/${n} giao dịch chưa kiểm được — KHÔNG kết luận được về cả lô. ${chung}`;
-  }
-  if (muc === "nguy_hiem") return `Có giao dịch nguy hiểm trong lô ${n} giao dịch. ${chung}`;
-  if (muc === "can_xem_ky") return `Có giao dịch cần xem kỹ trong lô ${n} giao dịch. ${chung}`;
-  return `Không thấy dấu hiệu nguy hiểm trong ${n} giao dịch, TRONG PHẠM VI đọc được. ${chung}`;
+  if (muc === "khong_ket_luan_duoc") return `${c.khongKetLuan(hong, n)} ${c.chung}`;
+  if (muc === "nguy_hiem") return `${c.nguyHiem(n)} ${c.chung}`;
+  if (muc === "can_xem_ky") return `${c.canXemKy(n)} ${c.chung}`;
+  return `${c.khongThay(n)} ${c.chung}`;
 }
 
 /**

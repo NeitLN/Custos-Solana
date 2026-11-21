@@ -62,7 +62,7 @@ test("hồ sơ ví dụ giữ được cờ laViDu", () => {
 });
 
 test("từ chối thứ không phải hồ sơ phỏng vấn", () => {
-  assert.throws(() => docHoSo({ linh: "tinh" }), /thiếu mảng/);
+  assert.throws(() => docHoSo({ linh: "tinh" }), /missing the `ban` array/);
 });
 
 test("bắt được email và số điện thoại — dữ liệu này đi vào repo công khai", () => {
@@ -73,7 +73,7 @@ test("bắt được email và số điện thoại — dữ liệu này đi và
   ]);
   assert.equal(canh.length, 2, canh.join(" | "));
   assert.match(canh.join(" "), /email/);
-  assert.match(canh.join(" "), /điện thoại/);
+  assert.match(canh.join(" "), /phone/);
 });
 
 test("mã người tham gia có dấu cách bị nghi là tên thật", () => {

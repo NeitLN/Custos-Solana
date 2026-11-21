@@ -56,7 +56,7 @@ export function docYeuCauNgoaiChiTiet(): KetQuaYeuCau {
   if (!b64) return { loai: "khong" };
 
   if (b64.length > TOI_DA_B64) {
-    return { loai: "hong", lyDo: `yêu cầu dài ${b64.length} ký tự, vượt giới hạn ${TOI_DA_B64}` };
+    return { loai: "hong", lyDo: `request is ${b64.length} characters long, over the ${TOI_DA_B64} limit` };
   }
 
   try {
@@ -95,7 +95,7 @@ export function docYeuCauNgoaiChiTiet(): KetQuaYeuCau {
      * `tx` hỏng nghĩa là không có gì để kiểm, và điều đó phải nói ra.
      */
     const loi = e instanceof Error ? e.message : String(e);
-    return { loai: "hong", lyDo: /atob|InvalidCharacter/i.test(loi) ? "không phải base64 hợp lệ" : loi };
+    return { loai: "hong", lyDo: /atob|InvalidCharacter/i.test(loi) ? "not valid base64" : loi };
   }
 }
 

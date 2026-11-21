@@ -42,7 +42,7 @@ function manifest(v: unknown): DemoAccounts | null {
     !signature(v.setupSignature) ||
     (v.extraTarget !== undefined && !address(v.extraTarget))
   )
-    throw new Error("Manifest phiên không hợp lệ.");
+    throw new Error("Invalid session manifest.");
   return {
     mint: v.mint,
     source: v.source,
@@ -62,9 +62,9 @@ export function parsePublicSession(value: unknown, wallet: string): PublicSessio
     !address(wallet) ||
     typeof value.unresolved !== "boolean"
   )
-    throw new Error("Phiên lưu không khớp ví Devnet này.");
+    throw new Error("The saved session does not match this Devnet wallet.");
   if (!Array.isArray(value.receipts) || value.receipts.length > 30)
-    throw new Error("Lịch sử phiên không hợp lệ.");
+    throw new Error("Invalid session history.");
   const receipts: LiveReceipt[] = value.receipts.map((v) => {
     if (
       !obj(v) ||
@@ -74,7 +74,7 @@ export function parsePublicSession(value: unknown, wallet: string): PublicSessio
       !Object.hasOwn(SCENARIOS, v.kind) ||
       !obj(v.prediction)
     )
-      throw new Error("Receipt không hợp lệ.");
+      throw new Error("Invalid receipt.");
     const p = v.prediction;
     if (
       !address(p.source) ||
@@ -86,7 +86,7 @@ export function parsePublicSession(value: unknown, wallet: string): PublicSessio
       typeof p.message !== "string" ||
       !/^[1-9A-HJ-NP-Za-km-z]{1,4000}$/.test(p.message)
     )
-      throw new Error("Dữ kiện receipt không hợp lệ.");
+      throw new Error("Invalid receipt facts.");
     // Only essential lookup fields are restored. Local verdict/decision and observations
     // remain unverified cache; do not promote arbitrary JSON to chain evidence.
     return {
@@ -106,7 +106,7 @@ export function parsePublicSession(value: unknown, wallet: string): PublicSessio
         ...(address(p.target) ? { target: p.target } : {}),
       },
       createdAt: typeof v.createdAt === "string" ? v.createdAt.slice(0, 40) : "",
-      note: "Bản lưu chưa xác minh. Đọc lại từ Devnet; dự báo cũ không được chứng thực bởi cache.",
+      note: "Saved copy not verified. Re-read from Devnet; the old prediction is not vouched for by the cache.",
       observation: null,
       comparison: null,
       ...(Number.isSafeInteger(v.expiresAtBlock) ? { expiresAtBlock: v.expiresAtBlock as number } : {}),
@@ -154,7 +154,7 @@ export class PublicSessionCache {
   assertCurrent() {
     if (this.#storage.getItem(this.#key) !== this.#last)
       throw new Error(
-        "Phiên ví đã thay đổi ở tab khác. Tải lại rồi khôi phục phiên; tra cứu giao dịch đang chờ trước khi ký tiếp.",
+        "The wallet session changed in another tab. Reload and restore the session; look up any pending transaction before signing again.",
       );
   }
   write(value: string) {

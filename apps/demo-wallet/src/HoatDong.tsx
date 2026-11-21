@@ -23,19 +23,20 @@ type TrangThai =
 function khoangCach(luc: number | null): string {
   if (!luc) return "—";
   const giay = Math.max(0, Math.floor(Date.now() / 1000 - luc));
-  if (giay < 60) return "vừa xong";
+  if (giay < 60) return "just now";
   const phut = Math.floor(giay / 60);
-  if (phut < 60) return `${phut} phút trước`;
+  if (phut < 60) return `${phut} min ago`;
   const gio = Math.floor(phut / 60);
-  if (gio < 24) return `${gio} giờ trước`;
-  return `${Math.floor(gio / 24)} ngày trước`;
+  if (gio < 24) return `${gio} h ago`;
+  const ngay = Math.floor(gio / 24);
+  return `${ngay} ${ngay === 1 ? "day" : "days"} ago`;
 }
 
 export function HoatDong({
   rpc,
   diaChi,
-  tieuDe = "Hoạt động gần đây",
-  khiRong = "Ví này chưa có giao dịch nào trên Devnet. Thử một kịch bản ở trên để tạo giao dịch đầu tiên.",
+  tieuDe = "Recent activity",
+  khiRong = "This wallet has no transactions on Devnet yet. Try a scenario above to create the first one.",
 }: {
   rpc: string;
   diaChi: string;
@@ -70,7 +71,7 @@ export function HoatDong({
       <h2 className="mb-3 text-[13.5px] font-semibold text-chu">{tieuDe}</h2>
 
       {tt.loai === "dangTai" && (
-        <ul className="space-y-2.5" aria-busy="true" aria-label="Đang tải hoạt động">
+        <ul className="space-y-2.5" aria-busy="true" aria-label="Loading activity">
           {[0, 1, 2].map((i) => (
             <li key={i} className="flex items-center gap-3">
               <span className="xuong-khung h-7 w-7 shrink-0 rounded-full" />
@@ -82,8 +83,8 @@ export function HoatDong({
 
       {tt.loai === "loi" && (
         <p className="text-[12.5px] leading-relaxed text-chu-mo">
-          Chưa đọc được lịch sử từ Devnet. Phần kiểm tra giao dịch không phụ thuộc vào
-          mục này và vẫn chạy bình thường.
+          Could not read the history from Devnet. Transaction checks do not depend on
+          this section and still work normally.
         </p>
       )}
 
@@ -113,7 +114,7 @@ export function HoatDong({
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13px] text-chu">
-                    {m.hong ? "Giao dịch thất bại" : "Giao dịch thành công"}
+                    {m.hong ? "Transaction failed" : "Transaction succeeded"}
                   </span>
                   <span className="block truncate font-mono text-[11px] text-chu-mo">
                     {m.chuKy.slice(0, 10)}…{m.chuKy.slice(-6)}

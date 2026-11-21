@@ -75,16 +75,16 @@ export type TomTatQuyen = {
  *
  * Không async, không chạm mạng: mọi dữ kiện đã có trong `Facts`.
  */
-export function tomTatQuyen(f: Facts): TomTatQuyen {
+export function tomTatQuyen(f: Facts, locale: "vi" | "en" = "vi"): TomTatQuyen {
   const quyen: TinhTrangQuyen[] = [];
   const hookChuaDocHieu: string[] = [];
 
   for (const m of f.mints) {
     if (m.permanentDelegate !== null) {
-      quyen.push(dungQuyen("permanentDelegate", m.address, "mint", m.permanentDelegate, false));
+      quyen.push(dungQuyen("permanentDelegate", m.address, "mint", m.permanentDelegate, false, locale));
     }
     if (m.transferHookProgramId !== null) {
-      quyen.push(dungQuyen("transferHook", m.address, "mint", m.transferHookProgramId, false));
+      quyen.push(dungQuyen("transferHook", m.address, "mint", m.transferHookProgramId, false, locale));
       /*
        * Hook đọc hiểu được hay không CHỈ xét theo có lệnh nào của chính program đó
        * xuất hiện trong giao dịch này không.
@@ -96,16 +96,16 @@ export function tomTatQuyen(f: Facts): TomTatQuyen {
       if (!coLenh) hookChuaDocHieu.push(m.transferHookProgramId);
     }
     if (m.mintAuthority !== null) {
-      quyen.push(dungQuyen("mintAuthority", m.address, "mint", m.mintAuthority, false));
+      quyen.push(dungQuyen("mintAuthority", m.address, "mint", m.mintAuthority, false, locale));
     }
     if (m.freezeAuthority !== null) {
-      quyen.push(dungQuyen("freezeAuthority", m.address, "mint", m.freezeAuthority, false));
+      quyen.push(dungQuyen("freezeAuthority", m.address, "mint", m.freezeAuthority, false, locale));
     }
   }
 
   for (const t of f.tokenAccounts) {
-    themNeuCo(quyen, "delegate", t, t.delegateBefore, t.delegateAfter);
-    themNeuCo(quyen, "closeAuthority", t, t.closeAuthorityBefore, t.closeAuthorityAfter);
+    themNeuCo(quyen, "delegate", t, t.delegateBefore, t.delegateAfter, locale);
+    themNeuCo(quyen, "closeAuthority", t, t.closeAuthorityBefore, t.closeAuthorityAfter, locale);
   }
 
   return {
@@ -127,9 +127,10 @@ function themNeuCo(
   t: TokenAccountFact,
   truoc: string | null,
   sau: string | null,
+  locale: "vi" | "en",
 ): void {
   if (sau === null && truoc === null) return;
-  ra.push(dungQuyen(loai, t.address, "tokenAccount", sau, truoc !== sau));
+  ra.push(dungQuyen(loai, t.address, "tokenAccount", sau, truoc !== sau, locale));
 }
 
 const TEN: Record<LoaiQuyen, string> = {
@@ -141,13 +142,34 @@ const TEN: Record<LoaiQuyen, string> = {
   closeAuthority: "quyền đóng tài khoản",
 };
 
+const TEN_EN: Record<LoaiQuyen, string> = {
+  permanentDelegate: "the permanent delegate right",
+  transferHook: "a program that runs on every transfer",
+  mintAuthority: "the right to mint more",
+  freezeAuthority: "the freeze authority",
+  delegate: "the right to spend on your behalf",
+  closeAuthority: "the right to close the account",
+};
+
 function dungQuyen(
   loai: LoaiQuyen,
   doiTuong: string,
   nguon: NguonDuKien,
   ai: string | null,
   moi: boolean,
+  locale: "vi" | "en" = "vi",
 ): TinhTrangQuyen {
+  if (locale === "en") {
+    const tenEn = TEN_EN[loai];
+    const nguonEn = nguon === "mint" ? "read from the mint" : "read from the token account";
+    const cauEn =
+      ai === null
+        ? `This transaction REMOVES ${tenEn} of ${doiTuong} (${nguonEn}).`
+        : moi
+          ? `This transaction GRANTS ${tenEn} to ${ai} (${nguonEn}).`
+          : `${doiTuong} already had ${tenEn} held by ${ai} — this transaction does not change it (${nguonEn}).`;
+    return { loai, doiTuong, nguon, ai, moiTrongGiaoDich: moi, cau: cauEn };
+  }
   const ten = TEN[loai];
   const oDau = nguon === "mint" ? "đọc ở mint" : "đọc ở tài khoản token";
   /*

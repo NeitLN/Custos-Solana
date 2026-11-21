@@ -67,11 +67,11 @@ export default function App() {
    * chỉ có một. Giờ header giống nhau ở mọi trang; đây là bộ chuyển trong trang.
    */
   const chuyenMan = (
-    <nav className="wallet-surface-bar" aria-label="Không gian Ví Custos">
+    <nav className="wallet-surface-bar" aria-label="Custos Wallet spaces">
       {/* Phân tích đứng trước và là mặc định: chạy được với mọi người, không cần khoá. */}
-      <button aria-pressed={surface === "analysis"} disabled={walletBusy} onClick={() => setSurface("analysis")}>Phòng phân tích</button>
-      <button aria-pressed={surface === "wallet"} disabled={walletBusy} onClick={() => setSurface("wallet")}>Ví của bạn</button>
-      <span>{surface === "wallet" ? "Ký và thực thi trên Devnet" : "Thử các yêu cầu ký và đọc phân tích của Custos"}</span>
+      <button aria-pressed={surface === "analysis"} disabled={walletBusy} onClick={() => setSurface("analysis")}>Analysis Room</button>
+      <button aria-pressed={surface === "wallet"} disabled={walletBusy} onClick={() => setSurface("wallet")}>Your wallet</button>
+      <span>{surface === "wallet" ? "Sign and execute on Devnet" : "Try signing requests and read Custos's analysis"}</span>
     </nav>
   );
   return <>
@@ -310,16 +310,16 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
   //   · không kết nối được → mạng/RPC
   const moTaLoi = (e: unknown) =>
     e instanceof LoiQuaHan
-      ? `Custos chưa nhận được kết quả mô phỏng từ Solana Devnet sau ${Math.round(e.ms / 1000)} giây.`
+      ? `Custos did not receive a simulation result from Solana Devnet within ${Math.round(e.ms / 1000)} seconds.`
       : e instanceof HienTruongChuaSan
-        ? `Hiện trường demo trên Devnet chưa sẵn sàng: ${e.lyDo}. Đây là trạng thái của bản demo, KHÔNG phải kết luận về giao dịch.`
+        ? `The Devnet demo setup is not ready: ${e.lyDo}. This is the state of the demo, NOT a verdict on the transaction.`
         : e instanceof LoiNguonTron
-          ? `Hai nhà cung cấp RPC trả lời hai nửa của cùng một lượt đọc, hai lần liền (${e.nguon.join(" + ")}). Ghép lại không phải một ảnh chụp trạng thái, nên Custos bỏ kết quả.`
+          ? `Two RPC providers answered two halves of the same read, twice in a row (${e.nguon.join(" + ")}). Stitched together they are not one state snapshot, so Custos discarded the result.`
           : e instanceof LoiPhatLai
-            ? `Không phát lại được: ${e.message}. Phát lại không bao giờ gọi mạng bù.`
+            ? `Could not replay: ${e.message}. Replay never falls back to the network.`
             : e instanceof LoiKhongCoRpcDung
-              ? "Không endpoint RPC nào được xác nhận là Solana Devnet, nên Custos không mô phỏng. Đây là cấu hình của bản demo, KHÔNG phải kết luận về giao dịch."
-              : "Custos không kết nối được tới Solana Devnet để mô phỏng giao dịch này.";
+              ? "No RPC endpoint was confirmed to be Solana Devnet, so Custos did not simulate. This is the demo's configuration, NOT a verdict on the transaction."
+              : "Custos could not connect to Solana Devnet to simulate this transaction.";
 
   // Lọc TẠI CHỖ GHI, không lọc tại chỗ hiển thị: mọi đường vào nhật ký đều đi qua
   // đây, nên không cần nhớ lọc ở từng nơi gọi. Xem `locNhatKy.ts` — lỗi RPC đã đo
@@ -392,12 +392,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
     if (kq.loai === "hong") {
       // Không đọc được thì NÓI RA. Im lặng ở đây làm người dùng tưởng chưa có gì
       // tới, trong khi có một yêu cầu vừa bị bỏ qua.
-      ghi(`yêu cầu từ dApp không đọc được: ${kq.lyDo}`);
+      ghi(`dApp request unreadable: ${kq.lyDo}`);
       setLoiYeuCau(kq.lyDo);
       return;
     }
     const yc = kq.yc;
-    setTuDApp(yc.khai ? `dApp khai đây là: ${yc.khai.type}` : "dApp không khai gì");
+    setTuDApp(yc.khai ? `dApp declares this is: ${yc.khai.type}` : "dApp declared nothing");
     // Tách thành hàm có tên để nút "Thử lại" chạy lại ĐÚNG giao dịch dApp đã đẩy
     // sang, chứ không dựng một giao dịch mới — giao dịch mới là một phép thử khác.
     const chay = () => {
@@ -424,7 +424,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
             },
             yc.tx,
             {
-              locale: "vi",
+              locale: "en",
               ...(htNay ? { nguoiDung: htNay.nanNhan } : {}),
               ...(yc.khai ? { expectedAction: yc.khai } : {}),
               ...(yc.kyHieu ? { kyHieuToken: yc.kyHieu } : {}),
@@ -434,12 +434,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         HAN_MS,
       )
         .then((r) => {
-          ghi(`giao dịch từ dApp — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+          ghi(`transaction from dApp — level ${r.level}, understood ${r.coverage.analyzed}/${r.coverage.total}`);
           setKetQua(r);
           setChieuDienGiai(theoDoi.nguon() ?? "tatDinh");
         })
         .catch((e: unknown) => {
-          ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
+          ghi(`error: ${e instanceof Error ? e.message : String(e)}`);
           setKetQua(null);
           setLoi(moTaLoi(e));
         })
@@ -575,14 +575,14 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
           if (conDung()) setBoReplay(kqBo.bo);
         }
         mauPL = boPL.mau.find((m) => m.id === kich);
-        if (!mauPL) throw new LoiPhatLai(`chưa có dữ liệu đã ghi cho kịch bản "${kich}"`);
+        if (!mauPL) throw new LoiPhatLai(`no recorded data yet for scenario "${kich}"`);
         htDung = boPL.hienTruong;
         const m = mauPL;
         taoC = () => {
           const rp = connReplay(m);
           return { c: rp.conn as Connection, nguonOk: new Set(m.nguon), thieu: rp.thieu };
         };
-        ghi(`phát lại dữ liệu RPC ghi lúc ${m.captureLuc} — không gọi mạng`);
+        ghi(`replaying RPC data recorded at ${m.captureLuc} — no network calls`);
       } else {
         htDung = ht!;
         taoC = () => {
@@ -595,7 +595,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         };
       }
       const kb = timKichBan(kich);
-      if (!kb) throw new Error(`không có kịch bản "${kich}"`);
+      if (!kb) throw new Error(`no scenario "${kich}"`);
       const tuyChon = tuyChonInspectKichBan(kb, htDung);
       // Phát lại không gọi mô hình: lượt đó phải tái lập được và không có mạng.
       const theoDoi = phatLai ? theoDoiDienGiai(null) : dungTheoDoi();
@@ -622,10 +622,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
          */
         ghi(
           !coCustos
-            ? "Custos đang TẮT — không có khoá ký, dựng lại hậu quả từ mô phỏng"
+            ? "Custos is OFF — no signing key, rebuilding consequences from simulation"
             : phatLai
-              ? "đang chạy lại engine trên dữ liệu đã ghi…"
-              : "đang chạy thử giao dịch trên devnet…",
+              ? "re-running the engine on recorded data…"
+              : "simulating the transaction on devnet…",
         );
         // Tuỳ chọn từ `tuyChonInspectKichBan` — gồm `chanDoan: true` (dấu vết TB-X02) và
         // `nguoiDung` đọc từ SỔ (`khongKhaiNguoiDung`), cùng hàm với script ghi fixture.
@@ -639,7 +639,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
        */
       let lan = await coHanChung(motLan(), han);
       if (!phatLai && lan.nguonOk.size > 1) {
-        ghi(`lượt đọc trộn nguồn (${[...lan.nguonOk].join(" + ")}) — bỏ, đọc lại từ đầu`);
+        ghi(`read mixed sources (${[...lan.nguonOk].join(" + ")}) — discarded, reading again from scratch`);
         lan = await coHanChung(motLan(), han);
         if (lan.nguonOk.size > 1) throw new LoiNguonTron([...lan.nguonOk]);
       }
@@ -651,7 +651,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
        */
       const t = lan.thieu();
       if (t.length) {
-        throw new LoiPhatLai(`dữ liệu đã ghi thiếu lời gọi ${[...new Set(t.map((x) => x.method))].join(", ")}`);
+        throw new LoiPhatLai(`recorded data is missing calls ${[...new Set(t.map((x) => x.method))].join(", ")}`);
       }
       const tt: ThongTinNguon =
         phatLai && mauPL && boPL
@@ -665,7 +665,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
               gioiHan: boPL.gioiHan,
             }
           : { kieu: "trucTiep", nguon: [...lan.nguonOk] };
-      ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+      ghi(`result — level ${r.level}, understood ${r.coverage.analyzed}/${r.coverage.total}`);
       if (tt.kieu === "phatLai" && mauPL) {
         const so = soVoiLucGhi(r, mauPL.ketQuaLucGhi);
         // Engine đổi thì sai khác PHẢI hiện ra — ở CẢ HAI nhánh; không lấy kết quả lúc ghi đè lên.
@@ -694,12 +694,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         byteBayGio.length === byteLucKiem.length &&
         byteBayGio.every((b, i) => b === byteLucKiem[i]);
       if (!byteConKhop) {
-        ghi("giao dịch đã đổi trong lúc kiểm — bỏ kết quả");
+        ghi("transaction changed during the check — result discarded");
         if (conDung()) {
           setKetQua(null);
           setLoi(
-            "Giao dịch đã thay đổi trong lúc Custos đang kiểm. Kết quả vừa tính nói về " +
-              "một giao dịch khác với giao dịch hiện tại, nên nó đã bị bỏ. Hãy kiểm lại.",
+            "The transaction changed while Custos was checking it. The result just computed describes " +
+              "a different transaction from the current one, so it was discarded. Please check again.",
           );
         }
         return;
@@ -717,9 +717,9 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
        * không bị nuốt) là lỗi CỦA PHÁT LẠI — thẻ không được nói "không kết nối được Devnet"
        * về một lượt không hề dùng mạng (code review 27/09).
        */
-      const e = phatLai && e0 instanceof ThieuFixture ? new LoiPhatLai(`dữ liệu đã ghi thiếu lời gọi ${e0.method}`) : e0;
+      const e = phatLai && e0 instanceof ThieuFixture ? new LoiPhatLai(`recorded data is missing call ${e0.method}`) : e0;
       // Ghi nhật ký kỹ thuật cho đội, VÀ dựng thẻ lỗi cho người dùng.
-      ghi(`lỗi: ${e instanceof Error ? e.message : String(e)}`);
+      ghi(`error: ${e instanceof Error ? e.message : String(e)}`);
       if (conDung()) {
         setKetQua(null);
         setLoi(moTaLoi(e));
@@ -737,12 +737,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
   async function kiemTraSanSang() {
     if (!ht || sanSang === "dang") return;
     setSanSang("dang");
-    ghi("kiểm tra sẵn sàng Devnet — chỉ đọc, không ký, không gửi");
+    ghi("Devnet readiness check — read-only, no signing, no sending");
     // Bộ chọn RIÊNG (code review 27/09): preflight gọi với danh sách một URL và danh sách
     // đã lọc — chỉ số của nó không có nghĩa trong danh sách của lượt phân tích.
     const boChonPreflight = taoBoChon();
     const kq = await kiemSanSang(dsRpc(ht), ht, (ds, ghiNhan) => ketNoiDuPhong(ds, { boChon: boChonPreflight, ghiNhan }));
-    ghi(`sẵn sàng: ${kq.sanSang ? "có" : "chưa"} — ${kq.buoc.map((b) => `${b.ma}:${b.trangThai}`).join(" ")}`);
+    ghi(`ready: ${kq.sanSang ? "yes" : "not yet"} — ${kq.buoc.map((b) => `${b.ma}:${b.trangThai}`).join(" ")}`);
     // Endpoint preflight chứng minh là KHÁC cluster thì lượt phân tích sau không dùng nữa.
     // Kể cả RỖNG: không endpoint nào đúng cluster thì lượt sau phải báo thế, không đoán.
     datDsXacMinh(kq.dsDung);
@@ -752,7 +752,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
   const chuaDung = ht === null && loiCauHinh === null;
   const diaChiRutGon = ht
     ? `${ht.nanNhan.slice(0, 5)}…${ht.nanNhan.slice(-5)}`
-    : "Chưa có tài khoản";
+    : "No account yet";
 
   async function saoChepDiaChi() {
     if (!ht) return;
@@ -761,14 +761,14 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
       setDaSaoChep(true);
       window.setTimeout(() => setDaSaoChep(false), 1600);
     } catch {
-      ghi("không thể sao chép địa chỉ ví");
+      ghi("could not copy the wallet address");
     }
   }
 
   return (
     <div className="app-shell demo-shell min-h-screen bg-nen text-chu">
       <DaiPhamVi>
-        <strong>Solana Devnet</strong> · môi trường thử nghiệm, không dùng tài sản thật
+        <strong>Solana Devnet</strong> · test environment, no real assets
       </DaiPhamVi>
 
       {cheDo?.loai === "mock" && (
@@ -776,10 +776,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         // người dùng trình đọc màn hình nhảy theo landmark sẽ bỏ lỡ cảnh báo mock.
         <div
           role="region"
-          aria-label="Chế độ dữ liệu mock"
+          aria-label="Mock data mode"
           className="bg-nguy px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-white"
         >
-          ⚠ Đang xem dữ liệu mock &quot;{cheDo.ten}&quot; — không phải kết quả thật
+          ⚠ Viewing mock data &quot;{cheDo.ten}&quot; — not a real result
         </div>
       )}
 
@@ -814,7 +814,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   để nói lại điều mà banner trên đầu và chip bên cạnh đã nói. Ba lần
                   cùng một chữ không làm ai tin hơn, chỉ làm dòng bị gãy. */}
               <p className="wallet-brand__subtitle mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
-                Ví tham chiếu tích hợp Custos SDK
+                Reference wallet with the Custos SDK built in
               </p>
             </div>
           </div>
@@ -827,12 +827,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
 
         <section className="demo-intro" aria-labelledby="demo-title">
           <div>
-            <p className="demo-eyebrow"><ShieldIcon className="h-4 w-4" /> Trải nghiệm Custos SDK</p>
-            <h1 id="demo-title">Biết điều gì sẽ đổi.<br /><span>Trước khi bạn ký.</span></h1>
-            <p className="demo-intro__description">Một chữ ký có thể đổi cả tài sản lẫn quyền kiểm soát. Custos giúp bạn nhìn rõ hậu quả — và phần chưa đọc hiểu.</p>
+            <p className="demo-eyebrow"><ShieldIcon className="h-4 w-4" /> Try the Custos SDK</p>
+            <h1 id="demo-title">Know what will change.<br /><span>Before you sign.</span></h1>
+            <p className="demo-intro__description">One signature can change both your assets and who controls them. Custos shows you the consequences — and the parts it could not read.</p>
           </div>
-          <ol className="demo-steps" aria-label="Các bước trải nghiệm">
-            {["Chọn tình huống", "Custos phân tích", "Đọc kết quả"].map((label, i) => {
+          <ol className="demo-steps" aria-label="Demo steps">
+            {["Pick a scenario", "Custos analyzes", "Read the result"].map((label, i) => {
               const current = dangChay ? 1 : ketQua || hauQua ? 2 : 0;
               return <li key={label} aria-current={i === current ? "step" : undefined}>
                 <span className="demo-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><span>{label}</span>
@@ -841,19 +841,19 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
           </ol>
         </section>
 
-        {ht === undefined && <div className="demo-loading" role="status"><span />Đang chuẩn bị môi trường demo…</div>}
+        {ht === undefined && <div className="demo-loading" role="status"><span />Preparing the demo environment…</div>}
 
         {loiCauHinh !== null && (
           <div
             role="alert"
             className="glass-card mt-7 rounded-2xl border border-nguy/40 p-5"
           >
-            <div className="text-[15px] font-semibold text-chu">Cấu hình demo lỗi</div>
+            <div className="text-[15px] font-semibold text-chu">Demo configuration error</div>
             <p className="mt-1 text-[13px] text-chu-mo">
-              Đọc được <code>hien-truong.json</code> nhưng nội dung không dùng được:{" "}
-              <strong>{loiCauHinh}</strong>. Không có thao tác ký nào được tạo từ dữ liệu này.
+              <code>hien-truong.json</code> was read but its contents are unusable:{" "}
+              <strong>{loiCauHinh}</strong>. No signing action was created from this data.
             </p>
-            <p className="mt-2 text-[13px] text-chu-mo">Dựng lại hiện trường rồi tải lại trang:</p>
+            <p className="mt-2 text-[13px] text-chu-mo">Rebuild the Devnet setup, then reload the page:</p>
             <pre className="mt-3 overflow-x-auto rounded-xl border border-vien bg-slate-50 p-3 font-mono text-[11.5px] text-chu-nhat">
               node --experimental-strip-types scripts/dung-hien-truong.ts
             </pre>
@@ -862,15 +862,15 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
               onClick={() => window.location.reload()}
               className="mt-3 rounded-full border border-vien px-4 py-2 text-[13px] text-chu"
             >
-              Tải lại trang
+              Reload page
             </button>
           </div>
         )}
 
         {chuaDung && (
             <div className="glass-card mt-7 rounded-2xl border border-canh/30 p-5">
-            <div className="text-[15px] font-semibold text-chu">Chưa dựng hiện trường Devnet</div>
-            <p className="mt-1 text-[13px] text-chu-mo">Chạy lệnh dưới đây rồi tải lại trang:</p>
+            <div className="text-[15px] font-semibold text-chu">Devnet setup not built yet</div>
+            <p className="mt-1 text-[13px] text-chu-mo">Run the command below, then reload the page:</p>
             <pre className="mt-3 overflow-x-auto rounded-xl border border-vien bg-slate-50 p-3 font-mono text-[11.5px] text-chu-nhat">
               node --experimental-strip-types scripts/dung-hien-truong.ts
             </pre>
@@ -887,8 +887,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       <WalletIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-[15px] font-semibold text-chu">Tài khoản thử nghiệm</div>
-                      <div className="text-[12px] text-chu-mo">Ví thử nghiệm của bạn</div>
+                      <div className="truncate text-[15px] font-semibold text-chu">Test account</div>
+                      <div className="text-[12px] text-chu-mo">Your test wallet</div>
                     </div>
                   </div>
                   <button
@@ -897,14 +897,14 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     className={`address-pill flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[11px] transition-colors ${daSaoChep ? "is-copied" : ""}`}
                     title={ht.nanNhan}
                   >
-                    <span>{daSaoChep ? "Đã sao chép" : diaChiRutGon}</span>
+                    <span>{daSaoChep ? "Copied" : diaChiRutGon}</span>
                     {daSaoChep ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
                   </button>
                 </div>
 
                 <div className="wallet-balance mt-7">
                   <div className="wallet-balance__label flex items-center gap-2 text-[12px] text-chu-mo">
-                    Số dư token thử nghiệm
+                    Test token balance
                     <span className="token-badge rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-chu-nhat">SPL</span>
                   </div>
                   <div className="wallet-balance__amount mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -913,16 +913,16 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     </span>
                     <span className="balance-unit text-[16px] font-medium text-chu-nhat">{ht.kyHieu ?? "token"}</span>
                   </div>
-                  <p className="wallet-balance__note mt-2 text-[12px] text-chu-mo">Token thử nghiệm trên Devnet · không có giá trị quy đổi</p>
+                  <p className="wallet-balance__note mt-2 text-[12px] text-chu-mo">Devnet test token · no exchange value</p>
                 </div>
               </div>
 
               <div className="wallet-actions border-t px-5 py-5 sm:px-6">
                 <div className="demo-scenario-heading">
                   <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
-                    <span className="demo-section-number">01</span> Thử một yêu cầu ký
+                    <span className="demo-section-number">01</span> Try a signing request
                   </h2>
-                  <span className="demo-scenario-source">Nguồn: {nguonKiem === "trucTiep" ? "Devnet trực tiếp" : "Dữ liệu đã ghi"}</span>
+                  <span className="demo-scenario-source">Source: {nguonKiem === "trucTiep" ? "Live Devnet" : "Recorded data"}</span>
                 </div>
                 <PhongKichBan
                   dangChay={dangChay}
@@ -935,7 +935,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   daChay={daChay}
                   coKetQua={!!ketQua}
                   onMoBangChung={() => {
-                    ghi("mở dữ kiện của kết quả đang xem");
+                    ghi("opened the facts of the current result");
                     setMoBangChung((n) => n + 1);
                   }}
                 />
@@ -948,10 +948,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                 */}
                 <p className="demo-interpreter-note mb-3 text-[12px] leading-relaxed text-chu-mo" data-che-do-ai={coAi === null ? "dang-kiem" : coAi ? "mo-hinh" : "tat-dinh"}>
                   {coAi === null
-                    ? "Đang kiểm máy chủ diễn giải…"
+                    ? "Checking the explanation server…"
                     : coAi
-                      ? "Diễn giải: mô hình ngôn ngữ qua máy chủ, có đường lui tất định. Mức cảnh báo vẫn do engine luật quyết."
-                      : "Diễn giải: tất định — bản này không kết nối máy chủ AI. Mức cảnh báo do engine luật quyết."}
+                      ? "Explanation: language model via server, with a deterministic fallback. The warning level is still decided by the rule engine."
+                      : "Explanation: deterministic — this build has no AI server. The warning level is decided by the rule engine."}
                 </p>
                 {/*
                   PHÒNG KỊCH BẢN — duyệt từ sổ đăng ký, không gõ tay từng nút.
@@ -966,14 +966,14 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                 {/* R0-2 (ROADMAP-GIONG-THAT): bộ chọn nguồn thu vào "Tuỳ chọn" — chip "Nguồn: …" ở đầu mục vẫn
                     luôn nói đang dùng nguồn nào, nên thu gọn không giấu gì khỏi người xem. */}
                 <details className="nguon-tuy-chon mb-3">
-                <summary>Tuỳ chọn nguồn dữ liệu</summary>
+                <summary>Data source options</summary>
                 <fieldset className="nguon-kiem mb-3 rounded-xl border border-vien p-3" data-chon-nguon={nguonKiem}>
-                  <legend className="px-1 text-[12px] font-semibold text-chu">Nguồn dữ liệu</legend>
+                  <legend className="px-1 text-[12px] font-semibold text-chu">Data source</legend>
                   <div className="flex flex-wrap gap-2">
                     {(
                       [
-                        ["trucTiep", "Devnet trực tiếp", "Mô phỏng ngay trên Solana Devnet — cần mạng."],
-                        ["phatLai", "Dữ liệu đã ghi", "Engine chạy lại trên phản hồi RPC đã ghi — không cần mạng."],
+                        ["trucTiep", "Live Devnet", "Simulate right now on Solana Devnet — needs a network."],
+                        ["phatLai", "Recorded data", "The engine re-runs on recorded RPC responses — no network needed."],
                       ] as const
                     ).map(([giaTri, ten, moTa]) => (
                       <label
@@ -1006,7 +1006,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         onClick={() => void kiemTraSanSang()}
                         disabled={sanSang === "dang"}
                       >
-                        {sanSang === "dang" ? "Đang kiểm tra sẵn sàng…" : "Kiểm tra sẵn sàng Devnet"}
+                        {sanSang === "dang" ? "Checking readiness…" : "Check Devnet readiness"}
                       </button>
                       {sanSang && sanSang !== "dang" && <BangSanSang kq={sanSang} />}
                     </div>
@@ -1019,11 +1019,11 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <span className="protection-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl"><ShieldIcon className="h-5 w-5" /></span>
                     <span>
                       <span className="flex items-center gap-2 text-[14px] font-semibold text-chu">
-                        Lớp bảo vệ Custos
+                        Custos protection layer
                         <span className={`h-1.5 w-1.5 rounded-full ${batCustos ? "bg-thuong shadow-[0_0_10px_currentColor]" : "bg-nguy"}`} />
                       </span>
                       <span className="mt-0.5 block text-[11.5px] leading-relaxed text-chu-mo">
-                        {batCustos ? "Mô phỏng và giải thích trước khi ký" : "Tắt kiểm tra — giao dịch đi thẳng tới bước ký"}
+                        {batCustos ? "Simulate and explain before signing" : "Checks off — the transaction goes straight to signing"}
                       </span>
                     </span>
                   </span>
@@ -1034,7 +1034,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     type="checkbox"
                     checked={batCustos}
                     onChange={(e) => setBatCustos(e.target.checked)}
-                    aria-label="Bật hoặc tắt Custos"
+                    aria-label="Turn Custos on or off"
                     className="sr-only"
                   />
                 </label>
@@ -1046,12 +1046,12 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
             <section ref={oKiem} className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
               <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
                 <div>
-                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu"><span className="demo-section-number">02</span> Kiểm tra trước khi ký</h2>
-                  <p className="mt-0.5 text-[12.5px] text-chu-mo">Mô phỏng giao dịch rồi giải thích hậu quả</p>
+                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu"><span className="demo-section-number">02</span> Check before signing</h2>
+                  <p className="mt-0.5 text-[12.5px] text-chu-mo">Simulate the transaction, then explain the consequences</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11.5px] font-medium text-nhan">
                   <ShieldIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                  Chạy trước khi ký
+                  Runs before signing
                 </div>
               </div>
 
@@ -1060,7 +1060,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   <div className="hien dapp-request mb-4 flex items-start gap-3 rounded-xl px-4 py-3">
                     <ExternalIcon className="mt-0.5 h-4 w-4 shrink-0 text-nhan" />
                     <div>
-                      <div className="text-[12px] text-chu-mo">Yêu cầu ký đến từ một trang web bên ngoài</div>
+                      <div className="text-[12px] text-chu-mo">Signing request from an external website</div>
                       <div className="mt-0.5 text-[13.5px] font-medium text-chu">{tuDApp}</div>
                     </div>
                   </div>
@@ -1079,10 +1079,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <div className="demo-empty-heading flex items-start gap-3.5">
                       <div>
                         <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-chu">
-                          Đằng sau một lời mời ký là gì?
+                          What is behind a signing request?
                         </h3>
                         <p className="mt-1 text-[13px] leading-relaxed text-chu-mo">
-                          Thử “Gửi 10 token” rồi “Nhận quà tặng” để đối chiếu. Custos sẽ cho bạn thấy những thay đổi trước khi quyết định ký.
+                          Try “Send 10 tokens to a friend”, then “Claim your gift”, and compare. Custos shows you what changes before you decide to sign.
                         </p>
                       </div>
                     </div>
@@ -1090,23 +1090,23 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <ul className="demo-findings mt-5 space-y-3">
                       {[
                         {
-                          tieuDe: "Tài sản của bạn thay đổi ra sao",
-                          mo: "Số dư và quyền sở hữu, trước và sau khi ký.",
-                          viDu: "Trước → Sau",
+                          tieuDe: "How your assets change",
+                          mo: "Balances and ownership, before and after signing.",
+                          viDu: "Before → After",
                         },
                         {
-                          tieuDe: "Hiểu lý do bằng tiếng Việt",
-                          mo: "Giải thích hậu quả từ dữ kiện đã phân tích.",
-                          viDu: "Lý do cảnh báo",
+                          tieuDe: "Understand why, in plain language",
+                          mo: "Consequences explained from the analyzed facts.",
+                          viDu: "Warning reason",
                         },
                         {
-                          tieuDe: "Phần Custos CHƯA đọc hiểu",
+                          tieuDe: "What Custos could NOT read",
                           // KHÔNG khẳng định điều gì về ví khác: đội không có bằng chứng
                           // so sánh tái lập được, và một giám khảo chỉ cần MỘT phản ví dụ
                           // là bác bỏ cả câu. Nói việc Custos làm, đừng nói việc người khác
                           // không làm.
-                          mo: "Custos luôn hiện phần chưa đọc được trước khi bạn quyết định ký.",
-                          viDu: "Phạm vi đã đọc",
+                          mo: "Custos always shows the parts it could not read before you decide to sign.",
+                          viDu: "Coverage",
                           nhanManh: true,
                         },
                       ].map((m) => (
@@ -1134,16 +1134,16 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       <div className="scanner-ring absolute inset-0 rounded-full" />
                       <ShieldIcon className="h-9 w-9 text-nhan" />
                     </div>
-                    <h3 className="mt-6 text-[18px] font-semibold text-chu">{nguonKiem === "trucTiep" ? "Đang mô phỏng giao dịch" : "Đang phân tích dữ liệu đã ghi"}</h3>
+                    <h3 className="mt-6 text-[18px] font-semibold text-chu">{nguonKiem === "trucTiep" ? "Simulating the transaction" : "Analyzing recorded data"}</h3>
                     <p className="mt-2 max-w-[38ch] text-[13px] leading-relaxed text-chu-mo">
                       {nguonKiem === "trucTiep"
-                        ? "Custos đang đọc từng lệnh trong giao dịch và đối chiếu thay đổi tài sản trên Devnet."
-                        : "Custos đang chạy engine trên phản hồi RPC đã ghi. Không gọi mạng, không ký."}
+                        ? "Custos is reading each instruction in the transaction and checking asset changes on Devnet."
+                        : "Custos is running the engine on recorded RPC responses. No network calls, no signing."}
                     </p>
                     <div className="mt-6 w-full max-w-xs space-y-2">
                       <div className="scan-line h-1.5 overflow-hidden rounded-full"><span /></div>
                       <div className="flex justify-between text-[12px] text-chu-mo">
-                        <span>{nguonKiem === "trucTiep" ? "Đang mô phỏng trên Devnet" : "Đang chạy trên dữ liệu đã ghi"}</span>
+                        <span>{nguonKiem === "trucTiep" ? "Simulating on Devnet" : "Running on recorded data"}</span>
                         <span aria-hidden="true">…</span>
                       </div>
                     </div>
@@ -1167,21 +1167,21 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <div className="grid h-14 w-14 place-items-center rounded-full bg-[#fdf2f2]">
                       <ShieldIcon className="h-7 w-7 text-nguy" />
                     </div>
-                    <h3 className="mt-5 text-[18px] font-semibold text-chu">Không thể kiểm tra giao dịch</h3>
+                    <h3 className="mt-5 text-[18px] font-semibold text-chu">Could not check the transaction</h3>
                     <p className="mt-2 max-w-[42ch] text-[13.5px] leading-relaxed text-chu-mo">
-                      {loi} Chúng tôi <span className="font-medium text-chu">chưa thể kết luận</span> giao
-                      dịch này an toàn.
+                      {loi} We <span className="font-medium text-chu">cannot conclude</span> that this
+                      transaction is safe.
                     </p>
                     <button
                       type="button"
                       className="nut nut-chinh mt-6"
                       onClick={() => {
                         setLoi(null);
-                        ghi("người dùng bấm thử lại");
+                        ghi("user clicked retry");
                         thuLaiRef.current?.();
                       }}
                     >
-                      Thử lại
+                      Retry
                     </button>
                     {/*
                       ĐƯỜNG LUI CÙNG CÂU CHUYỆN — CK-02 / CK-F02.
@@ -1197,15 +1197,15 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         onClick={() => {
                           setLoi(null);
                           setNguonKiem("phatLai");
-                          ghi("người dùng chuyển sang phát lại dữ liệu đã ghi cho đúng kịch bản này");
+                          ghi("user switched to replaying recorded data for this same scenario");
                           void bam(kichCuoi, false, "phatLai");
                         }}
                       >
-                        Chạy lại ca này bằng dữ liệu đã ghi
+                        Re-run this case on recorded data
                       </button>
                     )}
                     <p className="text-[12px] text-chu-mo">
-                      Dữ liệu đã ghi có nhãn phát lại riêng — không phải kết quả mô phỏng trực tiếp.
+                      Recorded data carries its own replay label — it is not a live simulation result.
                     </p>
                     {nguonKiem === "trucTiep" && (
                       <button
@@ -1214,7 +1214,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         onClick={() => void kiemTraSanSang()}
                         disabled={sanSang === "dang"}
                       >
-                        {sanSang === "dang" ? "Đang kiểm tra sẵn sàng…" : "Xem chặng nào của Devnet đang hỏng"}
+                        {sanSang === "dang" ? "Checking readiness…" : "See which Devnet step is failing"}
                       </button>
                     )}
                     {sanSang && sanSang !== "dang" && <BangSanSang kq={sanSang} />}
@@ -1224,14 +1224,14 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                 {hauQua && (
                   <div className="hien">
                     {thongTinNguon && <DaiNguon tt={thongTinNguon} />}
-                    <p className="my-3 text-sm text-chu-mo">Đây là mô phỏng trên hiện trường công khai. Chọn “Ví của bạn” phía trên để ký và thực thi bằng ví thử nghiệm của phiên.</p>
+                    <p className="my-3 text-sm text-chu-mo">This is a simulation on the public Devnet setup. Choose “Your wallet” above to sign and execute with this session's test wallet.</p>
                     <HauQua
                       ketQua={hauQua}
                       onDong={() => setHauQua(null)}
                       onXemCustos={() => {
                         setHauQua(null);
                         setBatCustos(true);
-                        ghi("bật Custos, chạy lại đúng giao dịch đó");
+                        ghi("Custos on, re-running that same transaction");
                         void bam(kichCuoi, true);
                       }}
                     />
@@ -1240,24 +1240,24 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
 
                 {loiYeuCau !== null && (
                   <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
-                    <div className="font-semibold text-chu">Không đọc được yêu cầu từ ứng dụng</div>
+                    <div className="font-semibold text-chu">Could not read the request from the app</div>
                     <p className="mt-1 text-chu-mo">
-                      Một ứng dụng vừa gửi yêu cầu ký sang ví, nhưng nội dung không đọc được:{" "}
-                      <strong>{loiYeuCau}</strong>. Custos <strong>chưa kiểm tra gì cả</strong> — đây
-                      không phải kết luận giao dịch an toàn.
+                      An app just sent a signing request to the wallet, but its contents could not be read:{" "}
+                      <strong>{loiYeuCau}</strong>. Custos <strong>has not checked anything</strong> — this
+                      is not a verdict that the transaction is safe.
                     </p>
                     <p className="mt-1 text-chu-mo">
-                      Hãy quay lại ứng dụng và tạo yêu cầu mới, hoặc thử một tình huống bên dưới.
+                      Go back to the app and create a new request, or try a scenario below.
                     </p>
                   </div>
                 )}
 
                 {daHuy && !ketQua && (
                   <div role="status" aria-live="polite" className="mt-4 rounded-2xl border border-vien p-4 text-[13px]">
-                    <div className="font-semibold text-chu">Đã huỷ yêu cầu</div>
+                    <div className="font-semibold text-chu">Request cancelled</div>
                     <p className="mt-1 text-chu-mo">
-                      Giao dịch này <strong>chưa được gửi</strong> và sẽ không được gửi. Bạn có thể
-                      chạy lại một tình huống bên dưới để thử tiếp.
+                      This transaction <strong>was not sent</strong> and will not be sent. You can
+                      run a scenario below to keep trying.
                     </p>
                   </div>
                 )}
@@ -1266,7 +1266,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   <div
                     ref={oKetQua}
                     tabIndex={-1}
-                    aria-label="Kết quả kiểm tra giao dịch"
+                    aria-label="Transaction check result"
                     className="hien scroll-mt-4 outline-none"
                   >
                     {thongTinNguon && <DaiNguon tt={thongTinNguon} />}
@@ -1295,7 +1295,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         ...(thongTinNguon?.kieu === "phatLai" ? { ghiLuc: thongTinNguon.ghiLuc } : {}),
                       }}
                       onHuy={() => {
-                        ghi("người dùng huỷ giao dịch");
+                        ghi("user cancelled the transaction");
                         /*
                          * VÔ HIỆU LƯỢT KIỂM ĐANG BAY — không chỉ dọn màn hình.
                          *
@@ -1323,10 +1323,10 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       // Phòng phân tích không ký (26/09). Ký thật ở tab "Ví của bạn".
                       choPhepKy={false}
                       onKy={() => {
-                        throw new Error("Phòng phân tích không ký — đây là lỗi lập trình, không phải thao tác người dùng");
+                        throw new Error("The Analysis Room does not sign — this is a programming error, not a user action");
                       }}
                       onTiepTuc={() => {
-                        ghi("người dùng chọn tiếp tục — xem hậu quả theo mô phỏng, không ký, không gửi");
+                        ghi("user chose to continue — viewing simulated consequences, no signing, no sending");
                         setXemHauQua(true);
                       }}
                     />
@@ -1334,7 +1334,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                       <KhungTiepTuc
                         ketQua={ketQua}
                         onChan={() => {
-                          ghi("người dùng quay lại và chặn giao dịch");
+                          ghi("user went back and blocked the transaction");
                           luotRef.current++;
                           setKetQua(null);
                           setXemHauQua(false);
@@ -1349,7 +1349,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                 {nhatKy.length > 0 && (
                   <details className="mt-4">
                     <summary className="cursor-pointer text-[12.5px] text-chu-mo transition-colors hover:text-chu-nhat">
-                      Nhật ký kỹ thuật · {nhatKy.length} sự kiện
+                      Technical log · {nhatKy.length} events
                     </summary>
                     <pre className="technical-log mt-2 max-h-32 overflow-auto rounded-xl p-3 font-mono text-[10.5px] leading-relaxed text-chu-mo">
                       {nhatKy.join("\n")}
@@ -1362,8 +1362,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         )}
 
         <footer className="mt-5 flex flex-col gap-2 px-1 text-[10.5px] leading-relaxed text-chu-mo sm:flex-row sm:items-center sm:justify-between">
-          <span>Ví tham chiếu cho nhà phát triển tích hợp Custos · Không lưu ký tài sản.</span>
-          <span className="text-chu-nhat">Engine luật quyết định mức cảnh báo · AI không được đổi mức</span>
+          <span>Reference wallet for developers integrating Custos · Non-custodial.</span>
+          <span className="text-chu-nhat">The rule engine decides the warning level · AI cannot change it</span>
         </footer>
       </div>
     </div>
@@ -1390,11 +1390,11 @@ function BaoCham({ trucTiep }: { trucTiep: boolean }) {
   if (!cham) return null;
   return (
     <p className="mt-4 max-w-[40ch] text-[12.5px] leading-relaxed text-chu-mo">
-      Devnet đang trả lời chậm hơn thường lệ. Custos vẫn chờ; nếu hết thời hạn, bạn sẽ được báo và có thể thử lại.
+      Devnet is responding more slowly than usual. Custos is still waiting; if the time limit runs out, you will be told and can retry.
       {trucTiep && (
         <>
-          {" "}Muốn xem ngay: mở <strong>Tuỳ chọn nguồn dữ liệu</strong>, chọn <strong>Dữ liệu đã ghi</strong> rồi bấm lại — phát lại dữ liệu Devnet đã
-          ghi, không cần mạng.
+          {" "}Want to see it now? Open <strong>Data source options</strong>, choose <strong>Recorded data</strong> and click again — it replays
+          recorded Devnet data, no network needed.
         </>
       )}
     </p>

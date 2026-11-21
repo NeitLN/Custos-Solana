@@ -73,20 +73,20 @@ test("rights read at a later slot are NOT compared unless attributable to this t
   const r = compareReceipt(expected, sau);
   assert.equal(r.authority, 'unknown', 'quyền đọc sau một giao dịch khác không được tính là dự báo sai');
   assert.equal(r.balance, 'match', 'số dư lấy từ metadata của chính giao dịch — vẫn đối chiếu được');
-  assert.match(nhanDoiChieuQuyen(r.authority, sau), /Chưa quy được/);
+  assert.match(nhanDoiChieuQuyen(r.authority, sau), /Cannot be attributed/);
 });
 test("rights read later but attributable (no newer signature) ARE compared — a real mismatch stays visible", async () => {
   const { nhanDoiChieuQuyen } = await import("../src/live/receipt.ts");
   const sau = { ...observed, owner: 'other-owner', ownerSlot: 900, rightsAttributable: true };
   const r = compareReceipt(expected, sau);
   assert.equal(r.authority, 'mismatch');
-  assert.equal(nhanDoiChieuQuyen(r.authority, sau), 'Có chênh lệch');
+  assert.equal(nhanDoiChieuQuyen(r.authority, sau), 'Differs');
 });
 test("rights read in the SAME slot compare directly; unknown stays unknown", async () => {
   const { nhanDoiChieuQuyen } = await import("../src/live/receipt.ts");
   const cung = { ...observed, ownerSlot: 12, rightsAttributable: false };
   assert.equal(compareReceipt(expected, cung).authority, 'match');
-  assert.equal(nhanDoiChieuQuyen('unknown', { slot: 12, ownerSlot: null }), 'Chưa đủ dữ liệu');
+  assert.equal(nhanDoiChieuQuyen('unknown', { slot: 12, ownerSlot: null }), 'Not enough data');
 });
 test("attribution: only when the newest signature on the source account is ours", async () => {
   const { quyChoGiaoDich } = await import("../src/live/session.ts");
@@ -108,7 +108,7 @@ test("live: consume REJECTS an anchor that went stale between prepare and signin
     const gate = new ConsentGate(); const bytes = tx().message.serialize();
     const id = gate.prepare(bytes, signer, true, neoKetQua(bytes, signer, "devnet"));
     mock.timers.tick(60 * 60 * 1000); // một giờ sau mới bấm ký
-    assert.throws(() => gate.consume(id, bytes, signer), /cũ/);
+    assert.throws(() => gate.consume(id, bytes, signer), /stale/);
   } finally {
     mock.timers.reset();
   }

@@ -1,5 +1,9 @@
 import type { InspectResult } from "@custos-solana/types";
-import { NHAN, dinhDangSo } from "@custos-solana/core";
+import { NHAN, NHAN_EN, dinhDangSo } from "@custos-solana/core";
+
+/** Ví gọi `inspect()` với `locale: "en"`; vẫn nhận nhãn tiếng Việt để kết quả cũ/fixture không rơi mất. */
+const coTienTo = (nhan: string, khoa: keyof typeof NHAN) => nhan.startsWith(NHAN[khoa]) || nhan.startsWith(NHAN_EN[khoa]);
+const laNhan = (nhan: string, khoa: keyof typeof NHAN) => nhan === NHAN[khoa] || nhan === NHAN_EN[khoa];
 
 /**
  * "NẾU BẠN TIẾP TỤC" — góp ý mentor 28/09: người xem phải thấy được, tiếp tục thì mất gì.
@@ -27,7 +31,7 @@ function chenhLech(d: Dong): string | undefined {
   if (!s || s.truoc === undefined || s.sau === undefined || typeof s.decimals !== "number") return undefined;
   const c = BigInt(s.sau) - BigInt(s.truoc);
   if (c === 0n) return undefined;
-  const so = dinhDangSo(c < 0n ? -c : c, s.decimals);
+  const so = dinhDangSo(c < 0n ? -c : c, s.decimals, "en");
   return `${c < 0n ? "−" : "+"}${so}`;
 }
 
@@ -38,8 +42,8 @@ export function hauQuaNeuKy(kq: Pick<InspectResult, "diff" | "coverage">): {
   const dong: DongHauQuaKy[] = [];
   for (const d of kq.diff) {
     if (d.before === d.after) continue;
-    const ten = d.label.replace(/ sau khi ký$/, "");
-    if (d.label.startsWith(NHAN.SO_DU) || d.label === NHAN.SO_DU_SOL) {
+    const ten = d.label.replace(/ (sau khi ký|after signing)$/, "");
+    if (coTienTo(d.label, "SO_DU") || laNhan(d.label, "SO_DU_SOL")) {
       const chenh = chenhLech(d);
       const giam = chenh?.startsWith("−") ?? false;
       dong.push({
@@ -48,44 +52,44 @@ export function hauQuaNeuKy(kq: Pick<InspectResult, "diff" | "coverage">): {
         truoc: d.before,
         sau: d.after,
         ...(chenh ? { chenh } : {}),
-        giaiThich: giam ? "Khoản này rời khỏi tài khoản của bạn ngay khi giao dịch được xác nhận." : "Khoản này vào tài khoản của bạn.",
+        giaiThich: giam ? "This amount leaves your account as soon as the transaction is confirmed." : "This amount arrives in your account.",
         nghiemTrong: giam && d.severity === "danger",
       });
-    } else if (d.label.startsWith(NHAN.CHU_SO_HUU)) {
+    } else if (coTienTo(d.label, "CHU_SO_HUU")) {
       dong.push({
         loai: "quyen",
         tieuDe: ten,
         truoc: d.before,
         sau: d.after,
         giaiThich:
-          "Tài khoản token không còn thuộc về bạn. Chủ mới chuyển được mọi token còn lại trong đó bất cứ lúc nào, không cần bạn ký.",
+          "The token account no longer belongs to you. The new owner can move every remaining token in it at any time, without your signature.",
         nghiemTrong: true,
       });
-    } else if (d.label.startsWith(NHAN.DUOC_PHEP_RUT)) {
+    } else if (coTienTo(d.label, "DUOC_PHEP_RUT")) {
       dong.push({
         loai: "quyen",
         tieuDe: ten,
         truoc: d.before,
         sau: d.after,
-        giaiThich: "Ví này rút được token của bạn tới hạn mức trên, nhiều lần, không cần bạn ký thêm.",
+        giaiThich: "This wallet can withdraw your tokens up to the allowance above, repeatedly, without another signature from you.",
         nghiemTrong: d.severity === "danger",
       });
-    } else if (d.label.startsWith(NHAN.QUYEN_DONG)) {
+    } else if (coTienTo(d.label, "QUYEN_DONG")) {
       dong.push({
         loai: "quyen",
         tieuDe: ten,
         truoc: d.before,
         sau: d.after,
-        giaiThich: "Ví này đóng được tài khoản token khi số dư về 0 và nhận tiền thuê của tài khoản.",
+        giaiThich: "This wallet can close the token account once its balance reaches 0 and collect the account rent.",
         nghiemTrong: d.severity === "danger",
       });
-    } else if (d.label.startsWith(NHAN.CHUONG_TRINH)) {
+    } else if (coTienTo(d.label, "CHUONG_TRINH")) {
       dong.push({
         loai: "quyen",
         tieuDe: ten,
         truoc: d.before,
         sau: d.after,
-        giaiThich: "Một chương trình khác nắm quyền điều khiển tài khoản này.",
+        giaiThich: "Another program takes control of this account.",
         nghiemTrong: true,
       });
     }
@@ -95,7 +99,7 @@ export function hauQuaNeuKy(kq: Pick<InspectResult, "diff" | "coverage">): {
     dong,
     ghiChuPhamVi:
       analyzed < total
-        ? `Custos mới đọc hiểu ${analyzed}/${total} lệnh — phần chưa đọc hiểu có thể còn thay đổi khác không hiện ở đây.`
+        ? `Custos understood only ${analyzed}/${total} instructions — the unread part may contain other changes not shown here.`
         : null,
   };
 }

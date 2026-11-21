@@ -90,7 +90,7 @@ export function WalletExecution({
           try {
             cache?.write(JSON.stringify(session.snapshot()));
           } catch (e) {
-            setCacheNotice("Không lưu được phiên. Giữ tab này và tải bằng chứng JSON trước khi đóng.");
+            setCacheNotice("Could not save the session. Keep this tab open and download the JSON evidence before closing.");
             throw e;
           }
         }
@@ -111,7 +111,7 @@ export function WalletExecution({
       cache?.write(JSON.stringify(session.snapshot()));
     } catch {
       setCacheNotice(
-        "Không lưu được phiên trên trình duyệt. Giữ tab này và tải bằng chứng JSON trước khi đóng.",
+        "Could not save the session in the browser. Keep this tab open and download the JSON evidence before closing.",
       );
     }
   }, [session, view, cacheReady, cache]);
@@ -134,13 +134,13 @@ export function WalletExecution({
         else {
           setCachedSession(saved);
           setCacheNotice(
-            "Có phiên đã lưu trên máy. Khôi phục để đọc lại trạng thái Devnet trước khi thao tác.",
+            "A saved session exists on this device. Restore it to re-read the Devnet state before doing anything.",
           );
         }
       } else setCacheReady(true);
     } catch {
       setCacheNotice(
-        "Không đọc được bản lưu. Có thể bắt đầu phiên mới; bản lưu không được dùng làm bằng chứng.",
+        "Could not read the saved copy. You can start a new session; the saved copy is not used as evidence.",
       );
       setCacheReady(true);
     }
@@ -167,18 +167,18 @@ export function WalletExecution({
         await navigator.locks.request(`custos.devnet.${view.wallet}`, { ifAvailable: true }, async (lock) => {
           if (!lock)
             throw new Error(
-              "Ví này đang được thao tác trong tab khác. Chờ tab đó hoàn tất rồi cập nhật lại.",
+              "This wallet is being used in another tab. Wait for that tab to finish, then refresh.",
             );
           if (!cache)
             throw new Error(
-              "Cần cho phép lưu trạng thái công khai trên trình duyệt trước khi dùng ví thử nghiệm. Khoá ký không được lưu.",
+              "Allow the browser to store public state before using the test wallet. The signing key is never stored.",
             );
           cache.assertCurrent();
           await fn();
         });
       else
         throw new Error(
-          "Trình duyệt cần hỗ trợ Web Locks trên HTTPS hoặc localhost để tránh hai tab cùng ký.",
+          "The browser must support Web Locks over HTTPS or localhost so two tabs cannot sign at once.",
         );
       return true;
     } catch (e) {
@@ -225,11 +225,11 @@ export function WalletExecution({
   const stage = view.receipt?.observation ? 2 : p || view.busy ? 1 : 0;
   const status =
     view.send.pha === "dangKy"
-      ? "Đang ký giao dịch…"
+      ? "Signing the transaction…"
       : view.send.pha === "dangGui"
-        ? "Đang gửi lên Devnet…"
+        ? "Sending to Devnet…"
         : view.send.pha === "dangXacNhan"
-          ? "Đã gửi · đang chờ xác nhận…"
+          ? "Sent · waiting for confirmation…"
           : view.status;
   const copy = () =>
     run(async () => {
@@ -237,7 +237,7 @@ export function WalletExecution({
       setCopied(true);
     });
   const unlockFile = async (file: File) => {
-    if (file.size > 4096) throw new Error("File keypair không hợp lệ.");
+    if (file.size > 4096) throw new Error("Invalid keypair file.");
     let key: Keypair;
     try {
       const raw: unknown = JSON.parse(await file.text());
@@ -250,7 +250,7 @@ export function WalletExecution({
       key = Keypair.fromSecretKey(Uint8Array.from(raw));
     } catch {
       throw new Error(
-        "Không đọc được keypair JSON 64 byte. File chỉ được xử lý trong tab, không tải lên máy chủ.",
+        "Could not read a 64-byte JSON keypair. The file is processed only in this tab and never uploaded to a server.",
       );
     }
     session.unlock(key);
@@ -267,34 +267,34 @@ export function WalletExecution({
   const khoiThietLap = (funding || !view.accounts || !view.canSign) && (
               <section className="wallet-funding" aria-labelledby="funding-title">
                 <h2 id="funding-title">
-                  {!view.canSign ? "Dành cho người trình diễn" : view.accounts ? "Nhận SOL Devnet" : "Chuẩn bị ví của bạn"}
+                  {!view.canSign ? "For the presenter" : view.accounts ? "Get Devnet SOL" : "Prepare your wallet"}
                 </h2>
                 {!view.canSign && (
                   <p className="wallet-presenter-note">
-                    Phần này cần file khoá của ví thử nghiệm — đội phát triển giữ. Không có khoá, bạn vẫn xem và
-                    chặn được yêu cầu ký của SolBonus ở trên khi ví còn phiên DEMO trên Devnet.
+                    This part needs the test wallet's key file, which the dev team holds. Without the key you can still view and
+                    block SolBonus's signing request above while the wallet has a DEMO session on Devnet.
                   </p>
                 )}
                 <p>
-                  Địa chỉ này cố định qua các lần mở trang. Giữ file keypair trên máy để dùng lại. Nạp tối
-                  thiểu 0,012 SOL Devnet để tạo 500 DEMO.
+                  This address stays the same every time you open the page. Keep the keypair file on your device to reuse it. Fund at
+                  least 0.012 Devnet SOL to create 500 DEMO.
                 </p>
-                <label htmlFor="live-wallet-address">Địa chỉ nhận SOL Devnet</label>
+                <label htmlFor="live-wallet-address">Address to receive Devnet SOL</label>
                 <input id="live-wallet-address" value={view.wallet} readOnly />
                 <div className="wallet-inline-actions">
                   <button disabled={view.busy} onClick={() => void copy()}>
-                    Sao chép
+                    Copy
                   </button>
                   <a href={DEMO_FAUCET_URL} target="_blank" rel="noreferrer">
-                    Mở Solana Faucet ↗
+                    Open Solana Faucet ↗
                   </a>
                   <button disabled={view.busy} onClick={() => void run(() => session.refresh())}>
-                    Cập nhật số dư
+                    Refresh balance
                   </button>
                 </div>
                 {!view.canSign && (
                   <div className="wallet-unlock">
-                    <p className="wallet-unlock-title">Mở quyền ký bằng keypair của ví mặc định</p>
+                    <p className="wallet-unlock-title">Unlock signing with the default wallet's keypair</p>
                     {/* Điều khiển gốc của trình duyệt hiện "Choose File / No file chosen" giữa giao
                         diện tiếng Việt (review 26/09, mục 3.11). Input vẫn giữ nguyên để bàn phím
                         và trình đọc màn hình dùng được; nó chỉ ẩn về thị giác, nhãn ngay sau nó
@@ -312,31 +312,31 @@ export function WalletExecution({
                       }}
                     />
                     <label htmlFor="demo-keypair" className="wallet-file-btn">
-                      Chọn file khoá (.json)…
+                      Choose key file (.json)…
                     </label>
                     <p>
-                      Chọn .devnet/vi-demo.json trên máy. File được đọc tại trình duyệt, không gửi lên server
-                      hoặc lưu vào localStorage.
+                      Choose .devnet/vi-demo.json on your device. The file is read in the browser, never sent to a server
+                      or saved to localStorage.
                     </p>
                     <p className="wallet-unlock-warning" role="note">
-                      <strong>Chỉ dùng với ví Devnet cố định của bản thử nghiệm.</strong> Không bao giờ nạp khoá
-                      riêng của ví thật vào một trang web — kể cả trang này.
+                      <strong>Only for this demo's fixed Devnet wallet.</strong> Never load the private key
+                      of a real wallet into a website — including this one.
                     </p>
                   </div>
                 )}
-                {view.canSign && <p>Đã mở quyền ký đúng ví mặc định.</p>}
+                {view.canSign && <p>Signing unlocked for the default wallet.</p>}
                 {!view.accounts && (
                   <>
                     <p>
-                      Thao tác tạo mint, ba tài khoản token và cấp 0,001 SOL Devnet cho ứng dụng thử nghiệm
-                      trả phí bước sau. Không thể hoàn tác giao dịch đã gửi.
+                      This creates a mint and three token accounts, and gives the test app 0.001 Devnet SOL
+                      to pay fees in later steps. A sent transaction cannot be undone.
                     </p>
                     <button
                       className="nut nut-chinh wallet-setup-button"
                       disabled={view.busy || !view.canSign || !cacheReady || unresolved}
                       onClick={() => void run(() => session.setup())}
                     >
-                      Ký tạo phiên thử nghiệm
+                      Sign to create a test session
                     </button>
                   </>
                 )}
@@ -345,8 +345,8 @@ export function WalletExecution({
 
   return (
     <div className="app-shell demo-shell wallet-execution min-h-screen bg-nen text-chu">
-      <DaiPhamVi nhan="Mạng thử nghiệm">
-        <strong>Solana Devnet</strong> · ví thử nghiệm cố định · token không có giá trị tiền thật
+      <DaiPhamVi nhan="Test network">
+        <strong>Solana Devnet</strong> · fixed test wallet · tokens have no real-money value
       </DaiPhamVi>
       <div className="wallet-container">
         <header className="wallet-header flex items-center justify-between gap-4">
@@ -359,7 +359,7 @@ export function WalletExecution({
               <p className="wallet-brand__title">
                 Custos <span className="demo-brand-label">Devnet</span>
               </p>
-              <p className="wallet-brand__subtitle">Ví tham chiếu tích hợp Custos SDK</p>
+              <p className="wallet-brand__subtitle">Reference wallet with the Custos SDK built in</p>
             </div>
           </a>
           <div className="wallet-header__actions">
@@ -369,18 +369,18 @@ export function WalletExecution({
         {chuyenMan}
         <section className="demo-intro" aria-labelledby="demo-title">
           <div>
-            <p className="demo-eyebrow">Ví của bạn · Quyết định của bạn</p>
+            <p className="demo-eyebrow">Your wallet · Your decision</p>
             <h1 id="demo-title">
-              Một giao dịch.
+              One transaction.
               <br />
-              <span>Nhìn rõ trước khi ký.</span>
+              <span>See it clearly before you sign.</span>
             </h1>
             <p className="demo-intro__description">
-              Gửi token, xem cảnh báo trước khi ký và kiểm chứng điều thực sự xảy ra với tài khoản của bạn.
+              Send tokens, see the warning before you sign, and verify what actually happened to your account.
             </p>
           </div>
-          <ol className="demo-steps" aria-label="Các bước giao dịch">
-            {["Chọn giao dịch", "Xem & ký", "Xác nhận trên chuỗi"].map((label, i) => (
+          <ol className="demo-steps" aria-label="Transaction steps">
+            {["Pick a transaction", "Review & sign", "Confirm on-chain"].map((label, i) => (
               <li key={label} aria-current={stage === i ? "step" : undefined}>
                 <span className="demo-steps__number">0{i + 1}</span>
                 <span>{label}</span>
@@ -394,11 +394,11 @@ export function WalletExecution({
                 `order` từng làm focus đi qua số dư và ba nút nhanh trước (WCAG 2.4.3, review 06/10). */}
             {!view.canSign && (
               <section className="wallet-start" aria-labelledby="wallet-start-title">
-                <h2 id="wallet-start-title">Mở một ứng dụng để thử</h2>
+                <h2 id="wallet-start-title">Open an app to try it</h2>
                 <p>
-                  SolBonus là một dApp độc hại <strong>mô phỏng</strong>. Nó kết nối với Ví Custos qua chuẩn ví và
-                  dựng một yêu cầu ký từ phiên token DEMO của ví này trên Devnet; Custos kiểm đúng giao dịch đó
-                  trong cửa sổ ký. Xem cảnh báo và chặn không cần file khoá — chỉ ký thật mới cần.
+                  SolBonus is a <strong>SIMULATED</strong> malicious dApp. It connects to Custos Wallet via the wallet standard and
+                  builds a signing request from this wallet's DEMO token session on Devnet; Custos checks that exact transaction
+                  in the signing window. Viewing the warning and blocking need no key file — only real signing does.
                 </p>
                 <button
                   type="button"
@@ -406,10 +406,10 @@ export function WalletExecution({
                   disabled={view.busy || unresolved || !!p}
                   onClick={openDapp}
                 >
-                  Mở SolBonus ↗
+                  Open SolBonus ↗
                 </button>
                 <p className="wallet-start__phu">
-                  Chỉ muốn đọc phân tích? Chuyển sang <strong>Phòng phân tích</strong> ở thanh phía trên.
+                  Just want to read the analysis? Switch to the <strong>Analysis Room</strong> in the bar above.
                 </p>
               </section>
             )}
@@ -420,8 +420,8 @@ export function WalletExecution({
                     <WalletIcon className="h-5 w-5" />
                   </span>
                   <div>
-                    <strong className="text-chu">Tài khoản của bạn</strong>
-                    <p className="text-chu-mo">Ví thử nghiệm mặc định</p>
+                    <strong className="text-chu">Your account</strong>
+                    <p className="text-chu-mo">Default test wallet</p>
                   </div>
                 </div>
                 <button
@@ -429,12 +429,12 @@ export function WalletExecution({
                   title={view.wallet}
                   onClick={() => void copy()}
                 >
-                  <span>{copied ? "Đã sao chép" : short(view.wallet)}</span>
+                  <span>{copied ? "Copied" : short(view.wallet)}</span>
                   <CopyIcon className="h-3.5 w-3.5" />
                 </button>
               </div>
               <div className="wallet-balance">
-                <p className="wallet-balance__label">Số dư tài khoản DEMO</p>
+                <p className="wallet-balance__label">DEMO account balance</p>
                 <div className="wallet-balance__amount flex items-baseline gap-3">
                   {/* Chưa đọc số dư: giữ chữ nhưng ở cỡ trạng thái — con số khổng lồ "Chưa đo" chiếm chỗ đẹp
                       nhất mà không nói gì (redesign 06/10). */}
@@ -445,26 +445,26 @@ export function WalletExecution({
                 </div>
                 <p className="wallet-balance__note text-chu-mo">
                   {view.lamports === null
-                    ? "Cập nhật để xem SOL trả phí"
-                    : `${dinhDangSo(BigInt(view.lamports), 9)} SOL Devnet trả phí`}
+                    ? "Refresh to see the SOL for fees"
+                    : `${dinhDangSo(BigInt(view.lamports), 9, "en")} Devnet SOL for fees`}
                 </p>
-                {lostOwner && <p className="wallet-owner-lost">Đã mất quyền kiểm soát tài khoản này</p>}
+                {lostOwner && <p className="wallet-owner-lost">Control of this account has been lost</p>}
                 {view.accounts && (
                   <div className="wallet-rights">
                     <div>
-                      <span>Bạn còn sử dụng được</span>
+                      <span>You can still use</span>
                       <strong>
-                        {view.closed ? "Tài khoản đã đóng" : `${token(lostOwner ? "0" : view.balance)} DEMO`}
+                        {view.closed ? "Account closed" : `${token(lostOwner ? "0" : view.balance)} DEMO`}
                       </strong>
                     </div>
                     <div>
-                      <span>Ứng dụng được phép rút</span>
-                      <strong>{view.delegate ? `${token(view.allowance)} DEMO` : "Không có quyền"}</strong>
+                      <span>App may withdraw</span>
+                      <strong>{view.delegate ? `${token(view.allowance)} DEMO` : "No allowance"}</strong>
                     </div>
                     {view.closeAuthority && (
                       <p>
-                        Quyền đóng tài khoản đã trao cho {short(view.closeAuthority)}. Chỉ đóng được khi hết
-                        DEMO.
+                        Close authority handed to {short(view.closeAuthority)}. The account can only be closed once it holds
+                        no DEMO.
                       </p>
                     )}
                   </div>
@@ -473,13 +473,13 @@ export function WalletExecution({
               <div className="wallet-quick-actions">
                 <button disabled={!ready} onClick={() => setShowSend((v) => !v)}>
                   <SendIcon className="h-4 w-4" />
-                  Gửi DEMO
+                  Send DEMO
                 </button>
                 <button disabled={view.busy || !!p} onClick={() => setFunding((v) => !v)}>
-                  ↓ Nhận SOL
+                  ↓ Get SOL
                 </button>
                 <button disabled={view.busy || !!p} onClick={() => void run(() => session.refresh())}>
-                  ↻ Cập nhật
+                  ↻ Refresh
                 </button>
               </div>
               {showSend && (
@@ -490,7 +490,7 @@ export function WalletExecution({
                     void prepare("transfer");
                   }}
                 >
-                  <label htmlFor="demo-send-amount">Số lượng DEMO</label>
+                  <label htmlFor="demo-send-amount">DEMO amount</label>
                   <input
                     id="demo-send-amount"
                     inputMode="decimal"
@@ -498,7 +498,7 @@ export function WalletExecution({
                     disabled={view.busy || !!p}
                     onChange={(e) => setAmount(e.target.value)}
                   />
-                  <label htmlFor="demo-send-target">Tài khoản token nhận (cùng mint DEMO)</label>
+                  <label htmlFor="demo-send-target">Recipient token account (same DEMO mint)</label>
                   <input
                     id="demo-send-target"
                     value={target}
@@ -507,11 +507,11 @@ export function WalletExecution({
                     onChange={(e) => setTarget(e.target.value)}
                   />
                   <p>
-                    Để trống để gửi tới tài khoản nhận của phiên. Đây là địa chỉ tài khoản token, không phải
-                    địa chỉ ví.
+                    Leave empty to send to the session's recipient account. This is a token account address, not a
+                    wallet address.
                   </p>
                   <button className="nut nut-chinh" disabled={!ready}>
-                    Kiểm tra giao dịch gửi
+                    Check the send transaction
                   </button>
                 </form>
               )}
@@ -524,18 +524,18 @@ export function WalletExecution({
                 <span className="flex items-center gap-3">
                   <ShieldIcon className="h-5 w-5" />
                   <span>
-                    <strong>Lớp bảo vệ Custos</strong>
+                    <strong>Custos protection layer</strong>
                     <small>
                       {view.protected
-                        ? "Đọc hậu quả trước khi quyết định ký"
-                        : "Tắt cảnh báo · vẫn cần bạn đồng ý ký"}
+                        ? "Read the consequences before deciding to sign"
+                        : "Warnings off · your consent to sign is still required"}
                     </small>
                   </span>
                 </span>
                 <input
                   type="checkbox"
                   role="switch"
-                  aria-label="Bảo vệ bằng Custos"
+                  aria-label="Protect with Custos"
                   checked={view.protected}
                   disabled={view.busy}
                   onChange={(e) => {
@@ -547,7 +547,7 @@ export function WalletExecution({
                   }}
                 />
               </label>
-              <h2 className="wallet-dapp-heading">Ứng dụng đang kết nối</h2>
+              <h2 className="wallet-dapp-heading">Connected apps</h2>
               {cacheNotice && (
                 <section className="wallet-session-recovery">
                   <p role="status">{cacheNotice}</p>
@@ -560,26 +560,26 @@ export function WalletExecution({
                             await session.restore(cachedSession);
                             setCachedSession(null);
                             setCacheNotice(
-                              "Đã khôi phục phiên. Khoá ứng dụng của phiên cũ không được lưu; bước ứng dụng cần tab gốc hoặc phiên mới.",
+                              "Session restored. The old session's app key was not saved; app steps need the original tab or a new session.",
                             );
                             setCacheReady(true);
                             setFunding(true);
                           })
                         }
                       >
-                        Khôi phục phiên đã lưu
+                        Restore saved session
                       </button>
                       <button
                         disabled={view.busy || !mayDiscardSession(cachedSession)}
-                        title="Phiên có giao dịch chưa rõ phải được khôi phục và tra cứu trước."
+                        title="A session with an unresolved transaction must be restored and looked up first."
                         onClick={() => void run(async () => {
                           if (!mayDiscardSession(cachedSession)) return;
                           setCachedSession(null);
                           setCacheReady(true);
-                          setCacheNotice("Bắt đầu ngữ cảnh mới. Các giao dịch đã gửi vẫn tồn tại trên Devnet.");
+                          setCacheNotice("Starting fresh. Transactions already sent still exist on Devnet.");
                         })}
                       >
-                        Bỏ bản lưu cục bộ
+                        Discard local copy
                       </button>
                     </div>
                   )}
@@ -599,25 +599,25 @@ export function WalletExecution({
                   <GiftIcon className="h-5 w-5" />
                 </span>
                 <span>
-                  <strong>Nhận quà tặng</strong>
-                  <small>Ứng dụng thử nghiệm · ký để nhận quà</small>
+                  <strong>Claim your gift</strong>
+                  <small>Test app · sign to receive your gift</small>
                 </span>
                 <span aria-hidden="true">↗</span>
               </button>
               <p className="wallet-small-print">
-                Kịch bản có điều kiện ẩn: chuyển nửa số token và đổi chủ tài khoản. Chỉ dùng token DEMO của
-                phiên này.
+                A scenario with hidden terms: it moves half the tokens and changes the account owner. Uses only this session's DEMO
+                tokens.
               </p>
               <button className="wallet-dapp-link" disabled={view.busy || unresolved || !!p} onClick={openDapp}>
-                Mở SolBonus độc lập ↗
+                Open SolBonus separately ↗
               </button>
               <details className="wallet-scenarios">
-                <summary>Khám phá các tình huống về quyền</summary>
+                <summary>Explore control scenarios</summary>
                 <p>
-                  Các bước bên dưới tạo giao dịch Devnet riêng. Mức cảnh báo do Custos đo từ giao dịch, không
-                  được đặt sẵn theo tên tình huống.
+                  The steps below create separate Devnet transactions. Custos measures the warning level from the transaction; it is not
+                  preset by the scenario name.
                 </p>
-                <label htmlFor="scenario-amount">Lượng cấp quyền / ứng dụng chuyển / gửi kèm (DEMO)</label>
+                <label htmlFor="scenario-amount">Allowance / app transfer / extra send amount (DEMO)</label>
                 <input
                   id="scenario-amount"
                   inputMode="decimal"
@@ -640,28 +640,28 @@ export function WalletExecution({
                     >
                       <strong>
                         {SCENARIOS[k].title}
-                        <span>{SCENARIOS[k].signer === "actor" ? "Ứng dụng ký" : "Bạn ký"}</span>
+                        <span>{SCENARIOS[k].signer === "actor" ? "App signs" : "You sign"}</span>
                       </strong>
                       <small>{SCENARIOS[k].detail}</small>
                     </button>
                   ))}
                 {view.accounts && !view.actorAvailable && (
                   <p>
-                    Khoá ứng dụng chỉ tồn tại ở tab tạo phiên. Mở tab đó hoặc tạo phiên mới để chạy bước ứng
-                    dụng; không lưu khoá vào trình duyệt.
+                    The app key exists only in the tab that created the session. Open that tab or create a new session to run app
+                    steps; the key is never saved to the browser.
                   </p>
                 )}
               </details>
               <details className="wallet-settings">
-                <summary>Cài đặt và dữ kiện của phiên</summary>
+                <summary>Session settings and facts</summary>
                 <p>
-                  Diễn giải:{" "}
+                  Explanation:{" "}
                   {aiAvailable === null
-                    ? "đang kiểm tra máy chủ"
+                    ? "checking the server"
                     : aiAvailable
-                      ? "có máy chủ AI; có đường lui tất định"
-                      : "tất định; bản này chưa kết nối máy chủ AI"}
-                  . Mức cảnh báo luôn do engine luật quyết.
+                      ? "AI server available; deterministic fallback"
+                      : "deterministic; this build has no AI server"}
+                  . The warning level is always decided by the rule engine.
                 </p>
                 {aiAvailable && (
                   <label>
@@ -671,12 +671,12 @@ export function WalletExecution({
                       disabled={view.busy || !!p}
                       onChange={(e) => setUseAI(e.target.checked)}
                     />{" "}
-                    Dùng mô hình để diễn giải
+                    Use the model for explanations
                   </label>
                 )}
                 <p>
-                  Địa chỉ ví không đổi khi tải lại. Chọn lại file keypair để mở quyền ký; có thể tạo phiên
-                  token mới và tra receipt cũ. Khoá không được nhúng vào website.
+                  The wallet address stays the same on reload. Choose the keypair file again to unlock signing; you can create a new token
+                  session and look up old receipts. The key is never embedded in the website.
                 </p>
                 {view.accounts && (
                   <>
@@ -684,13 +684,13 @@ export function WalletExecution({
                       Mint <code>{view.accounts.mint}</code>
                     </p>
                     <p>
-                      Tài khoản nguồn <code>{view.accounts.source}</code>
+                      Source account <code>{view.accounts.source}</code>
                     </p>
                     <a href={explorer(view.accounts.setupSignature)} target="_blank" rel="noreferrer">
-                      Giao dịch tạo phiên ↗
+                      Session setup transaction ↗
                     </a>
                     <button disabled={view.busy || !!p || !view.canSign || !cacheReady || unresolved} onClick={() => void run(() => session.setup())}>
-                      Ký tạo phiên mới
+                      Sign to create a new session
                     </button>
                   </>
                 )}
@@ -702,14 +702,14 @@ export function WalletExecution({
               <HoatDong
                 rpc={chonRpc(ht)}
                 diaChi={view.wallet}
-                tieuDe="Giao dịch gần đây của ví này trên Devnet"
-                khiRong="Ví này chưa có giao dịch nào trên Devnet. Người trình diễn có thể ký thử bằng file khoá."
+                tieuDe="Recent transactions of this wallet on Devnet"
+                khiRong="This wallet has no transactions on Devnet yet. The presenter can sign a test transaction with the key file."
               />
             )}
             <section className="wallet-history" aria-labelledby="history-title" hidden={history.length === 0}>
-              <h2 id="history-title">Lịch sử giao dịch</h2>
+              <h2 id="history-title">Transaction history</h2>
               {history.length === 0 ? (
-                <p>Chưa có giao dịch được ký. Huỷ trước khi ký không tạo giao dịch trên chuỗi.</p>
+                <p>No signed transactions yet. Cancelling before signing creates no on-chain transaction.</p>
               ) : (
                 <ul>
                   {history.map((r) => (
@@ -722,18 +722,18 @@ export function WalletExecution({
                         <strong>
                           {r.observation
                             ? r.observation.err === null
-                              ? "Đã xác nhận ↗"
-                              : "Thực thi lỗi ↗"
+                              ? "Confirmed ↗"
+                              : "Execution failed ↗"
                             : r.resolution === "expired-unobserved"
-                              ? "Hết hạn · chưa quan sát"
-                              : "Chưa xác minh ↗"}
+                              ? "Expired · not observed"
+                              : "Not verified ↗"}
                         </strong>
                       </a>
                       <button
                         disabled={view.busy || !!p}
                         onClick={() => void run(() => session.readReceipt(r))}
                       >
-                        Đọc bằng chứng
+                        Read evidence
                       </button>
                     </li>
                   ))}
@@ -752,13 +752,13 @@ export function WalletExecution({
           >
             <header className="review-header flex items-center justify-between">
               <div>
-                <p className="demo-eyebrow">Xác nhận giao dịch</p>
+                <p className="demo-eyebrow">Transaction confirmation</p>
                 <h2 id="wallet-review-title">
-                  {p ? "Bạn đang chuẩn bị ký" : view.receipt ? "Kết quả giao dịch" : "Custos bên cạnh bạn"}
+                  {p ? "You are about to sign" : view.receipt ? "Transaction result" : "Custos at your side"}
                 </h2>
               </div>
               <span className={`wallet-protection-badge ${view.protected ? "" : "is-off"}`}>
-                {view.protected ? "Custos bật" : "Custos tắt"}
+                {view.protected ? "Custos on" : "Custos off"}
               </span>
             </header>
             <div className="review-body">
@@ -777,19 +777,19 @@ export function WalletExecution({
                   disabled={view.busy}
                   onClick={() => void run(() => session.recoverSetup())}
                 >
-                  Tra cứu tạo phiên — không gửi lại
+                  Look up session setup — no resend
                 </button>
               )}
               {lostOwner && (
                 <div className="live-error">
-                  Số token còn lại vẫn ở tài khoản nguồn, nhưng ví của bạn không còn quyền sử dụng. Tạo phiên
-                  mới để thử tiếp.
+                  The remaining tokens are still in the source account, but your wallet can no longer use them. Create a new
+                  session to keep trying.
                   <button
                     className="nut nut-phu"
                     disabled={view.busy}
                     onClick={() => void run(() => session.setup())}
                   >
-                    Ký tạo phiên mới
+                    Sign to create a new session
                   </button>
                 </div>
               )}
@@ -798,61 +798,61 @@ export function WalletExecution({
                   ref={requestRef}
                   tabIndex={-1}
                   className="wallet-request"
-                  aria-label="Yêu cầu ký giao dịch"
+                  aria-label="Transaction signing request"
                 >
                   {p.protected && p.result && !confirm ? (
                     <CanhBao
                       ketQua={p.result}
                       onHuy={cancel}
                       onKy={() => setConfirm(true)}
-                      boiCanh={{ cluster: "devnet", nguon: p.nguonDoc.length ? p.nguonDoc.join(" + ") : "không rõ", kieu: "live" }}
+                      boiCanh={{ cluster: "devnet", nguon: p.nguonDoc.length ? p.nguonDoc.join(" + ") : "unknown", kieu: "live" }}
                       nguonChu={source}
                     />
                   ) : (
                     <section className="wallet-sign">
-                      <p className="demo-eyebrow">CHƯA KÝ · CHƯA GỬI</p>
-                      <h3>Xác nhận bằng ví của bạn</h3>
+                      <p className="demo-eyebrow">NOT SIGNED · NOT SENT</p>
+                      <h3>Confirm with your wallet</h3>
                       {!p.protected && (
                         <p className="wallet-off-notice">
-                          Custos đang tắt. Ví sẽ ký và gửi sau khi bạn đồng ý.
+                          Custos is off. The wallet will sign and send after you agree.
                         </p>
                       )}
                       {p.protected && p.result?.level !== "safe" && (
-                        <p className="live-error">Custos đã cảnh báo: {p.result?.explanation}</p>
+                        <p className="live-error">Custos warned: {p.result?.explanation}</p>
                       )}
                       <p>{SCENARIOS[p.kind].detail}</p>
                       <dl>
                         <div>
-                          <dt>Giao dịch</dt>
+                          <dt>Transaction</dt>
                           <dd>{SCENARIOS[p.kind].title}</dd>
                         </div>
                         <div>
                           <dt>
-                            {p.kind === "approve" ? "Lượng cấp quyền (chưa chuyển)" : "Lượng trong yêu cầu"}
+                            {p.kind === "approve" ? "Allowance (not transferred yet)" : "Amount in the request"}
                           </dt>
                           <dd>
-                            {token(p.amount)} DEMO{p.kind === "extra" ? " + 1 DEMO chuyển thêm" : ""}
+                            {token(p.amount)} DEMO{p.kind === "extra" ? " + 1 extra DEMO transfer" : ""}
                           </dd>
                         </div>
                         <div>
-                          <dt>Bên ký và trả phí</dt>
+                          <dt>Signer and fee payer</dt>
                           <dd>
                             {SCENARIOS[p.kind].signer === "actor"
-                              ? "Ứng dụng — chủ ví không ký bước này"
-                              : "Ví của bạn"}
+                              ? "App — the wallet owner does not sign this step"
+                              : "Your wallet"}
                             <code>{p.signer}</code>
                           </dd>
                         </div>
                         <div>
-                          <dt>Tài khoản nhận</dt>
+                          <dt>Recipient account</dt>
                           <dd>
                             <code>{p.target}</code>
                           </dd>
                         </div>
                         <div>
-                          <dt>Phí ước tính</dt>
+                          <dt>Estimated fee</dt>
                           <dd>
-                            {p.fee === null ? "Chưa đọc được" : `${dinhDangSo(BigInt(p.fee), 9)} SOL Devnet`}
+                            {p.fee === null ? "Not read yet" : `${dinhDangSo(BigInt(p.fee), 9, "en")} Devnet SOL`}
                           </dd>
                         </div>
                       </dl>
@@ -863,16 +863,16 @@ export function WalletExecution({
                           onChange={(e) => setConsent(e.target.checked)}
                         />
                         {chiDeNghi
-                          ? "Tôi đã xem đề nghị kiểm tra thủ công của Custos và vẫn muốn ký giao dịch này."
+                          ? "I have seen Custos's manual-check recommendation and still want to sign this transaction."
                           : needsOverride
-                            ? "Tôi đã đọc cảnh báo và chủ động bỏ qua cho giao dịch này. Custos vẫn bật; token hoặc quyền kiểm soát có thể mất theo nội dung giao dịch."
+                            ? "I've read the warning and am deliberately overriding it for this transaction. Custos stays on; tokens or control may be lost as the transaction specifies."
                             : SCENARIOS[p.kind].signer === "actor"
-                              ? "Tôi cho chạy bước ứng dụng ký riêng trên Devnet bằng quyền đã cấp."
-                              : "Tôi đồng ý ký bằng ví thử nghiệm trong tab này."}
+                              ? "I let the app run its own signed step on Devnet using the allowance granted."
+                              : "I agree to sign with the test wallet in this tab."}
                       </label>
                       <div className="wallet-sign-actions">
                         <button className="nut nut-phu" disabled={view.busy} onClick={cancel}>
-                          Huỷ giao dịch
+                          Cancel transaction
                         </button>
                         <button
                           className={`nut ${needsOverride ? "wallet-override" : "nut-chinh"}`}
@@ -882,16 +882,16 @@ export function WalletExecution({
                           }
                         >
                           {chiDeNghi
-                            ? "Đã xem, vẫn ký và gửi"
+                            ? "Seen it, sign and send anyway"
                             : needsOverride
-                              ? "Bỏ qua cảnh báo và gửi"
-                              : "Ký và gửi trên Devnet"}
+                              ? "Override the warning and send"
+                              : "Sign and send on Devnet"}
                         </button>
                       </div>
                       <p className="wallet-small-print">
                         {p.protected
-                          ? "Giao dịch ký phải khớp với kết quả vừa kiểm tra."
-                          : "Custos chỉ đo dự báo độc lập để đối chiếu sau gửi; kết quả không là điều kiện ký của lượt này."}
+                          ? "The signed transaction must match the result just checked."
+                          : "Custos only records an independent prediction to compare after sending; the result is not a signing condition for this run."}
                       </p>
                     </section>
                   )}
@@ -901,25 +901,25 @@ export function WalletExecution({
                 <div className="empty-review">
                   <DemoScanArtwork />
                   <div className="demo-empty-heading">
-                    <h3>Quyết định có hậu quả thật.</h3>
+                    <h3>Decisions with real consequences.</h3>
                     <p>
-                      Gửi lượng DEMO bạn chọn, hoặc mở lời mời nhận quà để xem Custos phát hiện hậu quả ẩn.
-                      Cấp quyền cho ứng dụng có thể cho phép nó chuyển token trong giao dịch sau mà bạn không
-                      ký lại.
+                      Send any amount of DEMO, or open the gift offer to see Custos detect hidden consequences.
+                      Granting an app an allowance can let it move tokens in a later transaction without you
+                      signing again.
                     </p>
                   </div>
                   <ul className="wallet-expectations">
                     <li>
-                      <strong>Trước khi ký</strong>
-                      <span>Đọc thay đổi tài sản và quyền kiểm soát.</span>
+                      <strong>Before signing</strong>
+                      <span>Read the changes to assets and control.</span>
                     </li>
                     <li>
-                      <strong>Quyết định của bạn</strong>
-                      <span>Huỷ yêu cầu hoặc chủ động bỏ qua cảnh báo.</span>
+                      <strong>Your decision</strong>
+                      <span>Cancel the request or deliberately override the warning.</span>
                     </li>
                     <li>
-                      <strong>Sau xác nhận</strong>
-                      <span>Kiểm chứng số dư và chữ ký trên Explorer.</span>
+                      <strong>After confirmation</strong>
+                      <span>Verify the balance and signature on Explorer.</span>
                     </li>
                   </ul>
                 </div>
@@ -928,7 +928,7 @@ export function WalletExecution({
                 <div className="live-page wallet-receipt">
                   {view.receipt.prediction.source !== view.accounts?.source && (
                     <p className="wallet-small-print">
-                      Đang tra cứu bằng chứng của phiên trước; đây không phải số dư của ví mới ở bên trái.
+                      Looking up evidence from a previous session; this is not the balance of the new wallet on the left.
                     </p>
                   )}
                   <Receipt
@@ -943,9 +943,9 @@ export function WalletExecution({
           </section>
         </main>
         <footer className="wallet-footer">
-          Custos phân tích. Bạn quyết định. Ví ký và gửi trên Solana Devnet.
+          Custos analyzes. You decide. The wallet signs and sends on Solana Devnet.
           <br />
-          Các tình huống nâng cao nằm trong “Phòng phân tích” ở đầu trang.
+          Advanced scenarios are in the “Analysis Room” at the top of the page.
         </footer>
       </div>
     </div>

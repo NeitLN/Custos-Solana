@@ -24,7 +24,7 @@ export function HauQua({
   onXemCustos: () => void;
   onDong: () => void;
 }) {
-  const hang = dungHauQua(ketQua);
+  const hang = dungHauQua(ketQua, "en");
 
   // Không có hậu quả nào đo được thì KHÔNG dựng màn hình đỏ. Một sản phẩm lúc nào
   // cũng hiện hậu quả thì màn này không còn nghĩa gì — và với giao dịch bình
@@ -36,10 +36,10 @@ export function HauQua({
           <ShieldIcon className="h-6 w-6" />
         </div>
         <div className="mt-4 text-[14px] leading-relaxed text-slate-700">
-          Giao dịch này chạy xong mà không để lại hậu quả nào Custos đo được trên tài sản của bạn.
+          This transaction ran without leaving any consequence on your assets that Custos could measure.
         </div>
         <button onClick={onDong} className="mt-4 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-[12px] text-slate-700 hover:bg-slate-50">
-          Đóng
+          Close
         </button>
       </div>
     );
@@ -54,13 +54,13 @@ export function HauQua({
               <AlertIcon className="h-6 w-6" />
             </div>
             <div>
-              <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-rose-700">Custos đang tắt</div>
-              <h3 className="mt-1 text-[20px] font-semibold leading-tight tracking-[-0.025em] text-slate-950">Đây là hậu quả nếu bạn ký</h3>
+              <div className="font-mono text-[9.5px] uppercase tracking-[0.15em] text-rose-700">Custos is off</div>
+              <h3 className="mt-1 text-[20px] font-semibold leading-tight tracking-[-0.025em] text-slate-950">This is what happens if you sign</h3>
             </div>
           </div>
         {/* Nhãn trung thực. KHÔNG được bỏ, KHÔNG được làm mờ đi. */}
           <span className="shrink-0 rounded-full border border-rose-200 bg-white px-2.5 py-1 font-mono text-[8.5px] font-bold uppercase tracking-[0.12em] text-rose-700">
-            Mô phỏng
+            Simulation
           </span>
         </div>
       </div>
@@ -70,16 +70,16 @@ export function HauQua({
           h.loai === "soDu" ? (
             <div key={i} className="rounded-xl border border-rose-200 bg-white px-3.5 py-3.5">
               <div className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-500">
-                {h.ten} của bạn
+                Your {h.ten}
               </div>
               <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                 <div>
-                  <div className="text-[9px] uppercase tracking-wider text-slate-500">Trước</div>
+                  <div className="text-[9px] uppercase tracking-wider text-slate-500">Before</div>
                   <div className="mt-0.5 text-[18px] font-medium tabular-nums text-slate-700">{h.truoc}</div>
                 </div>
                 <ArrowIcon className="h-5 w-5 text-rose-500" />
                 <div className="text-right">
-                  <div className="text-[9px] uppercase tracking-wider text-rose-600">Sau</div>
+                  <div className="text-[9px] uppercase tracking-wider text-rose-600">After</div>
                   <div className="mt-0.5 text-[23px] font-semibold tabular-nums text-rose-700">{h.sau}</div>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export function HauQua({
         )}
 
         <p className="border-l-2 border-rose-400 pl-3 text-[12.5px] font-medium leading-relaxed text-slate-700">
-          Giao dịch blockchain không có nút hoàn tác sau khi đã ký và gửi.
+          A blockchain transaction has no undo button once it is signed and sent.
         </p>
 
         <div className="grid gap-2 pt-1 sm:grid-cols-[1fr_auto]">
@@ -102,13 +102,13 @@ export function HauQua({
             className="flex items-center justify-center gap-2 rounded-xl bg-nhan px-4 py-3 text-[13px] font-semibold text-white shadow-[0_6px_16px_rgba(49,85,198,0.18)] transition-all hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0"
           >
             <ShieldIcon className="h-4 w-4" />
-            Bật Custos và thử lại
+            Turn on Custos and retry
           </button>
           <button
             onClick={onDong}
             className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-[12px] text-slate-700 hover:bg-slate-50"
           >
-            Đóng
+            Close
           </button>
         </div>
       </div>

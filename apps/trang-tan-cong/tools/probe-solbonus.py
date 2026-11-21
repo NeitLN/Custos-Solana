@@ -31,43 +31,43 @@ with sync_playwright() as pw:
         expect(page.get_by_role("heading", level=1)).to_be_visible()
         page.screenshot(path=str(out / "solbonus-desktop.png"), full_page=True)
         with page.expect_popup() as popup:
-            page.get_by_role("button", name="Kết nối ví", exact=True).click()
+            page.get_by_role("button", name="Connect wallet", exact=True).click()
         wallet = popup.value
         report["wallet"] = wallet.url
         assert urlparse(page.url).netloc != urlparse(wallet.url).netloc, "Origins must differ"
-        wallet.get_by_role("button", name="Cho kết nối", exact=True).click()
-        page.get_by_role("button", name="Tìm token DEMO trên Devnet", exact=True).click()
+        wallet.get_by_role("button", name="Allow connection", exact=True).click()
+        page.get_by_role("button", name="Find DEMO tokens on Devnet", exact=True).click()
         expect(page.locator("#sb-token")).to_be_visible(timeout=180000)
         report["tokens"] = page.locator("#sb-token option").count()
-        expect(page.get_by_role("button", name="Nhận 1.000 SOLB", exact=True)).to_be_enabled()
-        page.get_by_role("button", name="Nhận 1.000 SOLB", exact=True).click()
-        expect(wallet.locator(".kn-muc")).to_have_text("Nguy hiểm", timeout=90000)
+        expect(page.get_by_role("button", name="Claim 1,000 SOLB", exact=True)).to_be_enabled()
+        page.get_by_role("button", name="Claim 1,000 SOLB", exact=True).click()
+        expect(wallet.locator(".kn-muc")).to_have_text("Danger", timeout=90000)
         report["danger"] = wallet.locator(".kn-yeu-cau").inner_text()
         wallet.screenshot(path=str(out / "wallet-danger.png"), full_page=True)
-        wallet.get_by_role("button", name="Chặn giao dịch", exact=True).click()
-        expect(page.locator(".sb-status")).to_contain_text("chưa gửi giao dịch")
+        wallet.get_by_role("button", name="Block transaction", exact=True).click()
+        expect(page.locator(".sb-status")).to_contain_text("did not send any transaction")
         assert len(report["sends"]) == 0
         report["checks"].append("chain discovery -> independent danger transaction -> wallet inspect -> reject -> zero sends")
-        page.get_by_role("radio", name="Phiên bản lành", exact=True).check()
-        page.get_by_role("button", name="Nhận 1.000 SOLB", exact=True).click()
+        page.get_by_role("radio", name="Benign version", exact=True).check()
+        page.get_by_role("button", name="Claim 1,000 SOLB", exact=True).click()
         expect(wallet.locator(".kn-muc")).to_be_visible(timeout=90000)
         report["benign"] = wallet.locator(".kn-yeu-cau").inner_text()
-        assert wallet.locator(".kn-muc").inner_text() != "Nguy hiểm"
+        assert wallet.locator(".kn-muc").inner_text() != "Danger"
         if args.allow_devnet_send:
             wallet.locator("#kn-khoa").set_input_files(".devnet/vi-demo.json")
             checkbox = wallet.get_by_role("checkbox")
             if checkbox.count(): checkbox.check()
-            wallet.get_by_role("button", name="Ký", exact=True).click() if wallet.get_by_role("button", name="Ký", exact=True).count() else wallet.get_by_role("button", name="Vẫn ký", exact=True).click()
+            wallet.get_by_role("button", name="Sign", exact=True).click() if wallet.get_by_role("button", name="Sign", exact=True).count() else wallet.get_by_role("button", name="Sign anyway", exact=True).click()
             expect(page.locator(".sb-receipt")).to_have_attribute("data-outcome", "xong", timeout=90000)
             assert len(report["sends"]) == 1
             assert urlparse(report["sends"][0]).netloc == urlparse(page.url).netloc
             report["signatureUrl"] = page.locator("[data-signature]").get_attribute("href")
             report["checks"].append("benign -> inspect -> user signature -> dApp sends exactly once -> confirmed on Devnet")
         else:
-            wallet.get_by_role("button", name="Chặn giao dịch", exact=True).click()
+            wallet.get_by_role("button", name="Block transaction", exact=True).click()
             report["checks"].append("benign inspected; signing/send skipped (no opt-in)")
         wallet.close()
-        expect(page.get_by_role("button", name="Kết nối ví", exact=True)).to_be_enabled(timeout=15000)
+        expect(page.get_by_role("button", name="Connect wallet", exact=True)).to_be_enabled(timeout=15000)
         report["checks"].append("popup closed -> adapter disconnect -> reconnect available")
         page.set_viewport_size({"width": 390, "height": 844})
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -93,13 +93,13 @@ with sync_playwright() as pw:
         page.evaluate("sessionStorage.setItem('solbonus.pending.v1', JSON.stringify({signature:'1'.repeat(64),lastValidBlockHeight:1000000000}))")
         page.reload(wait_until="networkidle")
         expect(page.locator(".sb-receipt")).to_have_attribute("data-outcome", "cho")
-        expect(page.get_by_role("radio", name="Phiên bản lành", exact=True)).to_be_disabled()
+        expect(page.get_by_role("radio", name="Benign version", exact=True)).to_be_disabled()
         with page.expect_popup() as popup2:
-            page.get_by_role("button", name="Kết nối ví", exact=True).click()
+            page.get_by_role("button", name="Connect wallet", exact=True).click()
         wallet2 = popup2.value
-        wallet2.get_by_role("button", name="Cho kết nối", exact=True).click()
-        expect(page.get_by_role("button", name="Ngắt kết nối", exact=True)).to_be_visible()
-        expect(page.get_by_role("button", name="Nhận 1.000 SOLB", exact=True)).to_be_disabled()
+        wallet2.get_by_role("button", name="Allow connection", exact=True).click()
+        expect(page.get_by_role("button", name="Disconnect", exact=True)).to_be_visible()
+        expect(page.get_by_role("button", name="Claim 1,000 SOLB", exact=True)).to_be_disabled()
         assert page.evaluate("sessionStorage.getItem('solbonus.pending.v1')")
         wallet2.close()
         page.evaluate("sessionStorage.removeItem('solbonus.pending.v1')")

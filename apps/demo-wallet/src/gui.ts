@@ -100,17 +100,17 @@ export type KetQuaXacNhan =
  */
 export function docKetQuaXacNhan(ph: unknown): KetQuaXacNhan {
   if (typeof ph !== "object" || ph === null) {
-    return { loai: "khongDocDuoc", vi: "phản hồi xác nhận không phải object" };
+    return { loai: "khongDocDuoc", vi: "the confirmation response is not an object" };
   }
   if (!("value" in ph)) {
-    return { loai: "khongDocDuoc", vi: "phản hồi xác nhận thiếu trường `value`" };
+    return { loai: "khongDocDuoc", vi: "the confirmation response is missing the `value` field" };
   }
   const v = (ph as { value: unknown }).value;
   if (typeof v !== "object" || v === null) {
-    return { loai: "khongDocDuoc", vi: "`value` rỗng hoặc không phải object" };
+    return { loai: "khongDocDuoc", vi: "`value` is empty or not an object" };
   }
   if (!("err" in v)) {
-    return { loai: "khongDocDuoc", vi: "`value` thiếu trường `err`" };
+    return { loai: "khongDocDuoc", vi: "`value` is missing the `err` field" };
   }
   const err = (v as { err: unknown }).err;
   if (err === null) return { loai: "xong" };
@@ -122,7 +122,7 @@ export function docKetQuaXacNhan(ph: unknown): KetQuaXacNhan {
    * "mất dữ liệu" thành "an toàn", đúng kiểu sai mà sản phẩm này sinh ra để chống.
    */
   if (err === undefined) {
-    return { loai: "khongDocDuoc", vi: "`err` là undefined — không phải null, tức thiếu dữ liệu" };
+    return { loai: "khongDocDuoc", vi: "`err` is undefined — not null, meaning data is missing" };
   }
   return { loai: "loiThucThi", err: typeof err === "string" ? err : JSON.stringify(err) };
 }
@@ -254,7 +254,7 @@ export async function guiGiaoDich<T>(t: ThamSoGui<T>): Promise<TrangThaiGui> {
      * vừa ký. Ghi lại để người đọc nhật ký thấy, giữ chữ ký cục bộ.
      */
     if (sigTruoc && sigRpc !== sigTruoc) {
-      t.ghi?.(`chữ ký RPC trả về khác chữ ký cục bộ — giữ chữ ký cục bộ ${sigTruoc}`);
+      t.ghi?.(`the RPC returned a different signature from the local one — keeping the local signature ${sigTruoc}`);
     } else {
       sig = sigRpc;
     }
@@ -279,20 +279,20 @@ export async function guiGiaoDich<T>(t: ThamSoGui<T>): Promise<TrangThaiGui> {
     const kq = docKetQuaXacNhan(await t.conn.confirmTransaction(sigChac, "confirmed"));
 
     if (kq.loai === "loiThucThi") {
-      t.ghi?.(`giao dịch ĐÃ lên chuỗi và thất bại khi thực thi: ${kq.err}`);
+      t.ghi?.(`the transaction LANDED on-chain and failed during execution: ${kq.err}`);
       return dat({ pha: "thatBaiXacNhan", sig: sigChac, loi: kq.err });
     }
     if (kq.loai === "khongDocDuoc") {
       // Không đọc được kết quả ⇒ chưa rõ. Không bao giờ là thành công.
-      t.ghi?.(`không đọc được kết quả xác nhận: ${kq.vi}`);
+      t.ghi?.(`could not read the confirmation result: ${kq.vi}`);
       return dat({ pha: "chuaRo", sig: sigChac, loi: kq.vi });
     }
 
-    t.ghi?.(`đã ký và gửi: https://explorer.solana.com/tx/${sigChac}?cluster=devnet`);
+    t.ghi?.(`signed and sent: https://explorer.solana.com/tx/${sigChac}?cluster=devnet`);
     return dat({ pha: "thanhCong", sig: sigChac });
   } catch (e) {
     const loi = e instanceof Error ? e.message : String(e);
-    t.ghi?.(`gửi lỗi: ${loi}`);
+    t.ghi?.(`send error: ${loi}`);
     // Có chữ ký rồi thì KHÔNG được gọi là thất bại — xem chú thích ở `chuaRo`.
     return dat(sig ? { pha: "chuaRo", sig, loi } : { pha: "thatBai", loi });
   }

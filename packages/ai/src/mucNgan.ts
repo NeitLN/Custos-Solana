@@ -1,5 +1,5 @@
-import type { InspectResult } from "@custos-solana/types";
-import { NHAN } from "@custos-solana/core";
+import type { InspectResult, Locale } from "@custos-solana/types";
+import { NHAN, CHU_BANG } from "@custos-solana/core";
 
 /**
  * MỨC 1 — NGẮN. `docs/DAC-TA-L3.md` mục 6.
@@ -24,7 +24,8 @@ import { NHAN } from "@custos-solana/core";
 const tenTuNhan = (label: string, tienTo: string) =>
   label.slice(tienTo.length).replace(/ sau khi ký$/, "").trim();
 
-export function tomTat(ketQua: InspectResult): string {
+export function tomTat(ketQua: InspectResult, locale: Locale = "vi"): string {
+  if (locale === "en") return tomTatEn(ketQua);
   const nang = ketQua.diff.filter((d) => d.severity === "danger");
   const cau: string[] = [];
 
@@ -73,4 +74,60 @@ export function tomTat(ketQua: InspectResult): string {
 
   // Mức `safe`. Nhãn hiển thị là "Bình thường" — tuyệt đối không dùng chữ "an toàn".
   return "Không thấy dấu hiệu nào trong danh sách chúng tôi kiểm tra được.";
+}
+
+/**
+ * Bản tiếng Anh (`locale: "en"`) — cùng bốn nguyên tắc, cùng thứ tự, cùng con số lấy
+ * nguyên từ `diff`. Dò loại dòng bằng bảng tiền tố tiếng Anh (`NHAN_EN`), vì
+ * `inspect(…, { locale: "en" })` sinh nhãn tiếng Anh.
+ */
+function tomTatEn(ketQua: InspectResult): string {
+  const chu = CHU_BANG.en;
+  const N = chu.nhan;
+  const ten = (label: string, tienTo: string) =>
+    label.slice(tienTo.length).replace(/ after signing$/, "").trim();
+  const nang = ketQua.diff.filter((d) => d.severity === "danger");
+  const cau: string[] = [];
+
+  for (const d of nang) {
+    if (d.label.startsWith(N.SO_DU)) {
+      const t = ten(d.label, N.SO_DU);
+      cau.push(
+        d.after === "0" || d.after === "0.0"
+          ? `all of the ${t} in your wallet will be moved out`
+          : `the ${t} in your wallet will drop from ${d.before} to ${d.after}`,
+      );
+    } else if (d.label.startsWith(N.CHU_SO_HUU)) {
+      cau.push(`your ${ten(d.label, N.CHU_SO_HUU)} token account will change owner to ${d.after}`);
+    } else if (d.label.startsWith(N.DUOC_PHEP_RUT)) {
+      const [vi, hanMuc] = d.after.split(chu.toi);
+      const t = ten(d.label, N.DUOC_PHEP_RUT);
+      cau.push(`wallet ${vi} will be allowed to withdraw ${hanMuc ? `up to ${hanMuc} ` : ""}${t} from you, at any time`);
+    } else if (d.label.startsWith(N.QUYEN_DONG)) {
+      cau.push(`${d.after} will get the right to close your ${ten(d.label, N.QUYEN_DONG)} account`);
+    } else if (d.label.startsWith(N.CHUONG_TRINH)) {
+      cau.push(`one of your accounts will come under the control of ${d.after}`);
+    } else if (d.label === N.SO_DU_SOL) {
+      cau.push(`your SOL will drop from ${d.before} to ${d.after}`);
+    }
+  }
+
+  if (cau.length > 0) {
+    const s = cau.join(", and ");
+    return `${s.charAt(0).toUpperCase()}${s.slice(1)}. Once you sign, this cannot be undone.`;
+  }
+
+  // Không có hậu quả nặng đo được: nói về giới hạn của phép đo, KHÔNG trấn an.
+  if (ketQua.level !== "safe") {
+    if (ketQua.coverage.total > ketQua.coverage.analyzed) {
+      const con = ketQua.coverage.total - ketQua.coverage.analyzed;
+      return con === 1
+        ? "There is 1 part of this transaction we could not read, so we cannot say for sure what it does to your wallet."
+        : `There are ${con} parts of this transaction we could not read, so we cannot say for sure what it does to your wallet.`;
+    }
+    return "There are a few points in this transaction you should review carefully before signing.";
+  }
+
+  // Mức `safe` hiển thị là "Normal" — tuyệt đối không dùng chữ "safe".
+  return "No signs found among the checks we can run.";
 }

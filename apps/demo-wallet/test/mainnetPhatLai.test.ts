@@ -31,10 +31,10 @@ test("bộ mainnet hợp lệ: đúng genesis, một nguồn host trần, có lu
 });
 
 test("xác thực từ chối bộ lạ: sai genesis, nguồn là URL đầy đủ", () => {
-  assert.match(xacThucBoMainnet({ ...bo, genesis: "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG" }) ?? "", /không phải của mainnet/);
-  assert.match(xacThucBoMainnet({ ...bo, nguonGhi: ["https://rpc.example.com/?api-key=x"] }) ?? "", /host trần/);
+  assert.match(xacThucBoMainnet({ ...bo, genesis: "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG" }) ?? "", /not from mainnet/);
+  assert.match(xacThucBoMainnet({ ...bo, nguonGhi: ["https://rpc.example.com/?api-key=x"] }) ?? "", /bare host/);
   // Genesis đúng mà nhãn cluster sai ⇒ link Explorer trên thẻ cảnh báo trỏ nhầm mạng (review 06/10).
-  assert.match(xacThucBoMainnet({ ...bo, cluster: "devnet" }) ?? "", /nhãn cluster/);
+  assert.match(xacThucBoMainnet({ ...bo, cluster: "devnet" }) ?? "", /cluster label/);
 });
 
 test("cả 10 mẫu: engine đang chạy tái lập đúng kết quả lúc ghi, KHÔNG thiếu fixture", async () => {

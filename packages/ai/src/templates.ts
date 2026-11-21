@@ -1,5 +1,6 @@
 import type { Facts } from "@custos-solana/core";
 import { REASON, dinhDangSo, tinhSolNguoiDung } from "@custos-solana/core";
+import type { Locale } from "@custos-solana/types";
 
 /**
  * CÂU MẪU CỨNG — bản dự phòng khi mô hình hỏng, quá hạn, hoặc mất mạng.
@@ -180,16 +181,174 @@ function cauCho(ma: string, facts: Facts): string | null {
 }
 
 /**
+ * Bản tiếng Anh của `cauCho` (`locale: "en"`). Cùng điều kiện, cùng dữ liệu, cùng
+ * nguyên tắc viết: hậu quả trước cơ chế, chắc thì "will", là năng lực thì "can",
+ * không biết thì nói thẳng. Số viết theo kiểu en-US.
+ *
+ * Giữ song song với `cauCho`: mỗi nhánh ở đây ứng đúng một nhánh ở trên. Có test so
+ * rằng mã nào sinh câu tiếng Việt thì cũng sinh câu tiếng Anh.
+ */
+function cauChoEn(ma: string, facts: Facts): string | null {
+  const cuaToi = facts.tokenAccounts.filter((t) => t.ownerBefore === facts.signer);
+  const so = (raw: bigint, dec: number) => dinhDangSo(raw, dec, "en");
+
+  switch (ma) {
+    case REASON.SET_AUTHORITY_ACCOUNT_OWNER: {
+      const t = cuaToi.find((x) => x.ownerAfter !== null && x.ownerAfter !== facts.signer);
+      if (!t) return null;
+      return `Your ${rutGon(t.mint)} account will change owner to wallet ${rutGon(t.ownerAfter!)}. You will no longer control it.`;
+    }
+
+    case REASON.SET_AUTHORITY_CLOSE_OR_FREEZE: {
+      const t = cuaToi.find((x) => x.closeAuthorityAfter && x.closeAuthorityAfter !== facts.signer);
+      if (!t) return null;
+      return `Wallet ${rutGon(t.closeAuthorityAfter!)} will get the right to close your ${rutGon(t.mint)} account.`;
+    }
+
+    case REASON.APPROVE_DELEGATE_LON: {
+      const t = cuaToi.find((x) => x.delegateAfter && x.delegateAfter !== facts.signer);
+      if (!t) return null;
+      return `Wallet ${rutGon(t.delegateAfter!)} will be allowed to withdraw ${so(t.delegatedAmountAfter, decimalsCua(facts, t.mint))} ${rutGon(t.mint)} from you, at any time, even months from now.`;
+    }
+
+    case REASON.SYSTEM_ASSIGN_DOI_OWNER: {
+      const a = facts.accounts.find(
+        (x) =>
+          x.programOwnerBefore !== null &&
+          x.programOwnerAfter !== null &&
+          x.programOwnerBefore !== x.programOwnerAfter,
+      );
+      if (!a) return null;
+      return `One of your accounts will come under the control of program ${rutGon(a.programOwnerAfter!)}.`;
+    }
+
+    case REASON.MINT_AUTHORITY_CHUA_THU_HOI: {
+      const m = facts.mints.find((x) => x.mintAuthority !== null);
+      if (!m) return null;
+      return `The issuer of ${rutGon(m.address)} can still mint unlimited amounts of this token.`;
+    }
+
+    case REASON.TOKEN2022_PERMANENT_DELEGATE: {
+      const m = facts.mints.find((x) => x.permanentDelegate !== null);
+      if (!m) return null;
+      return `The issuer of ${rutGon(m.address)} holds a permanent right to withdraw this token from any wallet. This is a legitimate feature, but you should know.`;
+    }
+
+    case REASON.PROGRAM_CHUA_XAC_MINH:
+      return "The transaction calls a program we have not verified. We do not know what it does.";
+
+    case REASON.CHUONG_TRINH_KHONG_RO:
+      return "An instruction writes to your account, and we could not determine which program it comes from.";
+
+    case REASON.OUTFLOW_KHONG_KHOP: {
+      const theoMint = new Map<string, bigint>();
+      for (const t of facts.tokenAccounts) {
+        if (t.ownerBefore !== facts.signer && t.ownerAfter !== facts.signer) continue;
+        theoMint.set(t.mint, (theoMint.get(t.mint) ?? 0n) + (t.amountAfter - t.amountBefore));
+      }
+      const ra = [...theoMint.entries()].filter(([, d]) => d < 0n);
+      if (ra.length === 0) return null;
+      const ten = ra.map(([mint, d]) => `${so(-d, decimalsCua(facts, mint))} ${rutGon(mint)}`);
+      return `${ten.join(" and ")} will leave your wallet, and nothing in this transaction comes back to you.`;
+    }
+
+    case REASON.VI_NHAN_MOI_TAO: {
+      const moi = Object.entries(facts.tuoiViNhan).find(([, tuoi]) => tuoi !== null && tuoi < 24);
+      if (!moi) return null;
+      const [vi, tuoi] = moi;
+      return `Receiving wallet ${rutGon(vi)} was created only ${(tuoi as number).toFixed(1)} hours ago. A brand-new wallet receiving most of your assets is a familiar pattern in scams.`;
+    }
+
+    case REASON.TRANSFER_NGOAI_HANH_DONG_CHINH: {
+      const t = cuaToi.find((x) => x.amountAfter < x.amountBefore);
+      if (!t) return null;
+      return `Besides what you intend to do, the transaction also moves ${so(t.amountBefore - t.amountAfter, decimalsCua(facts, t.mint))} ${rutGon(t.mint)} out of your wallet.`;
+    }
+
+    case REASON.TOKEN2022_TRANSFER_HOOK: {
+      const m = facts.mints.find((x) => x.transferHookProgramId !== null);
+      if (!m) return null;
+      return `Every time ${rutGon(m.address)} is transferred, another program runs along with it. This is a legitimate feature, but we have not read that program.`;
+    }
+
+    case REASON.FREEZE_AUTHORITY_CON_HIEU_LUC: {
+      const m = facts.mints.find((x) => x.freezeAuthority !== null && x.freezeAuthority !== facts.signer);
+      if (!m) return null;
+      return `The issuer of ${rutGon(m.address)} can freeze your account so you cannot transfer this token. Many major tokens work this way — this is a legitimate feature.`;
+    }
+
+    case REASON.PERMANENT_DELEGATE_RA_TAY: {
+      const m = facts.mints.find(
+        (x) =>
+          x.permanentDelegate !== null &&
+          facts.instructions.some((ix) => ix.decoded?.authority === x.permanentDelegate),
+      );
+      if (!m) return null;
+      return `The issuer of ${rutGon(m.address)} is itself taking this token out of your account using its permanent withdrawal right. It does not need your consent, and you cannot revoke that right.`;
+    }
+
+    case REASON.SOL_ROI_VI: {
+      const { roi } = tinhSolNguoiDung(facts);
+      const phi = facts.phiUocTinh ?? 0n;
+      const di = roi - phi;
+      if (di <= 0n) return null;
+      return `${so(di, 9)} SOL will leave your wallet — most of the SOL you have. This does not include the network fee.`;
+    }
+
+    case REASON.NGUOI_DUNG_KHONG_RO: {
+      const n = facts.nguoiKy?.length ?? 0;
+      if (n <= 1) return null;
+      return `This transaction needs ${n} signatures, and the wallet has not said which address is yours. We are checking against the fee-paying wallet, so we may be looking at the wrong wallet.`;
+    }
+
+    case REASON.TRANG_THAI_DO_KHUYET: {
+      const n = facts.accountKhongDoDuoc?.length ?? 0;
+      const m = facts.mintKhongDoc?.length ?? 0;
+      if (n === 0 && m === 0) return null;
+      const cau: string[] = [];
+      if (n > 0) {
+        cau.push(`This transaction touches ${n} ${n === 1 ? "account" : "accounts"} whose post-signing state we could not read, so the changes table above may be incomplete.`);
+      }
+      if (m > 0) {
+        cau.push(`We could not read the details of ${m} ${m === 1 ? "token" : "tokens"} in this transaction, so amounts are shown in base units and warnings about that token (freezing, extra minting) may be missing.`);
+      }
+      return cau.join(" ");
+    }
+
+    case REASON.MO_PHONG_HONG:
+      return "We could not simulate this transaction, so we do not know what it will do to your wallet.";
+
+    case REASON.ALT_KHONG_GIAI_DUOC:
+      return "The transaction uses an address lookup table we could not read, so the list of recipients may be incomplete.";
+
+    default:
+      return null;
+  }
+}
+
+/**
  * Ghép các câu mẫu thành một đoạn giải thích.
  *
  * KHÔNG chứa dòng "đã đọc hiểu N trên M lệnh" — dòng đó do giao diện sinh ra
  * trực tiếp từ `result.coverage`, để mô hình không bao giờ viết lại được nó.
  */
-export function dienGiaiMau(facts: Facts, reasonCodes: string[]): string {
+export function dienGiaiMau(facts: Facts, reasonCodes: string[], locale: Locale = "vi"): string {
   const cau: string[] = [];
+  const sinh = locale === "en" ? cauChoEn : cauCho;
   for (const ma of reasonCodes) {
-    const c = cauCho(ma, facts);
+    const c = sinh(ma, facts);
     if (c && !cau.includes(c)) cau.push(c);
+  }
+
+  if (locale === "en" && cau.length === 0) {
+    // Cùng ba nhánh, cùng mức trung thực với bản tiếng Việt: không bao giờ nói "an toàn".
+    if (!facts.simulationOk) {
+      return "We could not simulate this transaction, so we do not know what it will do.";
+    }
+    if (facts.coverage.analyzed < facts.coverage.total) {
+      return "We could not fully read this transaction.";
+    }
+    return "No signs found among the checks we can run.";
   }
 
   if (cau.length === 0) {

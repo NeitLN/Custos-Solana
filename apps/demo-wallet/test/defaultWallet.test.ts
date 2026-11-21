@@ -12,7 +12,7 @@ test('default wallet stays the configured faucet recipient across sessions', () 
 });
 test('another key cannot silently replace the configured demo wallet', () => {
   const session = new LiveSession();
-  assert.throws(() => session.unlock(Keypair.generate()), /khớp/);
+  assert.throws(() => session.unlock(Keypair.generate()), /does not match/);
   assert.equal(session.view.wallet, DEFAULT_DEMO_WALLET);
   assert.equal(session.view.canSign, false);
 });

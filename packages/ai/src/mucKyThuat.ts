@@ -1,4 +1,41 @@
-import type { InspectResult } from "@custos-solana/types";
+import type { InspectResult, Locale } from "@custos-solana/types";
+
+/** Nhãn của mức Kỹ thuật theo ngôn ngữ. Giá trị thô (mã, địa chỉ, level) không dịch. */
+const CHU_KY_THUAT = {
+  vi: {
+    muc: "Mức",
+    deNghi: "Custos đề nghị",
+    hanhDong: "Hành động chính nhận diện được",
+    tu: "từ",
+    sang: "sang",
+    docHieu: "Đọc hiểu",
+    phamVi: (a: number, t: number, u: number) => `${a}/${t} lệnh · ${u} chương trình chưa xác minh`,
+    maLyDo: "Mã lý do",
+    khaiLech: "Lời khai của dApp lệch",
+    khaiLechGiaTri: (k: string, n: string) => `khai "${k}", nhận diện "${n}"`,
+    chuaCoBangChung: "chưa có bằng chứng truy vết chi tiết",
+    dauVet: (r: number, c: string) => `Dấu vết · luật ${r} · ${c}`,
+    dauVetThieu: "Dấu vết chưa đầy đủ",
+    dauVetThieuGiaTri: (a: number, b: number) => `${a}/${b} cảnh báo chưa truy vết được tới dữ kiện`,
+  },
+  en: {
+    muc: "Level",
+    deNghi: "Custos suggests",
+    hanhDong: "Detected primary action",
+    tu: "from",
+    sang: "to",
+    docHieu: "Coverage",
+    phamVi: (a: number, t: number, u: number) =>
+      `${a}/${t} instructions · ${u} unverified ${u === 1 ? "program" : "programs"}`,
+    maLyDo: "Reason codes",
+    khaiLech: "dApp declaration mismatch",
+    khaiLechGiaTri: (k: string, n: string) => `declared "${k}", detected "${n}"`,
+    chuaCoBangChung: "no detailed trace evidence yet",
+    dauVet: (r: number, c: string) => `Trace · rule ${r} · ${c}`,
+    dauVetThieu: "Incomplete trace",
+    dauVetThieuGiaTri: (a: number, b: number) => `${a}/${b} warnings not yet traced to facts`,
+  },
+} as const;
 
 /**
  * MỨC 3 — KỸ THUẬT. `docs/DAC-TA-L3.md` mục 6.
@@ -23,31 +60,32 @@ export type DongKyThuat = {
   giaTri: string;
 };
 
-export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
+export function chiTietKyThuat(ketQua: InspectResult, locale: Locale = "vi"): DongKyThuat[] {
   const ra: DongKyThuat[] = [];
+  const C = CHU_KY_THUAT[locale];
 
-  ra.push({ nhan: "Mức", giaTri: ketQua.level });
+  ra.push({ nhan: C.muc, giaTri: ketQua.level });
 
   if (ketQua.aiAdvisory) {
-    ra.push({ nhan: "Custos đề nghị", giaTri: ketQua.aiAdvisory });
+    ra.push({ nhan: C.deNghi, giaTri: ketQua.aiAdvisory });
   }
 
   if (ketQua.detectedPrimaryAction) {
     const h = ketQua.detectedPrimaryAction;
-    const phan = [h.type, h.from ? `từ ${h.from}` : "", h.to ? `sang ${h.to}` : ""].filter(Boolean);
-    ra.push({ nhan: "Hành động chính nhận diện được", giaTri: phan.join(" ") });
+    const phan = [h.type, h.from ? `${C.tu} ${h.from}` : "", h.to ? `${C.sang} ${h.to}` : ""].filter(Boolean);
+    ra.push({ nhan: C.hanhDong, giaTri: phan.join(" ") });
   }
 
   // Con số coverage là trục khác biệt của sản phẩm, nên nó phải có mặt ở đây
   // dưới dạng thô chứ không chỉ dưới dạng câu chữ.
   const c = ketQua.coverage;
   ra.push({
-    nhan: "Đọc hiểu",
-    giaTri: `${c.analyzed}/${c.total} lệnh · ${c.unverifiedPrograms} chương trình chưa xác minh`,
+    nhan: C.docHieu,
+    giaTri: C.phamVi(c.analyzed, c.total, c.unverifiedPrograms),
   });
 
   if (ketQua.reasonCodes.length > 0) {
-    ra.push({ nhan: "Mã lý do", giaTri: ketQua.reasonCodes.join(", ") });
+    ra.push({ nhan: C.maLyDo, giaTri: ketQua.reasonCodes.join(", ") });
   }
 
   // Bảng chênh lệch ở dạng thô: nhãn và hai đầu giá trị, không diễn giải.
@@ -65,8 +103,8 @@ export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
 
   if (ketQua.loiKhaiLech) {
     ra.push({
-      nhan: "Lời khai của dApp lệch",
-      giaTri: `khai "${ketQua.loiKhaiLech.khai}", nhận diện "${ketQua.loiKhaiLech.nhanDien}"`,
+      nhan: C.khaiLech,
+      giaTri: C.khaiLechGiaTri(ketQua.loiKhaiLech.khai, ketQua.loiKhaiLech.nhanDien),
     });
   }
 
@@ -89,13 +127,13 @@ export function chiTietKyThuat(ketQua: InspectResult): DongKyThuat[] {
       const dan =
         c.bangChung.length > 0
           ? c.bangChung.map((b) => `${b.loai}:${b.khoa}`).join(" · ")
-          : "chưa có bằng chứng truy vết chi tiết";
-      ra.push({ nhan: `Dấu vết · luật ${c.ruleId} · ${c.reasonCode}`, giaTri: dan });
+          : C.chuaCoBangChung;
+      ra.push({ nhan: C.dauVet(c.ruleId, c.reasonCode), giaTri: dan });
     }
     if (cd.thieuBangChung > 0) {
       ra.push({
-        nhan: "Dấu vết chưa đầy đủ",
-        giaTri: `${cd.thieuBangChung}/${cd.canhBao.length} cảnh báo chưa truy vết được tới dữ kiện`,
+        nhan: C.dauVetThieu,
+        giaTri: C.dauVetThieuGiaTri(cd.thieuBangChung, cd.canhBao.length),
       });
     }
   }

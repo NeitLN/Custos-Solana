@@ -100,7 +100,7 @@ test("origin bị ghim từ lần xin kết nối: origin khác sau đó bị b�
   ketNoi(d);
   d.tuDapp({ custos: 1, kieu: "ky", id: d.id(), giaoDich: sangBase64(txV0().serialize()) }, "https://ke-gian.example");
   assert.equal(d.cs.trangThai.dangCho, null);
-  assert.match(d.cs.trangThai.nhatKy[0]!, /Bỏ thông điệp từ https:\/\/ke-gian\.example/);
+  assert.match(d.cs.trangThai.nhatKy[0]!, /Dropped a message from https:\/\/ke-gian\.example/);
 });
 
 test("mọi trả lời đi tới ĐÚNG origin dApp đã ghim", async () => {
@@ -422,12 +422,12 @@ test("lỗi RPC nguyên văn KHÔNG lên giao diện — có thể chứa URL k�
 });
 
 test("lỗi do chính ví soạn (LoiHienThiDuoc) vẫn hiện nguyên câu", async () => {
-  const d = dung({ kiem: async () => Promise.reject(new LoiHienThiDuoc("RPC x không phải Solana Devnet — không kiểm, không ký.")) });
+  const d = dung({ kiem: async () => Promise.reject(new LoiHienThiDuoc("RPC x is not Solana Devnet — not checking, not signing.")) });
   ketNoi(d);
   d.tuDapp({ custos: 1, kieu: "ky", id: d.id(), giaoDich: sangBase64(txV0().serialize()) });
   await d.cho();
   const dc = d.cs.trangThai.dangCho;
-  assert.ok(dc?.kieu === "ky" && /không phải Solana Devnet/.test(dc.loi ?? ""));
+  assert.ok(dc?.kieu === "ky" && /is not Solana Devnet/.test(dc.loi ?? ""));
 });
 
 test("code-review 04/10 · dApp ngắt khi lời xin kết nối còn chờ ⇒ bỏ ghim origin, origin khác lại xin được", () => {

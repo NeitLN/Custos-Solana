@@ -98,7 +98,21 @@ export function tinhPhiChuyen(soGui: bigint, ch: CauHinhPhi): bigint | null {
  * Thiếu config ⇒ `khongBiet`, KHÔNG suy từ ký hiệu token. Một token tên "USDC"
  * không đảm bảo điều gì về phí của nó; ký hiệu là thứ kẻ tấn công đặt được.
  */
-export function chiTietPhi(soGui: bigint, ch: CauHinhPhi | null): ChiTietPhi {
+const LY_DO_PHI = {
+  vi: {
+    khongDoc: "không đọc được cấu hình phí của mint",
+    khongEpoch: "không biết epoch hiện tại nên không biết cấu hình nào đang hiệu lực",
+    khongHopLe: "cấu hình phí không hợp lệ",
+  },
+  en: {
+    khongDoc: "could not read the mint's fee configuration",
+    khongEpoch: "the current epoch is unknown, so we do not know which configuration is in effect",
+    khongHopLe: "invalid fee configuration",
+  },
+} as const;
+
+export function chiTietPhi(soGui: bigint, ch: CauHinhPhi | null, locale: "vi" | "en" = "vi"): ChiTietPhi {
+  const L = LY_DO_PHI[locale];
   if (ch === null) {
     return {
       soGui,
@@ -106,7 +120,7 @@ export function chiTietPhi(soGui: bigint, ch: CauHinhPhi | null): ChiTietPhi {
       thucNhan: soGui,
       nguon: "khongBiet",
       cauHinh: null,
-      lyDo: "không đọc được cấu hình phí của mint",
+      lyDo: L.khongDoc,
     };
   }
   if (ch.epoch === null) {
@@ -116,7 +130,7 @@ export function chiTietPhi(soGui: bigint, ch: CauHinhPhi | null): ChiTietPhi {
       thucNhan: soGui,
       nguon: "khongBiet",
       cauHinh: ch,
-      lyDo: "không biết epoch hiện tại nên không biết cấu hình nào đang hiệu lực",
+      lyDo: L.khongEpoch,
     };
   }
 
@@ -128,7 +142,7 @@ export function chiTietPhi(soGui: bigint, ch: CauHinhPhi | null): ChiTietPhi {
       thucNhan: soGui,
       nguon: "khongBiet",
       cauHinh: ch,
-      lyDo: "cấu hình phí không hợp lệ",
+      lyDo: L.khongHopLe,
     };
   }
 

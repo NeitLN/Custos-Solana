@@ -34,7 +34,7 @@ let daXacMinh: Promise<void> | null = null;
 /** Endpoint phải CHỨNG MINH là Devnet trước lượt kiểm đầu tiên. Lỗi thì lần sau thử lại. */
 function xacMinhDevnet(): Promise<void> {
   daXacMinh ??= connection.getGenesisHash().then((g) => {
-    if (g !== DEVNET_GENESIS) throw new LoiHienThiDuoc(`RPC ${HOST_RPC} không phải Solana Devnet — không kiểm, không ký.`);
+    if (g !== DEVNET_GENESIS) throw new LoiHienThiDuoc(`RPC ${HOST_RPC} is not Solana Devnet — not checking, not signing.`);
   });
   return daXacMinh.catch((e) => {
     daXacMinh = null;
@@ -45,7 +45,7 @@ function xacMinhDevnet(): Promise<void> {
 /** Hẹn giờ dùng chung (`scripts/coHan.ts`); quá hạn đổi thành câu ví tự soạn, hiển thị được. */
 function coHanHienThi<T>(p: Promise<T>, ms: number): Promise<T> {
   return coHan(p, ms).catch((e) => {
-    throw e instanceof LoiQuaHan ? new LoiHienThiDuoc(`Custos chưa kiểm xong sau ${ms / 1000} giây.`) : e;
+    throw e instanceof LoiQuaHan ? new LoiHienThiDuoc(`Custos did not finish checking within ${ms / 1000} seconds.`) : e;
   });
 }
 
@@ -67,7 +67,7 @@ async function kiem(tx: VersionedTransaction): Promise<{ ketQua: InspectResult; 
         },
       },
       tx,
-      { nguoiDung: DEFAULT_DEMO_WALLET, locale: "vi", ...(Object.keys(kyHieuToken).length ? { kyHieuToken } : {}) },
+      { nguoiDung: DEFAULT_DEMO_WALLET, locale: "en", ...(Object.keys(kyHieuToken).length ? { kyHieuToken } : {}) },
     ),
     HAN_KIEM_MS,
   );
@@ -110,10 +110,10 @@ window.addEventListener("message", (e) =>
 opener?.postMessage({ custos: PHIEN_BAN, kieu: "san-sang" }, "*");
 
 const CAU_BIEN_NHAN: Record<NonNullable<TrangThaiCuaSo["bienNhan"]>["pha"], string> = {
-  "cho-mang": "Đang tra giao dịch trên Devnet… Ứng dụng tự gửi; ví không gửi.",
-  "thanh-cong": "Giao dịch đã chạy trên Devnet.",
-  "that-bai": "Giao dịch đã lên chain nhưng thực thi THẤT BẠI — trạng thái không đổi, chỉ mất phí.",
-  "chua-thay": "Chưa thấy giao dịch trên Devnet sau khoảng 90 giây. Ứng dụng có thể chưa gửi. Ví không gửi lại.",
+  "cho-mang": "Looking up the transaction on Devnet… The app sends it itself; the wallet does not send.",
+  "thanh-cong": "The transaction ran on Devnet.",
+  "that-bai": "The transaction landed on chain but execution FAILED — no state changed, only the fee was spent.",
+  "chua-thay": "The transaction has not appeared on Devnet after about 90 seconds. The app may not have sent it. The wallet does not resend.",
 };
 
 /**
@@ -123,8 +123,8 @@ const CAU_BIEN_NHAN: Record<NonNullable<TrangThaiCuaSo["bienNhan"]>["pha"], stri
 function cauLoaiCo(r: InspectResult): string | null {
   if (r.level === "safe") return null;
   return r.reasonCodes.length === 0 || chiLaThongTin(r.reasonCodes)
-    ? "Custos gắn cờ vì THIẾU THÔNG TIN để kết luận — không phải vì phát hiện hành vi xấu. Hãy tự kiểm tra kỹ trước khi ký."
-    : "Custos phát hiện hành vi cụ thể trong chính giao dịch này. Đọc bảng bên dưới trước khi quyết định.";
+    ? "Custos flagged this because it LACKS THE INFORMATION to reach a conclusion — not because it found harmful behavior. Check carefully yourself before signing."
+    : "Custos found specific behavior in this very transaction. Read the table below before you decide.";
 }
 
 /**
@@ -138,17 +138,17 @@ const BIEN_BAN_KY_THAT =
   "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/ck-20260929/B5-VAN-KY.json";
 
 const NHAN_MUC: Record<InspectResult["level"], string> = {
-  safe: "Bình thường",
-  warning: "Cần xem kỹ",
-  danger: "Nguy hiểm",
+  safe: "Normal",
+  warning: "Review carefully",
+  danger: "Danger",
 };
 
 function docKhoa(raw: unknown): Keypair {
   if (!Array.isArray(raw) || raw.length !== 64 || raw.some((n) => !Number.isInteger(n) || n < 0 || n > 255))
-    throw new Error("Không đọc được keypair JSON 64 byte.");
+    throw new Error("Could not read a 64-byte keypair JSON.");
   const k = Keypair.fromSecretKey(Uint8Array.from(raw as number[]));
   if (k.publicKey.toBase58() !== DEFAULT_DEMO_WALLET)
-    throw new Error("File khoá không phải ví demo cố định — không đổi sang ví khác.");
+    throw new Error("This key file is not the fixed demo wallet — the wallet does not switch to another one.");
   return k;
 }
 
@@ -164,7 +164,7 @@ function Trang() {
 
   const napKhoa = async (f: File) => {
     try {
-      if (f.size > 4096) throw new Error("File keypair không hợp lệ.");
+      if (f.size > 4096) throw new Error("Invalid keypair file.");
       khoaRef.hienTai = docKhoa(JSON.parse(await f.text()));
       setCoKhoa(true);
       setLoiKhoa(null);
@@ -179,39 +179,39 @@ function Trang() {
   return (
     <main className="kn">
       <header className="kn-dau">
-        <h1>Ví Custos</h1>
-        <span>Solana Devnet · cửa sổ ký</span>
+        <h1>Custos Wallet</h1>
+        <span>Solana Devnet · signing window</span>
       </header>
 
       {!opener && (
         <p className="kn-note">
-          Trang này là cửa sổ ký của Ví Custos. Nó chỉ hoạt động khi được một ứng dụng (dApp) mở — trong danh
-          sách ví của dApp, ví này có tên “Custos Wallet”.
+          This page is the Custos Wallet signing window. It only works when an app (dApp) opens it — in the
+          dApp’s wallet list, this wallet is called “Custos Wallet”.
         </p>
       )}
 
       <section className="kn-khoi">
         <div className="kn-dong">
-          <span>Ví</span>
+          <span>Wallet</span>
           <code>{DEFAULT_DEMO_WALLET.slice(0, 6)}…{DEFAULT_DEMO_WALLET.slice(-6)}</code>
         </div>
         <div className="kn-dong">
-          <span>Ứng dụng</span>
-          <code>{s.originDapp ?? "chưa có"}</code>
+          <span>App</span>
+          <code>{s.originDapp ?? "none yet"}</code>
         </div>
         <div className="kn-dong">
-          <span>Custos đọc chain qua</span>
+          <span>Custos reads the chain via</span>
           <code>{HOST_RPC}</code>
         </div>
         {/* Đánh giá giám khảo 05/10: người xem KHÔNG có khoá — nạp khoá là việc của đội, nên thu gọn lại
             thay vì làm thứ nổi bật nhất cửa sổ. Ô file giữ id `kn-khoa` (các probe nạp khoá qua nó). */}
         {!coKhoa && (
           <details className="kn-khoa" open={!!loiKhoa}>
-            <summary>Tôi có file khoá của ví thử nghiệm (đội phát triển)</summary>
+            <summary>I have the test wallet’s key file (development team)</summary>
             <input ref={file} id="kn-khoa" type="file" accept=".json,application/json" hidden
               onChange={(e) => e.target.files?.[0] && void napKhoa(e.target.files[0])} />
-            <button type="button" className="phu" onClick={() => file.current?.click()}>Chọn file khoá (.json)…</button>
-            <small>Chỉ cần để ký thật. Khoá chỉ nằm trong tab này, không gửi đi đâu.</small>
+            <button type="button" className="phu" onClick={() => file.current?.click()}>Choose key file (.json)…</button>
+            <small>Only needed to really sign. The key stays in this tab and is never sent anywhere.</small>
             {loiKhoa && <p role="alert">{loiKhoa}</p>}
           </details>
         )}
@@ -219,25 +219,25 @@ function Trang() {
 
       {dc?.kieu === "ket-noi" && (
         <section className="kn-yeu-cau" aria-live="polite">
-          <h2>{dc.origin} muốn kết nối</h2>
-          <p>Ứng dụng sẽ thấy địa chỉ ví. Mỗi giao dịch nó gửi sau đó đều được Custos kiểm tại đây trước khi bạn ký.</p>
+          <h2>{dc.origin} wants to connect</h2>
+          <p>The app will see your wallet address. Every transaction it sends afterwards is checked by Custos here before you sign.</p>
           <div className="kn-nut">
-            <button type="button" className="phu" onClick={() => cuaSo.tuChoi()}>Từ chối</button>
-            <button type="button" onClick={() => cuaSo.choKetNoi()}>Cho kết nối</button>
+            <button type="button" className="phu" onClick={() => cuaSo.tuChoi()}>Reject</button>
+            <button type="button" onClick={() => cuaSo.choKetNoi()}>Allow connection</button>
           </div>
         </section>
       )}
 
       {dc?.kieu === "ky" && (
         <section className={`kn-yeu-cau muc-${ketQua?.level ?? "cho"}`} aria-live="polite">
-          <h2>{dc.origin} yêu cầu ký một giao dịch</h2>
-          {dc.pha === "dang-kiem" && <p>Custos đang mô phỏng chính giao dịch này trên Devnet…</p>}
+          <h2>{dc.origin} requests a transaction signature</h2>
+          {dc.pha === "dang-kiem" && <p>Custos is simulating this exact transaction on Devnet…</p>}
           {dc.pha === "loi-kiem" && (
             <>
-              <p role="alert">Custos chưa kiểm được: {dc.loi}</p>
-              <p>Không có kết quả kiểm thì ví không cho ký.</p>
+              <p role="alert">Custos could not check it: {dc.loi}</p>
+              <p>Without a check result, the wallet does not allow signing.</p>
               <div className="kn-nut">
-                <button type="button" className="phu" onClick={() => cuaSo.tuChoi()}>Đóng yêu cầu</button>
+                <button type="button" className="phu" onClick={() => cuaSo.tuChoi()}>Close request</button>
               </div>
             </>
           )}
@@ -257,29 +257,29 @@ function Trang() {
                 </ul>
               )}
               <p className="kn-phu">
-                Mã lý do: {ketQua.reasonCodes.join(", ") || "không có"} · phủ {ketQua.coverage.analyzed}/{ketQua.coverage.total} lệnh
+                Reason code: {ketQua.reasonCodes.join(", ") || "none"} · Coverage: understood {ketQua.coverage.analyzed} of {ketQua.coverage.total} instructions
               </p>
               {canXacNhan && (
                 <label className="kn-xac-nhan">
                   <input type="checkbox" checked={hieuRuiRo} onChange={(e) => setHieuRuiRo(e.target.checked)} />
-                  Tôi đã đọc cảnh báo và vẫn muốn ký
+                  I've read the warning and still want to sign
                 </label>
               )}
               <div className="kn-nut">
                 <button type="button" className="phu" onClick={() => cuaSo.tuChoi()} disabled={dc.pha === "dang-ky"}>
-                  Chặn giao dịch
+                  Block transaction
                 </button>
                 <button type="button" onClick={() => void cuaSo.vanKy()}
                   disabled={!coKhoa || dc.pha === "dang-ky" || (canXacNhan && !hieuRuiRo)}>
-                  {ketQua.level === "safe" ? "Ký" : "Vẫn ký"}
+                  {ketQua.level === "safe" ? "Sign" : "Sign anyway"}
                 </button>
               </div>
               {!coKhoa && (
                 <p className="kn-khong-khoa">
-                  Không có file khoá? Bạn vẫn chặn được: bấm <strong>Chặn giao dịch</strong> — ứng dụng sẽ không
-                  nhận được chữ ký nào. Ký thật cần khoá của đội; xem{" "}
-                  <a href={GIAO_DICH_DA_KY_THAT} target="_blank" rel="noreferrer">một lượt đã ký thật trên Explorer</a>{" "}
-                  và <a href={BIEN_BAN_KY_THAT} target="_blank" rel="noreferrer">biên nhận đối chiếu với chain</a>.
+                  No key file? You can still block it: press <strong>Block transaction</strong> — the app will not
+                  receive any signature. Real signing needs the team’s key; see{" "}
+                  <a href={GIAO_DICH_DA_KY_THAT} target="_blank" rel="noreferrer">a really signed run on Explorer</a>{" "}
+                  and <a href={BIEN_BAN_KY_THAT} target="_blank" rel="noreferrer">its receipt checked against the chain</a>.
                 </p>
               )}
             </>
@@ -287,20 +287,20 @@ function Trang() {
         </section>
       )}
 
-      {!dc && s.daChoKetNoi && <p className="kn-note">Đang kết nối với {s.originDapp}. Chờ ứng dụng gửi yêu cầu…</p>}
+      {!dc && s.daChoKetNoi && <p className="kn-note">Connected to {s.originDapp}. Waiting for the app to send a request…</p>}
 
       {s.bienNhan && (
         <section className="kn-khoi kn-bien-nhan" aria-live="polite">
-          <h2>Biên nhận</h2>
+          <h2>Receipt</h2>
           <p>{CAU_BIEN_NHAN[s.bienNhan.pha]}</p>
           <a href={`https://explorer.solana.com/tx/${s.bienNhan.chuKy}?cluster=devnet`} target="_blank" rel="noreferrer">
-            {s.bienNhan.chuKy.slice(0, 10)}…{s.bienNhan.chuKy.slice(-6)} trên Explorer
+            {s.bienNhan.chuKy.slice(0, 10)}…{s.bienNhan.chuKy.slice(-6)} on Explorer
           </a>
           {!s.bienNhan.duBao.ok && <small>{s.bienNhan.duBao.lyDo}</small>}
           {s.bienNhan.dong.length > 0 && (
             <table>
               <thead>
-                <tr><th>Mục</th><th>Custos dự báo</th><th>Thực tế</th><th /></tr>
+                <tr><th>Item</th><th>Custos predicted</th><th>Actual</th><th /></tr>
               </thead>
               <tbody>
                 {s.bienNhan.dong.map((d, i) => (
@@ -315,8 +315,8 @@ function Trang() {
           {s.bienNhan.khopHet !== null && (
             <p data-khop-het={String(s.bienNhan.khopHet)}>
               {s.bienNhan.khopHet
-                ? "Thực tế khớp dự báo của Custos ở mọi dòng được chấm."
-                : "Thực tế KHÁC dự báo ở dòng ✗. Trạng thái chain có thể đã đổi giữa lúc mô phỏng và lúc chạy — điều này không tự chứng minh Custos sai."}
+                ? "The actual result matches Custos’s prediction on every checked row."
+                : "The actual result DIFFERS from the prediction on the ✗ rows. Chain state may have changed between the simulation and execution — this alone does not prove Custos was wrong."}
             </p>
           )}
         </section>

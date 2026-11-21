@@ -69,7 +69,7 @@ test("bản lành cùng luồng chỉ chuyển 0 lamport cho chính mình; khôn
 });
 
 test("chỉ ví demo cố định và Devnet; thiếu token hoặc không còn đủ số dư thì dừng", async () => {
-  assert.throws(() => dungGiaoDich(key(), "lanh", expiry), /ví demo/);
+  assert.throws(() => dungGiaoDich(key(), "lanh", expiry), /demo wallet/);
   assert.throws(() => dungGiaoDich(VI_DEMO, "dieu-kien-an", expiry), /DEMO/);
   assert.throws(() => dungGiaoDich(VI_DEMO, "dieu-kien-an", expiry, { ...token, amount: 1n }), /DEMO/);
   await assert.rejects(kiemDevnet({ getGenesisHash: async () => "mainnet" }), /Devnet/);
@@ -85,7 +85,7 @@ test("huỷ ký không gửi; bytes bị thay đổi không gửi; lỗi gửi k
   const save = () => { saved++; };
   await assert.rejects(kyVaGui(tx, async () => { throw new Error("huỷ"); }, rpc, save), /huỷ/);
   assert.equal(sends, 0);
-  await assert.rejects(kyVaGui(tx, async (t) => { t.recentBlockhash = key().toBase58(); return t; }, rpc, save), /thay đổi/);
+  await assert.rejects(kyVaGui(tx, async (t) => { t.recentBlockhash = key().toBase58(); return t; }, rpc, save), /modified/);
   assert.equal(sends, 0);
   // Transaction needs only this test signer for a valid signature.
   const valid = new Transaction({ feePayer: signer.publicKey, ...expiry });
@@ -138,7 +138,7 @@ test("discovery không nhận token chỉ giống thông số DEMO khi không c�
 test("tài khoản đã đổi chủ giữa quét và bấm không được dùng để dựng yêu cầu", async () => {
   const { rpc, account, target, mint } = chainFixture();
   rpc.getMultipleAccountsInfo = async () => [account(token.actor, 500_000_000n), target, mint];
-  await assert.rejects(capNhatDemo(rpc as unknown as Connection, token), /Quyền sở hữu/);
+  await assert.rejects(capNhatDemo(rpc as unknown as Connection, token), /ownership/);
 });
 
 test("theo dõi chữ ký phân biệt xác nhận, lỗi, chưa rõ và hết hạn thực sự", async () => {

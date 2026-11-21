@@ -52,12 +52,12 @@ export type MaLoi =
   | "chua-ket-noi";
 
 export const CAU_LOI: Record<MaLoi, string> = {
-  "tu-choi": "Người dùng đã từ chối trong ví.",
-  "chua-kiem-duoc": "Custos chưa kiểm được giao dịch này nên ví không ký.",
-  "chua-ro": "Không rõ ví đã ký hay chưa — đừng gửi lại yêu cầu, hãy kiểm tra trong ví.",
-  "dang-ban": "Ví đang chờ người dùng quyết định một yêu cầu khác.",
-  "sai-yeu-cau": "Ví không nhận yêu cầu này.",
-  "chua-ket-noi": "Ứng dụng chưa được người dùng cho kết nối.",
+  "tu-choi": "The user rejected the request in the wallet.",
+  "chua-kiem-duoc": "Custos could not finish checking this transaction, so the wallet did not sign.",
+  "chua-ro": "It is unclear whether the wallet signed — do not resend the request; check in the wallet.",
+  "dang-ban": "The wallet is waiting for the user to decide on another request.",
+  "sai-yeu-cau": "The wallet does not accept this request.",
+  "chua-ket-noi": "The user has not allowed this app to connect.",
 };
 
 export type KetQuaKetNoi = { diaChi: string; khoaCongKhai: string };

@@ -14,7 +14,7 @@ const TK = "JBQ9SiALovgymB6rA6E14QshDrtgjcPLACtCKKyQGobp";
 
 test("dòng quyền: địa chỉ đầy đủ lấy từ `sauDayDu`, không dựng lại từ chuỗi rút gọn", () => {
   const d = { label: "Chủ sở hữu tài khoản USDC-demo", before: "Bạn", after: "CRZa…picz", severity: "danger", sauDayDu: FULL };
-  assert.deepEqual(diaChiCuaDong(d), [{ nhan: "Địa chỉ mới", diaChi: FULL }]);
+  assert.deepEqual(diaChiCuaDong(d), [{ nhan: "New address", diaChi: FULL }]);
 });
 
 test("dòng tài sản: mint và tài khoản token đầy đủ", () => {
@@ -27,7 +27,7 @@ test("dòng tài sản: mint và tài khoản token đầy đủ", () => {
   };
   assert.deepEqual(diaChiCuaDong(d), [
     { nhan: "Mint", diaChi: MINT },
-    { nhan: "Tài khoản token", diaChi: TK },
+    { nhan: "Token account", diaChi: TK },
   ]);
 });
 
@@ -68,5 +68,5 @@ test("thẻ cảnh báo NỐI ĐÚNG: mọi dòng hậu quả → địa chỉ �
 test("có cả địa chỉ trước (`truocDayDu`) thì hiện cả hai, trước rồi sau", () => {
   const CU = "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF";
   const d = { label: "Chương trình", before: "2EjY…pAF", after: "CRZa…picz", severity: "danger", truocDayDu: CU, sauDayDu: FULL };
-  assert.deepEqual(diaChiCuaDong(d).map((x) => x.nhan), ["Địa chỉ trước", "Địa chỉ mới"]);
+  assert.deepEqual(diaChiCuaDong(d).map((x) => x.nhan), ["Previous address", "New address"]);
 });

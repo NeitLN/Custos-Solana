@@ -107,7 +107,7 @@ test("tài khoản nguồn đã ĐỔI CHỦ ⇒ lỗi hiện trường nói rõ
   const r = await chay([endpoint("a.example", { nguon: "sai" })]);
   const b = r.buoc.find((x) => x.ma === "nguon")!;
   assert.equal(b.trangThai, "loi");
-  assert.match(b.chiTiet ?? "", /đổi chủ/);
+  assert.match(b.chiTiet ?? "", /changed owner/);
   assert.equal(r.sanSang, false);
 });
 

@@ -81,7 +81,7 @@ export function dsRpc(ht: HienTruong | null | undefined): string[] {
  * Ở đó nó chặn một lỗi đã mắc thật: capture mẫu mainnet bằng endpoint devnet "thành
  * công" nhưng ghi lại một sự thật khác.
  */
-export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" | "localnet" | "không rõ" {
+export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" | "localnet" | "unknown" {
   if (/devnet/i.test(rpc)) return "devnet";
   if (/testnet/i.test(rpc)) return "testnet";
   if (/localhost|127\.0\.0\.1/i.test(rpc)) return "localnet";
@@ -89,7 +89,7 @@ export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" |
   // KHÔNG đoán. Một endpoint riêng (Helius, QuickNode…) không lộ cluster qua tên host,
   // và đoán bừa "mainnet-beta" là cách tệ nhất để sai — nó gắn nhãn đắt nhất cho một
   // thứ chưa biết.
-  return "không rõ";
+  return "unknown";
 }
 
 /** Host của endpoint. Bỏ path và query vì credential của RPC thương mại nằm ở đó. */
@@ -130,32 +130,32 @@ const KHOA = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 /** `null` nghĩa là hợp lệ; chuỗi là lý do hỏng, viết cho người đọc. */
 export function xacThucHienTruong(x: unknown): string | null {
-  if (x === null || typeof x !== "object") return "không phải một đối tượng JSON";
+  if (x === null || typeof x !== "object") return "not a JSON object";
   const o = x as Record<string, unknown>;
 
   for (const k of ["nanNhan", "keTanCong", "banBe", "mint", "taiKhoanNanNhan", "taiKhoanKeTanCong", "taiKhoanBanBe"]) {
     const v = o[k];
-    if (typeof v !== "string") return `thiếu trường \`${k}\``;
-    if (!KHOA.test(v)) return `\`${k}\` không phải địa chỉ Solana hợp lệ`;
+    if (typeof v !== "string") return `missing field \`${k}\``;
+    if (!KHOA.test(v)) return `\`${k}\` is not a valid Solana address`;
   }
 
   if (typeof o["decimals"] !== "number" || !Number.isInteger(o["decimals"]) || o["decimals"] < 0 || o["decimals"] > 18) {
-    return "`decimals` phải là số nguyên trong khoảng 0–18";
+    return "`decimals` must be an integer from 0 to 18";
   }
   // `soLuong` là chuỗi số nguyên lớn: token có thể vượt Number.MAX_SAFE_INTEGER.
   if (typeof o["soLuong"] !== "string" || !/^\d+$/.test(o["soLuong"])) {
-    return "`soLuong` phải là chuỗi chỉ gồm chữ số";
+    return "`soLuong` must be a string of digits only";
   }
-  if (o["rpc"] !== undefined && typeof o["rpc"] !== "string") return "`rpc` phải là chuỗi";
+  if (o["rpc"] !== undefined && typeof o["rpc"] !== "string") return "`rpc` must be a string";
   if (o["rpcDuPhong"] !== undefined && !(Array.isArray(o["rpcDuPhong"]) && o["rpcDuPhong"].every((x) => typeof x === "string"))) {
-    return "`rpcDuPhong` phải là mảng chuỗi URL";
+    return "`rpcDuPhong` must be an array of URL strings";
   }
   if (typeof o["rpc"] === "string" && o["rpc"] !== "") {
     try {
       const u = new URL(o["rpc"]);
-      if (u.protocol !== "https:" && u.protocol !== "http:") return "`rpc` phải là URL http(s)";
+      if (u.protocol !== "https:" && u.protocol !== "http:") return "`rpc` must be an http(s) URL";
     } catch {
-      return "`rpc` không phải URL hợp lệ";
+      return "`rpc` is not a valid URL";
     }
   }
   return null;
@@ -175,7 +175,7 @@ export async function docHienTruongChiTiet(): Promise<KetQuaHienTruong> {
     // TẠI — bảo người ta "chưa dựng" là chỉ sai hướng.
     const loi = e instanceof Error ? e.message : String(e);
     return /JSON|Unexpected token/i.test(loi)
-      ? { trangThai: "hong", lyDo: "file không phải JSON hợp lệ" }
+      ? { trangThai: "hong", lyDo: "the file is not valid JSON" }
       : { trangThai: "chuaDung" };
   }
 

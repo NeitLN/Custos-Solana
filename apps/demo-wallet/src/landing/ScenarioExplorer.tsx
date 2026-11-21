@@ -199,7 +199,8 @@ function BangChung({ t, ca, tenCa }: { t: NoiDung; ca: CaMau; tenCa: string }) {
             </div>
             <div className="lg-bc__hang">
               <dt>{g.truoc}</dt>
-              <dd>{ca.doiChu.truoc}</dd>
+              {/* Fixture ghi "Bạn" = người ký; hiển thị theo ngôn ngữ trang. */}
+              <dd>{ca.doiChu.truoc === "Bạn" ? t.hero.phieu.chuBan : ca.doiChu.truoc}</dd>
             </div>
             <div className="lg-bc__hang">
               <dt>{g.sau}</dt>

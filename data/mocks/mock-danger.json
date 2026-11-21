@@ -8,21 +8,21 @@
   },
   "diff": [
     {
-      "label": "Số dư USDC sau khi ký",
-      "before": "500,00",
-      "after": "0,00",
+      "label": "Balance of USDC after signing",
+      "before": "500.00",
+      "after": "0.00",
       "severity": "danger"
     },
     {
-      "label": "Chủ sở hữu tài khoản USDC",
-      "before": "Bạn",
+      "label": "Token account owner: USDC",
+      "before": "You",
       "after": "9xQe…7Tm2",
       "severity": "danger"
     },
     {
-      "label": "Phí mạng",
+      "label": "Network fee",
       "before": "—",
-      "after": "0,000005 SOL",
+      "after": "0.000005 SOL",
       "severity": "info"
     }
   ],
@@ -36,5 +36,5 @@
     "total": 11,
     "unverifiedPrograms": 1
   },
-  "explanation": "500 USDC của bạn sẽ chuyển sang ví 9xQe…7Tm2, và tài khoản USDC cũng đổi chủ sang chính ví đó. Sau khi ký, bạn không lấy lại được. Giao dịch cũng gọi một chương trình chúng tôi chưa xác minh — chúng tôi không biết nó làm gì."
+  "explanation": "500 USDC will move to wallet 9xQe…7Tm2, and your USDC account also changes owner to that same wallet. Once you sign, you cannot get it back. The transaction also calls a program we have not verified — we do not know what it does."
 }

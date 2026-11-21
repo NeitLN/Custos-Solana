@@ -37,26 +37,26 @@ with sync_playwright() as pw:
     try:
         page.goto(URL, wait_until="networkidle")
         with page.expect_popup() as pop:
-            page.get_by_role("button", name="Kết nối ví", exact=True).click()
+            page.get_by_role("button", name="Connect wallet", exact=True).click()
         vi = pop.value
         kq["vi"] = vi.url.split("?")[0]
         assert urlparse(page.url).netloc != urlparse(vi.url).netloc, "hai origin phải khác nhau"
         kq["buoc"].append(f"hai origin HTTPS: {urlparse(page.url).netloc} ↔ {urlparse(vi.url).netloc}; popup mở khi trình chặn BẬT")
-        vi.get_by_role("button", name="Cho kết nối", exact=True).click()
+        vi.get_by_role("button", name="Allow connection", exact=True).click()
         vi.locator("#kn-khoa").set_input_files(".devnet/vi-demo.json")
 
-        page.get_by_role("button", name="Tìm token DEMO trên Devnet", exact=True).click()
+        page.get_by_role("button", name="Find DEMO tokens on Devnet", exact=True).click()
         expect(page.locator("#sb-token")).to_be_visible(timeout=180000)
         kq["taiKhoanChon"] = page.locator("#sb-token").input_value()
-        page.get_by_role("button", name="Nhận 1.000 SOLB", exact=True).click()
-        expect(vi.locator(".kn-muc")).to_have_text("Nguy hiểm", timeout=90000)
+        page.get_by_role("button", name="Claim 1,000 SOLB", exact=True).click()
+        expect(vi.locator(".kn-muc")).to_have_text("Danger", timeout=90000)
         kq["canhBao"] = vi.locator(".kn-yeu-cau").inner_text()
         vi.screenshot(path=RA.replace(".json", "-canh-bao.png"), full_page=True)
         assert kq["gui"] == [], "đã có giao dịch được gửi TRƯỚC khi người dùng quyết định"
         kq["buoc"].append("cảnh báo Nguy hiểm hiện TRƯỚC khi có bất kỳ sendTransaction nào")
 
         vi.locator(".kn-xac-nhan input").check()
-        vi.get_by_role("button", name="Vẫn ký", exact=True).click()
+        vi.get_by_role("button", name="Sign anyway", exact=True).click()
         expect(page.locator(".sb-receipt")).to_have_attribute("data-outcome", "xong", timeout=120000)
         kq["chuKy"] = page.locator("[data-signature]").get_attribute("href")
         assert len(kq["gui"]) == 1 and urlparse(kq["gui"][0]).netloc == urlparse(page.url).netloc

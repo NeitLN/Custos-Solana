@@ -5,10 +5,10 @@ import { nhanDoiChieuQuyen, type LiveReceipt } from "./receipt.ts";
 import { SCENARIOS } from "./scenarios.ts";
 export const short = (s: string) => `${s.slice(0, 5)}…${s.slice(-5)}`;
 export const token = (s: string | null | undefined) =>
-  s == null ? "Chưa đo" : dinhDangSo(BigInt(s), DECIMALS);
+  s == null ? "Not measured" : dinhDangSo(BigInt(s), DECIMALS, "en");
 export const explorer = (signature: string) =>
   `https://explorer.solana.com/tx/${encodeURIComponent(signature)}?cluster=devnet`;
-const labels = { match: "Khớp", mismatch: "Có chênh lệch", unknown: "Chưa đủ dữ liệu" } as const;
+const labels = { match: "Match", mismatch: "Differs", unknown: "Not enough data" } as const;
 export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: () => void }) {
   const p = r.prediction,
     o = r.observation,
@@ -25,11 +25,11 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
     <section className="live-evidence" aria-labelledby="receipt-title">
       <div className="live-section-top">
         <div>
-          <span className="live-eyebrow">BẰNG CHỨNG THỰC THI</span>
-          <h2 id="receipt-title">Dự báo gặp thực tế.</h2>
+          <span className="live-eyebrow">EXECUTION EVIDENCE</span>
+          <h2 id="receipt-title">Predicted vs. actual.</h2>
         </div>
         <span className={`live-badge ${o?.err === null ? "" : "live-badge--neutral"}`}>
-          {o ? (o.err === null ? `Confirmed · slot ${o.slot}` : "Thực thi thất bại") : "Đang tra cứu"}
+          {o ? (o.err === null ? `Confirmed · slot ${o.slot}` : "Execution failed") : "Looking up"}
         </span>
       </div>
       <p className="live-muted">{r.note}</p>
@@ -37,66 +37,66 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
       {r.decision && (
         <div className={`receipt-decision ${r.decision.action === "override" ? "is-override" : ""}`}>
           <strong>
-            {r.decision.action === "override" ? "Bạn đã chủ động bỏ qua cảnh báo" : "Bạn đã đồng ý thực hiện"}
+            {r.decision.action === "override" ? "You deliberately overrode the warning" : "You agreed to proceed"}
           </strong>
           <p>
-            Custos {r.protected ? "vẫn bật" : "tắt"} khi ký · Mức L2:{" "}
+            Custos was {r.protected ? "still on" : "off"} at signing · L2 level:{" "}
             {r.decision.level === "danger"
-              ? "Nguy hiểm"
+              ? "Danger"
               : r.decision.level === "warning"
-                ? "Cần xem kỹ"
+                ? "Review carefully"
                 : r.decision.level === "safe"
-                  ? "Bình thường"
-                  : "Không đo được"}
+                  ? "Normal"
+                  : "Could not measure"}
             .
           </p>
           {r.decision.aiAdvisory === "review_required" && (
-            <p>Custos đề nghị kiểm tra thủ công, và bạn đã xác nhận đã xem trước khi ký.</p>
+            <p>Custos recommended a manual check, and you confirmed you had seen it before signing.</p>
           )}
-          <small>Nhật ký quyết định cục bộ, không phải chứng nhận on-chain về việc người dùng đã hiểu.</small>
+          <small>A local decision log, not an on-chain certificate that the user understood.</small>
         </div>
       )}
       {o?.err === null &&
         c?.actualBefore != null &&
         c.actualAfter != null &&
         BigInt(c.actualBefore) > BigInt(c.actualAfter) && (
-          <div className="receipt-flow" aria-label="Token đã rời tài khoản nguồn">
+          <div className="receipt-flow" aria-label="Tokens that left the source account">
             <span>
-              Nguồn{" "}
+              Source{" "}
               <strong>−{token((BigInt(c.actualBefore) - BigInt(c.actualAfter)).toString())} DEMO</strong>
             </span>
             <span className="receipt-flow-arrow" aria-hidden="true">
               →
             </span>
             <span>
-              Đã ghi nhận<strong>slot {o.slot}</strong>
+              Recorded<strong>slot {o.slot}</strong>
             </span>
           </div>
         )}
       <p className="live-footnote">
-        Chế độ khi ký giao dịch này:{" "}
-        {r.protected ? "Custos bật — đã xem phân tích trước ký." : "Custos tắt — ký theo luồng đối chứng."}
+        Mode when signing this transaction:{" "}
+        {r.protected ? "Custos on — analysis viewed before signing." : "Custos off — signed in the control flow."}
       </p>
       <div
         className="live-table-wrap"
         role="region"
-        aria-label="Bảng đối chiếu dự báo và Devnet, có thể cuộn ngang"
+        aria-label="Prediction vs. Devnet comparison table, scrolls horizontally"
         tabIndex={0}
       >
         <table>
-          <caption className="sr-only">Đối chiếu dự báo Custos với dữ liệu Devnet</caption>
+          <caption className="sr-only">Custos prediction compared with Devnet data</caption>
           <thead>
             <tr>
-              <th>Dữ kiện</th>
-              <th>Custos dự báo</th>
-              <th>Devnet ghi nhận</th>
-              <th>Đối chiếu</th>
+              <th>Fact</th>
+              <th>Custos predicted</th>
+              <th>Devnet recorded</th>
+              <th>Comparison</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th>
-                Số dư tài khoản nguồn <small>DEMO · {short(p.source)}</small>
+                Source account balance <small>DEMO · {short(p.source)}</small>
               </th>
               <td>
                 {token(p.before)} → {token(p.after)}
@@ -109,7 +109,7 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
             {p.target && (
               <tr>
                 <th>
-                  Số dư tài khoản nhận <small>DEMO · {short(p.target)}</small>
+                  Recipient account balance <small>DEMO · {short(p.target)}</small>
                 </th>
                 <td>
                   {token(p.targetBefore)} → {token(p.targetAfter)}
@@ -121,15 +121,15 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
               </tr>
             )}
             <tr>
-              <th>Quyền kiểm soát tài khoản</th>
+              <th>Account control</th>
               <td title={p.ownerAfter ?? ""}>
-                {p.ownerAfter ? short(p.ownerAfter) : "Không có dự báo đổi chủ"}
+                {p.ownerAfter ? short(p.ownerAfter) : "No owner change predicted"}
               </td>
               <td title={o?.owner ?? ""}>
-                {o?.owner ? short(o.owner) : "Chưa đọc được"}
+                {o?.owner ? short(o.owner) : "Not read yet"}
                 <small>
                   {o?.ownerSlot != null &&
-                    `Đọc lại tại slot ${o.ownerSlot}${o.ownerSlot > o.slot ? (o.rightsAttributable ? " · không có giao dịch nào khác chạm tài khoản sau đó" : " · chưa loại trừ được giao dịch xen giữa") : ""}`}
+                    `Re-read at slot ${o.ownerSlot}${o.ownerSlot > o.slot ? (o.rightsAttributable ? " · no other transaction touched the account after that" : " · an intervening transaction cannot be ruled out yet") : ""}`}
                 </small>
               </td>
               <td data-result={c?.authority ?? "unknown"}>
@@ -137,42 +137,42 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
               </td>
             </tr>
             <tr>
-              <th>Quyền sử dụng token</th>
+              <th>Token delegate</th>
               <td>
                 {p.authorityMeasured
                   ? p.delegateAfter
                     ? `${short(p.delegateAfter)} · ${token(p.allowanceAfter)} DEMO`
-                    : "Không có delegate"
-                  : "Chưa đo"}
+                    : "No delegate"
+                  : "Not measured"}
               </td>
               <td>
                 {o?.allowance != null
                   ? o.delegate
                     ? `${short(o.delegate)} · ${token(o.allowance)} DEMO`
-                    : "Không có delegate"
-                  : "Chưa đo"}
+                    : "No delegate"
+                  : "Not measured"}
               </td>
               <td data-result={c?.delegate ?? "unknown"}>
                 {o ? nhanDoiChieuQuyen(c?.delegate ?? "unknown", o) : labels.unknown}
               </td>
             </tr>
             <tr>
-              <th>Quyền đóng tài khoản</th>
+              <th>Close authority</th>
               <td>
                 {p.authorityMeasured
                   ? p.closeAuthorityAfter
                     ? short(p.closeAuthorityAfter)
-                    : "Chủ tài khoản"
-                  : "Chưa đo"}
+                    : "Account owner"
+                  : "Not measured"}
               </td>
               <td>
                 {o?.closed
-                  ? "Đã đọc thấy tài khoản không còn tồn tại"
+                  ? "Read: the account no longer exists"
                   : o?.closeAuthority === undefined
-                    ? "Chưa đo"
+                    ? "Not measured"
                     : o.closeAuthority
                       ? short(o.closeAuthority)
-                      : "Chủ tài khoản"}
+                      : "Account owner"}
               </td>
               <td data-result={c?.closeAuthority ?? "unknown"}>
                 {o ? nhanDoiChieuQuyen(c?.closeAuthority ?? "unknown", o) : labels.unknown}
@@ -180,37 +180,37 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
             </tr>
             <tr>
               <th>
-                Phí giao dịch <small>SOL Devnet</small>
+                Transaction fee <small>Devnet SOL</small>
               </th>
-              <td>Phí thực tế ghi riêng</td>
-              <td>{o ? `${dinhDangSo(BigInt(o.fee), 9)} SOL` : "Chưa đọc được"}</td>
-              <td>Không gộp vào token</td>
+              <td>Actual fee recorded separately</td>
+              <td>{o ? `${dinhDangSo(BigInt(o.fee), 9, "en")} SOL` : "Not read yet"}</td>
+              <td>Not counted in tokens</td>
             </tr>
           </tbody>
         </table>
       </div>
       <p className="live-footnote">
-        Xác nhận thành công chỉ nói giao dịch đã thực thi, không có nghĩa giao dịch có lợi. Số token lấy từ
-        metadata giao dịch. Quyền sở hữu/delegate là trạng thái đọc sau xác nhận, có thể thay đổi tiếp. Dữ
-        liệu thiếu luôn được giữ là chưa rõ.
+        A successful confirmation only means the transaction executed, not that it was good for you. Token amounts come from
+        the transaction metadata. Owner/delegate are states read after confirmation and may change again. Missing
+        data is always kept as unknown.
       </p>
       {o && r.kind === "close" && (
         <p className="live-footnote">
-          SOL trước/sau của bên ký và nhận rent:{" "}
-          {o.preLamports?.[0] == null ? "Chưa đo" : dinhDangSo(BigInt(o.preLamports[0]), 9)} →{" "}
-          {o.postLamports?.[0] == null ? "Chưa đo" : dinhDangSo(BigInt(o.postLamports[0]), 9)} SOL Devnet;
-          chênh lệch này đã bao gồm phí.
+          SOL before/after for the signer and rent receiver:{" "}
+          {o.preLamports?.[0] == null ? "Not measured" : dinhDangSo(BigInt(o.preLamports[0]), 9, "en")} →{" "}
+          {o.postLamports?.[0] == null ? "Not measured" : dinhDangSo(BigInt(o.postLamports[0]), 9, "en")} Devnet SOL;
+          this difference includes the fee.
         </p>
       )}
       <div className="live-actions">
         <a className="live-primary" href={explorer(r.signature)} target="_blank" rel="noreferrer">
-          Kiểm chứng trên Explorer ↗
+          Verify on Explorer ↗
         </a>
-        <button onClick={query}>Tra cứu lại</button>
-        <button onClick={download}>Tải bằng chứng JSON</button>
+        <button onClick={query}>Look up again</button>
+        <button onClick={download}>Download JSON evidence</button>
       </div>
       <details className="live-details">
-        <summary>Signature và tài khoản đầy đủ</summary>
+        <summary>Full signature and accounts</summary>
         <p>
           Signature <code>{r.signature}</code>
         </p>
@@ -220,19 +220,19 @@ export function Receipt({ receipt: r, query }: { receipt: LiveReceipt; query: ()
           Devnet. Chỉ nói "trùng" khi đọc được metadata — chưa đọc thì là chưa rõ.
         */}
         <p>
-          Dấu vân tay message đã đồng ý ký <code>{sha256Hex(p.message).slice(0, 16)}</code>
+          Fingerprint of the message you agreed to sign <code>{sha256Hex(p.message).slice(0, 16)}</code>
           {" · "}
-          {o ? (o.message === p.message ? "trùng message Devnet ghi nhận" : "KHÁC message Devnet ghi nhận") : "chưa đọc được message Devnet ghi nhận"}
+          {o ? (o.message === p.message ? "matches the message Devnet recorded" : "DIFFERS from the message Devnet recorded") : "the message Devnet recorded has not been read yet"}
         </p>
         <p>
-          Tài khoản nguồn <code>{p.source}</code>
+          Source account <code>{p.source}</code>
         </p>
         <p>
           Mint <code>{p.mint}</code>
         </p>
         {o?.owner && (
           <p>
-            Chủ hiện tại <code>{o.owner}</code>
+            Current owner <code>{o.owner}</code>
           </p>
         )}
       </details>

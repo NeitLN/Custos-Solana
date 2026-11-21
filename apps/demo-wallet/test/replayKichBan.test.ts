@@ -108,16 +108,16 @@ test("ĐỔI KỊCH BẢN ⇒ đổi tx: dựng ca khác trên fixture của ca 
 });
 
 test("fixture HỎNG / khác phiên bản / khác cluster / khác ví ⇒ bị từ chối trước khi chạy", () => {
-  assert.match(xacThucBoReplay({ ...BO, phienBan: 2 }) ?? "", /phiên bản/);
+  assert.match(xacThucBoReplay({ ...BO, phienBan: 2 }) ?? "", /version/);
   assert.match(xacThucBoReplay({ ...BO, schema: "khac" }) ?? "", /schema/);
   assert.match(xacThucBoReplay({ ...BO, genesis: "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d" }) ?? "", /Devnet/);
   assert.match(
     xacThucBoReplay({ ...BO, viBaoVe: "2EjYM7ShF9n1e5ErWpmnw5xzMTEUF9CC4peDctKbCpAF" }) ?? "",
-    /ví khác/,
+    /wallet other than/,
     "bộ ghi cho ví khác lọt vào hành trình demo",
   );
-  assert.match(xacThucBoReplay({ ...BO, mau: [{ ...BO.mau[0], id: "khong-ton-tai" }] }) ?? "", /lạ/);
-  assert.match(xacThucBoReplay({ ...BO, mau: [{ ...BO.mau[0], fixture: {} }] }) ?? "", /hỏng/);
+  assert.match(xacThucBoReplay({ ...BO, mau: [{ ...BO.mau[0], id: "khong-ton-tai" }] }) ?? "", /unknown/);
+  assert.match(xacThucBoReplay({ ...BO, mau: [{ ...BO.mau[0], fixture: {} }] }) ?? "", /broken/);
   assert.ok(xacThucBoReplay(null));
 });
 
@@ -133,7 +133,7 @@ test("THIẾU MỘT LỜI GỌI ⇒ nổi ra trong hộp thiếu, dù extractFac
 test("engine đổi kết quả so với lúc ghi ⇒ sai khác được NÓI RA, không lấy kết quả cũ đè lên", () => {
   const so = soVoiLucGhi({ level: "warning", reasonCodes: ["X"] }, { level: "danger", reasonCodes: ["Y"], coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 } });
   assert.equal(so.khop, false);
-  assert.match("moTa" in so ? so.moTa : "", /Lúc ghi: danger \(Y\)\. Engine đang chạy: warning \(X\)/);
+  assert.match("moTa" in so ? so.moTa : "", /At recording: danger \(Y\)\. Engine now: warning \(X\)/);
   assert.ok(soVoiLucGhi({ level: "safe", reasonCodes: ["B", "A"] }, { level: "safe", reasonCodes: ["A", "B"], coverage: { analyzed: 1, total: 1, unverifiedPrograms: 0 } }).khop);
 });
 

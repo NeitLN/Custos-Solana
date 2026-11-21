@@ -65,15 +65,15 @@ export type KetQuaPreflight = {
 export type TaoConn = (ds: string[], ghiNhan: (q: QuanSatRpc) => void) => Connection;
 
 const TEN: Record<MaBuoc, string> = {
-  genesis: "Đúng mạng Devnet",
-  blockhash: "Lấy blockhash",
-  vi: "Đọc tài khoản ví",
-  nguon: "Đọc tài khoản token nguồn",
-  moPhong: "Mô phỏng một giao dịch lành",
+  genesis: "Correct network (Devnet)",
+  blockhash: "Fetch blockhash",
+  vi: "Read wallet account",
+  nguon: "Read source token account",
+  moPhong: "Simulate a benign transaction",
 };
 
 function moTa(e: unknown): { trangThai: TrangThaiBuoc; chiTiet: string } {
-  if (e instanceof LoiQuaHan) return { trangThai: "quaHan", chiTiet: "không trả lời trong hạn" };
+  if (e instanceof LoiQuaHan) return { trangThai: "quaHan", chiTiet: "no response within the time limit" };
   if (e instanceof HienTruongChuaSan) return { trangThai: "loi", chiTiet: e.lyDo };
   const m = e instanceof Error ? e.message : String(e);
   // Thông điệp lỗi RPC có thể nhúng URL đầy đủ — chỉ giữ dòng đầu, bỏ mọi URL.
@@ -109,7 +109,7 @@ export async function kiemSanSang(
     ma: "genesis",
     ten: TEN.genesis,
     trangThai: coDevnet ? "dat" : endpoint.every((e) => e.genesis === "chuaDo") ? "quaHan" : "loi",
-    chiTiet: endpoint.map((e) => `${e.nguon}: ${e.genesis === "devnet" ? "Devnet" : e.genesis === "khacCluster" ? "KHÁC cluster — bỏ" : "chưa đo được"}`).join(" · "),
+    chiTiet: endpoint.map((e) => `${e.nguon}: ${e.genesis === "devnet" ? "Devnet" : e.genesis === "khacCluster" ? "DIFFERENT cluster — dropped" : "not measured"}`).join(" · "),
   });
 
   const conLai: MaBuoc[] = ["blockhash", "vi", "nguon", "moPhong"];
@@ -141,21 +141,21 @@ export async function kiemSanSang(
     }
   };
 
-  const bh = await chay("blockhash", () => conn.getLatestBlockhash("confirmed"), (x) => `hết hạn ở block ${x.lastValidBlockHeight}`);
+  const bh = await chay("blockhash", () => conn.getLatestBlockhash("confirmed"), (x) => `expires at block ${x.lastValidBlockHeight}`);
   if (!bh) return { sanSang: false, luc, buoc, endpoint, dsDung };
 
   const vi = await chay(
     "vi",
     async () => {
       const a = await conn.getAccountInfo(new PublicKey(ht.nanNhan));
-      if (!a) throw new Error("ví cố định chưa có tài khoản trên Devnet — cần nạp SOL từ faucet");
+      if (!a) throw new Error("the fixed demo wallet has no account on Devnet yet — fund it with SOL from the faucet");
       return a;
     },
-    (a) => `${(a.lamports / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 4 })} SOL`,
+    (a) => `${(a.lamports / 1e9).toLocaleString("en-US", { maximumFractionDigits: 4 })} SOL`,
   );
   if (!vi) return { sanSang: false, luc, buoc, endpoint, dsDung };
 
-  const nguon = await chay("nguon", () => docNguonSong(conn, ht), (x) => `số dư ${x.soDu} (đơn vị gốc)`);
+  const nguon = await chay("nguon", () => docNguonSong(conn, ht), (x) => `balance ${x.soDu} (base units)`);
   if (!nguon) return { sanSang: false, luc, buoc, endpoint, dsDung };
 
   const lanhTinh = timKichBan("lanh-tinh")!;
@@ -164,7 +164,7 @@ export async function kiemSanSang(
     async () => {
       const tx = lanhTinh.dungTx(ht, { blockhash: bh.blockhash, soDuNguon: nguon.soDu });
       const r = await conn.simulateTransaction(tx, { sigVerify: false, replaceRecentBlockhash: true });
-      if (r.value.err) throw new Error(`mô phỏng ca lành trả lỗi: ${JSON.stringify(r.value.err)}`);
+      if (r.value.err) throw new Error(`simulating the benign case returned an error: ${JSON.stringify(r.value.err)}`);
       return r;
     },
     (r) => `slot ${r.context.slot}`,

@@ -174,7 +174,7 @@ export async function kySauKhiKiem({
       daKy: false,
       ketCuc: /** @type {const} */ ("chua_ro"),
       lyDo: "het_han_cho_signer",
-      chiTiet: `không có phản hồi sau ${Math.round(msChoSigner / 1000)} giây — KHÔNG kết luận ví đã huỷ`,
+      chiTiet: `no response after ${Math.round(msChoSigner / 1000)} seconds — this does NOT mean the wallet cancelled`,
     };
   }
 
@@ -197,7 +197,7 @@ export async function kySauKhiKiem({
       daKy: false,
       ketCuc: /** @type {const} */ ("chua_ro"),
       lyDo: "signer_tra_ve_tx_khac",
-      chiTiet: "message sau khi ký khác message đã kiểm — không gửi",
+      chiTiet: "the signed message differs from the checked message — not sending",
     };
   }
 
@@ -218,7 +218,7 @@ export async function kySauKhiKiem({
       daKy: false,
       ketCuc: /** @type {const} */ ("chua_ro"),
       lyDo: "signer_khong_tra_chu_ky",
-      chiTiet: "signer không trả giao dịch mang chữ ký hợp lệ của ví trên đúng bytes đã kiểm — không gửi",
+      chiTiet: "the signer did not return a transaction with a valid wallet signature over the exact checked bytes — not sending",
     };
   }
 

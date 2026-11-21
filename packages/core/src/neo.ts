@@ -176,8 +176,10 @@ export function khopNeo(
   messageBytes: Uint8Array,
   nguoiDung: string,
   cluster: Cluster,
+  locale: "vi" | "en" = "vi",
 ): KetQuaKhop {
   const bamNay = bam(messageBytes);
+  const en = locale === "en";
   if (bamNay !== neo.bamMessage) {
     return {
       khop: false,
@@ -185,21 +187,27 @@ export function khopNeo(
       // Đổi blockhash CŨNG là đổi message: blockhash nằm trong message nên byte đã
       // khác. Mặc định của thẻ C06 là re-inspect, không phải chuẩn hoá rồi coi như
       // nhau — muốn coi như nhau thì cần một chứng minh riêng.
-      chiTiet: `đã kiểm ${neo.bamMessage}, sắp ký ${bamNay}`,
+      chiTiet: en
+        ? `checked ${neo.bamMessage}, about to sign ${bamNay}`
+        : `đã kiểm ${neo.bamMessage}, sắp ký ${bamNay}`,
     };
   }
   if (nguoiDung !== neo.nguoiDung) {
     return {
       khop: false,
       lyDo: "nguoi-dung-khac",
-      chiTiet: `đã kiểm cho ${neo.nguoiDung}, nay là ${nguoiDung}`,
+      chiTiet: en
+        ? `checked for ${neo.nguoiDung}, now ${nguoiDung}`
+        : `đã kiểm cho ${neo.nguoiDung}, nay là ${nguoiDung}`,
     };
   }
   if (cluster !== neo.cluster) {
     return {
       khop: false,
       lyDo: "cluster-khac",
-      chiTiet: `đã kiểm trên ${neo.cluster}, nay là ${cluster}`,
+      chiTiet: en
+        ? `checked on ${neo.cluster}, now ${cluster}`
+        : `đã kiểm trên ${neo.cluster}, nay là ${cluster}`,
     };
   }
   return { khop: true };

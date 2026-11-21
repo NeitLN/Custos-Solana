@@ -132,9 +132,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "thuong-gia-mat-token",
     nhom: "thuongGiaMatToken",
-    tieuDe: "Nhận thưởng nhưng token rời ví",
-    loiMoi: "Nhận 5 000 BONUS miễn phí — chỉ cần ký để xác nhận ví.",
-    tienDieuKien: "Tài khoản nguồn còn ít nhất 10 token.",
+    tieuDe: "Claim a reward, but tokens leave the wallet",
+    loiMoi: "Get 5,000 BONUS free — just sign to verify your wallet.",
+    tienDieuKien: "The source account holds at least 10 tokens.",
     hoTro: "devnet",
     khai: { type: "airdrop" },
     bangChungMongDoi: {
@@ -145,7 +145,7 @@ export const KICH_BAN: KichBan[] = [
         "khai 'airdrop' trong khi giao dịch chuyển tiền ĐI — phần lệch do L3 nêu.",
     },
     dungTx: (ht, nc) => {
-      canSoDu(nc.soDuNguon, muoiToken(ht), "kịch bản nhận thưởng");
+      canSoDu(nc.soDuNguon, muoiToken(ht), "reward-claim scenario");
       return dungGiaoDichThuongGiaMatToken({
         ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
@@ -157,9 +157,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "doi-chu-tai-khoan",
     nhom: "doiChu",
-    tieuDe: "Đổi chủ tài khoản token",
-    loiMoi: "Nâng cấp ví lên bản Pro — ký để kích hoạt.",
-    tienDieuKien: "Tài khoản token phải đang thuộc về người ký (luật 1 đòi ownerBefore === signer).",
+    tieuDe: "Token account owner changes",
+    loiMoi: "Upgrade your wallet to Pro — sign to activate.",
+    tienDieuKien: "The token account must currently belong to the signer (rule 1 requires ownerBefore === signer).",
     hoTro: "devnet",
     khai: { type: "upgrade" },
     bangChungMongDoi: {
@@ -178,9 +178,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "cap-quyen-vuot-so-du",
     nhom: "capQuyen",
-    tieuDe: "Cấp quyền rút vượt số dư",
-    loiMoi: "Cho phép sàn giao dịch tự động khớp lệnh hộ bạn.",
-    tienDieuKien: "Hạn mức uỷ quyền phải LỚN HƠN số dư đang có, nếu không luật 3 im.",
+    tieuDe: "Delegate allowance above the balance",
+    loiMoi: "Let the exchange fill orders for you automatically.",
+    tienDieuKien: "The delegate allowance must be GREATER than the current balance, otherwise rule 3 stays silent.",
     hoTro: "devnet",
     doiChung: "cap-quyen-vua-du",
     khai: { type: "approve" },
@@ -199,9 +199,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "cap-quyen-vua-du",
     nhom: "doiChung",
-    tieuDe: "Cấp quyền rút vừa đủ — đối chứng",
-    loiMoi: "Cho phép sàn giao dịch khớp đúng khối lượng bạn đặt.",
-    tienDieuKien: "Hạn mức KHÔNG VƯỢT số dư sống. Engine phải IM.",
+    tieuDe: "Delegate allowance within the balance — control case",
+    loiMoi: "Let the exchange fill exactly the amount you ordered.",
+    tienDieuKien: "The allowance does NOT EXCEED the live balance. The engine must stay SILENT.",
     hoTro: "devnet",
     khai: { type: "approve" },
     bangChungMongDoi: {
@@ -218,7 +218,7 @@ export const KICH_BAN: KichBan[] = [
      * "một nửa số cấu hình" — tức vẫn tin một con số đã trôi. Nay tính từ chuỗi.
      */
     dungTx: (ht, nc) => {
-      if (nc.soDuNguon < 2n) throw new HienTruongChuaSan("tài khoản nguồn cạn — ca đối chứng cần hạn mức dương");
+      if (nc.soDuNguon < 2n) throw new HienTruongChuaSan("source account is empty — the control case needs a positive allowance");
       return dungGiaoDichCapQuyenVuaDu({
         ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
@@ -230,9 +230,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "trao-quyen-dong",
     nhom: "quyenDong",
-    tieuDe: "Trao quyền đóng tài khoản",
-    loiMoi: "Dọn dẹp tài khoản rác để nhận lại phí thuê.",
-    tienDieuKien: "closeAuthority mới phải khác người ký (luật 2 bỏ qua khi tự giữ quyền).",
+    tieuDe: "Hand over the right to close the account",
+    loiMoi: "Clean up junk accounts to reclaim rent.",
+    tienDieuKien: "The new closeAuthority must differ from the signer (rule 2 skips it when you keep the authority).",
     hoTro: "devnet",
     khai: { type: "cleanup" },
     bangChungMongDoi: {
@@ -251,9 +251,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "chuyen-them-ngoai-hanh-dong",
     nhom: "chuyenThem",
-    tieuDe: "Chuyển thêm ngoài hành động chính",
-    loiMoi: "Gửi 10 token cho bạn bè — kèm phí mạng nhỏ.",
-    tienDieuKien: "Tài khoản nguồn còn ít nhất 20 token; cần cả ví bạn bè và ví kẻ tấn công.",
+    tieuDe: "Extra transfer beyond the primary action",
+    loiMoi: "Send 10 tokens to a friend — plus a small network fee.",
+    tienDieuKien: "The source account holds at least 20 tokens; needs both the friend wallet and the attacker wallet.",
     hoTro: "devnet",
     khai: { type: "transfer" },
     bangChungMongDoi: {
@@ -264,7 +264,7 @@ export const KICH_BAN: KichBan[] = [
         "lệnh đầu tiên — tổng rời ví là tổng của cả hai lệnh.",
     },
     dungTx: (ht, nc) => {
-      canSoDu(nc.soDuNguon, 2n * muoiToken(ht), "kịch bản chuyển thêm");
+      canSoDu(nc.soDuNguon, 2n * muoiToken(ht), "extra-transfer scenario");
       return dungGiaoDichChuyenThem({
         ...chung(ht, nc),
         keTanCong: new PublicKey(ht.keTanCong),
@@ -279,11 +279,11 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "thieu-du-lieu",
     nhom: "thieuDuLieu",
-    tieuDe: "Không rõ đang bảo vệ ai",
-    loiMoi: "Ký chung giao dịch với một ví khác để nhận thưởng.",
+    tieuDe: "Unclear whose wallet is being protected",
+    loiMoi: "Co-sign a transaction with another wallet to get a reward.",
     tienDieuKien:
-      "Giao dịch cần HAI chữ ký và ví KHÔNG khai `nguoiDung`. Người trả phí phải có SOL " +
-      "trên Devnet, nếu không mô phỏng hỏng trước khi luật nào kịp chạy.",
+      "The transaction needs TWO signatures and the wallet does NOT declare `nguoiDung`. The fee payer must hold SOL " +
+      "on Devnet, otherwise the simulation fails before any rule can run.",
     hoTro: "devnet",
     khongKhaiNguoiDung: true,
     bangChungMongDoi: {
@@ -308,16 +308,16 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "lanh-tinh",
     nhom: "doiChung",
-    tieuDe: "Giao dịch lành tính — đối chứng",
-    loiMoi: "Gửi 10 token cho bạn bè.",
-    tienDieuKien: "Tài khoản nguồn còn ít nhất 10 token; cần ví bạn bè trong hiện trường.",
+    tieuDe: "Benign transaction — control case",
+    loiMoi: "Send 10 tokens to a friend.",
+    tienDieuKien: "The source account holds at least 10 tokens; needs the friend wallet in the Devnet setup.",
     hoTro: "devnet",
     bangChungMongDoi: {
       maMongDoi: [],
       ghiChu: "Ca âm tính gốc của dự án. Engine phải cho Xanh hoặc Vàng-thông-tin.",
     },
     dungTx: (ht, nc) => {
-      canSoDu(nc.soDuNguon, muoiToken(ht), "kịch bản gửi bạn bè");
+      canSoDu(nc.soDuNguon, muoiToken(ht), "send-to-friend scenario");
       return dungGiaoDichLanhTinh({
         ...chung(ht, nc),
         banBe: new PublicKey(ht.banBe),
@@ -329,9 +329,9 @@ export const KICH_BAN: KichBan[] = [
   {
     id: "tan-cong-day-du",
     nhom: "doiChu",
-    tieuDe: "Tấn công đầy đủ — chuyển tiền và đổi chủ",
-    loiMoi: "Nhận quà tặng — ký để nhận.",
-    tienDieuKien: "Tài khoản nguồn còn số dư và vẫn thuộc nạn nhân; cần ví kẻ tấn công.",
+    tieuDe: "Full attack — transfer and owner change",
+    loiMoi: "Claim your gift — sign to receive it.",
+    tienDieuKien: "The source account still has a balance and still belongs to the victim; needs the attacker wallet.",
     hoTro: "devnet",
     khai: { type: "airdrop" },
     bangChungMongDoi: {

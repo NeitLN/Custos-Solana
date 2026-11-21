@@ -93,8 +93,8 @@ test("trang số liệu công khai KHÔNG nói chưa đo khi artifact nói đã 
    *
    * Nên neo hai chặng: tìm tiêu đề mục AI trước, rồi mới tìm `<GioiHan` SAU nó.
    */
-  const mucAI = s.indexOf("AI có thể làm hỏng gì");
-  assert.ok(mucAI > 0, "trang số liệu mất mục 'AI có thể làm hỏng gì' — bài này neo nhầm chỗ");
+  const mucAI = s.indexOf("What the AI could break");
+  assert.ok(mucAI > 0, "trang số liệu mất mục 'What the AI could break' — bài này neo nhầm chỗ");
 
   const i = s.indexOf("<GioiHan", mucAI);
   assert.ok(i > mucAI, "mục eval phải còn khối GioiHan nói ra giới hạn");
@@ -112,7 +112,7 @@ test("trang số liệu công khai KHÔNG nói chưa đo khi artifact nói đã 
   if (DA_DO) {
     // Nhánh "chưa đo" được PHÉP tồn tại trong mã (nó chạy khi mất khoá). Thứ bị cấm
     // là nhánh đó chạy VÔ ĐIỀU KIỆN — tức cụm nằm ngoài mọi phép rẽ, như tiêu đề cũ.
-    const goCung = /tieuDe="[^"]*chưa đo[^"]*"/i;
+    const goCung = /tieuDe="[^"]*(chưa đo|not (yet )?measured)[^"]*"/i;
     assert.doesNotMatch(
       khoi,
       goCung,

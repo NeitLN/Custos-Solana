@@ -15,16 +15,16 @@ test("429 của nhà cung cấp ⇒ câu người đọc được, giữ mã 429
 
 test("đọc tài khoản quá hạn ⇒ nói quá hạn, KHÁC với 429", () => {
   const m = moTaLoiLive(THAT_TREO);
-  assert.match(m, /quá hạn/);
+  assert.match(m, /timed out/);
   assert.doesNotMatch(m, /429/);
 });
 
 test("KHÔNG khẳng định chưa gửi gì — lỗi đọc có thể đến sau khi đã gửi", () => {
-  for (const m of [moTaLoiLive(THAT_429), moTaLoiLive(THAT_TREO)]) assert.doesNotMatch(m, /chưa (có gì|gửi)/i);
+  for (const m of [moTaLoiLive(THAT_429), moTaLoiLive(THAT_TREO)]) assert.doesNotMatch(m, /chưa (có gì|gửi)|nothing (has been |was )?sent|(has|was) not (been )?sent/i);
 });
 
 test("lỗi khác giữ nguyên nghĩa nhưng bỏ URL endpoint (có thể mang khoá)", () => {
-  const m = moTaLoiLive("Ví này đang được thao tác trong tab khác. https://x.example/?api-key=BI-MAT");
-  assert.match(m, /tab khác/);
+  const m = moTaLoiLive("This wallet is being used in another tab. https://x.example/?api-key=BI-MAT");
+  assert.match(m, /another tab/);
   assert.doesNotMatch(m, /BI-MAT|https?:/);
 });

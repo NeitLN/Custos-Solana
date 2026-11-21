@@ -32,8 +32,8 @@ test("endpoint riêng KHÔNG bị đoán bừa thành mainnet", () => {
    * "mainnet-beta" là gắn cái nhãn đắt nhất cho một thứ chưa biết — và nếu người xem
    * tin nhãn đó, họ tin nhầm cả phần còn lại của thẻ cảnh báo.
    */
-  assert.equal(clusterCua("https://x.helius-rpc.com/?api-key=1"), "không rõ");
-  assert.equal(clusterCua("https://my-node.example.com"), "không rõ");
+  assert.equal(clusterCua("https://x.helius-rpc.com/?api-key=1"), "unknown");
+  assert.equal(clusterCua("https://my-node.example.com"), "unknown");
 });
 
 test("`clusterCua` xét devnet TRƯỚC mainnet — thứ tự có ý nghĩa", () => {
@@ -57,7 +57,7 @@ test("`hostCua` bỏ path và query — credential nằm ở đó", () => {
 test("endpoint hỏng ⇒ nói không đọc được, KHÔNG ném", () => {
   // Trắng trang là lỗi tệ nhất của một lớp bảo mật: người dùng mất luôn đường thấy
   // cảnh báo. Xem chú thích `docHienTruong` cùng file.
-  assert.equal(hostCua("khong-phai-url"), "(không đọc được endpoint)");
+  assert.equal(hostCua("khong-phai-url"), "(unreadable endpoint)");
 });
 
 /* ── 3 · Giao diện phân biệt LIVE với MOCK ─────────────────────────────────── */
@@ -69,12 +69,12 @@ test("khối bối cảnh phân biệt kết quả live với dữ liệu mock",
    * chỉ khối này phân biệt được.
    */
   const s = doc("../src/CanhBao.tsx");
-  assert.match(s, /Nguồn kết quả/, "thiếu dòng nguồn kết quả");
-  assert.match(s, /chạy thật — vừa gọi RPC/, "thiếu nhãn cho kết quả live");
-  assert.match(s, /KHÔNG phải kết quả thật/, "nhãn mock không nói rõ đây không phải kết quả thật");
+  assert.match(s, /Result source/, "thiếu dòng nguồn kết quả");
+  assert.match(s, /live run — RPC just called/, "thiếu nhãn cho kết quả live");
+  assert.match(s, /NOT a real result/, "nhãn mock không nói rõ đây không phải kết quả thật");
   assert.match(s, /Cluster:/, "thiếu dòng cluster");
   assert.match(s, /Endpoint:/, "thiếu dòng endpoint");
-  assert.match(s, /Phần chưa đọc hiểu:/, "thiếu phần chưa hiểu — thẻ đòi đích danh");
+  assert.match(s, /Not understood:/, "thiếu phần chưa hiểu — thẻ đòi đích danh");
 });
 
 test("`boiCanh` là prop TUỲ CHỌN, và vắng thì KHÔNG bịa", () => {
@@ -139,7 +139,7 @@ test("khối bối cảnh nằm TRONG phần đóng sẵn, không dàn ra luồn
    */
   const s = doc("../src/CanhBao.tsx");
   const i = s.indexOf("{moKyThuat && (");
-  const j = s.indexOf("Nguồn kết quả");
+  const j = s.indexOf("Result source");
   assert.ok(i > 0, "mất khối progressive disclosure");
   assert.ok(j > i, "khối bối cảnh phải nằm SAU cổng `moKyThuat`, tức đóng sẵn");
   assert.match(s, /aria-expanded=\{moKyThuat\}/, "nút mở phải khai `aria-expanded`");

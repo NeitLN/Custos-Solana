@@ -36,46 +36,46 @@ async function ketQua(id: string) {
 test("tấn công đầy đủ: thấy MẤT 250 token VÀ mất quyền với phần còn lại", async () => {
   const h = hauQuaNeuKy(await ketQua("tan-cong-day-du"));
   const ts = h.dong.find((d) => d.loai === "taiSan")!;
-  assert.equal(ts.truoc, "500,0");
-  assert.equal(ts.sau, "250,0");
-  assert.equal(ts.chenh, "−250,0");
+  assert.equal(ts.truoc, "500.0");
+  assert.equal(ts.sau, "250.0");
+  assert.equal(ts.chenh, "−250.0");
   assert.ok(ts.nghiemTrong);
   const q = h.dong.find((d) => d.loai === "quyen")!;
-  assert.equal(q.truoc, "Bạn");
-  assert.match(q.giaiThich, /không còn thuộc về bạn/);
-  assert.match(q.giaiThich, /không cần bạn ký/);
+  assert.equal(q.truoc, "You");
+  assert.match(q.giaiThich, /no longer belongs to you/);
+  assert.match(q.giaiThich, /without your signature/);
 });
 
 test("chỉ đổi chủ: KHÔNG có dòng số dư giảm (quyết định khoá số 7), vẫn nói mất quyền", async () => {
   const h = hauQuaNeuKy(await ketQua("doi-chu-tai-khoan"));
   assert.ok(!h.dong.some((d) => d.loai === "taiSan" && d.truoc !== d.sau), "bịa ra số dư giảm khi giao dịch chỉ đổi chủ");
-  assert.ok(h.dong.some((d) => d.loai === "quyen" && /không còn thuộc về bạn/.test(d.giaiThich)));
+  assert.ok(h.dong.some((d) => d.loai === "quyen" && /no longer belongs to you/.test(d.giaiThich)));
 });
 
 test("cấp quyền vượt số dư: nói ví khác rút được mà không cần ký thêm; lành tính: chỉ số dư giảm đúng số gửi", async () => {
   const cap = hauQuaNeuKy(await ketQua("cap-quyen-vuot-so-du"));
-  assert.ok(cap.dong.some((d) => d.loai === "quyen" && /không cần bạn ký thêm/.test(d.giaiThich)));
+  assert.ok(cap.dong.some((d) => d.loai === "quyen" && /without another signature from you/.test(d.giaiThich)));
   const lanh = hauQuaNeuKy(await ketQua("lanh-tinh"));
   assert.deepEqual(
     lanh.dong.map((d) => [d.loai, d.truoc, d.sau, d.chenh]),
-    [["taiSan", "500,0", "490,0", "−10,0"]],
+    [["taiSan", "500.0", "490.0", "−10.0"]],
   );
   assert.ok(!lanh.dong.some((d) => d.nghiemTrong && d.loai === "quyen"));
 });
 
 test("đọc hiểu chưa đủ thì NÓI RA — phần chưa đọc có thể còn thay đổi khác", async () => {
   const h = hauQuaNeuKy(await ketQua("tan-cong-day-du"));
-  assert.match(h.ghiChuPhamVi ?? "", /chưa đọc hiểu/);
+  assert.match(h.ghiChuPhamVi ?? "", /understood only .* the unread part may contain other changes/);
   const lanh = hauQuaNeuKy(await ketQua("lanh-tinh"));
   assert.equal(lanh.ghiChuPhamVi, null);
 });
 
 test("giao diện: thẻ có nút 'Vẫn tiếp tục', khung nói rõ là mô phỏng và có đường quay lại chặn", () => {
   const cb = readFileSync("apps/demo-wallet/src/CanhBao.tsx", "utf8");
-  assert.match(cb, /Vẫn tiếp tục — xem điều sẽ xảy ra/);
+  assert.match(cb, /Continue anyway — see what would happen/);
   const k = readFileSync("apps/demo-wallet/src/KhungTiepTuc.tsx", "utf8");
-  assert.match(k, /Theo mô phỏng · chưa có giao dịch nào được gửi/, "khung không nói rõ là mô phỏng");
-  assert.match(k, /Quay lại & chặn giao dịch/);
+  assert.match(k, /Per simulation · no transaction has been sent/, "khung không nói rõ là mô phỏng");
+  assert.match(k, /Go back & block transaction/);
   const app = readFileSync("apps/demo-wallet/src/App.tsx", "utf8");
   assert.ok(/onTiepTuc=\{/.test(app) && /<KhungTiepTuc/.test(app), "Phòng phân tích chưa nối khung tiếp tục");
   // Chọn kết quả mới / huỷ đều đóng khung cũ — khung không được nói về giao dịch khác.

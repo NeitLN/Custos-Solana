@@ -13,7 +13,7 @@ export type Pending = { signature: string; lastValidBlockHeight: number };
 
 export async function kiemDevnet(rpc: Pick<Connection, "getGenesisHash">) {
   if (await rpc.getGenesisHash() !== "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG")
-    throw new Error("RPC không phải Solana Devnet. Đã dừng thử nghiệm.");
+    throw new Error("The RPC is not Solana Devnet. The test has stopped.");
 }
 
 /** DEMO has no metadata. Identify it through its successful issuance transaction,
@@ -36,7 +36,7 @@ export function docBangChung(tx: ParsedTransactionWithMeta | null, source: Publi
 }
 
 export async function timDemo(rpc: Connection, owner: PublicKey, progress: (text: string) => void = () => {}) {
-  if (!owner.equals(VI_DEMO)) throw new Error("Thử nghiệm chỉ dùng ví demo cố định.");
+  if (!owner.equals(VI_DEMO)) throw new Error("This test only uses the fixed demo wallet.");
   await kiemDevnet(rpc);
   const accounts = await rpc.getTokenAccountsByOwner(owner, { programId: TOKEN_PROGRAM_ID }, "confirmed");
   const candidates = accounts.value.map(a => unpackAccount(a.pubkey, a.account))
@@ -45,7 +45,7 @@ export async function timDemo(rpc: Connection, owner: PublicKey, progress: (text
   // Sequential, bounded history lookup: do not burst the public Devnet RPC.
   for (const [index, account] of candidates.entries()) {
     if (found.length >= 5) break;
-    progress(`Đang đối chiếu nguồn gốc DEMO ${index + 1}/${candidates.length}…`);
+    progress(`Checking DEMO provenance ${index + 1}/${candidates.length}…`);
     const mintInfo = await rpc.getAccountInfo(account.mint, "confirmed");
     if (!mintInfo?.owner.equals(TOKEN_PROGRAM_ID)) continue;
     const mint = unpackMint(account.mint, mintInfo);
@@ -71,21 +71,21 @@ class PhienKhongConSan extends Error {}
  * must never be reused just because it was available during the previous scan. */
 export async function capNhatDemo(rpc: Connection, token: DemoToken): Promise<DemoToken> {
   const [sourceInfo, targetInfo, mintInfo] = await rpc.getMultipleAccountsInfo([token.source, token.target, token.mint], "confirmed");
-  if (!sourceInfo || !targetInfo || !mintInfo) throw new PhienKhongConSan("Phiên DEMO không còn đầy đủ tài khoản. Hãy quét lại.");
+  if (!sourceInfo || !targetInfo || !mintInfo) throw new PhienKhongConSan("The DEMO session no longer has all its accounts. Scan again.");
   const source = unpackAccount(token.source, sourceInfo), target = unpackAccount(token.target, targetInfo);
   const mint = unpackMint(token.mint, mintInfo);
   if (!source.owner.equals(VI_DEMO) || !source.mint.equals(token.mint) || source.amount < 2n || source.isFrozen ||
       !target.mint.equals(token.mint) || !target.owner.equals(token.actor) || target.isFrozen ||
       mint.decimals !== 6 || mint.supply !== 500_000_000n || mint.mintAuthority || mint.freezeAuthority)
-    throw new PhienKhongConSan("Quyền sở hữu hoặc số dư DEMO đã đổi. Hãy quét lại phiên.");
+    throw new PhienKhongConSan("DEMO ownership or balance has changed. Scan the session again.");
   return { ...token, amount: source.amount };
 }
 
 export function dungGiaoDich(owner: PublicKey, mode: CheDo, expiry: BlockhashWithExpiryBlockHeight, token?: DemoToken) {
-  if (!owner.equals(VI_DEMO)) throw new Error("Thử nghiệm chỉ dùng ví demo cố định.");
+  if (!owner.equals(VI_DEMO)) throw new Error("This test only uses the fixed demo wallet.");
   const tx = new Transaction({ feePayer: owner, ...expiry });
   if (mode === "lanh") return tx.add(SystemProgram.transfer({ fromPubkey: owner, toPubkey: owner, lamports: 0 }));
-  if (!token || token.amount < 2n) throw new Error("Chưa có tài khoản DEMO đủ số dư để thử.");
+  if (!token || token.amount < 2n) throw new Error("No DEMO account with enough balance to test yet.");
   return tx.add(
     createTransferCheckedInstruction(token.source, token.mint, token.target, owner, token.amount / 2n, 6),
     createSetAuthorityInstruction(token.source, owner, AuthorityType.AccountOwner, token.actor),
@@ -102,13 +102,13 @@ export async function kyVaGui(
 ) {
   const message = tx.serializeMessage();
   const signed = await signTransaction(tx);
-  if (!message.equals(signed.serializeMessage())) throw new Error("Ví trả về giao dịch đã bị thay đổi. Không gửi.");
+  if (!message.equals(signed.serializeMessage())) throw new Error("The wallet returned a modified transaction. Not sent.");
   const bytes = signed.serialize(); // validates all required signatures
-  if (!signed.signature) throw new Error("Ví chưa trả chữ ký.");
+  if (!signed.signature) throw new Error("The wallet did not return a signature.");
   const signature = bs58.encode(signed.signature);
   beforeSend(signature);
   const response = await rpc.sendRawTransaction(bytes, { skipPreflight: false, preflightCommitment: "confirmed", maxRetries: 0 });
-  if (response !== signature) throw new Error("RPC trả chữ ký khác. Hãy kiểm tra chữ ký đã lưu.");
+  if (response !== signature) throw new Error("The RPC returned a different signature. Check the saved signature.");
   return signature;
 }
 

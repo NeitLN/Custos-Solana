@@ -49,7 +49,7 @@ test("QUÁ HẠN không bao giờ thành an toàn", async () => {
   assert.equal(q.cho, "chan", "quá hạn phải CHẶN");
   assert.equal(q.lyDo, "khong_kiem_duoc", "quá hạn là KHÔNG KIỂM ĐƯỢC, không phải phát hiện");
   assert.equal(q.ketQua, null);
-  assert.match(q.loi ?? "", /quá hạn/, "phải giữ nguyên nhân thật để hiển thị và để ghi lại");
+  assert.match(q.loi ?? "", /timed out/, "phải giữ nguyên nhân thật để hiển thị và để ghi lại");
 });
 
 test("lỗi RPC không bao giờ thành an toàn", async () => {

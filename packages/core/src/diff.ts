@@ -1,4 +1,4 @@
-import type { DiffEntry } from "@custos-solana/types";
+import type { DiffEntry, Locale } from "@custos-solana/types";
 import { quyenRutMoRong, type Facts } from "./facts.ts";
 import type { RuleHit, BangChung } from "./l2/rules.ts";
 import { phiNguoiDungTra, tinhSolNguoiDung, tinhTienDatCoc, WSOL_MINT } from "./sol.ts";
@@ -33,17 +33,24 @@ export function kyHieuAnToan(
   return rutGon(mint);
 }
 
-/** Định dạng số theo kiểu Việt Nam: dấu phẩy thập phân, chấm phân nhóm. */
-export function dinhDangSo(raw: bigint, decimals: number): string {
+/**
+ * Định dạng số theo ngôn ngữ hiển thị.
+ *
+ *   "vi" (mặc định): dấu phẩy thập phân, chấm phân nhóm — `1.000,5`
+ *   "en":            dấu chấm thập phân, phẩy phân nhóm — `1,000.5`
+ *
+ * Chỉ đổi cách VIẾT con số; giá trị thô nằm ở `DiffEntry.soLieu` và không đổi.
+ */
+export function dinhDangSo(raw: bigint, decimals: number, locale: Locale = "vi"): string {
   const am = raw < 0n;
   const abs = am ? -raw : raw;
   const chia = 10n ** BigInt(decimals);
   const nguyen = abs / chia;
   const du = abs % chia;
-  const phanNguyen = new Intl.NumberFormat("vi-VN").format(nguyen);
+  const phanNguyen = new Intl.NumberFormat(locale === "en" ? "en-US" : "vi-VN").format(nguyen);
   if (decimals === 0) return (am ? "−" : "") + phanNguyen;
   const phanDu = du.toString().padStart(decimals, "0").replace(/0+$/, "") || "0";
-  return `${am ? "−" : ""}${phanNguyen},${phanDu}`;
+  return `${am ? "−" : ""}${phanNguyen}${locale === "en" ? "." : ","}${phanDu}`;
 }
 
 const LAMPORTS_DECIMALS = 9;
@@ -73,6 +80,51 @@ export const NHAN = {
   CHUA_DOC: "Phần chưa đọc được",
 } as const;
 
+/**
+ * Cùng bộ tiền tố, bản tiếng Anh (`locale: "en"`). Cùng khoá với `NHAN` để mọi
+ * chỗ dò loại dòng (`mucNgan.ts`, `hauQua.ts`, giao diện) chỉ cần chọn bảng.
+ *
+ * Giữ đúng ràng buộc của `NHAN`: `SO_DU_SOL` KHÔNG bắt đầu bằng `SO_DU`.
+ */
+export const NHAN_EN: { readonly [K in keyof typeof NHAN]: string } = {
+  SO_DU: "Balance of ",
+  CHU_SO_HUU: "Token account owner: ",
+  DUOC_PHEP_RUT: "Delegate allowed to withdraw ",
+  QUYEN_DONG: "Close authority of account ",
+  CHUONG_TRINH: "Controlling program of account ",
+  SO_DU_SOL: "Your total SOL",
+  DAT_COC: "Account deposit (refundable)",
+  PHI: "Network fee",
+  PHI_UOC: "Estimated network fee",
+  CHUA_DOC: "Parts we could not read",
+};
+
+/** Bộ chữ của các GIÁ TRỊ trong bảng chênh lệch, theo ngôn ngữ. */
+export const CHU_BANG = {
+  vi: {
+    nhan: NHAN as { readonly [K in keyof typeof NHAN]: string },
+    sauKhiKy: " sau khi ký",
+    ban: "Bạn",
+    khongAi: "không ai",
+    toi: " — tới ",
+    donViGoc: (s: string) => `${s} đơn vị gốc`,
+    chuaDoc: (n: number) => `${n} tài khoản không đọc được trạng thái sau`,
+  },
+  en: {
+    nhan: NHAN_EN,
+    sauKhiKy: " after signing",
+    ban: "You",
+    khongAi: "no one",
+    toi: " — up to ",
+    donViGoc: (s: string) => `${s} base units`,
+    chuaDoc: (n: number) =>
+      `${n} ${n === 1 ? "account" : "accounts"} whose post-signing state could not be read`,
+  },
+} as const;
+
+/** Bảng tiền tố nhãn của một ngôn ngữ. */
+export const nhanTheo = (locale: Locale = "vi") => CHU_BANG[locale].nhan;
+
 
 /**
  * Bảng chênh lệch — đây là DỮ LIỆU ĐO ĐƯỢC, không phải diễn giải.
@@ -85,8 +137,14 @@ export function dungBangChenhLech(
   facts: Facts,
   hits: RuleHit[],
   kyHieu?: Record<string, string>,
+  locale: Locale = "vi",
 ): DiffEntry[] {
   const out: DiffEntry[] = [];
+  // Chữ hiển thị theo ngôn ngữ. Chỉ chữ và cách viết số đổi — dòng nào có mặt, màu
+  // severity và soLieu thô là như nhau ở mọi ngôn ngữ.
+  const chu = CHU_BANG[locale];
+  const N = chu.nhan;
+  const dd = (x: bigint, d: number) => dinhDangSo(x, d, locale);
 
   // MÔ PHỎNG HỎNG THÌ KHÔNG CÓ TRẠNG THÁI "SAU".
   //
@@ -165,7 +223,7 @@ export function dungBangChenhLech(
      * `decimals` của nó là số, không có chỗ để nói "chưa biết".
      */
     const biet = decimalsCua.has(t.mint);
-    const so = (x: bigint) => (biet ? dinhDangSo(x, dec) : `${dinhDangSo(x, 0)} đơn vị gốc`);
+    const so = (x: bigint) => (biet ? dd(x, dec) : chu.donViGoc(dd(x, 0)));
     // Người dùng không đọc được base58. Mục đích duy nhất của sản phẩm là làm
     // người ta HIỂU KỊP trước khi bấm ký, nên hiện ký hiệu khi biết.
     //
@@ -177,7 +235,7 @@ export function dungBangChenhLech(
 
     if (t.amountBefore !== t.amountAfter) {
       out.push({
-        label: `${NHAN.SO_DU}${nhan} sau khi ký`,
+        label: `${N.SO_DU}${nhan}${chu.sauKhiKy}`,
         before: so(t.amountBefore),
         after: so(t.amountAfter),
         /*
@@ -210,9 +268,9 @@ export function dungBangChenhLech(
 
     if (t.ownerBefore !== null && t.ownerAfter !== null && t.ownerBefore !== t.ownerAfter) {
       out.push({
-        label: `${NHAN.CHU_SO_HUU}${nhan}`,
-        before: t.ownerBefore === facts.signer ? "Bạn" : rutGon(t.ownerBefore),
-        after: t.ownerAfter === facts.signer ? "Bạn" : rutGon(t.ownerAfter),
+        label: `${N.CHU_SO_HUU}${nhan}`,
+        before: t.ownerBefore === facts.signer ? chu.ban : rutGon(t.ownerBefore),
+        after: t.ownerAfter === facts.signer ? chu.ban : rutGon(t.ownerAfter),
         severity: "danger",
         ...(t.ownerBefore === facts.signer ? {} : { truocDayDu: t.ownerBefore }),
         ...(t.ownerAfter === facts.signer ? {} : { sauDayDu: t.ownerAfter }),
@@ -224,12 +282,12 @@ export function dungBangChenhLech(
       // không hai cột trông y hệt và người đọc không thấy gì đã đổi.
       const hanMucCu =
         t.delegateBefore === t.delegateAfter && t.delegatedAmountBefore !== undefined
-          ? ` — tới ${so(t.delegatedAmountBefore)}`
+          ? `${chu.toi}${so(t.delegatedAmountBefore)}`
           : "";
       out.push({
-        label: `${NHAN.DUOC_PHEP_RUT}${nhan}`,
-        before: t.delegateBefore ? `${rutGon(t.delegateBefore)}${hanMucCu}` : "không ai",
-        after: `${rutGon(t.delegateAfter)} — tới ${so(t.delegatedAmountAfter)}`,
+        label: `${N.DUOC_PHEP_RUT}${nhan}`,
+        before: t.delegateBefore ? `${rutGon(t.delegateBefore)}${hanMucCu}` : chu.khongAi,
+        after: `${rutGon(t.delegateAfter)}${chu.toi}${so(t.delegatedAmountAfter)}`,
         severity:
           coBangChung("tokenAccount", t.address) || coHitO(t.address) ? "danger" : "warning",
         ...(t.delegateBefore ? { truocDayDu: t.delegateBefore } : {}),
@@ -242,8 +300,8 @@ export function dungBangChenhLech(
       t.closeAuthorityAfter !== t.closeAuthorityBefore
     ) {
       out.push({
-        label: `${NHAN.QUYEN_DONG}${nhan}`,
-        before: t.closeAuthorityBefore ? rutGon(t.closeAuthorityBefore) : "không ai",
+        label: `${N.QUYEN_DONG}${nhan}`,
+        before: t.closeAuthorityBefore ? rutGon(t.closeAuthorityBefore) : chu.khongAi,
         after: rutGon(t.closeAuthorityAfter),
         severity: "danger",
         ...(t.closeAuthorityBefore ? { truocDayDu: t.closeAuthorityBefore } : {}),
@@ -256,7 +314,7 @@ export function dungBangChenhLech(
     if (a.programOwnerBefore === null || a.programOwnerAfter === null) continue;
     if (a.programOwnerBefore === a.programOwnerAfter) continue;
     out.push({
-      label: `${NHAN.CHUONG_TRINH}${rutGon(a.address)}`,
+      label: `${N.CHUONG_TRINH}${rutGon(a.address)}`,
       before: rutGon(a.programOwnerBefore),
       after: rutGon(a.programOwnerAfter),
       severity: "danger",
@@ -294,9 +352,9 @@ export function dungBangChenhLech(
      */
     const luat13 = coBangChung("solNguoiDung", "");
     out.push({
-      label: NHAN.SO_DU_SOL,
-      before: dinhDangSo(sol.truoc, LAMPORTS_DECIMALS),
-      after: dinhDangSo(sol.sau, LAMPORTS_DECIMALS),
+      label: N.SO_DU_SOL,
+      before: dd(sol.truoc, LAMPORTS_DECIMALS),
+      after: dd(sol.sau, LAMPORTS_DECIMALS),
       severity: luat13 ? "danger" : "info",
       /* Không có `mint`: đây là SOL gốc, không phải wSOL. Gắn mint wSOL vào đây
        * sẽ làm consumer cộng nhầm hai lần — wSOL đã gộp vào chính dòng này. */
@@ -313,9 +371,9 @@ export function dungBangChenhLech(
   const datCoc = tinhTienDatCoc(facts);
   if (doDuocHauQua && datCoc > 0n) {
     out.push({
-      label: NHAN.DAT_COC,
+      label: N.DAT_COC,
       before: "—",
-      after: `${dinhDangSo(datCoc, LAMPORTS_DECIMALS)} SOL`,
+      after: `${dd(datCoc, LAMPORTS_DECIMALS)} SOL`,
       severity: "info",
       /* `truoc: "0"` chứ không phải chuỗi rỗng: đây là một KHOẢN, không phải một
        * số dư có trạng thái trước. Cột trái hiển thị "—" vì số 0 giả gây hiểu
@@ -331,9 +389,9 @@ export function dungBangChenhLech(
   // Phí KHÔNG phải số dư, nên cột trái là "—" chứ không phải số 0 giả.
   if (phi > 0n && facts.solDelta[facts.signer] !== undefined) {
     out.push({
-      label: facts.phiChinhXac ? NHAN.PHI : NHAN.PHI_UOC,
+      label: facts.phiChinhXac ? N.PHI : N.PHI_UOC,
       before: "—",
-      after: `${dinhDangSo(phi, LAMPORTS_DECIMALS)} SOL`,
+      after: `${dd(phi, LAMPORTS_DECIMALS)} SOL`,
       severity: "info",
       soLieu: {
         truoc: "0",
@@ -347,9 +405,9 @@ export function dungBangChenhLech(
   const thieu = facts.accountKhongDoDuoc?.length ?? 0;
   if (thieu > 0) {
     out.push({
-      label: NHAN.CHUA_DOC,
+      label: N.CHUA_DOC,
       before: "—",
-      after: `${thieu} tài khoản không đọc được trạng thái sau`,
+      after: chu.chuaDoc(thieu),
       severity: "warning",
     });
   }

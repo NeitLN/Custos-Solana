@@ -17,7 +17,7 @@ test("Phòng phân tích và Ví của bạn đều dùng dải phạm vi chung,
     const m = s.match(/<DaiPhamVi[\s\S]*?<\/DaiPhamVi>/);
     assert.ok(m, `${f} không dùng DaiPhamVi`);
     assert.match(m![0], /Devnet/, `${f}: dải không còn nói Devnet`);
-    assert.match(m![0], /không (dùng tài sản thật|có giá trị tiền thật)/i, `${f}: dải không còn nói không phải tài sản thật`);
+    assert.match(m![0], /no (real assets|real-money value)/i, `${f}: dải không còn nói không phải tài sản thật`);
   }
 });
 

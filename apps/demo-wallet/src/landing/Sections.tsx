@@ -100,15 +100,15 @@ export function DeveloperSection({ t }: { t: NoiDung }) {
           <pre className="lg-code__pre" tabIndex={0} aria-label={t.devs.codeTieuDe}>
             <code>
               <span className="lg-syn-kw">import</span> &#123; <span className="lg-syn-fn">inspect</span> &#125; <span className="lg-syn-kw">from</span> <span className="lg-syn-str">"@custos-solana/core"</span>;{"\n\n"}
-              <span className="lg-syn-kw">const</span> ketQua = <span className="lg-syn-kw">await</span> <span className="lg-syn-fn">inspect</span>(&#123; connection &#125;, tx, &#123;{"\n"}
-              {"  "}locale: <span className="lg-syn-str">"vi"</span>,{"\n"}
-              {"  "}nguoiDung: viNguoiDung.<span className="lg-syn-fn">toBase58</span>(),{"\n"}
+              <span className="lg-syn-kw">const</span> {t.devs.codeBienKetQua} = <span className="lg-syn-kw">await</span> <span className="lg-syn-fn">inspect</span>(&#123; connection &#125;, tx, &#123;{"\n"}
+              {"  "}locale: <span className="lg-syn-str">"{t.devs.codeLocale}"</span>,{"\n"}
+              {"  "}nguoiDung: {t.devs.codeBienVi}.<span className="lg-syn-fn">toBase58</span>(),{"\n"}
               &#125;);{"\n\n"}
               <span className="lg-syn-com">// {t.devs.codeChuThich[0]}</span>{"\n"}
-              ketQua.level;        <span className="lg-syn-com">// "safe" | "warning" | "danger"</span>{"\n"}
-              ketQua.reasonCodes;  <span className="lg-syn-com">// ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"]</span>{"\n"}
-              ketQua.coverage;     <span className="lg-syn-com">// {t.devs.codeChuThich[1]}</span>{"\n"}
-              ketQua.diff;         <span className="lg-syn-com">// {t.devs.codeChuThich[2]}</span>
+              {`${t.devs.codeBienKetQua}.level;`.padEnd(21)}<span className="lg-syn-com">// "safe" | "warning" | "danger"</span>{"\n"}
+              {`${t.devs.codeBienKetQua}.reasonCodes;`.padEnd(21)}<span className="lg-syn-com">// ["SPL_SET_AUTHORITY__ACCOUNT_OWNER"]</span>{"\n"}
+              {`${t.devs.codeBienKetQua}.coverage;`.padEnd(21)}<span className="lg-syn-com">// {t.devs.codeChuThich[1]}</span>{"\n"}
+              {`${t.devs.codeBienKetQua}.diff;`.padEnd(21)}<span className="lg-syn-com">// {t.devs.codeChuThich[2]}</span>
             </code>
           </pre>
           <p className="lg-caption lg-code__ghichu">{t.devs.codeGhiChu}</p>

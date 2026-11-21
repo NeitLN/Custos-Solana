@@ -7,15 +7,15 @@
   },
   "diff": [
     {
-      "label": "Số dư USDC sau khi ký",
-      "before": "500,00",
-      "after": "450,00",
+      "label": "Balance of USDC after signing",
+      "before": "500.00",
+      "after": "450.00",
       "severity": "warning"
     },
     {
-      "label": "Phí mạng",
+      "label": "Network fee",
       "before": "—",
-      "after": "0,000005 SOL",
+      "after": "0.000005 SOL",
       "severity": "info"
     }
   ],
@@ -28,5 +28,5 @@
     "total": 11,
     "unverifiedPrograms": 2
   },
-  "explanation": "50 USDC sẽ chuyển sang ví 4kPm…9Wq1. Ví này vừa được tạo cách đây 3 giờ. Người phát hành token này vẫn có thể tạo thêm không giới hạn."
+  "explanation": "50 USDC will move to wallet 4kPm…9Wq1. This wallet was created 3 hours ago. The issuer of this token can still mint more without limit."
 }

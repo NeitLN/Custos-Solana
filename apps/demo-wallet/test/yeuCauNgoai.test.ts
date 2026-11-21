@@ -67,7 +67,7 @@ test("đầu vào quá dài bị chặn TRƯỚC khi giải mã", () => {
   datHash(`tx=${"A".repeat(5000)}`);
   const r = docYeuCauNgoaiChiTiet();
   assert.equal(r.loai, "hong");
-  assert.match((r as { lyDo: string }).lyDo, /vượt giới hạn/);
+  assert.match((r as { lyDo: string }).lyDo, /over the \d+ limit/);
 });
 
 /*

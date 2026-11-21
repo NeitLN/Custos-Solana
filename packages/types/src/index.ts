@@ -225,6 +225,13 @@ export type ChanDoan = {
 };
 
 /**
+ * Ngôn ngữ của chữ SDK sinh ra cho người dùng: nhãn bảng chênh lệch, diễn giải, mô tả
+ * hành động chính. KHÔNG bao giờ ảnh hưởng `level`, `reasonCodes` hay `coverage` —
+ * cùng một giao dịch ra cùng verdict ở mọi ngôn ngữ.
+ */
+export type Locale = "vi" | "en";
+
+/**
  * Ngữ cảnh do ví/dApp cung cấp. KHÔNG ĐÁNG TIN TUYỆT ĐỐI.
  *
  * Quy tắc bất đối xứng (docs/CUSTOS.md mục 03):
@@ -233,7 +240,7 @@ export type ChanDoan = {
  * Một dApp độc hại hoàn toàn có thể khai đúng để trông vô hại.
  */
 export type InspectOptions = {
-  locale?: "vi";
+  locale?: Locale;
   expectedAction?: PrimaryAction;
   /** Ký hiệu token theo địa chỉ mint, để hiển thị "USDC" thay vì "4YDg…Wpv1".
    *  Chỉ ảnh hưởng cách hiển thị — KHÔNG bao giờ ảnh hưởng verdict. */

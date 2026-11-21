@@ -20,13 +20,13 @@ test("chưa có khoá: khối mở đầu đứng trước, khối thiết lập
   assert.ok(moDau < s.indexOf('<div className="wallet-card__top">'), "khối mở đầu phải đứng trước số dư trong DOM");
   assert.doesNotMatch(readFileSync("apps/demo-wallet/src/wallet-execution.css", "utf8"), /\.wallet-start\{order/);
   assert.ok(thietLapDuoi > lichSu, "không khoá ⇒ thiết lập nằm sau lịch sử");
-  assert.match(s, /Mở một ứng dụng để thử/);
-  assert.match(s, /Dành cho người trình diễn/);
+  assert.match(s, /Open an app to try it/);
+  assert.match(s, /For the presenter/);
 });
 
 test("hợp đồng probe giữ nguyên: id, nhãn nút, không bọc thiết lập trong <details>", () => {
   assert.match(s, /id="demo-keypair"/);
-  assert.match(s, />\s*Ký tạo phiên thử nghiệm\s*</);
+  assert.match(s, />\s*Sign to create a test session\s*</);
   const khoi = s.slice(s.indexOf("const khoiThietLap"), s.indexOf("  return (\n"));
   assert.doesNotMatch(khoi, /<details/, "phần tử trong <details> đóng không có trong cây trợ năng — probe gọi theo vai trò sẽ hỏng");
 });

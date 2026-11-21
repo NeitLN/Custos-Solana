@@ -1,6 +1,6 @@
 """
 NHẬP VAI GIÁM KHẢO — hành trình lần đầu, KHÔNG có file khoá, trên production. Chỉ đọc và bấm; KHÔNG ký,
-KHÔNG gửi giao dịch nào (popup luôn kết thúc bằng "Chặn giao dịch").
+KHÔNG gửi giao dịch nào (popup luôn kết thúc bằng "Block transaction").
 
 Ghi từng bước: tiêu đề, các nút nhìn thấy, thời gian chờ, chữ trên màn hình, ảnh chụp, lỗi trang. Dùng để
 trả lời "giám khảo có bị kẹt ở đâu không" trước mỗi lần trình diễn. Bối cảnh và kết quả lần đầu:
@@ -88,27 +88,27 @@ with sync_playwright() as pw:
     vi = None
     try:
         with sb.expect_popup(timeout=10000) as pop:
-            sb.get_by_role("button", name=re.compile("Kết nối ví")).click()
+            sb.get_by_role("button", name=re.compile("Connect wallet")).click()
         vi = pop.value; vi.wait_for_load_state("networkidle")
         vi.screenshot(path=f"{OUT}/04-cua-so-ky-ket-noi.png")
         ghi("4 cửa sổ ví (xin kết nối)", h1=h(vi), nut=nut(vi), chu=vi.locator("body").inner_text()[:700].replace("\n", " | "))
-        vi.get_by_role("button", name="Cho kết nối").click()
+        vi.get_by_role("button", name="Allow connection").click()
         sb.bring_to_front()
         t = time.time()
-        sb.get_by_role("button", name=re.compile("Tìm token DEMO")).click()
+        sb.get_by_role("button", name=re.compile("Find DEMO tokens")).click()
         sb.locator("#sb-token, .sb-status").first.wait_for(timeout=180000)
         sb.wait_for_function("() => document.querySelector('#sb-token') || /Chưa tìm thấy|không/.test(document.querySelector('.sb-status')?.innerText||'')", timeout=180000)
         ghi("5 tìm token", giay=round(time.time() - t, 1), trangThai=sb.locator(".sb-status").inner_text()[:200] if sb.locator(".sb-status").count() else None, coChon=sb.locator("#sb-token").count())
         sb.screenshot(path=f"{OUT}/05-solbonus-da-tim.png", full_page=True)
         t = time.time()
-        sb.get_by_role("button", name=re.compile("Nhận 1.000 SOLB")).click()
+        sb.get_by_role("button", name=re.compile("Claim 1,000 SOLB")).click()
         vi.bring_to_front()
         vi.locator(".kn-muc, [role=alert]").first.wait_for(timeout=120000)
         vi.screenshot(path=f"{OUT}/06-cua-so-ky-canh-bao.png", full_page=True)
         ghi("6 cảnh báo trong ví", giay=round(time.time() - t, 1), nut=nut(vi),
-            vanKyBat=vi.get_by_role("button", name="Vẫn ký").is_enabled() if vi.get_by_role("button", name="Vẫn ký").count() else None,
+            vanKyBat=vi.get_by_role("button", name="Sign anyway").is_enabled() if vi.get_by_role("button", name="Sign anyway").count() else None,
             chu=vi.locator("body").inner_text()[:1200].replace("\n", " | "))
-        vi.get_by_role("button", name="Chặn giao dịch").click()
+        vi.get_by_role("button", name="Block transaction").click()
         sb.bring_to_front(); sb.wait_for_timeout(1500)
         ghi("7 sau khi chặn (SolBonus)", trangThai=sb.locator(".sb-status").inner_text()[:250] if sb.locator(".sb-status").count() else None)
     except Exception as e:

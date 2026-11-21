@@ -18,7 +18,7 @@ export function buildLiveHandoff(p: LiveHandoff): string {
     BigInt(p.amount) > 18446744073709551615n ||
     !Number.isSafeInteger(p.lastValidBlockHeight)
   )
-    throw new Error("Yêu cầu demo không hợp lệ.");
+    throw new Error("Invalid demo request.");
   const tx = new VersionedTransaction(
     new TransactionMessage({
       payerKey: new PublicKey(p.wallet),

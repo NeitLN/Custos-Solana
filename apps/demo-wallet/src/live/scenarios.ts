@@ -10,48 +10,48 @@ import {
 
 export const SCENARIOS = {
   transfer: {
-    title: "Gửi DEMO",
-    detail: "Chuyển số lượng bạn chọn tới tài khoản token cùng mint.",
+    title: "Send DEMO",
+    detail: "Transfer the amount you choose to a token account of the same mint.",
     signer: "wallet",
   },
   attack: {
-    title: "Nhận quà tặng",
-    detail: "Chuyển nửa số dư và đổi chủ tài khoản trong cùng giao dịch.",
+    title: "Claim your gift",
+    detail: "Transfers half the balance and changes the account owner in the same transaction.",
     signer: "wallet",
   },
   owner: {
-    title: "Trao quyền kiểm soát",
-    detail: "Chỉ đổi chủ. Token vẫn nằm trong tài khoản, nhưng bạn mất quyền sử dụng.",
+    title: "Hand over control",
+    detail: "Only changes the owner. The tokens stay in the account, but you lose the right to use them.",
     signer: "wallet",
   },
   approve: {
-    title: "Cấp quyền sử dụng token",
-    detail: "Cho ứng dụng quyền chuyển tối đa lượng DEMO bạn chọn. Chưa chuyển token.",
+    title: "Grant a token allowance",
+    detail: "Lets the app transfer up to the DEMO amount you choose. No tokens move yet.",
     signer: "wallet",
   },
   "delegate-transfer": {
-    title: "Ứng dụng sử dụng quyền",
-    detail: "Bước 2: ứng dụng ký và chuyển token bằng quyền đã được cấp. Chủ ví không ký bước này.",
+    title: "App uses the allowance",
+    detail: "Step 2: the app signs and transfers tokens using the granted allowance. The wallet owner does not sign this step.",
     signer: "actor",
   },
   revoke: {
-    title: "Thu hồi quyền đã cấp",
-    detail: "Chặn lần sử dụng quyền tiếp theo. Không lấy lại token đã chuyển.",
+    title: "Revoke the allowance",
+    detail: "Blocks the next use of the allowance. Does not recover tokens already moved.",
     signer: "wallet",
   },
   extra: {
-    title: "Gửi kèm chuyển thêm",
-    detail: "Chuyển lượng đã chọn, kèm 1 DEMO tới tài khoản ứng dụng. Khoản thêm không phải phí mạng.",
+    title: "Send with an extra transfer",
+    detail: "Transfers the chosen amount plus 1 DEMO to the app's account. The extra is not a network fee.",
     signer: "wallet",
   },
   "close-authority": {
-    title: "Trao quyền đóng tài khoản",
-    detail: "Chưa mất token. Ứng dụng chỉ đóng được tài khoản DEMO này khi số dư bằng 0.",
+    title: "Hand over close authority",
+    detail: "No tokens lost yet. The app can only close this DEMO account once its balance is 0.",
     signer: "wallet",
   },
   close: {
-    title: "Ứng dụng đóng tài khoản rỗng",
-    detail: "Ứng dụng ký bước 2, nhận SOL thuê tài khoản. Chỉ thực hiện khi số dư token bằng 0.",
+    title: "App closes the empty account",
+    detail: "The app signs step 2 and collects the account rent in SOL. Only possible when the token balance is 0.",
     signer: "actor",
   },
 } as const;
@@ -59,11 +59,11 @@ export type LiveKind = keyof typeof SCENARIOS;
 export function parseDemoAmount(text: string): bigint {
   const normalized = text.trim().replace(",", ".");
   if (!/^\d+(?:\.\d{1,6})?$/.test(normalized))
-    throw new Error("Nhập số dương, tối đa 6 chữ số thập phân; không dùng dấu phân nhóm.");
+    throw new Error("Enter a positive number with at most 6 decimal places; no thousands separators.");
   const [whole, fraction = ""] = normalized.split(".");
   const amount = BigInt(whole!) * 1_000_000n + BigInt(fraction.padEnd(6, "0"));
   if (amount <= 0n || amount > 18446744073709551615n)
-    throw new Error("Số lượng phải lớn hơn 0 và nằm trong giới hạn token.");
+    throw new Error("The amount must be greater than 0 and within the token limit.");
   return amount;
 }
 export function buildScenario(
@@ -97,12 +97,12 @@ export function buildScenario(
     case "revoke":
       return [createRevokeInstruction(a.source, a.owner)];
     case "extra":
-      if (!a.extraTarget) throw new Error("Thiếu tài khoản nhận khoản chuyển thêm.");
+      if (!a.extraTarget) throw new Error("Missing the account that receives the extra transfer.");
       return [transfer(a.amount), transfer(1_000_000n, a.extraTarget)];
     case "close-authority":
       return [createSetAuthorityInstruction(a.source, a.owner, AuthorityType.CloseAccount, a.actor)];
     case "close":
-      if (a.balance !== 0n) throw new Error("Tài khoản DEMO phải rỗng trước khi đóng.");
+      if (a.balance !== 0n) throw new Error("The DEMO account must be empty before closing.");
       return [createCloseAccountInstruction(a.source, a.actor, a.actor)];
   }
 }

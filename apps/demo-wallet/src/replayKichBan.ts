@@ -56,7 +56,7 @@ export type BoReplayKichBan = {
  */
 export function tuyChonInspectKichBan(kb: KichBan | undefined, ht: HienTruong): InspectOptions {
   return {
-    locale: "vi",
+    locale: "en",
     ...(kb?.khongKhaiNguoiDung ? {} : { nguoiDung: ht.nanNhan }),
     // Bật dấu vết cho ví DEMO — xem chú thích TB-X02 trong `App.tsx`. Không thêm lượt RPC.
     chanDoan: true,
@@ -66,23 +66,23 @@ export function tuyChonInspectKichBan(kb: KichBan | undefined, ht: HienTruong): 
 
 /** Kiểm bộ phát lại trước khi dùng. Trả lý do hỏng, hoặc `null` nếu dùng được. */
 export function xacThucBoReplay(x: unknown): string | null {
-  if (!x || typeof x !== "object") return "không phải một đối tượng JSON";
+  if (!x || typeof x !== "object") return "not a JSON object";
   const o = x as Partial<BoReplayKichBan>;
-  if (o.schema !== "custos.replay-kich-ban") return "sai schema";
-  if (o.phienBan !== 1) return `phiên bản ${String(o.phienBan)} chưa hỗ trợ`;
-  if (o.cluster !== "devnet" || o.genesis !== GENESIS_DEVNET) return "dữ liệu không phải của Devnet";
+  if (o.schema !== "custos.replay-kich-ban") return "wrong schema";
+  if (o.phienBan !== 1) return `version ${String(o.phienBan)} is not supported yet`;
+  if (o.cluster !== "devnet" || o.genesis !== GENESIS_DEVNET) return "the data is not from Devnet";
   /*
    * VÍ ĐƯỢC BẢO VỆ phải là ví cố định (quyết định khoá số 8). Một bộ ghi từ ví khác thì
    * không phải hành trình demo — nó thuộc phòng bằng chứng, với địa chỉ gốc và nhãn lịch
    * sử, không được lặng lẽ thay vào đây.
    */
   if (o.viBaoVe !== DEFAULT_DEMO_WALLET || o.hienTruong?.nanNhan !== DEFAULT_DEMO_WALLET) {
-    return "dữ liệu ghi cho một ví khác ví demo cố định";
+    return "the data was recorded for a wallet other than the fixed demo wallet";
   }
-  if (!Array.isArray(o.mau) || o.mau.length === 0) return "không có kịch bản nào";
+  if (!Array.isArray(o.mau) || o.mau.length === 0) return "no scenarios";
   for (const m of o.mau) {
-    if (!KICH_BAN.some((k) => k.id === m?.id)) return `kịch bản lạ: ${String(m?.id)}`;
-    if (!Array.isArray(m.fixture?.banGhi)) return `kịch bản ${m.id}: fixture hỏng`;
+    if (!KICH_BAN.some((k) => k.id === m?.id)) return `unknown scenario: ${String(m?.id)}`;
+    if (!Array.isArray(m.fixture?.banGhi)) return `scenario ${m.id}: broken fixture`;
   }
   return null;
 }
@@ -92,12 +92,12 @@ export async function docBoReplay(): Promise<{ bo: BoReplayKichBan } | { loi: st
     // Không `no-store`: bộ này được nạp sẵn lúc mở trang, và bản đã tải phải dùng lại được
     // khi mạng rớt giữa chừng (review 27/09). Nội dung chỉ đổi khi deploy lại.
     const r = await fetch(`${import.meta.env.BASE_URL}replay/kich-ban.json`);
-    if (!r.ok) return { loi: "chưa có bộ dữ liệu đã ghi" };
+    if (!r.ok) return { loi: "no recorded data set yet" };
     const x: unknown = await r.json();
     const lyDo = xacThucBoReplay(x);
     return lyDo ? { loi: lyDo } : { bo: x as BoReplayKichBan };
   } catch {
-    return { loi: "không đọc được bộ dữ liệu đã ghi" };
+    return { loi: "could not read the recorded data set" };
   }
 }
 
@@ -123,17 +123,17 @@ export function soVoiLucGhi(
    * và mã giữ nguyên vẫn là một sai khác phải nói — "Phần chưa đọc hiểu" là trục khác biệt
    * của sản phẩm, không phải chi tiết phụ.
    */
-  const cov = (c: KetQuaLucGhi["coverage"]) => `${c.analyzed}/${c.total}, ${c.unverifiedPrograms} chưa xác minh`;
+  const cov = (c: KetQuaLucGhi["coverage"]) => `${c.analyzed}/${c.total}, ${c.unverifiedPrograms} unverified`;
   const covKhop =
     !nay.coverage ||
     (nay.coverage.analyzed === lucGhi.coverage.analyzed &&
       nay.coverage.total === lucGhi.coverage.total &&
       nay.coverage.unverifiedPrograms === lucGhi.coverage.unverifiedPrograms);
   if (nay.level === lucGhi.level && a === b && covKhop) return { khop: true };
-  const phanCov = nay.coverage ? `; đọc hiểu ${cov(lucGhi.coverage)} → ${cov(nay.coverage)}` : "";
+  const phanCov = nay.coverage ? `; coverage ${cov(lucGhi.coverage)} → ${cov(nay.coverage)}` : "";
   return {
     khop: false,
-    moTa: `Lúc ghi: ${lucGhi.level}${b ? ` (${b})` : ""}. Engine đang chạy: ${nay.level}${a ? ` (${a})` : ""}${phanCov}.`,
+    moTa: `At recording: ${lucGhi.level}${b ? ` (${b})` : ""}. Engine now: ${nay.level}${a ? ` (${a})` : ""}${phanCov}.`,
   };
 }
 

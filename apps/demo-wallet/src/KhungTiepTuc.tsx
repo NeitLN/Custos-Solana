@@ -32,13 +32,13 @@ export function KhungTiepTuc({
   return (
     <section ref={ref} tabIndex={-1} className={`khung-tiep-tuc hien${nguy ? " khung-tiep-tuc--nguy" : ""}`} aria-labelledby="ktt-tieu-de">
       <header className="khung-tiep-tuc__dau">
-        <h3 id="ktt-tieu-de">Nếu bạn ký giao dịch này</h3>
-        <span className="khung-tiep-tuc__nhan">Theo mô phỏng · chưa có giao dịch nào được gửi</span>
+        <h3 id="ktt-tieu-de">If you sign this transaction</h3>
+        <span className="khung-tiep-tuc__nhan">Per simulation · no transaction has been sent</span>
       </header>
 
       {dong.length === 0 ? (
         <p className="khung-tiep-tuc__trong">
-          Mô phỏng không cho thấy số dư hay quyền nào của bạn đổi, ngoài phí mạng.
+          The simulation shows no change to your balances or control, apart from the network fee.
         </p>
       ) : (
         <>
@@ -48,7 +48,7 @@ export function KhungTiepTuc({
               <div className="ktt-tai-san__so">
                 <span>{d.truoc}</span>
                 <span aria-hidden="true" className="ktt-mui-ten">→</span>
-                <span className="sr-only">thành</span>
+                <span className="sr-only">becomes</span>
                 <strong>{d.sau}</strong>
                 {d.chenh && <span className="ktt-tai-san__chenh">{d.chenh}</span>}
               </div>
@@ -60,7 +60,7 @@ export function KhungTiepTuc({
               <div className="ktt-quyen__ten">{d.tieuDe}</div>
               <div className="ktt-quyen__doi">
                 <span>{d.truoc}</span> <span aria-hidden="true">→</span>
-                <span className="sr-only">thành</span> <strong>{d.sau}</strong>
+                <span className="sr-only">becomes</span> <strong>{d.sau}</strong>
               </div>
               <p>{d.giaiThich}</p>
             </div>
@@ -70,18 +70,18 @@ export function KhungTiepTuc({
 
       {nguy && (
         <p className="khung-tiep-tuc__canh-bao">
-          Giao dịch trên Solana không có nút hoàn tác: ký rồi thì những thay đổi trên là vĩnh viễn.
+          Solana transactions have no undo: once signed, the changes above are permanent.
         </p>
       )}
       {ghiChuPhamVi && <p className="khung-tiep-tuc__pham-vi">{ghiChuPhamVi}</p>}
 
       <div className="khung-tiep-tuc__nut">
         <button type="button" className={`nut nut-quyet-dinh ${nguy ? "nut-nguy" : "nut-chinh"}`} onClick={onChan}>
-          {nguy ? "Quay lại & chặn giao dịch" : "Quay lại & huỷ"}
+          {nguy ? "Go back & block transaction" : "Go back & cancel"}
         </button>
         {onMoVi && (
           <button type="button" className="nut nut-quyet-dinh nut-phu" onClick={onMoVi}>
-            Ký thật ở “Ví của bạn”
+            Sign for real in “Your wallet”
           </button>
         )}
       </div>

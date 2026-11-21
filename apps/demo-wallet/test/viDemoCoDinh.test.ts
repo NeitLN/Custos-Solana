@@ -51,7 +51,7 @@ test("phòng phân tích không còn đường ký nào — ký thật chỉ ở
   const ma = doc("apps/demo-wallet/src/App.tsx").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
   assert.doesNotMatch(ma, /guiGiaoDich|kyVaGui|\.sign\(\[/, "App.tsx còn đường ký/gửi");
   assert.match(ma, /choPhepKy=\{false\}/, "nút ký của phòng phân tích phải tắt cứng");
-  assert.match(ma, /Phòng phân tích không ký — đây là lỗi lập trình/, "bật lại nút ký phải ném, không âm thầm ký");
+  assert.match(ma, /The Analysis Room does not sign — this is a programming error/, "bật lại nút ký phải ném, không âm thầm ký");
 });
 
 test("ví mẫu không tự sinh rồi LƯU một ví khác", () => {
@@ -81,7 +81,7 @@ test("màn thực thi KHÔNG cho URL hay nút nào đổi sang ví khác — ph�
   // Hẹp có chủ ý: `searchParams` còn dùng hợp lệ cho mã bàn giao `custosLive`.
   assert.doesNotMatch(ma, /\.(?:get|has|set)\(\s*['"](?:guest|wallet)['"]/, "không đọc/ghi ví qua URL");
   assert.doesNotMatch(ma, /Keypair\.generate\(/, "không tự sinh ví trong giao diện");
-  assert.doesNotMatch(ma, /ví khách/i, "không còn lối vào 'ví khách'");
+  assert.doesNotMatch(ma, /ví khách|guest wallet/i, "không còn lối vào 'ví khách'");
   // `inspect` có thể được bọc để gắn nhãn nguồn diễn giải theo lượt (CK-09) — tham số VÍ (1) và
   // KHOÁ (3) vẫn phải là `undefined`: đó mới là điều bài này canh.
   assert.match(

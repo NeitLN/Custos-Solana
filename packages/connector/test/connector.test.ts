@@ -242,7 +242,7 @@ test("hết hạn chờ ký ⇒ het-han (KHÔNG nói là đã huỷ), và KHÔNG
   await d.choVong();
   const truoc = d.gui.length;
   d.chayHen(5 * 60_000);
-  await assert.rejects(p, (e: LoiCustos) => e.ma === "het-han" && /đừng gửi lại/.test(e.message));
+  await assert.rejects(p, (e: LoiCustos) => e.ma === "het-han" && /do not resend/.test(e.message));
   assert.equal(d.gui.length, truoc, "hết hạn mà connector tự gửi lại yêu cầu ký");
 });
 

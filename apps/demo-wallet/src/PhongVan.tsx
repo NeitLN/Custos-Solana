@@ -133,7 +133,7 @@ export function PhongVan() {
     const { soDu } = await docNguonSong(c, ht);
     const tx: VersionedTransaction = dungTxTanCongSong(ht, blockhash, soDu);
     return inspect({ connection: c, interpret: boiThoiHan(dienGiaiKhongAI) }, tx, {
-      locale: "vi",
+      locale: "en",
       nguoiDung: ht.nanNhan,
       ...(ht.kyHieu ? { kyHieuToken: { [ht.mint]: ht.kyHieu } } : {}),
     });
@@ -160,7 +160,7 @@ export function PhongVan() {
     setKetQua(null);
     void coHan(
       docHienTruong().then((ht) =>
-        ht ? dung(ht) : Promise.reject(new Error("chưa dựng hiện trường devnet")),
+        ht ? dung(ht) : Promise.reject(new Error("the Devnet setup has not been created yet")),
       ),
       HAN_MS,
     )
@@ -220,7 +220,7 @@ export function PhongVan() {
   return (
     <main className="app-shell interview-shell">
       <div className="interview-container">
-        <ProductHeader active="interview" label="Nghiên cứu" />
+        <ProductHeader active="interview" label="Research" />
         <div className="interview-body">
         {/*
           H1 CỦA TRANG.
@@ -232,7 +232,7 @@ export function PhongVan() {
           Chữ trùng với <title> trong phong-van.html, không đặt tên khác.
         */}
         <h1 className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.02em] text-chu">
-          Đo mức độ hiểu
+          Comprehension test
         </h1>
 
         {/*
@@ -244,13 +244,13 @@ export function PhongVan() {
         */}
         {khoHong !== null && (
           <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
-            <div className="font-semibold text-chu">Dữ liệu đã lưu không đọc được</div>
+            <div className="font-semibold text-chu">The saved data cannot be read</div>
             <p className="mt-1 text-chu-mo">
-              Kho cục bộ có nội dung nhưng sai cấu trúc: <strong>{khoHong.lyDo}</strong>.
+              Local storage has content but the structure is wrong: <strong>{khoHong.lyDo}</strong>.
             </p>
             <p className="mt-1 text-chu-mo">
-              <strong>Không có gì bị xoá.</strong> Hãy tải bản sao xuống trước, rồi mới nhập
-              tiếp — nhập tiếp bây giờ sẽ ghi đè lên dữ liệu cũ.
+              <strong>Nothing has been deleted.</strong> Download a copy first, then continue
+              entering — entering more now will overwrite the old data.
             </p>
             <button
               type="button"
@@ -265,18 +265,18 @@ export function PhongVan() {
               }}
               className="mt-3 min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu"
             >
-              Tải bản sao dữ liệu cũ
+              Download a copy of the old data
             </button>
           </div>
         )}
 
         {loiGhi !== null && (
           <div role="alert" className="mt-4 rounded-2xl border border-nguy/40 p-4 text-[13px]">
-            <div className="font-semibold text-chu">Không lưu được bản ghi vừa nhập</div>
+            <div className="font-semibold text-chu">Could not save the record you just entered</div>
             <p className="mt-1 text-chu-mo">
-              Trình duyệt từ chối ghi vào kho cục bộ: <strong>{loiGhi}</strong>. Nội dung bạn
-              vừa gõ <strong>vẫn còn trên màn hình</strong> — hãy sao chép ra nơi khác trước
-              khi rời trang.
+              The browser refused to write to local storage: <strong>{loiGhi}</strong>. What you
+              just typed <strong>is still on the screen</strong> — copy it somewhere else before
+              leaving the page.
             </p>
           </div>
         )}
@@ -291,16 +291,16 @@ export function PhongVan() {
           nhìn tấm cảnh báo và câu hỏi bên dưới.
         */}
         <section
-          aria-label="Hướng dẫn cho người phỏng vấn"
+          aria-label="Instructions for the interviewer"
           className="mt-2 rounded-xl border border-dashed border-[#d8b571] bg-[#fdf8ee] p-4"
         >
           <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[#7a5a17]">
-            Chỉ người phỏng vấn đọc phần này
+            Interviewer only — do not show this part
           </h2>
           <p className="mt-2 text-[14px] leading-relaxed text-[#5c4514]">
-            Chiếu màn hình dưới, <span className="font-semibold">không giải thích gì cả</span>, chỉ
-            hỏi đúng câu in đậm. Đừng hỏi &quot;bạn thấy dễ hiểu không&quot; — ai cũng trả lời có.
-            Chép nguyên văn lời họ nói, kể cả khi sai. Chấm sau khi đã chép.
+            Show the screen below, <span className="font-semibold">explain nothing at all</span>, and
+            ask only the bold question. Don&apos;t ask &quot;is this easy to understand?&quot; — everyone says yes.
+            Write down exactly what they say, even if it is wrong. Score only after writing it down.
           </p>
         </section>
 
@@ -309,36 +309,36 @@ export function PhongVan() {
             role="alert"
             className="mt-4 rounded-xl border border-[#e7b3bd] bg-[#fdf2f4] p-4 text-[14px] leading-relaxed text-[#7d1229]"
           >
-            <span className="font-semibold">Không dựng được màn hình thật:</span> {loi}
+            <span className="font-semibold">Could not build the real screen:</span> {loi}
             <p className="mt-1.5 text-[13.5px] text-[#93384c]">
-              Không có bản dự phòng, và đó là chủ ý — đo trên một màn hình giả thì con số thu
-              được cũng giả.
+              There is no fallback, on purpose — measuring on a fake screen gives fake
+              numbers.
             </p>
           </div>
         )}
 
         {!ketQua && !loi && (
           <div role="status" aria-live="polite" className="mt-6 text-[15px] text-chu-nhat">
-            Đang dựng màn hình thật… <span className="text-chu-mo">(tối đa 15 giây)</span>
+            Building the real screen… <span className="text-chu-mo">(up to 15 seconds)</span>
           </div>
         )}
 
         {loi !== null && (
           <div role="alert" className="mt-6 rounded-2xl border border-nguy/40 p-4 text-[13px]">
-            <div className="font-semibold text-chu">Chưa dựng được màn hình</div>
+            <div className="font-semibold text-chu">The screen could not be built yet</div>
             <p className="mt-1 text-chu-mo">
-              Không kết nối được Devnet để dựng giao dịch thật: <strong>{loi}</strong>.
+              Could not connect to Devnet to build the real transaction: <strong>{loi}</strong>.
             </p>
             <p className="mt-1 text-chu-mo">
-              <strong>Đừng phỏng vấn khi chưa có màn hình này.</strong> Đo trên một màn hình
-              giả thì con số thu được cũng giả.
+              <strong>Do not interview until this screen is shown.</strong> Measuring on a fake
+              screen gives fake numbers.
             </p>
             <button
               type="button"
               onClick={dungLai}
               className="mt-3 min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu"
             >
-              Thử lại
+              Retry
             </button>
           </div>
         )}
@@ -377,42 +377,42 @@ export function PhongVan() {
                 aria-live="polite"
                 className="mt-4 rounded-2xl border border-vien bg-white/70 p-3 text-[13px] text-chu-nhat"
               >
-                Đã ghi nhận lựa chọn của bạn.{" "}
-                <strong className="text-chu">Không có giao dịch nào được gửi đi</strong> — đây là
-                màn hình dùng cho buổi phỏng vấn.
+                Your choice has been recorded.{" "}
+                <strong className="text-chu">No transaction was sent</strong> — this screen is
+                for the interview session.
               </div>
             )}
 
             <p className="mt-7 text-[18px] font-semibold leading-relaxed text-chu">
-              Nếu bạn bấm ký, chuyện gì xảy ra với ví của bạn?
+              If you press sign, what happens to your wallet?
             </p>
 
             <label className="sr-only" htmlFor="nguyen-van">
-              Câu trả lời nguyên văn
+              Verbatim answer
             </label>
             <textarea
               id="nguyen-van"
               value={nguyenVan}
               onChange={(e) => setNguyenVan(e.target.value)}
               rows={4}
-              placeholder="Chép nguyên văn lời họ nói…"
+              placeholder="Write down exactly what they say…"
               className="mt-3 w-full rounded-xl border border-vien bg-white p-3 text-[15px] leading-relaxed text-chu outline-none transition-colors placeholder:text-chu-mo focus:border-nhan"
             />
             <label className="sr-only" htmlFor="ghi-chu">
-              Ghi chú ẩn danh
+              Anonymous note
             </label>
             <input
               id="ghi-chu"
               value={ghiChu}
               onChange={(e) => setGhiChu(e.target.value)}
-              placeholder="Ghi chú (tuổi, có dùng crypto bao lâu…) — không ghi tên"
+              placeholder="Note (age, how long they have used crypto…) — no names"
               className="mt-2 w-full rounded-xl border border-vien bg-white px-3 py-2.5 text-[14px] text-chu outline-none transition-colors placeholder:text-chu-mo focus:border-nhan"
             />
 
             {/* Câu hỏi thứ hai, hỏi SAU khi họ đã trả lời xong câu một. Hỏi cùng
                 lúc thì chính câu "bạn sẽ ký hay huỷ" đã gợi ý rằng có gì đó đáng huỷ. */}
             <p className="mt-6 text-[18px] font-semibold leading-relaxed text-chu">
-              Bạn sẽ ký, huỷ, hay cần kiểm tra thêm? Vì sao?
+              Would you sign, cancel, or check further first? Why?
             </p>
 
             {!choCham ? (
@@ -422,16 +422,16 @@ export function PhongVan() {
                 disabled={nguyenVan.trim().length === 0}
                 className="nut nut-chinh mt-4"
               >
-                Đã chép xong → chấm
+                Done writing → score
               </button>
             ) : (
               <div className="mt-4 space-y-5 rounded-xl border border-dashed border-vien bg-white p-4">
                 <p className="text-[13px] font-semibold uppercase tracking-[0.08em] text-chu-mo">
-                  Người phỏng vấn chấm
+                  Interviewer scoring
                 </p>
 
                 <fieldset>
-                  <legend className="text-[14px] font-medium text-chu">Mức hiểu hậu quả</legend>
+                  <legend className="text-[14px] font-medium text-chu">Understanding of the consequence</legend>
                   <div className="mt-2 grid gap-2">
                     {(Object.keys(NHAN_CHAM) as Cham[]).map((c) => (
                       <button
@@ -452,7 +452,7 @@ export function PhongVan() {
                 </fieldset>
 
                 <fieldset>
-                  <legend className="text-[14px] font-medium text-chu">Họ nói sẽ làm gì</legend>
+                  <legend className="text-[14px] font-medium text-chu">What they say they would do</legend>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(Object.keys(NHAN_QD) as QuyetDinh[]).map((q) => (
                       <button
@@ -481,12 +481,12 @@ export function PhongVan() {
                 */}
                 <details className="rounded-2xl border border-vien p-4">
                   <summary className="lien-ket cursor-pointer text-[13px] text-chu-nhat">
-                    Vòng 2 — hai câu mới, kênh, và lý do (không bắt buộc)
+                    Round 2 — two new questions, channel, and reason (optional)
                   </summary>
 
                   <fieldset className="mt-4">
                     <legend className="text-[12.5px] font-semibold text-chu">
-                      Câu 3 — chỉ vào dòng &laquo;đã đọc hiểu 2 trên 3 lệnh&raquo;: dòng này nói gì?
+                      Question 3 — point at the line &laquo;Understood 2 of 3 instructions&raquo;: what does this line say?
                     </legend>
                     <div className="mt-2 grid gap-1.5">
                       {(Object.keys(NHAN_HIEU_COVERAGE) as HieuCoverage[]).map((c) => (
@@ -507,7 +507,7 @@ export function PhongVan() {
 
                   <fieldset className="mt-4">
                     <legend className="text-[12.5px] font-semibold text-chu">
-                      Câu 4 — phí ở đây bao nhiêu, có liên quan số tiền có thể mất không?
+                      Question 4 — how much is the fee here, and is it related to the amount that could be lost?
                     </legend>
                     <div className="mt-2 grid gap-1.5">
                       {(Object.keys(NHAN_DOC_NHAM_PHI) as DocNhamPhi[]).map((c) => (
@@ -528,7 +528,7 @@ export function PhongVan() {
 
                   <fieldset className="mt-4">
                     <legend className="text-[12.5px] font-semibold text-chu">
-                      Kênh phỏng vấn <span className="font-normal text-chu-mo">— giữ nguyên cho người tiếp theo</span>
+                      Interview channel <span className="font-normal text-chu-mo">— kept for the next person</span>
                     </legend>
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {(Object.keys(NHAN_KENH) as Kenh[]).map((k) => (
@@ -548,14 +548,14 @@ export function PhongVan() {
                   </fieldset>
 
                   <label className="mt-4 block text-[12.5px] font-semibold text-chu" htmlFor="ly-do-qd">
-                    Lý do của quyết định — vế &laquo;vì sao&raquo; của câu 2
+                    Reason for the decision — the &laquo;why&raquo; part of question 2
                   </label>
                   <textarea
                     id="ly-do-qd"
                     value={lyDoQuyetDinh}
                     onChange={(e) => setLyDoQuyetDinh(e.target.value)}
                     rows={2}
-                    placeholder="Chép nguyên văn lý do họ nói…"
+                    placeholder="Write down the reason exactly as they say it…"
                     className="mt-1.5 w-full rounded-xl border border-vien p-3 text-[13px]"
                   />
                 </details>
@@ -566,44 +566,44 @@ export function PhongVan() {
                   disabled={!cham || !quyetDinh}
                   className="nut nut-chinh w-full sm:w-auto"
                 >
-                  Lưu người này
+                  Save this person
                 </button>
               </div>
             )}
 
             <section className="mt-7 rounded-xl border border-vien bg-white p-4">
               <h2 className="text-[15px] font-semibold text-chu">
-                Đã ghi {ban.length} người
+                Recorded {ban.length} {ban.length === 1 ? "person" : "people"}
               </h2>
 
               {/* Ba mức phân biệt bằng TÊN, màu chỉ là lớp phụ — mù màu đỏ/lục là
                   khoảng 8 % nam giới, và số liệu này còn được chiếu lên tường. */}
               <dl className="mt-3 space-y-2 text-[15px]">
                 <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
-                  <dt className="text-[14px] text-chu-mo">Mức hiểu</dt>
+                  <dt className="text-[14px] text-chu-mo">Understanding</dt>
                   <dd className="flex flex-wrap gap-x-4 tabular-nums text-chu">
                     <span>
-                      <strong className="font-semibold">{dem("dung")}</strong> đúng
+                      <strong className="font-semibold">{dem("dung")}</strong> correct
                     </span>
                     <span>
-                      <strong className="font-semibold">{dem("motPhan")}</strong> một phần
+                      <strong className="font-semibold">{dem("motPhan")}</strong> partly
                     </span>
                     <span>
-                      <strong className="font-semibold">{dem("sai")}</strong> sai
+                      <strong className="font-semibold">{dem("sai")}</strong> wrong
                     </span>
                   </dd>
                 </div>
                 <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
-                  <dt className="text-[14px] text-chu-mo">Họ nói sẽ</dt>
+                  <dt className="text-[14px] text-chu-mo">They say they would</dt>
                   <dd className="flex flex-wrap gap-x-4 tabular-nums text-chu">
                     <span>
-                      <strong className="font-semibold">{demQD("huy")}</strong> huỷ
+                      <strong className="font-semibold">{demQD("huy")}</strong> cancel
                     </span>
                     <span>
-                      <strong className="font-semibold">{demQD("kiemTraThem")}</strong> kiểm tra thêm
+                      <strong className="font-semibold">{demQD("kiemTraThem")}</strong> check further
                     </span>
                     <span>
-                      <strong className="font-semibold">{demQD("ky")}</strong> vẫn ký
+                      <strong className="font-semibold">{demQD("ky")}</strong> sign anyway
                     </span>
                   </dd>
                 </div>
@@ -612,16 +612,16 @@ export function PhongVan() {
               {/* Con số công bố phải là ĐÚNG / TỔNG. Gộp "một phần" vào "đúng" là
                   tự nâng điểm, và là thứ dễ bị hỏi lộ nhất. */}
               <p className="mt-4 border-t border-vien pt-3.5 text-[14px] leading-relaxed text-chu-nhat">
-                Con số nói trên sân khấu:{" "}
+                The numbers to state on stage:{" "}
                 <span className="font-medium text-chu">
-                  {dem("dung")}/{ban.length} nêu được hậu quả
+                  {dem("dung")}/{ban.length} named the consequence
                 </span>{" "}
-                và{" "}
+                and{" "}
                 <span className="font-medium text-chu">
-                  {demQD("ky")}/{ban.length} vẫn ký
+                  {demQD("ky")}/{ban.length} would sign anyway
                 </span>
-                . &quot;Một phần&quot; KHÔNG được gộp vào &quot;đúng&quot;. Nếu có người hiểu đúng mà
-                vẫn ký, đó là phát hiện quan trọng nhất của cả đợt — đừng giấu nó đi.
+                . &quot;Partly&quot; must NOT be merged into &quot;correct&quot;. If someone understands
+                correctly and still signs, that is the most important finding of the round — don&apos;t hide it.
               </p>
 
               <button
@@ -644,14 +644,14 @@ export function PhongVan() {
                 disabled={ban.length === 0}
                 className="nut nut-phu mt-4"
               >
-                {daChep ? "Đã sao chép" : "Sao chép toàn bộ (JSON)"}
+                {daChep ? "Copied" : "Copy everything (JSON)"}
               </button>
 
               <p className="mt-3 text-[13.5px] leading-relaxed text-chu-mo">
-                Dữ liệu nằm trong trình duyệt máy này. Dán vào{" "}
+                The data lives in this machine&apos;s browser. Paste it into{" "}
                 <code className="font-mono text-[13px] text-chu-nhat">data/seed/phong-van.json</code>{" "}
-                rồi commit. Không có nút xoá từng mục — bỏ người trả lời sai là gian lận, và là thứ
-                dễ bị hỏi lộ nhất.
+                and commit. There is no button to delete a single entry — dropping people who answered
+                wrong is cheating, and the easiest thing to be caught on.
               </p>
             </section>
           </>

@@ -18,11 +18,11 @@ export function diaChiCuaDong(d: Dong): Array<{ nhan: string; diaChi: string }> 
   const them = (nhan: string, x: unknown) => {
     if (typeof x === "string" && BASE58.test(x)) ra.push({ nhan, diaChi: x });
   };
-  them("Địa chỉ trước", d.truocDayDu);
-  them("Địa chỉ mới", d.sauDayDu);
+  them("Previous address", d.truocDayDu);
+  them("New address", d.sauDayDu);
   const so = d.soLieu as { mint?: unknown; taiKhoan?: unknown } | undefined;
   them("Mint", so?.mint);
-  them("Tài khoản token", so?.taiKhoan);
+  them("Token account", so?.taiKhoan);
   return ra;
 }
 

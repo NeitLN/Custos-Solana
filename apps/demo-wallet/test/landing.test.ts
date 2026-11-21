@@ -163,7 +163,8 @@ test("WEB-05 · bản EN dịch TRUNG THÀNH giới hạn, không nới thành l
     assert.ok(!tho.includes(cam), `bản EN có câu nới quá mức: "${cam}"`);
   }
   assert.match(EN.bangChung.gioiHan, /does not guarantee/i, "EN mất câu giới hạn");
-  assert.match(EN.ab.giaTri.ketLuanA, /analyzed scope/i, "EN nới kết luận ca A");
+  assert.match(EN.ab.giaTri.ketLuanA, /parts we could read/i, "EN nới kết luận ca A");
+  assert.doesNotMatch(EN.ab.giaTri.ketLuanA, /safe|secure|protected/i, "EN đổi \"không phát hiện\" thành lời bảo đảm");
 });
 
 test("WEB-02 · không có tuyên bố bịa trong CẢ HAI bản", () => {
@@ -179,6 +180,15 @@ test("WEB-02 · không có tuyên bố bịa trong CẢ HAI bản", () => {
   ]) {
     assert.ok(!tho.includes(cam), `nội dung có tuyên bố chưa có căn cứ: "${cam}"`);
   }
+});
+
+test("WEB-05 · không chọn gì thì trang mở bằng tiếng Anh; VI vẫn chọn được", () => {
+  const ma = readFileSync(GOC + "apps/demo-wallet/src/landing/LandingPage.tsx", "utf8");
+  assert.match(ma, /\}\r?\n  return "en";\r?\n\}/, "ngonBanDau() không mặc định EN");
+  assert.match(ma, /q === "en" \|\| q === "vi"/, "mất ?lang=vi");
+  // Đoạn code mẫu theo ngôn ngữ trang: bản EN truyền locale "en" cho inspect().
+  assert.equal(EN.devs.codeLocale, "en");
+  assert.equal(VI.devs.codeLocale, "vi");
 });
 
 /* ── Bundle và link ───────────────────────────────────────────────────────── */
@@ -261,7 +271,10 @@ test("WEB-04 · link ngoài trỏ tới file CÓ THẬT trong repo", () => {
 test("WEB-06 · HTML entry có metadata và no-JS fallback có link THẬT", () => {
   const html = readFileSync(GOC + "apps/demo-wallet/gioi-thieu.html", "utf8");
 
-  assert.match(html, /<title>Custos — Hiểu giao dịch Solana trước khi ký<\/title>/);
+  /* Bản quốc tế: HTML gốc là tiếng Anh, khớp ngôn ngữ mặc định của `LandingPage.tsx`. */
+  assert.match(html, /<html lang="en">/);
+  assert.match(html, /<title>Custos — Understand Solana transactions before signing<\/title>/);
+  assert.ok(html.includes(`<title>${EN.meta.title}</title>`), "title HTML lệch EN.meta.title");
   assert.match(html, /name="description"/, "thiếu meta description");
   /*
    * `theme-color` phải khớp NAVBAR THẬT, và navbar đã đổi.

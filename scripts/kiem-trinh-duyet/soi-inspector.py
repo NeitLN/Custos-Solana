@@ -116,13 +116,13 @@ async def main() -> None:
         ck(
             "trang Inspector dựng được",
             "Giao dịch cần kiểm tra" in t
-            and await pg.get_by_role("button", name="Kiểm giao dịch").count() == 1,
+            and await pg.get_by_role("button", name="Check transaction").count() == 1,
         )
         ck(
             "cảnh báo riêng tư hiện TRƯỚC ô nhập",
             "Dữ liệu đi đâu" in t and t.index("Dữ liệu đi đâu") < t.index("Giao dịch (base64)"),
         )
-        ck("KHÔNG có nút Ký ở Inspector", "Ký giao dịch" not in t and "Vẫn ký" not in t)
+        ck("KHÔNG có nút Ký ở Inspector", "Ký giao dịch" not in t and "Sign anyway" not in t)
         ck("không hỏi seed phrase / khoá riêng", "seed phrase" in t and "không nhận" in t)
 
         print("\nB · đầu vào sai KHÔNG chạm RPC")
@@ -137,7 +137,7 @@ async def main() -> None:
         ]:
             rpc.clear()
             await pg.fill("#tx-b64", dv)
-            await pg.get_by_role("button", name="Kiểm giao dịch").click()
+            await pg.get_by_role("button", name="Check transaction").click()
             await pg.wait_for_timeout(900)
             man = await pg.locator("body").inner_text()
             ck(f"{ten} · báo lỗi đúng loại", cho in man)
@@ -147,7 +147,7 @@ async def main() -> None:
         rpc.clear()
         await pg.fill("#tx-b64", b64That or "")
         await pg.fill("#vi-bv", "không-phải-base58!!!")
-        await pg.get_by_role("button", name="Kiểm giao dịch").click()
+        await pg.get_by_role("button", name="Check transaction").click()
         await pg.wait_for_timeout(900)
         man = await pg.locator("body").inner_text()
         ck("ví sai · báo lỗi", "không phải base58 hợp lệ" in man)
@@ -159,16 +159,16 @@ async def main() -> None:
             ck("dựng được giao dịch Devnet thật", False, "không lấy được blockhash")
         else:
             await pg.fill("#tx-b64", b64That)
-            await pg.get_by_role("button", name="Kiểm giao dịch").click()
+            await pg.get_by_role("button", name="Check transaction").click()
             try:
                 await pg.wait_for_selector("[aria-label='Thẻ cảnh báo Custos']", timeout=45000)
                 man = await pg.locator("body").inner_text()
                 ck("thẻ kết quả hiện ra", True)
                 ck(
                     "có mức verdict",
-                    any(x in man for x in ["Bình thường", "Cần xem kỹ", "Nguy hiểm", "Chưa đọc hiểu"]),
+                    any(x in man for x in ["Normal", "Review carefully", "Danger", "Chưa đọc hiểu"]),
                 )
-                ck("vẫn KHÔNG có nút Ký sau khi có kết quả", "Vẫn ký" not in man)
+                ck("vẫn KHÔNG có nút Ký sau khi có kết quả", "Sign anyway" not in man)
                 ck("nói rõ đã mô phỏng trên RPC nào", "mô phỏng trên" in man)
                 ck("có gọi RPC ở đường thành công", len(rpc) > 0, f"{len(rpc)} lời gọi")
             except Exception as e:
@@ -177,7 +177,7 @@ async def main() -> None:
         print("\nE · TRACE — bấm từ cảnh báo tới dữ kiện (CU-09)")
         if b64That:
             try:
-                await pg.get_by_role("button", name="Chi tiết kỹ thuật").click()
+                await pg.get_by_role("button", name="Technical details").click()
                 await pg.wait_for_timeout(400)
                 man = await pg.locator("body").inner_text()
 
@@ -237,7 +237,7 @@ async def main() -> None:
                 await pgH.goto(TRANG, wait_until="networkidle")
                 await pgH.wait_for_timeout(400)
                 await pgH.fill("#tx-b64", b64That)
-                await pgH.get_by_role("button", name="Kiểm giao dịch").click()
+                await pgH.get_by_role("button", name="Check transaction").click()
                 await pgH.wait_for_timeout(700)
                 mH = await pgH.locator("body").inner_text()
                 ck("đang kiểm ⇒ nút Huỷ hiện ra", "Huỷ" in mH and "Đang kiểm" in mH)

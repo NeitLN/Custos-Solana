@@ -50,7 +50,7 @@ test("đoạn mã hiển thị là chuỗi CON nguyên văn của file nguồn",
 });
 
 test("file nguồn đổi mà trang không theo ⇒ báo lệch, không im lặng hiện mã cũ", () => {
-  assert.throws(() => catTu(TICH_HOP, "export async function hamKhongTonTai"), /lệch với mã/);
+  assert.throws(() => catTu(TICH_HOP, "export async function hamKhongTonTai"), /out of sync with the code/);
 });
 
 test("số dòng mã đếm bằng máy, bỏ chú thích và dòng trống", () => {

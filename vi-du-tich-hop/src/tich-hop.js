@@ -34,13 +34,13 @@ const HAN_MS = 12_000;
 function coHan(viec, ms) {
   let dongHo;
   const chuong = new Promise((_, tuChoi) => {
-    dongHo = setTimeout(() => tuChoi(new Error(`Custos quá hạn sau ${ms} ms`)), ms);
+    dongHo = setTimeout(() => tuChoi(new Error(`Custos timed out after ${ms} ms`)), ms);
   });
   return Promise.race([viec, chuong]).finally(() => clearTimeout(dongHo));
 }
 
 /**
- * Chạy Custos trước khi ký. Trả về quyết định cho dApp.
+ * Run Custos before signing. Returns the decision for the dApp.
  *
  * @returns {Promise<{
  *   cho: "ky"|"hoi"|"chan",
@@ -49,25 +49,25 @@ function coHan(viec, ms) {
  *   loi: string|null,
  * }>}
  */
-// `hanMs` mở ra cho bài kiểm: không có nó thì tính chất quan trọng nhất của file —
-// quá hạn KHÔNG thành an toàn — chỉ kiểm được bằng cách chờ 12 giây thật, tức là
-// không ai kiểm. Giữ cả danh sách trên một dòng vì "số dòng tích hợp" là con số
-// CÔNG BỐ; xuống dòng cho đẹp sẽ thổi nó lên mà công sức tích hợp không hề tăng.
+// `hanMs` is exposed for tests: without it, the most important property of this file —
+// a timeout does NOT become "safe" — could only be tested by waiting 12 real seconds, i.e.
+// nobody would test it. The parameter list stays on one line because the integration line
+// count is PUBLISHED; wrapping it for looks would inflate it without any extra integration work.
 export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNguoiDung, dAppKhai, hanMs = HAN_MS }) {
   let r;
   try {
     r = await coHan(
       inspect({ connection, interpret }, tx, {
-        locale: "vi",
-        // (1) địa chỉ lấy từ ví của chính người dùng
+        locale: "en",
+        // (1) address taken from the user's own wallet
         nguoiDung: viNguoiDung.toBase58(),
-        // (2) ngữ cảnh do dApp khai — chỉ để phát hiện lệch
+        // (2) context declared by the dApp — only used to detect mismatches
         ...(dAppKhai ? { expectedAction: dAppKhai } : {}),
       }),
       hanMs,
     );
   } catch (e) {
-    // (3) FAIL CLOSED. Đây là dòng quan trọng nhất của cả file.
+    // (3) FAIL CLOSED. This is the most important line in the whole file.
     const loi = e instanceof Error ? e.message : String(e);
     return { cho: "chan", lyDo: "khong_kiem_duoc", ketQua: null, loi };
   }
@@ -75,13 +75,13 @@ export async function kiemTruocKhiKy({ inspect, connection, interpret, tx, viNgu
   if (r.level === "danger") return { cho: "chan", lyDo: "phat_hien", ketQua: r, loi: null };
   if (r.level === "warning") return { cho: "hoi", lyDo: "phat_hien", ketQua: r, loi: null };
 
-  // Coverage khuyết mà engine vẫn cho `safe` thì bên tích hợp vẫn nên hỏi lại:
-  // "đọc hiểu 1/3 lệnh" không phải một lời bảo đảm.
+  // If coverage is incomplete but the engine still says `safe`, the integrator should still ask:
+  // "understood 1 of 3 instructions" is not a guarantee.
   if (r.coverage && r.coverage.analyzed < r.coverage.total) {
     return { cho: "hoi", lyDo: "coverage_khuyet", ketQua: r, loi: null };
   }
-  // Custos đề nghị kiểm tra thủ công (lớp diễn giải, hoặc lời khai của dApp lệch). Không
-  // đổi `level` — nhưng bỏ qua nó thì đề nghị ấy không bao giờ tới người dùng.
+  // Custos asks for a manual check (explanation layer, or the dApp's declaration mismatched). It does not
+  // change `level` — but if you skip it, that request never reaches the user.
   if (r.aiAdvisory === "review_required") return { cho: "hoi", lyDo: "de_nghi_kiem_tra", ketQua: r, loi: null };
   return { cho: "ky", lyDo: "khong_van_de", ketQua: r, loi: null };
 }

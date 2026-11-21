@@ -1,4 +1,4 @@
-import type { Level } from "@custos-solana/types";
+import type { Level, Locale } from "@custos-solana/types";
 
 /**
  * CU-18 — POLICY CỦA VÍ, TÁCH HẲN KHỎI ENGINE.
@@ -115,6 +115,7 @@ function capDo(a: QuyetDinh, b: QuyetDinh): QuyetDinh {
 export function danhGiaPolicy(
   boiCanh: BoiCanhPolicy,
   profile: ProfileVi = PROFILE_MAC_DINH,
+  locale: Locale = "vi",
 ): KetQuaPolicy {
   const ma: MaPolicy[] = [];
   let qd: QuyetDinh = "allow";
@@ -154,7 +155,7 @@ export function danhGiaPolicy(
     phienBanPolicy: PHIEN_BAN_POLICY,
     profile: profile.ten,
     maLyDo: ma,
-    cau: cauChoNguoiDoc(qd, profile.ten, boiCanh.level),
+    cau: cauChoNguoiDoc(qd, profile.ten, boiCanh.level, locale),
   };
 }
 
@@ -165,7 +166,14 @@ export function danhGiaPolicy(
  * ra quyết định nào"*. Một dòng "Bị chặn" không nói ai chặn sẽ bị người dùng đọc
  * thành "Custos bảo giao dịch này xấu", trong khi có thể chỉ là ví đang đặt chặt.
  */
-function cauChoNguoiDoc(qd: QuyetDinh, tenProfile: string, level: Level): string {
+function cauChoNguoiDoc(qd: QuyetDinh, tenProfile: string, level: Level, locale: Locale): string {
+  if (locale === "en") {
+    // Cùng mức trung thực với bản tiếng Việt: "allow" KHÔNG phải lời bảo đảm an toàn.
+    const lv = { safe: "Normal", warning: "Review carefully", danger: "Danger" }[level];
+    if (qd === "block") return `The wallet (rule "${tenProfile}") blocks signing. The engine rated this transaction ${lv}.`;
+    if (qd === "review") return `The wallet (rule "${tenProfile}") asks you to review before signing. The engine rated it ${lv}.`;
+    return `The wallet (rule "${tenProfile}") does not block. The engine rated it ${lv} — this is NOT a guarantee of safety.`;
+  }
   const nhan = { safe: "bình thường", warning: "cần xem kỹ", danger: "nguy hiểm" }[level];
   if (qd === "block") return `Ví (quy tắc "${tenProfile}") chặn ký. Engine xếp giao dịch ở mức ${nhan}.`;
   if (qd === "review") return `Ví (quy tắc "${tenProfile}") yêu cầu bạn xem lại trước khi ký. Engine xếp ở mức ${nhan}.`;

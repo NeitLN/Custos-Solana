@@ -8,21 +8,21 @@
   },
   "diff": [
     {
-      "label": "Số dư SOL sau khi ký",
-      "before": "2,50",
-      "after": "1,50",
+      "label": "Balance of SOL after signing",
+      "before": "2.50",
+      "after": "1.50",
       "severity": "info"
     },
     {
-      "label": "Số dư USDC sau khi ký",
-      "before": "0,00",
-      "after": "148,20",
+      "label": "Balance of USDC after signing",
+      "before": "0.00",
+      "after": "148.20",
       "severity": "info"
     },
     {
-      "label": "Phí mạng",
+      "label": "Network fee",
       "before": "—",
-      "after": "0,000005 SOL",
+      "after": "0.000005 SOL",
       "severity": "info"
     }
   ],
@@ -32,5 +32,5 @@
     "total": 11,
     "unverifiedPrograms": 0
   },
-  "explanation": "Bạn đổi 1 SOL lấy 148,20 USDC. Không có hành động nào khác ngoài việc hoán đổi."
+  "explanation": "You swap 1 SOL for 148.20 USDC. No other action besides the swap was found in the parts we could read."
 }

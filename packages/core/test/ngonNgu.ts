@@ -82,3 +82,43 @@ export function laLoiDan(chuTho: string): boolean {
     /["“][^"”]*\?["”]/.test(chu)
   );
 }
+
+/*
+ * ── BẢN TIẾNG ANH ──────────────────────────────────────────────────────────────
+ *
+ * Web công khai nay viết tiếng Anh, nên guard cấm claim cần hiểu phủ định tiếng Anh.
+ * Tách hàm riêng thay vì gộp vào `viPhamCum`: thêm "not"/"no" vào bộ phủ định chung sẽ
+ * để một chữ tiếng Anh lạc trong tài liệu tiếng Việt miễn tội cho một claim tiếng Việt.
+ *
+ * Cùng hai quy tắc với bản tiếng Việt: phủ định NEO ngay trước cụm (trong ~30 ký tự,
+ * không qua dấu câu), và câu hỏi thì không phải lời khẳng định.
+ */
+const PHU_DINH_TRUOC_EN =
+  /(\bnot\b|\bnever\b|\bno\b|n['’]t\b|\bcannot\b|\bnor\b|\bwithout\b|\bavoid\w*|\binstead of\b|\bclaim(s|ing)? to be\b|\bforbidden\b|\bbanned\b)[^.,:;]{0,30}$/i;
+
+export function viPhamCumEn(chu: string, moc: RegExp): boolean {
+  chu = boDauNhan(chu);
+  const m = new RegExp(moc.source, moc.flags.replace("g", "")).exec(chu);
+  if (!m) return false;
+
+  const sau = chu.slice(m.index);
+  const hoi = sau.search(/\?/);
+  const het = sau.search(/[.|]/);
+  if (hoi !== -1 && (het === -1 || hoi < het)) return false;
+
+  // Phủ định tiếng Việt cũng tính: chú thích tiếng Việt hay trích nguyên văn cụm tiếng
+  // Anh bị cấm — `không đổi "không phát hiện" thành "fully secure"`.
+  const truoc = chu.slice(0, m.index);
+  return !PHU_DINH_TRUOC_EN.test(truoc) && !PHU_DINH_TRUOC.test(truoc);
+}
+
+/** Lời dặn tiếng Anh: "do not say …", "never call it …" — đang CẤM claim, không phải nói nó. */
+export function laLoiDanEn(chuTho: string): boolean {
+  const chu = boDauNhan(chuTho);
+  return (
+    /\b(do not|don['’]t|never|must not|should not|may not) (say|write|call|use|claim|state|count|describe|present|report)\b/i.test(chu) ||
+    /\b(we|custos) (do|does) not claim\b/i.test(chu) ||
+    /\bnot yet (measured|labell?ed)\b|\bno ground truth\b|\bbefore ground truth\b/i.test(chu) ||
+    /["“][^"”]*\?["”]/.test(chu)
+  );
+}

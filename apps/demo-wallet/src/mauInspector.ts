@@ -30,7 +30,7 @@ export type MauInspector = {
 export async function dungMau(bo: BoReplayKichBan, id = ID_MAU): Promise<MauInspector> {
   const m = bo.mau.find((x) => x.id === id);
   const kb = timKichBan(id);
-  if (!m || !kb) throw new Error(`chưa có dữ liệu đã ghi cho kịch bản "${id}"`);
+  if (!m || !kb) throw new Error(`no recorded data yet for scenario "${id}"`);
   const taoKetNoi = async () => {
     const c = connReplay(m).conn as Connection;
     await c.getLatestBlockhash();

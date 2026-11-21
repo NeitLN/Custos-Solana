@@ -15,14 +15,14 @@ test("đủ điều kiện ⇒ không có lý do (dApp dùng được)", () => {
 });
 
 test("mỗi điều kiện thiếu ⇒ đúng bước cần làm, theo thứ tự gặp", () => {
-  assert.match(lyDoDappChuaSan({ ...du, canSign: false, coPhien: false })!, /Chọn file khoá/);
-  assert.match(lyDoDappChuaSan({ ...du, coPhien: false })!, /Ký tạo phiên thử nghiệm/);
-  assert.match(lyDoDappChuaSan({ ...du, doiChu: true })!, /đổi chủ[\s\S]*phiên mới/);
-  assert.match(lyDoDappChuaSan({ ...du, daDong: true })!, /đóng[\s\S]*phiên mới/);
-  assert.match(lyDoDappChuaSan({ ...du, coYeuCau: true })!, /yêu cầu ký đang chờ/);
-  assert.match(lyDoDappChuaSan({ ...du, luuDuoc: false })!, /lưu trạng thái/);
+  assert.match(lyDoDappChuaSan({ ...du, canSign: false, coPhien: false })!, /Choose key file/);
+  assert.match(lyDoDappChuaSan({ ...du, coPhien: false })!, /Sign to create a test session/);
+  assert.match(lyDoDappChuaSan({ ...du, doiChu: true })!, /changed owner[\s\S]*new session/);
+  assert.match(lyDoDappChuaSan({ ...du, daDong: true })!, /closed[\s\S]*new session/);
+  assert.match(lyDoDappChuaSan({ ...du, coYeuCau: true })!, /signing request is waiting/);
+  assert.match(lyDoDappChuaSan({ ...du, luuDuoc: false })!, /blocking storage/);
   // Chạy thật 28/09: đã có phiên từ trước, quay lại trang ⇒ phải khôi phục (hoặc bỏ) trước.
-  assert.match(lyDoDappChuaSan({ ...du, phienLuuChoXuLy: true })!, /Khôi phục phiên đã lưu/);
+  assert.match(lyDoDappChuaSan({ ...du, phienLuuChoXuLy: true })!, /Restore the saved session/);
 });
 
 test("màn ví hiện lý do ngay dưới khối dApp khi chưa dùng được", () => {
@@ -32,6 +32,6 @@ test("màn ví hiện lý do ngay dưới khối dApp khi chưa dùng được",
 });
 
 test('giao dịch chưa rõ kết quả phải được tra cứu trước khi tạo hoặc dùng phiên', () => {
-  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true, coPhien: false })!, /Tra cứu/);
-  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true })!, /Tra cứu/);
+  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true, coPhien: false })!, /Look it up/);
+  assert.match(lyDoDappChuaSan({ ...du, chuaRo: true })!, /Look it up/);
 });

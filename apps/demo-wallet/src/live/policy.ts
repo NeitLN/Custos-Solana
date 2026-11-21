@@ -16,7 +16,7 @@ export class ConsentGate {
   prepare(bytes: Uint8Array, signer: string, protectedMode: boolean, anchor: NeoKetQua | null) {
     this.cancel();
     if (protectedMode && (!anchor || quaCu(anchor) || !khopNeo(anchor, bytes, signer, "devnet").khop)) {
-      throw new Error("Cần kết quả Custos mới và khớp giao dịch trước khi ký.");
+      throw new Error("A fresh Custos result matching the transaction is required before signing.");
     }
     const id = ++this.#serial;
     this.#pending = {
@@ -38,10 +38,10 @@ export class ConsentGate {
       p.bytes.length !== bytes.length ||
       p.bytes.some((b, i) => b !== bytes[i])
     ) {
-      throw new Error("Yêu cầu ký đã huỷ hoặc giao dịch thay đổi. Hãy tạo yêu cầu mới.");
+      throw new Error("The signing request was cancelled or the transaction changed. Create a new request.");
     }
     if (p.protected && (!p.anchor || quaCu(p.anchor) || !khopNeo(p.anchor, bytes, signer, "devnet").khop)) {
-      throw new Error("Kết quả Custos đã cũ. Hãy kiểm tra lại.");
+      throw new Error("The Custos result is stale. Please check again.");
     }
   }
 }

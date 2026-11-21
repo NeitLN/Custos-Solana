@@ -31,14 +31,14 @@ const kiemTruocKhiKy = kiemJs as (p: Record<string, unknown>) => Promise<QuyetDi
 /** Từ dòng bắt đầu bằng `dau` tới hết file — nguyên văn, chỉ bỏ khoảng trắng cuối. */
 export function catTu(raw: string, dau: string): string {
   const i = raw.indexOf(dau);
-  if (i < 0) throw new Error(`không thấy "${dau}" trong file nguồn — trang Tích hợp lệch với mã`);
+  if (i < 0) throw new Error(`"${dau}" not found in the source file — the Integration page is out of sync with the code`);
   return raw.slice(i).trimEnd();
 }
 
 /** Các dòng khớp mẫu, nguyên văn, theo thứ tự trong file. */
 export function catDong(raw: string, mau: RegExp): string {
   const d = raw.split(/\r?\n/).filter((x) => mau.test(x));
-  if (d.length === 0) throw new Error(`không thấy dòng khớp ${mau} — trang Tích hợp lệch với mã`);
+  if (d.length === 0) throw new Error(`no line matches ${mau} — the Integration page is out of sync with the code`);
   return d.join("\n");
 }
 
@@ -72,7 +72,7 @@ export async function chayThu(
 ): Promise<KetQuaChayThu> {
   const m = bo.mau.find((x) => x.id === id);
   const kb = timKichBan(id);
-  if (!m || !kb) throw new Error(`chưa có dữ liệu đã ghi cho kịch bản "${id}"`);
+  if (!m || !kb) throw new Error(`no recorded data yet for scenario "${id}"`);
   const { conn, thieu } = connReplay(m);
   const c = conn as Connection;
   const { blockhash } = await c.getLatestBlockhash();

@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 // Một định nghĩa duy nhất cho "phủ định có neo" và "lời dặn" — ba guard từng giữ
 // ba bản sao, và cả ba đều có lỗ theo cách riêng. Xem `ngonNgu.ts`.
 import { laLoiDan as laDoanMienTru, viPhamCum } from "./ngonNgu.ts";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { laLoiDanEn, viPhamCumEn } from "./ngonNgu.ts";
 
 /**
  * GUARD CHỐNG TRÔI CLAIM VÀ SỐ LIỆU.
@@ -612,5 +613,206 @@ test("không gọi '0 cáo buộc' thành tỉ lệ báo nhầm", () => {
         `${f}: "${d.trim().slice(0, 90)}" — cohort chưa gán nhãn ground truth nên không được phát biểu như tỉ lệ báo nhầm.`,
       );
     }
+  }
+});
+
+/*
+ * ── CLAIM TIẾNG ANH ─────────────────────────────────────────────────────────────
+ *
+ * Web công khai (ví mẫu, trang giới thiệu, Inspector, Evidence, SolBonus) nay viết
+ * tiếng Anh. Mọi mẫu cấm phía trên là tiếng Việt, nên một câu "0 false positives on
+ * mainnet" hay "Custos keeps your assets safe" trên trang tiếng Anh đi thẳng qua.
+ *
+ * Mỗi mẫu dưới đây là bản tiếng Anh của một mẫu tiếng Việt đã có (hoặc của một luật
+ * trong BOI-CANH-DU-AN.md: không nói "an toàn", "0 bị gắn cờ" ≠ "0 cáo buộc", runtime
+ * chỉ Devnet). Mẫu tiếng Việt GIỮ NGUYÊN — hai bộ chạy song song.
+ *
+ * Bề mặt quét: các tài liệu public đã canh ở trên CỘNG toàn bộ mã nguồn web
+ * (`apps/*\/src/**`, các trang `.html`) và chữ người dùng do SDK sinh ra
+ * (`packages/ai/src`, `packages/core/src/diff.ts`). Quét cả mã nguồn vì chữ hiển thị
+ * nằm ngay trong JSX/TS; mẫu được viết đủ hẹp để không bắt tên biến như `"safe"`.
+ */
+
+function quetThuMuc(goc: string, duoi: RegExp): string[] {
+  const ra: string[] = [];
+  const di = (rel: string) => {
+    let ds: string[];
+    try {
+      ds = readdirSync(new URL(rel, GOC));
+    } catch {
+      return;
+    }
+    for (const ten of ds) {
+      if (ten === "node_modules" || ten === "dist" || ten.startsWith(".")) continue;
+      const con = `${rel}/${ten}`;
+      if (statSync(new URL(con, GOC)).isDirectory()) di(con);
+      else if (duoi.test(ten)) ra.push(con);
+    }
+  };
+  di(goc);
+  return ra;
+}
+
+const WEB_TIENG_ANH = [
+  ...quetThuMuc("apps/demo-wallet/src", /\.(tsx?|html)$/),
+  ...quetThuMuc("apps/trang-tan-cong/src", /\.(tsx?|html)$/),
+  ...quetThuMuc("apps/thu-ket-noi/src", /\.(tsx?|html)$/),
+  ...quetThuMuc("apps/demo-wallet", /\.html$/).filter((f) => !f.includes("/public/") && f.split("/").length === 3),
+  "apps/trang-tan-cong/index.html",
+  "apps/thu-ket-noi/index.html",
+  ...quetThuMuc("packages/ai/src", /\.ts$/),
+  "packages/core/src/diff.ts",
+];
+
+const BE_MAT_TIENG_ANH = [...new Set([...BE_MAT_PUBLIC, ...WEB_TIENG_ANH])];
+
+test("bề mặt tiếng Anh tìm thấy đủ file — guard không quét một danh sách rỗng", () => {
+  assert.ok(WEB_TIENG_ANH.length >= 20, `chỉ tìm thấy ${WEB_TIENG_ANH.length} file web`);
+  for (const f of ["apps/demo-wallet/src/CanhBao.tsx", "apps/trang-tan-cong/src/App.tsx", "apps/demo-wallet/index.html"]) {
+    assert.ok(WEB_TIENG_ANH.includes(f), `thiếu ${f}`);
+  }
+});
+
+/** Mỗi cặp: [tên vi phạm, mẫu]. Chữ đã hạ thường trước khi so. */
+const CUM_CAM_EN: Array<[string, RegExp]> = [
+  // ↔ "không ví nào", "ví khác im lặng", "họ không hiển thị"
+  ["claims no other wallet does this", /\bno other wallet\b|\bno wallet (else )?(does|shows|tells|warns)\b/],
+  ["claims other wallets stay silent", /\b(other|existing|current) wallets? (all )?(stay silent|say nothing|show nothing|(do not|don['’]t) (show|say|tell|warn))\b/],
+  ["claims competitors do not display it", /\bthey (do not|don['’]t) (show|display)\b|\bno one (else )?(shows|displays)\b/],
+  ["rhetorical 'is there any wallet willing to say'", /\b(is there|whether) (any|a) wallet (is )?(willing|that will)\b/],
+  // ↔ "Custos là duy nhất"
+  ["claims Custos is the only one", /\bcustos is the (only|sole)\b|\bthe only (solution|tool|wallet|product|one) (that|to|which|willing)\b/],
+  // ↔ "Blockaid đóng"
+  ["says Blockaid shut down", /\bblockaid (has )?(shut down|closed|is closed)\b/],
+  // ↔ "0 false positive", "không kêu oan lần nào"
+  ["claims zero false positives", /\b(0|zero) false (positives?|alarms?)\b|\bnever (gives|raises|produces) (a )?false (positives?|alarms?)\b|\bno false (positives|alarms) (at all|ever)\b/],
+  // ↔ "\d+ % chính xác"
+  ["claims an accuracy figure without ground truth", /\d+(\.\d+)?\s*% (accurate|accuracy|precision|recall|detection( rate)?)\b|\b(accuracy|precision|recall|detection rate) (of|is|=)\s*\d+(\.\d+)?\s*%/],
+  // ↔ "mọi drainer", "bắt được mọi"
+  ["claims to catch every drainer", /\b(catch(es)?|detects?|stops?|blocks?) (every|all) (drainers?|scams?|attacks?|threats?|malicious)\b/],
+  // ↔ luật: không bao giờ nói "an toàn" / bảo đảm
+  ["calls a transaction or the product safe/secure", /\b(100\s*%|completely|fully|totally|guaranteed) (safe|secure)\b|\b(this|the) transaction is safe\b|\bsafe to sign\b/],
+  ["promises safety or protection of assets", /\bguarantees? (your |the )?(safety|security)\b|\b(keeps|makes) (you|your (funds|assets|wallet|tokens)) (safe|secure)\b|\bprotects? your (assets|funds|wallet|tokens|money)\b/],
+  // ↔ luật: "0 bị gắn cờ" sai — con số 0 là số CÁO BUỘC
+  ["says '0 flagged' (7 were flagged; 0 is the ACCUSED count)", /\b(0|zero|no) (transactions? )?(were |was )?flagged\b/],
+  // ↔ runtime chỉ Devnet
+  ["claims mainnet readiness", /\bmainnet[- ]ready\b|\bready for mainnet\b|\b(live|available|works) on mainnet\b|\bprotects? (you |your assets |users )?on mainnet\b|\bmainnet (signing|protection) is (live|available|supported)\b/],
+];
+
+/** ↔ `MOI_VI_DOC_QUYEN` */
+const MOI_VI_EN = /\b(every|all) (other )?wallets?\b[^.]{0,80}\b(lacks?|(do not|don['’]t) have|have none|stays? silent|says? nothing)\b/;
+
+/** ↔ `NOI_TI_LE_SAI` / `NOI_COHORT` / `CO_DISCLAIMER` */
+const NOI_TI_LE_SAI_EN = /false positive|false alarm|precision|recall|accuracy|\baccurate\b/;
+const CO_DISCLAIMER_EN = /ground truth|unlabell?ed|not (a|an) (rate|measure|measurement|accuracy)|not yet|observation|observed|\bnot\b.{0,20}\b(rate|accuracy)\b/;
+
+const thuongEn = (s: string) => s.toLowerCase();
+
+/*
+ * Miễn trừ theo CÂU, không theo đoạn. Bề mặt tiếng Anh gồm cả mã nguồn, và một file
+ * TS/TSX dài thường không có dòng trống nào — cả file thành MỘT "đoạn". Miễn trừ theo
+ * đoạn thì chỉ cần một chú thích "KHÔNG nói …" ở đầu file là cả file thoát guard.
+ */
+function viPhamTiengAnh(chu: string): string[] {
+  const ra = new Set<string>();
+  for (const cauGoc of cauTrongDoan(chu)) {
+    if (laDoanMienTru(cauGoc) || laLoiDanEn(cauGoc)) continue;
+    const cau = thuongEn(cauGoc);
+    for (const [ten, moc] of CUM_CAM_EN) if (viPhamCumEn(cau, moc)) ra.add(ten);
+    if (viPhamCumEn(cau, MOI_VI_EN)) ra.add("claims every other wallet lacks it");
+    // Disclaimer tiếng Việt cũng tính: tài liệu tiếng Việt hay trích thuật ngữ tiếng Anh
+    // ("precision", "false positive") cạnh lời đính chính tiếng Việt.
+    if (
+      NOI_TI_LE_SAI_EN.test(cau) && NOI_COHORT.test(cau) &&
+      !CO_DISCLAIMER_EN.test(cau) && !CO_DISCLAIMER.test(cau)
+    ) {
+      ra.add("states an error rate on the cohort/mainnet without a ground-truth disclaimer");
+    }
+  }
+  return [...ra];
+}
+
+test("EN — không có claim cấm nào trên bề mặt tiếng Anh (kiểm theo đoạn)", () => {
+  const pham: string[] = [];
+  for (const f of BE_MAT_TIENG_ANH) {
+    for (const { dong, chu } of doanVanBan(doc(f))) {
+      for (const ten of viPhamTiengAnh(chu)) {
+        pham.push(`${f}:${dong} — ${ten}\n      ${chu.slice(0, 140)}`);
+      }
+    }
+  }
+  assert.deepEqual(pham, [], "Claim tiếng Anh không chứng minh được:\n" + pham.join("\n"));
+});
+
+test("EN — không có '0 false positive(s)' trên dòng nào", () => {
+  const pham: string[] = [];
+  for (const f of BE_MAT_TIENG_ANH) {
+    doc(f).split("\n").forEach((d, i) => {
+      if (laDoanMienTru(d) || laLoiDanEn(d)) return;
+      if (/\b0\s*(false positives?|false alarms?)\b/i.test(d)) pham.push(`${f}:${i + 1} — ${d.trim().slice(0, 100)}`);
+      const t = d.toLowerCase();
+      if (t.includes("false positive") && t.includes("mainnet") && !/ground truth|not (a|an) /.test(t)) {
+        pham.push(`${f}:${i + 1} — false positive + mainnet: ${d.trim().slice(0, 100)}`);
+      }
+    });
+  }
+  assert.deepEqual(pham, [], "Cohort chưa có ground truth; runtime chỉ Devnet:\n" + pham.join("\n"));
+});
+
+const PHAI_TU_CHOI_EN = [
+  "No other wallet tells you what it could not read.",
+  "Existing wallets stay silent when they do not understand a transaction.",
+  "They don't show that number.",
+  "The difference is whether any wallet is willing to say it.",
+  "Custos is the only solution that admits what it could not read.",
+  "Custos is the **only** tool that shows coverage.",
+  "Blockaid shut down, so the market is open.",
+  "We measured mainnet, so our 0 false positives figure is meaningful.",
+  "Zero false positives across the cohort.",
+  "Custos is 98% accurate.",
+  "Detection rate of 95 % on real transactions.",
+  "Custos catches every drainer.",
+  "This transaction is safe to sign.",
+  "Custos keeps your assets safe.",
+  "Custos protects your wallet from scams.",
+  "100% secure signing.",
+  "0 transactions were flagged in the mainnet cohort.",
+  "Custos is mainnet-ready.",
+  "Every other wallet lacks this kind of explanation.",
+  "We replayed mainnet transactions, which is why our false positive rate is meaningful.",
+];
+
+const PHAI_CHAP_NHAN_EN = [
+  "No red flags is not a guarantee of safety.",
+  "No danger signs found in the parts we could read.",
+  "We do not claim to be the only solution.",
+  "Custos does not guarantee your safety; it explains what it could read.",
+  "The signing flow runs on Solana Devnet only. Real mainnet transactions are replayed from recorded data — not a mainnet signing flow, nor a promise to protect mainnet assets.",
+  "0 transactions accused; 7 flagged as Review carefully because data or coverage was missing.",
+  "The cohort has no ground truth yet, so this is not a false positive rate.",
+  "Do not call it a false positive rate.",
+  "Phantom and Blockaid proved the demand; Custos differs by being open source and showing coverage.",
+  "This is how much we could read, not how safe it is.",
+  "level: \"safe\" | \"warning\" | \"danger\"",
+  "Custos never says a transaction is safe.",
+];
+
+test("EN — guard bác bỏ mọi câu cấm mẫu", () => {
+  const lot = PHAI_TU_CHOI_EN.filter((c) => doanVanBan(c).every(({ chu }) => viPhamTiengAnh(chu).length === 0));
+  assert.deepEqual(lot, [], "Những câu này phải bị chặn nhưng vẫn lọt:\n" + lot.join("\n"));
+});
+
+test("EN — guard KHÔNG chặn nhầm cách nói đúng", () => {
+  const oan = PHAI_CHAP_NHAN_EN.filter((c) => doanVanBan(c).some(({ chu }) => viPhamTiengAnh(chu).length > 0));
+  assert.deepEqual(oan, [], "Guard đang chặn nhầm câu đúng:\n" + oan.join("\n"));
+});
+
+test("EN — claim cài vào giữa một file web THẬT vẫn bị bắt (miễn trừ không nuốt cả file)", () => {
+  for (const f of ["apps/demo-wallet/src/landing/content.ts", "apps/demo-wallet/src/CanhBao.tsx", "apps/trang-tan-cong/src/App.tsx"]) {
+    const goc = doc(f).split("\n");
+    const giua = Math.floor(goc.length / 2);
+    const cai = [...goc.slice(0, giua), '  note: "Custos keeps your assets safe.",', ...goc.slice(giua)].join("\n");
+    const bat = doanVanBan(cai).some(({ chu }) => viPhamTiengAnh(chu).length > 0);
+    assert.ok(bat, `${f}: claim cài vào không bị bắt — miễn trừ đang nuốt cả đoạn`);
   }
 });

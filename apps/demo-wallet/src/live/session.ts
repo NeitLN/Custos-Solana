@@ -218,7 +218,7 @@ export class LiveSession {
       owner: null,
       protected: true,
       busy: false,
-      status: "Ví mặc định đã sẵn sàng để nhận SOL Devnet. Chọn keypair đúng ví để ký.",
+      status: "The default wallet is ready to receive Devnet SOL. Choose this wallet's keypair to sign.",
       pending: null,
       receipt: null,
       setupPending: null,
@@ -233,14 +233,14 @@ export class LiveSession {
     };
   }
   unlock(key: Keypair) {
-    if (this.#locked || this.#request) throw new Error("Chờ thao tác hiện tại hoàn tất trước khi mở khoá.");
+    if (this.#locked || this.#request) throw new Error("Wait for the current action to finish before unlocking.");
     if (!key.publicKey.equals(this.#publicKey))
-      throw new Error("Keypair không khớp địa chỉ ví mặc định. Không đổi sang ví khác.");
+      throw new Error("The keypair does not match the default wallet address. Switching to another wallet is not allowed.");
     this.#wallet = key;
-    this.#update({ canSign: true, status: "Đã mở quyền ký cho ví mặc định trong tab này." });
+    this.#update({ canSign: true, status: "Signing unlocked for the default wallet in this tab." });
   }
   #signer() {
-    if (!this.#wallet) throw new Error("Chọn file keypair của ví mặc định trước khi ký.");
+    if (!this.#wallet) throw new Error("Choose the default wallet's keypair file before signing.");
     return this.#wallet;
   }
   subscribe(fn: (view: LiveView) => void) {
@@ -274,7 +274,7 @@ export class LiveSession {
   async restore(value: unknown) {
     return this.#exclusive(async () => {
       if (this.#request || this.#unresolved)
-        throw new Error("Kết thúc yêu cầu hiện tại trước khi khôi phục.");
+        throw new Error("Finish the current request before restoring.");
       const saved = parsePublicSession(value, this.view.wallet);
       await this.#devnet();
       if (saved.accounts) {
@@ -284,7 +284,7 @@ export class LiveSession {
           maxSupportedTransactionVersion: 0,
         });
         if (!setup?.meta || setup.meta.err !== null)
-          throw new Error("Chưa xác minh được giao dịch tạo phiên. Không tạo phiên mới tự động.");
+          throw new Error("The session setup transaction could not be verified. No new session is created automatically.");
         const keys = setup.transaction.message.getAccountKeys({
           accountKeysFromLookups: setup.meta.loadedAddresses,
         });
@@ -295,7 +295,7 @@ export class LiveSession {
             list.includes(k),
           )
         )
-          throw new Error("Manifest không khớp giao dịch tạo phiên của ví.");
+          throw new Error("The manifest does not match the wallet's session setup transaction.");
         const [mint, target] = await Promise.all([
           getMint(this.#connection, new PublicKey(a.mint)),
           getAccount(this.#connection, new PublicKey(a.target)),
@@ -306,7 +306,7 @@ export class LiveSession {
           target.mint.toBase58() !== a.mint ||
           target.owner.toBase58() !== a.recipient
         )
-          throw new Error("Mint/tài khoản đích không khớp phiên DEMO.");
+          throw new Error("The mint/target account does not match the DEMO session.");
       }
       this.#unresolved = saved.unresolved;
       this.#setupExpiry = saved.setupExpiry;
@@ -317,7 +317,7 @@ export class LiveSession {
         receipt: saved.receipts[0] ?? null,
         restored: true,
         status:
-          "Đã khôi phục địa chỉ công khai. Đọc lại số dư và bằng chứng từ Devnet; khoá ký không được lưu.",
+          "Public addresses restored. Re-reading balances and evidence from Devnet; the signing key is not stored.",
       });
       await this.#refresh();
     });
@@ -327,7 +327,7 @@ export class LiveSession {
     // (`datDuPhongLive`), so whichever endpoint answers here is Devnet.
     if (this.#verifiedDevnet) return;
     if ((await this.#connection.getGenesisHash()) !== DEVNET_GENESIS)
-      throw new Error("Chỉ cho phép mạng Solana Devnet đã xác minh.");
+      throw new Error("Only a verified Solana Devnet network is allowed.");
     this.#verifiedDevnet = true;
   }
   /**
@@ -336,7 +336,7 @@ export class LiveSession {
    * trình; `PublicSessionCache` (Web Lock + so-rồi-ghi) giảm, không xoá được rủi ro đó.
    */
   async #exclusive<T>(work: () => Promise<T>): Promise<T> {
-    if (this.#locked) throw new Error("Một thao tác đang chạy. Hãy chờ kết quả.");
+    if (this.#locked) throw new Error("An action is running. Please wait for the result.");
     this.#locked = true;
     try {
       this.#update({ busy: true });
@@ -354,19 +354,19 @@ export class LiveSession {
     this.#update({ pending: null });
   }
   setProtection(enabled: boolean) {
-    if (this.#locked) throw new Error("Chờ thao tác hiện tại hoàn tất trước khi đổi chế độ.");
+    if (this.#locked) throw new Error("Wait for the current action to finish before switching modes.");
     this.#clearRequest();
     this.#update({
       protected: enabled,
       status: enabled
-        ? "Custos sẽ kiểm tra trước khi bạn ký."
-        : "Chế độ đối chứng: Custos không quyết định việc ký.",
+        ? "Custos will check before you sign."
+        : "Control mode: Custos does not decide whether you sign.",
     });
   }
   cancel() {
-    if (this.#locked) throw new Error("Không thể huỷ thao tác đã bắt đầu gửi.");
+    if (this.#locked) throw new Error("An action that has started sending cannot be cancelled.");
     this.#clearRequest();
-    this.#update({ status: "Đã huỷ trước khi ký. Ví không gửi giao dịch này.", send: { pha: "nghi" } });
+    this.#update({ status: "Cancelled before signing. The wallet will not send this transaction.", send: { pha: "nghi" } });
   }
   async refresh() {
     return this.#exclusive(() => this.#refresh());
@@ -378,7 +378,7 @@ export class LiveSession {
     if (a) {
       try {
         const source = await getAccount(this.#connection, new PublicKey(a.source), "confirmed");
-        if (source.mint.toBase58() !== a.mint) throw new Error("Tài khoản nguồn không đúng mint của phiên.");
+        if (source.mint.toBase58() !== a.mint) throw new Error("The source account does not use the session's mint.");
         this.#update({
           lamports,
           balance: source.amount.toString(),
@@ -405,10 +405,10 @@ export class LiveSession {
   async faucet() {
     return this.#exclusive(async () => {
       await this.#devnet();
-      this.#update({ status: "Đang xin SOL thử nghiệm từ faucet Devnet…" });
+      this.#update({ status: "Requesting test SOL from the Devnet faucet…" });
       const sig = await this.#connection.requestAirdrop(this.#publicKey, 1_000_000_000);
       this.#update({
-        status: `Faucet đã nhận yêu cầu (${sig.slice(0, 8)}…). Bấm cập nhật số dư sau vài giây.`,
+        status: `Faucet accepted the request (${sig.slice(0, 8)}…). Refresh the balance in a few seconds.`,
       });
       await this.#refresh();
     });
@@ -454,14 +454,14 @@ export class LiveSession {
     return this.#exclusive(async () => {
       this.#signer();
       if (this.#unresolved)
-        throw new Error("Lượt gửi trước chưa rõ kết quả. Tra cứu trước khi tạo phiên khác.");
+        throw new Error("The previous send has an unresolved result. Look it up before creating another session.");
       this.#clearRequest();
       await this.#refresh();
       if ((this.view.lamports ?? 0) < 12_000_000)
         throw new Error(
-          "Cần ít nhất 0,012 SOL Devnet để tạo phiên. Chỉ nạp SOL thử nghiệm vào địa chỉ trên.",
+          "At least 0.012 Devnet SOL is needed to create a session. Only fund the address above with test SOL.",
         );
-      this.#update({ status: "Đang tạo mint và hai tài khoản token riêng trên Devnet…", receipt: null });
+      this.#update({ status: "Creating a mint and two dedicated token accounts on Devnet…", receipt: null });
       const mint = Keypair.generate(),
         source = Keypair.generate(),
         target = Keypair.generate(),
@@ -512,13 +512,13 @@ export class LiveSession {
         this.#unresolved = true;
         this.#update({ setupPending: { ...accounts }, actorAvailable: true });
       });
-      if (!("sig" in sent)) throw new Error("loi" in sent ? sent.loi : "Chưa gửi được giao dịch tạo phiên.");
+      if (!("sig" in sent)) throw new Error("loi" in sent ? sent.loi : "The session setup transaction could not be sent.");
       accounts.setupSignature = sent.sig;
       if (sent.pha !== "thanhCong") {
         this.#unresolved = sent.pha === "chuaRo";
         this.#update({ setupPending: this.#unresolved ? accounts : null });
         throw new Error(
-          `Tạo phiên ${sent.pha === "chuaRo" ? "chưa rõ kết quả" : "thất bại"}. Kiểm chữ ký ${sent.sig} trên Explorer; không tự gửi lại.`,
+          `Session setup ${sent.pha === "chuaRo" ? "has an unresolved result" : "failed"}. Check signature ${sent.sig} on Explorer; it will not be resent automatically.`,
         );
       }
       this.#unresolved = false;
@@ -526,7 +526,7 @@ export class LiveSession {
         accounts,
         setupPending: null,
         actorAvailable: true,
-        status: "Phiên sẵn sàng: 500 DEMO. Quyền phát hành đã thu hồi.",
+        status: "Session ready: 500 DEMO. Mint authority revoked.",
         send: { pha: "nghi" },
       });
       await this.#refresh();
@@ -550,20 +550,20 @@ export class LiveSession {
             this.#unresolved = false;
             this.#update({
               setupPending: null,
-              status: `Giao dịch tạo phiên đã hết hạn; RPC không tìm thấy signature ${pending.setupSignature}. Kiểm Explorer trước khi chủ động tạo phiên mới; không tự gửi lại.`,
+              status: `The session setup transaction expired; the RPC did not find signature ${pending.setupSignature}. Check Explorer before deliberately creating a new session; it will not be resent automatically.`,
             });
             return;
           }
         }
-        throw new Error("Chưa rõ giao dịch tạo phiên. Giữ signature và thử tra cứu lại.");
+        throw new Error("The session setup transaction is unresolved. Keep the signature and try looking it up again.");
       }
       this.#unresolved = false;
       this.#update({ setupPending: null });
-      if (data.meta.err !== null) throw new Error("Tạo phiên đã thất bại trên chuỗi. Có thể tạo phiên mới.");
+      if (data.meta.err !== null) throw new Error("Session setup failed on-chain. You can create a new session.");
       this.#update({
         accounts: pending,
         send: { pha: "nghi" },
-        status: "Đã tìm thấy giao dịch tạo phiên thành công. Không gửi lại.",
+        status: "Found a successful session setup transaction. Not resending.",
       });
       await this.#refresh();
     });
@@ -582,7 +582,7 @@ export class LiveSession {
     return this.#exclusive(async () => {
       this.#signer();
       if (this.#unresolved || this.#request)
-        throw new Error("Giải quyết yêu cầu trước khi kết nối ứng dụng.");
+        throw new Error("Resolve the current request before connecting an app.");
       await this.#refresh();
       const a = this.view.accounts;
       if (
@@ -591,7 +591,7 @@ export class LiveSession {
         this.view.closed ||
         BigInt(this.view.balance ?? "0") < 2n
       )
-        throw new Error("Cần phiên DEMO còn token và quyền kiểm soát.");
+        throw new Error("A DEMO session that still has tokens and control is required.");
       const expiry = await this.#connection.getLatestBlockhash("confirmed");
       this.#offered = {
         nonce: crypto.randomUUID(),
@@ -614,7 +614,7 @@ export class LiveSession {
       serialized.length > 2000 ||
       serialized !== buildLiveHandoff(offered)
     )
-      throw new Error("Yêu cầu dApp không khớp phiên/message được kết nối.");
+      throw new Error("The dApp request does not match the connected session/message.");
     this.#offered = null;
     await this.prepare(
       "attack",
@@ -634,16 +634,16 @@ export class LiveSession {
       const actorStep = SCENARIOS[kind].signer === "actor";
       if (!actorStep) this.#signer();
       else if (!this.#actor())
-        throw new Error("Khoá ứng dụng chỉ ở tab đã tạo phiên. Tạo phiên mới để chạy bước ứng dụng.");
-      if (this.#unresolved) throw new Error("Lượt gửi trước chưa rõ kết quả. Hãy tra cứu trước.");
+        throw new Error("The app key exists only in the tab that created the session. Create a new session to run app steps.");
+      if (this.#unresolved) throw new Error("The previous send has an unresolved result. Look it up first.");
       this.#clearRequest();
       const version = this.#version;
       await this.#refresh();
       const a = this.view.accounts;
-      if (!a) throw new Error("Hãy tạo phiên trước.");
-      if (this.view.closed) throw new Error("Tài khoản đã đóng. Tạo phiên mới để thử tiếp.");
+      if (!a) throw new Error("Create a session first.");
+      if (this.view.closed) throw new Error("The account is closed. Create a new session to keep trying.");
       if (!actorStep && this.view.owner !== this.view.wallet)
-        throw new Error("Tài khoản đã đổi chủ. Hãy tạo phiên mới để thử lại.");
+        throw new Error("The account changed owner. Create a new session to try again.");
       const before = BigInt(this.view.balance ?? "0");
       const usesAmount = ["transfer", "extra", "approve", "delegate-transfer"].includes(kind);
       const amount =
@@ -652,30 +652,30 @@ export class LiveSession {
         (usesAmount || kind === "attack") &&
         (amount <= 0n || (kind !== "approve" && amount + (kind === "extra" ? 1_000_000n : 0n) > before))
       )
-        throw new Error("Không đủ token DEMO; hãy tạo phiên mới.");
+        throw new Error("Not enough DEMO tokens; create a new session.");
       if (
         kind === "delegate-transfer" &&
         (this.view.delegate !== a.recipient || BigInt(this.view.allowance ?? "0") < amount)
       )
-        throw new Error("Ứng dụng không có quyền hoặc lượng cấp còn lại không đủ.");
+        throw new Error("The app has no allowance or the remaining allowance is not enough.");
       if (kind === "close" && (this.view.closeAuthority !== a.recipient || before !== 0n))
-        throw new Error("Chỉ đóng khi tài khoản rỗng và ứng dụng có quyền đóng.");
+        throw new Error("The account can only be closed when it is empty and the app holds close authority.");
       let target: PublicKey;
       try {
         target = new PublicKey(input.target || a.target);
       } catch {
-        throw new Error("Địa chỉ tài khoản token đích không hợp lệ.");
+        throw new Error("Invalid target token account address.");
       }
-      if (target.toBase58() === a.source) throw new Error("Tài khoản nhận phải khác tài khoản nguồn.");
+      if (target.toBase58() === a.source) throw new Error("The recipient account must differ from the source account.");
       if (input.target && target.toBase58() !== a.target) {
         const dest = await getAccount(this.#connection, target, "confirmed");
         if (dest.mint.toBase58() !== a.mint || dest.isFrozen)
-          throw new Error("Tài khoản nhận phải cùng mint DEMO và không bị đóng băng.");
+          throw new Error("The recipient account must use the DEMO mint and must not be frozen.");
       }
       const signer = actorStep ? this.#actor()!.publicKey : this.#publicKey;
       const expiry = handedOff?.expiry ?? (await this.#connection.getLatestBlockhash("confirmed"));
       if (handedOff && (await this.#connection.getBlockHeight("confirmed")) > expiry.lastValidBlockHeight)
-        throw new Error("Yêu cầu dApp đã hết hạn. Kết nối lại để tạo yêu cầu mới.");
+        throw new Error("The dApp request expired. Reconnect to create a new request.");
       const ix = buildScenario(kind, {
         source: new PublicKey(a.source),
         target,
@@ -688,12 +688,12 @@ export class LiveSession {
       const tx = this.#transaction(ix, expiry.blockhash, signer),
         bytes = tx.message.serialize().slice();
       if (handedOff && maBase58(handedOff.tx.message.serialize()) !== maBase58(bytes))
-        throw new Error("Trạng thái phiên đã thay đổi; không ký yêu cầu dApp cũ.");
+        throw new Error("The session state changed; the old dApp request will not be signed.");
       const protectedMode = this.view.protected;
       this.#update({
         status: protectedMode
-          ? "Custos đang mô phỏng trước khi ký…"
-          : "Đang chuẩn bị đối chứng; đo dự báo riêng, không dùng làm cổng ký…",
+          ? "Custos is simulating before you sign…"
+          : "Preparing control run; recording a separate prediction, not used to gate signing…",
         receipt: null,
         send: { pha: "nghi" },
       });
@@ -730,7 +730,7 @@ export class LiveSession {
           tx,
           {
             nguoiDung: signer.toBase58(),
-            locale: "vi",
+            locale: "en",
             kyHieuToken: { [a.mint]: "DEMO" },
           },
         ), CAU_HINH_LIVE.hanKiemMs);
@@ -742,7 +742,7 @@ export class LiveSession {
           captured.facts = undefined;
           if (protectedMode) {
             throw new Error(
-              `Hai nhà cung cấp RPC trả lời hai nửa của cùng một lượt kiểm, hai lần liền (${lan.nguon.join(" + ")}) — không tạo yêu cầu ký từ kết quả ghép.`,
+              `Two RPC providers answered two halves of the same check, twice in a row (${lan.nguon.join(" + ")}) — no signing request is created from a stitched result.`,
             );
           }
           throw new LoiNguonTron(lan.nguon);
@@ -754,7 +754,7 @@ export class LiveSession {
         if (protectedMode) {
           throw e instanceof LoiQuaHan
             ? new Error(
-                `Custos chưa có kết quả mô phỏng sau ${Math.round(e.ms / 1000)} giây (quá hạn) — không tạo yêu cầu ký khi chưa kiểm xong.`,
+                `Custos had no simulation result after ${Math.round(e.ms / 1000)} seconds (timed out) — no signing request is created before the check finishes.`,
               )
             : e;
         }
@@ -789,23 +789,23 @@ export class LiveSession {
         nguonDoc,
       };
       this.#request = { tx, expiry, view };
-      this.#update({ pending: view, status: "Chưa ký, chưa gửi. Bạn quyết định ở bước xác nhận." });
+      this.#update({ pending: view, status: "Not signed, not sent. You decide at the confirmation step." });
     });
   }
   async execute(id: number, action: "approve" | "override" = "approve") {
     return this.#exclusive(async () => {
       const request = this.#request;
-      if (!request || request.view.id !== id) throw new Error("Yêu cầu đã huỷ hoặc thay đổi.");
+      if (!request || request.view.id !== id) throw new Error("The request was cancelled or changed.");
       // `aiAdvisory` KHÔNG đổi `level`, nhưng cũng không được để ký thẳng — phản biện 26/09, F-03.
       if (request.view.protected && canBoQua(request.view.result) && action !== "override")
-        throw new Error("Cần xác nhận chủ động bỏ qua cảnh báo cho đúng yêu cầu này.");
+        throw new Error("You must explicitly confirm overriding the warning for this exact request.");
       await this.#refresh();
       if (this.#accountState() !== request.view.state)
-        throw new Error("Trạng thái tài khoản thay đổi. Hãy tạo yêu cầu mới.");
+        throw new Error("The account state changed. Create a new request.");
       if (request.view.prediction.before !== null && request.view.prediction.before !== this.view.balance)
-        throw new Error("Số dư thay đổi sau mô phỏng. Hãy tạo yêu cầu mới.");
+        throw new Error("The balance changed after simulation. Create a new request.");
       if ((await this.#connection.getBlockHeight("confirmed")) > request.expiry.lastValidBlockHeight)
-        throw new Error("Giao dịch hết hạn. Hãy chọn lại kịch bản để kiểm tra mới.");
+        throw new Error("The transaction expired. Pick the scenario again for a new check.");
       this.#gate.consume(id, request.tx.message.serialize(), request.view.signer);
       this.#request = null;
       this.#update({ pending: null });
@@ -818,7 +818,7 @@ export class LiveSession {
         observation: null,
         comparison: null,
         createdAt: new Date().toISOString(),
-        note: "Đang ký/gửi; chưa có bằng chứng thực thi.",
+        note: "Signing/sending; no execution evidence yet.",
         wallet: this.view.wallet,
         signer: request.view.signer,
         expiresAtBlock: request.expiry.lastValidBlockHeight,
@@ -866,12 +866,12 @@ export class LiveSession {
             ...receipt,
             note:
               sent.pha === "thanhCong"
-                ? "Đã xác nhận; đang đọc hậu quả…"
-                : "Kiểm tra bằng chứng trên Devnet; không tự gửi lại.",
+                ? "Confirmed; reading the consequences…"
+                : "Check the evidence on Devnet; it will not be resent automatically.",
           },
         });
         await this.#readReceipt();
-      } else this.#update({ status: "loi" in sent ? sent.loi : "Chưa gửi được." });
+      } else this.#update({ status: "loi" in sent ? sent.loi : "Could not send." });
       await this.#refresh();
     });
   }
@@ -883,7 +883,7 @@ export class LiveSession {
     const receipt = saved ?? this.view.receipt;
     if (!receipt?.signature) return;
     if (this.#unresolved && (this.view.setupPending || receipt.signature !== this.view.receipt?.signature))
-      throw new Error("Tra cứu đúng signature của lượt gửi chưa rõ trước.");
+      throw new Error("Look up the signature of the unresolved send first.");
     await this.#devnet();
     const data = await this.#connection.getTransaction(receipt.signature, {
       commitment: "confirmed",
@@ -903,16 +903,16 @@ export class LiveSession {
             receipt: {
               ...receipt,
               resolution: "expired-unobserved",
-              note: "Blockhash đã hết hạn ở finalized; RPC không tìm thấy signature trong lịch sử. Không khẳng định giao dịch chưa từng xảy ra. Kiểm Explorer và số dư trước khi tạo yêu cầu mới.",
+              note: "The blockhash expired at finalized; the RPC did not find the signature in history. This does not prove the transaction never happened. Check Explorer and the balance before creating a new request.",
             },
-            status: "Đã hết hạn; chưa quan sát được thực thi. Có thể chuẩn bị yêu cầu mới, không tự gửi lại.",
+            status: "Expired; execution not observed. You can prepare a new request; it will not be resent automatically.",
           });
           return;
         }
       }
       this.#update({
-        receipt: { ...receipt, note: "Chưa đọc được metadata. Bấm Tra cứu lại; không gửi giao dịch mới." },
-        status: "Chưa đủ bằng chứng để đối chiếu.",
+        receipt: { ...receipt, note: "Metadata not read yet. Click Look up again; no new transaction is sent." },
+        status: "Not enough evidence to compare yet.",
       });
       return;
     }
@@ -926,13 +926,13 @@ export class LiveSession {
         resolution: data.meta.err === null ? "confirmed" : "failed",
         note:
           data.meta.err === null
-            ? "Số dư lấy từ metadata giao dịch; quyền sở hữu đọc lại từ tài khoản ở slot ghi bên dưới."
-            : "Giao dịch thất bại khi thực thi. Không được xem dự báo là hậu quả đã xảy ra.",
+            ? "Balances come from the transaction metadata; ownership is re-read from the account at the slot shown below."
+            : "The transaction failed during execution. The prediction must not be read as what happened.",
       },
       status:
         data.meta.err === null
-          ? "Đã đọc bằng chứng thực thi trên Devnet."
-          : "Devnet ghi nhận giao dịch thất bại.",
+          ? "Execution evidence read from Devnet."
+          : "Devnet recorded the transaction as failed.",
     });
   }
 }

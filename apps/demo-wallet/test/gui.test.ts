@@ -302,7 +302,7 @@ test("chữ ký RPC lệch chữ ký cục bộ ⇒ GIỮ chữ ký cục bộ",
   });
   assert.equal((kq as { sig: string }).sig, SIG_KY);
   assert.ok(
-    ghiLai.some((d) => /khác chữ ký cục bộ/.test(d)),
+    ghiLai.some((d) => /different signature from the local one/.test(d)),
     "phải ghi lại việc lệch để người đọc nhật ký thấy",
   );
 });

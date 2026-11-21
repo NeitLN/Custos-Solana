@@ -1,4 +1,4 @@
-import type { InspectResult } from "@custos-solana/types";
+import type { InspectResult, Locale } from "@custos-solana/types";
 import { sha256Hex } from "./sha256.ts";
 import type { Facts } from "./facts.ts";
 import { dongBangFacts, giaiDongBangFacts } from "./facts-io.ts";
@@ -57,6 +57,25 @@ const RANH_GIOI = [
   "level trong biên lai do engine luật (L2) sinh, không do mô hình ngôn ngữ",
 ];
 
+/** Cùng bốn ranh giới, bản tiếng Anh — cùng mức mạnh, không nói nhẹ đi. */
+const RANH_GIOI_EN = [
+  "the hash only proves the content has not changed since export — it is NOT a signature, it does not prove who exported it, and it does not prove the RPC told the truth",
+  "redaction is NOT anonymity: wallet addresses and transaction signatures are public on-chain data and can be linked to an identity",
+  "the receipt contains no raw transaction and no signature, in every mode",
+  "the level in the receipt is produced by the rule engine (L2), not by a language model",
+];
+
+const KHONG_REPLAY = {
+  vi: {
+    chiaSe: "bản chia sẻ cố ý không mang Facts — Facts chứa toàn bộ trạng thái tài khoản đã đọc",
+    khongCo: "không có Facts của lượt kiểm này",
+  },
+  en: {
+    chiaSe: "the shareable copy deliberately carries no Facts — Facts contain the full account state that was read",
+    khongCo: "no Facts for this check",
+  },
+} as const;
+
 /** Trần độ dài cho chữ tự do đi vào biên lai. */
 const TRAN_CHU = 4_000;
 
@@ -104,6 +123,7 @@ export function dungReceipt(
   cheDo: CheDoReceipt,
   facts?: Facts,
   taoLuc: Date = new Date(),
+  locale: Locale = "vi",
 ): Receipt {
   const sachKetQua = cheSauRong(ketQua) as InspectResult;
 
@@ -111,10 +131,9 @@ export function dungReceipt(
   let factsRa: unknown;
 
   if (cheDo === "chiaSe") {
-    khongReplayDuoc =
-      "bản chia sẻ cố ý không mang Facts — Facts chứa toàn bộ trạng thái tài khoản đã đọc";
+    khongReplayDuoc = KHONG_REPLAY[locale].chiaSe;
   } else if (!facts) {
-    khongReplayDuoc = "không có Facts của lượt kiểm này";
+    khongReplayDuoc = KHONG_REPLAY[locale].khongCo;
   } else {
     // Đi qua facts-io để bigint sống sót qua JSON, rồi che chuỗi.
     factsRa = cheSauRong(JSON.parse(dongBangFacts(facts)));
@@ -127,7 +146,7 @@ export function dungReceipt(
     ketQua: sachKetQua,
     ...(factsRa === undefined ? {} : { facts: factsRa }),
     khongReplayDuoc,
-    ranhGioi: RANH_GIOI,
+    ranhGioi: locale === "en" ? RANH_GIOI_EN : RANH_GIOI,
   };
 
   return { ...phan, hash: tinhHash(phan) };
@@ -148,22 +167,42 @@ export type KetQuaDoc =
  * tình huống khác hẳn một biên lai hỏng, và người gọi cần phân biệt được. Gộp hai
  * thứ vào một cờ là buộc họ đoán.
  */
-export function docReceipt(s: string): KetQuaDoc {
+const LOI_DOC = {
+  vi: {
+    json: "không phải JSON đọc được",
+    object: "biên lai phải là object",
+    thieuPhienBan: "thiếu phienBan",
+    phienBan: (v: unknown) => `phienBan ${v} không đọc được (bản này đọc ${PHIEN_BAN_RECEIPT})`,
+    cheDo: "cheDo không hợp lệ",
+    thieuHash: "thiếu hash",
+  },
+  en: {
+    json: "not readable JSON",
+    object: "a receipt must be an object",
+    thieuPhienBan: "missing phienBan",
+    phienBan: (v: unknown) => `phienBan ${v} cannot be read (this version reads ${PHIEN_BAN_RECEIPT})`,
+    cheDo: "invalid cheDo",
+    thieuHash: "missing hash",
+  },
+} as const;
+
+export function docReceipt(s: string, locale: Locale = "vi"): KetQuaDoc {
+  const L = LOI_DOC[locale];
   let v: unknown;
   try {
     v = JSON.parse(s);
   } catch {
-    return { ok: false, loi: "không phải JSON đọc được" };
+    return { ok: false, loi: L.json };
   }
-  if (typeof v !== "object" || v === null) return { ok: false, loi: "biên lai phải là object" };
+  if (typeof v !== "object" || v === null) return { ok: false, loi: L.object };
 
   const o = v as Record<string, unknown>;
-  if (typeof o["phienBan"] !== "number") return { ok: false, loi: "thiếu phienBan" };
+  if (typeof o["phienBan"] !== "number") return { ok: false, loi: L.thieuPhienBan };
   if (o["phienBan"] !== PHIEN_BAN_RECEIPT) {
-    return { ok: false, loi: `phienBan ${o["phienBan"]} không đọc được (bản này đọc ${PHIEN_BAN_RECEIPT})` };
+    return { ok: false, loi: L.phienBan(o["phienBan"]) };
   }
-  if (o["cheDo"] !== "rieng" && o["cheDo"] !== "chiaSe") return { ok: false, loi: "cheDo không hợp lệ" };
-  if (typeof o["hash"] !== "string") return { ok: false, loi: "thiếu hash" };
+  if (o["cheDo"] !== "rieng" && o["cheDo"] !== "chiaSe") return { ok: false, loi: L.cheDo };
+  if (typeof o["hash"] !== "string") return { ok: false, loi: L.thieuHash };
 
   const { hash, ...phan } = o as unknown as Receipt;
   return { ok: true, receipt: o as unknown as Receipt, toanVen: tinhHash(phan) === hash };

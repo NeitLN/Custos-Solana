@@ -24,8 +24,8 @@ test('two tabs: stale controller cannot overwrite or proceed after another tab p
   const storage = { getItem: (k: string) => entries.get(k) ?? null, setItem: (k: string, v: string) => { entries.set(k, v); } };
   const a = new PublicSessionCache(storage, 'wallet'), b = new PublicSessionCache(storage, 'wallet');
   a.write('{"unresolved":true,"signature":"pending"}');
-  assert.throws(() => b.assertCurrent(), /tab khác/);
-  assert.throws(() => b.write('{"unresolved":false}'), /tab khác/);
+  assert.throws(() => b.assertCurrent(), /another tab/);
+  assert.throws(() => b.write('{"unresolved":false}'), /another tab/);
   assert.equal(entries.get('wallet'), '{"unresolved":true,"signature":"pending"}');
   a.assertCurrent();
   a.write('{"unresolved":false,"signature":"confirmed"}');

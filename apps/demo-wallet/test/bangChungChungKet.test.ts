@@ -101,7 +101,7 @@ test("reviewer lần 3, mục 2 · trang KHÔNG gán một nguyên nhân chung c
   const muc = src.slice(src.indexOf('id="thuc-thi-live"'), src.indexOf('id="ai-that"'));
   // AC05 đã gửi (biên nhận đọc quá hạn), AC06 có biên nhận nhưng quyền "chưa rõ" — không phải
   // "dừng ở bước chuẩn bị". Câu chung như vậy nói sai nguyên nhân của chính những ca đó.
-  assert.ok(!/Các lượt tới những ca chưa đạt dừng ở bước chuẩn bị/.test(muc), "vẫn gán một nguyên nhân chung");
+  assert.ok(!/Các lượt tới những ca chưa đạt dừng ở bước chuẩn bị|(all|every) (run|case)s?[^.]{0,40}stopped at the preparation step/i.test(muc), "vẫn gán một nguyên nhân chung");
   assert.ok(/NGHIEM-THU-LIVE\.md/.test(muc), "không trỏ tới biên bản có lý do từng ca");
 });
 

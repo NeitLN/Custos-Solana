@@ -1,4 +1,4 @@
-import type { InspectResult } from "@custos-solana/types";
+import type { InspectResult, Locale } from "@custos-solana/types";
 import { danhGia } from "./l2/evaluate.ts";
 import { dungBangChenhLech } from "./diff.ts";
 import { docReceipt, factsTuReceipt, type Receipt } from "./receipt.ts";
@@ -55,20 +55,23 @@ export type NhanReplay = {
  * trông rất giống biên lai đầy đủ, và "dựng Facts rỗng rồi chạy" sẽ cho ra một
  * verdict trông hợp lệ mà không dựa trên gì cả.
  */
-export function chayLaiTuJson(json: string): KetQuaReplay {
-  const doc = docReceipt(json);
+export function chayLaiTuJson(json: string, locale: Locale = "vi"): KetQuaReplay {
+  const doc = docReceipt(json, locale);
   if (!doc.ok) return { ok: false, loi: doc.loi };
-  return chayLaiTuReceipt(doc.receipt, doc.toanVen);
+  return chayLaiTuReceipt(doc.receipt, doc.toanVen, locale);
 }
 
-export function chayLaiTuReceipt(r: Receipt, toanVen: boolean): KetQuaReplay {
+export function chayLaiTuReceipt(r: Receipt, toanVen: boolean, locale: Locale = "vi"): KetQuaReplay {
+  const en = locale === "en";
   const facts = factsTuReceipt(r);
   if (!facts) {
     return {
       ok: false,
       loi:
         r.khongReplayDuoc ??
-        "biên lai không mang Facts — không có dữ liệu để chạy lại",
+        (en
+          ? "the receipt carries no Facts — there is no data to replay"
+          : "biên lai không mang Facts — không có dữ liệu để chạy lại"),
     };
   }
 
@@ -78,7 +81,7 @@ export function chayLaiTuReceipt(r: Receipt, toanVen: boolean): KetQuaReplay {
     level: l2.level,
     aiAdvisory: null, // L3 KHÔNG chạy lại: không có mô hình, và biên lai không lưu lời mô hình.
     detectedPrimaryAction: null,
-    diff: dungBangChenhLech(facts, l2.hits),
+    diff: dungBangChenhLech(facts, l2.hits, undefined, locale),
     reasonCodes: l2.reasonCodes,
     /*
      * `facts.coverage` chứ KHÔNG tự tính lại.
@@ -99,7 +102,9 @@ export function chayLaiTuReceipt(r: Receipt, toanVen: boolean): KetQuaReplay {
     engineDaDoi: khacNhau(r.ketQua, chayLai),
     toanVen,
     nhan: {
-      cau: `Dữ liệu ghi lại lúc ${r.taoLuc} — không phải trạng thái chuỗi hiện tại`,
+      cau: en
+        ? `Data recorded at ${r.taoLuc} — not the current on-chain state`
+        : `Dữ liệu ghi lại lúc ${r.taoLuc} — không phải trạng thái chuỗi hiện tại`,
       nguon: "du_lieu_ghi_lai",
       taoLuc: r.taoLuc,
       phienBanReceipt: r.phienBan,

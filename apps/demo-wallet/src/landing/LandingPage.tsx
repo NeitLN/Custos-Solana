@@ -20,7 +20,7 @@ const KHOA_LUU = "custos-landing-ngon";
 /**
  * Chọn ngôn ngữ ban đầu.
  *
- * Thứ tự ưu tiên theo mục 7.1: query rõ ràng → preference đã lưu → VI.
+ * Thứ tự ưu tiên: query rõ ràng → preference đã lưu → EN (bản quốc tế mặc định tiếng Anh).
  *
  * `try/catch` quanh `localStorage` là BẮT BUỘC, không phải phòng xa: trình duyệt
  * chặn storage trong chế độ riêng tư hoặc khi người dùng tắt cookie bên thứ ba sẽ
@@ -36,7 +36,7 @@ function ngonBanDau(): Ngon {
   } catch {
     /* storage bị chặn — dùng mặc định, không phải lỗi cần báo cho người dùng */
   }
-  return "vi";
+  return "en";
 }
 
 export function LandingPage() {
@@ -57,7 +57,7 @@ export function LandingPage() {
    * Cập nhật metadata theo ngôn ngữ.
    *
    * GIỚI HẠN ĐÃ BIẾT (mục 13): đổi `lang`/`title` bằng JavaScript KHÔNG bảo đảm
-   * crawler đọc được metadata EN — HTML gốc vẫn là VI. Đây là điều đã ghi trong
+   * crawler đọc được metadata VI — HTML gốc là EN. Đây là điều đã ghi trong
    * bàn giao, không phải thứ được coi là đã giải quyết. Người dùng thật và screen
    * reader thì đọc đúng, vì cả hai chạy sau khi script chạy.
    */

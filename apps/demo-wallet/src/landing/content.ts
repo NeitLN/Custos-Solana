@@ -204,6 +204,10 @@ export const VI = {
     ghiChu:
       "SDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.",
     codeTieuDe: "Ví dụ phân tích một giao dịch",
+    /** Đoạn code mẫu đổi theo ngôn ngữ trang: `locale` truyền cho `inspect()` và tên biến. */
+    codeLocale: "vi",
+    codeBienKetQua: "ketQua",
+    codeBienVi: "viNguoiDung",
     codeGhiChu:
       "Ví dụ phân tích; xem hướng dẫn consumer trước khi nối vào bước ký. Gói @custos-solana/core trên npm là 0.2.0, cùng phiên bản với mã nguồn; connector Wallet Standard chưa phát hành lên npm.",
     lien: [
@@ -341,7 +345,7 @@ export const EN: NoiDung = {
   chung: {
     boQuaToiNoiDung: "Skip to main content",
     thuNguoiDung: "Try it as a user",
-    moDemo: "Open the analysis room",
+    moDemo: "Open the Analysis Room",
     moVi: "Custos Wallet",
     xemCachHoatDong: "See how it works",
     moMenu: "Open menu",
@@ -424,11 +428,11 @@ export const EN: NoiDung = {
       },
       {
         tieuDe: "L2 · 14 rules reach the verdict",
-        moTa: "Deterministic rules reach the verdict. A failed simulation or missing facts needed to assess consequences yields at least “warning”, never “safe”.",
+        moTa: "Deterministic rules reach the verdict. A failed simulation or missing facts needed to assess consequences yields at least “Review carefully”, never “Normal”.",
       },
       {
-        tieuDe: "L3 · Explain in Vietnamese",
-        moTa: "A deterministic explanation, or a language model if the integrator enables one. AI only explains facts and may request a manual review; it cannot declare a transaction safe or dangerous, or change the verdict.",
+        tieuDe: "L3 · Explain in plain language",
+        moTa: "A deterministic explanation, or a language model if the integrator enables one, in English or Vietnamese. AI only explains facts and may request a manual review; it cannot declare a transaction safe or dangerous, or change the verdict.",
       },
     ],
     ghiChu: "The wallet or dApp that integrates Custos decides how to use the result in its signing flow.",
@@ -470,7 +474,7 @@ export const EN: NoiDung = {
       tokenChuyen: "10",
       khongCoDoiChu: "Not present in the sample transaction",
       coDoiChu: "Present",
-      ketLuanA: "No danger detected in the analyzed scope",
+      ketLuanA: "No danger signs found in the parts we could read",
       ketLuanB: "Account control changes detected",
     },
     moBangChungB: "View the data for scenario B",
@@ -485,14 +489,14 @@ export const EN: NoiDung = {
       sau: "After",
       nguon: "Source",
       nguonGiaTri: "Recorded Devnet simulation",
-      luat: "Rule code",
+      luat: "Reason code",
       kiemSau: "Show technical details",
       diaChiDayDu: "Full address",
       gioiHan: "Limits",
       gioiHanND:
         "These are two independent simulations. They do not prove a shared state snapshot, and no transaction was broadcast.",
       khongCoCanhBao:
-        "Scenario A produced no reason codes in this recorded run. That is a statement about the analyzed scope, not a guarantee of safety.",
+        "Scenario A produced no reason codes in this recorded run. That is a statement about the parts we could read, not a guarantee of safety.",
       doLuc: "Measured at",
       commitNguon: "Source commit",
       moArtifact: "Open the source data",
@@ -519,6 +523,9 @@ export const EN: NoiDung = {
     ghiChu:
       "The SDK provides analysis. The consumer is responsible for binding it to the correct transaction and enforcing signing conditions.",
     codeTieuDe: "Example: analyzing one transaction",
+    codeLocale: "en",
+    codeBienKetQua: "result",
+    codeBienVi: "userWallet",
     codeGhiChu:
       "Analysis example; read the consumer guide before wiring this into a signing step. @custos-solana/core on npm is 0.2.0, the same version as the source; the Wallet Standard connector is not yet published to npm.",
     lien: [
@@ -540,7 +547,7 @@ export const EN: NoiDung = {
       },
       {
         tieuDe: "Numbers with their methods",
-        moTa: "14 rules, each with a triggering case and a near-identical control case. Test counts, the cohort and the commands to re-check them are on the Numbers page.",
+        moTa: "14 rules, each with a triggering case and a near-identical control case. Test counts, the cohort and the commands to re-check them are on the Evidence page.",
         khoa: "soLieu",
       },
       {
@@ -576,7 +583,7 @@ export const EN: NoiDung = {
         dap: "No, not for this website and its sample flow. The demo uses Devnet. Do not enter a seed phrase or private key into the landing page or Inspector.",
       },
       {
-        hoi: "Does “no danger detected” mean a transaction is completely safe?",
+        hoi: "Does “No danger signs found” mean a transaction is completely safe?",
         dap: "No. The result is limited to the data and programs analyzed. Review coverage, missing evidence, and the stated limitations.",
       },
       {
@@ -585,7 +592,7 @@ export const EN: NoiDung = {
       },
       {
         hoi: "Can I inspect another transaction?",
-        dap: "Use Inspector for inputs and networks within its supported scope. It also includes 10 real mainnet transactions, recorded seconds after they executed, that replay offline — recorded data, not the current chain state or a mainnet signing flow. Its analysis is not a guarantee of safety, and it does not need your private key.",
+        dap: "Use Inspector for inputs and networks within its supported scope. Inspector accepts a base64 transaction you paste in, and also includes 10 real mainnet transactions, recorded seconds after they executed, that replay offline — recorded data, not the current chain state or a mainnet signing flow. Its analysis is not a guarantee of safety, and it does not need your private key.",
       },
       {
         hoi: "Does Custos run on mainnet?",
@@ -596,7 +603,7 @@ export const EN: NoiDung = {
         dap: "The product preview and A/B section show labeled, recorded samples. The demo button opens the application for further checks. Live and replay modes must be labeled where results appear.",
       },
       {
-        hoi: "Does Custos automatically stop every wallet from signing?",
+        hoi: "Does Custos automatically stop every wallet from signing dangerous transactions?",
         dap: "No. A wallet or dApp must integrate it and handle its results correctly. The reference consumer demonstrates checks before calling a signer.",
       },
       {
@@ -619,9 +626,9 @@ export const EN: NoiDung = {
       { nhan: "Inspector", khoa: "inspector" },
       { nhan: "SDK guide", khoa: "sdkDocs" },
       { nhan: "GitHub", khoa: "repo" },
-      { nhan: "Numbers", khoa: "soLieu" },
+      { nhan: "Evidence", khoa: "soLieu" },
     ],
-    ghiChu: "Devnet prototype.",
+    ghiChu: "Test build on Solana Devnet.",
   },
 };
 

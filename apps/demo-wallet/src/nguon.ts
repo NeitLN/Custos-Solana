@@ -32,7 +32,7 @@ export async function docCheDo(): Promise<CheDo> {
 
   const nap = MOCKS[ten];
   if (!nap) {
-    console.warn(`[custos] không có mock tên "${ten}" — quay về đường thật`);
+    console.warn(`[custos] no mock named "${ten}" — falling back to the real path`);
     return { loai: "that" };
   }
 

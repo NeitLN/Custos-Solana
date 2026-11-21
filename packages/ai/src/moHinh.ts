@@ -567,6 +567,17 @@ export function dienGiaiBangMoHinh(goi: GoiMoHinh): Interpreter {
   return async (facts, reasonCodes, locale, options) => {
     const nen = await dienGiaiKhongAI(facts, reasonCodes, locale, options);
 
+    /*
+     * `locale: "en"` KHÔNG đi qua mô hình — trả thẳng câu tất định tiếng Anh.
+     *
+     * Toàn bộ lưới soát bên dưới (neo số, chiều tài sản, phủ định hậu quả, đếm phạm
+     * vi…) được viết cho câu TIẾNG VIỆT, và SYSTEM_PROMPT bắt mô hình viết tiếng Việt.
+     * Cho lời văn tiếng Anh đi qua đó là để nó lọt lưới vì regex không khớp — tức
+     * fail-open đúng chỗ lớp này tồn tại để chặn. Chưa có lưới tiếng Anh thì không
+     * gọi mô hình: người dùng vẫn đọc được câu tất định, và không có lời gọi mạng nào.
+     */
+    if (locale === "en") return nen;
+
     const duLieuGui = JSON.stringify(duLieuChoMoHinh(facts, reasonCodes, options?.kyHieuToken));
 
     let tho: string;

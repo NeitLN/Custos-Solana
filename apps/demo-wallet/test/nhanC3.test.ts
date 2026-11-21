@@ -17,18 +17,18 @@ const tatCa = (thuMuc: string) =>
     .map((f) => ({ f: join(thuMuc, f), s: doc(join(thuMuc, f)) }));
 
 test("SolBonus tự nhận là dApp độc hại MÔ PHỎNG, không gọi Custos", () => {
-  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /<aside className="bang-mo-phong"[^>]*><span>dApp độc hại MÔ PHỎNG · Không gọi Custos/);
+  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /<aside className="bang-mo-phong"[^>]*><span>SIMULATED malicious dApp · Does not call Custos/);
   // R0-4: nhãn rời đầu trang nhưng phải LUÔN nhìn thấy — dải cố định đáy màn hình.
   assert.match(doc("apps/trang-tan-cong/src/attack-design.css"), /\.bang-mo-phong \{\s*position: fixed;/);
   // SOLB hư cấu vẫn phải được nói rõ ở đâu đó trên trang.
-  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /SOLB là phần thưởng hư cấu/);
+  assert.match(doc("apps/trang-tan-cong/src/App.tsx"), /SOLB is a fictional reward/);
 });
 
 test("Inspector là công cụ nhà phát triển, và nói người dùng cuối gặp Custos trong ví", () => {
   const s = doc("apps/demo-wallet/src/Inspector.tsx");
-  assert.match(s, /Công cụ nhà phát triển/);
-  assert.match(s, /bên trong ví/);
-  assert.match(doc("apps/demo-wallet/soi.html"), /<title>Công cụ nhà phát triển — Custos<\/title>/);
+  assert.match(s, /Developer tool/);
+  assert.match(s, /inside the wallet/);
+  assert.match(doc("apps/demo-wallet/soi.html"), /<title>Developer tool — Custos<\/title>/);
 });
 
 test("không câu nào ngụ ý Custos xét URL, tên miền hay trang web", () => {
@@ -41,6 +41,16 @@ test("không câu nào ngụ ý Custos xét URL, tên miền hay trang web", () 
       .map((d) => `${f}: ${d.trim().slice(0, 100)}`),
   );
   assert.deepEqual(vi, []);
+  // Bản tiếng Anh của cùng luật: giao diện nay là tiếng Anh.
+  const SAI_EN =
+    /\b(detects?|scans?|checks?|blocks?) (the |a |any )?(links?|urls?|domains?|websites?|web pages?)\b|\bpaste (a |the )?(link|url)\b/i;
+  const en = [...tatCa("apps/demo-wallet/src"), ...tatCa("apps/trang-tan-cong/src")].flatMap(({ f, s }) =>
+    s
+      .split("\n")
+      .filter((d) => SAI_EN.test(d) && !/does not check links/i.test(d))
+      .map((d) => `${f}: ${d.trim().slice(0, 100)}`),
+  );
+  assert.deepEqual(en, []);
 });
 
 test("C2 · trang giới thiệu có dải hành trình ký ngay dưới hero, đủ hai ngôn ngữ", async () => {

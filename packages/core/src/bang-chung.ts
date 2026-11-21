@@ -1,4 +1,23 @@
 import type { Facts } from "./facts.ts";
+import type { Locale } from "@custos-solana/types";
+
+/** Lý do `missing`/`unsupported`, theo ngôn ngữ hiển thị. Khoá là ID ổn định. */
+const LY_DO = {
+  vi: {
+    taiKhoanSau: "không đọc được trạng thái sau của tài khoản này",
+    programOwnerSau: "không đọc được program owner sau của account này",
+    chuaDecoder: "chưa có decoder cho chương trình này",
+    altKhongGiai: "không giải được bảng tra cứu — danh sách account có thể thiếu",
+    moPhongHong: "mô phỏng không chạy được nên không có trạng thái sau",
+  },
+  en: {
+    taiKhoanSau: "could not read this account's post-signing state",
+    programOwnerSau: "could not read this account's post-signing program owner",
+    chuaDecoder: "no decoder for this program yet",
+    altKhongGiai: "could not resolve the lookup table — the account list may be incomplete",
+    moPhongHong: "simulation did not run, so there is no post-signing state",
+  },
+} as const;
 
 import type { BangChung, RuleHit } from "./l2/rules.ts";
 
@@ -166,7 +185,8 @@ const khoaCua = (loai: string, khoa: string) => `${loai}\u0000${khoa}`;
 
  */
 
-export function dungChiMuc(facts: Facts): ChiMucDuKien {
+export function dungChiMuc(facts: Facts, locale: Locale = "vi"): ChiMucDuKien {
+  const ly = LY_DO[locale];
 
   const map = new Map<string, MucDuKien>();
 
@@ -224,7 +244,7 @@ export function dungChiMuc(facts: Facts): ChiMucDuKien {
 
       nguon: duHaiPhia ? "observed" : "missing",
 
-      ...(duHaiPhia ? {} : { lyDo: "không đọc được trạng thái sau của tài khoản này" }),
+      ...(duHaiPhia ? {} : { lyDo: ly.taiKhoanSau }),
 
       lenh: lenhCham(t.address),
 
@@ -268,7 +288,7 @@ export function dungChiMuc(facts: Facts): ChiMucDuKien {
 
       nguon: duHaiPhia ? "observed" : "missing",
 
-      ...(duHaiPhia ? {} : { lyDo: "không đọc được program owner sau của account này" }),
+      ...(duHaiPhia ? {} : { lyDo: ly.programOwnerSau }),
 
       lenh: lenhCham(a.address),
 
@@ -294,7 +314,7 @@ export function dungChiMuc(facts: Facts): ChiMucDuKien {
 
       nguon: ix.decoded === null ? "unsupported" : "observed",
 
-      ...(ix.decoded === null ? { lyDo: "chưa có decoder cho chương trình này" } : {}),
+      ...(ix.decoded === null ? { lyDo: ly.chuaDecoder } : {}),
 
       lenh: lenhCham(ix.programId),
 
@@ -314,7 +334,7 @@ export function dungChiMuc(facts: Facts): ChiMucDuKien {
 
       nguon: t.resolved ? "observed" : "missing",
 
-      ...(t.resolved ? {} : { lyDo: "không giải được bảng tra cứu — danh sách account có thể thiếu" }),
+      ...(t.resolved ? {} : { lyDo: ly.altKhongGiai }),
 
     });
 
@@ -342,7 +362,7 @@ export function dungChiMuc(facts: Facts): ChiMucDuKien {
 
     nguon: facts.simulationOk ? "derived" : "missing",
 
-    ...(facts.simulationOk ? {} : { lyDo: "mô phỏng không chạy được nên không có trạng thái sau" }),
+    ...(facts.simulationOk ? {} : { lyDo: ly.moPhongHong }),
 
   });
 

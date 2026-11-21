@@ -18,18 +18,18 @@ export function lyDoDappChuaSan(t: {
   chuaRo?: boolean;
 }): string | null {
   if (!t.luuDuoc)
-    return "Trình duyệt đang chặn lưu trạng thái cho trang này — cho phép lưu dữ liệu trang rồi tải lại.";
+    return "The browser is blocking storage for this page — allow site data, then reload.";
   if (t.phienLuuChoXuLy)
-    return "Khôi phục phiên đã lưu để tiếp tục dùng ứng dụng. Nếu không còn giao dịch đang chờ, bạn cũng có thể bỏ bản lưu và tạo phiên mới.";
-  if (t.chuaRo) return "Giao dịch trước chưa rõ kết quả. Tra cứu giao dịch trong khung xác nhận trước khi thử tiếp; không gửi lại.";
+    return "Restore the saved session to keep using the app. If no transaction is pending, you can also discard the saved copy and create a new session.";
+  if (t.chuaRo) return "The previous transaction has an unresolved result. Look it up in the confirmation panel before trying again; do not resend.";
   // Chưa có khoá ⇒ khối nạp khoá nằm CUỐI thẻ ví, mục "Dành cho người trình diễn" (R0-5) — không phải "ở trên".
   if (!t.canSign)
-    return "Bước 1 (người trình diễn): bấm “Chọn file khoá (.json)…” trong mục “Dành cho người trình diễn” bên dưới và chọn .devnet/vi-demo.json.";
-  if (!t.coPhien) return "Bước 2: bấm “Ký tạo phiên thử nghiệm” — tạo token DEMO trên Devnet cho ứng dụng dùng.";
+    return "Step 1 (presenter): click “Choose key file (.json)…” in the “For the presenter” section below and pick .devnet/vi-demo.json.";
+  if (!t.coPhien) return "Step 2: click “Sign to create a test session” — this creates DEMO tokens on Devnet for the app to use.";
   if (t.doiChu)
-    return "Tài khoản token của phiên này đã đổi chủ ở lượt trước — tạo phiên mới trong “Cài đặt và dữ kiện của phiên”.";
-  if (t.daDong) return "Tài khoản token của phiên này đã đóng — tạo phiên mới trong “Cài đặt và dữ kiện của phiên”.";
-  if (t.coYeuCau) return "Đang có một yêu cầu ký đang chờ bạn quyết định ở khung bên cạnh.";
-  if (t.dangBan) return "Đang xử lý thao tác trước…";
+    return "This session's token account changed owner in a previous run — create a new session in “Session settings and facts”.";
+  if (t.daDong) return "This session's token account is closed — create a new session in “Session settings and facts”.";
+  if (t.coYeuCau) return "A signing request is waiting for your decision in the panel alongside.";
+  if (t.dangBan) return "Processing the previous action…";
   return null;
 }

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { Connection } from "@solana/web3.js";
-import { inspect, NHAN } from "@custos-solana/core";
+import { inspect, NHAN, NHAN_EN } from "@custos-solana/core";
 import { dienGiaiKhongAI } from "@custos-solana/ai";
 import { docNguonSong } from "../../../scripts/hienTruongSong.ts";
 import { timKichBan } from "../src/kichBan.ts";
@@ -33,7 +33,7 @@ async function ketQua(id: string) {
 test("CHỈ ĐỔI CHỦ ⇒ khối tài sản không có số dư nào đổi; khối quyền có dòng đổi chủ", async () => {
   const hq = nhomHauQua((await ketQua("doi-chu-tai-khoan")).diff);
   assert.equal(taiSanDoi(hq.taiSan), false, "ca chỉ đổi chủ lại hiện tài sản rời ví");
-  assert.ok(hq.quyen.some((d) => d.label.startsWith(NHAN.CHU_SO_HUU)), "thiếu dòng đổi chủ trong khối quyền");
+  assert.ok(hq.quyen.some((d) => d.label.startsWith(NHAN_EN.CHU_SO_HUU)), "thiếu dòng đổi chủ trong khối quyền");
 });
 
 test("NHẬN THƯỞNG NHƯNG TOKEN RỜI VÍ ⇒ tài sản đổi, quyền không đổi", async () => {
@@ -44,7 +44,7 @@ test("NHẬN THƯỞNG NHƯNG TOKEN RỜI VÍ ⇒ tài sản đổi, quyền kh�
 
 test("CẤP QUYỀN VƯỢT SỐ DƯ ⇒ quyền rút nằm ở khối quyền, số dư CHƯA đổi (approve ≠ đã chuyển)", async () => {
   const hq = nhomHauQua((await ketQua("cap-quyen-vuot-so-du")).diff);
-  assert.ok(hq.quyen.some((d) => d.label.startsWith(NHAN.DUOC_PHEP_RUT)));
+  assert.ok(hq.quyen.some((d) => d.label.startsWith(NHAN_EN.DUOC_PHEP_RUT)));
   assert.equal(taiSanDoi(hq.taiSan), false, "approve bị hiện như tiền đã rời ví");
 });
 

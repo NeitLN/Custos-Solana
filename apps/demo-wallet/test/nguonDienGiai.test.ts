@@ -111,7 +111,7 @@ test("CK-09 · MỌI trường thật sự gửi cho mô hình đều có câu c
 
 test("CK-04 · nhãn nguồn ngắn thấy được cạnh 'Xem chi tiết' khi CHƯA mở", () => {
   const src = readFileSync(fileURLToPath(new URL("../src/CanhBao.tsx", import.meta.url)), "utf8");
-  const i = src.indexOf('{moRong ? "Thu gọn" : "Xem chi tiết"}');
+  const i = src.indexOf('{moRong ? "Show less" : "View details"}');
   const j = src.indexOf("{moRong && (", i);
   assert.ok(i > 0 && j > i);
   assert.ok(/NHAN_NGUON\[nguonChu\]\.ngan/.test(src.slice(i, j)), "nhãn ngắn chỉ hiện sau khi mở chi tiết");

@@ -66,7 +66,7 @@ test("thực tế khớp dự báo ⇒ khopHet true, mọi dòng token ✓", () 
   const t = thucTeTuGiaoDich(giaoDich(), VI, [TK])!;
   const r = doiChieu(d, t);
   assert.equal(r.khopHet, true);
-  assert.ok(r.dong.some((x) => x.muc.startsWith("Chủ") && x.khop === true));
+  assert.ok(r.dong.some((x) => x.muc.startsWith("Owner") && x.khop === true));
 });
 
 test("chủ thực tế khác dự báo ⇒ khopHet false", () => {
@@ -83,15 +83,15 @@ test("SOL lệch KHÔNG làm biên nhận thành lệch — chỉ để xem", ()
 
 test("tài khoản vắng trong kết quả ⇒ không đọc thành 0, không chấm", () => {
   const r = doiChieu(duBaoTuFacts(facts(), VI), thucTeTuGiaoDich(giaoDich({ bo: true }), VI, [TK])!);
-  const so = r.dong.find((x) => x.muc.startsWith("Số dư"))!;
+  const so = r.dong.find((x) => x.muc.startsWith("Balance"))!;
   assert.equal(so.khop, null);
-  assert.match(so.thucTe, /không còn/);
+  assert.match(so.thucTe, /no longer/);
 });
 
 test("thực thi thất bại mà dự báo thành công ⇒ lệch ở dòng kết quả, không so số dư", () => {
   const r = doiChieu(duBaoTuFacts(facts(), VI), thucTeTuGiaoDich(giaoDich({ err: { InstructionError: [0, "x"] } }), VI, [TK])!);
   assert.equal(r.khopHet, false);
-  assert.ok(!r.dong.some((x) => x.muc.startsWith("Số dư")));
+  assert.ok(!r.dong.some((x) => x.muc.startsWith("Balance")));
 });
 
 test("không có dự báo ⇒ khopHet null — KHÔNG hiển thị như khớp", () => {

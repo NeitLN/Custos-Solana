@@ -1,5 +1,21 @@
-import type { InspectResult } from "@custos-solana/types";
-import { NHAN } from "@custos-solana/core";
+import type { InspectResult, Locale } from "@custos-solana/types";
+import { CHU_BANG } from "@custos-solana/core";
+
+/** Câu của màn hậu quả theo ngôn ngữ. Loại dòng dò bằng bảng tiền tố CÙNG ngôn ngữ. */
+const CAU_HAU_QUA = {
+  vi: {
+    chu: (ten: string, sau: string) => `Tài khoản ${ten} không còn thuộc về bạn — chủ mới là ${sau}`,
+    rut: (ten: string, sau: string) => `${sau} có quyền rút ${ten} của bạn bất cứ lúc nào`,
+    dong: (ten: string, sau: string) => `${sau} có quyền đóng tài khoản ${ten} của bạn`,
+    chuongTrinh: (sau: string) => `Một tài khoản của bạn đã chuyển sang quyền điều khiển của ${sau}`,
+  },
+  en: {
+    chu: (ten: string, sau: string) => `The ${ten} account no longer belongs to you — the new owner is ${sau}`,
+    rut: (ten: string, sau: string) => `${sau} can withdraw your ${ten} at any time`,
+    dong: (ten: string, sau: string) => `${sau} can close your ${ten} account`,
+    chuongTrinh: (sau: string) => `One of your accounts has come under the control of ${sau}`,
+  },
+} as const;
 
 /**
  * "NẾU BẠN KÝ MÀ KHÔNG CÓ CUSTOS" — dựng nội dung màn hậu quả.
@@ -34,11 +50,15 @@ export type HangHauQua =
   | { loai: "mucKiemSoat"; cau: string };
 
 /** Bỏ đuôi "sau khi ký" để lấy tên token trong nhãn số dư. */
-const tenTuNhan = (label: string, tienTo: string) =>
-  label.slice(tienTo.length).replace(/ sau khi ký$/, "").trim();
-
-export function dungHauQua(ketQua: InspectResult): HangHauQua[] {
+export function dungHauQua(ketQua: InspectResult, locale: Locale = "vi"): HangHauQua[] {
   const ra: HangHauQua[] = [];
+  const NHAN = CHU_BANG[locale].nhan;
+  const duoi = CHU_BANG[locale].sauKhiKy;
+  const C = CAU_HAU_QUA[locale];
+  const tenTuNhan = (label: string, tienTo: string) => {
+    const t = label.slice(tienTo.length);
+    return (t.endsWith(duoi) ? t.slice(0, -duoi.length) : t).trim();
+  };
 
   for (const d of ketQua.diff) {
     // Dòng thông tin không phải hậu quả của việc ký. Phí mạng và dòng "chưa đọc
@@ -52,22 +72,22 @@ export function dungHauQua(ketQua: InspectResult): HangHauQua[] {
     } else if (d.label.startsWith(NHAN.CHU_SO_HUU)) {
       ra.push({
         loai: "mucKiemSoat",
-        cau: `Tài khoản ${tenTuNhan(d.label, NHAN.CHU_SO_HUU)} không còn thuộc về bạn — chủ mới là ${d.after}`,
+        cau: C.chu(tenTuNhan(d.label, NHAN.CHU_SO_HUU), d.after),
       });
     } else if (d.label.startsWith(NHAN.DUOC_PHEP_RUT)) {
       ra.push({
         loai: "mucKiemSoat",
-        cau: `${d.after} có quyền rút ${tenTuNhan(d.label, NHAN.DUOC_PHEP_RUT)} của bạn bất cứ lúc nào`,
+        cau: C.rut(tenTuNhan(d.label, NHAN.DUOC_PHEP_RUT), d.after),
       });
     } else if (d.label.startsWith(NHAN.QUYEN_DONG)) {
       ra.push({
         loai: "mucKiemSoat",
-        cau: `${d.after} có quyền đóng tài khoản ${tenTuNhan(d.label, NHAN.QUYEN_DONG)} của bạn`,
+        cau: C.dong(tenTuNhan(d.label, NHAN.QUYEN_DONG), d.after),
       });
     } else if (d.label.startsWith(NHAN.CHUONG_TRINH)) {
       ra.push({
         loai: "mucKiemSoat",
-        cau: `Một tài khoản của bạn đã chuyển sang quyền điều khiển của ${d.after}`,
+        cau: C.chuongTrinh(d.after),
       });
     }
   }

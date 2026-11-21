@@ -61,8 +61,17 @@ const RPC_MAC_DINH = "https://api.devnet.solana.com";
 /** Giờ Việt Nam, cố định múi — cùng một dữ liệu đã ghi thì mọi máy hiện cùng một giờ. */
 const gioVN = (iso: string | null) =>
   iso
-    ? new Date(iso).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour12: false }) + " (giờ VN)"
-    : "không rõ";
+    ? new Date(iso).toLocaleString("en-US", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }) + " (UTC+7)"
+    : "unknown";
 const rutGon = (s: string) => `${s.slice(0, 6)}…${s.slice(-6)}`;
 /*
  * Độ trễ "thực thi → mô phỏng lại" tính từ `blockTime` (giờ mạng ƯỚC TÍNH cho khối) và đồng hồ máy
@@ -70,7 +79,7 @@ const rutGon = (s: string) => `${s.slice(0, 6)}…${s.slice(-6)}`;
  * cạnh nhau (trông như ghi TRƯỚC khi thực thi); nói theo khoảng.
  */
 const khoangTre = (giay: number | null) =>
-  giay === null ? "sau một khoảng không rõ" : giay <= 5 ? "trong vài giây" : `khoảng ${giay} giây`;
+  giay === null ? "after an unknown delay" : giay <= 5 ? "within a few seconds" : `about ${giay} seconds`;
 
 export function Inspector() {
   const [tho, setTho] = useState("");
@@ -166,13 +175,13 @@ export function Inspector() {
     const cuaToi = ++luot.current;
     const conDung = () => luot.current === cuaToi;
     setTt({ pha: "dang-kiem" });
-    ghi(`đọc được giao dịch ${d.soByte} byte, ${d.daKy ? "ĐÃ ký" : "chưa ký"}`);
+    ghi(`read a ${d.soByte}-byte transaction, ${d.daKy ? "ALREADY signed" : "unsigned"}`);
 
     try {
       if (dangDungMn && mauMn && boMn) {
         // Phát lại mainnet: Connection từ fixture, KHÔNG gọi mạng; tuỳ chọn và diễn giải đúng như lúc ghi.
         boHuy.current = null;
-        ghi(`giao dịch mainnet thật ${mauMn.id} — phát lại dữ liệu ghi lúc ${mauMn.captureLuc}, không gọi mạng`);
+        ghi(`real mainnet transaction ${mauMn.id} — replay of data recorded at ${mauMn.captureLuc}, no network calls`);
         const { conn, thieu } = connMainnet(mauMn);
         const r = await inspect({ connection: conn, interpret: dienGiaiKhongAI }, d.tx, TUY_CHON_MAINNET);
         if (!conDung()) return;
@@ -180,18 +189,18 @@ export function Inspector() {
         if (thieu().length > 0) {
           setTt({
             pha: "loi-rpc",
-            câu: "Dữ liệu đã ghi thiếu một lời gọi RPC, và phát lại không gọi mạng bù. Đây KHÔNG phải kết luận về giao dịch.",
+            câu: "The recorded data is missing an RPC call, and the replay does not call the network to fill it in. This is NOT a conclusion about the transaction.",
           });
           return;
         }
         const ss = soVoiLucGhi(r, mauMn.ketQuaLucGhi);
-        ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}${ss.khop ? ", khớp lúc ghi" : ", KHÁC lúc ghi"}`);
+        ghi(`result — level ${r.level}, understood ${r.coverage.analyzed}/${r.coverage.total}${ss.khop ? ", matches the recording" : ", DIFFERS from the recording"}`);
         setTt({
           pha: "xong",
           ketQua: r,
           soByte: d.soByte,
           daKy: d.daKy,
-          nguonKq: `phát lại dữ liệu RPC mainnet ghi từ ${boMn.nguonGhi[0]}`,
+          nguonKq: `replay of mainnet RPC data recorded from ${boMn.nguonGhi[0]}`,
           mainnet: { mau: mauMn, bo: boMn, lech: ss.khop ? null : ss.moTa },
         });
         return;
@@ -203,7 +212,7 @@ export function Inspector() {
         boHuy.current = null;
         c = await mau.taoKetNoi();
         tuyChon = mau.tuyChon;
-        ghi(`giao dịch mẫu — phát lại dữ liệu Devnet ghi lúc ${mau.captureLuc}, không gọi mạng`);
+        ghi(`sample transaction — replay of Devnet data recorded at ${mau.captureLuc}, no network calls`);
       } else {
         const k = ketNoiCoHuy();
         boHuy.current = k;
@@ -211,17 +220,17 @@ export function Inspector() {
           commitment: "confirmed",
           fetch: k.fetch,
         });
-        tuyChon = { locale: "vi", chanDoan: true, ...(vi.trim() ? { nguoiDung: vi.trim() } : {}) };
+        tuyChon = { locale: "en", chanDoan: true, ...(vi.trim() ? { nguoiDung: vi.trim() } : {}) };
       }
       const r = await inspect({ connection: c }, d.tx, tuyChon);
       if (!conDung()) return;
-      ghi(`kết quả — mức ${r.level}, đọc hiểu ${r.coverage.analyzed}/${r.coverage.total}`);
+      ghi(`result — level ${r.level}, understood ${r.coverage.analyzed}/${r.coverage.total}`);
       setTt({
         pha: "xong",
         ketQua: r,
         soByte: d.soByte,
         daKy: d.daKy,
-        nguonKq: dangDungMau ? "phát lại dữ liệu Devnet đã ghi" : `mô phỏng trên ${rpc.trim() || RPC_MAC_DINH}`,
+        nguonKq: dangDungMau ? "replay of recorded Devnet data" : `simulated on ${rpc.trim() || RPC_MAC_DINH}`,
       });
     } catch (e) {
       if (!conDung()) return;
@@ -233,17 +242,17 @@ export function Inspector() {
        * rồi mới nói.
        */
       if (laHuy(e)) {
-        ghi("lượt kiểm bị huỷ — request đã được cắt");
+        ghi("check cancelled — the request was aborted");
         setTt({ pha: "da-huy" });
         return;
       }
       const câu = e instanceof Error ? e.message : String(e);
-      ghi(`lỗi: ${câu}`);
+      ghi(`error: ${câu}`);
       setTt({
         pha: "loi-rpc",
         câu:
-          "Không kiểm được giao dịch này. Đây là lỗi kết nối tới RPC, " +
-          "KHÔNG phải kết luận về giao dịch.",
+          "Could not check this transaction. This is an RPC connection error, " +
+          "NOT a conclusion about the transaction.",
       });
     }
   }, [tho, vi, rpc, ghi, dangDungMau, mau, dangDungMn, mauMn, boMn]);
@@ -252,7 +261,7 @@ export function Inspector() {
     if (boMn) return;
     setLoiMn(null);
     const b = await docBoMainnet();
-    if ("loi" in b) setLoiMn(`Chưa dùng được bộ giao dịch mainnet: ${b.loi}`);
+    if ("loi" in b) setLoiMn(`The mainnet transaction set is not usable yet: ${b.loi}`);
     else setBoMn(b.bo);
   }, [boMn]);
 
@@ -287,7 +296,7 @@ export function Inspector() {
       doiDauVao(m.b64);
       setVi(m.viBaoVe);
     } catch (e) {
-      setLoiMau(`Chưa dùng được giao dịch mẫu: ${e instanceof Error ? e.message : String(e)}`);
+      setLoiMau(`The sample transaction is not usable yet: ${e instanceof Error ? e.message : String(e)}`);
     }
   }, [doiDauVao]);
 
@@ -296,20 +305,20 @@ export function Inspector() {
     // Cắt THẬT, không chỉ bỏ kết quả. `huy()` gọi nhiều lần là vô hại.
     boHuy.current?.huy();
     setTt({ pha: "da-huy" });
-    ghi("người dùng huỷ lượt kiểm — request đã được cắt");
+    ghi("user cancelled the check — the request was aborted");
   }, [ghi]);
 
   const doiTep = useCallback(
     async (f: File | null | undefined) => {
       if (!f) return;
       if (f.size > GIOI_HAN_BYTE * 4) {
-        setTt({ pha: "loi-dau-vao", câu: `Tệp lớn hơn ${GIOI_HAN_BYTE * 4} byte — quá lớn.` });
+        setTt({ pha: "loi-dau-vao", câu: `File is larger than ${GIOI_HAN_BYTE * 4} bytes — too large.` });
         return;
       }
       try {
         doiDauVao((await f.text()).trim());
       } catch {
-        setTt({ pha: "loi-dau-vao", câu: "Không đọc được tệp này." });
+        setTt({ pha: "loi-dau-vao", câu: "Could not read this file." });
       }
     },
     [doiDauVao],
@@ -319,24 +328,24 @@ export function Inspector() {
     <main className="app-shell inspector-shell mx-auto max-w-3xl px-4 py-8">
       <ProductHeader active="inspector" label="Inspector" />
       <header className="inspector-heading">
-      <p className="inspector-eyebrow">Công cụ nhà phát triển · Solana Devnet</p>
-      <h1 className="text-[22px] font-semibold text-chu">Đọc giao dịch.<br /><span>Trước khi đặt niềm tin.</span></h1>
+      <p className="inspector-eyebrow">Developer tool · Solana Devnet</p>
+      <h1 className="text-[22px] font-semibold text-chu">Read the transaction.<br /><span>Before you trust it.</span></h1>
       <p className="mt-2 text-[14px] leading-relaxed text-chu-mo">
-        Dán chuỗi base64 của một giao dịch <strong>chưa ký</strong>, hoặc chọn tệp. Custos
-        mô phỏng nó trên Devnet rồi cho biết nó làm gì với tài sản của bạn.
+        Paste the base64 string of an <strong>unsigned</strong> transaction, or choose a file. Custos
+        simulates it on Devnet and tells you what it does to your assets.
       </p>
       {/* C3, ROADMAP-SAU-MENTOR: trang này là công cụ cho người TÍCH HỢP — không phải cách người
           dùng cuối gặp Custos. Người dùng gặp Custos trong ví, lúc ký (ADR-0004). */}
       <p className="mt-2 text-[13px] leading-relaxed text-chu-mo">
-        Người dùng cuối không cần trang này: Custos chạy <strong>bên trong ví</strong>, trên đúng giao dịch sắp
-        ký. Custos không kiểm đường link hay tên miền.
+        End users do not need this page: Custos runs <strong>inside the wallet</strong>, on the exact transaction about
+        to be signed. Custos does not check links or domain names.
       </p>
       </header>
 
       <div className="inspector-workspace">
-      <section className="inspector-form" aria-label="Dữ liệu giao dịch">
+      <section className="inspector-form" aria-label="Transaction data">
 
-      <div className="tool-panel-heading"><span>01 / DỮ LIỆU ĐẦU VÀO</span><h2>Giao dịch cần kiểm tra</h2></div>
+      <div className="tool-panel-heading"><span>01 / INPUT</span><h2>Transaction to check</h2></div>
       {/*
         RIÊNG TƯ — nói TRƯỚC khi người dùng dán, không phải sau.
 
@@ -345,13 +354,13 @@ export function Inspector() {
         là nói sau khi việc đã rồi.
       */}
       <div className="inspector-privacy mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] leading-relaxed text-amber-900">
-        <strong>Dữ liệu đi đâu:</strong> để mô phỏng, Custos gửi toàn bộ nội dung giao
-        dịch tới máy chủ RPC bên dưới. Không có bước nào chạy hoàn toàn trên máy bạn.
-        Trang này không lưu lịch sử và không nhận khoá riêng hay seed phrase.
+        <strong>Where your data goes:</strong> to simulate, Custos sends the full transaction
+        contents to the RPC server below. No step runs entirely on your machine.
+        This page keeps no history and never accepts private keys or seed phrases.
       </div>
 
       <label className="mt-5 block text-[13px] font-medium text-chu" htmlFor="tx-b64">
-        Giao dịch (base64)
+        Transaction (base64)
       </label>
       <textarea
         id="tx-b64"
@@ -364,13 +373,13 @@ export function Inspector() {
 
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <button type="button" className="nut text-[13px]" onClick={() => void dungGiaoDichMau()}>
-          Dùng giao dịch mẫu đã ghi
+          Use the recorded sample transaction
         </button>
         <label
           className="nut lien-ket cursor-pointer text-[13px] underline"
           htmlFor="tx-tep"
         >
-          hoặc chọn tệp…
+          or choose a file…
         </label>
         <input
           id="tx-tep"
@@ -383,15 +392,15 @@ export function Inspector() {
 
       {dangDungMau && mau && (
         <p className="mt-2 text-[12px] text-chu-mo" data-mau>
-          Đang dùng giao dịch mẫu “{mau.tieuDe}”. Bấm Kiểm sẽ <strong>phát lại</strong> dữ liệu Devnet ghi lúc{" "}
-          {mau.captureLuc} — không gọi mạng, không ký. Sửa ô trên thì quay về kiểm trực tiếp.
+          Using the sample transaction “{mau.tieuDe}”. Check will <strong>replay</strong> Devnet data recorded at{" "}
+          {mau.captureLuc} — no network calls, no signing. Edit the box above to go back to a live check.
         </p>
       )}
       {dangDungMn && mauMn && (
         <p className="mt-2 text-[12px] text-chu-mo" data-mau-mainnet>
-          Đang dùng giao dịch mainnet thật {mauMn.id} ({rutGon(mauMn.chuKy)}), bản chưa ký. Bấm Kiểm sẽ{" "}
-          <strong>phát lại</strong> dữ liệu RPC ghi lúc {gioVN(mauMn.captureLuc)} — không gọi mạng, không ký. Sửa ô trên
-          thì quay về kiểm trực tiếp trên Devnet.
+          Using real mainnet transaction {mauMn.id} ({rutGon(mauMn.chuKy)}), unsigned copy. Check will{" "}
+          <strong>replay</strong> RPC data recorded at {gioVN(mauMn.captureLuc)} — no network calls, no signing. Edit the box
+          above to go back to a live check on Devnet.
         </p>
       )}
       {loiMau && <p className="mt-2 text-[12px]" role="alert">{loiMau}</p>}
@@ -406,26 +415,26 @@ export function Inspector() {
           if ((e.currentTarget as HTMLDetailsElement).open) void moMucMainnet();
         }}
       >
-        <summary>Giao dịch mainnet thật — phát lại</summary>
+        <summary>Real mainnet transactions — replay</summary>
         <div className="inspector-mainnet__than">
           <p>
-            Giao dịch <strong>đã thực thi trên mainnet</strong> trước khi Custos nhìn thấy. Custos dựng lại bản chưa ký,
-            mô phỏng lại trong vài giây đến vài chục giây sau đó (chỉ đọc) và ghi phản hồi RPC. Bấm một giao dịch để phát lại ngay trên dữ liệu đã ghi —
-            không gọi mạng, <strong>không phải trạng thái chuỗi hiện tại</strong>, không phải luồng ký mainnet. Luồng ký
-            của Custos chỉ chạy Devnet.
+            These transactions <strong>had already executed on mainnet</strong> before Custos saw them. Custos rebuilt the unsigned copy,
+            re-simulated it a few seconds to a few tens of seconds later (read-only) and recorded the RPC responses. Click a transaction to replay it right away on the recorded data —
+            no network calls, <strong>not the current chain state</strong>, not a mainnet signing flow. Custos’s signing
+            flow runs on Devnet only.
           </p>
           {loiMn && <p role="alert">{loiMn}</p>}
-          {!boMn && !loiMn && <p role="status">Đang tải bộ dữ liệu đã ghi…</p>}
+          {!boMn && !loiMn && <p role="status">Loading the recorded data set…</p>}
           {boMn && (() => {
             const t = tomTatBo(boMn);
             return (
               <>
                 <p data-luat-chon>
-                  {boMn.mau.length} giao dịch thành công đầu tiên của chương trình SPL Token lúc{" "}
-                  {gioVN(boMn.cachChon.layLuc)}, theo thứ tự — không chọn theo kết quả. Lúc ghi: {t.safe} Bình thường ·{" "}
-                  {t.warning} Cần xem kỹ ({t.moPhongHong} vì mô phỏng hỏng) · {t.danger} Nguy hiểm.
+                  The first {boMn.mau.length} successful transactions of the SPL Token program as of{" "}
+                  {gioVN(boMn.cachChon.layLuc)}, in order — not picked by result. At recording time: {t.safe} Normal ·{" "}
+                  {t.warning} Review carefully ({t.moPhongHong} due to failed simulation) · {t.danger} Danger.
                   {boMn.boQua.length > 0 &&
-                    ` Bỏ qua ${boMn.boQua.length} giao dịch vì lý do kỹ thuật: ${[...new Set(boMn.boQua.map((b) => lyDoBoNgan(b.lyDo)))].join("; ")}.`}
+                    ` Skipped ${boMn.boQua.length} transaction(s) for technical reasons: ${[...new Set(boMn.boQua.map((b) => lyDoBoNgan(b.lyDo)))].join("; ")}.`}
                 </p>
                 <ul className="inspector-mainnet__ds">
                   {boMn.mau.map((m) => (
@@ -433,15 +442,15 @@ export function Inspector() {
                       <button
                         type="button"
                         aria-pressed={dangDungMn && mauMn?.id === m.id}
-                        aria-label={`Phát lại giao dịch ${m.id}, chữ ký ${rutGon(m.chuKy)}`}
+                        aria-label={`Replay transaction ${m.id}, signature ${rutGon(m.chuKy)}`}
                         disabled={tt.pha === "dang-kiem"}
                         onClick={() => chonMainnet(m)}
                       >
                         <span className="inspector-mainnet__id">{m.id}</span>
                         <code>{rutGon(m.chuKy)}</code>
-                        <span>mô phỏng lại {khoangTre(m.treGiay)} sau khi thực thi</span>
+                        <span>re-simulated {khoangTre(m.treGiay)} after execution</span>
                       </button>
-                      <a href={explorerTx(m.chuKy)} target="_blank" rel="noreferrer" aria-label={`Xem giao dịch ${m.id} trên Explorer`}>
+                      <a href={explorerTx(m.chuKy)} target="_blank" rel="noreferrer" aria-label={`View transaction ${m.id} on Explorer`}>
                         Explorer ↗
                       </a>
                     </li>
@@ -456,12 +465,12 @@ export function Inspector() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
           <label className="block text-[13px] font-medium text-chu" htmlFor="vi-bv">
-            Ví của bạn <span className="font-normal text-chu-mo">(tuỳ chọn)</span>
+            Your wallet <span className="font-normal text-chu-mo">(optional)</span>
           </label>
           <input
             id="vi-bv"
             className="mt-1 w-full rounded-xl border border-slate-300 p-2 font-mono text-[12px]"
-            placeholder="địa chỉ ví cần bảo vệ"
+            placeholder="wallet address to protect"
             value={vi}
             onChange={(e) => doiThamSo(() => setVi(e.target.value))}
             spellCheck={false}
@@ -471,12 +480,12 @@ export function Inspector() {
             Trong giao dịch được tài trợ phí, đó không phải bạn.
           */}
           <p className="mt-1 text-[12px] text-chu-mo">
-            Bỏ trống thì Custos phân tích theo người trả phí — có thể không phải bạn.
+            If left empty, Custos analyzes from the fee payer’s point of view — which may not be you.
           </p>
         </div>
         <div>
           <label className="block text-[13px] font-medium text-chu" htmlFor="rpc">
-            Máy chủ RPC
+            RPC server
           </label>
           <input
             id="rpc"
@@ -495,34 +504,34 @@ export function Inspector() {
           onClick={() => void kiem()}
           disabled={tt.pha === "dang-kiem"}
         >
-          {tt.pha === "dang-kiem" ? "Đang kiểm…" : "Kiểm giao dịch"}
+          {tt.pha === "dang-kiem" ? "Checking…" : "Check transaction"}
         </button>
         {tt.pha === "dang-kiem" && (
           <button type="button" className="nut" onClick={huy}>
-            Huỷ
+            Cancel
           </button>
         )}
       </div>
 
       </section>
-      <section ref={resultRegion} tabIndex={-1} className="inspector-result mt-5" aria-label="Kết quả phân tích" aria-live="polite" aria-busy={tt.pha === "dang-kiem"}>
-        <div className="tool-panel-heading"><span>02 / KẾT QUẢ PHÂN TÍCH</span><h2>Hiểu điều sắp xảy ra</h2></div>
+      <section ref={resultRegion} tabIndex={-1} className="inspector-result mt-5" aria-label="Analysis result" aria-live="polite" aria-busy={tt.pha === "dang-kiem"}>
+        <div className="tool-panel-heading"><span>02 / ANALYSIS RESULT</span><h2>Understand what is about to happen</h2></div>
         {tt.pha === "rong" && (
           <div className="inspector-empty">
             <DemoScanArtwork />
-            <h3>Chờ giao dịch của bạn.</h3>
-            <p>Kết quả sẽ xuất hiện tại đây sau khi mô phỏng. Inspector không có quyền ký hoặc gửi giao dịch.</p>
-            <ul><li>Biến động tài sản</li><li>Quyền kiểm soát tài khoản</li><li>Dữ kiện và phần chưa đọc được</li></ul>
+            <h3>Waiting for your transaction.</h3>
+            <p>The result appears here after the simulation. Inspector has no power to sign or send transactions.</p>
+            <ul><li>Asset changes</li><li>Account control</li><li>Facts and the parts we could not read</li></ul>
           </div>
         )}
-        {tt.pha === "dang-kiem" && <div className="inspector-progress" role="status"><span aria-hidden="true" /><h3>Đang mô phỏng giao dịch…</h3><p>Chờ dữ liệu từ RPC. Bạn có thể huỷ lượt kiểm bất cứ lúc nào.</p></div>}
+        {tt.pha === "dang-kiem" && <div className="inspector-progress" role="status"><span aria-hidden="true" /><h3>Simulating the transaction…</h3><p>Waiting for data from the RPC. You can cancel the check at any time.</p></div>}
         {tt.pha === "loi-dau-vao" && (
           <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-[13px] text-rose-900">
             {tt.câu}
           </div>
         )}
         {tt.pha === "da-huy" && (
-          <p className="text-[13px] text-chu-mo">Đã huỷ. Kết quả trước đó không còn hiệu lực.</p>
+          <p className="text-[13px] text-chu-mo">Cancelled. The previous result is no longer valid.</p>
         )}
         {tt.pha === "loi-rpc" && (
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] text-amber-900">
@@ -537,8 +546,8 @@ export function Inspector() {
                 được. Nói ra, và nói sau khi đã kiểm — vì lúc này ta mới biết chắc.
               */
               <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-[13px] text-rose-900">
-                <strong>Giao dịch này ĐÃ có chữ ký.</strong> Bất kỳ ai cầm chuỗi vừa dán
-                đều có thể phát nó lên chuỗi. Đừng chia sẻ chuỗi đó.
+                <strong>This transaction is ALREADY signed.</strong> Anyone holding the string you pasted
+                can broadcast it to the chain. Do not share that string.
               </div>
             )}
             {/*
@@ -553,20 +562,20 @@ export function Inspector() {
             {tt.mainnet && (
               <div className="inspector-mainnet-nhan mb-3" data-nguon="mainnet-phat-lai">
                 <p>
-                  <strong>Giao dịch mainnet thật · phát lại dữ liệu đã ghi.</strong> Đã thực thi ở slot{" "}
-                  {tt.mainnet.mau.slotThucThi.toLocaleString("vi-VN")}, lúc {gioVN(tt.mainnet.mau.thucThiLuc)}; Custos mô
-                  phỏng lại {khoangTre(tt.mainnet.mau.treGiay)} sau đó và ghi phản hồi RPC. Không phải trạng thái chuỗi
-                  hiện tại, không phải luồng ký mainnet. Phân tích theo người trả phí.
+                  <strong>Real mainnet transaction · replay of recorded data.</strong> Executed at slot{" "}
+                  {tt.mainnet.mau.slotThucThi.toLocaleString("en-US")}, at {gioVN(tt.mainnet.mau.thucThiLuc)}; Custos
+                  re-simulated it {khoangTre(tt.mainnet.mau.treGiay)} later and recorded the RPC responses. Not the current
+                  chain state, not a mainnet signing flow. Analyzed from the fee payer’s point of view.
                 </p>
                 {tt.ketQua.reasonCodes.includes("MO_PHONG_HONG") && (
                   <p>
-                    Mô phỏng lại hỏng vì trạng thái chuỗi đã đổi sau khi giao dịch thực thi (số dư đã chuyển, giá đã
-                    trượt…). Custos báo thiếu dữ liệu thay vì đoán — vì vậy không bao giờ ra mức Bình thường.
+                    The re-simulation failed because chain state changed after the transaction executed (balances
+                    already moved, prices slipped…). Custos reports missing data instead of guessing — so it never shows Normal.
                   </p>
                 )}
-                {tt.mainnet.lech && <p role="alert">Engine đang chạy cho kết quả KHÁC lúc ghi. {tt.mainnet.lech}</p>}
+                {tt.mainnet.lech && <p role="alert">The current engine gives a DIFFERENT result from the recording. {tt.mainnet.lech}</p>}
                 <a href={explorerTx(tt.mainnet.mau.chuKy)} target="_blank" rel="noreferrer">
-                  Xem giao dịch gốc trên Explorer ↗
+                  View the original transaction on Explorer ↗
                 </a>
               </div>
             )}
@@ -588,11 +597,11 @@ export function Inspector() {
                 setTt({ pha: "rong" });
               }}
               onKy={() => {
-                throw new Error("Inspector không ký — đây là lỗi lập trình, không phải thao tác người dùng");
+                throw new Error("Inspector does not sign — this is a programming error, not a user action");
               }}
             />
             <p className="mt-3 text-[12px] text-chu-mo">
-              Đọc {tt.soByte} byte · {tt.nguonKq} · Custos không ký và không gửi gì.
+              Read {tt.soByte} bytes · {tt.nguonKq} · Custos does not sign or send anything.
             </p>
 
             {/*
@@ -609,7 +618,7 @@ export function Inspector() {
               <button
                 type="button"
                 onClick={() => {
-                  const bl = dungReceipt(tt.ketQua, "chiaSe");
+                  const bl = dungReceipt(tt.ketQua, "chiaSe", undefined, undefined, "en");
                   const b = new Blob([receiptRaJson(bl)], { type: "application/json" });
                   const u = URL.createObjectURL(b);
                   const a = document.createElement("a");
@@ -617,18 +626,18 @@ export function Inspector() {
                   a.download = `custos-bien-lai-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.json`;
                   a.click();
                   URL.revokeObjectURL(u);
-                  ghi("Đã xuất biên lai bản chia sẻ (không kèm Facts, không chạy lại được)");
+                  ghi("Exported the shareable receipt (no Facts included, cannot be replayed)");
                 }}
                 className="min-h-[44px] rounded-full border border-vien px-4 text-[13px] text-chu hover:bg-slate-50"
               >
-                Xuất biên lai
+                Export receipt
               </button>
               <p className="mt-2 text-[12px] leading-relaxed text-chu-mo">
-                Bản <strong>chia sẻ</strong>: mang kết quả và mã lý do, đã che đường dẫn
-                máy và thông tin đăng nhập RPC. <strong>Không</strong> kèm dữ liệu tài
-                khoản nên <strong>không chạy lại được</strong> — đó là chủ ý, không phải
-                thiếu sót. Mã băm trong biên lai chỉ cho biết nội dung có bị sửa hay
-                không; nó <strong>không phải chữ ký</strong> và không chứng minh ai xuất.
+                <strong>Shareable</strong> copy: it carries the result and reason codes, with
+                machine paths and RPC credentials masked. It does <strong>not</strong> include account
+                data, so it <strong>cannot be replayed</strong> — that is intentional, not an
+                omission. The hash in the receipt only shows whether the content was
+                altered; it is <strong>not a signature</strong> and does not prove who exported it.
               </p>
             </div>
           </>
@@ -638,7 +647,7 @@ export function Inspector() {
 
       {nhatKy.length > 0 && (
         <details className="mt-6">
-          <summary className="cursor-pointer text-[13px] text-chu-mo">Nhật ký kỹ thuật</summary>
+          <summary className="cursor-pointer text-[13px] text-chu-mo">Technical log</summary>
           <pre className="mt-2 overflow-x-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-relaxed">
             {nhatKy.join("\n")}
           </pre>

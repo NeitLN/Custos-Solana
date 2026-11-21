@@ -27,7 +27,7 @@ export const GENESIS_MAINNET = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
  * Tuỳ chọn `inspect()` — MỘT chỗ cho cả script ghi lẫn ví phát lại. Không khai `nguoiDung`:
  * không ai trong đội là chủ các giao dịch này, nên Custos phân tích theo người trả phí.
  */
-export const TUY_CHON_MAINNET: InspectOptions = { locale: "vi", chanDoan: true };
+export const TUY_CHON_MAINNET: InspectOptions = { locale: "en", chanDoan: true };
 
 export type MauReplayMainnet = {
   id: string;
@@ -60,27 +60,27 @@ const CHU_KY = /^[1-9A-HJ-NP-Za-km-z]{64,90}$/;
 
 /** Kiểm bộ trước khi dùng. Trả lý do hỏng, hoặc `null` nếu dùng được. */
 export function xacThucBoMainnet(x: unknown): string | null {
-  if (!x || typeof x !== "object") return "không phải một đối tượng JSON";
+  if (!x || typeof x !== "object") return "not a JSON object";
   const o = x as Partial<BoReplayMainnet>;
-  if (o.schema !== "custos.replay-mainnet") return "sai schema";
-  if (o.phienBan !== 1) return `phiên bản ${String(o.phienBan)} chưa hỗ trợ`;
-  if (o.genesis !== GENESIS_MAINNET) return "dữ liệu không phải của mainnet";
+  if (o.schema !== "custos.replay-mainnet") return "wrong schema";
+  if (o.phienBan !== 1) return `version ${String(o.phienBan)} is not supported yet`;
+  if (o.genesis !== GENESIS_MAINNET) return "the data is not from mainnet";
   /*
    * Nhãn cluster đi vào link Explorer của thẻ cảnh báo — genesis đúng mà nhãn sai thì link trỏ nhầm
    * mạng (review 06/10). Kiểm bằng CHÍNH hàm dựng link: nhãn phải cho ra link mainnet (không có
    * `?cluster`), thay vì so với một chuỗi gõ lại ở đây.
    */
   const link = typeof o.cluster === "string" ? lienKetExplorer(GENESIS_MAINNET, o.cluster) : null;
-  if (!link || link.includes("?")) return "nhãn cluster không khớp genesis mainnet";
-  if (!Array.isArray(o.nguonGhi) || o.nguonGhi.length !== 1) return "bộ ghi phải đến từ đúng một nguồn";
+  if (!link || link.includes("?")) return "cluster label does not match the mainnet genesis";
+  if (!Array.isArray(o.nguonGhi) || o.nguonGhi.length !== 1) return "the recording must come from exactly one source";
   // Host trần — URL đầy đủ có thể mang khoá API.
-  if (o.nguonGhi.some((n) => typeof n !== "string" || /[/?:@]/.test(n))) return "nguồn ghi không phải host trần";
-  if (!o.cachChon?.quyTac || !Array.isArray(o.boQua)) return "thiếu luật chọn mẫu";
-  if (!Array.isArray(o.mau) || o.mau.length === 0) return "không có mẫu nào";
+  if (o.nguonGhi.some((n) => typeof n !== "string" || /[/?:@]/.test(n))) return "recording source is not a bare host";
+  if (!o.cachChon?.quyTac || !Array.isArray(o.boQua)) return "missing the sample selection rule";
+  if (!Array.isArray(o.mau) || o.mau.length === 0) return "no samples";
   for (const m of o.mau) {
-    if (!CHU_KY.test(m?.chuKy ?? "")) return `mẫu ${String(m?.id)}: chữ ký hỏng`;
-    if (!Array.isArray(m.fixture?.banGhi)) return `mẫu ${m.id}: fixture hỏng`;
-    if (m.fixture.nguon !== o.nguonGhi[0]) return `mẫu ${m.id}: nguồn khác nguồn của bộ`;
+    if (!CHU_KY.test(m?.chuKy ?? "")) return `sample ${String(m?.id)}: invalid signature`;
+    if (!Array.isArray(m.fixture?.banGhi)) return `sample ${m.id}: invalid fixture`;
+    if (m.fixture.nguon !== o.nguonGhi[0]) return `sample ${m.id}: source differs from the set's source`;
   }
   return null;
 }
@@ -89,12 +89,12 @@ export function xacThucBoMainnet(x: unknown): string | null {
 export async function docBoMainnet(): Promise<{ bo: BoReplayMainnet } | { loi: string }> {
   try {
     const r = await fetch(`${import.meta.env.BASE_URL}replay/mainnet.json`);
-    if (!r.ok) return { loi: "chưa có bộ giao dịch mainnet đã ghi" };
+    if (!r.ok) return { loi: "no recorded mainnet transaction set yet" };
     const x: unknown = await r.json();
     const lyDo = xacThucBoMainnet(x);
     return lyDo ? { loi: lyDo } : { bo: x as BoReplayMainnet };
   } catch {
-    return { loi: "không đọc được bộ giao dịch mainnet đã ghi" };
+    return { loi: "could not read the recorded mainnet transaction set" };
   }
 }
 
@@ -113,10 +113,10 @@ export const explorerTx = (chuKy: string) => `https://explorer.solana.com/tx/${c
 
 /** Lý do bỏ mẫu, viết cho người đọc — bản gốc là thông điệp RPC tiếng Anh, vẫn nằm nguyên trong dữ liệu. */
 export function lyDoBoNgan(lyDo: string): string {
-  if (/version \(1\)/i.test(lyDo)) return "giao dịch phiên bản mới (v1) mà thư viện web3.js chưa đọc được";
-  if (/không trả giao dịch/.test(lyDo)) return "RPC không trả giao dịch";
-  if (/RPC hỏng/.test(lyDo)) return "RPC lỗi sau nhiều lần thử";
-  return "không lấy được giao dịch";
+  if (/version \(1\)/i.test(lyDo)) return "newer transaction version (v1) that the web3.js library cannot read yet";
+  if (/không trả giao dịch/.test(lyDo)) return "RPC did not return the transaction";
+  if (/RPC hỏng/.test(lyDo)) return "RPC error after several retries";
+  return "could not fetch the transaction";
 }
 
 /** Đếm kết quả LÚC GHI của cả bộ — hiện cạnh danh sách để không ai chọn riêng thẻ đẹp. */

@@ -38,7 +38,7 @@ test("mảng bản ghi hợp lệ ⇒ `ok`", () => {
 test("`{}` ⇒ `hong` — đây chính là ca làm trắng trang", () => {
   const r = docKho("{}");
   assert.equal(r.loai, "hong", "object không phải mảng phải bị chặn trước khi tới `.filter`");
-  assert.match((r as { lyDo: string }).lyDo, /không phải mảng/);
+  assert.match((r as { lyDo: string }).lyDo, /not an array/);
 });
 
 test("`null` và JSON sai cú pháp ⇒ `hong`", () => {

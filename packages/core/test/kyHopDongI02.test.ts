@@ -400,7 +400,7 @@ test("ADR-0003 · signer TREO ⇒ chua_ro, và KHÔNG được đọc thành đ�
   });
   assert.equal(r.daKy, false);
   assert.equal(r.ketCuc, "chua_ro", "timeout KHÔNG được thành tu_choi");
-  assert.match(r.chiTiet ?? "", /KHÔNG kết luận ví đã huỷ/);
+  assert.match(r.chiTiet ?? "", /does NOT mean the wallet cancelled/);
 });
 
 test("ADR-0003 · double-click ⇒ signer chạy ĐÚNG MỘT LẦN", async () => {

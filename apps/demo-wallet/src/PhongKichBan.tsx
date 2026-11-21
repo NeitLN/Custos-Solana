@@ -23,24 +23,24 @@ import { ArrowIcon, CheckIcon, GiftIcon, SendIcon } from "./Icons.tsx";
 export const CHANG_HUONG_DAN = [
   {
     kich: "lanh-tinh",
-    ten: "Chuyển bình thường",
-    yNghia: "Gửi token cho bạn bè: tài sản rời ví đúng như lời mời, không trao quyền gì.",
+    ten: "Normal transfer",
+    yNghia: "Send tokens to a friend: assets leave the wallet exactly as the request says, no control is handed over.",
   },
   {
     kich: "tan-cong-day-du",
-    ten: "Lời mời nhận quà",
-    yNghia: "Token rời ví VÀ tài khoản token đổi chủ. Bảng số dư thường chỉ thấy vế đầu.",
+    ten: "Gift offer",
+    yNghia: "Tokens leave the wallet AND the token account changes owner. A plain balance view only shows the first part.",
   },
 ] as const;
 
 const NHOM: Array<{ ten: string; moTa: string; nhom: NhomRuiRo[] }> = [
-  { ten: "Tài sản rời ví", moTa: "Token đi đâu, bao nhiêu, có khớp lời mời không.", nhom: ["thuongGiaMatToken", "chuyenThem"] },
+  { ten: "Assets leaving the wallet", moTa: "Where tokens go, how many, and whether that matches the request.", nhom: ["thuongGiaMatToken", "chuyenThem"] },
   {
-    ten: "Quyền kiểm soát",
-    moTa: "Số dư có thể còn nguyên mà quyền đã đổi — chủ, người được rút, người được đóng.",
+    ten: "Control",
+    moTa: "The balance can stay the same while control changes — owner, delegate, close authority.",
     nhom: ["doiChu", "capQuyen", "quyenDong"],
   },
-  { ten: "Chưa đủ dữ liệu để kết luận", moTa: "Custos nói rõ phần chưa biết thay vì đoán.", nhom: ["thieuDuLieu"] },
+  { ten: "Not enough data to conclude", moTa: "Custos states what it does not know instead of guessing.", nhom: ["thieuDuLieu"] },
 ];
 
 function NutKichBan({
@@ -90,9 +90,9 @@ function NutKichBan({
           {hienLoiMoi
             ? kb.tieuDe
             : kb.nhom === "doiChung"
-            ? "Giao dịch tương tự để đối chiếu"
+            ? "Similar transaction for comparison"
             : kb.nhom === "thieuDuLieu"
-              ? "Chưa đủ dữ liệu để kết luận"
+              ? "Not enough data to conclude"
               : kb.loiMoi}
         </span>
       </span>
@@ -135,7 +135,7 @@ export function PhongKichBan({
     <div className="phong-kich-ban">
       <section aria-labelledby="huong-dan-tieu-de" className="huong-dan mb-3 rounded-xl border border-vien p-3">
         <h3 id="huong-dan-tieu-de" className="text-[13px] font-semibold text-chu">
-          Bắt đầu với hai tình huống
+          Start with two scenarios
         </h3>
         <ol className="demo-guided-cases mt-2 grid gap-2.5 sm:grid-cols-2">
           {CHANG_HUONG_DAN.map((c, i) => {
@@ -144,8 +144,8 @@ export function PhongKichBan({
               <li key={c.kich} className="flex flex-col gap-1.5">
                 <p className="text-[12px] leading-relaxed text-chu-mo">
                   <span className="font-semibold text-chu">
-                    Bước {i + 1} · {c.ten}
-                    {daChay.has(c.kich) ? " — đã xem" : ""}
+                    Step {i + 1} · {c.ten}
+                    {daChay.has(c.kich) ? " — viewed" : ""}
                   </span>
                 </p>
                 <NutKichBan kb={kb} dangChay={dangChay} onChon={onChon} hienLoiMoi daXem={daChay.has(c.kich)} dangXem={kichDangXem === c.kich} />
@@ -155,21 +155,21 @@ export function PhongKichBan({
           })}
         </ol>
         <div className="demo-evidence-link mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="text-[12px] text-chu-mo"><span className="font-semibold text-chu">Bước 3 · Kiểm chứng kết quả</span></p>
+          <p className="text-[12px] text-chu-mo"><span className="font-semibold text-chu">Step 3 · Verify the result</span></p>
           <button
             type="button"
             className="lien-ket min-h-[44px] text-[12.5px] font-medium text-chu underline underline-offset-4 disabled:opacity-45"
             disabled={!coKetQua || dangChay}
             onClick={onMoBangChung}
           >
-            Mở dữ kiện của kết quả đang xem
+            Open the facts behind the current result
           </button>
         </div>
       </section>
 
       <details className="thu-vien rounded-xl border border-vien p-3">
         <summary className="min-h-[44px] cursor-pointer py-2 text-[13px] font-semibold text-chu">
-          Tự chọn tình huống — {KICH_BAN.length} ca, nhóm theo tài sản · quyền · dữ liệu thiếu
+          Pick a scenario yourself — {KICH_BAN.length} cases, grouped by assets · control · missing data
         </summary>
         {NHOM.map((g) => (
           <section key={g.ten} className="mt-3" aria-label={g.ten}>
@@ -183,16 +183,16 @@ export function PhongKichBan({
                   dangChay={dangChay}
                   onChon={onChon}
                   dangXem={kichDangXem === kb.id}
-                  {...(laDoiChieuCua ? { nhan: `Đối chiếu với: ${laDoiChieuCua}` } : {})}
+                  {...(laDoiChieuCua ? { nhan: `Compare with: ${laDoiChieuCua}` } : {})}
                 />
               ))}
             </div>
           </section>
         ))}
         {doiChieuRieng.length > 0 && (
-          <section className="mt-3" aria-label="Giao dịch lành để đối chiếu">
-            <h4 className="text-[12.5px] font-semibold text-chu">Giao dịch lành để đối chiếu</h4>
-            <p className="mb-2 text-[11.5px] text-chu-mo">Custos nên cho kết quả bình thường ở đây — nếu không, nó đang gắn cờ quá tay.</p>
+          <section className="mt-3" aria-label="Benign transactions for comparison">
+            <h4 className="text-[12.5px] font-semibold text-chu">Benign transactions for comparison</h4>
+            <p className="mb-2 text-[11.5px] text-chu-mo">Custos should return Normal here — if not, it is over-flagging.</p>
             <div className="grid gap-2.5 sm:grid-cols-2">
               {doiChieuRieng.map((kb) => (
                 <NutKichBan key={kb.id} kb={kb} dangChay={dangChay} onChon={onChon} dangXem={kichDangXem === kb.id} />

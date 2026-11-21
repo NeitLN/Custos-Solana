@@ -28,8 +28,8 @@ export type DuBao =
 
 /** Dự báo từ Facts của lượt kiểm: token mà người dùng SỞ HỮU trước giao dịch. */
 export function duBaoTuFacts(f: Facts | undefined, vi: string): DuBao {
-  if (!f) return { ok: false, lyDo: "Không có dữ liệu mô phỏng cho giao dịch này." };
-  if (!f.simulationOk) return { ok: false, lyDo: `Mô phỏng thất bại (${f.simulationError ?? "không rõ lỗi"}) — không có dự báo để đối chiếu.` };
+  if (!f) return { ok: false, lyDo: "No simulation data for this transaction." };
+  if (!f.simulationOk) return { ok: false, lyDo: `Simulation failed (${f.simulationError ?? "unknown error"}) — no prediction to compare against.` };
   const khongDo = new Set(f.accountKhongDoDuoc ?? []);
   return {
     ok: true,
@@ -87,9 +87,9 @@ const rutGon = (s: string | null) => (s ? `${s.slice(0, 4)}…${s.slice(-4)}` : 
 export function doiChieu(d: DuBao, t: ThucTe): { dong: DongDoiChieu[]; khopHet: boolean | null } {
   const dong: DongDoiChieu[] = [];
   dong.push({
-    muc: "Kết quả thực thi",
-    duBao: d.ok ? "thành công" : "—",
-    thucTe: t.thanhCong ? "thành công" : `thất bại ${t.loi ?? ""}`.trim(),
+    muc: "Execution result",
+    duBao: d.ok ? "success" : "—",
+    thucTe: t.thanhCong ? "success" : `failed ${t.loi ?? ""}`.trim(),
     khop: d.ok ? t.thanhCong : null,
   });
   if (d.ok) {
@@ -99,20 +99,20 @@ export function doiChieu(d: DuBao, t: ThucTe): { dong: DongDoiChieu[]; khopHet: 
         const th = t.token.find((x) => x.taiKhoan === du.taiKhoan);
         if (!th) continue;
         dong.push({
-          muc: `Số dư ${rutGon(du.taiKhoan)}`,
+          muc: `Balance ${rutGon(du.taiKhoan)}`,
           duBao: du.soLuongSau.toString(),
-          thucTe: th.coMat ? th.soLuongSau.toString() : "không còn trong kết quả",
+          thucTe: th.coMat ? th.soLuongSau.toString() : "no longer in the result",
           khop: th.coMat ? th.soLuongSau === du.soLuongSau : null,
         });
         dong.push({
-          muc: `Chủ ${rutGon(du.taiKhoan)}`,
+          muc: `Owner ${rutGon(du.taiKhoan)}`,
           duBao: rutGon(du.chuSau),
-          thucTe: th.coMat ? rutGon(th.chuSau) : "không còn trong kết quả",
+          thucTe: th.coMat ? rutGon(th.chuSau) : "no longer in the result",
           khop: th.coMat ? th.chuSau === du.chuSau : null,
         });
       }
     dong.push({
-      muc: "SOL của ví sau (chỉ để xem)",
+      muc: "SOL in wallet after (lamports, display only)",
       duBao: d.lamportsSau?.toString() ?? "—",
       thucTe: t.lamportsSau?.toString() ?? "—",
       khop: null,

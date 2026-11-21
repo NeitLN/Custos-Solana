@@ -38,7 +38,7 @@ import { doiChieu, duBaoTuFacts, thucTeTuGiaoDich, type DongDoiChieu, type DuBao
 export class LoiHienThiDuoc extends Error {}
 
 export const CAU_LOI_DOC_CHAIN =
-  "lỗi khi đọc dữ liệu chain (chi tiết không hiển thị để không lộ cấu hình RPC).";
+  "error while reading chain data (details hidden so the RPC configuration is not exposed).";
 
 /** Người dùng có thể đọc cảnh báo lâu; quá hạn này thì kiểm lại chứ không ký kết quả cũ. */
 export const TUOI_KET_QUA_TOI_DA_MS = 120_000;
@@ -134,7 +134,7 @@ export class CuaSoVi {
     if (!e.laOpener) return;
     const ghim = this.trangThai.originDapp;
     if (ghim !== null && e.origin !== ghim) {
-      this.#ghi(`Bỏ thông điệp từ ${e.origin}: ví đang kết nối với ${ghim}.`);
+      this.#ghi(`Dropped a message from ${e.origin}: the wallet is connected to ${ghim}.`);
       return;
     }
     const yc = docYeuCau(e.data);
@@ -160,7 +160,7 @@ export class CuaSoVi {
       }
       this.#dat({ daChoKetNoi: false });
       this.#p.gui({ custos: PHIEN_BAN, kieu: "tra-loi", id: yc.id, ok: true, ketQua: null }, e.origin);
-      this.#ghi(dc && !dangKy ? "Ứng dụng đã ngắt kết nối — yêu cầu đang chờ đã bị huỷ." : "Ứng dụng đã ngắt kết nối.");
+      this.#ghi(dc && !dangKy ? "The app disconnected — the pending request was cancelled." : "The app disconnected.");
       return;
     }
     if (this.trangThai.dangCho) return this.#loi(yc.id, "dang-ban", e.origin);
@@ -176,11 +176,11 @@ export class CuaSoVi {
     try {
       tx = VersionedTransaction.deserialize(tuBase64(yc.giaoDich));
     } catch {
-      this.#ghi("Bỏ yêu cầu ký: không đọc được bytes giao dịch.");
+      this.#ghi("Dropped signing request: could not read the transaction bytes.");
       return this.#loi(yc.id, "sai-yeu-cau", e.origin);
     }
     if (!laNguoiKyBatBuoc(tx, this.#p.viNguoiDung)) {
-      this.#ghi("Bỏ yêu cầu ký: ví này không phải người ký của giao dịch.");
+      this.#ghi("Dropped signing request: this wallet is not a signer of the transaction.");
       return this.#loi(yc.id, "sai-yeu-cau", e.origin);
     }
     this.#dat({ dangCho: { kieu: "ky", id: yc.id, origin: e.origin, tx, pha: "dang-kiem" } });
@@ -226,7 +226,7 @@ export class CuaSoVi {
       d.origin,
     );
     this.#dat({ daChoKetNoi: true, dangCho: null });
-    this.#ghi(`Đã cho ${d.origin} xem địa chỉ ví.`);
+    this.#ghi(`Shared the wallet address with ${d.origin}.`);
   }
 
   /** Chặn / từ chối. Custos chưa kiểm xong thì mã là `chua-kiem-duoc`, không phải người dùng từ chối. */
@@ -236,7 +236,7 @@ export class CuaSoVi {
     const ma: MaLoi = d.kieu === "ky" && d.pha === "loi-kiem" ? "chua-kiem-duoc" : "tu-choi";
     this.#loi(d.id, ma, d.origin);
     this.#dat({ dangCho: null, ...(d.kieu === "ket-noi" ? { originDapp: null } : {}) });
-    this.#ghi(d.kieu === "ky" ? "Đã chặn giao dịch — không có chữ ký nào được tạo." : "Đã từ chối kết nối.");
+    this.#ghi(d.kieu === "ky" ? "Transaction blocked — no signature was created." : "Connection rejected.");
   }
 
   /** Người dùng bấm "Vẫn ký" SAU khi đã thấy kết quả. Không có kết quả thì không có đường tới đây. */
@@ -265,7 +265,7 @@ export class CuaSoVi {
     if (!this.trangThai.daChoKetNoi) {
       this.#loi(d.id, "chua-ro", d.origin);
       this.#dat({ dangCho: null });
-      this.#ghi("Ứng dụng đã ngắt trong lúc ký — chữ ký được giữ lại trong ví, không trao cho ứng dụng.");
+      this.#ghi("The app disconnected during signing — the signature stays in the wallet and was not handed to the app.");
       return;
     }
     if (kq.ketCuc === "da_ky") {
@@ -274,7 +274,7 @@ export class CuaSoVi {
         d.origin,
       );
       this.#dat({ dangCho: null });
-      this.#ghi("Đã ký theo quyết định của bạn. Ứng dụng tự gửi giao dịch; ví không gửi.");
+      this.#ghi("Signed at your decision. The app sends the transaction itself; the wallet does not send.");
       const chuKy = chuKyDauTien(kq.giaoDichDaKy);
       if (chuKy && this.#p.traCuu) void this.#theoDoiBienNhan(chuKy, d.origin, duBaoTuFacts(d.facts, this.#p.viNguoiDung));
       return;
@@ -282,13 +282,13 @@ export class CuaSoVi {
     if (kq.lyDo === "ket_qua_qua_cu") {
       // Kết quả cũ: trạng thái chain có thể đã đổi — kiểm lại, người dùng xem lại rồi mới ký.
       this.#dat({ dangCho: { ...d, pha: "dang-kiem", ketQua: undefined, facts: undefined, neo: undefined } });
-      this.#ghi("Kết quả kiểm đã cũ — Custos đang kiểm lại trước khi cho ký.");
+      this.#ghi("The check result is stale — Custos is re-checking before allowing a signature.");
       void this.#kiem();
       return;
     }
     this.#loi(d.id, kq.ketCuc === "chua_ro" ? "chua-ro" : "sai-yeu-cau", d.origin);
     this.#dat({ dangCho: null });
-    this.#ghi(`Không ký: ${kq.lyDo}.`);
+    this.#ghi(`Not signed: ${kq.lyDo}.`);
   }
 
   /**

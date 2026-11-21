@@ -52,10 +52,35 @@ export type KetQuaSoSanh = {
  * Khác biệt ở đây là tất định: hai message khác byte là hai giao dịch khác nhau,
  * không phụ thuộc thời điểm đọc.
  */
-export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
-  const khac: DongKhac[] = [];
+/** Chữ hiển thị của phép so, theo ngôn ngữ. Khoá dòng (`khoa`) là địa chỉ — không dịch. */
+const CHU_SO_SANH = {
+  vi: {
+    giaoDich: "giao dịch", nguoiKyChinh: "người ký chính", soNguoiKy: "số người ký",
+    lenhCoMat: "lệnh có mặt", loaiLenh: "loại lệnh", tuLookup: "từ lookup table",
+    chuSau: "chủ sở hữu sau", soDuSau: "số dư sau", delegateSau: "delegate sau", quyenDongSau: "quyền đóng sau",
+    chuaDoc: "(chưa đọc hiểu)",
+    cauTrucGiong: "Hai giao dịch giống nhau ở những gì Custos đọc được.",
+    cauTrucKhac: (n: number) => `Hai giao dịch KHÁC NHAU ở ${n} chỗ. Đây là so sánh cấu trúc — khác biệt không phụ thuộc thời điểm đọc.`,
+    quanSatGiong: "Hai lần đọc cho kết quả giống nhau.",
+    quanSatKhac: (n: number) => `Hai lần đọc khác nhau ở ${n} chỗ. Trạng thái chuỗi có thể đã đổi giữa hai lần đọc — điều này KHÔNG chứng minh giao dịch bị tráo.`,
+  },
+  en: {
+    giaoDich: "transaction", nguoiKyChinh: "primary signer", soNguoiKy: "number of signers",
+    lenhCoMat: "instruction present", loaiLenh: "instruction type", tuLookup: "from lookup table",
+    chuSau: "owner after", soDuSau: "balance after", delegateSau: "delegate after", quyenDongSau: "close authority after",
+    chuaDoc: "(not understood)",
+    cauTrucGiong: "The two transactions are the same in everything Custos could read.",
+    cauTrucKhac: (n: number) => `The two transactions DIFFER in ${n} ${n === 1 ? "place" : "places"}. This is a structural comparison — the differences do not depend on when the data was read.`,
+    quanSatGiong: "The two reads gave the same result.",
+    quanSatKhac: (n: number) => `The two reads differ in ${n} ${n === 1 ? "place" : "places"}. On-chain state may have changed between the two reads — this does NOT prove the transaction was swapped.`,
+  },
+} as const;
 
-  them(khac, "giao dịch", "người ký chính", a.signer, b.signer);
+export function soSanhCauTruc(a: Facts, b: Facts, locale: "vi" | "en" = "vi"): KetQuaSoSanh {
+  const khac: DongKhac[] = [];
+  const c = CHU_SO_SANH[locale];
+
+  them(khac, c.giaoDich, c.nguoiKyChinh, a.signer, b.signer);
   /*
    * `Array.isArray` chứ không `a.nguoiKy.length` thẳng.
    *
@@ -66,7 +91,7 @@ export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
    * Đây là phép so, không phải phép kiểm: thiếu trường ở CẢ HAI bên nghĩa là
    * không có gì để so, không phải "khác nhau".
    */
-  them(khac, "giao dịch", "số người ký", soNguoiKy(a), soNguoiKy(b));
+  them(khac, c.giaoDich, c.soNguoiKy, soNguoiKy(a), soNguoiKy(b));
 
   // Lệnh: khớp theo programId + thứ tự TRONG CÙNG program, không theo vị trí tuyệt đối.
   const la = nhomLenh(a.instructions);
@@ -82,12 +107,12 @@ export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
        * *"có thêm một lệnh"* kém xa *"có thêm một SetAuthority trao quyền cho X"*.
        * Lệnh mới là thứ đáng đọc nhất trong cả phép so.
        */
-      them(khac, khoa, "lệnh có mặt", moTaLenh(x), moTaLenh(y));
+      them(khac, khoa, c.lenhCoMat, moTaLenh(x, c.chuaDoc), moTaLenh(y, c.chuaDoc));
       continue;
     }
-    them(khac, khoa, "loại lệnh", x.decoded?.kind ?? null, y.decoded?.kind ?? null);
+    them(khac, khoa, c.loaiLenh, x.decoded?.kind ?? null, y.decoded?.kind ?? null);
     them(khac, khoa, "authority", x.decoded?.authority ?? null, y.decoded?.authority ?? null);
-    them(khac, khoa, "từ lookup table", `${x.fromLookupTable}`, `${y.fromLookupTable}`);
+    them(khac, khoa, c.tuLookup, `${x.fromLookupTable}`, `${y.fromLookupTable}`);
   }
 
   // Tài khoản token: khớp theo ĐỊA CHỈ, không theo ký hiệu token.
@@ -96,10 +121,10 @@ export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
   for (const dc of new Set([...ta.keys(), ...tb.keys()])) {
     const x = ta.get(dc);
     const y = tb.get(dc);
-    them(khac, dc, "chủ sở hữu sau", x?.ownerAfter ?? null, y?.ownerAfter ?? null);
-    them(khac, dc, "số dư sau", chuoiSo(x?.amountAfter), chuoiSo(y?.amountAfter));
-    them(khac, dc, "delegate sau", x?.delegateAfter ?? null, y?.delegateAfter ?? null);
-    them(khac, dc, "quyền đóng sau", x?.closeAuthorityAfter ?? null, y?.closeAuthorityAfter ?? null);
+    them(khac, dc, c.chuSau, x?.ownerAfter ?? null, y?.ownerAfter ?? null);
+    them(khac, dc, c.soDuSau, chuoiSo(x?.amountAfter), chuoiSo(y?.amountAfter));
+    them(khac, dc, c.delegateSau, x?.delegateAfter ?? null, y?.delegateAfter ?? null);
+    them(khac, dc, c.quyenDongSau, x?.closeAuthorityAfter ?? null, y?.closeAuthorityAfter ?? null);
   }
 
   const giongNhau = khac.length === 0;
@@ -107,9 +132,7 @@ export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
     loai: "cauTruc",
     giongNhau,
     khacBiet: khac,
-    cau: giongNhau
-      ? "Hai giao dịch giống nhau ở những gì Custos đọc được."
-      : `Hai giao dịch KHÁC NHAU ở ${khac.length} chỗ. Đây là so sánh cấu trúc — khác biệt không phụ thuộc thời điểm đọc.`,
+    cau: giongNhau ? c.cauTrucGiong : c.cauTrucKhac(khac.length),
   };
 }
 
@@ -120,16 +143,15 @@ export function soSanhCauTruc(a: Facts, b: Facts): KetQuaSoSanh {
  * chuỗi đã đổi — và cũng có thể vì giao dịch bị tráo. Custos phân biệt được hai
  * khả năng đó bằng `khopNeo` (so byte), không bằng phép so này.
  */
-export function soSanhQuanSat(truoc: Facts, sau: Facts): KetQuaSoSanh {
-  const co = soSanhCauTruc(truoc, sau);
+export function soSanhQuanSat(truoc: Facts, sau: Facts, locale: "vi" | "en" = "vi"): KetQuaSoSanh {
+  const co = soSanhCauTruc(truoc, sau, locale);
+  const c = CHU_SO_SANH[locale];
   const giongNhau = co.khacBiet.length === 0;
   return {
     loai: "quanSat",
     giongNhau,
     khacBiet: co.khacBiet,
-    cau: giongNhau
-      ? "Hai lần đọc cho kết quả giống nhau."
-      : `Hai lần đọc khác nhau ở ${co.khacBiet.length} chỗ. Trạng thái chuỗi có thể đã đổi giữa hai lần đọc — điều này KHÔNG chứng minh giao dịch bị tráo.`,
+    cau: giongNhau ? c.quanSatGiong : c.quanSatKhac(co.khacBiet.length),
   };
 }
 
@@ -145,9 +167,9 @@ const chuoiSo = (v: bigint | undefined): string | null => (v === undefined ? nul
  * `null` nghĩa lệnh KHÔNG có mặt ở bên đó — khác hẳn "có mặt nhưng không đọc
  * hiểu", vốn trả `"(chưa đọc hiểu)"`.
  */
-function moTaLenh(ix: InstructionFact | null): string | null {
+function moTaLenh(ix: InstructionFact | null, chuaDoc: string): string | null {
   if (ix === null) return null;
-  const loai = ix.decoded?.kind ?? "(chưa đọc hiểu)";
+  const loai = ix.decoded?.kind ?? chuaDoc;
   return ix.decoded?.authority ? `${loai} → ${ix.decoded.authority}` : loai;
 }
 

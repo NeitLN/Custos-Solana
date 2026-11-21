@@ -1,10 +1,10 @@
 import type { Interpreter, Facts } from "@custos-solana/core";
-import type { AiAdvisory } from "@custos-solana/types";
+import type { AiAdvisory, Locale } from "@custos-solana/types";
 import { dienGiaiMau } from "./templates.ts";
 import { nhanDien, moTaHanhDong, moTaLech } from "./nhanDien.ts";
 
 export { dienGiaiMau } from "./templates.ts";
-export { nhanDien, moTaHanhDong, moTaLech, type KetQuaNhanDien, type HauQuaLech } from "./nhanDien.ts";
+export { nhanDien, moTaHanhDong, moTaLech, LOAI_HANH_DONG_THEO, type KetQuaNhanDien, type HauQuaLech } from "./nhanDien.ts";
 export {
   dienGiaiBangMoHinh,
   soiDauRa,
@@ -62,18 +62,36 @@ const MA_TRUNG: Record<string, string> = {
   doi_chuong_trinh: "SYSTEM_ASSIGN_DOI_OWNER",
 };
 
-function ghepCau(facts: Facts, reasonCodes: string[], kyHieu?: Record<string, string>): { cau: string; coLech: boolean } {
-  const { hanhDong, lech } = nhanDien(facts, kyHieu);
+/** Khung câu của phần ghép, theo ngôn ngữ. */
+const KHUNG = {
+  vi: {
+    hanhDong: (m: string) => `Hành động chính được nhận diện: ${m}.`,
+    lechCoHanhDong: (ds: string, m: string) => `Nhưng giao dịch còn ${ds} — việc này không phục vụ ${m}.`,
+    lechKhongHanhDong: (ds: string) => `Giao dịch ${ds}.`,
+  },
+  en: {
+    hanhDong: (m: string) => `Detected primary action: ${m}.`,
+    lechCoHanhDong: (ds: string, m: string) => `But the transaction also ${ds} — this is not needed to ${m}.`,
+    lechKhongHanhDong: (ds: string) => `The transaction ${ds}.`,
+  },
+} as const;
+
+function ghepCau(
+  facts: Facts,
+  reasonCodes: string[],
+  kyHieu?: Record<string, string>,
+  locale: Locale = "vi",
+): { cau: string; coLech: boolean } {
+  const { hanhDong, lech } = nhanDien(facts, kyHieu, locale);
+  const K = KHUNG[locale];
   const phan: string[] = [];
 
-  if (hanhDong) phan.push(`Hành động chính được nhận diện: ${moTaHanhDong(hanhDong)}.`);
+  if (hanhDong) phan.push(K.hanhDong(moTaHanhDong(hanhDong, locale)));
 
   if (lech.length > 0) {
-    const ds = lech.map(moTaLech).join("; ");
+    const ds = lech.map((l) => moTaLech(l, locale)).join("; ");
     phan.push(
-      hanhDong
-        ? `Nhưng giao dịch còn ${ds} — việc này không phục vụ ${moTaHanhDong(hanhDong)}.`
-        : `Giao dịch ${ds}.`,
+      hanhDong ? K.lechCoHanhDong(ds, moTaHanhDong(hanhDong, locale)) : K.lechKhongHanhDong(ds),
     );
   }
 
@@ -83,7 +101,7 @@ function ghepCau(facts: Facts, reasonCodes: string[], kyHieu?: Record<string, st
   const daNoi = new Set(lech.map((l) => MA_TRUNG[l.loai]).filter(Boolean));
   const conLai = reasonCodes.filter((c) => !daNoi.has(c));
 
-  const mau = dienGiaiMau(facts, conLai);
+  const mau = dienGiaiMau(facts, conLai, locale);
   // `dienGiaiMau` luôn trả một câu, kể cả khi không còn mã nào. Chỉ ghép thêm
   // khi thật sự còn điều chưa nói.
   if (conLai.length > 0 && mau) phan.push(mau);
@@ -98,10 +116,12 @@ function ghepCau(facts: Facts, reasonCodes: string[], kyHieu?: Record<string, st
  * Khác bản trước ở chỗ nó ĐÃ nhận diện được hành động chính — trước đây luôn
  * trả `null` vì câu mẫu không suy ra ý định được. Giờ lõi xác định làm việc đó.
  */
-export const dienGiaiKhongAI: Interpreter = async (facts, reasonCodes, _locale, options) => {
+export const dienGiaiKhongAI: Interpreter = async (facts, reasonCodes, locale, options) => {
   const kyHieu = options?.kyHieuToken;
-  const { hanhDong } = nhanDien(facts, kyHieu);
-  const { cau, coLech } = ghepCau(facts, reasonCodes, kyHieu);
+  // Giá trị lạ (gọi từ JS thuần) rơi về "vi" — giống `inspect()`.
+  const nn: Locale = locale === "en" ? "en" : "vi";
+  const { hanhDong } = nhanDien(facts, kyHieu, nn);
+  const { cau, coLech } = ghepCau(facts, reasonCodes, kyHieu, nn);
   return {
     detectedPrimaryAction: hanhDong,
     explanation: cau,

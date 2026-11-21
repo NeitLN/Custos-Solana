@@ -117,9 +117,9 @@ test("docNguonSong: đọc số dư từ chuỗi", async () => {
 
 test("docNguonSong: ba kiểu hiện trường hỏng ⇒ HienTruongChuaSan kèm lý do riêng", async () => {
   const ca: Array<[Parameters<typeof connGia>[0], RegExp]> = [
-    [{ khongCo: true }, /không còn trên Devnet/],
-    [{ owner: HT.keTanCong }, /đã đổi chủ/],
-    [{ mint: HT.keTanCong }, /không thuộc mint/],
+    [{ khongCo: true }, /no longer exists on Devnet/],
+    [{ owner: HT.keTanCong }, /changed owner/],
+    [{ mint: HT.keTanCong }, /does not belong to the setup's mint/],
   ];
   for (const [o, lyDo] of ca) {
     await assert.rejects(docNguonSong(connGia(o), HT), (e: Error) =>
@@ -148,7 +148,7 @@ test("preflightDemo: `insufficient funds` ⇒ câu lý do riêng; mô phỏng đ
     connGia({ mophong: { err: { InstructionError: [1, { Custom: 1 }] }, logs: ["Program log: Error: insufficient funds"] } }),
     tx,
   );
-  assert.match(loi ?? "", /số dư/);
+  assert.match(loi ?? "", /balance/);
 });
 
 test("kiemSanSangTanCong: hiện trường lành ⇒ san kèm số dư sống", async () => {

@@ -1,5 +1,39 @@
 import { kyHieuAnToan, quyenRutMoRong, type Facts } from "@custos-solana/core";
-import type { PrimaryAction } from "@custos-solana/types";
+import type { Locale, PrimaryAction } from "@custos-solana/types";
+
+/**
+ * Tên loại hành động theo ngôn ngữ. Khoá là ID nội bộ; giá trị là chữ đi vào
+ * `detectedPrimaryAction.type` và hiện thẳng trên giao diện.
+ *
+ * Bản "vi" giữ NGUYÊN chữ cũ — `inspect.ts` (`cungLoaiHanhDong`), `moHinh.ts` và
+ * test đều so trên đúng các chuỗi này. Bản "en" có mặt trong cùng bảng so lời khai.
+ */
+export const LOAI_HANH_DONG_THEO = {
+  vi: {
+    swap: "swap",
+    chuyenToken: "chuyển token",
+    nhanToken: "nhận token",
+    chuyenSol: "chuyển SOL",
+    capQuyenRut: "cấp quyền rút",
+  },
+  en: {
+    swap: "swap",
+    chuyenToken: "transfer token",
+    nhanToken: "receive token",
+    chuyenSol: "transfer SOL",
+    capQuyenRut: "approve delegate",
+  },
+} as const;
+
+type KhoaHanhDong = keyof (typeof LOAI_HANH_DONG_THEO)["vi"];
+
+/** Chữ `type` (bất kể ngôn ngữ nào) → ID nội bộ. Lạ thì `null`. */
+function khoaCua(type: string): KhoaHanhDong | null {
+  for (const bang of [LOAI_HANH_DONG_THEO.vi, LOAI_HANH_DONG_THEO.en]) {
+    for (const [k, v] of Object.entries(bang)) if (v === type) return k as KhoaHanhDong;
+  }
+  return null;
+}
 
 /**
  * LÕI XÁC ĐỊNH CỦA L3 — nhận diện hành động chính và hậu quả lệch khỏi nó.
@@ -36,7 +70,12 @@ const rutGon = (a: string) => (a.length > 12 ? `${a.slice(0, 4)}…${a.slice(-4)
  *  duy nhất của sản phẩm là làm người ta HIỂU KỊP trước khi bấm ký. */
 const tenToken = (mint: string, kyHieu?: Record<string, string>) => kyHieuAnToan(mint, kyHieu);
 
-export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaNhanDien {
+export function nhanDien(
+  facts: Facts,
+  kyHieu?: Record<string, string>,
+  locale: Locale = "vi",
+): KetQuaNhanDien {
+  const LOAI = LOAI_HANH_DONG_THEO[locale];
   const cuaToi = facts.tokenAccounts.filter(
     (t) => t.ownerBefore === facts.signer || t.ownerAfter === facts.signer,
   );
@@ -62,13 +101,13 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
 
   let hanhDong: PrimaryAction | null = null;
   if (ra.length === 1 && vao.length === 1) {
-    hanhDong = { type: "swap", from: tenToken(ra[0]!, kyHieu), to: tenToken(vao[0]!, kyHieu) };
+    hanhDong = { type: LOAI.swap, from: tenToken(ra[0]!, kyHieu), to: tenToken(vao[0]!, kyHieu) };
   } else if (ra.length === 1 && vao.length === 0) {
-    hanhDong = { type: "chuyển token", from: tenToken(ra[0]!, kyHieu) };
+    hanhDong = { type: LOAI.chuyenToken, from: tenToken(ra[0]!, kyHieu) };
   } else if (ra.length === 0 && vao.length === 1) {
-    hanhDong = { type: "nhận token", to: tenToken(vao[0]!, kyHieu) };
+    hanhDong = { type: LOAI.nhanToken, to: tenToken(vao[0]!, kyHieu) };
   } else if (ra.length === 0 && vao.length === 0 && solRa) {
-    hanhDong = { type: "chuyển SOL" };
+    hanhDong = { type: LOAI.chuyenSol };
   }
   // Nhiều mint ra lẫn vào, hoặc không có dòng tiền nào: KHÔNG đoán. Trả null.
   // Nói không biết vẫn tốt hơn đoán sai — docs/DAC-TA-L3.md mục 3.1 ràng buộc 4.
@@ -124,7 +163,7 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
     const cacMint = new Set(capQuyen.map((t) => t.mint));
     if (lech.every((l) => l.loai === "cap_quyen_rut") && viNhan.size === 1 && cacMint.size === 1) {
       hanhDong = {
-        type: "cấp quyền rút",
+        type: LOAI.capQuyenRut,
         from: tenToken(capQuyen[0]!.mint, kyHieu),
         to: rutGon(capQuyen[0]!.delegateAfter!),
       };
@@ -136,7 +175,24 @@ export function nhanDien(facts: Facts, kyHieu?: Record<string, string>): KetQuaN
 }
 
 /** Câu mô tả hành động chính, dùng cho giao diện và cho prompt của lớp AI. */
-export function moTaHanhDong(h: PrimaryAction | null): string {
+export function moTaHanhDong(h: PrimaryAction | null, locale: Locale = "vi"): string {
+  if (locale === "en") {
+    if (!h) return "could not be determined";
+    switch (khoaCua(h.type)) {
+      case "swap":
+        return `swap ${h.from} for ${h.to}`;
+      case "chuyenToken":
+        return `send ${h.from}`;
+      case "nhanToken":
+        return `receive ${h.to}`;
+      case "chuyenSol":
+        return "send SOL";
+      case "capQuyenRut":
+        return `allow wallet ${h.to} to withdraw ${h.from}`;
+      default:
+        return h.type;
+    }
+  }
   if (!h) return "không xác định được";
   switch (h.type) {
     case "swap":
@@ -161,6 +217,15 @@ const TEN_LECH: Record<HauQuaLech["loai"], string> = {
   doi_chuong_trinh: "đổi chương trình điều khiển tài khoản",
 };
 
-export function moTaLech(l: HauQuaLech): string {
+/** Bản tiếng Anh, ở ngôi thứ ba để đứng sau "the transaction also …". */
+const TEN_LECH_EN: Record<HauQuaLech["loai"], string> = {
+  doi_chu: "changes the token account owner",
+  cap_quyen_rut: "grants withdrawal rights to another wallet",
+  trao_quyen_dong: "hands over the right to close the account",
+  doi_chuong_trinh: "changes the program that controls the account",
+};
+
+export function moTaLech(l: HauQuaLech, locale: Locale = "vi"): string {
+  if (locale === "en") return `${TEN_LECH_EN[l.loai]} to ${l.benNhan}`;
   return `${TEN_LECH[l.loai]} sang ${l.benNhan}`;
 }

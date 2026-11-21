@@ -2,7 +2,8 @@ export { inspect, cungLoaiHanhDong, type InspectDeps, type Interpreter } from ".
 export { extractFacts } from "./l1/fetch.ts";
 export { danhGia, caoHon, type KetQuaL2 } from "./l2/evaluate.ts";
 export { LUAT, LUAT_DO, luat1, luat2, luat3, luat4, luat5, luat6, luat7, luat8, luat9, luat10, luat11, luat12, luat13, luat14, type Rule, type RuleHit, type BangChung } from "./l2/rules.ts";
-export { dungBangChenhLech, dinhDangSo, NHAN, kyHieuAnToan } from "./diff.ts";
+export { dungBangChenhLech, dinhDangSo, NHAN, NHAN_EN, CHU_BANG, nhanTheo, kyHieuAnToan } from "./diff.ts";
+export type { Locale } from "@custos-solana/types";
 export { computeCoverage, chiTietCoverage, type ChiTietCoverage } from "./l1/coverage.ts";
 export { nangLucCua, tomTatNangLuc, type MucNangLuc, type NangLucProgram, type TomTatNangLuc } from "./l1/nang-luc.ts";
 // TB-C06 — neo kết quả vào giao dịch đã kiểm. Xem `neo.ts` về điều nó KHÔNG làm.

@@ -37,7 +37,7 @@ import { dungGiaoDichTanCong } from "./tan-cong.ts";
 export class HienTruongChuaSan extends Error {
   readonly lyDo: string;
   constructor(lyDo: string) {
-    super(`hiện trường Devnet chưa sẵn sàng: ${lyDo}`);
+    super(`Devnet demo setup is not ready: ${lyDo}`);
     this.name = "HienTruongChuaSan";
     this.lyDo = lyDo;
   }
@@ -66,15 +66,15 @@ export async function docNguonSong(conn: Connection, ht: HienTruongToiThieu): Pr
   const info = await conn.getParsedAccountInfo(new PublicKey(ht.taiKhoanNanNhan));
   const v = info.value;
   if (!v) {
-    throw new HienTruongChuaSan("tài khoản token nguồn không còn trên Devnet — cần dựng lại hiện trường");
+    throw new HienTruongChuaSan("the source token account no longer exists on Devnet — the Devnet setup must be rebuilt");
   }
   const data = v.data;
   if (!data || typeof data !== "object" || !("parsed" in data)) {
-    throw new HienTruongChuaSan("tài khoản nguồn không phải tài khoản token");
+    throw new HienTruongChuaSan("the source account is not a token account");
   }
   const i = (data.parsed as { info?: { owner?: string; mint?: string; tokenAmount?: { amount?: string } } }).info;
   if (i?.mint !== ht.mint) {
-    throw new HienTruongChuaSan("tài khoản nguồn không thuộc mint của hiện trường");
+    throw new HienTruongChuaSan("the source account does not belong to the setup's mint");
   }
   if (i.owner !== ht.nanNhan) {
     /*
@@ -83,11 +83,11 @@ export async function docNguonSong(conn: Connection, ht: HienTruongToiThieu): Pr
      * lệnh đổi chủ vì người ký không còn là chủ — và giao diện lại hiện "Chưa đọc
      * hiểu hết" cho một vụ tấn công. Bắt ở đây thì người trình bày biết cần dựng lại.
      */
-    throw new HienTruongChuaSan("tài khoản nguồn đã đổi chủ — hiện trường đã bị dùng, cần dựng lại");
+    throw new HienTruongChuaSan("the source account has changed owner — the setup was already used and must be rebuilt");
   }
   const tho = i.tokenAmount?.amount;
   if (typeof tho !== "string" || !/^\d+$/.test(tho)) {
-    throw new HienTruongChuaSan("không đọc được số dư tài khoản nguồn");
+    throw new HienTruongChuaSan("could not read the source account balance");
   }
   return { soDu: BigInt(tho) };
 }
@@ -112,7 +112,7 @@ export async function docNguonSong(conn: Connection, ht: HienTruongToiThieu): Pr
  */
 export function chonLuongTanCong(soDu: bigint): bigint {
   if (soDu < 2n) {
-    throw new HienTruongChuaSan("tài khoản nguồn gần như cạn — không dựng được giao dịch chuyển tiền có ý nghĩa");
+    throw new HienTruongChuaSan("the source account is almost empty — cannot build a meaningful transfer");
   }
   return soDu / 2n;
 }
@@ -120,7 +120,7 @@ export function chonLuongTanCong(soDu: bigint): bigint {
 /** Kiểm số dư đủ cho một lượng cố định; ném `HienTruongChuaSan` kèm lý do đọc được. */
 export function canSoDu(soDu: bigint, can: bigint, viec: string): void {
   if (soDu < can) {
-    throw new HienTruongChuaSan(`${viec} cần ${can} đơn vị nhưng tài khoản nguồn chỉ còn ${soDu}`);
+    throw new HienTruongChuaSan(`${viec} needs ${can} base units but the source account only has ${soDu}`);
   }
 }
 
@@ -168,11 +168,11 @@ export async function preflightDemo(
   const s = await conn.simulateTransaction(tx, { sigVerify: false, replaceRecentBlockhash: true });
   if (!s.value.err) return null;
   const log = (s.value.logs ?? []).join("\n");
-  if (/insufficient funds/i.test(log)) return "số dư tài khoản nguồn không đủ cho giao dịch demo";
-  if (/owner does not match|OwnerMismatch/i.test(log)) return "tài khoản nguồn đã đổi chủ — cần dựng lại hiện trường";
+  if (/insufficient funds/i.test(log)) return "the source account balance is not enough for the demo transaction";
+  if (/owner does not match|OwnerMismatch/i.test(log)) return "the source account has changed owner — the Devnet setup must be rebuilt";
   const e = JSON.stringify(s.value.err);
-  if (/AccountNotFound/.test(e)) return "một tài khoản của hiện trường không tồn tại trên Devnet";
-  return `mô phỏng giao dịch demo thất bại (${e.slice(0, 80)})`;
+  if (/AccountNotFound/.test(e)) return "an account of the Devnet setup does not exist on Devnet";
+  return `demo transaction simulation failed (${e.slice(0, 80)})`;
 }
 
 /**

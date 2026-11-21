@@ -108,21 +108,21 @@ export type DocNhamPhi = "co" | "khong";
 export type Kenh = "video" | "goiThoai" | "trucTiep" | "tinNhan";
 
 export const NHAN_HIEU_COVERAGE: Record<HieuCoverage, string> = {
-  dung: "ĐÚNG — nói được đây là phần đã đọc hiểu, còn phần chưa hiểu",
-  sai: "SAI — hiểu thành điểm an toàn, tỉ lệ an toàn, hoặc «2/3 ổn rồi»",
-  khongBiet: "KHÔNG BIẾT — không đoán được dòng đó nói gì",
+  dung: "CORRECT — says this is the part that was understood, and some is not yet understood",
+  sai: "WRONG — reads it as a safety score, a safety rate, or «2/3 is fine»",
+  khongBiet: "DON'T KNOW — cannot guess what the line means",
 };
 
 export const NHAN_DOC_NHAM_PHI: Record<DocNhamPhi, string> = {
-  co: "CÓ — nói phí là khoản mất, hoặc dùng phí để kết luận thiệt hại nhỏ",
-  khong: "KHÔNG — tách được phí khỏi tài sản có thể mất",
+  co: "YES — says the fee is the loss, or uses the fee to conclude the damage is small",
+  khong: "NO — separates the fee from the assets that could be lost",
 };
 
 export const NHAN_KENH: Record<Kenh, string> = {
-  video: "Gọi video",
-  goiThoai: "Gọi thoại",
-  trucTiep: "Trực tiếp",
-  tinNhan: "Tin nhắn — KHÔNG đo thời gian đọc",
+  video: "Video call",
+  goiThoai: "Voice call",
+  trucTiep: "In person",
+  tinNhan: "Text message — reading time NOT measured",
 };
 
 /** Bản xuất có cấu trúc ổn định — thứ được commit vào `data/seed/`. */
@@ -147,15 +147,15 @@ export type HoSoPhongVan = {
 };
 
 export const NHAN_CHAM: Record<Cham, string> = {
-  dung: "ĐÚNG — nêu được mất tiền HOẶC mất quyền kiểm soát",
-  motPhan: "MỘT PHẦN — nêu được một vế, hoặc chỉ biết có gì đó nguy hiểm",
-  sai: "SAI — hiểu ngược, hoặc nói chuyện không liên quan",
+  dung: "CORRECT — names losing money OR losing control",
+  motPhan: "PARTLY — names one of the two, or only senses something is dangerous",
+  sai: "WRONG — reads it the opposite way, or talks about something unrelated",
 };
 
 export const NHAN_QD: Record<QuyetDinh, string> = {
-  huy: "HUỶ",
-  kiemTraThem: "KIỂM TRA THÊM rồi mới quyết",
-  ky: "VẪN KÝ",
+  huy: "CANCEL",
+  kiemTraThem: "CHECK FURTHER before deciding",
+  ky: "SIGN ANYWAY",
 };
 
 const DOI_CHAM: Record<string, Cham> = { "ĐÚNG": "dung", "MỘT PHẦN": "motPhan", "SAI": "sai" };
@@ -178,7 +178,7 @@ export function docHoSo(thoJson: unknown): HoSoPhongVan {
     return { phienBan: 0, xuatLuc: "", ban: thoJson as Ban[] };
   }
   const h = thoJson as Partial<HoSoPhongVan>;
-  if (!h || !Array.isArray(h.ban)) throw new Error("không phải hồ sơ phỏng vấn: thiếu mảng `ban`");
+  if (!h || !Array.isArray(h.ban)) throw new Error("not an interview file: missing the `ban` array");
   /*
    * GIỮ NGUYÊN METADATA. Kiểu trả về có `vong`, `phienBanUi`, `nguonGoc` — nhưng bản
    * trước không đọc chúng, nên mọi hồ sơ đi qua hàm này đều mất phiên bản giao diện
@@ -271,13 +271,13 @@ export function soiDuLieuCaNhan(ban: Ban[]): string[] {
   const DIEN_THOAI = /(?:\+?84|0)[\s.-]?\d(?:[\s.-]?\d){7,9}\b/;
   ban.forEach((b, i) => {
     const ma = b.ma ?? `#${i + 1}`;
-    for (const [ten, v] of [["nguyên văn", b.nguyenVan], ["ghi chú", b.ghiChu]] as const) {
+    for (const [ten, v] of [["verbatim answer", b.nguyenVan], ["note", b.ghiChu]] as const) {
       if (!v) continue;
-      if (EMAIL.test(v)) canh.push(`${ma}: có email trong ${ten} — gỡ trước khi commit`);
-      if (DIEN_THOAI.test(v)) canh.push(`${ma}: có thể là số điện thoại trong ${ten} — kiểm rồi gỡ`);
+      if (EMAIL.test(v)) canh.push(`${ma}: email found in ${ten} — remove it before committing`);
+      if (DIEN_THOAI.test(v)) canh.push(`${ma}: possible phone number in ${ten} — check and remove it`);
     }
     if (b.ma && /\s/.test(b.ma.trim())) {
-      canh.push(`${ma}: mã người tham gia có dấu cách — nghe như tên thật, hãy dùng P1, P2…`);
+      canh.push(`${ma}: participant code contains a space — looks like a real name, use P1, P2…`);
     }
   });
   return canh;
@@ -310,16 +310,16 @@ export type KetQuaDocKho =
 /** `null` nghĩa là bản ghi hợp lệ; chuỗi là lý do, viết cho người đọc. */
 export function xacThucBan(x: unknown, i: number): string | null {
   if (x === null || typeof x !== "object" || Array.isArray(x)) {
-    return `bản ghi #${i + 1} không phải đối tượng`;
+    return `record #${i + 1} is not an object`;
   }
   const o = x as Record<string, unknown>;
-  if (typeof o["nguyenVan"] !== "string") return `bản ghi #${i + 1} thiếu \`nguyenVan\``;
+  if (typeof o["nguyenVan"] !== "string") return `record #${i + 1} is missing \`nguyenVan\``;
   if (!["dung", "motPhan", "sai"].includes(String(o["cham"]))) {
-    return `bản ghi #${i + 1} có \`cham\` lạ: ${String(o["cham"])}`;
+    return `record #${i + 1} has an unknown \`cham\`: ${String(o["cham"])}`;
   }
   const qd = o["quyetDinh"];
   if (qd !== undefined && !["huy", "kiemTraThem", "ky"].includes(String(qd))) {
-    return `bản ghi #${i + 1} có \`quyetDinh\` lạ: ${String(qd)}`;
+    return `record #${i + 1} has an unknown \`quyetDinh\`: ${String(qd)}`;
   }
 
   /*
@@ -341,11 +341,11 @@ export function xacThucBan(x: unknown, i: number): string | null {
   for (const [ten, hopLe] of nhan) {
     const v = o[ten];
     if (v !== undefined && !hopLe.includes(String(v))) {
-      return `bản ghi #${i + 1} có \`${ten}\` lạ: ${String(v)}`;
+      return `record #${i + 1} has an unknown \`${ten}\`: ${String(v)}`;
     }
   }
   if (o["lyDoQuyetDinh"] !== undefined && typeof o["lyDoQuyetDinh"] !== "string") {
-    return `bản ghi #${i + 1} có \`lyDoQuyetDinh\` không phải chuỗi`;
+    return `record #${i + 1} has a \`lyDoQuyetDinh\` that is not a string`;
   }
   return null;
 }
@@ -357,12 +357,12 @@ export function docKho(tho: string | null): KetQuaDocKho {
   try {
     x = JSON.parse(tho);
   } catch {
-    return { loai: "hong", lyDo: "không phải JSON hợp lệ", tho };
+    return { loai: "hong", lyDo: "not valid JSON", tho };
   }
 
   if (!Array.isArray(x)) {
     // Đây chính là ca đã tái hiện: `{}` parse được nhưng không phải mảng.
-    return { loai: "hong", lyDo: `dữ liệu là ${x === null ? "null" : typeof x}, không phải mảng`, tho };
+    return { loai: "hong", lyDo: `the data is ${x === null ? "null" : typeof x}, not an array`, tho };
   }
 
   for (let i = 0; i < x.length; i++) {

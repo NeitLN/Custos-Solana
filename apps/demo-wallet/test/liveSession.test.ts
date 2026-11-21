@@ -70,7 +70,7 @@ test('session: timeout after signing keeps signature and prevents preparing a ne
   const f = fixture(); await f.session.setup(); f.session.setProtection(false); await f.session.prepare('attack'); f.setFailSend();
   await f.session.execute(f.session.view.pending!.id);
   assert.equal(f.session.view.send.pha, 'chuaRo'); assert.ok(f.session.view.receipt?.signature);
-  await assert.rejects(() => f.session.prepare('attack'), /chưa rõ/); assert.equal(f.sends(), 2);
+  await assert.rejects(() => f.session.prepare('attack'), /unresolved/); assert.equal(f.sends(), 2);
 });
 test('session: receipt query locks preparation until resolved, so old query cannot overwrite a new send', async () => {
   const f = fixture(); await f.session.setup(); f.session.setProtection(false); await f.session.prepare('transfer'); await f.session.execute(f.session.view.pending!.id);
@@ -78,11 +78,11 @@ test('session: receipt query locks preparation until resolved, so old query cann
   f.reader(() => new Promise(resolve => { finish = resolve; }));
   const query = f.session.readReceipt();
   await new Promise(resolve => setImmediate(resolve));
-  await assert.rejects(() => f.session.prepare('attack'), /đang chạy/);
+  await assert.rejects(() => f.session.prepare('attack'), /is running/);
   finish(null); await query;
 });
 test('session: setup timeout retains manifest and can recover by querying without another send', async () => {
-  const f = fixture(); f.setFailSend(); await assert.rejects(() => f.session.setup(), /chưa rõ/);
+  const f = fixture(); f.setFailSend(); await assert.rejects(() => f.session.setup(), /unresolved/);
   assert.ok(f.session.view.setupPending?.setupSignature);
   f.reader(async () => ({ meta: { err: null } }));
   await f.session.recoverSetup();
@@ -93,7 +93,7 @@ test('session: setup timeout retains manifest and can recover by querying withou
 test('protected red override stays on and records the verdict and explicit decision', async () => {
   const f = fixture(); await f.session.setup(); await f.session.prepare('attack');
   const id = f.session.view.pending!.id;
-  await assert.rejects(() => f.session.execute(id, 'approve'), /bỏ qua/);
+  await assert.rejects(() => f.session.execute(id, 'approve'), /overrid/);
   assert.equal(f.sends(), 1);
   await f.session.execute(id, 'override');
   assert.equal(f.sends(), 2);
@@ -123,12 +123,12 @@ test('restoring public session verifies chain and never restores a signer', asyn
   await f.session.restore(snapshot);
   assert.equal(f.sends(), 1);
   assert.equal(f.session.view.balance, '500000000');
-  await assert.rejects(() => f.session.restore({ ...snapshot, wallet: Keypair.generate().publicKey.toBase58() }), /ví/);
+  await assert.rejects(() => f.session.restore({ ...snapshot, wallet: Keypair.generate().publicKey.toBase58() }), /wallet/);
 });
 
 test('delegate step signs with actor, rejects revoked allowance and never borrows owner signature', async () => {
   const f = fixture(); await f.session.setup();
-  await assert.rejects(() => f.session.prepare('delegate-transfer'), /không có quyền/);
+  await assert.rejects(() => f.session.prepare('delegate-transfer'), /no allowance/);
   const actor = f.session.view.accounts!.recipient;
   f.patch({ delegateOption: 1, delegate: new PublicKey(actor), delegatedAmount: 20_000_000n });
   await f.session.prepare('delegate-transfer', { amount: '12' });
@@ -137,14 +137,14 @@ test('delegate step signs with actor, rejects revoked allowance and never borrow
   assert.equal(f.signedBy.at(-1), actor);
   assert.notEqual(f.signedBy.at(-1), f.session.view.wallet);
   f.patch({});
-  await assert.rejects(() => f.session.prepare('delegate-transfer', { amount: '1' }), /không có quyền/);
+  await assert.rejects(() => f.session.prepare('delegate-transfer', { amount: '1' }), /no allowance/);
 });
 
 test('authority or allowance changes after inspect invalidate signing before send', async () => {
   const f = fixture(); await f.session.setup();
   await f.session.prepare('transfer'); const id = f.session.view.pending!.id;
   f.patch({ delegateOption: 1, delegate: Keypair.generate().publicKey, delegatedAmount: 1n });
-  await assert.rejects(() => f.session.execute(id, 'override'), /Trạng thái/);
+  await assert.rejects(() => f.session.execute(id, 'override'), /state changed/);
   assert.equal(f.sends(), 1);
 });
 
@@ -152,22 +152,22 @@ test('dApp bytes are pinned to the offered session and replayed messages are rej
   const { buildLiveHandoff } = await import('../src/live/handoff.ts');
   const f = fixture(); await f.session.setup();
   const offer = await f.session.offerDapp();
-  await assert.rejects(() => f.session.acceptDapp(offer.nonce, buildLiveHandoff({ ...offer, amount: '1' })), /khớp/);
+  await assert.rejects(() => f.session.acceptDapp(offer.nonce, buildLiveHandoff({ ...offer, amount: '1' })), /does not match/);
   await f.session.acceptDapp(offer.nonce, buildLiveHandoff(offer));
   assert.equal(f.session.view.pending!.kind, 'attack');
-  await assert.rejects(() => f.session.acceptDapp(offer.nonce, buildLiveHandoff(offer)), /khớp/);
+  await assert.rejects(() => f.session.acceptDapp(offer.nonce, buildLiveHandoff(offer)), /does not match/);
   f.session.cancel(); assert.equal(f.sends(), 1);
 });
 
 test('unknown setup stays blocked until finalized expiry plus absent historical signature, then releases without resend', async () => {
-  const f = fixture(); f.setFailSend(); await assert.rejects(() => f.session.setup(), /chưa rõ/);
-  await assert.rejects(() => f.session.recoverSetup(), /Chưa rõ/);
+  const f = fixture(); f.setFailSend(); await assert.rejects(() => f.session.setup(), /unresolved/);
+  await assert.rejects(() => f.session.recoverSetup(), /unresolved/);
   assert.equal(f.session.snapshot().unresolved, true);
   f.expire(); await f.session.recoverSetup();
   assert.equal(f.session.snapshot().unresolved, false);
   assert.equal(f.session.view.setupPending, null);
   assert.equal(f.sends(), 1);
-  assert.match(f.session.view.status, /hết hạn/);
+  assert.match(f.session.view.status, /expired/);
 });
 
 test('persistence subscriber failure before signing releases controller lock and sends nothing', async () => {
@@ -186,7 +186,7 @@ test('protected safe + manual-review advisory needs explicit override and is log
   const f = fixture(); f.setResult({ level: 'safe', aiAdvisory: 'review_required', reasonCodes: [] });
   await f.session.setup(); await f.session.prepare('transfer');
   const id = f.session.view.pending!.id;
-  await assert.rejects(() => f.session.execute(id, 'approve'), /bỏ qua/);
+  await assert.rejects(() => f.session.execute(id, 'approve'), /overrid/);
   assert.equal(f.sends(), 1, 'không được ký khi chưa xác nhận đề nghị kiểm tra');
   await f.session.execute(id, 'override');
   assert.equal(f.session.view.receipt?.decision?.action, 'override');
@@ -213,7 +213,7 @@ test('protected inspection that never answers is REFUSED within the deadline; no
   try {
     const f = fixture(); await f.session.setup(); f.setHangInspect();
     const t0 = Date.now();
-    await assert.rejects(() => f.session.prepare('attack'), /quá hạn/);
+    await assert.rejects(() => f.session.prepare('attack'), /timed out/);
     assert.ok(Date.now() - t0 < 2_000, `chờ ${Date.now() - t0} ms — hạn không được áp`);
     assert.equal(f.session.view.pending, null); assert.equal(f.sends(), 1);
     // Bảo vệ TẮT: kiểm chỉ để đo dự báo, không phải cổng — quá hạn thì dự báo để trống.
@@ -235,7 +235,7 @@ test('protected inspection answered by TWO providers is refused after one re-rea
   const ok = (nguon: string) => ghiNguonLive({ method: 'getMultipleAccounts', nguon, ketQua: 'ok', ms: 0 });
   const f = fixture(); await f.session.setup();
   f.setInspectHook(() => { ok('a.example'); ok('b.example'); });
-  await assert.rejects(() => f.session.prepare('attack'), /nhà cung cấp/);
+  await assert.rejects(() => f.session.prepare('attack'), /providers/);
   assert.equal(f.session.view.pending, null); assert.equal(f.sends(), 1);
   f.session.setProtection(false); await f.session.prepare('transfer');
   const sau = f.session.view.pending as { result: unknown } | null;

@@ -4,7 +4,7 @@ QUAY VIDEO DỰ PHÒNG — luồng dApp → ví → Custos → Chặn, trên pro
 
 Playwright quay HAI cửa sổ (SolBonus và cửa sổ ký của Ví Custos), ghi mốc thời gian từng bước,
 rồi ffmpeg ghép thành MỘT video cạnh nhau, đồng bộ, có phụ đề tiếng Việt. Không có file khoá, KHÔNG ký,
-KHÔNG gửi giao dịch nào — luồng kết thúc bằng "Chặn giao dịch". Lượt ký thật được dẫn bằng link ở cuối.
+KHÔNG gửi giao dịch nào — luồng kết thúc bằng "Block transaction". Lượt ký thật được dẫn bằng link ở cuối.
 
     python scripts/kiem-trinh-duyet/quay-video-luong-ky.py [--out docs/nop-bai/video/CUSTOS-LUONG-KY.mp4]
 
@@ -33,40 +33,40 @@ with sync_playwright() as pw:
     t0 = time.time()
     ghi = lambda cau: moc.append((round(time.time() - t0, 2), cau))
     sb.goto(args.solbonus, wait_until="networkidle")
-    ghi("SolBonus: dApp độc hại MÔ PHỎNG trên Devnet — không gọi Custos, chỉ xin chữ ký qua chuẩn ví")
+    ghi("SolBonus: SIMULATED malicious dApp on Devnet — does not call Custos, only requests a signature through the wallet standard")
     sb.wait_for_timeout(3500)
 
     # Cửa sổ ký quay bằng context RIÊNG không được — popup thuộc context của trang mở nó. Ghi video của
     # popup qua page.video của chính nó, và ghi mốc lúc nó mở để đồng bộ.
     with sb.expect_popup() as pop:
-        sb.get_by_role("button", name="Kết nối ví").click()
+        sb.get_by_role("button", name="Connect wallet").click()
     vi = pop.value
     t_vi = round(time.time() - t0, 2)
     vi.set_viewport_size({"width": W_VI, "height": H})
     vi.wait_for_load_state("networkidle")
-    ghi("Bấm Kết nối ví → cửa sổ Ví Custos mở ở origin riêng")
+    ghi("Click Connect wallet → the Custos Wallet window opens on its own origin")
     vi.wait_for_timeout(2500)
-    vi.get_by_role("button", name="Cho kết nối").click()
-    ghi("Cho kết nối: ứng dụng chỉ thấy địa chỉ ví")
+    vi.get_by_role("button", name="Allow connection").click()
+    ghi("Allow connection: the app only sees the wallet address")
     sb.wait_for_timeout(2000)
 
-    sb.get_by_role("button", name=re.compile("Tìm token DEMO")).click()
-    ghi("SolBonus tự đọc chain, tìm token DEMO của ví")
+    sb.get_by_role("button", name=re.compile("Find DEMO tokens")).click()
+    ghi("SolBonus reads the chain itself and finds the wallet's DEMO tokens")
     sb.locator("#sb-token").wait_for(timeout=120000)
     sb.wait_for_timeout(2000)
 
-    sb.get_by_role("button", name="Nhận 1.000 SOLB").click()
-    ghi("Bấm Nhận quà → yêu cầu ký đi vào ví; Custos mô phỏng ĐÚNG giao dịch đó")
+    sb.get_by_role("button", name="Claim 1,000 SOLB").click()
+    ghi("Click Claim → the signature request goes into the wallet; Custos simulates EXACTLY that transaction")
     vi.locator(".kn-muc").wait_for(timeout=60000)
-    ghi("Nguy hiểm: chuyển nửa số DEMO VÀ đổi chủ tài khoản token — trước khi có chữ ký nào của ví")
+    ghi("Danger: sends half the DEMO AND changes the token account owner — before the wallet signs anything")
     vi.wait_for_timeout(7000)
 
-    vi.get_by_role("button", name="Chặn giao dịch").click()
-    ghi("Chặn giao dịch: ví không tạo chữ ký")
+    vi.get_by_role("button", name="Block transaction").click()
+    ghi("Block transaction: the wallet creates no signature")
     sb.wait_for_timeout(2500)
-    ghi("SolBonus không nhận được chữ ký — chưa gửi gì lên Devnet")
+    ghi("SolBonus receives no signature — nothing was submitted to Devnet")
     sb.wait_for_timeout(4000)
-    ghi("Lượt đã ký thật 29/09: explorer.solana.com/tx/LDxqW6…eroQ2 (cluster devnet) — biên nhận khớp 3/3")
+    ghi("Real signed run on Sep 29: explorer.solana.com/tx/LDxqW6…eroQ2 (cluster devnet) — receipt matched 3/3")
     sb.wait_for_timeout(5000)
     t_het = round(time.time() - t0, 2)
     v_sb, v_vi = sb.video.path(), vi.video.path()

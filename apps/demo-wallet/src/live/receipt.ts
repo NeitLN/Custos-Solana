@@ -148,7 +148,7 @@ export type LiveReceipt = {
   resolution?: "confirmed" | "failed" | "expired-unobserved";
 };
 
-const NHAN_DOI_CHIEU = { match: "Khớp", mismatch: "Có chênh lệch", unknown: "Chưa đủ dữ liệu" } as const;
+const NHAN_DOI_CHIEU = { match: "Match", mismatch: "Differs", unknown: "Not enough data" } as const;
 
 /**
  * Nhãn cột "Đối chiếu" cho các hàng QUYỀN (chủ, uỷ quyền, quyền đóng).
@@ -165,7 +165,7 @@ export function nhanDoiChieuQuyen(
 ): string {
   // Phép so đã loại quyền không quy được (`compareReceipt`); nhãn chỉ nói VÌ SAO không so.
   if (kq === "unknown" && o.ownerSlot != null && o.ownerSlot > o.slot && o.rightsAttributable !== true) {
-    return "Chưa quy được cho riêng giao dịch này — cột bên là trạng thái hiện tại";
+    return "Cannot be attributed to this transaction alone — the column alongside is the current state";
   }
   return NHAN_DOI_CHIEU[kq];
 }

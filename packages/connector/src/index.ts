@@ -95,10 +95,10 @@ export class LoiCustos extends Error {
 }
 
 const CAU_CONNECTOR: Record<Exclude<MaLoiConnector, MaLoi>, string> = {
-  "cua-so-bi-chan": "Trình duyệt chặn cửa sổ ví — cho phép cửa sổ bật lên cho trang này rồi bấm lại.",
-  "cua-so-dong": "Cửa sổ ví đã đóng.",
-  "het-han": "Ví chưa trả lời. Không rõ đã ký hay chưa — đừng gửi lại, hãy xem trong cửa sổ ví.",
-  "vi-khong-phan-hoi": "Cửa sổ ví không tải xong. Đóng cửa sổ ví rồi bấm kết nối lại.",
+  "cua-so-bi-chan": "The browser blocked the wallet window — allow pop-ups for this page, then click again.",
+  "cua-so-dong": "The wallet window was closed.",
+  "het-han": "The wallet has not responded. It is unclear whether it signed — do not resend; check the wallet window.",
+  "vi-khong-phan-hoi": "The wallet window did not finish loading. Close the wallet window, then click connect again.",
 };
 
 function moiTruongTrinhDuyet(): MoiTruong {
@@ -143,7 +143,7 @@ export class CustosWallet implements Wallet {
     const u = new URL(url);
     const cucBo = u.hostname === "localhost" || u.hostname === "127.0.0.1";
     if (u.protocol !== "https:" && !(cucBo && u.protocol === "http:"))
-      throw new Error("URL ví phải là https (hoặc http://localhost khi phát triển).");
+      throw new Error("The wallet URL must be https (or http://localhost during development).");
     this.#url = u.href;
     this.#origin = u.origin;
     this.#mt = mt;
@@ -311,16 +311,16 @@ export class CustosWallet implements Wallet {
 
   #signTransaction: SolanaSignTransactionMethod = async (...inputs) => {
     if (inputs.length !== 1)
-      throw new LoiCustos("sai-yeu-cau", "Ví Custos chỉ ký MỘT giao dịch mỗi lần — mỗi giao dịch được kiểm riêng.");
+      throw new LoiCustos("sai-yeu-cau", "Custos Wallet signs only ONE transaction at a time — each transaction is checked separately.");
     const [i] = inputs;
     if (!i || !this.#accounts.some((a) => a.address === i.account.address))
       throw new LoiCustos("chua-ket-noi", CAU_LOI["chua-ket-noi"]);
     if (i.chain !== undefined && i.chain !== CHUOI_DEVNET)
-      throw new LoiCustos("sai-yeu-cau", "Ví Custos chỉ chạy trên Solana Devnet.");
+      throw new LoiCustos("sai-yeu-cau", "Custos Wallet runs on Solana Devnet only.");
     // Quá cỡ thì cửa sổ ví loại thông điệp mà không trả lời (`docYeuCau` → null): dApp sẽ chờ
     // trọn hạn rồi nhận "không rõ đã ký" — sai. Từ chối rõ ràng ngay tại đây.
     if (i.transaction.length === 0 || i.transaction.length > BYTE_TOI_DA)
-      throw new LoiCustos("sai-yeu-cau", `Giao dịch phải dài 1–${BYTE_TOI_DA} byte.`);
+      throw new LoiCustos("sai-yeu-cau", `The transaction must be 1–${BYTE_TOI_DA} bytes long.`);
     if (!this.#cuaSo || this.#cuaSo.closed) throw new LoiCustos("cua-so-dong", CAU_CONNECTOR["cua-so-dong"]);
     this.#cuaSo.focus();
     const kq = await this.#gui({ kieu: "ky", giaoDich: sangBase64(i.transaction) }, HAN_KY_MS);

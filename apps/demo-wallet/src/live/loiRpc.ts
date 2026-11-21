@@ -15,12 +15,12 @@
 export function moTaLoiLive(tho: string): string {
   const sach = tho.replace(/https?:\/\/\S+/g, "(endpoint)");
   if (/\b429\b|Too Many Requests|-32029|rate.?limit/i.test(sach)) {
-    return "Nhà cung cấp RPC Devnet đang giới hạn tần suất (HTTP 429) khi Custos đọc dữ liệu. Đợi ít phút rồi thử lại.";
+    return "The Devnet RPC provider is rate-limiting (HTTP 429) while Custos reads data. Wait a few minutes, then retry.";
   }
   if (/timed out|timeout|AbortError|aborted/i.test(sach)) {
     return /account|tài khoản/i.test(sach)
-      ? "RPC Devnet không trả lời trong hạn khi đọc tài khoản (quá hạn). Đợi ít phút rồi thử lại."
-      : "RPC Devnet không trả lời trong hạn (quá hạn). Đợi ít phút rồi thử lại.";
+      ? "The Devnet RPC did not respond in time while reading an account (timed out). Wait a few minutes, then retry."
+      : "The Devnet RPC did not respond in time (timed out). Wait a few minutes, then retry.";
   }
   return sach;
 }

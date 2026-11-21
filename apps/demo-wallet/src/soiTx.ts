@@ -36,20 +36,20 @@ export type KetQuaDoc =
   | { ok: false; loi: LoiDauVao; câu: string };
 
 const CAU: Record<LoiDauVao, string> = {
-  rong: "Chưa có gì để kiểm. Dán chuỗi base64 của giao dịch, hoặc chọn một tệp.",
-  qua_dai: `Chuỗi dài hơn ${GIOI_HAN_KY_TU} ký tự. Một giao dịch Solana hợp lệ ngắn hơn nhiều.`,
+  rong: "Nothing to check yet. Paste the base64 string of a transaction, or choose a file.",
+  qua_dai: `The string is longer than ${GIOI_HAN_KY_TU} characters. A valid Solana transaction is much shorter.`,
   khong_phai_base64:
-    "Chuỗi này không phải base64. Kiểm lại xem có lẫn ký tự lạ hoặc thiếu phần cuối không.",
-  qua_lon: `Giao dịch lớn hơn ${GIOI_HAN_BYTE} byte — vượt giới hạn của Solana.`,
+    "This string is not base64. Check for stray characters or a missing ending.",
+  qua_lon: `The transaction is larger than ${GIOI_HAN_BYTE} bytes — over Solana's limit.`,
   khong_giai_ma_duoc:
-    "Giải mã được base64 nhưng đây không phải một giao dịch Solana đọc được. " +
-    "Có thể là định dạng khác, hoặc dữ liệu đã hỏng.",
+    "The base64 decodes, but it is not a readable Solana transaction. " +
+    "It may be another format, or the data is corrupted.",
   tx_rong:
-    "Đây không phải giao dịch thật: nó không có người ký nào và không chạm tài khoản nào. " +
-    "Một chuỗi base64 hợp lệ vẫn có thể giải ra thành dữ liệu rỗng.",
-  vi_khong_hop_le: "Địa chỉ ví không phải base58 hợp lệ.",
+    "This is not a real transaction: it has no signer and touches no account. " +
+    "A valid base64 string can still decode to empty data.",
+  vi_khong_hop_le: "The wallet address is not valid base58.",
   vi_khong_o_trong_tx:
-    "Địa chỉ ví này không xuất hiện trong giao dịch. Custos sẽ không biết đang bảo vệ ai.",
+    "This wallet address does not appear in the transaction. Custos would not know whom it is protecting.",
 };
 
 /** Base64 chuẩn, cho phép khoảng trắng và xuống dòng ở giữa. */

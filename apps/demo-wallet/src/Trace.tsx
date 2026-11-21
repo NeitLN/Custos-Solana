@@ -25,19 +25,19 @@ import type { InspectResult } from "@custos-solana/types";
  */
 
 const NHAN_NGUON: Record<string, { chu: string; lop: string }> = {
-  observed: { chu: "đã đo", lop: "border-emerald-200 bg-emerald-50 text-emerald-800" },
-  derived: { chu: "suy ra", lop: "border-sky-200 bg-sky-50 text-sky-800" },
-  missing: { chu: "không đọc được", lop: "border-amber-200 bg-amber-50 text-amber-900" },
-  unsupported: { chu: "chưa hỗ trợ", lop: "border-slate-200 bg-slate-100 text-slate-700" },
+  observed: { chu: "measured", lop: "border-emerald-200 bg-emerald-50 text-emerald-800" },
+  derived: { chu: "derived", lop: "border-sky-200 bg-sky-50 text-sky-800" },
+  missing: { chu: "could not read", lop: "border-amber-200 bg-amber-50 text-amber-900" },
+  unsupported: { chu: "not supported yet", lop: "border-slate-200 bg-slate-100 text-slate-700" },
 };
 
 const LOAI_TIENG_VIET: Record<string, string> = {
-  tokenAccount: "tài khoản token",
+  tokenAccount: "token account",
   mint: "token",
-  account: "tài khoản",
-  program: "chương trình",
-  lookupTable: "bảng tra địa chỉ",
-  solNguoiDung: "số dư SOL của bạn",
+  account: "account",
+  program: "program",
+  lookupTable: "address lookup table",
+  solNguoiDung: "your SOL balance",
 };
 
 export function Trace({ ketQua }: { ketQua: InspectResult }) {
@@ -49,13 +49,13 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
   if (!cd || cd.canhBao.length === 0) return null;
 
   return (
-    <section className="mt-3" aria-label="Dữ kiện của từng cảnh báo">
+    <section className="mt-3" aria-label="Facts behind each warning">
       <h3 className="text-[12.5px] font-semibold text-slate-700">
-        Vì sao Custos nói vậy
+        Why Custos says this
       </h3>
       <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-        Mỗi dòng là một cảnh báo. Bấm để xem dữ kiện luật đã dựa vào — và cả những dữ
-        kiện lượt này <strong>không đọc được</strong>.
+        Each row is one warning. Click to see the facts the rule relied on — and also the facts
+        this run <strong>could not read</strong>.
       </p>
 
       <ul className="mt-2 space-y-1">
@@ -71,7 +71,7 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
               >
                 <span className="font-mono text-[11px] text-slate-800">{c.reasonCode}</span>
                 <span className="text-[11px] text-slate-500">
-                  luật {c.ruleId} · {c.bangChung.length} dữ kiện
+                  rule {c.ruleId} · {c.bangChung.length} {c.bangChung.length === 1 ? "fact" : "facts"}
                 </span>
               </button>
 
@@ -84,8 +84,8 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
                       là một cách nói dối: nó trông như đã kiểm mà không thấy gì.
                     */
                     <p className="text-slate-600">
-                      Luật này chưa khai dữ kiện cụ thể. Custos <strong>không suy đoán</strong>{" "}
-                      lệnh nào gây ra nó.
+                      This rule has not declared specific facts. Custos <strong>does not guess</strong>{" "}
+                      which instruction caused it.
                     </p>
                   ) : (
                     c.bangChung.map((b, j) => {
@@ -113,10 +113,10 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
                           {b.lyDo && <div className="text-amber-800">{b.lyDo}</div>}
                           {b.lenh && b.lenh.length > 0 && (
                             <div className="text-slate-600">
-                              lệnh{" "}
+                              {b.lenh.length === 1 ? "instruction" : "instructions"}{" "}
                               {b.lenh
                                 .map((l) =>
-                                  l.isInner ? `#${l.index} (trong #${l.parentIndex})` : `#${l.index}`,
+                                  l.isInner ? `#${l.index} (inside #${l.parentIndex})` : `#${l.index}`,
                                 )
                                 .join(", ")}
                             </div>
@@ -127,8 +127,8 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
                               Nói rõ, vì người đọc mặc định hiểu khoảng trống là "không có".
                             */
                             <div className="text-slate-500">
-                              chưa truy được lệnh cụ thể — dữ kiện này đến từ trạng thái
-                              tài khoản, không từ một lệnh
+                              no specific instruction traced — this fact comes from account
+                              state, not from an instruction
                             </div>
                           )}
                         </div>
@@ -144,7 +144,7 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
 
       {cd.thieuBangChung > 0 && (
         <p className="mt-2 text-[11px] text-amber-800">
-          {cd.thieuBangChung} cảnh báo chưa có bằng chứng truy vết chi tiết.
+          {cd.thieuBangChung} {cd.thieuBangChung === 1 ? "warning has" : "warnings have"} no detailed trace evidence yet.
         </p>
       )}
       {cd.bangChungTreo && cd.bangChungTreo.length > 0 && (
@@ -153,8 +153,8 @@ export function Trace({ ketQua }: { ketQua: InspectResult }) {
           dùng — nhưng giấu nó đi thì nó sống mãi. Hiện ra, và gọi đúng tên.
         */
         <p className="mt-1 text-[11px] font-semibold text-rose-800">
-          {cd.bangChungTreo.length} dữ kiện luật khai không tìm thấy trong dữ liệu đo được —
-          đây là lỗi của Custos, hãy báo lại.
+          {cd.bangChungTreo.length} declared rule facts were not found in the measured data —
+          this is a Custos bug, please report it.
         </p>
       )}
     </section>

@@ -90,7 +90,7 @@ with sync_playwright() as p:
     rpc_requests = []
     page.on('request', lambda request: rpc_requests.append(request.url) if 'api.devnet.solana.com' in request.url else None)
     page.locator('#tx-b64').fill('not-base64!!!')
-    page.get_by_role('button', name='Kiểm giao dịch', exact=True).click()
+    page.get_by_role('button', name='Check transaction', exact=True).click()
     expect(page.locator('.inspector-result')).to_contain_text('base64')
     assert not rpc_requests, rpc_requests
     audit(page, 'inspector-invalid-input')

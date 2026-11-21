@@ -4,13 +4,13 @@ type ProductPage = "demo" | "inspector" | "integration" | "evidence" | "intervie
 export function ProductNavigation({ active }: { active: ProductPage }) {
   const base = import.meta.env.BASE_URL;
   const links = [
-    { key: "intro", href: "gioi-thieu.html", label: "Giới thiệu" },
-    { key: "demo", href: "index.html", label: "Ví Custos" },
-    { key: "integration", href: "tich-hop.html", label: "Tích hợp" },
+    { key: "intro", href: "gioi-thieu.html", label: "About" },
+    { key: "demo", href: "index.html", label: "Custos Wallet" },
+    { key: "integration", href: "tich-hop.html", label: "Integration" },
     { key: "inspector", href: "soi.html", label: "Inspector" },
-    { key: "evidence", href: "so-lieu.html", label: "Số liệu" },
+    { key: "evidence", href: "so-lieu.html", label: "Evidence" },
   ];
-  return <nav className="product-navigation" aria-label="Điều hướng Custos">
+  return <nav className="product-navigation" aria-label="Custos navigation">
     {links.map(link => <a key={link.key} href={`${base}${link.href}`} aria-current={active === link.key ? "page" : undefined}>{link.label}</a>)}
   </nav>;
 }

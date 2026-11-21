@@ -43,5 +43,5 @@ test("bấm Kiểm lần hai vẫn cho cùng kết quả (mỗi lượt một Co
 test("Inspector chỉ dùng phát lại khi ô base64 còn đúng chuỗi mẫu", () => {
   const s = readFileSync("apps/demo-wallet/src/Inspector.tsx", "utf8");
   assert.match(s, /const dangDungMau = mau !== null && tho\.trim\(\) === mau\.b64;/);
-  assert.match(s, /phát lại/);
+  assert.match(s, /<strong>replay<\/strong>/);
 });

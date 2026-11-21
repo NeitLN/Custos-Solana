@@ -20,13 +20,18 @@ const HAM = doanTichHop(rawTichHop);
 const SO_DONG = demDongMa(HAM);
 const DAPP = catDong(rawSolBonus, /registerCustosWallet/);
 const REPO = "https://github.com/NeitLN/Custos-Solana/blob/main";
+// Mốc ghi là ISO; hiện theo kiểu tiếng Anh, chuỗi lạ thì giữ nguyên văn.
+const ngayGio = (iso: string) => {
+  const t = new Date(iso);
+  return Number.isNaN(t.getTime()) ? iso : t.toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+};
 
-const NHAN_CHO: Record<string, string> = { ky: "Cho ký", hoi: "Hỏi lại người dùng", chan: "Chặn" };
-const NHAN_MUC: Record<string, string> = { safe: "Bình thường", warning: "Cần xem kỹ", danger: "Nguy hiểm" };
+const NHAN_CHO: Record<string, string> = { ky: "Allow signing", hoi: "Ask the user again", chan: "Block" };
+const NHAN_MUC: Record<string, string> = { safe: "Normal", warning: "Review carefully", danger: "Danger" };
 
 const CA = [
-  { id: "tan-cong-day-du", nhan: "Giao dịch “nhận quà” đã ghi (chuyển tiền + đổi chủ)" },
-  { id: "lanh-tinh", nhan: "Giao dịch lành tính đã ghi (đối chứng)" },
+  { id: "tan-cong-day-du", nhan: "Recorded “claim a gift” transaction (transfer + owner change)" },
+  { id: "lanh-tinh", nhan: "Recorded benign transaction (control)" },
 ] as const;
 
 function ChayThu() {
@@ -52,25 +57,25 @@ function ChayThu() {
         return (
           <div key={c.id} className="tich-hop-ca">
             <button type="button" onClick={() => void chay(c.id)} disabled={dang !== null}>
-              {dang === c.id ? "Đang chạy…" : `Chạy kiemTruocKhiKy — ${c.nhan}`}
+              {dang === c.id ? "Running…" : `Run kiemTruocKhiKy — ${c.nhan}`}
             </button>
-            {typeof r === "string" && <p role="alert">Không chạy được: {r}</p>}
+            {typeof r === "string" && <p role="alert">Could not run: {r}</p>}
             {r && typeof r !== "string" && (
               <div className="tich-hop-kq" data-cho={r.quyetDinh.cho}>
                 <p>
-                  <strong>{NHAN_CHO[r.quyetDinh.cho]}</strong> · lý do <code>{r.quyetDinh.lyDo}</code>
+                  <strong>{NHAN_CHO[r.quyetDinh.cho]}</strong> · reason <code>{r.quyetDinh.lyDo}</code>
                   {r.quyetDinh.ketQua && (
-                    <> · mức {NHAN_MUC[r.quyetDinh.ketQua.level]} · mã {r.quyetDinh.ketQua.reasonCodes.join(", ") || "không có"}</>
+                    <> · level {NHAN_MUC[r.quyetDinh.ketQua.level]} · codes {r.quyetDinh.ketQua.reasonCodes.join(", ") || "none"}</>
                   )}
                 </p>
                 {r.quyetDinh.ketQua?.explanation && <p>{r.quyetDinh.ketQua.explanation}</p>}
                 <p className="tich-hop-phu">
                   {r.quyetDinh.ketQua &&
-                    `Đọc hiểu ${r.quyetDinh.ketQua.coverage.analyzed}/${r.quyetDinh.ketQua.coverage.total} lệnh. `}
-                  Phát lại dữ liệu Devnet ghi lúc {r.captureLuc} (tải từ tệp tĩnh của trang) bằng engine của bản đang
-                  chạy — phần phân tích không gọi RPC hay AI, không ký.
-                  {r.soVoi && !r.soVoi.khop && ` Kết quả KHÁC lúc ghi — ${r.soVoi.moTa}`}
-                  {r.thieu.length > 0 && ` Fixture thiếu: ${r.thieu.join(", ")}.`}
+                    `Understood ${r.quyetDinh.ketQua.coverage.analyzed} of ${r.quyetDinh.ketQua.coverage.total} instructions. `}
+                  Replay of Devnet data recorded at {ngayGio(r.captureLuc)} (loaded from a static file of this page) using
+                  the engine of the running build — the analysis calls no RPC and no AI, and signs nothing.
+                  {r.soVoi && !r.soVoi.khop && ` Result DIFFERS from the recording — ${r.soVoi.moTa}`}
+                  {r.thieu.length > 0 && ` Fixture missing: ${r.thieu.join(", ")}.`}
                 </p>
               </div>
             )}
@@ -84,57 +89,60 @@ function ChayThu() {
 function Trang() {
   return (
     <main className="app-shell inspector-shell">
-      <ProductHeader active="integration" label="Tích hợp" />
+      <ProductHeader active="integration" label="Integration" />
       <header className="inspector-heading">
-        <p className="inspector-eyebrow">Cho nhà phát triển ví và dApp · Solana Devnet</p>
-        <h1>Đặt Custos vào luồng ký.</h1>
+        <p className="inspector-eyebrow">For wallet and dApp developers · Solana Devnet</p>
+        <h1>Put Custos in the signing flow.</h1>
         <p>
-          Custos là SDK kiểm giao dịch chạy <strong>trước lúc ký</strong>, dành cho nhà phát triển ví (chính) và dApp (phụ).
-          Người dùng cuối không mở Custos: họ được bảo vệ vì ví của họ đã tích hợp nó.
+          Custos is a transaction-checking SDK that runs <strong>before signing</strong>, for wallet developers (primary)
+          and dApp developers (secondary). End users never open Custos: they get its checks because their wallet has
+          integrated it.
         </p>
       </header>
 
       <section className="tich-hop-muc">
-        <h2>1 · Ví tự gọi SDK trước khi ký</h2>
+        <h2>1 · The wallet calls the SDK itself before signing</h2>
         <pre><code>npm install @custos-solana/core</code></pre>
         <p>
-          Toàn bộ phần gọi Custos là đoạn dưới đây — <strong>{SO_DONG} dòng mã</strong>, máy đếm trên chính đoạn này
-          (bỏ chú thích và dòng trống). Nguyên văn từ{" "}
-          <a href={`${REPO}/vi-du-tich-hop/src/tich-hop.js`}>vi-du-tich-hop/src/tich-hop.js</a>. Đoạn này chép riêng ra
-          vẫn chạy được: ví truyền vào <code>inspect</code> (từ <code>@custos-solana/core</code>), một{" "}
-          <code>Connection</code> Devnet, giao dịch chưa ký và địa chỉ ví của chính người dùng.
+          Every call to Custos is in the snippet below — <strong>{SO_DONG} lines of code</strong>, counted by machine on
+          this exact snippet (excluding comments and blank lines). Verbatim from{" "}
+          <a href={`${REPO}/vi-du-tich-hop/src/tich-hop.js`}>vi-du-tich-hop/src/tich-hop.js</a>. Copied on its own, it
+          still runs: the wallet passes in <code>inspect</code> (from <code>@custos-solana/core</code>), a Devnet{" "}
+          <code>Connection</code>, the unsigned transaction and the user&apos;s own wallet address.
         </p>
-        <pre className="tich-hop-ma" tabIndex={0} aria-label="Mã hàm kiemTruocKhiKy"><code>{HAM}</code></pre>
+        <pre className="tich-hop-ma" tabIndex={0} aria-label="Code of the kiemTruocKhiKy function"><code>{HAM}</code></pre>
         <p>
-          <code>cho: "chan"</code> ⇒ không gọi hàm ký. Ký thì qua <code>kySauKhiKiem</code>: khớp neo bytes đã kiểm, phiên
-          ký dùng một lần, và chỉ nhận “đã ký” khi có chữ ký ed25519 hợp lệ trên đúng bytes đó (
+          <code>cho: "chan"</code> (block) ⇒ the sign function is not called. Signing goes through{" "}
+          <code>kySauKhiKiem</code>: it matches the anchor of the checked bytes, uses a one-time signing session, and only
+          accepts “signed” when there is a valid ed25519 signature over exactly those bytes (
           <a href={`${REPO}/vi-du-tich-hop/src/ky.js`}>ky.js</a>).
         </p>
-        <h3>Chạy thử chính hàm này</h3>
+        <h3>Try this exact function</h3>
         <ChayThu />
       </section>
 
       <section className="tich-hop-muc">
-        <h2>2 · dApp dùng một ví đã tích hợp Custos</h2>
+        <h2>2 · A dApp uses a wallet that has integrated Custos</h2>
         <p>
-          dApp không gọi <code>inspect()</code> và không import mã ví. Nó dùng <code>@solana/wallet-adapter</code> như với
-          mọi ví; hai dòng dưới đây (nguyên văn từ SolBonus) chỉ để “Custos Wallet” hiện trong danh sách ví theo
-          chuẩn Wallet Standard. <code>URL_VI</code> là địa chỉ trang ký của Ví Custos (<code>…/ket-noi.html</code>).
+          The dApp does not call <code>inspect()</code> and does not import wallet code. It uses{" "}
+          <code>@solana/wallet-adapter</code> as with any wallet; the two lines below (verbatim from SolBonus) only make
+          “Custos Wallet” appear in the wallet list via the Wallet Standard. <code>URL_VI</code> is the address of the
+          Custos Wallet signing page (<code>…/ket-noi.html</code>).
         </p>
-        <pre className="tich-hop-ma" tabIndex={0} aria-label="Mã đăng ký ví trong dApp"><code>{DAPP}</code></pre>
+        <pre className="tich-hop-ma" tabIndex={0} aria-label="Wallet registration code in the dApp"><code>{DAPP}</code></pre>
         <p>
-          Mọi <code>signTransaction</code> đi vào cửa sổ ví ở origin riêng — Custos kiểm tại đó, người dùng quyết định.
-          Xem chạy thật: <a href={LINK.solBonus}>SolBonus — dApp độc hại mô phỏng</a> (Devnet). Thiết kế:{" "}
+          Every <code>signTransaction</code> goes to the wallet window on its own origin — Custos checks there, the user
+          decides. See it running: <a href={LINK.solBonus}>SolBonus — SIMULATED malicious dApp</a> (Devnet). Design:{" "}
           <a href={`${REPO}/docs/adr/0004-custos-trong-luong-ky-cua-vi.md`}>ADR-0004</a>.
         </p>
       </section>
 
       <section className="tich-hop-muc">
-        <h2>Giới hạn, nói trước</h2>
+        <h2>Limits, stated up front</h2>
         <ul>
-          <li>Chỉ Solana Devnet. Ví Custos là ví web tham chiếu, không phải Phantom.</li>
-          <li>Ví và dApp mẫu đều do đội tự viết — đây là tích hợp tham chiếu, chưa phải pilot của bên thứ ba.</li>
-          <li>Custos không gửi giao dịch và không ghi gì lên chain.</li>
+          <li>Solana Devnet only. Custos Wallet is a reference web wallet, not Phantom.</li>
+          <li>The sample wallet and dApp were both written by the team — this is a reference integration, not a third-party pilot.</li>
+          <li>Custos does not send transactions and writes nothing on chain.</li>
         </ul>
       </section>
     </main>

@@ -1,5 +1,5 @@
 import type { Connection, VersionedTransaction } from "@solana/web3.js";
-import type { InspectResult, InspectOptions, PrimaryAction, AiAdvisory } from "@custos-solana/types";
+import type { InspectResult, InspectOptions, PrimaryAction, AiAdvisory, Locale } from "@custos-solana/types";
 import { extractFacts } from "./l1/fetch.ts";
 import { danhGia } from "./l2/evaluate.ts";
 import { dungBangChenhLech } from "./diff.ts";
@@ -17,7 +17,7 @@ import { chiTietCoverage } from "./l1/coverage.ts";
 export type Interpreter = (
   facts: Facts,
   reasonCodes: string[],
-  locale: "vi",
+  locale: Locale,
   options?: InspectOptions,
 ) => Promise<{
   detectedPrimaryAction: PrimaryAction | null;
@@ -114,9 +114,12 @@ function locL3(r: unknown): {
 const KHAI_TIENG_ANH: Readonly<Record<string, ReadonlyArray<string>>> = {
   // `transfer` không nói token hay SOL, nên nhận cả hai. Chiều ngược lại thì không:
   // khai `chuyển token` mà giao dịch chuyển SOL vẫn là lệch (so nguyên văn).
-  transfer: ["chuyển token", "chuyển SOL"],
-  receive: ["nhận token"],
-  approve: ["cấp quyền rút"],
+  //
+  // Với `locale: "en"` L3 trả tên hành động tiếng Anh (`transfer token`, …). Thêm chúng
+  // vào CÙNG từng dòng, không mở rộng nghĩa: `transfer` vẫn chỉ khớp chuyển token/SOL.
+  transfer: ["chuyển token", "chuyển SOL", "transfer token", "transfer SOL"],
+  receive: ["nhận token", "receive token"],
+  approve: ["cấp quyền rút", "approve delegate"],
 };
 
 export function cungLoaiHanhDong(khai: string, nhanDien: string): boolean {
@@ -147,7 +150,14 @@ export async function inspect(
 ): Promise<InspectResult> {
   const facts = await extractFacts(deps.connection, tx, options.nguoiDung);
   const l2 = danhGia(facts);
-  const diff = dungBangChenhLech(facts, l2.hits, options.kyHieuToken);
+  /*
+   * NGÔN NGỮ CHỈ ĐỔI CHỮ. `locale` đi vào bảng chênh lệch, chỉ mục dữ kiện và L3 — tức
+   * những thứ sinh CHỮ. Nó không đi vào `extractFacts` hay `danhGia`, nên `level`,
+   * `reasonCodes` và `coverage` không thể khác nhau giữa "vi" và "en". Có test canh.
+   * Giá trị lạ (JS thuần, không qua kiểu) rơi về "vi" chứ không làm vỡ lượt kiểm.
+   */
+  const locale: Locale = options.locale === "en" ? "en" : "vi";
+  const diff = dungBangChenhLech(facts, l2.hits, options.kyHieuToken, locale);
 
   let detectedPrimaryAction: PrimaryAction | null = null;
   let explanation = "";
@@ -162,7 +172,7 @@ export async function inspect(
       const r = await deps.interpret(
         structuredClone(facts),
         [...l2.reasonCodes],
-        options.locale ?? "vi",
+        locale,
         structuredClone(options),
       );
       const sach = locL3(r);
@@ -210,7 +220,7 @@ export async function inspect(
    * không phải dữ liệu hiển thị. Một luật khai dữ kiện không tồn tại là lỗi của
    * engine, và lỗi đó không được phép chỉ lộ ra khi người gọi bật chẩn đoán.
    */
-  const chiMuc = dungChiMuc(facts);
+  const chiMuc = dungChiMuc(facts, locale);
   const treoLo = chiMuc.treoLo(l2.hits);
 
   const chanDoan = options.chanDoan

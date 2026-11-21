@@ -14,9 +14,9 @@ import { NHAN_NGUON, DU_LIEU_GUI_MO_HINH, type ExplanationSource } from "./live/
  *  Xem docs/DAC-TA-L3.md mục 4. */
 const NHAN = {
   safe: {
-    chu: "Bình thường",
-    muc: "Không có cờ đỏ",
-    phu: "Không phát hiện dấu hiệu nguy hiểm trong phần đã đọc",
+    chu: "Normal",
+    muc: "No red flags",
+    phu: "No danger signs found in the parts we could read",
     vien: "border-emerald-200",
     nen: "bg-emerald-50/60",
     chip: "border-emerald-200 bg-white text-emerald-700",
@@ -24,9 +24,9 @@ const NHAN = {
     thanh: "bg-emerald-500",
   },
   warning: {
-    chu: "Cần xem kỹ",
-    muc: "Cần xác minh",
-    phu: "Có thông tin bạn cần xác minh trước khi tiếp tục",
+    chu: "Review carefully",
+    muc: "Needs verification",
+    phu: "There is information you should verify before continuing",
     vien: "border-amber-200",
     nen: "bg-amber-50/60",
     chip: "border-amber-200 bg-white text-amber-700",
@@ -34,9 +34,9 @@ const NHAN = {
     thanh: "bg-amber-500",
   },
   danger: {
-    chu: "Nguy hiểm",
-    muc: "Rủi ro cao",
-    phu: "Không nên ký giao dịch này",
+    chu: "Danger",
+    muc: "High risk",
+    phu: "You should not sign this transaction",
     vien: "border-rose-200",
     nen: "bg-rose-50/60",
     chip: "border-rose-200 bg-white text-rose-700",
@@ -60,9 +60,9 @@ const NHAN = {
  * "Bình thường", và câu chữ vẫn nói rõ phạm vi "trong phần đã đọc".
  */
 const HANH_DONG = {
-  safe: { huy: "Huỷ", huyChinh: false, ky: "Ký giao dịch" },
-  warning: { huy: "Huỷ giao dịch", huyChinh: true, ky: "Vẫn ký — tôi đã kiểm tra" },
-  danger: { huy: "Chặn & huỷ giao dịch", huyChinh: true, ky: "Vẫn ký — tôi hiểu rủi ro" },
+  safe: { huy: "Cancel", huyChinh: false, ky: "Sign transaction" },
+  warning: { huy: "Cancel transaction", huyChinh: true, ky: "Sign anyway — I have checked" },
+  danger: { huy: "Block & cancel transaction", huyChinh: true, ky: "Sign anyway — I understand the risk" },
 } as const;
 
 const MAU_DONG = {
@@ -112,7 +112,7 @@ function NutSaoChep({ chuoi, nhan }: { chuoi: string; nhan: string }) {
     <button
       type="button"
       className="dia-chi-nut inline-flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 text-[11.5px] text-slate-700 hover:bg-slate-50"
-      aria-label={`Sao chép ${nhan.toLowerCase()} đầy đủ`}
+      aria-label={`Copy full ${nhan.toLowerCase()}`}
       onClick={() => {
         // Ngữ cảnh không an toàn (http thường) không có `clipboard`.
         if (!navigator.clipboard) return setTrangThai("loi");
@@ -124,7 +124,7 @@ function NutSaoChep({ chuoi, nhan }: { chuoi: string; nhan: string }) {
     >
       {trangThai === "daChep" ? <CheckIcon className="h-3 w-3" /> : <CopyIcon className="h-3 w-3" />}
       <span aria-live="polite">
-        {trangThai === "daChep" ? "Đã chép" : trangThai === "loi" ? "Không chép được — hãy chọn chuỗi" : "Sao chép"}
+        {trangThai === "daChep" ? "Copied" : trangThai === "loi" ? "Could not copy — select the text" : "Copy"}
       </span>
     </button>
   );
@@ -155,7 +155,7 @@ function DiaChiDong({ d, cluster }: { d: DongDiff; cluster: string | undefined }
                 className="inline-flex items-center gap-1 text-emerald-800 underline underline-offset-2"
               >
                 Explorer <ExternalIcon className="h-3 w-3" />
-                <span className="sr-only">(mở tab mới)</span>
+                <span className="sr-only">(opens in a new tab)</span>
               </a>
             )}
           </li>
@@ -266,9 +266,9 @@ export function CanhBao({
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
   const n = chiLaChuaHieu
     ? {
-        chu: "Chưa đọc hiểu hết",
-        muc: "Phạm vi còn khuyết",
-        phu: "Một phần giao dịch chưa thể xác minh",
+        chu: "Not fully understood",
+        muc: "Incomplete coverage",
+        phu: "Part of the transaction could not be verified",
         vien: "border-slate-200",
         nen: "bg-slate-50",
         chip: "border-slate-200 bg-white text-slate-700",
@@ -298,7 +298,7 @@ export function CanhBao({
        * với mọi selector (khớp hai nơi). Nên nhãn ở đây phải KHÁC, và nó mô tả
        * đúng thứ nó là: tấm thẻ verdict, không phải cả vùng kết quả.
        */
-      aria-label="Thẻ cảnh báo Custos"
+      aria-label="Custos warning card"
       className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}
     >
       {/* PHÁN QUYẾT ĐỨNG ĐẦU. Người dùng đang chuẩn bị ký; thứ họ cần biết trước
@@ -334,7 +334,7 @@ export function CanhBao({
             {/* MỨC 1 — NGẮN. Mặc định, hiện ngay. Đây là câu duy nhất phần lớn
                 người dùng sẽ đọc, và cũng là màn hình dùng để đo mức độ hiểu
                 (docs/DAC-TA-L3.md mục 6 và 7). */}
-            <p className="text-[16px] font-medium leading-relaxed text-slate-950">{tomTat(ketQua)}</p>
+            <p className="text-[16px] font-medium leading-relaxed text-slate-950">{tomTat(ketQua, "en")}</p>
 
             {ketQua.explanation && (
               <>
@@ -344,7 +344,7 @@ export function CanhBao({
                   onClick={() => setMoRong((v) => !v)}
                   className="lien-ket text-[12.5px] text-slate-600 hover:text-slate-950"
                 >
-                  {moRong ? "Thu gọn" : "Xem chi tiết"}
+                  {moRong ? "Show less" : "View details"}
                 </button>
                 {/* Nguồn câu chi tiết thấy được KHI CHƯA MỞ (CK-04: "[AI: nguồn diễn giải]"). */}
                 {nguonChu && (
@@ -373,8 +373,8 @@ export function CanhBao({
                         {nguonChu !== "tatDinh" && nguonChu !== "chuaCauHinh" && (
                           <>
                             {" "}
-                            Đã gửi cho nhà cung cấp mô hình: {Object.values(DU_LIEU_GUI_MO_HINH).join("; ")}. Không gửi
-                            giao dịch thô, chữ ký hay khoá.
+                            Sent to the model provider: {Object.values(DU_LIEU_GUI_MO_HINH).join("; ")}. The raw
+                            transaction, signatures and keys are never sent.
                           </>
                         )}
                       </p>
@@ -388,8 +388,8 @@ export function CanhBao({
 
         {chiLaChuaHieu && (
           <p className="px-4 py-4 text-[14px] leading-relaxed text-slate-700 sm:px-5">
-            Không thấy dấu hiệu nguy hiểm nào trong phần chúng tôi đọc được. Nhưng chúng tôi chưa
-            đọc hiểu hết giao dịch này, nên chưa thể nói gì về phần còn lại.
+            No danger signs found in the parts we could read. But we could not fully read
+            this transaction, so we cannot say anything about the rest.
           </p>
         )}
 
@@ -402,15 +402,15 @@ export function CanhBao({
         {ketQua.loiKhaiLech && (
           <div className="bg-amber-50/70 px-4 py-3.5 sm:px-5">
             <p className="text-[13px] font-semibold text-amber-900">
-              Trang web nói một đằng, giao dịch làm một nẻo
+              The website says one thing, the transaction does another
             </p>
             <dl className="mt-2 grid gap-1 text-[13px] leading-relaxed text-slate-700">
               <div className="flex flex-wrap gap-x-1.5">
-                <dt>Trang web khai:</dt>
+                <dt>Website declares:</dt>
                 <dd className="font-semibold text-slate-950">{ketQua.loiKhaiLech.khai}</dd>
               </div>
               <div className="flex flex-wrap gap-x-1.5">
-                <dt>Giao dịch thật sự:</dt>
+                <dt>What the transaction actually does:</dt>
                 <dd className="font-semibold text-amber-900">{ketQua.loiKhaiLech.nhanDien}</dd>
               </div>
             </dl>
@@ -421,7 +421,7 @@ export function CanhBao({
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-4 py-3 sm:px-5">
             <span className="inline-flex items-center gap-1.5 text-[12.5px] text-slate-500">
               <ScanIcon className="h-3.5 w-3.5" aria-hidden="true" />
-              Custos nhận diện
+              Detected primary action
             </span>
             <span className="min-w-0 break-words text-[13.5px] font-medium text-slate-900">
               {ketQua.detectedPrimaryAction.type}
@@ -437,9 +437,9 @@ export function CanhBao({
             {/* Nhãn cột. Không có nó, `500,0 → 0,0` đọc được theo cả hai chiều —
                 mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
             <div className="flex items-baseline justify-between gap-4 px-4 pb-1 pt-3.5 text-[12px] text-slate-500 sm:px-5">
-              <span>Thay đổi nếu bạn ký</span>
+              <span>Changes if you sign</span>
               <span className="font-mono tabular-nums">
-                trước <span className="px-0.5">→</span> sau
+                before <span className="px-0.5">→</span> after
               </span>
             </div>
             {/*
@@ -451,13 +451,13 @@ export function CanhBao({
             */}
             {(
               [
-                ["TÀI SẢN", hq.taiSan, taiSanDoi(hq.taiSan) ? null : "Không thấy số dư token hay SOL nào đổi trong phần đã đọc hiểu, ngoài phí."],
-                ["QUYỀN KIỂM SOÁT", hq.quyen, "Không thấy quyền nào đổi trong phần đã đọc hiểu."],
+                ["ASSETS", hq.taiSan, taiSanDoi(hq.taiSan) ? null : "No token or SOL balance changes found in the parts we understood, apart from fees."],
+                ["CONTROL", hq.quyen, "No control changes found in the parts we understood."],
               ] as const
             ).map(([ten, dong, khiTrong], nhom) => (
-              <section key={ten} aria-label={`Hậu quả nếu ký — ${ten.toLowerCase()}`} className="border-t border-slate-100">
+              <section key={ten} aria-label={`Consequences if you sign — ${ten.toLowerCase()}`} className="border-t border-slate-100">
                 <h4 className="px-4 pt-2.5 text-[11px] font-semibold tracking-wide text-slate-500 sm:px-5">{ten}</h4>
-                {khiTrong && (dong.length === 0 || ten === "TÀI SẢN") && (
+                {khiTrong && (dong.length === 0 || ten === "ASSETS") && (
                   <p className="px-4 pb-1 pt-1 text-[12.5px] text-slate-600 sm:px-5">{khiTrong}</p>
                 )}
                 <div className="divide-y divide-slate-100">
@@ -468,7 +468,7 @@ export function CanhBao({
               </section>
             ))}
             {hq.khac.length > 0 && (
-              <section aria-label="Hậu quả nếu ký — phần khác" className="divide-y divide-slate-100 border-t border-slate-100">
+              <section aria-label="Consequences if you sign — other" className="divide-y divide-slate-100 border-t border-slate-100">
                 {hq.khac.map((d, i) => (
                   <DongHauQua key={i} d={d} cluster={clusterExplorer} thuTu={hq.taiSan.length + hq.quyen.length + i} />
                 ))}
@@ -490,7 +490,7 @@ export function CanhBao({
         <div className="px-4 py-3.5 sm:px-5">
           <div className="flex items-baseline justify-between gap-4">
             <p className="text-[13px] text-slate-700">
-              Đã đọc hiểu <span className="font-semibold text-slate-950">{analyzed} trên {total}</span> lệnh
+              Understood <span className="font-semibold text-slate-950">{analyzed} of {total}</span> instructions
             </p>
             <span className="font-mono text-[15px] font-semibold tabular-nums text-slate-800">
               {phanTramCoverage}%
@@ -502,7 +502,7 @@ export function CanhBao({
             aria-valuenow={phanTramCoverage}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label="Mức đọc hiểu giao dịch"
+            aria-label="Transaction coverage"
           >
             <div
               className={`coverage-fill h-full rounded-full ${n.thanh}`}
@@ -510,11 +510,11 @@ export function CanhBao({
             />
           </div>
           <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
-            {unverifiedPrograms > 0 && `${unverifiedPrograms} chương trình chưa xác minh. `}
+            {unverifiedPrograms > 0 && `${unverifiedPrograms} unverified ${unverifiedPrograms === 1 ? "program" : "programs"}. `}
             {/* "2 trên 3" rất dễ bị đọc thành "an toàn 67%". Đây là con số ĐỌC HIỂU,
                 và nói nhầm nó thành điểm an toàn là đúng thứ sản phẩm này sinh ra để
                 không làm. Một câu, đứng ngay cạnh con số. */}
-            {analyzed < total && <span>Đây là mức đọc hiểu, không phải mức an toàn.</span>}
+            {analyzed < total && <span>This is how much we could read, not how safe it is.</span>}
           </p>
         </div>
 
@@ -525,7 +525,7 @@ export function CanhBao({
             ngay tại chỗ nó sinh ra. */}
         {ketQua.aiAdvisory === "review_required" && (
           <div className="px-4 py-3.5 sm:px-5">
-            <p className="text-[13px] font-medium text-amber-900">Custos đề nghị kiểm tra thủ công</p>
+            <p className="text-[13px] font-medium text-amber-900">Custos recommends a manual check</p>
             {/* HAI CÂU NÀY TỪNG DÍNH LIỀN NHAU, VÀ CHÚNG PHỤC VỤ HAI NGƯỜI KHÁC NHAU.
                 Câu đầu là của người sắp ký: ai quyết định mức cảnh báo, và đề nghị
                 này KHÔNG phải một phán quyết. Nó bảo vệ quyết định đã khoá số 1 nên
@@ -539,8 +539,8 @@ export function CanhBao({
                 Nguồn câu chữ được ghi cạnh phần diễn giải theo từng lượt.
                 Không gắn nhãn tất định cố định khi có thể gọi mô hình thật. */}
             <p className="mt-1 text-[12px] leading-relaxed text-slate-600">
-              Mức cảnh báo ở trên do engine luật quyết định. Đề nghị này chỉ yêu cầu bạn
-              xem kỹ — không xác nhận an toàn, không kết luận nguy hiểm.
+              The warning level above is decided by the rule engine. This recommendation only asks you
+              to look carefully — it does not confirm safety and does not conclude danger.
             </p>
           </div>
         )}
@@ -558,7 +558,7 @@ export function CanhBao({
             onClick={() => setMoKyThuat((v) => !v)}
             className="lien-ket text-[12.5px] text-slate-500 hover:text-slate-900"
           >
-            {moKyThuat ? "Ẩn chi tiết kỹ thuật" : "Chi tiết kỹ thuật"}
+            {moKyThuat ? "Hide technical details" : "Technical details"}
           </button>
           {moKyThuat && (
             <>
@@ -573,13 +573,13 @@ export function CanhBao({
               {boiCanh && (
                 <dl className="mo-ra mt-2 space-y-1 rounded-xl border border-slate-200 bg-white p-3 font-mono text-[11px] text-slate-600">
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="text-slate-500">Nguồn kết quả:</dt>
+                    <dt className="text-slate-500">Result source:</dt>
                     <dd className="break-all font-semibold text-slate-800">
                       {boiCanh.kieu === "live"
-                        ? "chạy thật — vừa gọi RPC"
+                        ? "live run — RPC just called"
                         : boiCanh.kieu === "replay"
-                          ? `phát lại — engine vừa chạy trên phản hồi RPC ghi lúc ${boiCanh.ghiLuc ?? "?"}; ${boiCanh.cluster === "devnet" ? "KHÔNG phải giao dịch Devnet mới" : "KHÔNG phải trạng thái chuỗi hiện tại"}`
-                          : `dữ liệu mock “${boiCanh.tenMock ?? "?"}” — KHÔNG phải kết quả thật`}
+                          ? `replay — the engine just ran on RPC responses recorded at ${boiCanh.ghiLuc ?? "?"}; ${boiCanh.cluster === "devnet" ? "NOT a new Devnet transaction" : "NOT the current chain state"}`
+                          : `mock data “${boiCanh.tenMock ?? "?"}” — NOT a real result`}
                     </dd>
                   </div>
                   <div className="flex flex-wrap gap-x-2">
@@ -591,9 +591,9 @@ export function CanhBao({
                     <dd className="break-all text-slate-800">{boiCanh.nguon}</dd>
                   </div>
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="text-slate-500">Phần chưa đọc hiểu:</dt>
+                    <dt className="text-slate-500">Not understood:</dt>
                     <dd className="break-all text-slate-800">
-                      {total - analyzed}/{total} lệnh · {unverifiedPrograms} chương trình chưa xác minh
+                      {total - analyzed}/{total} instructions · {unverifiedPrograms} unverified programs
                     </dd>
                   </div>
                 </dl>
@@ -609,7 +609,7 @@ export function CanhBao({
               */}
               <Trace ketQua={ketQua} />
               <dl className="mo-ra mt-2 space-y-1 rounded-xl bg-slate-50 p-3 font-mono text-[11px] text-slate-600">
-                {chiTietKyThuat(ketQua).map((d, i) => (
+                {chiTietKyThuat(ketQua, "en").map((d, i) => (
                   <div key={i} className="flex flex-wrap gap-x-2">
                     <dt className="text-slate-500">{d.nhan}:</dt>
                     <dd className="break-all text-slate-800">{d.giaTri}</dd>
@@ -620,10 +620,10 @@ export function CanhBao({
                   trị để đối chiếu. Cùng khung xám nhưng khác kiểu chữ để mắt biết
                   ngay dòng nào là dữ liệu, dòng nào là lời giải thích. */}
               <p className="mo-ra mt-2 rounded-xl bg-slate-50 p-3 text-[11.5px] leading-relaxed text-slate-600">
-                Đây là ví tham chiếu tích hợp Custos SDK, không phải sản phẩm ví. Nguồn câu
-                giải thích được ghi ở phần nội dung phía trên: câu tất định hoặc mô hình
-                ngôn ngữ khi đã cấu hình. Lớp AI là tuỳ chọn và chỉ được phép đề nghị
-                kiểm tra thủ công — không tạo và không sửa mức cảnh báo.
+                This is a reference wallet with the Custos SDK built in, not a wallet product. The source of the
+                explanation is shown with the text above: a deterministic explanation, or a language
+                model when one is configured. The AI layer is optional and may only recommend
+                a manual check — it never creates or changes the warning level.
               </p>
             </>
           )}
@@ -655,11 +655,11 @@ export function CanhBao({
               </button>
             ) : onTiepTuc ? (
               <button onClick={onTiepTuc} className="nut nut-quyet-dinh nut-phu">
-                {ketQua.level === "safe" ? "Tiếp tục — xem kết quả" : "Vẫn tiếp tục — xem điều sẽ xảy ra"}
+                {ketQua.level === "safe" ? "Continue — see the result" : "Continue anyway — see what would happen"}
               </button>
             ) : (
               <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[11.5px] leading-relaxed text-slate-500">
-                Demo chỉ mô phỏng · không nhúng khoá ký
+                Demo simulates only · no signing key embedded
               </span>
             )}
           </>
