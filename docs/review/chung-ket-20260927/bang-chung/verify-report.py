@@ -28,6 +28,6 @@ assert sum('error' in r for r in rpc['results'])==2
 roadmap=docs[0].read_text(encoding='utf-8')
 assert len(re.findall(r'^### CK-\d\d —',roadmap,re.M))==16
 files=['apps/demo-wallet/src/App.tsx','apps/demo-wallet/src/WalletExecution.tsx','apps/demo-wallet/src/live/session.ts','apps/demo-wallet/src/live/receipt.ts','apps/demo-wallet/src/kichBan.ts','scripts/rpcDuPhong.ts','packages/ai/src/moHinh.ts','packages/core/src/diff.ts']
-manifest={'head':'964363a2232c681852cce30b77fe0a5b6b22913b','dirty':True,'note':'Hashes read after testing; review made no product implementation edits. See git-status.txt for pre-existing changes.','sourceSha256':{f:hashlib.sha256((root/f).read_bytes()).hexdigest() for f in files}}
+manifest={'head':'efc056adb0ced97da3cb757e3b26bb029c5d9b2e','dirty':True,'note':'Hashes read after testing; review made no product implementation edits. See git-status.txt for pre-existing changes.','sourceSha256':{f:hashlib.sha256((root/f).read_bytes()).hexdigest() for f in files}}
 (out/'source-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
 print('PASS: local links, 16 roadmap tasks, fresh test counts, browser states, RPC findings and no broadcast in browser records.')

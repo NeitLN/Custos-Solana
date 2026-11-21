@@ -15,7 +15,7 @@ Không ghi tên, email, số điện thoại. Chỉ mã P01–P20.
 | Ghi bằng gì | ghi lại bằng note trong lúc hỏi |
 | Có xin phép trước | **Có** — nói rõ là *tham gia nghiên cứu để lấy số liệu* |
 | Phạm vi consent | **số liệu tổng hợp**, KHÔNG bao gồm công bố tuổi chính xác và nghề cụ thể |
-| Màn hình đã chiếu | `/phong-van.html` ở trạng thái repo ngày 29–30/08 (trước `b90aad8`) |
+| Màn hình đã chiếu | `/phong-van.html` ở trạng thái repo ngày 29–30/08 (trước `3f2c2a2`) |
 
 ### Vì sao tuổi ở đây là NHÓM, không phải số chính xác
 
@@ -37,8 +37,8 @@ soi và xác nhận. Giữ chúng là giữ đường kiểm chứng cho con s�
 
 **1 · Màn hình đã đổi sau khi phỏng vấn.** Hôm 29–30/08 tấm cảnh báo là **nền tối**
 (`bg-slate-900/60`) đặt trên trang tối — nhất quán, không có lỗi tương phản. Nó được
-thiết kế lại sang nền sáng ngày **01/09** (`5713f46`) và trang phỏng vấn được đưa về
-cùng hệ nền sáng ngày **04/09** (`a6e58ba`).
+thiết kế lại sang nền sáng ngày **01/09** (`5c26bb2`) và trang phỏng vấn được đưa về
+cùng hệ nền sáng ngày **04/09** (`5faa36a`).
 
 Nội dung không đổi: vẫn mức *Nguy hiểm*, vẫn bảng `500 → 0`, vẫn dòng đổi chủ tài
 khoản, vẫn *"đã đọc hiểu 2 trên 3 lệnh"*. Nhưng **hình thức thì khác**, nên con số

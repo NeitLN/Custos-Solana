@@ -1,7 +1,7 @@
 # UI Custos — chuyển sang nhận diện xanh ngọc (UIR-00 → UIR-05)
 
 **UIR đã thực hiện:** UIR-00, UIR-01, UIR-02, UIR-03, UIR-04, UIR-05.
-**HEAD trước khi sửa:** `b6d66b1`. **Baseline đối chiếu:** `docs/review/ui-direction-b6d66b1/`.
+**HEAD trước khi sửa:** `2c916fb`. **Baseline đối chiếu:** `docs/review/ui-direction-b6d66b1/`.
 
 Đã build và kiểm local dưới prefix production. **Chưa deploy, chưa publish.**
 
@@ -57,7 +57,7 @@ riêng margin là **chưa đủ**: phải kiểm computed `padding` mới biết
 
 ## 2 · Nhận diện mới
 
-| | Trước (`b6d66b1`) | Sau |
+| | Trước (`2c916fb`) | Sau |
 |---|---|---|
 | Hero | tím đậm `#17132A` | nền sáng `#F5F8F7` |
 | CTA chính | lilac `#B9A3F3` | brand teal `#146C60`, chữ trắng |

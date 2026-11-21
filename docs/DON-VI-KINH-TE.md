@@ -1,6 +1,6 @@
 # Đơn vị kinh tế — chi phí một lượt kiểm tra
 
-**Đo ngày 23/08/2026**, phần mô hình **đo lại 12/09/2026** · commit `9e5e0f3` · script [`do-chi-phi.ts`](../scripts/do-chi-phi.ts) và [`do-token-mo-hinh.ts`](../scripts/do-token-mo-hinh.ts)
+**Đo ngày 23/08/2026**, phần mô hình **đo lại 12/09/2026** · commit `89a599d` · script [`do-chi-phi.ts`](../scripts/do-chi-phi.ts) và [`do-token-mo-hinh.ts`](../scripts/do-token-mo-hinh.ts)
 
 Trang này tồn tại vì một câu hỏi mà giám khảo track *Best Product & Business* chắc
 chắn hỏi và đội chưa trả lời được: **"Một lượt kiểm tra tốn của các em bao nhiêu?"**

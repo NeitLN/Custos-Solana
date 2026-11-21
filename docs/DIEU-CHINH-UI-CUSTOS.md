@@ -1,6 +1,6 @@
 # Custos — điều chỉnh UI theo nhận diện riêng sau khi chạy thử
 
-Baseline đã chạy: `b6d66b1` — trang giới thiệu WEB-00 đến WEB-07. Ngày lập tài liệu: 18/09/2026. Đối tượng thực hiện: Nhóm trong repository Custos. Không đặt mốc thời gian; nghiệm thu theo hành vi và hình ảnh thực tế.
+Baseline đã chạy: `2c916fb` — trang giới thiệu WEB-00 đến WEB-07. Ngày lập tài liệu: 18/09/2026. Đối tượng thực hiện: Nhóm trong repository Custos. Không đặt mốc thời gian; nghiệm thu theo hành vi và hình ảnh thực tế.
 
 ## 0. Quyết định mới của chủ dự án và thứ tự ưu tiên
 
@@ -460,7 +460,7 @@ Không dùng số điểm thẩm mỹ hoặc xác suất đạt giải thay cho 
 Đây là quyết định thiết kế mới của chủ dự án: không dùng UI/màu/bố cục đặc
 trưng của nhóm N.E.D. Tài liệu này thay phần art direction của đặc tả website cũ.
 
-Chạy giao diện hiện tại và đối chiếu ảnh baseline b6d66b1 trước khi sửa.
+Chạy giao diện hiện tại và đối chiếu ảnh baseline 2c916fb trước khi sửa.
 Ưu tiên sửa lỗi header tràn ở 320px, chip chồng title/Devnet và list reset làm
 lệch gutter; kiểm bằng browser metrics, không giấu bằng overflow-x:hidden.
 

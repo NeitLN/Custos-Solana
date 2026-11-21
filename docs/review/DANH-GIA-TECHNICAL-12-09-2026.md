@@ -1,6 +1,6 @@
 # Đánh giá Custos sau roadmap và đề xuất đổi track
 
-Ngày 12/09/2026, bản mã `780cf6d5408c031a852ac1fec371bbc5c9dc3207`.
+Ngày 12/09/2026, bản mã `f8d5a43a2a233225d0fbc630b4ba34698278b31b`.
 
 **Khuyến nghị: đổi sang Best Technical Build và tiếp tục phát triển từ nền hiện tại.** Người dùng cho biết BTC đã cho phép đổi track và nhóm hiện không thể bổ sung nghiên cứu thị trường/phỏng vấn. Đây là đầu vào của quyết định; chưa tự sửa thông tin đăng ký hay metadata dự án.
 

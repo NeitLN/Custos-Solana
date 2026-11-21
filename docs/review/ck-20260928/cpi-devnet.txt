@@ -1,4 +1,4 @@
-# npm run cpi-devnet — 2026-09-27T20:28:01Z — commit 6b00631 (cây có thay đổi chưa commit)
+# npm run cpi-devnet — 2026-09-27T20:28:01Z — commit 0530ce4 (cây có thay đổi chưa commit)
 RPC: api.devnet.solana.com
 mô phỏng: OK
 lệnh ngoài: AToken… createAtaIdempotent

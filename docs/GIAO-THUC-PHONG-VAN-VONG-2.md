@@ -117,7 +117,7 @@ Vòng 2 ghi vào **file riêng** — `data/seed/phong-van-vong-2.json`:
 {
   "phienBan": 1,
   "vong": 2,
-  "phienBanUi": "cf42a18",
+  "phienBanUi": "c20a4bd",
   "nguonGoc": { "khoangPhongVan": "…", "aiHoi": "…", "cachHoi": "…" },
   "ban": [ /* … */ ]
 }

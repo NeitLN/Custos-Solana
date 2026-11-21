@@ -1,6 +1,6 @@
 # Update Report — vòng review độc lập
 
-**Commit được review:** `31a59d7` · nhánh `main`
+**Commit được review:** `8e762d7` · nhánh `main`
 **Ngày:** 25/08/2026 · **Phạm vi:** PHASE 0 → 4, chỉ các mục **P0**
 **Trạng thái commit:** ⚠️ **chưa commit, chưa push** — theo yêu cầu. Thay đổi nằm trong
 cây làm việc, chờ người dùng tự duyệt và tự commit.

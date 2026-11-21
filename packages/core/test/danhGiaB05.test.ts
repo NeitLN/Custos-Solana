@@ -181,8 +181,8 @@ test("tài liệu ghi ĐÚNG số áp dụng của từng tính chất, không k
 
 test("tính chất suy từ tài liệu Solana, KHÔNG từ đặc tả nội bộ", () => {
   /*
-   * Ràng buộc khó nhất của thẻ. `docs/DAC-TA-CORE.md` commit `63959f3` lúc 21:55:31 và
-   * engine L2 commit `42c33d0` lúc 21:57:03 cùng ngày — 92 giây, cùng người, cùng
+   * Ràng buộc khó nhất của thẻ. `docs/DAC-TA-CORE.md` commit `7f77152` lúc 21:55:31 và
+   * engine L2 commit `c349c88` lúc 21:57:03 cùng ngày — 92 giây, cùng người, cùng
    * phiên. Nó KHÔNG độc lập với verdict.
    */
   const sc = doc(SCRIPT);

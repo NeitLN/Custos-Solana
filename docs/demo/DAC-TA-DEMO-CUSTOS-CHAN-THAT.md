@@ -24,7 +24,7 @@ Câu chuyện cần chứng minh:
 
 ## 2. Cơ sở rà soát và khoảng trống hiện tại
 
-Rà soát mã đang có trong workspace; HEAD ghi nhận `e4973af` nhưng nhiều thay đổi chưa commit. Đừng coi HEAD này đại diện đầy đủ cho tính năng mới. Lượt lập tài liệu này **không chạy thêm giao dịch**; bằng chứng live tham chiếu từ các báo cáo đã lưu.
+Rà soát mã đang có trong workspace; HEAD ghi nhận `6a0a3ef` nhưng nhiều thay đổi chưa commit. Đừng coi HEAD này đại diện đầy đủ cho tính năng mới. Lượt lập tài liệu này **không chạy thêm giao dịch**; bằng chứng live tham chiếu từ các báo cáo đã lưu.
 
 | Hạng mục | Điều quan sát được | Điều cần làm tiếp |
 |---|---|---|

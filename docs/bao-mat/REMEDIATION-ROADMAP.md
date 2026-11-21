@@ -1,6 +1,6 @@
 # Roadmap khắc phục
 
-Nguồn: `docs/bao-mat/SECURITY-AUDIT.md`, commit `92cca15`.
+Nguồn: `docs/bao-mat/SECURITY-AUDIT.md`, commit `d1e41e5`.
 
 Nguyên tắc xuyên suốt: **sửa nguyên nhân gốc trước triệu chứng.** Ba lỗi Critical
 (F2, A1, một phần F1) đều bắt nguồn từ việc `Facts` không phân biệt được *"đo được

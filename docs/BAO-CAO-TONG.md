@@ -1,6 +1,6 @@
 # Báo cáo tổng — đã làm gì, và còn thiếu gì
 
-**Viết ngày 06/09/2026** · 49 commit kể từ `e09569e` · dành cho người cần nắm nhanh
+**Viết ngày 06/09/2026** · 49 commit kể từ `acd15e7` · dành cho người cần nắm nhanh
 trạng thái thật của repo.
 
 > Số trong trang này **sinh từ dữ liệu**, không gõ tay. Chạy `npm run so-lieu` rồi

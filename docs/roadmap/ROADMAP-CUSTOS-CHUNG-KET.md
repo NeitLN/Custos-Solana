@@ -3,7 +3,7 @@
 > Bản đề xuất sau chạy thử ngày 27/09/2026. Track: **Best Technical Build**.
 > Đây là yêu cầu triển khai cho nhóm, **không phải báo cáo đã triển khai**.
 > Lịch và hình thức thi chỉ tra tại [nguồn lịch duy nhất](../cuoc-thi/THONG-TIN-VONG-HIEN-TAI.md).
-> Baseline: HEAD `964363a2232c681852cce30b77fe0a5b6b22913b` **cộng thay đổi chưa commit**.
+> Baseline: HEAD `efc056adb0ced97da3cb757e3b26bb029c5d9b2e` **cộng thay đổi chưa commit**.
 > [Báo cáo chạy thử và bằng chứng](../review/chung-ket-20260927/BAO-CAO.md).
 
 ## 1. Quyết định sản phẩm

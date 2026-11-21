@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).resolve().parent
 BASE = 'http://localhost:5198/Custos-Solana/'
-report = {'base': BASE, 'sourceCommit': 'b6d66b1', 'views': [], 'interactions': {}}
+report = {'base': BASE, 'sourceCommit': '2c916fb', 'views': [], 'interactions': {}}
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)

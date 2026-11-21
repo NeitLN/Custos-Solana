@@ -1,6 +1,6 @@
 # Chạy thử Custos và ưu tiên nâng cấp chung kết
 
-Ngày kiểm: 27/09/2026. HEAD `964363a2232c681852cce30b77fe0a5b6b22913b` cộng working tree có thay đổi sẵn. Mục tiêu: kiểm sản phẩm hiện tại để lập roadmap Technical, không sửa implementation trong lượt này.
+Ngày kiểm: 27/09/2026. HEAD `efc056adb0ced97da3cb757e3b26bb029c5d9b2e` cộng working tree có thay đổi sẵn. Mục tiêu: kiểm sản phẩm hiện tại để lập roadmap Technical, không sửa implementation trong lượt này.
 
 **Kết luận:** nền test và các bản vá trước đang qua; rủi ro trình diễn lớn nhất quan sát được là RPC đọc tài khoản không hoàn tất, trong khi balance/lịch sử vẫn trả lời. Cần ưu tiên vận hành live, replay theo kịch bản và đường xem bằng chứng. Luồng override/thực thi/quyền đã có, không nên xây lại.
 

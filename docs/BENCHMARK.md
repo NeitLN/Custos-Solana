@@ -379,8 +379,8 @@ bộ không đạt điều kiện đó, và lịch sử git nói thẳng:
 
 | | commit | thời điểm |
 |---|---|---|
-| `docs/DAC-TA-CORE.md` | `63959f3` | 21/08 **21:55:31** |
-| engine L2 | `42c33d0` | 21/08 **21:57:03** |
+| `docs/DAC-TA-CORE.md` | `7f77152` | 21/08 **21:55:31** |
+| engine L2 | `c349c88` | 21/08 **21:57:03** |
 
 **92 giây**, cùng người, cùng phiên. Dùng nó làm nguồn kỳ vọng rồi gọi là độc lập sẽ
 lặp đúng lỗi vòng tròn mà mục 1 đã tự cảnh báo.

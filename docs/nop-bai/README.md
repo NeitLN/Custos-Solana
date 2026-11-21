@@ -33,7 +33,7 @@ riêng phần **bằng chứng** — phỏng vấn người mua, bên thứ ba t
 lấp, không nằm lì trong danh sách trống.
 
 > Ô *"eval với mô hình thật"* từng gõ cứng chuỗi `BLOCKED_BY_SECRET` thẳng trong mã,
-> nên nó báo CHƯA suốt ba ngày sau khi lượt live đã chạy (`a0f2c91`, 11/09). Một ô
+> nên nó báo CHƯA suốt ba ngày sau khi lượt live đã chạy (`c23e300`, 11/09). Một ô
 > trống giả cũng là trình bày sai, và nó dẫn tới quyết định sai của chính đội.
 
 Một checklist gõ tay là danh sách của ngày viết nó. Sau ba lần sửa, ô người ta tin

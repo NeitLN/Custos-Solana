@@ -1,7 +1,7 @@
 {
  "phepDo": "CK-14 · thời gian theo chặng của một lượt kiểm (node, không gồm render)",
  "doLuc": "2026-09-28T12:41:20.490Z",
- "sourceCommit": "6b00631584022cfe45fb12da04e6d4bffce6d151",
+ "sourceCommit": "0530ce4c7fd48181d3d001e1f3ac47e59ff2d12f",
  "dirtyWorktree": true,
  "lenh": "node --env-file=.env.local --experimental-strip-types scripts/ky-thuat/do-chang.ts --live --n=3",
  "nguon": "live Devnet qua RPC riêng (host devnet.helius-rpc.com)",

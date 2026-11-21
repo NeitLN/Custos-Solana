@@ -1,6 +1,6 @@
 # TB-G00 — Xác minh baseline và giữ bằng chứng gốc
 
-**runId:** `g00-20260912-024738` · **HEAD:** `780cf6d5408c031a852ac1fec371bbc5c9dc3207`
+**runId:** `g00-20260912-024738` · **HEAD:** `f8d5a43a2a233225d0fbc630b4ba34698278b31b`
 (khớp baseline của [review 12/09](../../DANH-GIA-TECHNICAL-12-09-2026.md), không phải chép lại kết luận cũ)
 
 **Phạm vi lượt này:** offline + typecheck + unit test. **Chưa chạy:** browser suite, Devnet live, build hai app.

@@ -2,7 +2,7 @@
 
 > ⚠️ **TÀI LIỆU LỊCH SỬ — ảnh chụp mã nguồn lúc phản biện, 26/09/2026.** Báo cáo mô tả lỗi TRƯỚC khi sửa; giữ nguyên văn làm mốc. Trạng thái sửa từng finding: [`TRANG-THAI-SUA.md`](TRANG-THAI-SUA.md).
 
-Ngày 26/09/2026 · HEAD tham chiếu `e4973afbd63e4fea6c6247b6f13a6ab0bc73bd71` · **cây làm việc có thay đổi chưa commit**.
+Ngày 26/09/2026 · HEAD tham chiếu `6a0a3ef047e5dc159d6182e6782cced99e5477d5` · **cây làm việc có thay đổi chưa commit**.
 
 **Kết luận:** ưu tiên sửa độ đúng của quyền rút và fail-safe dữ liệu mint trước khi mở rộng tính năng. Hai ca chạy toàn tuyến bằng RPC stub hiện trả `safe` khi dữ kiện/quyền cần cảnh báo bị bỏ sót. Bộ test hiện có không phủ những biến thể này.
 

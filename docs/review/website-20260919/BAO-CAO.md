@@ -5,7 +5,7 @@ triển khai thì viết *"đã build và kiểm local"*, không viết *"websit
 
 | | |
 |---|---|
-| Baseline | `c14eeb0` |
+| Baseline | `fb73341` |
 | Ngày | 19/09/2026 |
 | Node | v24.12.0 · npm 11.6.2 |
 | Browser | Chromium (Playwright, bản ghim trong repo) |

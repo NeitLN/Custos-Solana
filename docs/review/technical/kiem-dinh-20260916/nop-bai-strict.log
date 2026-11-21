@@ -3,7 +3,7 @@
 > node --experimental-strip-types scripts/kiem-nop-bai.ts --strict
 
 
-CHECKLIST NỘP BÀI · 9/13 · HEAD cdd53c1
+CHECKLIST NỘP BÀI · 9/13 · HEAD 41d867f
 
   ✓ Bộ test xanh                               719 pass · 0 fail
   · Cây làm việc sạch                          còn thay đổi chưa commit
@@ -17,7 +17,7 @@ CHECKLIST NỘP BÀI · 9/13 · HEAD cdd53c1
 ✖ CHƯA SẴN SÀNG NỘP — 4/13 ô chưa đạt:
   · Release tag cố định                        chưa có tag nào
   ✓ Metadata repo (description, homepage, topics) 7 topic, có mô tả và homepage
-  ✓ Release notes mô tả đúng bản sắp gắn tag   cdd53c1 → HEAD cdd53c1: chỉ chính notes thay đổi
+  ✓ Release notes mô tả đúng bản sắp gắn tag   41d867f → HEAD 41d867f: chỉ chính notes thay đổi
   · Bằng chứng tích hợp thuộc đúng bản này     đo trên cây làm việc bẩn — chạy lại trên cây sạch
   ✓ Registry khớp version trong source         registry 0.2.0 · source 0.2.0
 

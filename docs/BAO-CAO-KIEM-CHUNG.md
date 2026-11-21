@@ -11,7 +11,7 @@ trang này ghi là **chưa đo được** thay vì ước lượng.
   commit** và chỉ xanh khi được sinh lại. Đó là chủ ý: chúng phải mô tả đúng bản
   sắp gắn tag. Bước cuối trước khi tạo tag là chạy lại `npm run thu-tich-hop:devnet`
   rồi `npm run release-notes`.
-- Bằng chứng tích hợp đo tại: `e4973af`, cây có thay đổi chưa commit lúc đo — lượt gần nhất PASS
+- Bằng chứng tích hợp đo tại: `6a0a3ef`, cây có thay đổi chưa commit lúc đo — lượt gần nhất PASS
 - Kết luận phát hành: **`DO NOT FREEZE`** — lý do ở mục 7
 
 ---
@@ -70,7 +70,7 @@ buộc**. Và không được gọi nó là *"0 false positive"* — cohort chư
 
 | # | Câu hỏi | Trả lời | Kiểm bằng |
 |---|---|---|---|
-| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `e4973af` | `ket-qua.json` → `lastAttempt` |
+| 1 | Lượt tích hợp gần nhất pass hay fail? | **PASS** tại `6a0a3ef` | `ket-qua.json` → `lastAttempt` |
 | 2 | Bằng chứng có thuộc bản này không? | Có — từ lúc đo tới HEAD **không file nào trong phạm vi đổi**. Phạm vi của lượt live là `packages/` và `vi-du-tich-hop/`, KHÔNG gồm giao diện: mã giao diện đổi thì bằng chứng a11y hết hiệu lực (dòng riêng), còn lượt live thì không | `npm run nop-bai -- --strict` |
 | 3 | Có artifact cũ nào đang báo xanh? | **Không** — cổng đọc `lastAttempt`, không đọc lượt pass cũ | mục 5 |
 | 4 | Registry đang phục vụ version nào? | **`ai@0.3.0`** · `core@0.2.0` — khớp source (publish 26/09/2026) | `npm view @custos-solana/ai version` |

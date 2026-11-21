@@ -1,7 +1,7 @@
 {
  "phepDo": "CK-14 · độ trễ phát lại theo kịch bản trong trình duyệt",
  "doLuc": "2026-09-26T19:26:47.899219+00:00",
- "sourceCommit": "964363a2232c681852cce30b77fe0a5b6b22913b",
+ "sourceCommit": "efc056adb0ced97da3cb757e3b26bb029c5d9b2e",
  "dirtyWorktree": true,
  "build": "production (vite build, base /Custos-Solana/) phục vụ bằng vite preview cổng 5198",
  "trinhDuyet": "Chromium headless (Playwright), 1440x900",

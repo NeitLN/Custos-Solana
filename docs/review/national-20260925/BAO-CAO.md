@@ -1,6 +1,6 @@
 # Custos — rà soát sau giải Nhất cấp trường, trước vòng toàn quốc
 
-**Ngày rà soát:** 25/09/2026 · **Mã nguồn:** `0c1b96d` cộng với thay đổi chưa commit của nhóm. Đây là ảnh chụp tại thời điểm kiểm tra, không phải nghiệm thu bản phát hành cuối. Không có commit/push nào được thực hiện trong lượt này.
+**Ngày rà soát:** 25/09/2026 · **Mã nguồn:** `764e6f4` cộng với thay đổi chưa commit của nhóm. Đây là ảnh chụp tại thời điểm kiểm tra, không phải nghiệm thu bản phát hành cuối. Không có commit/push nào được thực hiện trong lượt này.
 
 ## Kết luận để ra quyết định
 

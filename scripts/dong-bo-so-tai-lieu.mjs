@@ -43,8 +43,8 @@ const THIEU_CAP = S.soLuat - CAP;
 const GIAY = String(S.tichHop?.giayDenKetQuaDau ?? "").replace(".", ",");
 // Dải đo và số lượt — để câu chữ nói đúng con số là trung vị của bao nhiêu lượt.
 const KQ_TH = JSON.parse(readFileSync("data/tich-hop/ket-qua.json", "utf8"));
-// SHA và trạng thái của lượt đo GẦN NHẤT. Báo cáo kiểm chứng từng ghi tay `01f5112`
-// trong khi bằng chứng đã sang `55734e8` — đúng loại lệch mà chính trang đó tồn tại
+// SHA và trạng thái của lượt đo GẦN NHẤT. Báo cáo kiểm chứng từng ghi tay `7141bd0`
+// trong khi bằng chứng đã sang `b825765` — đúng loại lệch mà chính trang đó tồn tại
 // để bắt, và nó tự mắc.
 const TH_SHA = (KQ_TH.lastAttempt?.sourceCommit ?? "").slice(0, 7);
 const TH_DAT = KQ_TH.lastAttempt?.dat === true;
@@ -235,11 +235,7 @@ if (S.hieuNang) {
 // BOI-CANH-DU-AN.md đứng ngoài mọi vòng dọn dẹp trước vì không ai nghĩ nó là "tài liệu công
 // khai" — nhưng nó là thứ mọi phiên làm việc đọc đầu tiên, nên số cũ ở đây lan ra
 // khắp nơi khác.
-//
-// BOI-CANH-DU-AN.md là bản sao cùng nội dung cho agent khác (reviewer). Bỏ nó ra ngoài thì mỗi
-// lượt đồng bộ để lại một con số test cũ đúng ở chỗ agent kia đọc đầu tiên — đã xảy
-// ra 25/09 (F-14).
-for (const tep of ["BOI-CANH-DU-AN.md", "BOI-CANH-DU-AN.md"]) thayDong(tep, [
+for (const tep of ["BOI-CANH-DU-AN.md"]) thayDong(tep, [
   // Dòng này mang HAI con số. Bản trước chỉ đồng bộ số test, nên `soMau` ở đây tụt
   // lại 33 trong khi artifact và README đã 38 — đúng một dòng, hai claim, một cái
   // được canh và một cái không.

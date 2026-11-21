@@ -1,7 +1,7 @@
 # Bảng finding — lượt triển khai sau rà soát 25/09/2026
 
 Thực hiện theo [`BAO-CAO.md`](BAO-CAO.md) và `PROMPT-NANG-CAP-CUSTOS-VONG-QUOC-GIA-2026.md` (đã gỡ khỏi HEAD 09/10, còn trong lịch sử git).
-Baseline: HEAD `0c1b96d`, cây bẩn lúc bắt đầu: `package.json` (script `mau-inspector`), `BOI-CANH-DU-AN.md`,
+Baseline: HEAD `764e6f4`, cây bẩn lúc bắt đầu: `package.json` (script `mau-inspector`), `BOI-CANH-DU-AN.md`,
 tài liệu reviewer vừa thêm, `scripts/ky-thuat/mau-cho-inspector.ts`. **Chưa commit/push** — chủ nhóm tự làm.
 
 Môi trường đo: Windows 11 · Node 24.12.0 · npm 11.6.2 · Chromium 149.0.7827.55 · Playwright 1.61.0 ·
@@ -13,7 +13,7 @@ axe-core 4.13.0 · RPC Devnet công cộng `api.devnet.solana.com` · dev server
 
 ## Tóm tắt trước / sau
 
-| Kiểm tra | Trước (HEAD `0c1b96d`) | Sau (cây làm việc 25/09) |
+| Kiểm tra | Trước (HEAD `764e6f4`) | Sau (cây làm việc 25/09) |
 |---|---|---|
 | `npm run check` | 1004/1004 | **1042/1042** (17 test mới + 4 guard chế độ AI + 1 ngân sách lời gọi + 4 adapter replay + 6 L3 cấp quyền + 4 lời khai + 2 câu tóm tắt) |
 | Ca đối chứng Approve trên ví | Bình thường **kèm** "Custos đề nghị kiểm tra thủ công" | **Bình thường, không đề nghị** — nhận diện `cấp quyền rút · USDC-demo → CRZa…picz` (F-13) |

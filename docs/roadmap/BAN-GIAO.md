@@ -10,7 +10,7 @@ Lộ trình: [ROADMAP-SAU-MENTOR.md](ROADMAP-SAU-MENTOR.md); trạng thái từn
 [TIEN-DO.md](TIEN-DO.md#bảng-công-việc--roadmap-sau-mentor); nghiệm thu cuối ở
 [`ck-20261004/NGHIEM-THU-CUOI.md`](../review/ck-20261004/NGHIEM-THU-CUOI.md).
 
-- **Đã commit và push** tới `22e04f9`; Vercel production + alias SolBonus trỏ deployment
+- **Đã commit và push** tới `f984d10`; Vercel production + alias SolBonus trỏ deployment
   `custos-solana-70j8wsfpf`. Deploy Vercel chạy từ một **git worktree sạch**, vì thư mục làm việc có
   file cá nhân không thuộc dự án (`Q.html`, `Q_files/`). Chúng không được commit hay deploy.
 - **Sau mỗi `vercel deploy --prod`** phải gán lại alias SolBonus:
@@ -393,11 +393,11 @@ có phần dùng được.
 
 ## Hiện trạng — 17/09/2026 (sau merge giao diện)
 
-**726 pass, 0 fail.** HEAD `516f744`, **cây sạch**, **34 commit chưa push**.
+**726 pass, 0 fail.** HEAD `7d5894a`, **cây sạch**, **34 commit chưa push**.
 Cổng `kiem-san-pham` **11 đạt · 0 hỏng · 0 chưa rõ**; `nop-bai --strict` **11/13**, hai
 ô còn lại đều không phải việc của máy: 4 câu chưa hỏi BTC, và chưa tạo tag.
 
-**Đã pull 3 commit giao diện của Duy Anh** (`7493f07`, `2251d8f`, `27230a3` — 277 dòng
+**Đã pull 3 commit giao diện của Duy Anh** (`cd7d14a`, `0551fae`, `c3e7599` — 277 dòng
 CSS, `App.tsx` +15/−15). Merge tự động sạch, thay đổi hai bên còn nguyên. Nhưng đó là
 lần đầu người khác đụng vào bề mặt được đo, và nó lộ ra hai thứ:
 
@@ -455,7 +455,7 @@ roadmap cũ, lạc hậu vì dấu vết đổi chứ không vì thứ chúng đ
 
 ## Lịch sử — bàn giao reviewer 16/09/2026
 
-Bộ test: **719 pass, 0 fail** trên working tree sau bàn giao. HEAD `cdd53c1`; chưa commit/push.
+Bộ test: **719 pass, 0 fail** trên working tree sau bàn giao. HEAD `41d867f`; chưa commit/push.
 Đọc [báo cáo hiện hành](../review/technical/kiem-dinh-20260916/BAO-CAO.md) và bảng Technical trong TIEN-DO.md.
 Đã có B07 live, pitch/deck Technical, video thật và gói review. TB-V01 vẫn PARTIAL do nguồn sạch; H01/H02 chờ chủ dự án/BTC.
 Hai sửa code chính: consumer phải giữ neo từ lúc kiểm; cổng runtime bỏ qua khai báo kiểu/chú thích. Biên bản UI thêm số lỗi chức năng để phân biệt với vi phạm axe.

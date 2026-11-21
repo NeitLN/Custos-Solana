@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Regression cho ba lỗi layout đã tái hiện ở baseline `b6d66b1` (UIR-00).
+Regression cho ba lỗi layout đã tái hiện ở baseline `2c916fb` (UIR-00).
 
 Không khoá text CSS — khoá HÀNH VI ĐO ĐƯỢC:
 

@@ -204,7 +204,7 @@ const oTrongBangChung = [
    * ĐỌC TỪ ARTIFACT, KHÔNG GÕ CỨNG — và dòng này từng gõ cứng đúng một chuỗi.
    *
    * `"BLOCKED_BY_SECRET — cần ANTHROPIC_API_KEY"` nằm thẳng trong mã, nên checklist
-   * nói câu đó bất kể dữ liệu. Lượt eval với mô hình thật chạy 11/09 (`a0f2c91`) ghi
+   * nói câu đó bất kể dữ liệu. Lượt eval với mô hình thật chạy 11/09 (`c23e300`) ghi
    * `trangThai: "đã đo"` vào `data/eval/ai-ket-qua.json`, mà cổng nộp bài vẫn in
    * BLOCKED suốt ba ngày sau đó.
    *

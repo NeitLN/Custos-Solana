@@ -129,7 +129,7 @@ test("QA · hai miễn trừ KHÔNG được nới thành miễn tất — đố
    */
   assert.ok(!NHAN_LICH_SU.test("| Bộ test | **473 pass · 0 fail** | `npm run check` |"),
     "nhãn lịch sử nới quá tay — miễn luôn cả câu hiện trạng");
-  assert.ok(NHAN_LICH_SU.test("726 pass tại `516f744`"), "không nhận ra số gắn với commit");
+  assert.ok(NHAN_LICH_SU.test("726 pass tại `7d5894a`"), "không nhận ra số gắn với commit");
 
   assert.ok(THU_MUC_BIEN_BAN.test("docs/review/technical/kiem-dinh-20260916/BAO-CAO.md"),
     "biên bản review phải được miễn");

@@ -153,13 +153,13 @@ test("docHoSo GIỮ metadata vòng và phiên bản giao diện", () => {
   const ho = docHoSo({
     phienBan: 1,
     vong: 2,
-    phienBanUi: "cf42a18",
+    phienBanUi: "c20a4bd",
     xuatLuc: "2026-09-05T00:00:00.000Z",
     nguonGoc: { khoangPhongVan: "05/09/2026", aiHoi: "X", cachHoi: "video" },
     ban: [ban({})],
   });
   assert.equal(ho.vong, 2, "mất `vong`");
-  assert.equal(ho.phienBanUi, "cf42a18", "mất `phienBanUi`");
+  assert.equal(ho.phienBanUi, "c20a4bd", "mất `phienBanUi`");
   assert.equal(ho.nguonGoc?.khoangPhongVan, "05/09/2026", "mất `nguonGoc`");
 });
 

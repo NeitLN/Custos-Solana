@@ -150,7 +150,7 @@ async def main() -> None:
         tMo = await pg.locator("#trai-nghiem").inner_text()
         ck("bằng chứng B: mã luật", "SPL_SET_AUTHORITY__ACCOUNT_OWNER" in tMo)
         ck("bằng chứng B: địa chỉ ĐẦY ĐỦ", "CRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz" in tMo)
-        ck("bằng chứng B: commit nguồn", "dd7e776b0370" in tMo)
+        ck("bằng chứng B: commit nguồn", "b6a372f8ba5d" in tMo)
         ck("bằng chứng B: nói rõ 2 lượt độc lập", "hai lượt mô phỏng độc lập" in tMo.lower())
         ck("bằng chứng B: nói rõ không đủ replay", "không đủ để chạy lại engine" in tMo)
 

@@ -12,7 +12,7 @@ Mentor góp ý demo chưa đủ thật ở điểm cốt lõi: Custos bảo vệ
 
 ## 2. Hiện tại có gì, cần thay ở đâu
 
-Qua đọc mã tại HEAD `e4973af`:
+Qua đọc mã tại HEAD `6a0a3ef`:
 
 - `apps/demo-wallet/src/App.tsx` đã có nhánh bật/tắt Custos và `kyVaGui()`; `gui.ts` có ký, gửi, xác nhận, trạng thái chưa rõ và thất bại thực thi. Tận dụng phần này thay vì viết một luồng gửi song song không được kiểm thử.
 - `vi.ts` cho ký theo `VITE_DEMO_SECRET`; bản public thiếu signer nên nhánh tắt Custos chạy `inspect()` và hiển thị `HauQua.tsx` mang nhãn mô phỏng. Do đó khán giả chưa được thấy hậu quả **đã xảy ra** trên chuỗi ở luồng public.

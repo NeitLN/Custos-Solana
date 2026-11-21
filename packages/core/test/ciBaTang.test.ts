@@ -130,7 +130,7 @@ test("tầng tất định nằm TRÊN đường chặn deploy", () => {
 
 test("sinh số liệu chạy TRƯỚC bộ kiểm, không phải sau", () => {
   /*
-   * Đây là lỗi đã xảy ra thật, và nó làm HEAD `780cf6d` đỏ 11 bài: `so-lieu.json`
+   * Đây là lỗi đã xảy ra thật, và nó làm HEAD `f8d5a43` đỏ 11 bài: `so-lieu.json`
    * sinh sau khi tài liệu đã cập nhật ⇒ guard đối chiếu tài liệu với một file CŨ,
    * hai bên cùng cũ nên vẫn xanh cục bộ.
    *

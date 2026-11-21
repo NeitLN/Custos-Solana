@@ -49,7 +49,7 @@ trong 5 phút, trải nghiệm vẫn còn vài chỗ làm giám khảo phải t�
 - "AI quyết định an toàn hay nguy hiểm". Thực tế chỉ L2 sinh `level`.
 - "Đã có pilot hay đối tác dùng".
 - "1357 test chứng minh độ chính xác ngoài đời". Test chứng minh kỷ luật kỹ thuật, không thay ground truth.
-- Số test: biên bản nghiệm thu 04/10 ghi 1354 vì đó là ảnh chụp ở commit `22e04f9`. **Số hiện hành là
+- Số test: biên bản nghiệm thu 04/10 ghi 1354 vì đó là ảnh chụp ở commit `f984d10`. **Số hiện hành là
   1357**; trên sân khấu nói số hiện hành.
 
 ## Những gì chạy tốt (đo được)

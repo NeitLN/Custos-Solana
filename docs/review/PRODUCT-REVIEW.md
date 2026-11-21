@@ -1,6 +1,6 @@
 # Product Review — hội đồng độc lập
 
-**Commit được review:** `31a59d7cf13f9ce48b93c3e88b2cad02e989c172` · nhánh `main` · 24/08/2026 23:55 +07
+**Commit được review:** `8e762d7d078252765f085be7dd7c2f4bb7c69621` · nhánh `main` · 24/08/2026 23:55 +07
 **Ngày review:** 25/08/2026 · **Vòng:** 1 (read-only, chưa sửa production code)
 
 > Review chạy **tuần tự theo vai**, không dùng subagent — người review đã có ngữ cảnh
@@ -13,7 +13,7 @@
 
 | Hạng mục | Kết quả |
 |---|---|
-| Branch / HEAD | `main` / `31a59d7` · working tree **sạch** · đồng bộ `origin/main` (0 ahead, 0 behind) |
+| Branch / HEAD | `main` / `8e762d7` · working tree **sạch** · đồng bộ `origin/main` (0 ahead, 0 behind) |
 | Node / npm | v24.12.0 / 11.6.2 |
 | `npm ci` (cây làm việc) | **FAIL** — `EPERM`, OS khoá file |
 | `npm ci` (checkout sạch) | **PASS** |

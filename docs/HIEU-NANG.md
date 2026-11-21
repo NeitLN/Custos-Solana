@@ -31,7 +31,7 @@ của máy chạy, không bóp băng thông.
 ### Tải trang
 
 Số dưới đây lấy từ `data/hieu-nang/do-tre.json` của phiên **25/09** — đo trên cây làm việc
-CHƯA commit (artifact ghi `sourceCommit` là HEAD `0c1b96d`, nhưng mã đã gồm bản sửa hiện trường
+CHƯA commit (artifact ghi `sourceCommit` là HEAD `764e6f4`, nhưng mã đã gồm bản sửa hiện trường
 sống và bản gộp lời gọi ở mục 2b).
 
 | | Nguội | Ấm |

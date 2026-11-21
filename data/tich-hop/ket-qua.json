@@ -4,7 +4,7 @@
   "ghiChu": "Tích hợp do chính đội dựng. Chứng minh SDK dùng được từ ngoài monorepo; KHÔNG chứng minh có bên thứ ba nào đã chọn dùng Custos.",
   "lastAttempt": {
     "dat": true,
-    "sourceCommit": "e4973afbd63e4fea6c6247b6f13a6ab0bc73bd71",
+    "sourceCommit": "6a0a3ef047e5dc159d6182e6782cced99e5477d5",
     "dirtyWorktree": true,
     "dauVet": {
       "bam": "efcedc2da9cafa8c",
@@ -83,7 +83,7 @@
   },
   "lastSuccessful": {
     "dat": true,
-    "sourceCommit": "e4973afbd63e4fea6c6247b6f13a6ab0bc73bd71",
+    "sourceCommit": "6a0a3ef047e5dc159d6182e6782cced99e5477d5",
     "dirtyWorktree": true,
     "dauVet": {
       "bam": "efcedc2da9cafa8c",
@@ -163,61 +163,61 @@
   "lichSuPass": [
     {
       "finishedAt": "2026-09-17T20:31:28.113Z",
-      "sourceCommit": "c101f0510a8d2b3b20862075ae2eb14183cb9842",
+      "sourceCommit": "5f37b3507da77ab29716d1fb84b1bded5adaac88",
       "msDenKetQuaDauTien": 10290,
       "msMotLuotKiem": 584
     },
     {
       "finishedAt": "2026-09-17T21:27:32.541Z",
-      "sourceCommit": "ea4d3e36bcdb8d5a58d04d8f9edb3897cddc0a6b",
+      "sourceCommit": "6a23a65fb8c022b668ac8d546eb7ca533fe2f602",
       "msDenKetQuaDauTien": 7064,
       "msMotLuotKiem": 570
     },
     {
       "finishedAt": "2026-09-18T11:49:19.200Z",
-      "sourceCommit": "7292ceed7e01a2d1abb7e0365d82066292135912",
+      "sourceCommit": "a6784210d660047e69a45c83e6d92f7e4c2e5270",
       "msDenKetQuaDauTien": 6933,
       "msMotLuotKiem": 626
     },
     {
       "finishedAt": "2026-09-18T11:58:36.638Z",
-      "sourceCommit": "e5ae68b84210ec933dcb20d4f437febcbb587e7b",
+      "sourceCommit": "d937695faf6054bc9aa67cb7e7d89f6fb3c58a40",
       "msDenKetQuaDauTien": 13074,
       "msMotLuotKiem": 673
     },
     {
       "finishedAt": "2026-09-18T12:19:01.946Z",
-      "sourceCommit": "b49853fcb595e19f9875b8f64cc7e1e67f788944",
+      "sourceCommit": "bcae96217b29f0d9e80dd874196b8213d28968ba",
       "msDenKetQuaDauTien": 7162,
       "msMotLuotKiem": 629
     },
     {
       "finishedAt": "2026-09-18T12:42:19.745Z",
-      "sourceCommit": "9e6cf1921dac6f466f1ae2a21c8d091d50f2fc95",
+      "sourceCommit": "6da064e789fc554e81fa67b884484d9e9823fde8",
       "msDenKetQuaDauTien": 7502,
       "msMotLuotKiem": 649
     },
     {
       "finishedAt": "2026-09-24T18:06:55.463Z",
-      "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+      "sourceCommit": "764e6f4d14888edb2330e4b3a3fad79fbf21f6d5",
       "msDenKetQuaDauTien": 6599,
       "msMotLuotKiem": 648
     },
     {
       "finishedAt": "2026-09-24T19:58:36.219Z",
-      "sourceCommit": "0c1b96d3a91d5a4ea399cd0db934c74372132c65",
+      "sourceCommit": "764e6f4d14888edb2330e4b3a3fad79fbf21f6d5",
       "msDenKetQuaDauTien": 9387,
       "msMotLuotKiem": 578
     },
     {
       "finishedAt": "2026-09-24T20:18:03.659Z",
-      "sourceCommit": "8cba3decc473c6f2605efd5a4f909dd3a3d54d7b",
+      "sourceCommit": "ca716970b6a459619adea69d0835faaa3fd9a80c",
       "msDenKetQuaDauTien": 10844,
       "msMotLuotKiem": 920
     },
     {
       "finishedAt": "2026-09-25T19:48:04.784Z",
-      "sourceCommit": "e4973afbd63e4fea6c6247b6f13a6ab0bc73bd71",
+      "sourceCommit": "6a0a3ef047e5dc159d6182e6782cced99e5477d5",
       "msDenKetQuaDauTien": 13154,
       "msMotLuotKiem": 963
     }

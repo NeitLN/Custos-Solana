@@ -18,7 +18,7 @@ const doc = (p: string) => readFileSync(join(GOC, p), "utf8");
  *   · `README.md` bảng bốn loại bằng chứng
  *   · `scripts/kiem-nop-bai.ts`          — checklist nộp bài
  *
- * Ngày 11/09 (`a0f2c91`) lượt live chạy thật và trường đó chuyển sang `"đã đo"`.
+ * Ngày 11/09 (`c23e300`) lượt live chạy thật và trường đó chuyển sang `"đã đo"`.
  * Cả bốn bề mặt vẫn nói "chưa đo" thêm ba ngày nữa, vì cả bốn đều GÕ TAY.
  *
  * Hướng sai ở đây là **nói giảm** — báo chưa làm một việc đã làm. Dễ bị bỏ qua hơn

@@ -83,7 +83,7 @@ export const FIXTURE: FixtureLanding = {
   loai: "recorded-sample",
   nguonGoc: {
     doLuc: "2026-09-17T21:39:12.650Z",
-    sourceCommit: "dd7e776b03706f6cc587a494160e57660280041f",
+    sourceCommit: "b6a372f8ba5d44ea637831dcc69ba1d62d30035f",
     moTa: "Hai lượt mô phỏng ĐỘC LẬP trên Solana Devnet, giao dịch chưa ký.",
     daGui: false,
     duongDanArtifact: "docs/review/demo-wow-20260918/scenarios.json",

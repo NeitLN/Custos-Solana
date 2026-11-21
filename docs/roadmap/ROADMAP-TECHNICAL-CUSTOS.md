@@ -15,7 +15,7 @@
 - Chủ dự án yêu cầu tiếp tục phát triển sau roadmap cũ; hiện nhóm không có khả năng bổ sung khảo sát thị trường, buyer interview hoặc phỏng vấn người dùng mới.
 - Theo thông tin chủ dự án cung cấp, BTC cho phép đổi track. Kế hoạch này chuẩn bị sản phẩm và hồ sơ theo **Best Technical Build**. Việc đã cho phép đổi không đồng nghĩa biểu mẫu đăng ký đã được cập nhật.
 - Chủ đề trong repo hiện là **AI × Web3**. Không tự suy ra rằng chủ đề cũng đã đổi. Dữ liệu AI được giữ trung thực, kể cả khi không chứng minh được ưu thế của mô hình.
-- Baseline review là commit `780cf6d5408c031a852ac1fec371bbc5c9dc3207`. Nếu HEAD đã đổi, kiểm lại hiện trạng; không chép kết luận cũ thành kết quả của bản mới.
+- Baseline review là commit `f8d5a43a2a233225d0fbc630b4ba34698278b31b`. Nếu HEAD đã đổi, kiểm lại hiện trạng; không chép kết luận cũ thành kết quả của bản mới.
 - Custos tiếp tục là SDK đọc/mô phỏng. Bản bắt buộc không phát triển smart contract, staking registry, token riêng, backend thương mại hay mainnet runtime.
 - Phần kỹ thuật offline có thể làm và nghiệm thu riêng bằng fixture có nguồn gốc, kiểm thử đối kháng, benchmark và consumer tự dựng. Bản ứng viên của Custos trong kế hoạch này vẫn phải có demo mô phỏng thật Devnet ở B07; chỉ offline thì V01 kết luận PARTIAL. Đây là phụ thuộc hạ tầng, không phải yêu cầu tìm người phỏng vấn/đối tác. Bằng chứng tự dựng không được ghi thành xác nhận từ bên ngoài.
 

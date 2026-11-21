@@ -3,7 +3,7 @@
 > **Reviewer đã xử lý ngày 16/09:** xem [kết quả](review/technical/kiem-dinh-20260916/BAO-CAO.md). Trạng thái hiện hành chỉ ở [TIEN-DO.md](roadmap/TIEN-DO.md). Các trở ngại DNS/quyền trong phần dưới mô tả lúc bàn giao, không phải kết luận hiện tại.
 
 **Người viết:** nhóm, phiên 14–16/09/2026.
-**Trạng thái lúc bàn giao:** HEAD `9d85c8c` · **716 test pass, 0 fail** · **11 commit
+**Trạng thái lúc bàn giao:** HEAD `a8c0b7b` · **716 test pass, 0 fail** · **11 commit
 chưa push** · cây có **1 file bẩn** (`data/tich-hop/ket-qua.json`).
 **Dấu vết nội dung:** mã `6baf5fabc6f966d5` (121 file) · giao diện `c90436fd14d2fcb9` (30 file).
 
@@ -274,7 +274,7 @@ npm run thu-tich-hop:devnet    # CẦN MẠNG + DNS — đang hỏng, mục 1.1
 
 **Thứ tự quan trọng:** `tao-so-lieu.ts` phải chạy **trước** `npm run check`. Ngược
 lại thì guard đối chiếu tài liệu với số **cũ**, hai bên cùng cũ nên vẫn xanh — đó
-chính là lỗi làm HEAD `780cf6d` đỏ 11 test mà không ai biết suốt ba ngày.
+chính là lỗi làm HEAD `f8d5a43` đỏ 11 test mà không ai biết suốt ba ngày.
 
 Guard `ciBaTang.test.ts` canh đúng thứ tự này trong `.github/workflows/deploy.yml`.
 

@@ -5,7 +5,7 @@
 
 ## Bản được nghiệm thu
 
-- Commit `22e04f9` trên `main`, đã push.
+- Commit `f984d10` trên `main`, đã push.
 - Vercel production `custos-solana.vercel.app` và alias SolBonus `solbonus-custos.vercel.app` cùng trỏ
   vào deployment `custos-solana-70j8wsfpf-style-hub.vercel.app`. Đây là **hai origin** do trình duyệt
   cách ly, không phải hai hạ tầng độc lập.
@@ -26,7 +26,7 @@
 | 8 | Trang Tích hợp: chạy thử chính `kiemTruocKhiKy` | ĐẠT: tấn công ⇒ **Chặn**/`phat_hien`, phủ 2/3 lệnh; lành ⇒ **Cho ký**, phủ 1/1. Phát lại dữ liệu Devnet đã ghi; phần phân tích không gọi RPC hay AI, không ký | [`gd2-vercel.json`](gd2-vercel.json) |
 | 9 | Trang Tích hợp 390px + axe | ĐẠT: không tràn, 0 vi phạm | [`gd2-vercel.json`](gd2-vercel.json) |
 | 10 | Không lộ bí mật trên production | ĐẠT: `/.devnet/vi-demo.json` trả 404; file cá nhân trong thư mục làm việc trả 404; `/api/dien-giai` trả **403** với prompt lạ; dò khoá trên toàn bộ output build: sạch | lệnh `curl` và log `build-vercel.sh` |
-| 11 | CI GitHub Pages + bản Pages | ĐẠT: run `37185545753` build/goi-sdk/deploy success (run trước `37185315973` đỏ đúng vì tài liệu còn số test cũ, đã sửa ở `22e04f9`). Trên `neitln.github.io/Custos-Solana/`: dải hành trình 4 bước, link Tích hợp đúng base, chạy thử Chặn/Cho ký, axe 0 | [`gd2-pages.json`](gd2-pages.json) |
+| 11 | CI GitHub Pages + bản Pages | ĐẠT: run `37185545753` build/goi-sdk/deploy success (run trước `37185315973` đỏ đúng vì tài liệu còn số test cũ, đã sửa ở `f984d10`). Trên `neitln.github.io/Custos-Solana/`: dải hành trình 4 bước, link Tích hợp đúng base, chạy thử Chặn/Cho ký, axe 0 | [`gd2-pages.json`](gd2-pages.json) |
 
 ## Đối chiếu tuyên bố (F4)
 
@@ -42,7 +42,7 @@
 
 Reviewer đã review **từng giai đoạn**, chỉ đọc: GĐ0+GĐ1 (4 finding, đã sửa), GĐ2 (7 finding, đã sửa).
 Từ sau lượt review GĐ2 chỉ còn thay đổi về số liệu và tài liệu, không đổi mã. Mã đường ký không đổi
-từ commit B5 (`git diff 2728fe9 HEAD` trên connector, cửa sổ ký, `ky.js`, `giaoDich.ts`: rỗng).
+từ commit B5 (`git diff d75d6ee HEAD` trên connector, cửa sổ ký, `ky.js`, `giaoDich.ts`: rỗng).
 
 ## Chưa làm / chưa đo
 

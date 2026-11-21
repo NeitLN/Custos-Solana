@@ -48,7 +48,7 @@ const ketQua = (them: Partial<InspectResult> = {}): InspectResult => ({
  *     credential trong query (`?api-key=…`) hoặc trong path. Lỗi RPC mang nguyên
  *     URL vào `simulationError`, và `simulationError` đi thẳng vào biên lai.
  *
- *   Đường dẫn máy — chính bug đã sửa ở commit `e112ddd`: lỗi Node mang
+ *   Đường dẫn máy — chính bug đã sửa ở commit `aa4b65b`: lỗi Node mang
  *     `C:\Users\<tên>\…` vào nhật ký công khai.
  */
 const CORPUS_SECRET: Array<[string, string, RegExp]> = [

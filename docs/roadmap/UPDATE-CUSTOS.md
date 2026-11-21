@@ -37,7 +37,7 @@ Không dùng số lượng trang, luật hay test làm mục tiêu sản phẩm.
 
 ### 2.1. Những gì đã quan sát khi lập kế hoạch
 
-- HEAD lúc đọc là `15f28b6`; `git status --short` không có thay đổi. Không cố định SHA này cho các phiên sau.
+- HEAD lúc đọc là `ef53176`; `git status --short` không có thay đổi. Không cố định SHA này cho các phiên sau.
 - Artifact `apps/demo-wallet/public/so-lieu.json` và commit dựng deck ghi **730** ở số test (snapshot lúc lập kế hoạch). Đây là số đọc từ repo, không phải lượt chạy lại toàn bộ test trong phiên soạn tài liệu.
 - Đã có L1/L2/L3, 14 luật, diagnostic tùy chọn, ví mẫu, tarball consumer, neo kết quả, timeout, bộ đối kháng, benchmark/replay và video thật.
 - `rules.ts` hiện khai `bangChung` tại luật 11 và 13. Khoảng trống là phủ liên kết dữ kiện cho các luật còn lại và trình bày chúng rõ hơn; không xây lại trace từ số không.

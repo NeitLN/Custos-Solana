@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:5198/Custos-Solana/",
-  "sourceCommit": "b6d66b1",
+  "sourceCommit": "2c916fb",
   "views": [
     {
       "name": "desktop-hero",
@@ -148,7 +148,7 @@
   ],
   "interactions": {
     "A": "Cùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChỉ chuyển token\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\nThao tác đổi chủ tài khoản\nKhông có trong transaction mẫu\nKết luận lượt mẫu\nKhông phát hiện nguy hiểm trong phần đã đọc\nVì sao cảnh báo?\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.",
-    "B_evidence": "Cùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChuyển và đổi chủ\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\n!\nThao tác đổi chủ tài khoản\nCó\nBạn → CRZa…picz\nKết luận lượt mẫu\nPhát hiện thay đổi quyền kiểm soát\nĐóng bằng chứng\nDữ kiện đứng sau cảnh báo\nĐiều thay đổi\nChủ sở hữu token account\nTrước\nBạn\nSau\nCRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz\nLuật\nSPL_SET_AUTHORITY__ACCOUNT_OWNER\n\nĐo lúc: 2026-09-17T21:39:12.650Z\n\nCommit nguồn: dd7e776b0370\n\nGiới hạn: Đây là hai lượt mô phỏng độc lập. Chúng không chứng minh cùng một ảnh chụp trạng thái, và không có giao dịch nào được gửi lên mạng.\n\nDữ liệu hiển thị ở đây đã được rút gọn để công bố. Nó không đủ để chạy lại engine.\n\nMở dữ liệu nguồn\n(mở trong tab mới)\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.",
+    "B_evidence": "Cùng chuyển 10 token. Khác quyền kiểm soát.\n\nHai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.\n\nKết quả mẫu · Devnet · mô phỏng độc lập\n\nA · Chỉ chuyển token\nB · Chuyển và đổi chủ\nChuyển và đổi chủ\nToken chuyển\n10\nSố dư sau mô phỏng\n490,0\n!\nThao tác đổi chủ tài khoản\nCó\nBạn → CRZa…picz\nKết luận lượt mẫu\nPhát hiện thay đổi quyền kiểm soát\nĐóng bằng chứng\nDữ kiện đứng sau cảnh báo\nĐiều thay đổi\nChủ sở hữu token account\nTrước\nBạn\nSau\nCRZaSPkMcJsFrsbcQs8zVCsxGcTUXLYmmotm4fwepicz\nLuật\nSPL_SET_AUTHORITY__ACCOUNT_OWNER\n\nĐo lúc: 2026-09-17T21:39:12.650Z\n\nCommit nguồn: b6a372f8ba5d\n\nGiới hạn: Đây là hai lượt mô phỏng độc lập. Chúng không chứng minh cùng một ảnh chụp trạng thái, và không có giao dịch nào được gửi lên mạng.\n\nDữ liệu hiển thị ở đây đã được rút gọn để công bố. Nó không đủ để chạy lại engine.\n\nMở dữ liệu nguồn\n(mở trong tab mới)\n\nSố tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.\n\nMở demo để kiểm tra\n→\n\nBạn sẽ chuyển sang ứng dụng demo.",
     "faqOpen": true,
     "englishLang": "en",
     "escapeMenuClosed": true

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Commit được audit | `92cca153f62dd6451b9a5f20cf9c6c0ee3f844d6` (`main`) |
+| Commit được audit | `d1e41e500b72e770e0f56d03b5e5df6c891af176` (`main`) |
 | Ngày | 21–22/08/2026 |
 | Baseline | `npm run check` → **167/167 PASS**, worktree sạch |
 | Sau khắc phục | `npm run check` → **197/197 PASS** |
