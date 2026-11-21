@@ -155,7 +155,7 @@ async def main() -> None:
         if await nut.count() > 0:
             await nut.click()
             try:
-                await pg.wait_for_selector("[aria-label='Kết quả kiểm tra giao dịch']", timeout=45000)
+                await pg.wait_for_selector("[aria-label='Transaction check result']", timeout=45000)
                 await pg.wait_for_timeout(1200)
                 # Mở cả hai khối gập để đo nút bên trong.
                 for chu in ["Xem chi tiết", "Chi tiết kỹ thuật"]:

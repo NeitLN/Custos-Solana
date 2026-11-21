@@ -225,21 +225,21 @@ async def main() -> None:
             await pg.wait_for_load_state("networkidle")
             await pg.wait_for_timeout(2000)
             await soi_axe(pg, f"ví nghỉ · {ten}")
-            await pg.locator("button", has_text="Nhận quà tặng").first.click()
+            await pg.locator("button", has_text="Claim your gift").first.click()
             ok = await cho_ket_qua(pg)
             t = await pg.locator("body").inner_text() if ok else ""
-            ck(f"{ten} · ra mức Nguy hiểm", "Nguy hiểm" in t)
+            ck(f"{ten} · ra mức Nguy hiểm", "Danger" in t)
             # KIỂM QUAN HỆ, không cố định số (rà soát 25/09). Bản trước đòi "500 → 0" —
             # tức đỏ khi mọi thứ ĐÚNG và chỉ xanh ngay sau khi dựng lại hiện trường.
             # Hiện trường nay chuyển MỘT NỬA số dư sống (`chonLuongTanCong`), nên sau
             # phải bằng một nửa trước. Kiểm liên thông đầy đủ, kể cả khớp với lượng
             # Transfer giải mã từ giao dịch: `soi-ban-giao-tan-cong.py`.
-            m_sd = re.search(r"Số dư[^\n]*\n?[^\n]*?([\d.]+,\d+)\s*→\s*([\d.]+,\d+)", t)
+            m_sd = re.search(r"Balance of[^\n]*\n?[^\n]*?([\d,]+\.\d+)\s*→\s*([\d,]+\.\d+)", t)
             ck(f"{ten} · bảng hậu quả: số dư còn đúng một nửa",
-               bool(m_sd) and abs(float(m_sd.group(2).replace(".", "").replace(",", "."))
-                                  - float(m_sd.group(1).replace(".", "").replace(",", ".")) / 2) < 1e-6,
+               bool(m_sd) and abs(float(m_sd.group(2).replace(",", ""))
+                                  - float(m_sd.group(1).replace(",", "")) / 2) < 1e-6,
                m_sd.group(0).split("\n")[-1] if m_sd else "không thấy dòng số dư")
-            ck(f"{ten} · coverage 2 trên 3", "2 trên 3" in t)
+            ck(f"{ten} · coverage 2 trên 3", "2 of 3" in t)
             ck(f"{ten} · 0 lỗi console", not bug, str(bug[:1]))
             tran = await do_tran(pg)
             ck(f"{ten} · không tràn ngang", khong_tran(tran), ghi_chu(tran))
@@ -265,11 +265,11 @@ async def main() -> None:
         await pg.goto(VI)
         await pg.wait_for_load_state("networkidle")
         await pg.wait_for_timeout(2000)
-        await pg.locator("button", has_text="Gửi 10 token").first.click()
+        await pg.locator("button", has_text="Send 10 tokens").first.click()
         ok = await cho_ket_qua(pg)
         t = await pg.locator("body").inner_text() if ok else ""
-        ck("lành tính → Bình thường", "Bình thường" in t)
-        ck("KHÔNG hiện chữ 'an toàn'", "an toàn tuyệt đối" not in t.lower())
+        ck("lành tính → Bình thường", "Normal" in t)
+        ck("KHÔNG hiện chữ 'an toàn'", "completely safe" not in t.lower() and "fully secure" not in t.lower())
         await ctx.close()
 
         # ── C · trang tấn công → ví ─────────────────────────────────────────
@@ -322,9 +322,9 @@ async def main() -> None:
         tom = pg.locator("details.nguon-tuy-chon:not([open]) > summary")
         if await tom.count():
             await tom.click()
-        await pg.get_by_text("Devnet trực tiếp", exact=True).click()
+        await pg.get_by_text("Live Devnet", exact=True).click()
         t0 = time.time()
-        await pg.get_by_role("button", name=re.compile("Tấn công đầy đủ")).first.click()
+        await pg.get_by_role("button", name=re.compile("Full attack")).first.click()
         hien = False
         try:
             await pg.wait_for_selector('[role="alert"]', timeout=25000)
@@ -340,13 +340,13 @@ async def main() -> None:
         ck(f"dừng theo hạn (6 s mỗi lượt, tối đa 12 s), không chờ ~30s", hien and 5.0 <= giay <= 14.0, f"{giay}s")
         if hien:
             t = await pg.locator('[role="alert"]').inner_text()
-            ck("nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch", "chưa thể kết luận" in t)
+            ck("nói rõ là lỗi kết nối, KHÔNG kết luận về giao dịch", "cannot conclude" in t)
             # CK-02: đường lui là PHÁT LẠI đúng kịch bản trên dữ liệu đã ghi, có nhãn riêng —
             # không còn là thẻ mock cố định (mock kể một câu chuyện khác ca đang chọn).
-            ck("có đường lui dữ liệu đã ghi CÓ NHÃN", "dữ liệu đã ghi" in t.lower() and "phát lại" in t.lower())
+            ck("có đường lui dữ liệu đã ghi CÓ NHÃN", "recorded data" in t.lower() and "replay" in t.lower())
             await soi_axe(pg, "phòng phân tích · trạng thái lỗi")
             treo["bat"] = False
-            await pg.get_by_role("button", name="Thử lại", exact=True).click()
+            await pg.get_by_role("button", name="Retry", exact=True).click()
             di = await cho_ket_qua(pg, 40)
             ck("thử lại gọi lại RPC và đi tiếp được", di)
         await ctx.close()
@@ -365,14 +365,14 @@ async def main() -> None:
         try:
             await pgT.goto(VI, wait_until="networkidle")
             await pgT.wait_for_timeout(800)
-            await pgT.get_by_role("button", name="Nhận quà tặng").first.click()
+            await pgT.get_by_role("button", name="Claim your gift").first.click()
             await pgT.wait_for_selector(".result-card", timeout=45000)
-            await pgT.get_by_role("button", name="Chi tiết kỹ thuật").click()
+            await pgT.get_by_role("button", name="Technical details").click()
             await pgT.wait_for_timeout(400)
             manT = await pgT.locator("body").inner_text()
-            ck("khối trace hiện ra", "Vì sao Custos nói vậy" in manT)
+            ck("khối trace hiện ra", "Why Custos says this" in manT)
 
-            nutT = pgT.locator("[aria-label='Dữ kiện của từng cảnh báo'] button")
+            nutT = pgT.locator("[aria-label='Facts behind each warning'] button")
             soT = await nutT.count()
             ck("có cảnh báo bấm được", soT > 0, f"{soT} cảnh báo")
             if soT > 0:
@@ -381,7 +381,7 @@ async def main() -> None:
                 m2 = await pgT.locator("body").inner_text()
                 ck(
                     "bấm ⇒ hiện NGUỒN của dữ kiện, không chỉ khoá",
-                    any(x in m2 for x in ["đã đo", "suy ra", "không đọc được", "chưa hỗ trợ"]),
+                    any(x in m2 for x in ["measured", "derived", "could not read", "not supported yet"]),
                 )
                 ck("aria-expanded đổi khi mở", await nutT.first.get_attribute("aria-expanded") == "true")
                 # Bàn phím phải đóng lại được — nghiệm thu thẻ đòi "dùng bàn phím hoàn toàn".
@@ -402,7 +402,7 @@ async def main() -> None:
         await pg.goto(VI)
         await pg.wait_for_load_state("networkidle")
         await pg.wait_for_timeout(2000)
-        await pg.locator("button", has_text="Nhận quà tặng").first.click()
+        await pg.locator("button", has_text="Claim your gift").first.click()
         ok = await cho_ket_qua(pg)
         ck("cảnh báo vẫn hiện khi tắt chuyển động", ok)
         if ok:

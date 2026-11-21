@@ -122,7 +122,7 @@ async function main() {
   console.log(`${NL}[4] RPC treo — "${qTreo.cho}" · lý do "${qTreo.lyDo}"`);
   ck("quá hạn KHÔNG thành ký được", qTreo.cho === "chan", `quyết định "${qTreo.cho}"`);
   ck("quá hạn là KHÔNG KIỂM ĐƯỢC", qTreo.lyDo === "khong_kiem_duoc", `lý do "${qTreo.lyDo}"`);
-  ck("quá hạn nói rõ là quá hạn", /quá hạn/.test(qTreo.loi ?? ""), `lỗi "${qTreo.loi}"`);
+  ck("quá hạn nói rõ là quá hạn", /timed out/.test(qTreo.loi ?? ""), `lỗi "${qTreo.loi}"`);
 
   // ── 5 · lớp AI hỏng ⇒ verdict tất định GIỮ NGUYÊN ──────────────────────
   //

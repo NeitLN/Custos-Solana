@@ -48,10 +48,10 @@ async def main() -> None:
         # Mock chỉ nạp trong `chayKiem()`, tức chỉ khi người dùng bấm. Mở URL rồi chờ
         # thẻ kết quả là chờ một thứ không bao giờ tới. Bản đầu của bài này thiếu đúng
         # bước đó và báo đỏ nhầm chính sản phẩm.
-        await pg.get_by_role("button", name="Nhận quà tặng").first.click()
+        await pg.get_by_role("button", name="Claim your gift").first.click()
 
         try:
-            await pg.wait_for_selector("[aria-label='Kết quả kiểm tra giao dịch']", timeout=20000)
+            await pg.wait_for_selector("[aria-label='Transaction check result']", timeout=20000)
         except Exception:
             hong.append("mock=danger: bấm ca chính mà không dựng được thẻ kết quả")
             await b.close()
@@ -60,10 +60,10 @@ async def main() -> None:
 
         # Khối bối cảnh nằm SAU cổng "Chi tiết kỹ thuật" — đóng sẵn là đúng.
         chu_truoc = await pg.inner_text("body")
-        if "Nguồn kết quả" in chu_truoc:
+        if "Result source" in chu_truoc:
             hong.append("khối bối cảnh hiện SẴN — thẻ đòi giữ luồng mặc định gọn")
 
-        nut = pg.get_by_role("button", name="Chi tiết kỹ thuật")
+        nut = pg.get_by_role("button", name="Technical details")
         if await nut.count() == 0:
             hong.append("không tìm thấy nút 'Chi tiết kỹ thuật'")
         else:
@@ -71,14 +71,14 @@ async def main() -> None:
             await pg.wait_for_timeout(400)
             chu = await pg.inner_text("body")
 
-            for can in ["Nguồn kết quả", "Cluster:", "Endpoint:", "Phần chưa đọc hiểu:"]:
+            for can in ["Result source", "Cluster:", "Endpoint:", "Not understood:"]:
                 if can not in chu:
                     hong.append(f"mở chi tiết kỹ thuật mà thiếu dòng '{can}'")
 
             # ĐIỀU QUAN TRỌNG NHẤT: mock không được trông như live.
-            if "KHÔNG phải kết quả thật" not in chu:
+            if "NOT a real result" not in chu:
                 hong.append("thẻ dựng từ MOCK mà không nói rõ đây không phải kết quả thật")
-            if "chạy thật — vừa gọi RPC" in chu:
+            if "RPC just called" in chu:
                 hong.append("thẻ MOCK lại dán nhãn 'chạy thật' — đúng thứ thẻ cấm: live giả")
 
             # DẤU VẾT KHÔNG kiểm ở luồng mock, và đây là một lỗi đã mắc trong chính
@@ -101,10 +101,10 @@ async def main() -> None:
         await pg2.goto(f"{VI}/?mock=safe", wait_until="networkidle")
         await pg2.wait_for_timeout(1200)
         try:
-            await pg2.get_by_role("button", name="Gửi 10 token").first.click()
-            await pg2.wait_for_selector("[aria-label='Kết quả kiểm tra giao dịch']", timeout=20000)
+            await pg2.get_by_role("button", name="Send 10 tokens").first.click()
+            await pg2.wait_for_selector("[aria-label='Transaction check result']", timeout=20000)
             chu2 = await pg2.inner_text("body")
-            if "Nguy hiểm" in chu2:
+            if "Danger" in chu2:
                 hong.append("ca đối chứng (mock=safe) lại hiện phán quyết Nguy hiểm")
         except Exception:
             hong.append("mock=safe: không dựng được thẻ kết quả")
@@ -116,9 +116,9 @@ async def main() -> None:
         await pg3.goto(f"{VI}/?mock=danger", wait_until="networkidle")
         await pg3.wait_for_timeout(1200)
         try:
-            await pg3.get_by_role("button", name="Nhận quà tặng").first.click()
-            await pg3.wait_for_selector("[aria-label='Kết quả kiểm tra giao dịch']", timeout=20000)
-            huy = pg3.get_by_role("button", name="Chặn & huỷ giao dịch")
+            await pg3.get_by_role("button", name="Claim your gift").first.click()
+            await pg3.wait_for_selector("[aria-label='Transaction check result']", timeout=20000)
+            huy = pg3.get_by_role("button", name="Block & cancel transaction")
             if await huy.count() == 0:
                 hong.append("mobile: không tìm thấy nút huỷ")
             else:
@@ -144,7 +144,7 @@ async def main() -> None:
                             const t = a.effect && a.effect.getTiming ? a.effect.getTiming() : null;
                             return !t || t.iterations !== Infinity;
                         });
-                        await Promise.all(huuHan.map((a) => a.finished.catch(() => {})));
+                        await Promise.race([Promise.all(huuHan.map((a) => a.finished.catch(() => {}))), new Promise((r) => setTimeout(r, 3000))]);
                     }""",
                 )
                 hop = await huy.first.bounding_box()
