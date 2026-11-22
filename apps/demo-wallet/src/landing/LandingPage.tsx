@@ -20,9 +20,12 @@ const KHOA_LUU = "custos-landing-ngon";
 /**
  * Chọn ngôn ngữ ban đầu.
  *
- * Thứ tự ưu tiên: query rõ ràng → preference đã lưu → EN (bản quốc tế mặc định tiếng Anh).
+ * Thứ tự ưu tiên: query rõ ràng → lựa chọn trong CÙNG phiên (tab) → EN.
  *
- * `try/catch` quanh `localStorage` là BẮT BUỘC, không phải phòng xa: trình duyệt
+ * Lựa chọn chỉ nhớ trong `sessionStorage`: mở web lần mới luôn ra tiếng Anh, kể cả
+ * khi lần trước đã bấm VI. Muốn vào thẳng bản Việt thì dùng `?lang=vi`.
+ *
+ * `try/catch` quanh `sessionStorage` là BẮT BUỘC, không phải phòng xa: trình duyệt
  * chặn storage trong chế độ riêng tư hoặc khi người dùng tắt cookie bên thứ ba sẽ
  * **ném** ngay ở lệnh đọc. Không bắt thì cả trang trắng vì một tuỳ chọn phụ.
  */
@@ -31,7 +34,7 @@ function ngonBanDau(): Ngon {
   if (q === "en" || q === "vi") return q;
 
   try {
-    const luu = window.localStorage.getItem(KHOA_LUU);
+    const luu = window.sessionStorage.getItem(KHOA_LUU);
     if (luu === "en" || luu === "vi") return luu;
   } catch {
     /* storage bị chặn — dùng mặc định, không phải lỗi cần báo cho người dùng */
@@ -72,7 +75,7 @@ export function LandingPage() {
   const doiNgon = useCallback((n: Ngon) => {
     setNgon(n);
     try {
-      window.localStorage.setItem(KHOA_LUU, n);
+      window.sessionStorage.setItem(KHOA_LUU, n);
     } catch {
       /* không lưu được thì thôi — phiên này vẫn đúng ngôn ngữ vừa chọn */
     }
