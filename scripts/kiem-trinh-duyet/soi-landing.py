@@ -109,7 +109,7 @@ async def main() -> None:
 
         # Nhãn "kết quả mẫu" TÁCH khỏi nhãn Devnet (mục 6.2).
         than = await pg.locator("body").inner_text()
-        ck("có nhãn 'Kết quả mẫu đã lưu'", "Kết quả mẫu đã lưu" in than)
+        ck("có nhãn 'Ví dụ A/B (đã ghi)'", "Ví dụ A/B (đã ghi)" in than)
         ck("có nhãn Devnet riêng", "Devnet" in than)
         ck("không tự xưng 'live'", "đang kiểm tra trực tiếp" not in than.lower())
 
@@ -129,10 +129,10 @@ async def main() -> None:
         ck("có bảng đối chiếu A/B", await pg.locator("#trai-nghiem table").count() == 1)
         ck("bảng hiện CẢ hai ca cùng lúc", "Chỉ chuyển" in tAB and "Chuyển và đổi chủ" in tAB)
         ck("A: không có thao tác đổi chủ", "Không có trong transaction mẫu" in tAB)
-        ck("A: kết luận đúng phạm vi", "Không phát hiện nguy hiểm trong phần đã đọc" in tAB)
+        ck("A: kết luận đúng phạm vi", "trong phần Custos đọc được" in tAB and "Không phải lời bảo đảm an toàn" in tAB)
         ck("B: phát hiện đổi quyền", "Phát hiện thay đổi quyền kiểm soát" in tAB)
         ck("cả hai cùng số dư 490", tAB.count("490") >= 2, f"{tAB.count('490')} lần")
-        ck("badge nguồn hiện trong phần A/B", "Kết quả mẫu đã lưu" in tAB)
+        ck("badge nguồn hiện trong phần A/B", "Ví dụ A/B (đã ghi)" in tAB)
 
         # Evidence theo TỪNG CA — nút nói rõ ca nào (mục 5).
         nutB = pg.get_by_role("button", name="Xem dữ kiện của ca B")
@@ -257,7 +257,7 @@ async def main() -> None:
         ck("Tab đầu tiên tới skip link", "Bỏ qua" in dau, dau[:40])
 
         # Nút chính cao >= 48px, target >= 44px (mục 12.1).
-        hopNut = await pg.get_by_role("link", name="Mở demo Custos").first.bounding_box()
+        hopNut = await pg.get_by_role("link", name="Chạy demo 2 phút").first.bounding_box()
         ck("CTA chính cao >= 48px", hopNut is not None and hopNut["height"] >= 48,
            f"{round(hopNut['height']) if hopNut else '?'}px")
         await ctx.close()
@@ -283,13 +283,12 @@ async def main() -> None:
             "Mở menu" in await pg.evaluate("() => document.activeElement?.textContent ?? ''"),
         )
 
-        # UI-02: VI/EN chuyển vào menu ở mobile — phải còn dùng được.
-        await pg.get_by_role("button", name="Mở menu").click()
-        await pg.wait_for_timeout(250)
-        ck("mobile: VI/EN nằm trong menu", await pg.get_by_role("button", name="English").count() == 1)
+        # Review UX 11/2026: VI/EN nằm trên header ở MỌI cỡ màn hình (trước đây chỉ có trong menu).
+        ck("mobile: VI/EN hiện trên header", await pg.locator(".lg-header__phai > .lg-ngon").is_visible())
+        ck("mobile: chỉ một bộ VI/EN", await pg.get_by_role("button", name="English").count() == 1)
         await pg.get_by_role("button", name="English").last.click()
         await pg.wait_for_timeout(350)
-        ck("mobile: đổi được sang EN từ menu", "Understand what" in gon(await pg.locator("h1").inner_text()))
+        ck("mobile: đổi được sang EN từ header", "Understand what" in gon(await pg.locator("h1").inner_text()))
         ck(
             "mobile EN: vẫn không tràn ngang",
             await pg.evaluate(

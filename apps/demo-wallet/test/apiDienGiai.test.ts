@@ -432,7 +432,7 @@ test("payload THẬT với mint nhiều decimals và ký hiệu do ví truyền 
   const MINT = "BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua";
   for (const [dong, ten] of [
     [{ truoc: dinhDangSo(1n, 39), sau: dinhDangSo(0n, 39) }, kyHieuAnToan(MINT)],
-    [{ truoc: dinhDangSo(10n ** 300n, 255), sau: dinhDangSo(1n, 255) }, kyHieuAnToan(MINT, { [MINT]: "USDC-demo" })],
+    [{ truoc: dinhDangSo(10n ** 300n, 255), sau: dinhDangSo(1n, 255) }, kyHieuAnToan(MINT, { [MINT]: "DEMO" })],
   ] as const) {
     const user = JSON.stringify({
       ...JSON.parse(USER_HOP_LE),

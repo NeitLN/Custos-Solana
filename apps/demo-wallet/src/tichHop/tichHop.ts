@@ -19,6 +19,8 @@ import { docNguonSong } from "../../../../scripts/hienTruongSong.ts";
 // @ts-expect-error — JavaScript thuần, cố ý (xem `tichHopShim.test.ts`): đây là đúng file bên
 // tích hợp chép về, nên không thêm `.d.ts` cho nó. Kiểu khai ngay dưới, chỉ cho trang này.
 import { kiemTruocKhiKy as kiemJs } from "../../../../vi-du-tich-hop/src/tich-hop.js";
+// @ts-expect-error — cùng lý do: bản định danh tiếng Anh của đúng tích hợp trên (review UX 11/2026).
+import { inspectBeforeSigning as kiemEnJs } from "../../../../vi-du-tich-hop/src/inspect-before-signing.js";
 
 export type QuyetDinhTichHop = {
   cho: "ky" | "hoi" | "chan";
@@ -27,6 +29,25 @@ export type QuyetDinhTichHop = {
   loi: string | null;
 };
 const kiemTruocKhiKy = kiemJs as (p: Record<string, unknown>) => Promise<QuyetDinhTichHop>;
+
+/** Hợp đồng trả về của bản tiếng Anh — cùng ba quyết định, cùng năm lý do, khác tên. */
+export type DecisionEn = {
+  decision: "sign" | "ask" | "block";
+  reason: "no_issue" | "incomplete_coverage" | "review_requested" | "detected" | "could_not_check";
+  result: InspectResult | null;
+  error: string | null;
+};
+const inspectBeforeSigning = kiemEnJs as (p: Record<string, unknown>) => Promise<DecisionEn>;
+
+/** Ánh xạ một-một giữa hai bản — test dùng để đòi hai file trả CÙNG một câu trả lời. */
+export const CHO_SANG_EN = { ky: "sign", hoi: "ask", chan: "block" } as const;
+export const LY_DO_SANG_EN = {
+  khong_van_de: "no_issue",
+  coverage_khuyet: "incomplete_coverage",
+  de_nghi_kiem_tra: "review_requested",
+  phat_hien: "detected",
+  khong_kiem_duoc: "could_not_check",
+} as const;
 
 /** Từ dòng bắt đầu bằng `dau` tới hết file — nguyên văn, chỉ bỏ khoảng trắng cuối. */
 export function catTu(raw: string, dau: string): string {
@@ -70,20 +91,13 @@ export async function chayThu(
   /** Hàm kiểm — mặc định là hàm trong file ví dụ; test truyền CHÍNH đoạn hiển thị, nạp độc lập. */
   kiem: (p: Record<string, unknown>) => Promise<QuyetDinhTichHop> = kiemTruocKhiKy,
 ): Promise<KetQuaChayThu> {
-  const m = bo.mau.find((x) => x.id === id);
-  const kb = timKichBan(id);
-  if (!m || !kb) throw new Error(`no recorded data yet for scenario "${id}"`);
-  const { conn, thieu } = connReplay(m);
-  const c = conn as Connection;
-  const { blockhash } = await c.getLatestBlockhash();
-  const { soDu } = await docNguonSong(c, bo.hienTruong);
-  const tx = kb.dungTx(bo.hienTruong, { blockhash, soDuNguon: soDu });
+  const { m, c, tx, vi, khai, thieu } = await dungDauVao(bo, id);
   const quyetDinh = await kiem({
     inspect,
     connection: c,
     tx,
-    viNguoiDung: new PublicKey(bo.hienTruong.nanNhan),
-    ...(kb.khai ? { dAppKhai: kb.khai } : {}),
+    viNguoiDung: vi,
+    ...(khai ? { dAppKhai: khai } : {}),
   });
   return {
     quyetDinh,
@@ -95,6 +109,44 @@ export async function chayThu(
   };
 }
 
+export type KetQuaChayThuEn = Omit<KetQuaChayThu, "quyetDinh"> & { quyetDinh: DecisionEn };
+
+/** Như `chayThu`, cho bản tiếng Anh `inspectBeforeSigning` — cùng giao dịch, cùng dữ liệu phát lại. */
+export async function chayThuEn(
+  bo: BoReplayKichBan,
+  id: string,
+  kiem: (p: Record<string, unknown>) => Promise<DecisionEn> = inspectBeforeSigning,
+): Promise<KetQuaChayThuEn> {
+  const { m, c, tx, vi, khai, thieu } = await dungDauVao(bo, id);
+  const quyetDinh = await kiem({
+    inspect,
+    connection: c,
+    tx,
+    userWallet: vi,
+    ...(khai ? { dAppDeclared: khai } : {}),
+  });
+  return {
+    quyetDinh,
+    captureLuc: m.captureLuc,
+    lucGhi: m.ketQuaLucGhi,
+    soVoi: quyetDinh.result ? soVoiLucGhi(quyetDinh.result, m.ketQuaLucGhi) : null,
+    thieu: thieu().map((t) => t.method),
+  };
+}
+
+/** Giao dịch dựng lại bằng đúng đường Phòng phân tích dùng (`kb.dungTx`), trên Connection phát lại MỚI. */
+async function dungDauVao(bo: BoReplayKichBan, id: string) {
+  const m = bo.mau.find((x) => x.id === id);
+  const kb = timKichBan(id);
+  if (!m || !kb) throw new Error(`no recorded data yet for scenario "${id}"`);
+  const { conn, thieu } = connReplay(m);
+  const c = conn as Connection;
+  const { blockhash } = await c.getLatestBlockhash();
+  const { soDu } = await docNguonSong(c, bo.hienTruong);
+  const tx = kb.dungTx(bo.hienTruong, { blockhash, soDuNguon: soDu });
+  return { m, c, tx, vi: new PublicKey(bo.hienTruong.nanNhan), khai: kb.khai, thieu };
+}
+
 /**
  * Đoạn mã trang hiển thị — MỘT định nghĩa cho cả trang lẫn test. Bắt đầu từ hằng số quá hạn để
  * đoạn chép ra CHẠY ĐƯỢC ĐỘC LẬP (review GĐ2: bản đầu cắt từ `export async function` và
@@ -102,3 +154,54 @@ export async function chayThu(
  */
 export const DAU_DOAN_TICH_HOP = "const HAN_MS";
 export const doanTichHop = (raw: string) => catTu(raw, DAU_DOAN_TICH_HOP);
+
+/*
+ * BẢN TIẾNG ANH (review UX 11/2026). `tich-hop.js` vẫn là file được ĐẾM và công bố (31 dòng — sáu chỗ
+ * công bố và `thu-tich-hop.mjs` đọc nó), nên không đổi nó. Bản tiếng Anh là ví dụ THÊM, cũng hiện nguyên văn:
+ *   · `doanNhanh`    — riêng hàm `inspectBeforeSigning`, mở đầu trang;
+ *   · `doanTiengAnh` — từ hằng số quá hạn tới hết file: chép riêng ra vẫn chạy (test nạp chính đoạn này).
+ */
+export const DAU_HAM_EN = "export async function inspectBeforeSigning";
+export const DAU_DOAN_EN = "const TIMEOUT_MS";
+export const doanNhanh = (raw: string) => catTu(raw, DAU_HAM_EN);
+export const doanTiengAnh = (raw: string) => catTu(raw, DAU_DOAN_EN);
+
+/**
+ * Các dòng từ dòng chứa `dau` tới dòng ĐẦU TIÊN sau nó có nội dung (bỏ khoảng trắng) đúng bằng `cuoi` —
+ * nguyên văn, kể cả thụt lề. Đọc theo dòng nên file CRLF hay LF đều cắt như nhau.
+ */
+export function catKhoang(raw: string, dau: string, cuoi: string): string {
+  const d = raw.split(/\r?\n/);
+  const i = d.findIndex((x) => x.includes(dau));
+  const j = i < 0 ? -1 : d.findIndex((x, k) => k >= i && x.trim() === cuoi);
+  if (i < 0 || j < 0) throw new Error(`"${dau}" … "${cuoi}" not found in the source file — the Integration page is out of sync with the code`);
+  return d.slice(i, j + 1).join("\n");
+}
+
+/** Mở đầu trang: lời gọi `inspect` (~8 dòng mã) và cách đọc `level` — hai đoạn cắt nguyên văn từ bản tiếng Anh. */
+export const loiGoiEn = (raw: string) => catKhoang(raw, "result = await withTimeout(", ");");
+export const docMucEn = (raw: string) =>
+  catKhoang(raw, "// result.level is", 'return { decision: "sign", reason: "no_issue", result, error: null };');
+
+/*
+ * BẢNG "level → ví nên làm gì". Chữ của bảng do người viết, nhưng mỗi hàng mang một kết quả mẫu và
+ * test chạy CHÍNH `inspectBeforeSigning` trên nó: bảng nói khác hàm là đỏ.
+ */
+export type HangMuc = {
+  dieuKien: string;
+  nhan: string;
+  decision: DecisionEn["decision"];
+  reason: DecisionEn["reason"];
+  viec: string;
+  /** Kết quả `inspect()` mẫu cho hàng này; `null` = `inspect()` ném lỗi. */
+  mau: Pick<InspectResult, "level" | "coverage" | "aiAdvisory"> | null;
+};
+const du = { analyzed: 3, total: 3, unverifiedPrograms: 0 };
+export const BANG_MUC: HangMuc[] = [
+  { dieuKien: '"danger"', nhan: "Danger", decision: "block", reason: "detected", viec: "Do not call the sign function. Show the consequences table.", mau: { level: "danger", coverage: du, aiAdvisory: null } },
+  { dieuKien: '"warning"', nhan: "Review carefully", decision: "ask", reason: "detected", viec: "Show the warning and its reasons; sign only if the user confirms again.", mau: { level: "warning", coverage: du, aiAdvisory: null } },
+  { dieuKien: '"safe", but coverage.analyzed < total', nhan: "Normal", decision: "ask", reason: "incomplete_coverage", viec: "Say which part could not be read; ask before signing.", mau: { level: "safe", coverage: { analyzed: 2, total: 3, unverifiedPrograms: 1 }, aiAdvisory: null } },
+  { dieuKien: '"safe", aiAdvisory = "review_required"', nhan: "Normal", decision: "ask", reason: "review_requested", viec: "Pass on the request for a manual check; the level stays as it is.", mau: { level: "safe", coverage: du, aiAdvisory: "review_required" } },
+  { dieuKien: '"safe", full coverage, no advisory', nhan: "Normal", decision: "sign", reason: "no_issue", viec: "Let the user sign. Show “Normal”, never “safe”: it is not a guarantee.", mau: { level: "safe", coverage: du, aiAdvisory: null } },
+  { dieuKien: "inspect() throws or times out", nhan: "— (no result)", decision: "block", reason: "could_not_check", viec: "Do not sign: Custos could not check. Say it is a connection problem, not a finding.", mau: null },
+];

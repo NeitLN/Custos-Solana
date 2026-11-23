@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+# NGỪNG DÙNG (review UX 11/2026) — probe này viết cho giao diện TIẾNG VIỆT cũ của ví (nhãn như
+# "Dữ liệu đã ghi", "Tấn công đầy đủ", "Nhận quà tặng", thanh bước `.demo-steps`). Web đã chuyển sang
+# tiếng Anh và Phòng phân tích đã bỏ thanh bước, nên mọi bộ chọn ở dưới không còn khớp: chạy bây giờ là
+# đỏ vì lý do sai, không phải vì sản phẩm hỏng. Giữ lại làm hồ sơ của lần đo cũ; KHÔNG dùng làm bằng chứng
+# cho giao diện hiện tại. Phạm vi tương ứng nay do soi-trinh-duyet.py, soi-vung-bam.py và
+# soi-boi-canh-x02.py canh (cùng ví, nhãn tiếng Anh).
 """CK-12 — cùng một hành trình trên BA engine trình duyệt, nhiều khổ màn, bàn phím, cây trợ năng.
 
     npm run vi

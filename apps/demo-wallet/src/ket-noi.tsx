@@ -6,16 +6,20 @@
  * hộp chọn file, giữ trong bộ nhớ của tab này. Không lưu, không gửi đi đâu.
  */
 import "./polyfill.ts";
-import { StrictMode, useEffect, useRef, useState } from "react";
+import { StrictMode, useEffect, useRef, useState, type RefObject } from "react";
 import { createRoot } from "react-dom/client";
 import { Connection, Keypair, type VersionedTransaction } from "@solana/web3.js";
-import { chiLaThongTin, inspect, type Facts } from "@custos-solana/core";
+import { inspect, type Facts } from "@custos-solana/core";
 import { dienGiaiKhongAI } from "@custos-solana/ai";
 import type { InspectResult } from "@custos-solana/types";
 import { PHIEN_BAN } from "@custos-solana/connector/giao-thuc";
 import { CuaSoVi, LoiHienThiDuoc, type TrangThaiCuaSo } from "./ketNoi/cuaSoVi.ts";
 import type { GiaoDichRpc } from "./ketNoi/bienNhan.ts";
 import { timMintDemo } from "./ketNoi/nhanDemo.ts";
+import { cauHauQua, cauLoaiCo, dongHienThi, khongCoGiVao, NHAN_MUC } from "./ketNoi/hienThi.ts";
+import { rutGonDiaChi } from "./diaChi.ts";
+import { AlertIcon, ShieldIcon } from "./Icons.tsx";
+import "./ketNoi/cua-so-ky.css";
 import { DEVNET_GENESIS, LIVE_RPC } from "./live/session.ts";
 import { liveRpcFetch } from "./live/rpc.ts";
 import { DEFAULT_DEMO_WALLET } from "../../../scripts/demo-wallet-config.ts";
@@ -117,17 +121,6 @@ const CAU_BIEN_NHAN: Record<NonNullable<TrangThaiCuaSo["bienNhan"]>["pha"], stri
 };
 
 /**
- * C1 — "thiếu dữ liệu" KHÁC "phát hiện hành vi nguy hiểm" (ADR-0004 mục 3, BOI-CANH-DU-AN.md bảng ba chữ).
- * Chỉ có mã thông tin (hoặc không mã nào) mà vẫn không Xanh ⇒ cờ vì THIẾU, không phải cáo buộc.
- */
-function cauLoaiCo(r: InspectResult): string | null {
-  if (r.level === "safe") return null;
-  return r.reasonCodes.length === 0 || chiLaThongTin(r.reasonCodes)
-    ? "Custos flagged this because it LACKS THE INFORMATION to reach a conclusion — not because it found harmful behavior. Check carefully yourself before signing."
-    : "Custos found specific behavior in this very transaction. Read the table below before you decide.";
-}
-
-/**
  * Lượt "Vẫn ký" thật qua chính luồng này — SolBonus ↔ cửa sổ ký, hai origin HTTPS, 29/09/2026 (B5): biên nhận
  * khớp dự báo 3/3, chain xác nhận 499 → 249,5 DEMO và đổi chủ. KHÔNG trỏ trang Số liệu: dữ liệu ở đó là lượt
  * CK-05 của luồng cũ, dùng làm bằng chứng cho luồng này là nói sai nguồn (đánh giá giám khảo 05/10).
@@ -136,12 +129,6 @@ const GIAO_DICH_DA_KY_THAT =
   "https://explorer.solana.com/tx/LDxqW6gh5euJWtypEA95yPzUVEZoPGDv2p3ZovrSDRcVcFrw2gUNd7qbZHfDjmNg3PdwwA1FU9iDR5pfg2eroQ2?cluster=devnet";
 const BIEN_BAN_KY_THAT =
   "https://github.com/NeitLN/Custos-Solana/blob/main/docs/review/ck-20260929/B5-VAN-KY.json";
-
-const NHAN_MUC: Record<InspectResult["level"], string> = {
-  safe: "Normal",
-  warning: "Review carefully",
-  danger: "Danger",
-};
 
 function docKhoa(raw: unknown): Keypair {
   if (!Array.isArray(raw) || raw.length !== 64 || raw.some((n) => !Number.isInteger(n) || n < 0 || n > 255))
@@ -152,15 +139,179 @@ function docKhoa(raw: unknown): Keypair {
   return k;
 }
 
+/**
+ * KẾT QUẢ KIỂM TRONG CỬA SỔ KÝ — review UX 11/2026 (ảnh 22). Cùng thứ tự và từ vựng với thẻ kết quả của
+ * Phòng phân tích: băng mức có biểu tượng (không chỉ màu) → câu hậu quả → bảng chênh lệch → mã lý do và độ phủ.
+ * Origin của dApp hiện MỘT lần, trong băng, không còn là chữ đậm nhất. Mọi chữ đọc từ `ketQua`; `level` do L2.
+ */
+function KetQuaKiem({
+  ketQua,
+  origin,
+  simulationOk,
+  mucRef,
+}: {
+  ketQua: InspectResult;
+  origin: string;
+  simulationOk: boolean | undefined;
+  mucRef: RefObject<HTMLHeadingElement | null>;
+}) {
+  const muc = NHAN_MUC[ketQua.level];
+  const BieuTuong = ketQua.level === "danger" ? AlertIcon : ShieldIcon;
+  const loaiCo = cauLoaiCo(ketQua);
+  const hauQua = cauHauQua(ketQua, simulationOk);
+  const vao = khongCoGiVao(ketQua, simulationOk);
+  const { analyzed, total } = ketQua.coverage;
+  const phanTram = total > 0 ? Math.round((analyzed / total) * 100) : 0;
+  return (
+    <>
+      <div className="kn-bang">
+        <span className="kn-bieu-tuong" aria-hidden="true">
+          <BieuTuong />
+        </span>
+        <div>
+          {/* Probe tìm `.kn-muc` theo đúng chữ mức — giữ chỉ một nhãn trong thẻ này. */}
+          <h2 className="kn-muc" ref={mucRef} tabIndex={-1}>{muc.chu}</h2>
+          <p className="kn-muc-phu">
+            {muc.phu}
+            {ketQua.level === "safe" && ". Normal is not a guarantee of safety."}
+          </p>
+          <p className="kn-tu">
+            Signature request from <code>{origin}</code>
+          </p>
+        </div>
+      </div>
+
+      <p className="kn-hau-qua">{hauQua.cau}</p>
+      {loaiCo && <p className="kn-loai">{loaiCo}</p>}
+      {/* Câu hậu quả đã dựng từ bảng thì diễn giải của SDK chỉ lặp lại — chỉ hiện khi câu KHÔNG từ bảng. */}
+      {ketQua.explanation && !hauQua.tuBang && ketQua.explanation !== hauQua.cau && (
+        <p className="kn-dien-giai">{ketQua.explanation}</p>
+      )}
+
+      {(ketQua.diff.length > 0 || vao) && (
+        <section className="kn-bang-diff" aria-label="Consequences if you sign">
+          <ul className="kn-diff">
+            {ketQua.diff.map((d, i) => {
+              const h = dongHienThi(d);
+              return (
+                <li key={i} data-muc={d.severity}>
+                  <span aria-hidden="true">
+                    {(d.severity === "danger" || d.severity === "warning") && <span className="kn-dau-muc">!</span>}
+                    {h.nhan}
+                  </span>
+                  <span aria-hidden="true" className="kn-gt">
+                    {h.truoc === null ? h.sau : <>{h.truoc} <span className="kn-mui">→</span> {h.sau}</>}
+                  </span>
+                  <span className="sr-only">
+                    {h.docChoMayDoc}
+                    {d.severity === "danger" ? " (danger sign)" : d.severity === "warning" ? " (review sign)" : ""}
+                  </span>
+                </li>
+              );
+            })}
+            {vao && (
+              <li className="kn-vao" data-vao="khong">
+                <span aria-hidden="true">
+                  SOL or tokens coming in
+                  <small>net, from the simulation — not what the app says</small>
+                </span>
+                <span aria-hidden="true" className="kn-gt">None</span>
+                <span className="sr-only">
+                  SOL or tokens coming in: none, net, according to the simulation of this exact transaction — not what the app says.
+                </span>
+              </li>
+            )}
+          </ul>
+        </section>
+      )}
+
+      <div className="kn-ky-thuat">
+        <p>
+          Reason code: <code>{ketQua.reasonCodes.join(", ") || "none"}</code>
+        </p>
+        <p>
+          Coverage: understood <strong>{analyzed} of {total}</strong> instructions
+        </p>
+        {/* Thanh chỉ là hình: câu "Coverage: understood X of Y" ngay trên đã nói con số — một nguồn duy nhất cho trình đọc màn hình. */}
+        <div className="kn-phu-thanh" aria-hidden="true">
+          <span style={{ width: `${phanTram}%` }} />
+        </div>
+      </div>
+    </>
+  );
+}
+
 function Trang() {
   const [s, setS] = useState<TrangThaiCuaSo>(cuaSo.trangThai);
   const [coKhoa, setCoKhoa] = useState(false);
   const [loiKhoa, setLoiKhoa] = useState<string | null>(null);
   const [hieuRuiRo, setHieuRuiRo] = useState(false);
+  // Lần CHẶN gần nhất của chính người dùng trong cửa sổ này — để màn sau khi chặn nói rõ kết quả.
+  const [daChan, setDaChan] = useState<string | null>(null);
   const file = useRef<HTMLInputElement>(null);
+  const mucRef = useRef<HTMLHeadingElement>(null);
+  const chanRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => cuaSo.theoDoi(setS), []);
   const dc = s.dangCho;
-  useEffect(() => setHieuRuiRo(false), [dc?.id]);
+  const ketQua = dc?.kieu === "ky" && (dc.pha === "da-kiem" || dc.pha === "dang-ky") ? dc.ketQua : undefined;
+  // Ô "đã đọc cảnh báo" gắn với MỘT kết quả: yêu cầu mới HOẶC kết quả mới (vd. kiểm lại vì kết quả cũ) ⇒ bỏ tick.
+  useEffect(() => setHieuRuiRo(false), [dc?.id, ketQua]);
+  useEffect(() => {
+    if (dc) setDaChan(null);
+  }, [dc]);
+  // Kết quả vừa hiện ⇒ focus vào tiêu đề mức; vừa chặn ⇒ focus vào tiêu đề "Transaction blocked".
+  // Dòng role=status chỉ dùng khi focus KHÔNG chuyển được: tiêu đề mức đã được đọc khi nhận focus, đọc thêm
+  // "Check finished: Danger" là nghe "Danger" lần nữa (review a11y phase 6).
+  const [canBaoTrangThai, setCanBaoTrangThai] = useState(false);
+  useEffect(() => {
+    if (!ketQua) return setCanBaoTrangThai(false);
+    mucRef.current?.focus();
+    setCanBaoTrangThai(document.activeElement !== mucRef.current);
+  }, [ketQua]);
+  useEffect(() => {
+    if (daChan) chanRef.current?.focus();
+  }, [daChan]);
+
+  /*
+   * CỬA SỔ VỪA NỘI DUNG — review UX 11/2026 (ảnh 20: ~60% cửa sổ trống ở màn kết nối). Popup do dApp mở
+   * với chiều cao cố định; ở đây chỉ THU lại theo nội dung, không bao giờ cao hơn kích thước lúc mở.
+   * Đo lại khi nội dung đổi kích thước (ResizeObserver) và khi mở/đóng một <details>.
+   * Trình duyệt không cho (không phải popup, tab của điện thoại) ⇒ lệnh bị bỏ qua, không lỗi.
+   */
+  const caoBanDau = useRef(window.outerHeight);
+  useEffect(() => {
+    if (!opener) return;
+    let khung = 0;
+    const doVua = () => {
+      cancelAnimationFrame(khung);
+      khung = requestAnimationFrame(() => {
+        const kn = document.querySelector<HTMLElement>(".kn");
+        if (!kn) return;
+        // `.kn` cao tối thiểu 100vh; đo nội dung thật bằng tổng chiều cao các con + khoảng cách + lề.
+        const con = [...kn.children] as HTMLElement[];
+        const noiDung = con.reduce((t, c) => t + c.offsetHeight, 0) + 12 * Math.max(0, con.length - 1) + 40;
+        const vien = window.outerHeight - window.innerHeight;
+        const muon = Math.min(caoBanDau.current, Math.max(420, Math.ceil(noiDung + vien)));
+        if (Math.abs(muon - window.outerHeight) > 24) {
+          try {
+            window.resizeTo(window.outerWidth, muon);
+          } catch {
+            /* không được phép đổi kích thước — giữ nguyên */
+          }
+        }
+      });
+    };
+    const kn = document.querySelector<HTMLElement>(".kn");
+    const ro = typeof ResizeObserver === "function" ? new ResizeObserver(doVua) : null;
+    if (kn && ro) for (const c of kn.children) ro.observe(c);
+    document.addEventListener("toggle", doVua, true);
+    doVua();
+    return () => {
+      cancelAnimationFrame(khung);
+      ro?.disconnect();
+      document.removeEventListener("toggle", doVua, true);
+    };
+  }, [s, coKhoa, loiKhoa, daChan]);
 
   const napKhoa = async (f: File) => {
     try {
@@ -173,14 +324,33 @@ function Trang() {
     }
   };
 
-  const ketQua = dc?.kieu === "ky" ? dc.ketQua : undefined;
   const canXacNhan = ketQua !== undefined && ketQua.level !== "safe";
+  const dangKy = dc?.kieu === "ky" && dc.pha === "dang-ky";
+
+  // Nút ký bị khoá thì NÓI vì sao (gắn bằng aria-describedby, và hiện ngay cạnh nút).
+  const lyDoKhoaKy = dangKy
+    ? "Signing…"
+    : [
+        canXacNhan && !hieuRuiRo ? "Tick the box above first." : "",
+        !coKhoa ? "Signing also needs the team’s key file (see the bottom of this window)." : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+  const chan = (origin: string) => {
+    cuaSo.tuChoi();
+    setDaChan(origin);
+  };
+  const khoaKy = !coKhoa || dangKy || (canXacNhan && !hieuRuiRo);
+  // Nút ký khoá bằng aria-disabled (vẫn focus được để nghe lý do); bấm khi khoá thì không làm gì — cùng điều kiện.
+  const ky = () => {
+    if (!khoaKy) void cuaSo.vanKy();
+  };
 
   return (
     <main className="kn">
       <header className="kn-dau">
-        <h1>Custos Wallet</h1>
-        <span>Solana Devnet · signing window</span>
+        <img src={`${import.meta.env.BASE_URL}brand/custos-symbol-light.svg`} width="30" height="30" alt="" />
+        <div><h1>Custos Wallet</h1><span>Solana Devnet · signing window</span></div>
       </header>
 
       {!opener && (
@@ -190,37 +360,41 @@ function Trang() {
         </p>
       )}
 
-      <section className="kn-khoi">
-        <div className="kn-dong">
-          <span>Wallet</span>
-          <code>{DEFAULT_DEMO_WALLET.slice(0, 6)}…{DEFAULT_DEMO_WALLET.slice(-6)}</code>
-        </div>
-        <div className="kn-dong">
-          <span>App</span>
-          <code>{s.originDapp ?? "none yet"}</code>
-        </div>
-        <div className="kn-dong">
-          <span>Custos reads the chain via</span>
+      {/* Trong lúc có yêu cầu ký: bối cảnh thu còn MỘT dòng (origin đã nằm trong băng mức) để nút quyết định
+          lọt màn hình đầu của popup. */}
+      {dc?.kieu === "ky" ? (
+        <p className="kn-boi-canh-gon">
+          Wallet <code title={DEFAULT_DEMO_WALLET}>{rutGonDiaChi(DEFAULT_DEMO_WALLET)}</code> · reads Devnet via{" "}
           <code>{HOST_RPC}</code>
-        </div>
-        {/* Đánh giá giám khảo 05/10: người xem KHÔNG có khoá — nạp khoá là việc của đội, nên thu gọn lại
-            thay vì làm thứ nổi bật nhất cửa sổ. Ô file giữ id `kn-khoa` (các probe nạp khoá qua nó). */}
-        {!coKhoa && (
-          <details className="kn-khoa" open={!!loiKhoa}>
-            <summary>I have the test wallet’s key file (development team)</summary>
-            <input ref={file} id="kn-khoa" type="file" accept=".json,application/json" hidden
-              onChange={(e) => e.target.files?.[0] && void napKhoa(e.target.files[0])} />
-            <button type="button" className="phu" onClick={() => file.current?.click()}>Choose key file (.json)…</button>
-            <small>Only needed to really sign. The key stays in this tab and is never sent anywhere.</small>
-            {loiKhoa && <p role="alert">{loiKhoa}</p>}
-          </details>
-        )}
-      </section>
+        </p>
+      ) : (
+        <section className="kn-khoi kn-boi-canh" aria-label="Wallet and connection">
+          <div className="kn-dong">
+            <span>Wallet</span>
+            <code title={DEFAULT_DEMO_WALLET}>{rutGonDiaChi(DEFAULT_DEMO_WALLET)}</code>
+          </div>
+          <div className="kn-dong">
+            <span>App</span>
+            <code>{s.originDapp ?? "none yet"}</code>
+          </div>
+          <div className="kn-dong">
+            <span>Custos reads the chain via</span>
+            <code>{HOST_RPC}</code>
+          </div>
+        </section>
+      )}
 
       {dc?.kieu === "ket-noi" && (
-        <section className="kn-yeu-cau" aria-live="polite">
-          <h2>{dc.origin} wants to connect</h2>
-          <p>The app will see your wallet address. Every transaction it sends afterwards is checked by Custos here before you sign.</p>
+        <section className="kn-yeu-cau" aria-live="polite" aria-labelledby="kn-tieu-de-ket-noi">
+          <p className="kn-tu">
+            Connection request from <code>{dc.origin}</code>
+          </p>
+          <h2 id="kn-tieu-de-ket-noi" className="kn-tieu-de">Let this app see your wallet address?</h2>
+          <ol className="kn-buoc">
+            <li>The app sees your wallet address. Connecting creates no signature.</li>
+            <li>Every transaction it sends afterwards opens here first.</li>
+            <li>Custos simulates that exact transaction on Devnet and shows what would change — then you block or sign.</li>
+          </ol>
           <div className="kn-nut">
             <button type="button" className="phu" onClick={() => cuaSo.tuChoi()}>Reject</button>
             <button type="button" onClick={() => cuaSo.choKetNoi()}>Allow connection</button>
@@ -229,9 +403,17 @@ function Trang() {
       )}
 
       {dc?.kieu === "ky" && (
-        <section className={`kn-yeu-cau muc-${ketQua?.level ?? "cho"}`} aria-live="polite">
-          <h2>{dc.origin} requests a transaction signature</h2>
-          {dc.pha === "dang-kiem" && <p>Custos is simulating this exact transaction on Devnet…</p>}
+        <section className={`kn-yeu-cau muc-${ketQua?.level ?? "cho"}`} aria-label="Signature request">
+          {/* Một dòng trạng thái ngắn cho trình đọc màn hình — thay cho aria-live trên cả thẻ; để trống khi focus đã vào tiêu đề mức. */}
+          <p role="status" className="sr-only">{ketQua && canBaoTrangThai ? `Check finished: ${NHAN_MUC[ketQua.level].chu}` : ""}</p>
+          {!ketQua && (
+            <p className="kn-tu">
+              Signature request from <code>{dc.origin}</code>
+            </p>
+          )}
+          {dc.pha === "dang-kiem" && (
+            <p role="status" className="kn-dang-kiem">Custos is simulating this exact transaction on Devnet…</p>
+          )}
           {dc.pha === "loi-kiem" && (
             <>
               <p role="alert">Custos could not check it: {dc.loi}</p>
@@ -241,49 +423,63 @@ function Trang() {
               </div>
             </>
           )}
-          {ketQua && (dc.pha === "da-kiem" || dc.pha === "dang-ky") && (
+          {ketQua && (
             <>
-              <p className="kn-muc">{NHAN_MUC[ketQua.level]}</p>
-              {cauLoaiCo(ketQua) && <p className="kn-loai">{cauLoaiCo(ketQua)}</p>}
-              {ketQua.explanation && <p>{ketQua.explanation}</p>}
-              {ketQua.diff.length > 0 && (
-                <ul className="kn-diff">
-                  {ketQua.diff.map((d, i) => (
-                    <li key={i}>
-                      <span>{d.label}</span>
-                      <span>{d.before} → {d.after}</span>
-                    </li>
-                  ))}
-                </ul>
+              <KetQuaKiem ketQua={ketQua} origin={dc.origin} simulationOk={dc.facts?.simulationOk} mucRef={mucRef} />
+              {canXacNhan ? (
+                // Mức khác Normal: CHẶN là nút chính (đỏ đặc khi Danger); "Sign anyway" là nút chữ, chỉ mở
+                // sau khi tick ô xác nhận — cùng nguyên tắc "ma sát tỉ lệ rủi ro" của Phòng phân tích.
+                // Khối quyết định dính đáy popup: Block luôn thấy được mà không cần cuộn.
+                <div className="kn-quyet-dinh">
+                  <button type="button" className={`kn-chan ${ketQua.level === "danger" ? "kn-chan-do" : ""}`}
+                    onClick={() => chan(dc.origin)} disabled={dangKy}>
+                    Block transaction
+                  </button>
+                  <label className="kn-xac-nhan">
+                    <input type="checkbox" checked={hieuRuiRo} onChange={(e) => setHieuRuiRo(e.target.checked)} />
+                    <span>I've read the warning and still want to sign</span>
+                  </label>
+                  <div className="kn-ky-chu">
+                    <button type="button" className="kn-nut-chu" onClick={ky} aria-disabled={khoaKy}
+                      aria-describedby={khoaKy && lyDoKhoaKy ? "kn-ly-do-ky" : undefined}>
+                      Sign anyway
+                    </button>
+                    {khoaKy && lyDoKhoaKy && <small id="kn-ly-do-ky">{lyDoKhoaKy}</small>}
+                  </div>
+                </div>
+              ) : (
+                <div className="kn-quyet-dinh">
+                  <div className="kn-nut">
+                    <button type="button" className="phu" onClick={() => chan(dc.origin)} disabled={dangKy}>
+                      Block transaction
+                    </button>
+                    <button type="button" onClick={ky} aria-disabled={khoaKy}
+                      aria-describedby={khoaKy && lyDoKhoaKy ? "kn-ly-do-ky" : undefined}>
+                      Sign
+                    </button>
+                  </div>
+                  {khoaKy && lyDoKhoaKy && <small id="kn-ly-do-ky" className="kn-ly-do-phai">{lyDoKhoaKy}</small>}
+                </div>
               )}
-              <p className="kn-phu">
-                Reason code: {ketQua.reasonCodes.join(", ") || "none"} · Coverage: understood {ketQua.coverage.analyzed} of {ketQua.coverage.total} instructions
-              </p>
-              {canXacNhan && (
-                <label className="kn-xac-nhan">
-                  <input type="checkbox" checked={hieuRuiRo} onChange={(e) => setHieuRuiRo(e.target.checked)} />
-                  I've read the warning and still want to sign
-                </label>
-              )}
-              <div className="kn-nut">
-                <button type="button" className="phu" onClick={() => cuaSo.tuChoi()} disabled={dc.pha === "dang-ky"}>
-                  Block transaction
-                </button>
-                <button type="button" onClick={() => void cuaSo.vanKy()}
-                  disabled={!coKhoa || dc.pha === "dang-ky" || (canXacNhan && !hieuRuiRo)}>
-                  {ketQua.level === "safe" ? "Sign" : "Sign anyway"}
-                </button>
-              </div>
               {!coKhoa && (
                 <p className="kn-khong-khoa">
-                  No key file? You can still block it: press <strong>Block transaction</strong> — the app will not
-                  receive any signature. Real signing needs the team’s key; see{" "}
-                  <a href={GIAO_DICH_DA_KY_THAT} target="_blank" rel="noreferrer">a really signed run on Explorer</a>{" "}
-                  and <a href={BIEN_BAN_KY_THAT} target="_blank" rel="noreferrer">its receipt checked against the chain</a>.
+                  This demo wallet cannot sign without the team’s key file. You can still block: the app then
+                  receives no signature. See a signed run:{" "}
+                  <a href={BIEN_BAN_KY_THAT} target="_blank" rel="noreferrer">prediction vs chain</a>, or the same
+                  run <a href={GIAO_DICH_DA_KY_THAT} target="_blank" rel="noreferrer">on Explorer</a>.
                 </p>
               )}
             </>
           )}
+        </section>
+      )}
+
+      {!dc && daChan && (
+        <section className="kn-khoi kn-da-chan">
+          <h2 ref={chanRef} tabIndex={-1}>Transaction blocked</h2>
+          <p>
+            No signature was created, so <code>{daChan}</code> cannot send this transaction.
+          </p>
         </section>
       )}
 
@@ -322,53 +518,34 @@ function Trang() {
         </section>
       )}
 
-      {s.nhatKy.length > 0 && (
-        <ol className="kn-nhat-ky">
-          {s.nhatKy.map((d, i) => <li key={i}>{d}</li>)}
-        </ol>
-      )}
+      {/* Đánh giá giám khảo 05/10 + review UX 11/2026: người xem KHÔNG có khoá — nạp khoá là việc của đội, nên nằm
+          ở CHÂN cửa sổ, không chen vào giữa. Ô file giữ id `kn-khoa` (các probe nạp khoá qua nó). Nhật ký cũng
+          xuống đây, gập lại. */}
+      <footer className="kn-chan-trang">
+        {s.nhatKy.length > 0 && (
+          <details className="kn-hoat-dong">
+            <summary>Activity ({s.nhatKy.length})</summary>
+            <ol className="kn-nhat-ky">
+              {s.nhatKy.map((d, i) => <li key={i}>{d}</li>)}
+            </ol>
+          </details>
+        )}
+        {coKhoa ? (
+          <p>Key file loaded for the fixed demo wallet. It stays in this tab and is never sent anywhere.</p>
+        ) : (
+          <details className="kn-khoa" open={!!loiKhoa}>
+            <summary>I have the test wallet’s key file (development team)</summary>
+            <input ref={file} id="kn-khoa" type="file" accept=".json,application/json" hidden
+              onChange={(e) => e.target.files?.[0] && void napKhoa(e.target.files[0])} />
+            <button type="button" className="phu" onClick={() => file.current?.click()}>Choose key file (.json)…</button>
+            <small>Only needed to really sign. The key stays in this tab and is never sent anywhere.</small>
+            {loiKhoa && <p role="alert">{loiKhoa}</p>}
+          </details>
+        )}
+      </footer>
     </main>
   );
 }
-
-const css = document.createElement("style");
-css.textContent = `
-  :root { color-scheme: light dark; --nen:#f6f7f4; --chu:#18221c; --vien:#d6ddd6; --nhan:#1f3d2b; --do:#b3261e; --vang:#8a5a00; --xanh:#1d6b3a; }
-  @media (prefers-color-scheme: dark) { :root { --nen:#111713; --chu:#e6ece7; --vien:#2c372f; --nhan:#9fd3ae; --do:#ff8a80; --vang:#f5c451; --xanh:#7fd49b; } }
-  body { margin:0; background:var(--nen); color:var(--chu); font:15px/1.5 system-ui, sans-serif; }
-  .kn { max-width:440px; margin:0 auto; padding:16px; display:grid; gap:12px; }
-  .kn-dau { display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--vien); padding-bottom:8px; }
-  .kn-dau span, small, .kn-phu { opacity:.75; font-size:13px; }
-  .kn-khoi, .kn-yeu-cau { border:1px solid var(--vien); border-radius:12px; padding:12px; display:grid; gap:8px; }
-  .kn-dong { display:flex; justify-content:space-between; gap:8px; font-size:13px; }
-  .kn-dong code { overflow-wrap:anywhere; text-align:right; }
-  .kn-dau h1 { font-size:16px; margin:0; }
-  .kn-yeu-cau h2 { font-size:16px; margin:0; overflow-wrap:anywhere; }
-  .kn-muc { font-weight:700; font-size:18px; margin:0; }
-  .muc-danger { border-color:var(--do); } .muc-danger .kn-muc { color:var(--do); }
-  .muc-warning { border-color:var(--vang); } .muc-warning .kn-muc { color:var(--vang); }
-  .muc-safe .kn-muc { color:var(--xanh); }
-  .kn-diff { margin:0; padding:0; list-style:none; display:grid; gap:4px; font-size:13px; }
-  .kn-diff li { display:flex; justify-content:space-between; gap:8px; }
-  .kn-nut { display:flex; gap:8px; justify-content:flex-end; }
-  button { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--nhan); background:var(--nhan); color:var(--nen); cursor:pointer; }
-  button.phu { background:transparent; color:var(--chu); border-color:var(--vien); }
-  button:disabled { opacity:.45; cursor:not-allowed; }
-  .kn-xac-nhan { display:flex; gap:8px; align-items:center; font-size:14px; }
-  .kn-khoa summary { cursor:pointer; font-size:13px; opacity:.8; }
-  .kn-khoa[open] { display:grid; gap:6px; }
-  .kn-khong-khoa { margin:0; font-size:13px; line-height:1.55; padding:8px 10px; border-radius:8px; background:color-mix(in srgb, var(--nhan) 10%, transparent); }
-  .kn-khong-khoa a { color:inherit; }
-  .kn-note { margin:0; font-size:14px; }
-  .kn-loai { margin:0; font-size:14px; }
-  .kn-bien-nhan h2 { font-size:15px; margin:0; }
-  .kn-bien-nhan table { width:100%; border-collapse:collapse; font-size:12px; }
-  .kn-bien-nhan td, .kn-bien-nhan th { text-align:left; padding:2px 4px; border-bottom:1px solid var(--vien); overflow-wrap:anywhere; }
-  tr[data-khop=false] td { color:var(--do); }
-  .kn-nhat-ky { margin:0; padding-left:18px; font-size:12px; opacity:.8; }
-  [role=alert] { color:var(--do); margin:0; }
-`;
-document.head.appendChild(css);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

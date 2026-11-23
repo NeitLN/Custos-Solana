@@ -45,9 +45,10 @@ with sync_playwright() as pw:
         vi.get_by_role("button", name="Allow connection", exact=True).click()
         vi.locator("#kn-khoa").set_input_files(".devnet/vi-demo.json")
 
-        page.get_by_role("button", name="Find DEMO tokens on Devnet", exact=True).click()
+        # SolBonus tự đọc token DEMO ngay sau khi kết nối; một phiên thì hiện dạng chữ, nhiều phiên thì là select.
         expect(page.locator("#sb-token")).to_be_visible(timeout=180000)
-        kq["taiKhoanChon"] = page.locator("#sb-token").input_value()
+        tk = page.locator("#sb-token")
+        kq["taiKhoanChon"] = tk.get_attribute("data-source") or tk.input_value()
         page.get_by_role("button", name="Claim 1,000 SOLB", exact=True).click()
         expect(vi.locator(".kn-muc")).to_have_text("Danger", timeout=90000)
         kq["canhBao"] = vi.locator(".kn-yeu-cau").inner_text()

@@ -19,7 +19,7 @@ npm run tan-cong
 Mở `http://localhost:5189/`, chọn **Custos Wallet → Kết nối ví → Cho kết nối**.
 Giữ cửa sổ ví ở cổng 5188 mở.
 
-- **Có điều kiện ẩn:** bấm **Tìm token DEMO trên Devnet**, chọn phiên, bấm nhận thưởng.
+- **Có điều kiện ẩn:** kết nối xong SolBonus tự đọc token DEMO trên Devnet và tự chọn phiên mới nhất (nút **Rescan DEMO tokens** để làm mới), rồi bấm **Claim 1,000 SOLB**.
   Ví phải hiện kết quả thật cho chuyển nửa số DEMO + đổi chủ tài khoản. Bấm **Chặn giao dịch**
   để kết thúc mà không gửi. Nếu chủ động **Vẫn ký**, hành vi có hiệu lực trên Devnet.
 - **Phiên bản lành:** cùng luồng, chỉ chuyển 0 lamport cho chính ví; vẫn mất phí mạng.

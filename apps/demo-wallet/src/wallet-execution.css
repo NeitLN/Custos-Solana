@@ -37,3 +37,5 @@
 .wallet-start .wallet-start__phu{font-size:12px;color:#526456;margin:12px 0 0}
 .wallet-presenter-note{font-size:12px;color:#526456;line-height:1.8}
 @media(max-width:650px){.wallet-start{padding:20px}}
+/* Vùng chạm ≥44px trên điện thoại (review UX mục 4). Ô file thật chỉ là 1px vô hình — luật `.wallet-funding input` từng kéo nó rộng 100%, phủ vô hình lên nội dung. */
+.wallet-dapp-link,.wallet-inline-actions button,.wallet-inline-actions a{min-height:44px;min-width:44px;display:inline-flex;align-items:center}.wallet-scenarios summary,.wallet-settings summary{min-height:44px;padding:12px 0}.wallet-funding input{min-height:44px}.wallet-funding .wallet-file-input{width:1px;height:1px;min-height:0;padding:0;margin:0;border:0}

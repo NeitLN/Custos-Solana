@@ -88,9 +88,13 @@ export const NHAN = {
  */
 export const NHAN_EN: { readonly [K in keyof typeof NHAN]: string } = {
   SO_DU: "Balance of ",
-  CHU_SO_HUU: "Token account owner: ",
+  /*
+   * "Token account owner: DEMO" đọc như chủ sở hữu TÊN LÀ DEMO (review UX 11/2026). Nhãn tiếng Anh nay là
+   * "Owner of your DEMO token account" — tiền tố này + ký hiệu + `CHU_BANG.en.duoiTaiKhoan`. Bản "vi" không đổi.
+   */
+  CHU_SO_HUU: "Owner of your ",
   DUOC_PHEP_RUT: "Delegate allowed to withdraw ",
-  QUYEN_DONG: "Close authority of account ",
+  QUYEN_DONG: "Close authority of your ",
   CHUONG_TRINH: "Controlling program of account ",
   SO_DU_SOL: "Your total SOL",
   DAT_COC: "Account deposit (refundable)",
@@ -104,6 +108,8 @@ export const CHU_BANG = {
   vi: {
     nhan: NHAN as { readonly [K in keyof typeof NHAN]: string },
     sauKhiKy: " sau khi ký",
+    /** Đuôi của nhãn chủ sở hữu / quyền đóng. Tiếng Việt không cần: tiền tố đã nói "tài khoản". */
+    duoiTaiKhoan: "",
     ban: "Bạn",
     khongAi: "không ai",
     toi: " — tới ",
@@ -113,6 +119,7 @@ export const CHU_BANG = {
   en: {
     nhan: NHAN_EN,
     sauKhiKy: " after signing",
+    duoiTaiKhoan: " token account",
     ban: "You",
     khongAi: "no one",
     toi: " — up to ",
@@ -268,7 +275,7 @@ export function dungBangChenhLech(
 
     if (t.ownerBefore !== null && t.ownerAfter !== null && t.ownerBefore !== t.ownerAfter) {
       out.push({
-        label: `${N.CHU_SO_HUU}${nhan}`,
+        label: `${N.CHU_SO_HUU}${nhan}${chu.duoiTaiKhoan}`,
         before: t.ownerBefore === facts.signer ? chu.ban : rutGon(t.ownerBefore),
         after: t.ownerAfter === facts.signer ? chu.ban : rutGon(t.ownerAfter),
         severity: "danger",
@@ -300,7 +307,7 @@ export function dungBangChenhLech(
       t.closeAuthorityAfter !== t.closeAuthorityBefore
     ) {
       out.push({
-        label: `${N.QUYEN_DONG}${nhan}`,
+        label: `${N.QUYEN_DONG}${nhan}${chu.duoiTaiKhoan}`,
         before: t.closeAuthorityBefore ? rutGon(t.closeAuthorityBefore) : chu.khongAi,
         after: rutGon(t.closeAuthorityAfter),
         severity: "danger",

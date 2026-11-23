@@ -10,7 +10,7 @@ const GOC = join(import.meta.dirname, "..");
  * Thêm trang mới mà quên h1 thì bài dưới đỏ.
  */
 const TRANG: Array<[string, string]> = [
-  ["index.html", "WalletExecution.tsx"],
+  ["index.html", "App.tsx"],
   ["soi.html", "Inspector.tsx"],
   ["so-lieu.html", "SoLieu.tsx"],
   ["phong-van.html", "PhongVan.tsx"],
@@ -37,10 +37,15 @@ test("QA · mỗi trang có đúng một h1, và h1 không rỗng", () => {
    * lúc chạy `npm test`, không cần dev server và không cần Playwright.
    */
   const thieu: string[] = [];
+  const shared = readFileSync(join(GOC, "src", "ProductNavigation.tsx"), "utf8");
+  assert.equal((shared.match(/<h1[\s>]/g) ?? []).length, 1);
+  assert.match(shared, /<h1[^>]*>\{title\}<\/h1>/);
   for (const [trang, comp] of TRANG) {
     const p = join(GOC, "src", comp);
     const ma = readFileSync(p, "utf8").replace(/\/\*[\s\S]*?\*\//g, ""); // bỏ chú thích
-    const so = (ma.match(/<h1[\s>]/g) ?? []).length;
+    const intros = ma.match(/<ProductIntro\s[\s\S]*?<\/ProductIntro>/g) ?? [];
+    for (const intro of intros) assert.match(intro, /title=\{\S/, trang);
+    const so = (ma.match(/<h1[\s>]/g) ?? []).length + intros.length;
     if (so !== 1) thieu.push(`${trang} (${comp}): ${so} thẻ h1`);
   }
   assert.deepEqual(thieu, [], "trang không có đúng một h1:\n  " + thieu.join("\n  "));

@@ -50,7 +50,9 @@ with sync_playwright() as pw:
     ghi("Allow connection: the app only sees the wallet address")
     sb.wait_for_timeout(2000)
 
-    sb.get_by_role("button", name=re.compile("Find DEMO tokens")).click()
+    tim = sb.get_by_role("button", name=re.compile("Find DEMO tokens"))
+    if tim.count() and tim.is_enabled():
+        tim.click()  # dự phòng: bản mới tự quét sau khi kết nối
     ghi("SolBonus reads the chain itself and finds the wallet's DEMO tokens")
     sb.locator("#sb-token").wait_for(timeout=120000)
     sb.wait_for_timeout(2000)

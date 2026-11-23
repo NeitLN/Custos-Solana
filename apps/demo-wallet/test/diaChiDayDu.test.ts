@@ -13,13 +13,13 @@ const MINT = "BNbP9LKnD8sTyWkwYXpvWY6gqVyg9SDtry5mYtPaK7Ua";
 const TK = "JBQ9SiALovgymB6rA6E14QshDrtgjcPLACtCKKyQGobp";
 
 test("dòng quyền: địa chỉ đầy đủ lấy từ `sauDayDu`, không dựng lại từ chuỗi rút gọn", () => {
-  const d = { label: "Chủ sở hữu tài khoản USDC-demo", before: "Bạn", after: "CRZa…picz", severity: "danger", sauDayDu: FULL };
+  const d = { label: "Chủ sở hữu tài khoản DEMO", before: "Bạn", after: "CRZa…picz", severity: "danger", sauDayDu: FULL };
   assert.deepEqual(diaChiCuaDong(d), [{ nhan: "New address", diaChi: FULL }]);
 });
 
 test("dòng tài sản: mint và tài khoản token đầy đủ", () => {
   const d = {
-    label: "Số dư USDC-demo sau khi ký",
+    label: "Số dư DEMO sau khi ký",
     before: "500,0",
     after: "490,0",
     severity: "info",
@@ -52,17 +52,26 @@ test("thẻ cảnh báo NỐI ĐÚNG: mọi dòng hậu quả → địa chỉ �
    * thật (clipboard nhận chuỗi đầy đủ) kiểm trên trình duyệt: `soi-ck12-ba-trinh-duyet.py`.
    */
   const src = readFileSync(fileURLToPath(new URL("../src/CanhBao.tsx", import.meta.url)), "utf8");
-  const dong = src.slice(src.indexOf("function DongHauQua("), src.indexOf("export function CanhBao("));
-  assert.ok(/<DiaChiDong d=\{d\} cluster=\{cluster\} \/>/.test(dong), "dòng hậu quả không còn hiện địa chỉ đầy đủ");
+  /*
+   * Review UX 11/2026: địa chỉ đầy đủ dời từ lớp mặc định vào "Technical details" — vẫn trên thẻ, một cú
+   * bấm. Canh: khối đó nằm SAU cổng `moKyThuat`, duyệt MỌI dòng của `ketQua.diff` (không chỉ một nhóm),
+   * và mỗi dòng nhận đúng cluster của lượt.
+   */
+  const kyThuat = src.slice(src.indexOf("{moKyThuat && ("));
+  assert.ok(src.indexOf("{moKyThuat && (") > 0, "mất khối chi tiết kỹ thuật");
+  const dayDu = kyThuat.slice(kyThuat.indexOf('aria-label="Full addresses"'));
+  assert.ok(kyThuat.includes('aria-label="Full addresses"'), "chi tiết kỹ thuật không còn khối địa chỉ đầy đủ");
+  assert.ok(/ketQua\.diff\.map\(\(d, i\) =>/.test(dayDu.slice(0, 600)), "khối địa chỉ đầy đủ không duyệt mọi dòng hậu quả");
+  assert.ok(/<DiaChiDong d=\{d\} cluster=\{clusterExplorer\} \/>/.test(dayDu.slice(0, 900)), "dòng hậu quả không còn địa chỉ đầy đủ");
   const khoi = src.slice(src.indexOf("function DiaChiDong("), src.indexOf("function DongHauQua("));
   assert.ok(/const ds = diaChiCuaDong\(d\)/.test(khoi));
   assert.ok(/<NutSaoChep chuoi=\{x\.diaChi\}/.test(khoi), "nút chép không nhận chuỗi đầy đủ từ diaChiCuaDong");
   assert.ok(/lienKetExplorer\(x\.diaChi, cluster\)/.test(khoi));
   const nut = src.slice(src.indexOf("function NutSaoChep("), src.indexOf("function DiaChiDong("));
   assert.ok(/clipboard\.writeText\(chuoi\)/.test(nut), "nút chép không chép đúng chuỗi được truyền vào");
-  // Mọi chỗ vẽ dòng hậu quả đều truyền cluster (không sót nhánh nào).
-  const goi = src.match(/<DongHauQua [^>]*\/>/g) ?? [];
-  assert.ok(goi.length >= 2 && goi.every((g) => /cluster=\{clusterExplorer\}/.test(g)));
+  // Mọi chỗ vẽ địa chỉ đầy đủ đều truyền cluster của lượt (không sót nhánh nào).
+  const goi = src.match(/<DiaChiDong [^>]*\/>/g) ?? [];
+  assert.ok(goi.length >= 1 && goi.every((g) => /cluster=\{clusterExplorer\}/.test(g)));
 });
 
 test("có cả địa chỉ trước (`truocDayDu`) thì hiện cả hai, trước rồi sau", () => {

@@ -41,19 +41,23 @@ with sync_playwright() as p:
     page.mouse.move(1180,350); page.wait_for_timeout(500)
     assert page.locator('.lg-hero').evaluate('(el)=>el.style.getPropertyValue("--cine-ry")') != '0deg'
     page.screenshot(path=str(OUT/'hero.png'))
-    page.get_by_role('button',name='Dừng chuyển động').click()
+    page.get_by_role('button',name='Dừng chuyển động').first.click()
     expect(page.locator('.custos-landing')).to_have_attribute('data-motion','paused')
     page.wait_for_timeout(100)
     a=canvas_frame(page); page.wait_for_timeout(300); assert canvas_frame(page)==a
     assert running(page)==0
     audit(page,'desktop-paused')
-    page.get_by_role('button',name='Bật chuyển động').click()
+    page.get_by_role('button',name='Bật chuyển động').first.click()
     page.wait_for_timeout(100)
     a=canvas_frame(page); page.wait_for_timeout(400); assert canvas_frame(page)!=a
     report['checks'].append('Canvas moves; pointer tilt responds; pause freezes CSS/JS/canvas; resume restores motion')
-    page.locator('.cine-bridge').scroll_into_view_if_needed()
+    # Băng "cầu nối" (.cine-bridge) đã bỏ (review UX 11/2026). Sơ đồ hành trình chỉ để chụp; phép
+    # thử "canvas ngừng vẽ" phải ở chỗ hero chắc chắn đã khuất — section nhà phát triển.
+    page.locator('#cach-hoat-dong').scroll_into_view_if_needed()
+    page.wait_for_timeout(600)
+    page.screenshot(path=str(OUT/'journey.png'))
+    page.locator('#nha-phat-trien').scroll_into_view_if_needed()
     page.wait_for_timeout(1300)
-    page.screenshot(path=str(OUT/'bridge.png'))
     a=canvas_frame(page); page.wait_for_timeout(300); assert canvas_frame(page)==a
     report['checks'].append('Canvas stops drawing when hero is outside viewport')
     page.locator('#nha-phat-trien').scroll_into_view_if_needed()
@@ -62,7 +66,7 @@ with sync_playwright() as p:
     page.emulate_media(reduced_motion='reduce')
     page.wait_for_timeout(100)
     assert running(page)==0
-    expect(page.get_by_role('button',name='Đã giảm chuyển động')).to_be_disabled()
+    expect(page.get_by_role('button',name='Đã giảm chuyển động').first).to_be_disabled()
     expect(page.locator('.lg-code')).to_be_visible()
     page.emulate_media(reduced_motion='no-preference')
     expect(page.locator('.custos-landing')).to_have_attribute('data-motion','running')
@@ -78,7 +82,7 @@ with sync_playwright() as p:
             report['layouts'].append({'width':width,'lang':lang,**dims})
             assert running(page)==0
             if width==390 and lang=='vi':
-                page.locator('.cine-bridge').screenshot(path=str(OUT/'bridge-mobile.png'))
+                page.locator('#cach-hoat-dong').screenshot(path=str(OUT/'journey-mobile.png'))
                 page.locator('#nha-phat-trien').screenshot(path=str(OUT/'developer-mobile.png'))
             if width==320 and lang=='en':
                 page.locator('.lg-menu-nut').click()

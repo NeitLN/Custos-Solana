@@ -15,7 +15,7 @@ export function useSectionMotion(paused: boolean, locale: string) {
       animations.add(animation); animation.onfinish = () => animations.delete(animation);
     };
     root.querySelectorAll(".cine-word").forEach((node, i) => animate(node, [{ transform: "translateY(100%) rotate(3deg)", opacity: .2 }, { transform: "translateY(0) rotate(0deg)", opacity: 1 }], i * 65, 900));
-    root.querySelectorAll(".lg-kicker,.lg-hero__mota,.lg-hero__nut,.lg-hero__ghichu").forEach((node, i) => animate(node, [{ opacity: .2, transform: "translateY(18px)" }, { opacity: 1, transform: "translateY(0)" }], i * 90 + 180));
+    root.querySelectorAll(".lg-kicker,.lg-hero__mota,.lg-hero__nut,.lg-hero__buoc,.lg-hero__lien-phu,.lg-hero__ghichu").forEach((node, i) => animate(node, [{ opacity: .2, transform: "translateY(18px)" }, { opacity: 1, transform: "translateY(0)" }], i * 90 + 180));
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -23,14 +23,14 @@ export function useSectionMotion(paused: boolean, locale: string) {
         if (node.matches(".lg-buoc,.lg-bcs__muc")) {
           const i = Array.from(node.parentElement?.children ?? []).indexOf(node);
           animate(node, [{ opacity: .35, transform: "translateY(34px)" }, { opacity: 1, transform: "translateY(0)" }], Math.min(i * 110, 330));
-        } else if (node.matches(".lg-code,.cine-bridge__copy")) {
+        } else if (node.matches(".lg-code")) {
           animate(node, [{ clipPath: "inset(0 0 100% 0)", transform: "translateY(20px)" }, { clipPath: "inset(0 0 0% 0)", transform: "translateY(0)" }], 0, 950);
         } else {
           animate(node, [{ opacity: .45, transform: "perspective(1200px) translateY(32px) rotateX(5deg) scale(.96)" }, { opacity: 1, transform: "perspective(1200px) translateY(0) rotateX(0) scale(1)" }], 0, 850);
         }
       }
     }, { threshold: 0.12 });
-    root.querySelectorAll(".lg-phieu,.lg-ab__bang,.lg-tt,.lg-buoc,.lg-code,.lg-bcs__muc,.cine-bridge__copy,.lg-cta__in").forEach(node => observer.observe(node));
+    root.querySelectorAll(".lg-phieu,.lg-ab__bang,.lg-tt,.lg-buoc,.lg-code,.lg-bcs__muc,.lg-cta__in").forEach(node => observer.observe(node));
     const hero = root.querySelector<HTMLElement>(".lg-hero");
     const fine = matchMedia("(hover: hover) and (pointer: fine)");
     let frame = 0;

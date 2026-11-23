@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import type { NoiDung } from "./content.ts";
 import { LINK } from "./links.ts";
 import { DesignIcon } from "./DesignIcon.tsx";
+import { GapTrenMobile } from "./ThanhPhanChung.tsx";
 
 /**
  * Các section sau A/B.
@@ -11,53 +13,15 @@ import { DesignIcon } from "./DesignIcon.tsx";
  * "bắt đầu trong ba bước" trên nền lilac riêng. Mục 2 nói rõ: *"Loại trùng nội
  * dung trước khi giảm spacing"* và *"không giảm font body"*.
  *
- * Nay còn một section `PipelineSection`: ba bước theo pipeline THẬT (nhận tx →
- * mô phỏng → trả kết quả kèm giới hạn), và ba giá trị rút thành một hàng mô tả
- * nhẹ bên dưới, **không đánh số** — số 1/2/3 chỉ dành cho chuỗi pipeline.
+ * Từng còn một section `PipelineSection` (ba bước pipeline + hàng ba giá trị); xem đoạn
+ * "Review UX 11/2026" bên dưới về chỗ của nó bây giờ.
  *
  * Section "bắt đầu" nền lilac đã bỏ; hướng dẫn dùng thử nằm cạnh CTA của A/B.
- */
-
-/**
- * Pipeline ba bước + ba giá trị.
  *
- * Nền sáng tách phần giải thích quy trình khỏi hero và đoạn cinematic nền tối.
+ * Review UX 11/2026: `PipelineSection` (L1 → L3) đã gộp vào sơ đồ hành trình (`HanhTrinh.tsx`), và
+ * hàng ba giá trị (vốn đã bị ẩn bằng CSS vì lặp ý) bỏ hẳn. Trên mobile, sơ đồ luồng + code và danh
+ * sách FAQ gập thành accordion để trang ngắn lại.
  */
-export function PipelineSection({ t }: { t: NoiDung }) {
-  return (
-    <section className="lg-section lg-vien-tren" id="cach-hoat-dong">
-      <div className="lg-shell">
-        <h2 className="lg-h2">{t.pipeline.h2}</h2>
-        <p className="lg-lead lg-prose lg-muted lg-ab__mota">{t.pipeline.moTa}</p>
-
-        <ol className="lg-pipeline">
-          {t.pipeline.buoc.map((b, i) => (
-            <li key={b.tieuDe} className="lg-buoc">
-              <div className="lg-step-visual" aria-hidden="true">
-                <DesignIcon kind={i === 0 ? "transaction" : i === 1 ? "scan" : "evidence"} />
-                <span className="lg-buoc__so">{String(i + 1).padStart(2, "0")}</span>
-              </div>
-              <h3 className="lg-h3">{b.tieuDe}</h3>
-              <p className="lg-muted">{b.moTa}</p>
-            </li>
-          ))}
-        </ol>
-
-        <p className="lg-caption lg-pipeline__ghichu">{t.pipeline.ghiChu}</p>
-
-        {/* Ba giá trị — hàng mô tả nhẹ, KHÔNG card, KHÔNG số thứ tự. */}
-        <div className="lg-giatri">
-          {t.giaTri.the.map((the) => (
-            <div key={the.tieuDe} className="lg-giatri__o">
-              <h3>{the.tieuDe}</h3>
-              <p>{the.moTa}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /**
  * Đoạn code cho nhà phát triển — API HIỆN HÀNH.
@@ -74,6 +38,7 @@ export function DeveloperSection({ t }: { t: NoiDung }) {
           <h2 className="lg-h2">{t.devs.h2}</h2>
           <p className="lg-lead lg-prose lg-muted-dark lg-dev__mota">{t.devs.moTa}</p>
         </header>
+        <GapTrenMobile tomTat={t.devs.moCode}>
         <div className="integration-flow" role="group" aria-label={t.devs.luongTieuDe}>
           <p className="integration-flow__label">{t.devs.luongPhanTich}</p>
           <ol className="integration-flow__steps">
@@ -113,6 +78,7 @@ export function DeveloperSection({ t }: { t: NoiDung }) {
           </pre>
           <p className="lg-caption lg-code__ghichu">{t.devs.codeGhiChu}</p>
         </figure>
+        </GapTrenMobile>
         <div className="integration-notes">
           <p className="lg-caption lg-muted-dark lg-dev__ghichu">{t.devs.ghiChu}</p>
           <ul className="lg-dev__lien">
@@ -186,12 +152,14 @@ export function FAQ({ t }: { t: NoiDung }) {
           <p className="lg-faq__mota lg-prose">{t.faq.moTa}</p>
         </div>
         <div>
-          {t.faq.muc.map((m) => (
-            <details key={m.hoi} className="lg-faq__muc">
-              <summary className="lg-faq__hoi">{m.hoi}</summary>
-              <p className="lg-faq__dap">{m.dap}</p>
-            </details>
-          ))}
+          <GapTrenMobile tomTat={t.faq.moTatCa.replace("{n}", String(t.faq.muc.length))}>
+            {t.faq.muc.map((m) => (
+              <details key={m.hoi} className="lg-faq__muc">
+                <summary className="lg-faq__hoi">{m.hoi}</summary>
+                <p className="lg-faq__dap">{m.dap}</p>
+              </details>
+            ))}
+          </GapTrenMobile>
         </div>
       </div>
     </section>
@@ -210,23 +178,27 @@ export function CtaCuoi({ t }: { t: NoiDung }) {
         {/* Kết trang bằng ĐÚNG hành động chủ lực của hero và hành trình (critique 09/10): trước đây nút
             chính dẫn vào phòng phân tích — thứ chính trang này gọi là lối phụ. */}
         <div className="lg-cta__nut">
-          <a className="lg-btn lg-btn--primary" href={LINK.solBonus} target="_blank" rel="noreferrer noopener">
-            {t.hanhTrinh.ctaNguoiDung}
+          {/* Cùng MỘT nút chính với hero; các lối khác là link chữ (review UX 11/2026). */}
+          <a className="lg-btn lg-btn--primary" href={LINK.solBonus} target="_blank" rel="noreferrer noopener" aria-describedby="lg-cta-cuoi-ghichu">
+            {t.chung.thuNguoiDung}
             <span className="lg-sr"> ({t.chung.moTabMoi})</span>
           </a>
-          <a className="lg-btn lg-btn--outline" href={LINK.tichHop}>
-            {t.hanhTrinh.ctaNhaPhatTrien}
-          </a>
-          <a className="lg-link lg-cta__phu" href={LINK.viMau}>
-            {t.chung.moDemo} →
-          </a>
+          <p className="lg-caption lg-cta__ghichu" id="lg-cta-cuoi-ghichu">{t.chung.thuNguoiDungGhiChu}</p>
+          <p className="lg-cta__lien">
+            <a className="lg-link lg-cta__phu" href={LINK.tichHop}>
+              {t.hanhTrinh.ctaNhaPhatTrien} <span aria-hidden="true">→</span>
+            </a>
+            <a className="lg-link lg-cta__phu" href={LINK.viMau}>
+              {t.chung.moDemo} <span aria-hidden="true">→</span>
+            </a>
+          </p>
         </div>
       </div>
     </section>
   );
 }
 
-export function SiteFooter({ t }: { t: NoiDung }) {
+export function SiteFooter({ t, dieuKhienChuyenDong }: { t: NoiDung; dieuKhienChuyenDong?: ReactNode }) {
   return (
     <footer className="lg-footer lg-dark">
       <div className="lg-shell lg-footer__in">
@@ -262,6 +234,7 @@ export function SiteFooter({ t }: { t: NoiDung }) {
         </ul>
 
         <p className="lg-caption lg-muted-dark lg-footer__ghichu">{t.footer.ghiChu}</p>
+        {dieuKhienChuyenDong && <div className="lg-footer__chuyen-dong">{dieuKhienChuyenDong}</div>}
       </div>
     </footer>
   );

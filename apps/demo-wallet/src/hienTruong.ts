@@ -97,6 +97,26 @@ export function clusterCua(rpc: string): "devnet" | "testnet" | "mainnet-beta" |
 export const hostCua = hostCuaRpc;
 
 /**
+ * KÝ HIỆU HIỂN THỊ CỦA TOKEN DEMO — review UX 11/2026.
+ *
+ * Token Devnet của Phòng phân tích mang nhãn "USDC-demo" trong cấu hình: mượn tên một thương hiệu
+ * thật, điều không nên có ở một sản phẩm chống lừa đảo. Giao diện hiện nó là "DEMO".
+ *
+ * CẤU HÌNH KHÔNG ĐỔI, CHỈ ĐỔI LÚC ĐỌC. `public/hien-truong.json` và bộ phát lại
+ * `public/replay/kich-ban.json` giữ nguyên "USDC-demo": file hiện trường nằm trong danh sách tổ tiên
+ * của bằng chứng tích hợp (`scripts/toTien.ts`), `cungHienTruong` so cả trường này khi ghi lẻ một
+ * kịch bản, và tập giữ lại của eval mô hình dựng trên đúng ảnh chụp đó. Hàm này chỉ đổi giá trị đưa
+ * vào `kyHieuToken` — tuỳ chọn CHỈ ĐỂ HIỂN THỊ của SDK (nhãn bảng chênh lệch và câu diễn giải).
+ * Cùng mint; ký hiệu không đi vào giao dịch; mức, mã lý do và độ phủ không phụ thuộc nó.
+ *
+ * Đây KHÔNG phải token của SolBonus: phiên SolBonus có tài khoản token Devnet riêng, chỉ trùng nhãn.
+ */
+export const KY_HIEU_DEMO = "DEMO";
+export function kyHieuHienThi(ht: HienTruong): HienTruong {
+  return ht.kyHieu === "USDC-demo" ? { ...ht, kyHieu: KY_HIEU_DEMO } : ht;
+}
+
+/**
  * Đọc hiện trường devnet do `scripts/dung-hien-truong.ts` dựng ra.
  *
  * Trả null nếu chưa dựng — giao diện sẽ hướng dẫn thay vì im lặng hỏng.
@@ -180,7 +200,8 @@ export async function docHienTruongChiTiet(): Promise<KetQuaHienTruong> {
   }
 
   const lyDo = xacThucHienTruong(tho);
-  return lyDo === null ? { trangThai: "co", ht: tho as HienTruong } : { trangThai: "hong", lyDo };
+  // Nhãn hiển thị đổi tại đây — một chỗ cho mọi màn đọc hiện trường (xem `kyHieuHienThi`).
+  return lyDo === null ? { trangThai: "co", ht: kyHieuHienThi(tho as HienTruong) } : { trangThai: "hong", lyDo };
 }
 
 /** Giữ nguyên cho các chỗ chỉ cần dữ liệu; cấu trúc sai coi như không có. */

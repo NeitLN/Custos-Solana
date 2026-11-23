@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
-import type { Ngon } from "./content.ts";
 
 export const CINEMA = {
-  vi: { pause: "Dừng chuyển động", play: "Bật chuyển động", reduced: "Đã giảm chuyển động", scroll: "Cuộn để khám phá", title: "Một chữ ký.", emphasis: "Nhiều điều thay đổi.", detail: "Nhìn vào cả tài sản và quyền kiểm soát, trước khi bạn quyết định.", words: ["Mô phỏng", "Đọc dữ kiện", "Bạn quyết định"], steps: ["Xem trước thay đổi của giao dịch", "Hiểu cảnh báo và phạm vi đã kiểm", "Cân nhắc trước khi ký"], journey: "Từ giao dịch đến quyết định" },
-  en: { pause: "Pause motion", play: "Enable motion", reduced: "Motion reduced", scroll: "Scroll to explore", title: "One signature.", emphasis: "More than a transfer.", detail: "Look at both assets and control, before you decide.", words: ["Simulate", "Read the evidence", "You decide"], steps: ["Preview what the transaction changes", "Understand findings and coverage", "Consider the outcome before signing"], journey: "From transaction to decision" },
+  /* Băng "One signature. More than a transfer." và dải ba bước của nó đã bỏ (review UX 11/2026):
+     chúng vẽ lại cùng quy trình mà sơ đồ hành trình đã nói. */
+  vi: { pause: "Dừng chuyển động", play: "Bật chuyển động", reduced: "Đã giảm chuyển động", scroll: "Cuộn để khám phá" },
+  en: { pause: "Pause motion", play: "Enable motion", reduced: "Motion reduced", scroll: "Scroll to explore" },
 };
 
 /** Decorative orbital scene; no network, no transaction data. */
@@ -53,21 +54,4 @@ export function CinematicScene({ paused }: { paused: boolean }) {
     return () => { cancelAnimationFrame(frame); observer.disconnect(); sizes.disconnect(); document.removeEventListener("visibilitychange", sync); };
   }, [paused]);
   return <div className="cine-atmosphere" aria-hidden="true"><div className="cine-light cine-light--one" /><div className="cine-light cine-light--two" /><div className="cine-floor" /><canvas ref={ref} className="cine-orbits" /><div className="cine-vignette" /></div>;
-}
-
-export function CinematicBridge({ ngon }: { ngon: Ngon }) {
-  const copy = CINEMA[ngon];
-  return <section className="cine-bridge">
-    <div className="lg-shell cine-journey">
-      <ol className="cine-journey__steps" aria-label={copy.journey}>
-        {copy.words.map((word, i) => <li key={word}>
-          <div className="cine-journey__heading"><span className="cine-journey__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><strong>{word}</strong></div>
-          <p>{copy.steps[i]}</p><span className="cine-journey__track" aria-hidden="true"><span /></span>
-        </li>)}
-      </ol>
-    </div>
-    <div className="lg-shell cine-bridge__in"><div className="cine-bridge__copy"><h2 className="lg-h2">{copy.title}<br /><span>{copy.emphasis}</span></h2><p>{copy.detail}</p></div>
-      <div className="cine-gate" aria-hidden="true"><div className="cine-gate__ring" /><div className="cine-gate__ring cine-gate__ring--two" /><div className="cine-gate__core"><img src={`${import.meta.env.BASE_URL}brand/custos-symbol-light.svg`} width="124" height="124" alt="" /></div><span className="cine-gate__packet" /><span className="cine-gate__packet cine-gate__packet--two" /></div>
-    </div>
-  </section>;
 }

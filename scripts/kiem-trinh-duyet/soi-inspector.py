@@ -115,25 +115,43 @@ async def main() -> None:
         # dựng hoàn toàn bình thường.
         ck(
             "trang Inspector dựng được",
-            "Giao dịch cần kiểm tra" in t
+            "Transaction to check" in t
             and await pg.get_by_role("button", name="Check transaction").count() == 1,
         )
         ck(
             "cảnh báo riêng tư hiện TRƯỚC ô nhập",
-            "Dữ liệu đi đâu" in t and t.index("Dữ liệu đi đâu") < t.index("Giao dịch (base64)"),
+            "Where your data goes" in t and t.index("Where your data goes") < t.index("Transaction (base64)"),
         )
         ck("KHÔNG có nút Ký ở Inspector", "Ký giao dịch" not in t and "Sign anyway" not in t)
-        ck("không hỏi seed phrase / khoá riêng", "seed phrase" in t and "không nhận" in t)
+        ck("không hỏi seed phrase / khoá riêng", "seed phrase" in t and "never accepts" in t)
+        ck(
+            "giao dịch đã ghi đứng TRÊN ô dán base64",
+            "Try a recorded transaction" in t and t.index("Try a recorded transaction") < t.index("Transaction (base64)"),
+        )
+        ck("trạng thái rỗng không còn sơ đồ minh hoạ vỡ", await pg.locator(".inspector-empty .demo-inspection-map").count() == 0)
+
+        print("\nA2 · một cú bấm phát lại một giao dịch mainnet đã ghi — không gọi mạng")
+        rpc.clear()
+        try:
+            await pg.locator(".inspector-catalog > summary").click()
+            await pg.locator(".inspector-mainnet__ds button").first.click(timeout=15000)
+            await pg.wait_for_selector("[data-nguon='mainnet-phat-lai']", timeout=20000)
+            await pg.wait_for_selector("[aria-label='Custos warning card']", timeout=20000)
+            man = await pg.locator("body").inner_text()
+            ck("bấm một lần ⇒ có kết quả phát lại", "Real mainnet transaction · replay of recorded data." in man)
+            ck("phát lại KHÔNG gọi mạng ngoài localhost", len(rpc) == 0, f"{len(rpc)} lời gọi")
+        except Exception as e:
+            ck("bấm một lần ⇒ có kết quả phát lại", False, str(e)[:70])
 
         print("\nB · đầu vào sai KHÔNG chạm RPC")
         for ten, dv, cho in [
-            ("chuỗi rác", "không phải base64 đâu!!!", "không phải base64"),
+            ("chuỗi rác", "không phải base64 đâu!!!", "is not base64"),
             (
                 "base64 hợp lệ nhưng không phải tx",
                 base64.b64encode("văn bản thường".encode()).decode(),
-                "không phải một giao dịch Solana",
+                "not a readable Solana transaction",
             ),
-            ("chuỗi quá dài", "A" * 5000, "dài hơn"),
+            ("chuỗi quá dài", "A" * 5000, "longer than"),
         ]:
             rpc.clear()
             await pg.fill("#tx-b64", dv)
@@ -150,7 +168,7 @@ async def main() -> None:
         await pg.get_by_role("button", name="Check transaction").click()
         await pg.wait_for_timeout(900)
         man = await pg.locator("body").inner_text()
-        ck("ví sai · báo lỗi", "không phải base58 hợp lệ" in man)
+        ck("ví sai · báo lỗi", "not valid base58" in man)
         ck("ví sai · KHÔNG gọi RPC", len(rpc) == 0, f"{len(rpc)} lời gọi")
         await pg.fill("#vi-bv", "")
 
@@ -161,15 +179,15 @@ async def main() -> None:
             await pg.fill("#tx-b64", b64That)
             await pg.get_by_role("button", name="Check transaction").click()
             try:
-                await pg.wait_for_selector("[aria-label='Thẻ cảnh báo Custos']", timeout=45000)
+                await pg.wait_for_selector("[aria-label='Custos warning card']", timeout=45000)
                 man = await pg.locator("body").inner_text()
                 ck("thẻ kết quả hiện ra", True)
                 ck(
                     "có mức verdict",
-                    any(x in man for x in ["Normal", "Review carefully", "Danger", "Chưa đọc hiểu"]),
+                    any(x in man for x in ["Normal", "Review carefully", "Danger"]),
                 )
                 ck("vẫn KHÔNG có nút Ký sau khi có kết quả", "Sign anyway" not in man)
-                ck("nói rõ đã mô phỏng trên RPC nào", "mô phỏng trên" in man)
+                ck("nói rõ đã mô phỏng trên RPC nào", "simulated on" in man)
                 ck("có gọi RPC ở đường thành công", len(rpc) > 0, f"{len(rpc)} lời gọi")
             except Exception as e:
                 ck("thẻ kết quả hiện ra", False, str(e)[:60])
@@ -181,7 +199,7 @@ async def main() -> None:
                 await pg.wait_for_timeout(400)
                 man = await pg.locator("body").inner_text()
 
-                nut = pg.locator("[aria-label='Dữ kiện của từng cảnh báo'] button")
+                nut = pg.locator("[aria-label='Facts behind each warning'] button")
                 sl = await nut.count()
                 if sl == 0:
                     # KHÔNG CÓ CẢNH BÁO THÌ KHÔNG CÓ TRACE, và đó là đúng.
@@ -194,15 +212,15 @@ async def main() -> None:
                     # nào. Bản đầu của probe đòi "khối trace hiện ra" vô điều kiện và
                     # FAIL — kỳ vọng của probe sai, không phải sản phẩm sai.
                     ck("không có cảnh báo ⇒ trace tự ẩn, không hiện khung rỗng",
-                       "Vì sao Custos nói vậy" not in man, "0 cảnh báo")
+                       "Why Custos says this" not in man, "0 cảnh báo")
                 else:
-                    ck("khối trace hiện ra khi CÓ cảnh báo", "Vì sao Custos nói vậy" in man)
+                    ck("khối trace hiện ra khi CÓ cảnh báo", "Why Custos says this" in man)
                     await nut.first.click()
                     await pg.wait_for_timeout(400)
                     m2 = await pg.locator("body").inner_text()
                     ck(
                         "bấm cảnh báo ⇒ hiện NGUỒN của dữ kiện",
-                        any(x in m2 for x in ["đã đo", "suy ra", "không đọc được", "chưa hỗ trợ"]),
+                        any(x in m2 for x in ["measured", "derived", "could not read", "not supported yet"]),
                     )
                     ck(
                         "aria-expanded đổi khi mở",
@@ -240,26 +258,26 @@ async def main() -> None:
                 await pgH.get_by_role("button", name="Check transaction").click()
                 await pgH.wait_for_timeout(700)
                 mH = await pgH.locator("body").inner_text()
-                ck("đang kiểm ⇒ nút Huỷ hiện ra", "Huỷ" in mH and "Đang kiểm" in mH)
+                ck("đang kiểm ⇒ nút Huỷ hiện ra", "Cancel" in mH and "Checking…" in mH)
 
-                await pgH.get_by_role("button", name="Huỷ", exact=True).click()
+                await pgH.get_by_role("button", name="Cancel", exact=True).click()
                 await pgH.wait_for_timeout(600)
                 m2 = await pgH.locator("body").inner_text()
-                ck("bấm Huỷ ⇒ báo đã huỷ", "Đã huỷ" in m2)
+                ck("bấm Huỷ ⇒ báo đã huỷ", "Cancelled" in m2)
                 # HUỶ KHÔNG PHẢI LỖI: hiện "không kiểm được" cho một thao tác người
                 # dùng chủ động huỷ là nói sai, và làm họ nghĩ sản phẩm hỏng.
-                ck("huỷ KHÔNG bị báo thành lỗi RPC", "Không kiểm được giao dịch này" not in m2)
+                ck("huỷ KHÔNG bị báo thành lỗi RPC", "Could not check this transaction" not in m2)
 
                 # Nhật ký nằm trong <details> đóng — phải mở mới đọc được nội dung.
-                await pgH.locator("summary", has_text="Nhật ký kỹ thuật").click()
+                await pgH.locator("summary", has_text="Technical log").click()
                 await pgH.wait_for_timeout(300)
                 mNK = await pgH.locator("body").inner_text()
-                ck("nhật ký ghi rõ request đã được cắt", "đã được cắt" in mNK)
+                ck("nhật ký ghi rõ request đã được cắt", "aborted" in mNK)
 
                 # Chờ qua thời điểm RPC lẽ ra trả về: kết quả muộn không được ghi đè.
                 await pgH.wait_for_timeout(9000)
                 m3 = await pgH.locator("body").inner_text()
-                ck("kết quả về MUỘN không ghi đè trạng thái huỷ", "Đã huỷ" in m3)
+                ck("kết quả về MUỘN không ghi đè trạng thái huỷ", "Cancelled" in m3)
                 ck("0 lỗi console ở nhánh huỷ", len(bugH) == 0, str(bugH[:1]))
             except Exception as e:
                 ck("nhánh huỷ chạy được", False, str(e)[:70])
@@ -269,7 +287,7 @@ async def main() -> None:
         await pg.fill("#tx-b64", "rác")
         await pg.wait_for_timeout(300)
         man = await pg.locator("body").inner_text()
-        ck("đổi đầu vào ⇒ bỏ kết quả cũ", "Chưa kiểm gì" in man)
+        ck("đổi đầu vào ⇒ bỏ kết quả cũ", "Waiting for your transaction." in man)
 
         ck("0 lỗi console suốt lượt", len(bug) == 0, str(bug[:1]))
 

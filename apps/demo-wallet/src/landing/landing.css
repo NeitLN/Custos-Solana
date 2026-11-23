@@ -269,8 +269,18 @@
   border-top: 1px solid var(--custos-border);
 }
 
-.custos-landing [id] {
-  scroll-margin-top: calc(var(--lg-nav-h) + 20px);
+/*
+ * Header dính: MỘT nguồn bù duy nhất cho cả nhảy anchor lẫn focus bằng Tab (WCAG 2.4.11). Trước đây
+ * `.custos-landing [id] { scroll-margin-top }` cộng dồn với dòng này thành khoảng trống ~95px dưới header.
+ * `--lg-nav-h` khai trên `.custos-landing`, không với tới `html`, nên ghi số: 72px + 12, và 64px + 12 ở ≤640px.
+ */
+html:has(.custos-landing) {
+  scroll-padding-top: 84px;
+}
+@media (max-width: 640px) {
+  html:has(.custos-landing) {
+    scroll-padding-top: 76px;
+  }
 }
 
 /* ── Chữ (mục 4) ─────────────────────────────────────────────────────────── */
@@ -526,6 +536,9 @@
 .lg-skip:focus {
   left: var(--lg-gutter);
   top: 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 12px 18px;
   background: var(--custos-brand);
   color: #ffffff;
@@ -588,6 +601,8 @@
   text-decoration: none;
   /* `min-width: 0` cho phép brand CO LẠI thay vì đẩy header tràn ngang. */
   min-width: 0;
+  /* Vùng chạm ≥44px trên điện thoại (logo nhỏ lại còn 30px ở cinematic.css). */
+  min-height: 44px;
 }
 .lg-brand__symbol {
   width: 36px;
@@ -740,18 +755,6 @@
   font-weight: 700;
   border-bottom: 0;
 }
-/* VI/EN trong menu mobile — vẫn truy cập được, chỉ đổi chỗ (UI-02). */
-.lg-menu__ngon {
-  display: flex;
-  align-items: center;
-  gap: var(--lg-s3);
-  padding: 14px 2px 4px;
-}
-.lg-menu__ngon-nhan {
-  font-size: 14px;
-  color: var(--custos-muted);
-}
-
 @media (max-width: 1024px) {
   .lg-nav,
   .lg-header__cta {
@@ -765,10 +768,7 @@
   }
 }
 @media (max-width: 640px) {
-  /* VI/EN rời header, vào menu. */
-  .lg-header__phai > .lg-ngon {
-    display: none;
-  }
+  /* VI/EN ở lại header ở mọi cỡ (review UX 11/2026); chỉ dòng phụ của brand rời đi. */
   .lg-brand__phu {
     display: none;
   }
@@ -909,11 +909,6 @@
   margin-top: var(--lg-s2);
   font-size: 14px;
   color: var(--custos-danger);
-}
-.lg-phieu__lien {
-  display: inline-block;
-  margin-top: var(--lg-s5);
-  font-size: 15px;
 }
 .lg-phieu__caption {
   margin-top: var(--lg-s4);
@@ -1217,32 +1212,12 @@
   margin-block: var(--lg-s2) 6px;
 }
 
-/* Ba giá trị rút thành hàng mô tả nhẹ, KHÔNG đánh số (mục 5). */
-.lg-giatri {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--lg-s5);
-  margin-top: var(--lg-s7);
-  padding-top: var(--lg-s5);
-  border-top: 1px solid var(--custos-border);
-}
-.lg-giatri__o h3 {
-  font-family: var(--lg-font-body);
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.lg-giatri__o p {
-  font-size: 15px;
-  color: var(--custos-muted);
-}
 .lg-pipeline__ghichu {
   margin-top: var(--lg-s5);
   color: var(--custos-muted);
 }
 @media (max-width: 860px) {
-  .lg-pipeline,
-  .lg-giatri {
+  .lg-pipeline {
     grid-template-columns: 1fr;
     gap: var(--lg-s4);
   }

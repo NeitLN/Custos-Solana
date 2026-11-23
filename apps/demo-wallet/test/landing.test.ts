@@ -1,11 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { FIXTURE, dinhDangToken, layCa } from "../src/landing/sample.ts";
 import { VI, EN } from "../src/landing/content.ts";
+import { kyHieuHienThi, type HienTruong } from "../src/hienTruong.ts";
 
 const GOC = fileURLToPath(new URL("../../../", import.meta.url));
+
+/** Mọi file mã của landing — đọc từ thư mục, không liệt kê tay (file mới tự vào phạm vi guard). */
+const FILE_LANDING = readdirSync(GOC + "apps/demo-wallet/src/landing")
+  .filter((f) => /\.tsx?$/.test(f))
+  .sort();
 
 /* ── Fixture phải khớp artifact gốc ───────────────────────────────────────── */
 
@@ -163,8 +169,100 @@ test("WEB-05 · bản EN dịch TRUNG THÀNH giới hạn, không nới thành l
     assert.ok(!tho.includes(cam), `bản EN có câu nới quá mức: "${cam}"`);
   }
   assert.match(EN.bangChung.gioiHan, /does not guarantee/i, "EN mất câu giới hạn");
-  assert.match(EN.ab.giaTri.ketLuanA, /parts we could read/i, "EN nới kết luận ca A");
-  assert.doesNotMatch(EN.ab.giaTri.ketLuanA, /safe|secure|protected/i, "EN đổi \"không phát hiện\" thành lời bảo đảm");
+  /*
+   * Review UX 11/2026 đổi câu ca A thành "No red flags in the parts Custos could read. Not a guarantee
+   * of safety." Chữ "safety" duy nhất được phép là trong chính câu PHỦ ĐỊNH đó — bỏ nó đi rồi mới quét
+   * lời bảo đảm, để guard không đỏ vì câu từ chối bảo đảm, và vẫn đỏ nếu ai thêm "safe" ở chỗ khác.
+   */
+  assert.match(EN.ab.giaTri.ketLuanA, /parts Custos could read/i, "EN nới kết luận ca A");
+  assert.match(EN.ab.giaTri.ketLuanA, /not a guarantee of safety/i, "EN mất câu \"không phải bảo đảm\" của ca A");
+  assert.doesNotMatch(
+    EN.ab.giaTri.ketLuanA.replace(/not a guarantee of safety/i, ""),
+    /safe|secure|protected/i,
+    "EN đổi \"không phát hiện\" thành lời bảo đảm",
+  );
+  assert.match(VI.ab.giaTri.ketLuanA, /không phải lời bảo đảm an toàn/i, "VI mất câu \"không phải bảo đảm\" của ca A");
+});
+
+/* ── Review UX 11/2026 · một đường demo, phiếu mẫu lấy từ bản ghi ─────────── */
+
+test("UX-11 · nhãn mức trên landing đúng ba nhãn của ví, không có chữ \"safe\"", () => {
+  assert.deepEqual({ ...EN.chung.muc }, { safe: "Normal", warning: "Review carefully", danger: "Danger" });
+  for (const nhan of Object.values(EN.chung.muc)) {
+    assert.doesNotMatch(nhan, /safe|secure|protected/i, `nhãn mức EN nói quá: ${nhan}`);
+  }
+});
+
+test("UX-11 · nhãn mức bản VI đúng ba nhãn, không có \"an toàn\" hay \"bảo đảm\"", () => {
+  assert.deepEqual({ ...VI.chung.muc }, { safe: "Bình thường", warning: "Cần xem kỹ", danger: "Nguy hiểm" });
+  for (const nhan of Object.values(VI.chung.muc)) {
+    assert.doesNotMatch(nhan, /an toàn|bảo đảm/i, `nhãn mức VI nói quá: ${nhan}`);
+  }
+});
+
+test("UX-11 · phiếu ở hero lấy mức, mã lý do, coverage TỪ BẢN GHI — không gõ tay", () => {
+  /*
+   * Phiếu hiển thị ca B. Nếu ai đó gõ "Danger" hay "SPL_SET_AUTHORITY…" thẳng vào `Hero.tsx`, bản ghi
+   * đổi mà phiếu không đổi. Guard đọc mã: phải đi qua `caB.level`, `caB.reasonCodes`, `caB.coverage`.
+   */
+  const ma = readFileSync(GOC + "apps/demo-wallet/src/landing/Hero.tsx", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  assert.match(ma, /<ChipMuc level=\{caB\.level\}/, "chip mức không đọc từ bản ghi");
+  assert.match(ma, /caB\.reasonCodes\.join/, "mã lý do không đọc từ bản ghi");
+  assert.match(ma, /caB\.coverage\.analyzed/);
+  assert.match(ma, /caB\.coverage\.total/);
+  assert.ok(!ma.includes("SPL_SET_AUTHORITY"), "Hero.tsx gõ tay mã lý do");
+  // Chủ mới của tài khoản cũng từ bản ghi: dạng rút gọn hiển thị, địa chỉ đầy đủ ở `title`.
+  assert.match(ma, /title=\{caB\.doiChu\.sauDayDu\}>\{caB\.doiChu\.sau\}/, "chủ mới không đọc từ bản ghi");
+  // Câu coverage có chỗ cho cả hai số, ở cả hai bản.
+  for (const t of [VI, EN]) {
+    assert.ok(t.hero.phieu.docHieu.includes("{x}") && t.hero.phieu.docHieu.includes("{y}"));
+  }
+});
+
+test("UX-11 · MỌI nút chính trên landing đều dẫn tới SolBonus — một đường demo duy nhất", () => {
+  /*
+   * Guard theo cả thư mục, không riêng hero: vòng review 1 bỏ sót một nút lime dẫn vào phòng phân
+   * tích dưới bảng A/B. Mỗi thẻ mang `lg-btn--primary` phải là `<a>` có `href={LINK.solBonus}`.
+   */
+  let dem = 0;
+  for (const f of FILE_LANDING.filter((x) => x.endsWith(".tsx"))) {
+    const ma = readFileSync(GOC + "apps/demo-wallet/src/landing/" + f, "utf8").replace(/\{\/\*[\s\S]*?\*\/\}/g, "");
+    for (const m of ma.matchAll(/<(\w+)\b[^>]*\blg-btn--primary\b[^>]*>/g)) {
+      dem++;
+      assert.equal(m[1], "a", `${f}: nút chính không phải link: ${m[0].slice(0, 80)}`);
+      assert.match(m[0], /href=\{LINK\.solBonus\}/, `${f}: nút chính không dẫn tới SolBonus: ${m[0].slice(0, 100)}`);
+    }
+  }
+  assert.ok(dem >= 3, `chỉ thấy ${dem} nút chính — guard có còn đọc đúng file không?`);
+});
+
+test("UX-11 · hero có MỘT nút chính tới SolBonus, nói rõ nó mở gì; lối khác là link chữ", () => {
+  const ma = readFileSync(GOC + "apps/demo-wallet/src/landing/Hero.tsx", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const hero = ma.slice(ma.indexOf("export function Hero"), ma.indexOf("export function HangThongTin"));
+  assert.equal((hero.match(/lg-btn--primary/g) ?? []).length, 1, "hero phải có đúng một nút chính");
+  assert.match(hero, /className="lg-btn lg-btn--primary[^"]*" href=\{LINK\.solBonus\}/, "nút chính không dẫn tới SolBonus");
+  assert.match(hero, /thuNguoiDungGhiChu/, "nút chính thiếu phụ đề nói nó mở gì");
+  assert.match(EN.chung.thuNguoiDungGhiChu, /simulated malicious dApp/i);
+  assert.match(EN.chung.thuNguoiDungGhiChu, /Devnet/);
+  assert.equal(EN.hero.buocDemo.buoc.length, 3);
+  // Ví dụ đã ghi và demo trực tiếp phải được gọi tên khác nhau, không lẫn số của nhau.
+  assert.match(EN.hero.phieu.nhanMau, /recorded/i);
+  assert.match(EN.ab.nhanNguon, /recorded/i);
+  assert.match(EN.hero.buocDemo.nhan, /live demo \(SolBonus\)/i);
+  // Hai bề mặt trực tiếp — câu phải nói ĐÚNG nhãn token mà mỗi bề mặt HIỆN RA. Cấu hình
+  // (`public/hien-truong.json`) giữ "USDC-demo"; phòng phân tích hiện nó qua `kyHieuHienThi` lúc đọc.
+  // Canh nhãn HIỂN THỊ, không canh file: đổi cách đọc mà quên câu này thì đỏ.
+  const htGoc = JSON.parse(readFileSync("apps/demo-wallet/public/hien-truong.json", "utf8")) as HienTruong;
+  assert.equal(kyHieuHienThi(htGoc).kyHieu, "DEMO", "phòng phân tích đổi nhãn token hiển thị — ghi chú live phải đổi theo");
+  for (const t of [VI, EN]) {
+    assert.match(t.ab.ghiChuLive, /SolBonus[^.]*\bDEMO\b/, "ghi chú live không nói SolBonus dùng DEMO");
+    assert.match(t.ab.ghiChuLive, /(Analysis Room|phòng phân tích)[^.]*\bDEMO\b/i, "ghi chú live không nói phòng phân tích dùng DEMO");
+    assert.doesNotMatch(t.ab.ghiChuLive, /USDC/, "ghi chú live còn nhắc nhãn cũ mượn thương hiệu thật");
+  }
+  // Bước 1 phải gồm hai việc người xem buộc phải làm: chọn Custos Wallet và tìm token DEMO.
+  assert.match(EN.hero.buocDemo.buoc[0]!.moTa, /Custos Wallet/);
+  assert.match(EN.hero.buocDemo.buoc[0]!.moTa, /DEMO tokens/);
+  assert.match(EN.hero.buocDemo.buoc[1]!.moTa, /fictional SOLB/);
 });
 
 test("WEB-02 · không có tuyên bố bịa trong CẢ HAI bản", () => {
@@ -199,9 +297,8 @@ test("WEB-06 · entry landing KHÔNG import bundle của ví", () => {
    * đồ thị phụ thuộc ban đầu. Đo được bằng build (`CanhBao.js` 348KB nằm ở chunk
    * khác), nhưng guard đọc mã đỏ ngay ở `npm test` mà không cần build.
    */
-  const duong = ["src/landing.tsx", "src/landing/LandingPage.tsx", "src/landing/Hero.tsx",
-    "src/landing/ScenarioExplorer.tsx", "src/landing/Sections.tsx", "src/landing/SiteHeader.tsx",
-    "src/landing/sample.ts", "src/landing/content.ts", "src/landing/links.ts"];
+  const duong = ["src/landing.tsx", ...FILE_LANDING.map((f) => "src/landing/" + f)];
+  assert.ok(duong.includes("src/landing/Hero.tsx") && duong.length >= 10, "danh sách file landing rỗng bất thường");
 
   for (const f of duong) {
     /*
@@ -231,7 +328,7 @@ test("WEB-04 · mọi link nội bộ dựng từ BASE_URL, không gõ tay prefi
    * Bỏ chú thích trước khi tìm: `links.ts` GIẢI THÍCH vì sao không gõ tay prefix,
    * nên chính chú thích đó chứa chuỗi bị cấm.
    */
-  for (const f of ["links.ts", "Hero.tsx", "Sections.tsx", "SiteHeader.tsx", "ScenarioExplorer.tsx"]) {
+  for (const f of FILE_LANDING) {
     const noi = readFileSync(GOC + "apps/demo-wallet/src/landing/" + f, "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/[^\n]*/g, "");

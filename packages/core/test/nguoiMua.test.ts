@@ -114,7 +114,7 @@ test("trang số liệu KHÔNG giấu mục chưa đo được khi số bằng 0
    * Ô trống chính là thứ giám khảo đi tìm. Nó phải hiện ra, kể cả bằng số 0.
    */
   const s = doc("apps/demo-wallet/src/SoLieu.tsx");
-  const i = s.indexOf("What the team has NOT measured yet");
+  const i = s.indexOf("What the team has not measured yet");
   assert.ok(i > 0, "trang số liệu phải có mục nói ra điều chưa đo được");
 
   // Mục này phải nằm trong một <section> KHÔNG bị bọc điều kiện.

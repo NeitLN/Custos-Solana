@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { NoiDung, Ngon } from "./content.ts";
 import { LINK } from "./links.ts";
 import { FIXTURE, dinhDangToken, layCa, type CaMau } from "./sample.ts";
+import { ChipMuc } from "./ThanhPhanChung.tsx";
 
 /**
  * A/B — đối chiếu ĐỒNG THỜI, đặt ngay sau hero.
@@ -25,6 +26,13 @@ import { FIXTURE, dinhDangToken, layCa, type CaMau } from "./sample.ts";
  *
  * Ca A vẫn ghi "Không có thao tác đổi chủ trong transaction mẫu" — kết luận về
  * CẤU TRÚC transaction, không phải phép đo owner. Không bịa before/after cho A.
+ *
+ * ## Review UX 11/2026
+ *
+ * Hàng kết luận thành hàng "Mức cảnh báo": chip đúng `level` của bản ghi + mã lý do của bản ghi.
+ * Nhãn nguồn nói rõ đây là "Ví dụ A/B (đã ghi)", và một dòng nói demo trực tiếp dùng token DEMO
+ * nên số lượng khác — dữ liệu đã ghi KHÔNG bị sửa cho khớp. Mobile chỉ hiện hàng KHÁC NHAU; phần
+ * giống nhau (10 token, còn 490) nằm trong dòng đối chiếu đặt trên hai thẻ.
  */
 export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
   /* `null` = chưa mở evidence. Khác với "đang mở ca A". */
@@ -42,6 +50,7 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
           <p className="lg-ab__nguon">
             <span className="lg-badge lg-badge--mau">{t.ab.nhanNguon}</span>
           </p>
+          <p className="lg-caption lg-ab__live">{t.ab.ghiChuLive}</p>
         </div>
 
         {/* ── Desktop: bảng hai cột ───────────────────────────────────────── */}
@@ -77,10 +86,11 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
                   {t.ab.giaTri.coDoiChu}
                 </td>
               </tr>
-              <tr>
+              {/* Hàng mức — kết luận của bản ghi, chữ đủ lớn để đọc trước tiên. */}
+              <tr className="lg-hang-muc">
                 <th scope="row">{t.ab.hang.ketLuan}</th>
-                <td className="lg-ketluan--safe">{t.ab.giaTri.ketLuanA}</td>
-                <td className="lg-ketluan--danger">{t.ab.giaTri.ketLuanB}</td>
+                <td><OMuc t={t} ca={a} /></td>
+                <td><OMuc t={t} ca={b} /></td>
               </tr>
             </tbody>
           </table>
@@ -88,9 +98,9 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
 
         {/* ── Mobile: hai tóm tắt + dòng đối chiếu cố định ────────────────── */}
         <div className="lg-ab__tomtat">
-          <TomTat t={t} ngon={ngon} ca={a} ten={t.ab.chonA} />
-          <TomTat t={t} ngon={ngon} ca={b} ten={t.ab.chonB} />
           <p className="lg-ab__doichieu">{t.ab.dongDoiChieu}</p>
+          <TomTat t={t} ca={a} ten={t.ab.chonA} />
+          <TomTat t={t} ca={b} ten={t.ab.chonB} />
         </div>
 
         <div className="lg-ab__hanhdong">
@@ -102,18 +112,18 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
           <button
             type="button"
             className="lg-btn lg-btn--outline"
-            aria-expanded={caBangChung === "b"}
-            onClick={() => setCaBangChung((v) => (v === "b" ? null : "b"))}
-          >
-            {caBangChung === "b" ? t.ab.dongBangChungB : t.ab.moBangChungB}
-          </button>
-          <button
-            type="button"
-            className="lg-btn lg-btn--outline"
             aria-expanded={caBangChung === "a"}
             onClick={() => setCaBangChung((v) => (v === "a" ? null : "a"))}
           >
             {caBangChung === "a" ? t.ab.dongBangChungA : t.ab.moBangChungA}
+          </button>
+          <button
+            type="button"
+            className="lg-btn lg-btn--outline"
+            aria-expanded={caBangChung === "b"}
+            onClick={() => setCaBangChung((v) => (v === "b" ? null : "b"))}
+          >
+            {caBangChung === "b" ? t.ab.dongBangChungB : t.ab.moBangChungB}
           </button>
         </div>
 
@@ -125,47 +135,59 @@ export function ScenarioExplorer({ t, ngon }: { t: NoiDung; ngon: Ngon }) {
           />
         )}
 
-        <div className="lg-ab__hanhdong">
-          <a className="lg-btn lg-btn--primary" href={LINK.viMau}>
-            {t.ab.cta}
+        {/* Link chữ, không phải nút chính: nút chính của cả trang chỉ dẫn tới SolBonus. */}
+        <div className="lg-ab__hanhdong lg-ab__lien-phong">
+          <a className="lg-link lg-lien-chu" href={LINK.viMau} aria-describedby="lg-ab-cta-ghichu">
+            {t.ab.cta} <span aria-hidden="true">→</span>
           </a>
-          <p className="lg-caption lg-muted">{t.ab.ctaGhiChu}</p>
+          <p className="lg-caption lg-muted" id="lg-ab-cta-ghichu">{t.ab.ctaGhiChu}</p>
         </div>
       </div>
     </section>
   );
 }
 
-/** Tóm tắt một ca cho mobile. Cùng dữ liệu với bảng desktop. */
-function TomTat({
-  t,
-  ngon,
-  ca,
-  ten,
-}: {
-  t: NoiDung;
-  ngon: Ngon;
-  ca: CaMau;
-  ten: string;
-}) {
+/**
+ * Ô "Mức cảnh báo" của một ca: chip theo `level` của bản ghi, mã lý do của bản ghi (hoặc nói rõ là
+ * không có), và một câu. Câu của ca A giữ "không phải lời bảo đảm an toàn".
+ */
+function OMuc({ t, ca }: { t: NoiDung; ca: CaMau }) {
+  return (
+    <div className="lg-o-muc">
+      <ChipMuc level={ca.level} t={t} />
+      <span className="lg-o-muc__ma">
+        {ca.reasonCodes.length > 0 ? (
+          <code className="lg-mono">{ca.reasonCodes.join(", ")}</code>
+        ) : (
+          t.ab.giaTri.khongCoMaLyDo
+        )}
+      </span>
+      <span className={ca.level === "danger" ? "lg-ketluan--danger" : "lg-ketluan--safe"}>
+        {ca.id === "a" ? t.ab.giaTri.ketLuanA : t.ab.giaTri.ketLuanB}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Tóm tắt một ca cho mobile — CHỈ những hàng khác nhau giữa A và B (thao tác đổi chủ, mức).
+ * Hàng giống nhau (token chuyển, số dư sau) đã nằm trong dòng đối chiếu phía trên.
+ */
+function TomTat({ t, ca, ten }: { t: NoiDung; ca: CaMau; ten: string }) {
   const coDoiChu = ca.doiChu !== null;
   return (
     <section className={`lg-tt${coDoiChu ? " lg-tt--nguy" : ""}`}>
       <h3 className="lg-tt__ten">{ten}</h3>
       <dl>
         <div className="lg-tt__hang">
-          <dt>{t.ab.hang.tokenChuyen}</dt>
-          <dd>{t.ab.giaTri.tokenChuyen}</dd>
-        </div>
-        <div className="lg-tt__hang">
-          <dt>{t.ab.hang.soDuSau}</dt>
-          <dd>{dinhDangToken(ca.soDu.sau, ca.soDu.decimals, ngon)}</dd>
-        </div>
-        <div className="lg-tt__hang">
           <dt>{t.ab.hang.doiChu}</dt>
           <dd className={coDoiChu ? "lg-ketluan--danger" : "lg-muted"}>
             {coDoiChu ? t.ab.giaTri.coDoiChu : t.ab.giaTri.khongCoDoiChu}
           </dd>
+        </div>
+        <div className="lg-tt__hang lg-tt__hang--muc">
+          <dt>{t.ab.hang.ketLuan}</dt>
+          <dd><OMuc t={t} ca={ca} /></dd>
         </div>
       </dl>
     </section>

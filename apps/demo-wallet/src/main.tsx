@@ -10,8 +10,8 @@ import "./tool-design.css";
 import "./demo-design.css";
 import "./live/live-demo.css";
 import "./wallet-execution.css";
-// Redesign 06/10: token thương hiệu (chỉ biến) + lớp trình bày của trang demo — PHẢI nạp sau cùng.
-import "./landing/brand-tokens.css";
+import "./product-workspace.css";
+// Keep verdict and signing controls above the shared workspace styles.
 import "./demo-thiet-ke.css";
 
 createRoot(document.getElementById("root")!).render(

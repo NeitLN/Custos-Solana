@@ -1,5 +1,4 @@
-import { ProductHeader } from "./ProductNavigation.tsx";
-import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
+import { ProductHeader, ProductIntro } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Connection } from "@solana/web3.js";
 import {
@@ -133,8 +132,9 @@ export function Inspector() {
   const dangDungMau = mau !== null && tho.trim() === mau.b64;
 
   /*
-   * GIAO DỊCH MAINNET THẬT — PHÁT LẠI (R0-3). Bộ ~1,4 MB nén nên chỉ tải khi người xem mở mục.
-   * Cùng quy tắc với giao dịch mẫu: còn hiệu lực chừng nào ô base64 còn đúng chuỗi của mẫu.
+   * GIAO DỊCH MAINNET THẬT — PHÁT LẠI (R0-3). Cùng quy tắc với giao dịch mẫu: còn hiệu lực chừng nào
+   * ô base64 còn đúng chuỗi của mẫu. Review UX 11/2026: danh sách là lối vào chính của trang (giám
+   * khảo không dán base64), nên bộ ~1,4 MB nén được tải ngay khi mở trang thay vì chờ mở một mục gập.
    */
   const [boMn, setBoMn] = useState<BoReplayMainnet | null>(null);
   const [loiMn, setLoiMn] = useState<string | null>(null);
@@ -261,9 +261,45 @@ export function Inspector() {
     if (boMn) return;
     setLoiMn(null);
     const b = await docBoMainnet();
+    if (!conGan.current) return; // trang đã gỡ — không ghi state
     if ("loi" in b) setLoiMn(`The mainnet transaction set is not usable yet: ${b.loi}`);
     else setBoMn(b.bo);
   }, [boMn]);
+  /*
+   * Tải bộ ~1,4 MB nén khi mục giao dịch đã ghi sắp vào tầm nhìn (IntersectionObserver), hoặc khi trình
+   * duyệt rảnh (requestIdleCallback, lui về setTimeout) — điều nào tới trước. Không chặn lần vẽ đầu.
+   */
+  const conGan = useRef(true);
+  const mucGhiSan = useRef<HTMLElement>(null);
+  useEffect(() => {
+    conGan.current = true;
+    let daTai = false;
+    const tai = () => {
+      if (daTai) return;
+      daTai = true;
+      void moMucMainnet();
+    };
+    let io: IntersectionObserver | undefined;
+    const el = mucGhiSan.current;
+    if (el && typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver((es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          io?.disconnect();
+          tai();
+        }
+      }, { rootMargin: "400px" });
+      io.observe(el);
+    }
+    const coIdle = typeof window.requestIdleCallback === "function";
+    const hen = coIdle ? window.requestIdleCallback(tai, { timeout: 3000 }) : window.setTimeout(tai, 1500);
+    return () => {
+      conGan.current = false;
+      io?.disconnect();
+      if (coIdle) window.cancelIdleCallback(hen);
+      else window.clearTimeout(hen);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tải một lần khi mở trang
+  }, []);
 
   /*
    * Bấm một giao dịch = nạp VÀ phát lại ngay: danh sách nằm giữa ô nhập và nút Kiểm, bắt người xem cuộn
@@ -286,6 +322,8 @@ export function Inspector() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy khi người xem vừa chọn một giao dịch
   }, [chayMn]);
 
+  /* Giao dịch mẫu Devnet: cũng một cú bấm là nạp VÀ phát lại, như danh sách mainnet (review UX 11/2026). */
+  const [chayMau, setChayMau] = useState(0);
   const dungGiaoDichMau = useCallback(async () => {
     setLoiMau(null);
     try {
@@ -293,12 +331,18 @@ export function Inspector() {
       if ("loi" in b) throw new Error(b.loi);
       const m = await dungMau(b.bo);
       setMau(m);
+      setMauMn(null);
       doiDauVao(m.b64);
       setVi(m.viBaoVe);
+      setChayMau((n) => n + 1);
     } catch (e) {
       setLoiMau(`The sample transaction is not usable yet: ${e instanceof Error ? e.message : String(e)}`);
     }
   }, [doiDauVao]);
+  useEffect(() => {
+    if (chayMau > 0 && dangDungMau) void kiem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ chạy khi người xem vừa chọn giao dịch mẫu
+  }, [chayMau]);
 
   const huy = useCallback(() => {
     luot.current++;
@@ -325,103 +369,43 @@ export function Inspector() {
   );
 
   return (
-    <main className="app-shell inspector-shell mx-auto max-w-3xl px-4 py-8">
-      <ProductHeader active="inspector" label="Inspector" />
-      <header className="inspector-heading">
-      <p className="inspector-eyebrow">Developer tool · Solana Devnet</p>
-      <h1 className="text-[22px] font-semibold text-chu">Read the transaction.<br /><span>Before you trust it.</span></h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-chu-mo">
-        Paste the base64 string of an <strong>unsigned</strong> transaction, or choose a file. Custos
-        simulates it on Devnet and tells you what it does to your assets.
-      </p>
-      {/* C3, ROADMAP-SAU-MENTOR: trang này là công cụ cho người TÍCH HỢP — không phải cách người
-          dùng cuối gặp Custos. Người dùng gặp Custos trong ví, lúc ký (ADR-0004). */}
-      <p className="mt-2 text-[13px] leading-relaxed text-chu-mo">
-        End users do not need this page: Custos runs <strong>inside the wallet</strong>, on the exact transaction about
-        to be signed. Custos does not check links or domain names.
-      </p>
-      </header>
-
+    <>
+      <ProductHeader active="inspector" label="Transaction inspector" />
+      <ProductIntro page="inspector" context="Developer tools · Solana Devnet"
+        title={<>Transaction <em>inspector.</em></>}>
+        <p>Replay a recorded transaction or inspect your own unsigned transaction on Devnet. See changes to assets and account control before signing.</p>
+        <p className="workspace-intro__note">In a connected app, Custos checks these same bytes inside the wallet before the user signs.</p>
+      </ProductIntro>
+      <main className="app-shell inspector-shell">
       <div className="inspector-workspace">
       <section className="inspector-form" aria-label="Transaction data">
 
       <div className="tool-panel-heading"><span>01 / INPUT</span><h2>Transaction to check</h2></div>
-      {/*
-        RIÊNG TƯ — nói TRƯỚC khi người dùng dán, không phải sau.
-
-        Thẻ đòi nêu rõ *"simulation gửi dữ liệu giao dịch tới RPC được chọn"*, và
-        cấm *"quảng cáo mọi dữ liệu chỉ ở máy khi gọi RPC"*. Đặt câu này sau ô nhập
-        là nói sau khi việc đã rồi.
-      */}
-      <div className="inspector-privacy mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] leading-relaxed text-amber-900">
-        <strong>Where your data goes:</strong> to simulate, Custos sends the full transaction
-        contents to the RPC server below. No step runs entirely on your machine.
-        This page keeps no history and never accepts private keys or seed phrases.
-      </div>
-
-      <label className="mt-5 block text-[13px] font-medium text-chu" htmlFor="tx-b64">
-        Transaction (base64)
-      </label>
-      <textarea
-        id="tx-b64"
-        className="mt-1 h-32 w-full rounded-xl border border-slate-300 p-3 font-mono text-[12px]"
-        placeholder="AQABAsv…"
-        value={tho}
-        onChange={(e) => doiDauVao(e.target.value)}
-        spellCheck={false}
-      />
-
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <button type="button" className="nut text-[13px]" onClick={() => void dungGiaoDichMau()}>
-          Use the recorded sample transaction
-        </button>
-        <label
-          className="nut lien-ket cursor-pointer text-[13px] underline"
-          htmlFor="tx-tep"
-        >
-          or choose a file…
-        </label>
-        <input
-          id="tx-tep"
-          type="file"
-          accept=".txt,.b64,text/plain"
-          className="sr-only"
-          onChange={(e) => void doiTep(e.target.files?.[0])}
-        />
-      </div>
-
-      {dangDungMau && mau && (
-        <p className="mt-2 text-[12px] text-chu-mo" data-mau>
-          Using the sample transaction “{mau.tieuDe}”. Check will <strong>replay</strong> Devnet data recorded at{" "}
-          {mau.captureLuc} — no network calls, no signing. Edit the box above to go back to a live check.
-        </p>
-      )}
-      {dangDungMn && mauMn && (
-        <p className="mt-2 text-[12px] text-chu-mo" data-mau-mainnet>
-          Using real mainnet transaction {mauMn.id} ({rutGon(mauMn.chuKy)}), unsigned copy. Check will{" "}
-          <strong>replay</strong> RPC data recorded at {gioVN(mauMn.captureLuc)} — no network calls, no signing. Edit the box
-          above to go back to a live check on Devnet.
-        </p>
-      )}
-      {loiMau && <p className="mt-2 text-[12px]" role="alert">{loiMau}</p>}
 
       {/*
-        R0-3 · GIAO DỊCH MAINNET THẬT — PHÁT LẠI. Luật chọn mẫu và số đếm của CẢ bộ đứng trước danh
-        sách: người xem phải thấy các thẻ không được chọn riêng vì đẹp (review 06/10).
+        R0-3 · GIAO DỊCH ĐÃ GHI — PHÁT LẠI, ĐỨNG TRÊN Ô DÁN (review UX 11/2026: giám khảo sẽ không dán
+        base64, họ cần một cú bấm). Luật chọn mẫu và số đếm của CẢ bộ vẫn đứng trước danh sách: người xem
+        phải thấy các thẻ không được chọn riêng vì đẹp (review 06/10).
       */}
-      <details
-        className="inspector-mainnet mt-4"
-        onToggle={(e) => {
-          if ((e.currentTarget as HTMLDetailsElement).open) void moMucMainnet();
-        }}
-      >
-        <summary>Real mainnet transactions — replay</summary>
+      <section ref={mucGhiSan} className="inspector-mainnet" aria-labelledby="inspector-ghi-san">
+        <h3 id="inspector-ghi-san">Try a recorded transaction — offline replay, nothing signed</h3>
         <div className="inspector-mainnet__than">
           <p>
+            One click loads the transaction and replays it on recorded RPC data: no network calls,{" "}
+            <strong>not the current chain state</strong>, nothing signed. Custos’s signing flow runs on Devnet only.
+          </p>
+          <button type="button" className="inspector-mau-devnet" onClick={() => void dungGiaoDichMau()} disabled={tt.pha === "dang-kiem"}>
+            <span>Devnet sample</span>
+            Recorded “claim a gift” scenario (transfer + owner change), fixed demo wallet
+          </button>
+          {loiMau && <p role="alert">{loiMau}</p>}
+          <details className="inspector-catalog">
+          <summary>Mainnet replay set{boMn ? ` · ${boMn.mau.length} recorded transactions` : ""}</summary>
+          <div className="inspector-mainnet__than">
+          <p>
             These transactions <strong>had already executed on mainnet</strong> before Custos saw them. Custos rebuilt the unsigned copy,
-            re-simulated it a few seconds to a few tens of seconds later (read-only) and recorded the RPC responses. Click a transaction to replay it right away on the recorded data —
-            no network calls, <strong>not the current chain state</strong>, not a mainnet signing flow. Custos’s signing
-            flow runs on Devnet only.
+            re-simulated it a few seconds to a few tens of seconds later (read-only) and recorded the RPC responses. This is a
+            different data set from the public cohort on the Evidence page.
           </p>
           {loiMn && <p role="alert">{loiMn}</p>}
           {!boMn && !loiMn && <p role="status">Loading the recorded data set…</p>}
@@ -459,9 +443,66 @@ export function Inspector() {
               </>
             );
           })()}
+          </div>
+          </details>
         </div>
-      </details>
+      </section>
 
+      <h3 className="inspector-tu-dan">Or check your own transaction</h3>
+      {/*
+        RIÊNG TƯ — nói TRƯỚC khi người dùng dán, không phải sau.
+
+        Thẻ đòi nêu rõ *"simulation gửi dữ liệu giao dịch tới RPC được chọn"*, và
+        cấm *"quảng cáo mọi dữ liệu chỉ ở máy khi gọi RPC"*. Đặt câu này sau ô nhập
+        là nói sau khi việc đã rồi.
+      */}
+      <div className="inspector-privacy mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] leading-relaxed text-amber-900">
+        <strong>Where your data goes:</strong> to simulate, Custos sends the full transaction
+        contents to the RPC server below. No step runs entirely on your machine.
+        This page keeps no history and never accepts private keys or seed phrases.
+      </div>
+
+      <label className="mt-5 block text-[13px] font-medium text-chu" htmlFor="tx-b64">
+        Transaction (base64)
+      </label>
+      <textarea
+        id="tx-b64"
+        className="mt-1 h-32 w-full rounded-xl border border-slate-300 p-3 font-mono text-[12px]"
+        placeholder="AQABAsv…"
+        value={tho}
+        onChange={(e) => doiDauVao(e.target.value)}
+        spellCheck={false}
+      />
+
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <label
+          className="nut lien-ket cursor-pointer text-[13px] underline"
+          htmlFor="tx-tep"
+        >
+          Choose a file…
+        </label>
+        <input
+          id="tx-tep"
+          type="file"
+          accept=".txt,.b64,text/plain"
+          className="sr-only"
+          onChange={(e) => void doiTep(e.target.files?.[0])}
+        />
+      </div>
+
+      {dangDungMau && mau && (
+        <p className="mt-2 text-[12px] text-chu-mo" data-mau>
+          Using the sample transaction “{mau.tieuDe}”. Check will <strong>replay</strong> Devnet data recorded at{" "}
+          {mau.captureLuc} — no network calls, no signing. Edit the box above to go back to a live check.
+        </p>
+      )}
+      {dangDungMn && mauMn && (
+        <p className="mt-2 text-[12px] text-chu-mo" data-mau-mainnet>
+          Using real mainnet transaction {mauMn.id} ({rutGon(mauMn.chuKy)}), unsigned copy. Check will{" "}
+          <strong>replay</strong> RPC data recorded at {gioVN(mauMn.captureLuc)} — no network calls, no signing. Edit the box
+          above to go back to a live check on Devnet.
+        </p>
+      )}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
           <label className="block text-[13px] font-medium text-chu" htmlFor="vi-bv">
@@ -514,13 +555,17 @@ export function Inspector() {
       </div>
 
       </section>
-      <section ref={resultRegion} tabIndex={-1} className="inspector-result mt-5" aria-label="Analysis result" aria-live="polite" aria-busy={tt.pha === "dang-kiem"}>
+      {/* Không aria-live: kết quả về thì focus chuyển vào vùng này (useEffect ở trên); live + focus đọc kết quả hai lần. */}
+      <section ref={resultRegion} tabIndex={-1} className="inspector-result mt-5" aria-label="Analysis result" aria-busy={tt.pha === "dang-kiem"}>
         <div className="tool-panel-heading"><span>02 / ANALYSIS RESULT</span><h2>Understand what is about to happen</h2></div>
         {tt.pha === "rong" && (
           <div className="inspector-empty">
-            <DemoScanArtwork />
+            {/* Review UX 11/2026: sơ đồ minh hoạ vỡ ở khung này (icon dồn trái, chữ dính) — thay bằng ba dòng chữ. */}
             <h3>Waiting for your transaction.</h3>
-            <p>The result appears here after the simulation. Inspector has no power to sign or send transactions.</p>
+            <p>
+              Pick a recorded transaction or paste your own. The result appears here after the simulation. Inspector has
+              no power to sign or send transactions.
+            </p>
             <ul><li>Asset changes</li><li>Account control</li><li>Facts and the parts we could not read</li></ul>
           </div>
         )}
@@ -581,6 +626,7 @@ export function Inspector() {
             )}
             <CanhBao
               ketQua={tt.ketQua}
+              vungTrucTiep={false}
               {...(tt.mainnet
                 ? {
                     boiCanh: {
@@ -647,12 +693,13 @@ export function Inspector() {
 
       {nhatKy.length > 0 && (
         <details className="mt-6">
-          <summary className="cursor-pointer text-[13px] text-chu-mo">Technical log</summary>
+          <summary className="min-h-11 cursor-pointer py-3 text-[13px] leading-5 text-chu-mo">Technical log</summary>
           <pre className="mt-2 overflow-x-auto rounded-xl bg-slate-50 p-3 text-[11px] leading-relaxed">
             {nhatKy.join("\n")}
           </pre>
         </details>
       )}
-    </main>
+      </main>
+    </>
   );
 }

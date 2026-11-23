@@ -151,14 +151,16 @@ async def main() -> None:
         await pg.wait_for_timeout(1200)
         muc += await do_trang(pg, "ví")
 
-        nut = pg.locator("button:has-text('Nhận quà tặng')").first
+        # Nhãn tiếng Anh từ khi web chuyển sang tiếng Anh — nhãn tiếng Việt cũ làm bài này lặng lẽ
+        # bỏ qua cả phần thẻ kết quả (`count() == 0`), nên nút quyết định không được đo.
+        nut = pg.locator("button:has-text('Claim your gift')").first
         if await nut.count() > 0:
             await nut.click()
             try:
                 await pg.wait_for_selector("[aria-label='Transaction check result']", timeout=45000)
                 await pg.wait_for_timeout(1200)
                 # Mở cả hai khối gập để đo nút bên trong.
-                for chu in ["Xem chi tiết", "Chi tiết kỹ thuật"]:
+                for chu in ["View details", "Technical details"]:
                     n = pg.locator(f"button:has-text('{chu}')").first
                     if await n.count() > 0:
                         await n.click()

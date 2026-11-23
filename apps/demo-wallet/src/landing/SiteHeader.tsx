@@ -17,6 +17,13 @@ import { LINK } from "./links.ts";
  * vẫn có tên accessible đầy đủ theo locale qua `.lg-sr`.
  *
  * Không scale header, không `overflow-x: hidden` — cả hai đều là giấu lỗi.
+ *
+ * ## Review UX 11/2026 — VI/EN quay lại header mobile
+ *
+ * Giám khảo không thấy nút đổi ngôn ngữ trên điện thoại vì nó nằm trong menu. Nay VI/EN luôn ở
+ * header; chỗ hẹp lấy lại bằng cách thu brand và khoảng cách ở ≤480px (CSS), không phải bằng
+ * cách giấu chức năng. Menu không còn bản VI/EN thứ hai. Nút chính trên header là CÙNG đường demo
+ * với hero (SolBonus); "Ví Custos" hạ thành link chữ.
  */
 export function SiteHeader({
   t,
@@ -82,16 +89,16 @@ export function SiteHeader({
         </nav>
 
         <div className="lg-header__phai">
-          {/* Ở ≤640px cụm này bị ẩn bằng CSS và bản trong menu tiếp quản. */}
+          {/* VI/EN hiện ở MỌI cỡ màn hình — kể cả mobile (review UX 11/2026). */}
           <BoChonNgon t={t} ngon={ngon} doiNgon={doiNgon} />
 
-          {/* Lối vào ứng dụng (Phòng phân tích / Ví của bạn). Trước đây chỉ menu mobile có link này —
-              trên desktop, nút duy nhất dẫn sang SolBonus và không còn chỗ vào ứng dụng (phản hồi 09/10). */}
-          <a className="lg-btn lg-header__ung-dung" href={LINK.viMau}>
+          {/* Lối vào ứng dụng (Phòng phân tích / Ví của bạn) — link chữ, nhường nút duy nhất cho demo. */}
+          <a className="lg-header__ung-dung" href={LINK.viMau}>
             {t.chung.moVi}
           </a>
-          <a className="lg-btn lg-btn--primary lg-header__cta" href={LINK.solBonus} target="_blank" rel="noreferrer">
-            {t.chung.thuNguoiDung}
+          <a className="lg-btn lg-btn--primary lg-header__cta" href={LINK.solBonus} target="_blank" rel="noreferrer noopener">
+            {t.chung.thuNguoiDungNgan}
+            <span className="lg-sr"> — {t.chung.thuNguoiDungGhiChu} ({t.chung.moTabMoi})</span>
           </a>
 
           {/*
@@ -126,8 +133,9 @@ export function SiteHeader({
                 </li>
               ))}
               <li>
-                <a className="lg-menu__lien lg-menu__lien--cta" href={LINK.solBonus} target="_blank" rel="noreferrer">
+                <a className="lg-menu__lien lg-menu__lien--cta" href={LINK.solBonus} target="_blank" rel="noreferrer noopener">
                   {t.chung.thuNguoiDung}
+                  <span className="lg-menu__phu">{t.chung.thuNguoiDungGhiChu}</span>
                 </a>
               </li>
               <li>
@@ -136,14 +144,6 @@ export function SiteHeader({
                 </a>
               </li>
             </ul>
-
-            {/* VI/EN trong menu — đường truy cập duy nhất ở ≤640px. */}
-            <div className="lg-menu__ngon">
-              <span className="lg-menu__ngon-nhan" id={`${menuId}-ngon`}>
-                {t.chung.doiNgonNgu}
-              </span>
-              <BoChonNgon t={t} ngon={ngon} doiNgon={doiNgon} nhanBoi={`${menuId}-ngon`} />
-            </div>
           </div>
         </div>
       )}
@@ -157,26 +157,22 @@ export function SiteHeader({
  * Nhãn nhìn thấy là `VI`/`EN`; accessible name là tên đầy đủ. Không cờ quốc gia.
  * `aria-pressed` cho biết bản nào đang bật mà không cần màu.
  *
- * Render HAI LẦN (header và menu) nên `aria-label` phải khác nhau khi cả hai
- * cùng trong DOM — dùng `nhanBoi` để bản trong menu trỏ tới nhãn chữ cạnh nó
- * thay vì lặp lại một `aria-label` trùng.
+ * Từng render HAI LẦN (header và menu); nay chỉ còn bản ở header, nên một `aria-label` là đủ.
  */
 function BoChonNgon({
   t,
   ngon,
   doiNgon,
-  nhanBoi,
 }: {
   t: NoiDung;
   ngon: Ngon;
   doiNgon: (n: Ngon) => void;
-  nhanBoi?: string;
 }) {
   return (
     <div
       className="lg-ngon"
       role="group"
-      {...(nhanBoi ? { "aria-labelledby": nhanBoi } : { "aria-label": t.chung.doiNgonNgu })}
+      aria-label={t.chung.doiNgonNgu}
     >
       <button
         type="button"

@@ -95,9 +95,11 @@ with sync_playwright() as pw:
         vi.get_by_role("button", name="Allow connection").click()
         sb.bring_to_front()
         t = time.time()
-        sb.get_by_role("button", name=re.compile("Find DEMO tokens")).click()
+        tim = sb.get_by_role("button", name=re.compile("Find DEMO tokens"))
+        if tim.count() and tim.is_enabled():
+            tim.click()  # dự phòng: bản mới tự quét sau khi kết nối
         sb.locator("#sb-token, .sb-status").first.wait_for(timeout=180000)
-        sb.wait_for_function("() => document.querySelector('#sb-token') || /Chưa tìm thấy|không/.test(document.querySelector('.sb-status')?.innerText||'')", timeout=180000)
+        sb.wait_for_function("() => document.querySelector('#sb-token') || /Chưa tìm thấy|không|No usable DEMO session/.test(document.querySelector('.sb-status')?.innerText||'')", timeout=180000)
         ghi("5 tìm token", giay=round(time.time() - t, 1), trangThai=sb.locator(".sb-status").inner_text()[:200] if sb.locator(".sb-status").count() else None, coChon=sb.locator("#sb-token").count())
         sb.screenshot(path=f"{OUT}/05-solbonus-da-tim.png", full_page=True)
         t = time.time()

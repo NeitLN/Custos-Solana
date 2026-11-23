@@ -41,7 +41,7 @@ A transaction does not have to move tokens right away to create risk. In the own
 **Custos lives inside the wallet, not on a link-scanning page.** Any dApp requests a signature through the Wallet Standard. A wallet that integrates Custos simulates **that exact transaction**, explains the consequences and lets the user decide before the wallet signs ([ADR-0004](docs/adr/0004-custos-trong-luong-ky-cua-vi.md)).
 
 1. Open [SolBonus](https://solbonus.vercel.app/nhan-thuong) → **Connect wallet**. The Custos Wallet window pops up; click **Allow connection** and keep that window open.
-2. In SolBonus, click **Find DEMO tokens on Devnet**, then **Claim 1,000 SOLB**. The Custos Wallet signing window simulates exactly the transaction SolBonus sent and shows **Danger**: half of the tokens leave, and the token account owner changes to another address.
+2. SolBonus finds your DEMO tokens on Devnet by itself; then click **Claim 1,000 SOLB**. The Custos Wallet signing window simulates exactly the transaction SolBonus sent and shows **Danger**: half of the tokens leave, and the token account owner changes to another address.
 3. Click **Block transaction** — SolBonus receives no signature.
 4. Open the [Analysis Room](https://custos-sdk.vercel.app/vi) to compare the scenarios below, and the [Inspector](https://custos-sdk.vercel.app/inspector) to see 10 real mainnet transactions.
 

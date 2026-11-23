@@ -38,24 +38,6 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
 .cinematic .lg-hero__nut .lg-btn--primary { flex: 0 0 auto; min-height: 58px; border-radius: 999px; background: #c5e69d; border-color: #c5e69d; color: #102f28; padding: 8px 9px 8px 24px; gap: 24px; font-size: .9375rem; box-shadow: 0 8px 32px #9ec96712; }
 .cine-action-arrow { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #163d2c; color: #daf0be; }
 .cinematic .lg-hero__nut .lg-btn--primary:hover { background: #dcf2be; border-color: #dcf2be; color: #102f28; box-shadow: 0 8px 36px #b9de872b; }
-.cine-preview { max-width: 450px; padding-top: 20px; border-top: 1px solid #365444; }
-.cinematic .cine-preview .lg-lien-cta { display: flex; align-items: center; gap: 16px; width: 100%; border: 0; padding: 0; text-decoration: none; }
-.cine-preview__art { position: relative; flex: 0 0 76px; height: 64px; }
-.cine-preview__sheet { position: absolute; top: 6px; width: 39px; height: 49px; padding: 5px 7px; border: 1px solid #5a7e66; border-radius: 6px; background: #1a3d2d; transition: transform 350ms cubic-bezier(.16,1,.3,1); }
-.cine-preview__sheet--a { left: 3px; transform: rotate(-12deg); }
-.cine-preview__sheet--b { right: 3px; top: 12px; transform: rotate(9deg); background: #203a2e; }
-.cine-preview__sheet > span { font: 600 10px var(--lg-font-body); color: #d6e9c9; }
-.cine-preview__sheet i { display: block; height: 2px; margin-top: 5px; background: #98b897; width: 19px; }
-.cine-preview__sheet i:last-of-type { width: 11px; opacity: .5; }
-.cine-preview__sheet b { position: absolute; bottom: -3px; right: -4px; width: 14px; height: 14px; display: grid; place-items: center; border-radius: 50%; background: #eed4a0; color: #513a16; font: 700 10px var(--lg-font-body); }
-.cine-preview__copy { display: grid; gap: 5px; }
-.cine-preview__copy strong { color: #eff5e9; font-size: .875rem; font-weight: 600; }
-.cine-preview__copy > span { color: #b2c5b6; font-size: .8125rem; font-weight: 400; line-height: 1.7; }
-.cine-preview__arrow { margin-left: auto; color: #c5e69d; }
-.cine-preview__arrow svg { width: 18px; }
-.cine-preview a:hover .cine-preview__sheet--a { transform: translateX(-3px) rotate(-18deg); }
-.cine-preview a:hover .cine-preview__sheet--b { transform: translateX(3px) rotate(15deg); }
-.cine-preview a:focus-visible { outline: 2px solid #c5e69d; outline-offset: 6px; border-radius: 4px; }
 .cinematic .lg-lien-cta { color: #e0eee3; border-color: #759d8b; }
 .cine-atmosphere { position: absolute; z-index: -1; inset: 0; pointer-events: none; overflow: hidden; contain: paint; }
 .cine-orbits { position: absolute; width: 100%; height: 100%; inset: 0; transform: translateY(var(--cine-scroll,0px)); }
@@ -105,27 +87,6 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
 .cine-resource__scan { animation: resource-scan 4s ease-in-out infinite; }
 @keyframes resource-scan { 0%,100% { transform: translateY(-9px); opacity: .4; } 50% { transform: translateY(9px); opacity: 1; } }
 .cinematic #trai-nghiem { padding-block: 110px; }
-.cine-bridge { position: relative; overflow: clip; background: #0a2a23; color: #f5f7f4; }
-.cine-journey { padding-top: 44px; }
-.cinematic .cine-journey__steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 52px; list-style: none; margin: 0; padding: 0; }
-.cine-journey__heading { display: flex; align-items: center; gap: 14px; }
-.cine-journey__index { font-size: 12px; font-variant-numeric: tabular-nums; color: #b9de87; }
-.cine-journey__heading strong { color: #eef5ed; font-size: 18px; font-weight: 600; letter-spacing: -.015em; }
-.cine-journey__steps p { color: #acc6b7; font-size: 14px; line-height: 1.7; margin: 8px 0 18px 29px; }
-.cine-journey__track { display: block; height: 1px; background: #3a5b49; position: relative; overflow: hidden; }
-.cine-journey__track span { position: absolute; inset-block: 0; width: 35%; background: linear-gradient(90deg,transparent,#c1e3a2,transparent); animation: cine-journey-trace 7s linear infinite; }
-.cine-journey__steps li:nth-child(2) .cine-journey__track span { animation-delay: -4.6s; }
-.cine-journey__steps li:nth-child(3) .cine-journey__track span { animation-delay: -2.3s; }
-.cine-bridge__in { display: grid; grid-template-columns: 1.15fr .85fr; gap: 64px; align-items: center; min-height: 420px; padding-block: 48px 64px; }
-.cine-bridge__copy .lg-h2 { font-size: clamp(32px,3.5vw,48px); line-height: 1.3; letter-spacing: -.025em; color: #f5f7f4; }
-.cine-bridge__copy .lg-h2 span { color: #b9de87; }
-.cine-bridge__copy p { color: #c2d9c8; max-width: 43ch; line-height: 1.8; margin-top: 24px; }
-.cine-gate { width: min(100%,350px); aspect-ratio: 1; position: relative; justify-self: center; display: grid; place-items: center; }
-.cine-gate__ring { position: absolute; inset: 4%; border: 1px solid #82bb925e; border-radius: 50%; transform: rotateX(60deg) rotate(-28deg); animation: cine-ring 16s linear infinite; }
-.cine-gate__ring--two { inset: 0; border-style: dashed; opacity: .6; animation-direction: reverse; animation-duration: 24s; }
-.cine-gate__core { width: 176px; height: 176px; border-radius: 36px; display: grid; place-items: center; background: linear-gradient(145deg,#285d45,#103329); border: 1px solid #669874; box-shadow: 0 28px 70px #00140b80,inset 0 1px 0 #c0e6bd30; animation: cine-float 7s ease-in-out infinite; }
-.cine-gate__packet { position: absolute; width: 9px; height: 9px; top: 50%; left: 50%; background: #b9de87; animation: cine-packet 9s linear infinite; }
-.cine-gate__packet--two { animation-delay: -4.5s; width: 5px; height: 5px; background: #c7e9d9; }
 .cinematic #cach-hoat-dong { padding-block: 110px; }
 .cinematic .lg-step-visual { overflow: hidden; }
 .cinematic .lg-step-visual svg { transition: transform 400ms cubic-bezier(.16,1,.3,1); }
@@ -175,18 +136,12 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
 @keyframes cine-halo { to { transform: rotate(5deg) translateY(-14px); } }
 @keyframes cine-scan-edge { 0%,100% { transform: scaleX(.2); opacity: .4; } 50% { transform: scaleX(1); opacity: 1; } }
 @keyframes cine-scroll-cue { from { transform: translateY(-12px); } to { transform: translateY(32px); } }
-@keyframes cine-journey-trace { from { transform: translateX(-110%); } to { transform: translateX(400%); } }
-@keyframes cine-float { 0%,100% { transform: translateY(7px) rotate(-7deg); } 50% { transform: translateY(-9px) rotate(2deg); } }
-@keyframes cine-ring { from { transform: perspective(650px) rotateX(58deg) rotateZ(0); } to { transform: perspective(650px) rotateX(58deg) rotateZ(360deg); } }
-@keyframes cine-packet { from { transform: rotate(0) translateX(150px) rotate(45deg); } to { transform: rotate(360deg) translateX(150px) rotate(45deg); } }
 .cinematic[data-motion=paused] *, .cinematic[data-motion=paused] *::before, .cinematic[data-motion=paused] *::after { animation-play-state: paused !important; transition: none !important; scroll-behavior: auto !important; }
 @media(max-width:1100px) { .cinematic .lg-hero__grid { gap: 32px; } .cinematic .lg-hero__h1 { font-size: clamp(2.8rem,5.1vw,3.5rem); } .cinematic .lg-hero__nut { flex-wrap: wrap; gap: 14px; } .cine-resource { padding-inline: 20px; } }
 @media(max-width:960px) {
   .cinematic .lg-dev { grid-template-columns: 1fr; grid-template-areas: "heading" "flow" "code" "notes"; gap: 32px; }
   .integration-heading { gap: 32px; }
   .integration-notes { grid-template-columns: 1fr; gap: 20px; }
-  .cine-journey__heading strong { font-size: 16px; }
-  .cinematic .cine-journey__steps { gap: 28px; }
 }
 @media(max-width:760px) {
   .cinematic .lg-hero { padding-top: 48px; }
@@ -195,11 +150,6 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
   .cinematic .lg-hero__mota { font-size: 1rem; }
   .cinematic .lg-hero__ghichu { max-width: none; flex-basis: 100%; font-size: .8125rem; }
   .cinematic .lg-hero__nut { margin-bottom: 24px; }
-  .cine-preview { padding-top: 16px; }
-  .cinematic .cine-preview .lg-lien-cta { gap: 10px; }
-  .cine-preview__art { flex-basis: 65px; }
-  .cine-preview__copy strong { font-size: .8125rem; }
-  .cine-preview__copy > span { font-size: .8125rem; }
   .cine-card-stage { padding: 128px 0 0; transform: none; }
   .inspection-lens { top: -42px; height: 182px; }
   .cinematic .lg-phieu { transform: none; }
@@ -212,15 +162,8 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
   .cinematic .cine-resource__arrow { top: 18px; right: 12px; width: 24px; height: 24px; }
   .cinematic .cine-resource__copy strong { font-size: 1rem; }
   .cine-hero-foot { padding-block: 24px; }
-  .cine-hero-foot > span { display: none; }
   .cine-light { width: 500px; height: 500px; }
   .cine-floor { display: none; }
-  .cine-bridge__in { grid-template-columns: 1fr; gap: 28px; padding-block: 40px 48px; }
-  .cine-journey { padding-top: 30px; }
-  .cinematic .cine-journey__steps { grid-template-columns: 1fr; gap: 22px; }
-  .cine-journey__steps li { position: relative; padding-left: 0; }
-  .cine-journey__steps p { margin-bottom: 12px; }
-  .cine-journey__track { margin-left: 29px; }
   .integration-heading { grid-template-columns: 1fr; gap: 18px; }
   .cinematic .integration-heading .lg-h2 { max-width: 22ch; }
   .integration-flow__step { gap: 12px; padding-inline: 0; }
@@ -233,14 +176,9 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
   .cinematic .lg-code__ghichu { padding: 16px; }
   .integration-code-file { font-size: 12px; gap: 8px; }
   .integration-code-language { display: none; }
-  .cine-gate { width: 270px; }
-  .cine-gate__core { width: 142px; height: 142px; }
-  .cine-gate__core img { width: 100px; height: 100px; }
-  .cine-gate__packet { animation-name: cine-packet-mobile; }
   .cinematic #trai-nghiem,.cinematic #cach-hoat-dong,.cinematic #thu-custos { padding-block: 68px; }
-  .cine-motion-control { right: 12px; bottom: 12px; font-size: 12px; padding-inline: 12px; }
+  .cine-motion-control { font-size: 12px; padding-inline: 12px; }
 }
-@keyframes cine-packet-mobile { from { transform: rotate(0) translateX(120px) rotate(45deg); } to { transform: rotate(360deg) translateX(120px) rotate(45deg); } }
 @media(prefers-reduced-motion:reduce) {
   .cinematic *, .cinematic *::before, .cinematic *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .cinematic .lg-phieu,.cine-card-stage,.cine-orbits { transform: none !important; }
@@ -260,13 +198,9 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
 .custos-landing .lg-buoc--custos .lg-step-visual { border-bottom: 2px solid #146c60; }
 .custos-landing .lg-buoc--custos .lg-buoc__so,
 .custos-landing .lg-buoc--custos .lg-step-visual svg { color: #146c60; }
-/* Nút phụ "Tích hợp vào ví của bạn" từng trắng không viền trên nền sáng — đọc như một nhãn. */
-.custos-landing #hanh-trinh .lg-btn:not(.lg-btn--primary) { border: 1px solid #9fb8ac; }
 
-/* Cùng một quy trình từng được vẽ bốn lần (hành trình, cầu nối, pipeline, sơ đồ dev). Bỏ danh
-   sách lặp ở cầu nối và hàng ba ô giá trị lặp lại pipeline; giữ tiêu đề cầu nối làm khoảng lặng. */
-.custos-landing .cine-journey,
-.custos-landing .lg-giatri { display: none; }
+/* Cùng một quy trình từng được vẽ bốn lần (hành trình, cầu nối, pipeline, sơ đồ dev). Review UX
+   11/2026 bỏ hẳn cầu nối và hàng ba giá trị khỏi markup, và gộp pipeline vào hành trình. */
 
 /* Chuyển động: dừng các vòng lặp trang trí cạnh tranh với dữ kiện — nhất là vệt quét chạy mãi trên
    một KẾT QUẢ MẪU ĐÃ LƯU, dễ gợi cảm giác trang đang phân tích live. Giữ nền, logo và cổng. */
@@ -308,13 +242,215 @@ html[lang=en] .cine-signature { font-size: .83em; margin-top: .1em; }
 .custos-landing.cinematic .lg-hero :focus-visible,
 .custos-landing.cinematic .lg-header__in :focus-visible { outline-color: #c5e69d; }
 
-/* Lối vào ứng dụng trên header desktop (09/10) — nút viền, nhường nút lime cho SolBonus. Ở ≤1024px
-   header thu vào menu, nơi đã có link này, nên ẩn như `.lg-header__cta`. */
-.custos-landing .lg-header__ung-dung {
-  background: transparent; border: 1px solid #688e78; color: #f5f7f4; white-space: nowrap;
-}
-.custos-landing .lg-header__ung-dung:hover { background: #1b4839; border-color: #9fc4ad; color: #fff; }
-@media (max-width: 1024px) { .custos-landing .lg-header__ung-dung { display: none; } }
-
-/* Lối phụ vào Phòng phân tích ở cuối trang — dưới hai nút chính, đủ vùng bấm. */
+/* Link chữ ở cuối trang (tích hợp, phòng phân tích) — đủ vùng bấm 44px. */
 .custos-landing .lg-cta__phu { display: inline-flex; align-items: center; min-height: 44px; flex-basis: 100%; }
+
+/* ═══ Review UX 11/2026 — landing ══════════════════════════════════════════════════════════════
+   Một đường demo, phiếu mẫu có mức/mã lý do/coverage, A/B có hàng Mức, sơ đồ gộp, trang mobile ngắn. */
+
+/* ── Hero: một nút chính, phụ đề nói nó mở gì, dải ba bước, các lối khác là link chữ ── */
+.cinematic .lg-hero__nut { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin-bottom: 22px; }
+.lg-hero__cta-phu { margin: 0; font-size: .8125rem; line-height: 1.6; color: #b8cfc0; }
+.lg-hero__buoc { margin-bottom: 14px; max-width: 560px; }
+.lg-hero__buoc-nhan { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #a8c2b0; }
+.lg-hero__buoc ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lg-hero__buoc li { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: 8px; padding-right: 18px; font-size: .8125rem; line-height: 1.5; color: #d5e9da; }
+.lg-hero__buoc li:not(:last-child)::after { content: "→"; content: "→" / ""; position: absolute; right: 0; top: 2px; color: #7fa58f; }
+.lg-hero__buoc-so { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #1d4a38; color: #c5e69d; font-size: 12px; font-weight: 700; }
+.lg-hero__buoc strong { display: block; color: #eff5ec; font-weight: 600; }
+.lg-hero__buoc-mota { color: #a9c3b3; }
+.lg-hero__lien-phu { display: flex; flex-wrap: wrap; gap: 0 22px; margin: 0; }
+.cinematic .lg-hero__lien-phu .lg-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: .875rem; color: #c5e69d; text-underline-offset: 3px; }
+.cinematic .lg-hero__lien-phu .lg-link:hover { color: #dcf2be; }
+.custos-landing.cinematic .lg-hero__ghichu { max-width: none; margin: 0; }
+
+/* ── Chip mức cảnh báo: ký hiệu + chữ, không chỉ màu ── */
+.lg-chip-muc { display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 3px 4px; border: 1px solid; border-radius: 999px; font-size: 13px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+.lg-chip-muc__ky { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 800; line-height: 1; }
+.lg-chip-muc--danger { color: #a2263b; background: #fff1f3; border-color: #ecc4cd; }
+.lg-chip-muc--danger .lg-chip-muc__ky { background: #a2263b; }
+.lg-chip-muc--warning { color: #6f4500; background: #fff6e0; border-color: #e6cf94; }
+.lg-chip-muc--warning .lg-chip-muc__ky { background: #8a5a00; }
+.lg-chip-muc--safe { color: #1f5a4d; background: #ecf5f0; border-color: #bcd6cb; }
+.lg-chip-muc--safe .lg-chip-muc__ky { background: #2d6f5f; }
+
+/* ── Phiếu mẫu: mức + mã lý do + coverage của bản ghi ── */
+.custos-landing .lg-phieu__ketqua { margin: 0 24px; padding: 16px 0; border-bottom: 1px solid #e0e8e1; }
+.lg-phieu__ketqua dl { margin: 0; display: grid; gap: 10px; }
+.lg-phieu__ketqua-hang { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.lg-phieu__ketqua-hang dt { min-width: 92px; font-size: 12px; color: #4f6a5d; }
+.lg-phieu__ketqua-hang dd { margin: 0; min-width: 0; }
+.lg-phieu__lydo { display: inline-block; padding: 2px 7px; border-radius: 4px; background: #f1f5f2; color: #152e28; font-size: 12px; overflow-wrap: anywhere; }
+.lg-phieu__ketqua-hang dd.lg-phieu__dochieu { font-size: 12px; color: #4f6a5d; }
+@media (max-width: 960px) { .custos-landing .lg-phieu__ketqua { margin-inline: 16px; } }
+
+/* ── A/B: hàng Mức, nhãn "đã ghi" vs "trực tiếp" ── */
+.lg-ab__live { margin-top: 10px; max-width: 52ch; color: #52675f; }
+.custos-landing .lg-bang tr.lg-hang-muc th { color: #152e28; font-weight: 700; }
+.custos-landing .lg-bang tbody tr.lg-hang-muc td { font-size: 15px; line-height: 1.6; }
+.lg-o-muc { display: grid; justify-items: start; gap: 8px; }
+.lg-o-muc__ma { font-size: 12.5px; color: #52675f; }
+.lg-o-muc__ma code { font-size: 12px; overflow-wrap: anywhere; }
+.lg-tt__hang--muc { display: block; }
+.lg-tt__hang--muc dt { margin-bottom: 8px; }
+.lg-tt__hang--muc dd { text-align: left; }
+.lg-ab__tomtat .lg-ab__doichieu { margin: 0 0 12px; }
+
+/* ── Sơ đồ gộp: bốn bước, và "bên trong bước 03" nối ngay dưới ── */
+.lg-kiem-trong { position: relative; margin-top: 40px; padding: 28px 30px; border: 1px solid #bcd2c4; border-radius: 14px; background: #fff; }
+@media (min-width: 1081px) {
+  .lg-kiem-trong::before { content: ""; position: absolute; top: -41px; left: calc((100% - 120px) * .625 + 80px); width: 2px; height: 40px; background: #146c60; }
+}
+.lg-kiem-trong__tieude { margin: 0; font: 600 18px/1.4 var(--lg-font-display); color: #152e28; }
+.lg-kiem-trong__mota { margin: 6px 0 0; color: #52675f; }
+.lg-kiem-trong__ds { list-style: none; margin: 20px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.lg-kiem-trong__ds li { padding-top: 14px; border-top: 2px solid #146c60; }
+.lg-kiem-trong__ds h4 { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #152e28; }
+.lg-kiem-trong__ds p { margin: 0; font-size: 13.5px; line-height: 1.75; color: #52675f; }
+.custos-landing .lg-kiem-trong .lg-pipeline__ghichu { margin-top: 18px; }
+.lg-lien-chu { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 16px; }
+.custos-landing .lg-hanh-trinh__loi-vao { margin-top: 28px; }
+.custos-landing .lg-hanh-trinh__loi-vao .lg-caption { margin-top: 0; }
+@media (max-width: 860px) { .lg-kiem-trong__ds { grid-template-columns: 1fr; gap: 16px; } }
+
+/* ── Accordion chỉ có trên mobile (`GapTrenMobile`) ── */
+/* `GapTrenMobile` luôn là một `<details>`: desktop luôn mở và ẩn <summary>; mobile mới có khung. */
+.lg-gap__tom { display: none; }
+.cinematic .lg-dev > .lg-gap { grid-column: 1 / -1; }
+.cinematic .lg-gap .lg-code { display: flex; flex-direction: column; margin: 0; background: #0b211c; border-color: #375445; border-radius: 14px; }
+.lg-gap__than > .integration-flow, .lg-gap__than > .lg-code { grid-area: auto; }
+@media (min-width: 961px) {
+  .cinematic .lg-dev .lg-gap__than { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px 64px; align-items: start; }
+  .cinematic .lg-gap .lg-code { align-self: stretch; }
+}
+@media (max-width: 960px) { .cinematic .lg-gap .lg-code { margin-top: 32px; } }
+@media (max-width: 760px) {
+  .lg-gap { border: 1px solid #c9d8cf; border-radius: 10px; background: #fff; }
+  .lg-gap__tom { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 12px 16px; list-style: none; cursor: pointer; font-size: 15px; font-weight: 600; color: #152e28; }
+  .lg-gap__tom::-webkit-details-marker { display: none; }
+  .lg-gap__tom::after { content: "+"; content: "+" / ""; flex: none; font-size: 20px; line-height: 1; color: #146c60; }
+  .lg-gap[open] > .lg-gap__tom::after { content: "−"; content: "−" / ""; }
+  .lg-gap__than { padding: 0 16px 16px; }
+  /* Tiêu đề h3 đã nằm trong <summary> nhìn thấy; giữ nó cho trình đọc màn hình để không nhảy cấp. */
+  .lg-gap .lg-kiem-trong__tieude { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .cinematic #nha-phat-trien .lg-gap { background: #0b211c; border-color: #375445; }
+  .cinematic #nha-phat-trien .lg-gap__tom { color: #f0f6ef; }
+  .cinematic #nha-phat-trien .lg-gap__tom::after { color: #c5e69d; }
+  .cinematic .lg-gap .lg-code { margin-top: 16px; }
+  .custos-landing .lg-faq .lg-gap__than { padding-bottom: 4px; }
+}
+
+/* ── Header: "Ví Custos" là link chữ; VI/EN luôn hiện, kể cả trên mobile ── */
+.custos-landing .lg-header__ung-dung { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; border: 0; background: none; color: #c2d7cd; font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+.custos-landing .lg-header__ung-dung:hover { background: none; color: #b9de87; text-decoration: underline; text-underline-offset: 4px; }
+.lg-menu__phu { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; color: #52675f; }
+@media (max-width: 480px) {
+  .custos-landing .lg-header__in { gap: 10px; }
+  .custos-landing .lg-brand { gap: 8px; }
+  .custos-landing .lg-brand__symbol { width: 30px; height: 30px; }
+  .custos-landing .lg-brand__chu strong { font-size: 21px; }
+  .custos-landing .lg-header__phai { gap: 8px; }
+  .custos-landing .lg-ngon__nut { min-width: 44px; min-height: 44px; padding: 0 8px; }
+}
+
+/* ── Nút dừng chuyển động: trong luồng trang (chân hero), không nổi đè lên nội dung ── */
+.custos-landing .cine-hero-foot .cine-motion-control { position: static; background: transparent; box-shadow: none; }
+.custos-landing .cine-hero-foot .cine-motion-control:hover { background: #1b4839; }
+.custos-landing.cinematic .lg-footer { padding-bottom: 28px; }
+
+/* ── Lưới bốn ô: tiêu đề neo theo đỉnh ô; cả ô là một link ── */
+.cine-resource { justify-content: flex-start; min-height: 0; }
+.cine-resource__art { flex: none; }
+
+/* ── CTA cuối: cùng một nút chính; lối khác là link chữ ── */
+.lg-cta__ghichu { flex-basis: 100%; margin: 0; color: #3f5545; }
+.lg-cta__lien { display: flex; flex-wrap: wrap; gap: 0 24px; flex-basis: 100%; margin: 0; }
+.custos-landing .lg-cta__lien .lg-cta__phu { flex-basis: auto; }
+
+/* ── Mobile: trang ngắn hơn ── */
+@media (max-width: 760px) {
+  .cinematic .lg-hero { padding-top: 24px; }
+  .custos-landing.cinematic .lg-hero__h1 { font-size: 2.25rem; line-height: 1.22; margin-block: 14px; }
+  .custos-landing.cinematic .lg-hero__mota { font-size: .9375rem; line-height: 1.65; margin-bottom: 20px; }
+  .cinematic .lg-hero__nut { margin-bottom: 18px; }
+  .lg-hero__buoc-mota { display: inline; }
+  .lg-hero__buoc li { align-items: flex-start; }
+  .cinematic .lg-hero__grid { gap: 20px; }
+  .cine-card-stage { padding-top: 0; }
+  .custos-landing .inspection-lens, .custos-landing .cine-card-halo { display: none; }
+  /* Phiếu mẫu: chỉ còn mức, hai dòng diff và chú thích nguồn. */
+  .custos-landing .lg-phieu__nhan-nhom, .custos-landing .lg-phieu__canhbao { display: none; }
+  .custos-landing .lg-phieu__dau { padding: 12px 16px; }
+  .custos-landing .lg-phieu__hanhdong { padding: 12px 16px; }
+  .custos-landing .lg-phieu__hanhdong strong { font-size: 18px; }
+  .custos-landing .lg-phieu__ketqua { padding-block: 12px; }
+  .custos-landing .lg-phieu__nhom, .custos-landing .lg-phieu__nhom + .lg-phieu__nhom { margin-top: 10px; }
+  .custos-landing .lg-phieu__hang { padding: 10px 12px; }
+  .custos-landing .lg-phieu__hang dd, .custos-landing .lg-phieu__hang--nguy dd { margin-top: 4px; }
+  .custos-landing .lg-phieu__hang .lg-so { font-size: 24px; }
+  .custos-landing .lg-phieu__caption { margin-top: 12px; padding-block: 10px; }
+  .cine-hero-foot { padding-block: 8px 12px; }
+  .cine-resource { padding: 14px 12px 16px; gap: 8px; }
+  .cine-resource__art { width: 72px; height: 36px; }
+  .lg-kiem-trong { margin-top: 24px; padding: 0; border: 0; background: none; }
+  .custos-landing .lg-step-visual { height: 52px; margin-bottom: 10px; }
+  .custos-landing .lg-step-visual svg { width: 26px; height: 26px; }
+  .custos-landing .lg-buoc__so { font-size: 26px; }
+  .custos-landing .lg-buoc .lg-h3 { font-size: 18px; margin-bottom: 6px; }
+}
+
+/* ── Tinh chỉnh sau khi đo (1440×900 và 390×844) ── */
+/* "Ví Custos" là link chữ trên header rộng; ≤1024px nó nằm trong menu như trước. */
+@media (max-width: 1024px) { .custos-landing .lg-header__ung-dung { display: none; } }
+.custos-landing .lg-cta__lien .lg-cta__phu { gap: 6px; }
+/* Desktop: dải ba bước của đường demo phải lọt màn hình đầu 1440×900. */
+@media (min-width: 761px) {
+  .cinematic .lg-hero { padding-top: 36px; }
+  .cinematic .lg-hero__h1 { line-height: 1.22; margin-block: 22px 24px; }
+  .cinematic .lg-hero__mota { line-height: 1.7; margin-bottom: 24px; }
+  .custos-landing .lg-phieu__hang .lg-so { font-size: clamp(28px, 2.4vw, 36px); }
+}
+@media (max-width: 760px) {
+  /* Dải ba bước: một hàng gọn "1 Kết nối → 2 Nhận thưởng → 3 Chặn". */
+  .lg-hero__buoc ol { display: flex; flex-wrap: wrap; gap: 8px 0; }
+  .lg-hero__buoc li { display: flex; padding-right: 0; }
+  .lg-hero__buoc li:not(:last-child)::after { position: static; margin: 0 10px; }
+  /* Bốn bước hành trình: số và tiêu đề trên một dòng ngắn, bỏ ô icon cao. */
+  .custos-landing .lg-step-visual { height: auto; margin-bottom: 4px; border-bottom: 0; justify-content: flex-start; }
+  .custos-landing .lg-step-visual svg { display: none; }
+  .custos-landing .lg-buoc__so { font-size: 15px; letter-spacing: .02em; color: #3d5a4a; } /* chữ nhỏ cần 4,5:1 */
+  .custos-landing .lg-buoc--custos .lg-step-visual { border-bottom: 0; }
+  .custos-landing .lg-buoc--custos { padding-left: 12px; border-left: 2px solid #146c60; }
+  .custos-landing .lg-pipeline { gap: 18px; margin-top: 24px; }
+  .custos-landing .lg-bcs__muc { padding-block: 16px; }
+}
+/* Bảng A/B: hai cột ca rộng bằng nhau dù ô "Mức" của A dài hơn. Dòng "demo trực tiếp dùng DEMO" nằm dưới
+   nhãn nguồn, cùng cột. */
+.custos-landing .lg-bang { table-layout: fixed; }
+.custos-landing .lg-bang thead th:not(:first-child) { width: 35%; }
+@media (min-width: 761px) { .custos-landing .lg-ab__dau .lg-ab__live { grid-column: 2; } }
+
+
+
+/* ── Vòng 2 review ── */
+/* Dưới nút chính, chỉ trên điện thoại: ví mở trong cửa sổ riêng. */
+.lg-hero__may-tinh { display: none; margin: 0; font-size: .8125rem; line-height: 1.6; color: #c9dccf; }
+@media (max-width: 760px) { .lg-hero__may-tinh { display: block; } }
+/* Màn rất hẹp: ba bước xếp dọc thay vì xuống dòng giữa chừng. */
+@media (max-width: 359px) {
+  .lg-hero__buoc ol { flex-direction: column; gap: 6px; }
+  .lg-hero__buoc li:not(:last-child)::after { content: none; }
+}
+/* Nút dừng chuyển động thứ hai, ở footer — cùng trạng thái với nút ở chân hero. */
+.lg-footer__chuyen-dong { flex-basis: 100%; }
+.custos-landing .lg-footer__chuyen-dong .cine-motion-control { position: static; background: transparent; box-shadow: none; }
+.custos-landing .lg-footer__chuyen-dong .cine-motion-control:hover { background: #1b4839; }
+/* Lối vào phòng phân tích dưới bảng A/B: link chữ, kèm chú thích. */
+.lg-ab__lien-phong { flex-direction: column; align-items: flex-start; gap: 2px; }
+.lg-ab__lien-phong .lg-lien-chu { font-size: 16px; }
+/* Mobile: ba bước xếp dọc KÈM mô tả — bước 1 phải nói đủ "chọn Custos Wallet, rồi tìm token DEMO". */
+@media (max-width: 760px) {
+  .lg-hero__buoc ol { flex-direction: column; gap: 6px; }
+  .lg-hero__buoc li:not(:last-child)::after { content: none; }
+  .lg-hero__buoc strong { display: inline; }
+}

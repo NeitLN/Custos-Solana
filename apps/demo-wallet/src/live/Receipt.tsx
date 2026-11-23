@@ -3,7 +3,9 @@ import { sha256Hex } from "../../../../packages/core/src/sha256.ts";
 import { DECIMALS } from "./session.ts";
 import { nhanDoiChieuQuyen, type LiveReceipt } from "./receipt.ts";
 import { SCENARIOS } from "./scenarios.ts";
-export const short = (s: string) => `${s.slice(0, 5)}…${s.slice(-5)}`;
+import { rutGonDiaChi } from "../diaChi.ts";
+/** Rút gọn hiển thị — cùng một hàm với cả ví (`diaChi.ts`), không tự cắt kiểu riêng. */
+export const short = rutGonDiaChi;
 export const token = (s: string | null | undefined) =>
   s == null ? "Not measured" : dinhDangSo(BigInt(s), DECIMALS, "en");
 export const explorer = (signature: string) =>

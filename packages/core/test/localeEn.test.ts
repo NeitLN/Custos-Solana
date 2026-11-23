@@ -101,7 +101,7 @@ test("SolBonus (chuyển nửa + đổi chủ) — en: bảng tiếng Anh, level
   assert.equal(soDu.before, "500.0");
   assert.equal(soDu.after, "250.0");
 
-  const chu = en.find((d) => d.label === "Token account owner: DEMO");
+  const chu = en.find((d) => d.label === "Owner of your DEMO token account");
   assert.ok(chu, "thiếu dòng đổi chủ");
   assert.equal(chu.before, "You");
   assert.equal(chu.after, "KeTa…1111");
@@ -198,7 +198,7 @@ test("inspect() đầu-cuối — 'en' và 'vi' cho CÙNG level, reasonCodes, co
 
   // en là tiếng Anh.
   assert.ok(en.diff.some((d) => d.label.startsWith("Balance of ") && d.before === "500.0" && d.after === "0.0"));
-  assert.ok(en.diff.some((d) => d.label.startsWith("Token account owner: ") && d.before === "You"));
+  assert.ok(en.diff.some((d) => d.label.startsWith("Owner of your ") && d.label.endsWith(" token account") && d.before === "You"));
   for (const d of en.diff) assert.doesNotMatch(`${d.label} ${d.before} ${d.after}`, CO_DAU);
   assert.doesNotMatch(en.explanation, CO_DAU);
   assert.ok(en.explanation.length > 0);

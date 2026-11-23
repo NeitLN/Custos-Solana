@@ -21,9 +21,20 @@ export const VI = {
   chung: {
     boQuaToiNoiDung: "Bỏ qua, tới nội dung chính",
     /* Đánh giá giám khảo 05/10: nút chính phải dẫn vào luồng dApp → ví (SolBonus); phòng phân tích là
-       lối phụ và phải được gọi đúng tên. */
-    thuNguoiDung: "Thử như người dùng",
-    moDemo: "Mở phòng phân tích",
+       lối phụ và phải được gọi đúng tên. Review UX 11/2026: MỘT đường demo, nút nói rõ nó mở gì. */
+    thuNguoiDung: "Chạy demo 2 phút",
+    /** Nhãn ngắn của cùng nút đó trên header — chỗ hẹp. */
+    thuNguoiDungNgan: "Chạy demo",
+    thuNguoiDungGhiChu: "Mở SolBonus, một dApp độc hại mô phỏng · Devnet",
+    /** Chỉ hiện trên mobile, dưới nút chính: ví mở trong cửa sổ riêng, điện thoại hay biến nó thành tab. */
+    totNhatTrenMayTinh: "Nên dùng máy tính: ví mở trong một cửa sổ riêng",
+    /**
+     * `index.html` có MỘT tên trên cả landing: "Phòng phân tích" là một màn của "Ví Custos". Link dài
+     * nói đủ cặp tên; header/footer dùng tên ứng dụng.
+     */
+    moDemo: "Mở phòng phân tích (Ví Custos)",
+    /** Ba mức của L2 — đúng nhãn của ví. Chỉ là chữ hiển thị; `level` không đổi. */
+    muc: { safe: "Bình thường", warning: "Cần xem kỹ", danger: "Nguy hiểm" },
     /** Lối vào ứng dụng trên header desktop — cùng tên với thanh điều hướng trong ứng dụng. */
     moVi: "Ví Custos",
     xemCachHoatDong: "Xem cách hoạt động",
@@ -55,28 +66,40 @@ export const VI = {
     kicker: "SDK kiểm tra giao dịch Solana trước khi ký",
     h1: "Hiểu điều bạn sắp ký.",
     moTa: "Custos chạy trong ví đã tích hợp SDK: mô phỏng đúng giao dịch dApp gửi tới và chỉ ra thay đổi tài sản, quyền kiểm soát — trước khi bạn ký. Custos kiểm chính giao dịch, không kiểm đường link hay tên miền.",
-    ctaPhu: "Xem tình huống A/B",
-    goiMoAB: "Cùng số dư. Khác quyền kiểm soát.",
+    ctaPhu: "Xem ví dụ A/B đã ghi",
     ghiChu: "Bản thử nghiệm Devnet · Không dùng tài sản thật",
+    /* Ba bước của đường demo chính — đúng thứ tự người xem làm trên SolBonus. */
+    buocDemo: {
+      nhan: "Demo trực tiếp (SolBonus)",
+      buoc: [
+        { ten: "Kết nối", moTa: "chọn Ví Custos, rồi tìm token DEMO của bạn" },
+        { ten: "Nhận thưởng", moTa: "SOLB hư cấu, không có giá trị" },
+        { ten: "Chặn", moTa: "ngay trong cửa sổ ký của Custos" },
+      ],
+    },
     phieu: {
       tieuDe: "Phân tích giao dịch",
-      nhanMau: "Kết quả mẫu đã lưu",
-      mang: "Devnet",
+      nhanMau: "Ví dụ đã ghi · Devnet",
       hanhDong: "Chuyển 10 token",
+      nhanMuc: "Mức cảnh báo",
+      nhanLyDo: "Mã lý do",
+      nhanDoPhu: "Độ phủ",
+      /** `{x}`/`{y}` thay bằng `coverage.analyzed`/`coverage.total` của bản ghi. */
+      docHieu: "Đọc hiểu {x}/{y} lệnh",
+      /** Chữ cho trình đọc màn hình thay mũi tên "→" (mũi tên là aria-hidden). */
+      thanh: "thành",
       nhomTaiSan: "Tài sản",
       nhomQuyen: "Quyền kiểm soát",
       nhanSoDu: "Số dư token",
       nhanQuyen: "Chủ tài khoản token",
       chuBan: "Bạn",
-      diaChiKhac: "địa chỉ khác",
       cauCanhBao: "Giao dịch mẫu có thao tác đổi chủ tài khoản token.",
-      xemDoiChieu: "Xem đối chiếu và bằng chứng",
       caption: "Minh họa từ một lượt mô phỏng Devnet; không phải giao dịch đã gửi.",
     },
   },
 
   dai: [
-    { manh: "Solana Devnet", phu: "Môi trường thử nghiệm" },
+    { manh: "Ví Custos", phu: "Phòng phân tích, chạy trên Devnet" },
     { manh: "SDK", phu: "Dành cho ví và dApp" },
     { manh: "Inspector", phu: "Có 10 giao dịch mainnet đã ghi" },
     { manh: "Bằng chứng", phu: "Xem dữ kiện và giới hạn" },
@@ -85,7 +108,7 @@ export const VI = {
   /* C2, ROADMAP-SAU-MENTOR: mentor 29/09 — người xem tưởng Custos soi đường dẫn web. Dải này nói
      Custos nằm Ở ĐÂU trong hành trình ký, ngay dưới hero (ADR-0004). */
   hanhTrinh: {
-    h2: "Custos nằm ở đâu khi bạn ký",
+    h2: "Custos nằm ở đâu khi bạn ký, và kiểm thế nào",
     moTa: "Custos không kiểm đường link hay tên miền. Nó chạy bên trong ví đã tích hợp SDK, trên đúng giao dịch mà dApp gửi tới — trước khi ví của bạn ký.",
     buoc: [
       { tieuDe: "dApp dựng giao dịch", moTa: "Một trang bất kỳ — kể cả trang độc hại — gửi yêu cầu ký qua chuẩn ví của Solana." },
@@ -93,15 +116,16 @@ export const VI = {
       { tieuDe: "Custos kiểm trong ví", moTa: "Mô phỏng chính giao dịch đó, áp bộ luật, và giải thích hậu quả bằng tiếng Việt." },
       { tieuDe: "Bạn quyết định", moTa: "Chặn thì không có gì được gửi. Vẫn ký thì Ví Custos trên Devnet đối chiếu kết quả thật với dự báo." },
     ],
-    ctaNguoiDung: "Thử như người dùng: mở SolBonus",
+    ctaNguoiDung: "Chạy demo 2 phút trên SolBonus",
     ghiChuNguoiDung: "dApp độc hại mô phỏng trên Devnet — không gọi Custos, chỉ xin chữ ký qua chuẩn Wallet Standard.",
     ctaNhaPhatTrien: "Tích hợp vào ví của bạn",
     ghiChuNhaPhatTrien: "Xem cách gọi SDK và nối vào luồng ký — chạy thử trên dữ liệu Devnet đã ghi ngay tại trang.",
   },
 
+  /* Gộp vào sơ đồ hành trình (review UX 11/2026): ba lớp dưới đây là phần bên trong bước 03. */
   pipeline: {
-    h2: "Cách Custos kiểm một giao dịch.",
-    moTa: "Ba bước dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.",
+    h2: "Bên trong bước 3: Custos kiểm một giao dịch thế nào",
+    moTa: "Ba lớp dưới đây là đường đi thật của một lượt kiểm, không phải sơ đồ minh họa.",
     buoc: [
       {
         tieuDe: "L1 · Mô phỏng và đọc dữ kiện",
@@ -119,27 +143,15 @@ export const VI = {
     ghiChu: "Ví hoặc dApp tích hợp Custos quyết định cách dùng kết quả trong luồng ký.",
   },
 
-  giaTri: {
-    the: [
-      {
-        tieuDe: "Xem hậu quả",
-        moTa: "Đối chiếu trạng thái trước và sau mô phỏng để thấy thay đổi về tài sản, phí và quyền.",
-      },
-      {
-        tieuDe: "Hiểu cảnh báo",
-        moTa: "Đọc hành vi đáng chú ý bằng ngôn ngữ rõ ràng, cùng phạm vi Custos đã kiểm được.",
-      },
-      {
-        tieuDe: "Kiểm bằng chứng",
-        moTa: "Đi từ cảnh báo tới dữ kiện liên quan và mở thêm chi tiết khi cần kiểm sâu.",
-      },
-    ],
-  },
-
   ab: {
     h2: "Cùng chuyển 10 token. Khác quyền kiểm soát.",
     moTa: "Hai tình huống dưới đây cùng để lại 490 token trong lượt mô phỏng mẫu. Nhưng một tình huống còn chuyển quyền kiểm soát tài khoản sang địa chỉ khác.",
-    nhanNguon: "Kết quả mẫu đã lưu · hai simulation độc lập",
+    nhanNguon: "Ví dụ A/B (đã ghi) · hai simulation độc lập",
+    /* Ví dụ đã ghi khác số với hai bề mặt trực tiếp — nói thẳng thay vì sửa dữ liệu đã ghi. Từ review UX 11/2026
+       phòng phân tích cũng hiện nhãn DEMO (trước là "USDC-demo", mượn tên thương hiệu thật). Không nói "cùng một
+       token": mỗi bề mặt có tài khoản token Devnet riêng. */
+    ghiChuLive:
+      "Demo trực tiếp (SolBonus) và phòng phân tích đều dùng token Devnet thử nghiệm mang nhãn DEMO (không có giá trị), nên số lượng ở đó khác ví dụ đã ghi này.",
     chonA: "A · Chỉ chuyển",
     chonB: "B · Chuyển và đổi chủ",
     cotTruong: "Mục so sánh",
@@ -149,14 +161,15 @@ export const VI = {
       tokenChuyen: "Token chuyển",
       soDuSau: "Số dư sau mô phỏng",
       doiChu: "Thao tác đổi chủ tài khoản",
-      ketLuan: "Kết luận lượt mẫu",
+      ketLuan: "Mức cảnh báo",
     },
     giaTri: {
       tokenChuyen: "10",
       khongCoDoiChu: "Không có trong transaction mẫu",
       coDoiChu: "Có",
-      ketLuanA: "Không phát hiện nguy hiểm trong phần đã đọc",
+      ketLuanA: "Không thấy dấu hiệu nguy hiểm trong phần Custos đọc được. Không phải lời bảo đảm an toàn.",
       ketLuanB: "Phát hiện thay đổi quyền kiểm soát",
+      khongCoMaLyDo: "Không có mã lý do",
     },
     moBangChungB: "Xem dữ kiện của ca B",
     dongBangChungB: "Đóng dữ kiện ca B",
@@ -184,8 +197,8 @@ export const VI = {
       khongDuReplay:
         "Dữ liệu hiển thị ở đây đã được rút gọn để công bố. Nó không đủ để chạy lại engine.",
     },
-    cta: "Mở demo để kiểm tra",
-    ctaGhiChu: "Bạn sẽ chuyển sang ứng dụng demo.",
+    cta: "Thử các tình huống tương tự trực tiếp trong phòng phân tích (Ví Custos)",
+    ctaGhiChu: "Mô phỏng trên Devnet; nếu RPC lỗi thì bản phát lại được ghi nhãn rõ. Bước kiểm không ký gì.",
     ketLuan: "Số tiền là một phần của câu chuyện. Quyền kiểm soát cũng cần được nhìn thấy.",
   },
 
@@ -204,6 +217,8 @@ export const VI = {
     ghiChu:
       "SDK cung cấp kết quả phân tích. Ứng dụng tích hợp chịu trách nhiệm gắn kết quả với đúng giao dịch và xử lý điều kiện ký.",
     codeTieuDe: "Ví dụ phân tích một giao dịch",
+    /** Tóm tắt accordion trên mobile cho sơ đồ luồng và đoạn code. */
+    moCode: "Xem sơ đồ luồng và code mẫu",
     /** Đoạn code mẫu đổi theo ngôn ngữ trang: `locale` truyền cho `inspect()` và tên biến. */
     codeLocale: "vi",
     codeBienKetQua: "ketQua",
@@ -255,6 +270,8 @@ export const VI = {
   faq: {
     h2: "Câu hỏi thường gặp",
     moTa: "Phạm vi, giới hạn và cách đọc kết quả của Custos.",
+    /** Tóm tắt accordion trên mobile; `{n}` là số câu hỏi. */
+    moTatCa: "Xem {n} câu hỏi",
     muc: [
       {
         hoi: "Custos có phải một ví mới không?",
@@ -265,7 +282,7 @@ export const VI = {
         dap: "Không cần cho website và luồng tình huống mẫu này. Demo sử dụng Devnet. Không nhập seed phrase hoặc khóa riêng vào trang giới thiệu hay Inspector.",
       },
       {
-        hoi: "Kết quả “không phát hiện nguy hiểm” có nghĩa là an toàn tuyệt đối không?",
+        hoi: "Kết quả “Bình thường” có nghĩa là an toàn tuyệt đối không?",
         dap: "Không. Kết quả chỉ có ý nghĩa trong phạm vi dữ liệu và chương trình đã phân tích. Hãy đọc coverage, dữ kiện còn thiếu và giới hạn đi kèm.",
       },
       {
@@ -282,7 +299,7 @@ export const VI = {
       },
       {
         hoi: "Website đang chạy kiểm tra trực tiếp hay hiển thị kết quả mẫu?",
-        dap: "Khung giới thiệu và phần A/B trên trang có nhãn kết quả mẫu đã lưu. Nút mở demo dẫn tới ứng dụng để chạy kiểm tra. Chế độ live hoặc replay phải được ghi rõ tại nơi hiển thị kết quả.",
+        dap: "Phiếu ở đầu trang và phần A/B là ví dụ đã ghi, có nhãn rõ. “Chạy demo 2 phút” mở SolBonus, nơi cửa sổ ký của Custos mô phỏng trực tiếp trên Devnet; phòng phân tích cũng mô phỏng trực tiếp. Chế độ live hoặc replay được ghi rõ tại nơi hiển thị kết quả.",
       },
       {
         hoi: "Custos có tự chặn mọi ví ký giao dịch nguy hiểm không?",
@@ -344,8 +361,12 @@ export const EN: NoiDung = {
 
   chung: {
     boQuaToiNoiDung: "Skip to main content",
-    thuNguoiDung: "Try it as a user",
-    moDemo: "Open the Analysis Room",
+    thuNguoiDung: "Run the 2-minute demo",
+    thuNguoiDungNgan: "Run the demo",
+    thuNguoiDungGhiChu: "Opens SolBonus, a simulated malicious dApp · Devnet",
+    totNhatTrenMayTinh: "Best on desktop: the wallet opens in a separate window",
+    moDemo: "Open the Analysis Room (Custos Wallet)",
+    muc: { safe: "Normal", warning: "Review carefully", danger: "Danger" },
     moVi: "Custos Wallet",
     xemCachHoatDong: "See how it works",
     moMenu: "Open menu",
@@ -376,35 +397,44 @@ export const EN: NoiDung = {
     kicker: "An SDK that checks Solana transactions before signing",
     h1: "Understand what you’re about to sign.",
     moTa: "Custos runs inside wallets that integrate it: it simulates the exact transaction a dApp sends and shows what changes to assets and account control — before you sign. It checks transactions, not links.",
-    ctaPhu: "Explore the A/B example",
-    goiMoAB: "Same balance. Different account control.",
+    ctaPhu: "See the recorded A/B example",
     ghiChu: "Devnet prototype · Do not use real assets",
+    buocDemo: {
+      nhan: "Live demo (SolBonus)",
+      buoc: [
+        { ten: "Connect", moTa: "choose Custos Wallet, then find your DEMO tokens" },
+        { ten: "Claim", moTa: "the fictional SOLB reward" },
+        { ten: "Block", moTa: "it in the Custos signing window" },
+      ],
+    },
     phieu: {
       tieuDe: "Transaction analysis",
-      nhanMau: "Recorded sample",
-      mang: "Devnet",
+      nhanMau: "Recorded example · Devnet",
       hanhDong: "Transfer 10 tokens",
+      nhanMuc: "Level",
+      nhanLyDo: "Reason code",
+      nhanDoPhu: "Coverage",
+      docHieu: "Understood {x} of {y} instructions",
+      thanh: "to",
       nhomTaiSan: "Assets",
       nhomQuyen: "Account control",
       nhanSoDu: "Token balance",
       nhanQuyen: "Token account owner",
       chuBan: "You",
-      diaChiKhac: "another address",
       cauCanhBao: "The sample transaction changes the token account owner.",
-      xemDoiChieu: "See the comparison and evidence",
       caption: "Based on a recorded Devnet simulation. No transaction was broadcast.",
     },
   },
 
   dai: [
-    { manh: "Solana Devnet", phu: "Test environment" },
+    { manh: "Custos Wallet", phu: "Analysis Room, running on Devnet" },
     { manh: "SDK", phu: "For wallets and dApps" },
     { manh: "Inspector", phu: "Includes 10 recorded mainnet transactions" },
     { manh: "Evidence", phu: "See the data and limits" },
   ],
 
   hanhTrinh: {
-    h2: "Where Custos sits when you sign",
+    h2: "Where Custos sits when you sign, and how it checks",
     moTa: "Custos does not check links or domains. It runs inside wallets that integrate it, on the exact transaction a dApp sends — before your wallet signs.",
     buoc: [
       { tieuDe: "A dApp builds a transaction", moTa: "Any site — including a malicious one — requests a signature through the Solana wallet standard." },
@@ -412,15 +442,15 @@ export const EN: NoiDung = {
       { tieuDe: "Custos inspects in the wallet", moTa: "It simulates that exact transaction, applies its rules, and explains the consequences." },
       { tieuDe: "You decide", moTa: "Block, and nothing is sent. Sign anyway, and Custos Wallet on Devnet compares the real outcome with the prediction." },
     ],
-    ctaNguoiDung: "Try it as a user: open SolBonus",
+    ctaNguoiDung: "Run the 2-minute demo on SolBonus",
     ghiChuNguoiDung: "A simulated malicious dApp on Devnet — it never calls Custos; it only requests a signature through the Wallet Standard.",
     ctaNhaPhatTrien: "Integrate it into your wallet",
     ghiChuNhaPhatTrien: "See how to call the SDK and wire it into signing — run it on recorded Devnet data on the page.",
   },
 
   pipeline: {
-    h2: "How Custos checks a transaction.",
-    moTa: "These three steps are the real path of a check, not an illustrative diagram.",
+    h2: "Inside step 3: how Custos checks a transaction",
+    moTa: "These three layers are the real path of a check, not an illustrative diagram.",
     buoc: [
       {
         tieuDe: "L1 · Simulate and read the facts",
@@ -438,27 +468,12 @@ export const EN: NoiDung = {
     ghiChu: "The wallet or dApp that integrates Custos decides how to use the result in its signing flow.",
   },
 
-  giaTri: {
-    the: [
-      {
-        tieuDe: "See the effects",
-        moTa: "Compare state before and after simulation to understand changes to assets, fees, and permissions.",
-      },
-      {
-        tieuDe: "Understand the warning",
-        moTa: "Read a clear description of the finding and the scope of the analysis.",
-      },
-      {
-        tieuDe: "Inspect the evidence",
-        moTa: "Follow a warning to the relevant data and open technical details when needed.",
-      },
-    ],
-  },
-
   ab: {
     h2: "Same 10-token transfer. Different account control.",
     moTa: "Both recorded examples leave 490 tokens after simulation. One also transfers control of the token account to another address.",
-    nhanNguon: "Recorded sample · two independent simulations",
+    nhanNguon: "A/B example (recorded) · two independent simulations",
+    ghiChuLive:
+      "The live demo (SolBonus) and the Analysis Room both use Devnet test tokens labelled DEMO (no exchange value), so amounts differ from this recorded example.",
     chonA: "A · Transfer only",
     chonB: "B · Transfer and change owner",
     cotTruong: "Compared field",
@@ -468,14 +483,15 @@ export const EN: NoiDung = {
       tokenChuyen: "Tokens transferred",
       soDuSau: "Balance after simulation",
       doiChu: "Account owner change",
-      ketLuan: "Recorded result",
+      ketLuan: "Level",
     },
     giaTri: {
       tokenChuyen: "10",
       khongCoDoiChu: "Not present in the sample transaction",
       coDoiChu: "Present",
-      ketLuanA: "No danger signs found in the parts we could read",
+      ketLuanA: "No red flags in the parts Custos could read. Not a guarantee of safety.",
       ketLuanB: "Account control changes detected",
+      khongCoMaLyDo: "No reason code",
     },
     moBangChungB: "View the data for scenario B",
     dongBangChungB: "Close the data for scenario B",
@@ -503,8 +519,8 @@ export const EN: NoiDung = {
       khongDuReplay:
         "The data shown here is reduced for publication. It is not sufficient to replay the engine.",
     },
-    cta: "Open the demo to check",
-    ctaGhiChu: "This opens the demo application.",
+    cta: "Try similar scenarios live in the Analysis Room (Custos Wallet)",
+    ctaGhiChu: "Devnet simulation; replay is labeled if RPC fails. Inspection signs nothing.",
     ketLuan: "The amount is part of the story. Account control matters too.",
   },
 
@@ -523,6 +539,7 @@ export const EN: NoiDung = {
     ghiChu:
       "The SDK provides analysis. The consumer is responsible for binding it to the correct transaction and enforcing signing conditions.",
     codeTieuDe: "Example: analyzing one transaction",
+    moCode: "Show the flow and code example",
     codeLocale: "en",
     codeBienKetQua: "result",
     codeBienVi: "userWallet",
@@ -573,6 +590,7 @@ export const EN: NoiDung = {
   faq: {
     h2: "Frequently asked questions",
     moTa: "Scope, limits, and how to read a Custos result.",
+    moTatCa: "Show all {n} questions",
     muc: [
       {
         hoi: "Is Custos a new wallet?",
@@ -583,7 +601,7 @@ export const EN: NoiDung = {
         dap: "No, not for this website and its sample flow. The demo uses Devnet. Do not enter a seed phrase or private key into the landing page or Inspector.",
       },
       {
-        hoi: "Does “No danger signs found” mean a transaction is completely safe?",
+        hoi: "Does a “Normal” result mean a transaction is completely safe?",
         dap: "No. The result is limited to the data and programs analyzed. Review coverage, missing evidence, and the stated limitations.",
       },
       {
@@ -600,7 +618,7 @@ export const EN: NoiDung = {
       },
       {
         hoi: "Is this page running a live check or showing a sample?",
-        dap: "The product preview and A/B section show labeled, recorded samples. The demo button opens the application for further checks. Live and replay modes must be labeled where results appear.",
+        dap: "The card at the top and the A/B section show a labeled, recorded example. “Run the 2-minute demo” opens SolBonus, where the Custos signing window simulates live on Devnet; the Analysis Room also simulates live. Live and replay modes are labeled where results appear.",
       },
       {
         hoi: "Does Custos automatically stop every wallet from signing dangerous transactions?",

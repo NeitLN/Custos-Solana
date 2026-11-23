@@ -5,12 +5,11 @@ import { Hero, HangThongTin } from "./Hero.tsx";
 import { HanhTrinh } from "./HanhTrinh.tsx";
 import { ScenarioExplorer } from "./ScenarioExplorer.tsx";
 import { useSectionMotion } from "./useSectionMotion.ts";
-import { CINEMA, CinematicBridge } from "./CinematicScene.tsx";
+import { CINEMA } from "./CinematicScene.tsx";
 import {
   CtaCuoi,
   DeveloperSection,
   FAQ,
-  PipelineSection,
   ProofSection,
   SiteFooter,
 } from "./Sections.tsx";
@@ -55,6 +54,18 @@ export function LandingPage() {
     return () => media.removeEventListener("change", update);
   }, []);
   const t = NOI_DUNG[ngon];
+
+  /*
+   * Nút dừng chuyển động — nay nằm trong luồng trang, không nổi đè lên nội dung: một bản ở chân
+   * hero, một bản ở footer để người đã cuộn qua hero vẫn dừng được (trạng thái dùng chung, và
+   * `data-motion="paused"` dừng mọi hoạt ảnh trên CẢ trang). Khi hệ điều hành bật giảm chuyển động,
+   * trang đã tự dừng và nút bị ẩn (CSS `:disabled`).
+   */
+  const nutChuyenDong = (
+    <button type="button" className="cine-motion-control" aria-pressed={paused} disabled={reduced} onClick={() => setUserPaused(value => !value)}>
+      <span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>{reduced ? CINEMA[ngon].reduced : paused ? CINEMA[ngon].play : CINEMA[ngon].pause}
+    </button>
+  );
 
   /*
    * Cập nhật metadata theo ngôn ngữ.
@@ -108,26 +119,23 @@ export function LandingPage() {
         nó sau ba thẻ giá trị nên người xem phải cuộn qua phần giải thích trùng ý
         mới tới được điểm nhớ.
 
-        Section "bắt đầu" nền lilac đã bỏ; ba bước gộp vào `PipelineSection` theo
-        đúng pipeline thật.
+        Section "bắt đầu" nền lilac đã bỏ.
+
+        Review UX 11/2026: băng trang trí "One signature. More than a transfer." đã bỏ, và
+        "Custos nằm ở đâu" gộp với "Custos kiểm thế nào" thành MỘT sơ đồ trong `HanhTrinh`.
       */}
       <main id="noi-dung">
-        <Hero t={t} ngon={ngon} paused={paused} />
+        <Hero t={t} ngon={ngon} paused={paused} dieuKhienChuyenDong={nutChuyenDong} />
         <HangThongTin t={t} />
         <HanhTrinh t={t} />
         <ScenarioExplorer t={t} ngon={ngon} />
-        <CinematicBridge ngon={ngon} />
-        <PipelineSection t={t} />
         <DeveloperSection t={t} />
         <ProofSection t={t} />
         <FAQ t={t} />
         <CtaCuoi t={t} />
       </main>
 
-      <SiteFooter t={t} />
-      <button type="button" className="cine-motion-control" aria-pressed={paused} disabled={reduced} onClick={() => setUserPaused(value => !value)}>
-        <span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>{reduced ? CINEMA[ngon].reduced : paused ? CINEMA[ngon].play : CINEMA[ngon].pause}
-      </button>
+      <SiteFooter t={t} dieuKhienChuyenDong={nutChuyenDong} />
     </div>
   );
 }

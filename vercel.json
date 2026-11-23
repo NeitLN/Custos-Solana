@@ -16,11 +16,29 @@
       "destination": "/tan-cong/index.html"
     },
     {
+      "source": "/claim",
+      "has": [
+        {
+          "type": "host",
+          "value": "solbonus.vercel.app"
+        }
+      ],
+      "destination": "/tan-cong/index.html"
+    },
+    {
       "source": "/gioi-thieu",
       "destination": "/gioi-thieu.html"
     },
     {
+      "source": "/about",
+      "destination": "/gioi-thieu.html"
+    },
+    {
       "source": "/vi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/wallet",
       "destination": "/index.html"
     },
     {
@@ -32,7 +50,15 @@
       "destination": "/so-lieu.html"
     },
     {
+      "source": "/evidence",
+      "destination": "/so-lieu.html"
+    },
+    {
       "source": "/tich-hop",
+      "destination": "/tich-hop.html"
+    },
+    {
+      "source": "/integrate",
       "destination": "/tich-hop.html"
     }
   ],

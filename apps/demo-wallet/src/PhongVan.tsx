@@ -1,4 +1,4 @@
-import { ProductHeader } from "./ProductNavigation.tsx";
+import { ProductHeader, ProductIntro } from "./ProductNavigation.tsx";
 import { useCallback, useEffect, useState } from "react";
 import { VersionedTransaction } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
@@ -218,23 +218,15 @@ export function PhongVan() {
   const demQD = (q: QuyetDinh) => ban.filter((b) => b.quyetDinh === q).length;
 
   return (
-    <main className="app-shell interview-shell">
-      <div className="interview-container">
-        <ProductHeader active="interview" label="Research" />
-        <div className="interview-body">
-        {/*
-          H1 CỦA TRANG.
-
-          Trang này trước đây bắt đầu thẳng từ h2, tức không có điểm vào cho người
-          duyệt bằng phím tiêu đề của trình đọc màn hình — và không có câu trả lời
-          cho "tôi đang ở trang nào". Ba trang còn lại đều có h1; chỉ trang này sót.
-
-          Chữ trùng với <title> trong phong-van.html, không đặt tên khác.
-        */}
-        <h1 className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.02em] text-chu">
-          Comprehension test
-        </h1>
-
+    <>
+      <ProductHeader active="interview" label="Research" />
+      <ProductIntro page="interview" context="Research · Facilitator workspace"
+        title={<>Comprehension <em>test.</em></>}>
+        <p>Show the participant a transaction review, then record their first answer in their own words.</p>
+      </ProductIntro>
+      <main className="app-shell interview-shell">
+        <div className="interview-container">
+          <div className="interview-body" data-ready={Boolean(ketQua)}>
         {/*
           KHO HỎNG — báo, giữ, và cho xuất. Không tự sửa, không tự xoá.
 
@@ -290,32 +282,14 @@ export function PhongVan() {
           viền nét đứt, và một nhãn nói thẳng ai được đọc. Người ngồi trả lời chỉ cần
           nhìn tấm cảnh báo và câu hỏi bên dưới.
         */}
-        <section
-          aria-label="Instructions for the interviewer"
-          className="mt-2 rounded-xl border border-dashed border-[#d8b571] bg-[#fdf8ee] p-4"
-        >
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[#7a5a17]">
-            Interviewer only — do not show this part
-          </h2>
+        <details className="interview-instructions" open>
+          <summary>Interviewer instructions</summary>
           <p className="mt-2 text-[14px] leading-relaxed text-[#5c4514]">
-            Show the screen below, <span className="font-semibold">explain nothing at all</span>, and
+            Close these instructions and show the review below. <span className="font-semibold">Explain nothing</span> and
             ask only the bold question. Don&apos;t ask &quot;is this easy to understand?&quot; — everyone says yes.
             Write down exactly what they say, even if it is wrong. Score only after writing it down.
           </p>
-        </section>
-
-        {loi && (
-          <div
-            role="alert"
-            className="mt-4 rounded-xl border border-[#e7b3bd] bg-[#fdf2f4] p-4 text-[14px] leading-relaxed text-[#7d1229]"
-          >
-            <span className="font-semibold">Could not build the real screen:</span> {loi}
-            <p className="mt-1.5 text-[13.5px] text-[#93384c]">
-              There is no fallback, on purpose — measuring on a fake screen gives fake
-              numbers.
-            </p>
-          </div>
-        )}
+        </details>
 
         {!ketQua && !loi && (
           <div role="status" aria-live="polite" className="mt-6 text-[15px] text-chu-nhat">
@@ -324,7 +298,7 @@ export function PhongVan() {
         )}
 
         {loi !== null && (
-          <div role="alert" className="mt-6 rounded-2xl border border-nguy/40 p-4 text-[13px]">
+          <div role="alert" className="interview-connection mt-6 rounded-2xl border border-nguy/40 p-4 text-[13px]">
             <div className="font-semibold text-chu">The screen could not be built yet</div>
             <p className="mt-1 text-chu-mo">
               Could not connect to Devnet to build the real transaction: <strong>{loi}</strong>.
@@ -353,6 +327,7 @@ export function PhongVan() {
               hỏi đang nhìn ĐÚNG màn hình mà người dùng thật sẽ nhìn. Card khác đi một
               chút nghĩa là số liệu thu được đang đo một vật khác với sản phẩm.
             */}
+            <div className="interview-review">
             <div className="review-body mt-5 rounded-2xl border border-vien p-4 sm:p-5">
               <CanhBao
                 ketQua={ketQua}
@@ -383,6 +358,8 @@ export function PhongVan() {
               </div>
             )}
 
+            </div>
+            <div className="interview-record">
             <p className="mt-7 text-[18px] font-semibold leading-relaxed text-chu">
               If you press sign, what happens to your wallet?
             </p>
@@ -571,6 +548,7 @@ export function PhongVan() {
               </div>
             )}
 
+            </div>
             <section className="mt-7 rounded-xl border border-vien bg-white p-4">
               <h2 className="text-[15px] font-semibold text-chu">
                 Recorded {ban.length} {ban.length === 1 ? "person" : "people"}
@@ -658,6 +636,7 @@ export function PhongVan() {
         )}
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

@@ -85,7 +85,7 @@ function tomTatEn(ketQua: InspectResult): string {
   const chu = CHU_BANG.en;
   const N = chu.nhan;
   const ten = (label: string, tienTo: string) =>
-    label.slice(tienTo.length).replace(/ after signing$/, "").trim();
+    label.slice(tienTo.length).replace(/ (after signing|token account)$/, "").trim();
   const nang = ketQua.diff.filter((d) => d.severity === "danger");
   const cau: string[] = [];
 

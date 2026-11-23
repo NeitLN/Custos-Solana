@@ -1,47 +1,42 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Trace } from "./Trace.tsx";
 import type { InspectResult } from "@custos-solana/types";
-import { chiLaThongTin } from "@custos-solana/core";
+import { chiLaThongTin, CHU_BANG, NHAN as NHAN_DIFF, NHAN_EN } from "@custos-solana/core";
 import { tomTat, chiTietKyThuat } from "@custos-solana/ai";
 import { useEffect, useRef, useState } from "react";
 import { AlertIcon, CheckIcon, CopyIcon, ExternalIcon, ScanIcon, ShieldIcon } from "./Icons.tsx";
-import { diaChiCuaDong, lienKetExplorer } from "./diaChi.ts";
+import { diaChiCuaDong, lienKetExplorer, rutGonDiaChi } from "./diaChi.ts";
 import { nhomHauQua, taiSanDoi, type DongDiff } from "./nhomHauQua.ts";
 import { NHAN_NGUON, DU_LIEU_GUI_MO_HINH, type ExplanationSource } from "./live/interpreter.ts";
 
-/** Nhãn hiển thị tiếng Việt. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
+/** Nhãn hiển thị. KHÔNG BAO GIỜ dùng chữ "an toàn" cho mức safe —
  *  sản phẩm không có thẩm quyền tuyên bố một giao dịch an toàn.
- *  Xem docs/DAC-TA-L3.md mục 4. */
+ *  Xem docs/DAC-TA-L3.md mục 4.
+ *
+ *  CHỈ BA TỪ MỨC: Normal / Review carefully / Danger (review UX 11/2026). Chip phụ "High risk",
+ *  "No red flags", "Needs verification" từng đứng cạnh tiêu đề — một bộ từ vựng thứ tư cho cùng một
+ *  mức, nên đã bỏ. Thanh độ phủ cũng không còn mang màu của mức (xem khối coverage bên dưới). */
 const NHAN = {
   safe: {
     chu: "Normal",
-    muc: "No red flags",
     phu: "No danger signs found in the parts we could read",
     vien: "border-emerald-200",
     nen: "bg-emerald-50/60",
-    chip: "border-emerald-200 bg-white text-emerald-700",
     icon: "border-emerald-200 bg-white text-emerald-600",
-    thanh: "bg-emerald-500",
   },
   warning: {
     chu: "Review carefully",
-    muc: "Needs verification",
     phu: "There is information you should verify before continuing",
     vien: "border-amber-200",
     nen: "bg-amber-50/60",
-    chip: "border-amber-200 bg-white text-amber-700",
     icon: "border-amber-200 bg-white text-amber-600",
-    thanh: "bg-amber-500",
   },
   danger: {
     chu: "Danger",
-    muc: "High risk",
     phu: "You should not sign this transaction",
     vien: "border-rose-200",
     nen: "bg-rose-50/60",
-    chip: "border-rose-200 bg-white text-rose-700",
     icon: "border-rose-200 bg-white text-rose-600",
-    thanh: "bg-rose-500",
   },
 } as const;
 
@@ -165,9 +160,62 @@ function DiaChiDong({ d, cluster }: { d: DongDiff; cluster: string | undefined }
   );
 }
 
-/** Một dòng hậu quả — y như bảng cũ, chỉ tách ra để hai khối dùng chung. */
-function DongHauQua({ d, cluster, thuTu }: { d: DongDiff; cluster: string | undefined; thuTu?: number }) {
+/** Dòng phí mạng — "trước" của nó không có nghĩa (phí không có số dư trước), nên chỉ in "sau". */
+const NHAN_PHI: readonly string[] = [NHAN_DIFF.PHI, NHAN_DIFF.PHI_UOC, NHAN_EN.PHI, NHAN_EN.PHI_UOC];
+const truocRong = (d: DongDiff) => d.before.trim() === "" || d.before.trim() === "—";
+
+/**
+ * Tên hành động chính để ĐỌC, không phải enum thô — review UX 11/2026: "Detected primary action
+ * transfer token" trông như giá trị kỹ thuật lộ ra. Khoá là chữ `type` của SDK (cả hai ngôn ngữ);
+ * chữ lạ (mô hình đặt) thì in nguyên, không đoán.
+ */
+const TEN_HANH_DONG: Record<string, string> = {
+  "transfer token": "token transfer",
+  "chuyển token": "token transfer",
+  "transfer SOL": "SOL transfer",
+  "chuyển SOL": "SOL transfer",
+  "receive token": "receiving tokens",
+  "nhận token": "receiving tokens",
+  "approve delegate": "delegate approval",
+  "cấp quyền rút": "delegate approval",
+  swap: "swap",
+};
+const LA_CAP_QUYEN = new Set(["approve delegate", "cấp quyền rút"]);
+/** Nhãn "Bạn"/"You" mà core đặt ở cột trước khi quyền đang thuộc người ký. */
+const BAN: readonly string[] = [CHU_BANG.vi.ban, CHU_BANG.en.ban];
+const LA_DONG_RUT = (d: DongDiff) => d.label.startsWith(NHAN_DIFF.DUOC_PHEP_RUT) || d.label.startsWith(NHAN_EN.DUOC_PHEP_RUT);
+
+/**
+ * Nhãn nút ở thanh quyết định dính đáy: trên điện thoại hai nút đứng cạnh nhau, nên chỉ HIỆN phần đầu;
+ * phần đuôi vẫn nằm trong tên truy cập (`max-sm:sr-only`) — trình đọc màn hình và probe tìm theo tên
+ * đầy đủ vẫn thấy đúng câu.
+ */
+function NhanNut({ day, gon, thuGon }: { day: string; gon: string; thuGon: boolean }) {
+  if (!thuGon || !day.startsWith(gon) || day === gon) return <>{day}</>;
+  // Bọc MỘT span: nút là flex, mỗi con trần là một flex item và khoảng trắng đầu phần đuôi bị nuốt.
+  return (
+    <span>
+      {gon}
+      <span className="max-sm:sr-only">{day.slice(gon.length)}</span>
+    </span>
+  );
+}
+const NHAN_GON: Record<string, string> = {
+  "Block & cancel transaction": "Block & cancel",
+  "Cancel transaction": "Cancel",
+  "Sign anyway — I have checked": "Sign anyway",
+  "Sign anyway — I understand the risk": "Sign anyway",
+  "Continue anyway — see what would happen": "Continue anyway",
+  "Continue — see the result": "Continue",
+};
+
+/** Một dòng hậu quả. Địa chỉ đầy đủ KHÔNG nằm ở đây nữa — chúng ở "Technical details". */
+function DongHauQua({ d, thuTu }: { d: DongDiff; thuTu?: number }) {
   const mau = MAU_DONG[d.severity as keyof typeof MAU_DONG] ?? "text-slate-700";
+  // "— → 0.000005 SOL" khó đọc: phí không có "trước". Chỉ áp cho dòng phí; dòng khác giữ "—" vì ở
+  // đó nó mang nghĩa "trước đây không có" (vd. chưa ai được phép rút).
+  const chiSau = NHAN_PHI.includes(d.label) && truocRong(d);
+  const nhanMuc = d.severity === "danger" ? " (danger sign)" : d.severity === "warning" ? " (review sign)" : "";
   return (
     // `--dong`: thứ tự TOÀN CỤC của dòng qua mọi nhóm — chỉ để hiện lần lượt (demo-thiet-ke.css), không đổi nội dung.
     <div
@@ -175,11 +223,33 @@ function DongHauQua({ d, cluster, thuTu }: { d: DongDiff; cluster: string | unde
       style={thuTu === undefined ? undefined : ({ "--dong": thuTu } as CSSProperties)}
       className="grid gap-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-4 sm:px-5"
     >
-      <span className={`text-[13px] ${mau}`}>{d.label}</span>
-      <span className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${mau}`}>
-        {d.before} <span className="px-1 text-slate-400">→</span> {d.after}
+      {/* Mức của dòng không chỉ nói bằng màu (WCAG 1.4.1): dòng danger/warning có thêm icon, và trình đọc
+          màn hình nghe "(danger sign)" / "(review sign)" — không lặp chữ mức "Danger" của thẻ, đặt SAU giá trị để chuỗi
+          thấy được "nhãn ↵ trước → sau" mà probe đọc không bị chen ngang. */}
+      <span className={`text-[13px] ${mau}`}>
+        {(d.severity === "danger" || d.severity === "warning") && (
+          <AlertIcon className="mr-1 inline-block h-3.5 w-3.5 -translate-y-px align-[-2px]" />
+        )}
+        {d.label}
       </span>
-      <DiaChiDong d={d} cluster={cluster} />
+      <span className={`break-all font-mono text-[12.5px] tabular-nums sm:text-right ${mau}`}>
+        {chiSau ? (
+          <>
+            <span aria-hidden="true">{d.after}</span>
+            <span className="sr-only">{`: ${d.after}${nhanMuc}.`}</span>
+          </>
+        ) : (
+          <>
+            {/* Mũi tên chỉ là hình: trình đọc màn hình nghe "from … to …" (review UX mục 4). Chữ thấy được
+                giữ nguyên — probe đọc số dư từ đúng chuỗi "trước → sau" này. */}
+            <span aria-hidden="true">
+              {d.before} <span className="px-1 text-slate-500">→</span> {d.after}
+            </span>
+            {/* ":" mở và "." đóng: dòng không dính liền dòng sau khi đọc liên tục (review a11y phase 6). */}
+            <span className="sr-only">{`: from ${d.before} to ${d.after}${nhanMuc}.`}</span>
+          </>
+        )}
+      </span>
     </div>
   );
 }
@@ -193,6 +263,7 @@ export function CanhBao({
   boiCanh,
   nguonChu,
   moBangChung = 0,
+  vungTrucTiep = true,
 }: {
   ketQua: InspectResult;
   onHuy: () => void;
@@ -220,6 +291,11 @@ export function CanhBao({
    * đang đọc, không đổi gì khác của thẻ.
    */
   moBangChung?: number;
+  /**
+   * `aria-live` trên cả thẻ. TẮT khi nơi dùng tự chuyển focus vào kết quả (ví demo, Inspector): focus đã đọc
+   * tiêu đề mức, vùng live đọc lại cả thẻ lần nữa — "Danger" bị nghe nhiều lần (review a11y phase 6).
+   */
+  vungTrucTiep?: boolean;
 }) {
   const { analyzed, total, unverifiedPrograms } = ketQua.coverage;
   const hq = nhomHauQua(ketQua.diff);
@@ -266,23 +342,86 @@ export function CanhBao({
     (ketQua.reasonCodes.length === 0 || chiLaThongTin(ketQua.reasonCodes));
   const n = chiLaChuaHieu
     ? {
-        chu: "Not fully understood",
-        muc: "Incomplete coverage",
-        phu: "Part of the transaction could not be verified",
+        // Vẫn là từ của mức (fail-safe: thiếu dữ liệu ⇒ ít nhất "Review carefully"); chỉ màu và câu phụ
+        // nói rõ đây là chưa đọc hết, không phải một dấu hiệu bị bắt.
+        chu: "Review carefully",
+        phu: "Not fully understood — part of the transaction could not be verified",
         vien: "border-slate-200",
         nen: "bg-slate-50",
-        chip: "border-slate-200 bg-white text-slate-700",
         icon: "border-slate-200 bg-white text-slate-600",
-        thanh: "bg-slate-500",
       }
     : NHAN[ketQua.level];
   const hd = HANH_DONG[ketQua.level];
   const phanTramCoverage = total > 0 ? Math.min(100, Math.round((analyzed / total) * 100)) : 0;
   const IconTrangThai = ketQua.level === "danger" ? AlertIcon : ShieldIcon;
+  const hanhDong = ketQua.detectedPrimaryAction;
+  const tenHanhDong = hanhDong ? (TEN_HANH_DONG[hanhDong.type] ?? hanhDong.type) : null;
+  /** Chương trình Custos KHÔNG nhận ra (có khi bật `chanDoan`) — để nêu đích danh phần chưa đọc. */
+  const chuongTrinhLa = ketQua.chanDoan?.nguon.chiTiet?.danhSachLa ?? [];
+
+  /*
+   * LÝ DO CỦA ĐỀ NGHỊ XEM TAY (`aiAdvisory`) — review UX 11/2026.
+   *
+   * Khối cũ chỉ nói "Custos recommends a manual check … does not confirm safety and does not
+   * conclude danger" ngay dưới "Danger": người đọc không biết tin câu nào, và khối không nêu
+   * phần nào chưa đọc được. Cơ chế giữ nguyên (chỉ hiện khi L3 đặt `review_required`, không
+   * bao giờ đổi `level`); chỉ câu chữ đổi: nêu lý do CÓ THẬT trong kết quả, đọc như phần CỘNG
+   * THÊM vào mức, không phải một phán quyết khác. Mỗi lý do suy từ dữ kiện của chính kết quả —
+   * không suy được thì nói thẳng là không có lý do cụ thể hơn.
+   */
+  const lyDoXemTay: ReactNode[] = [];
+  if (chuaHetCoverage) {
+    lyDoXemTay.push(<>{total - analyzed} of {total} instructions could not be read.</>);
+    // Chỉ nêu tên chương trình khi core thật sự khai danh sách — không suy từ con số `unverifiedPrograms`.
+    if (chuongTrinhLa.length > 0) {
+      lyDoXemTay.push(
+        <>
+          {chuongTrinhLa.length === 1 ? "Program" : "Programs"} Custos does not recognise:{" "}
+          {chuongTrinhLa.map((c, i) => (
+            <span key={c.programId}>
+              {i > 0 && ", "}
+              <code className="font-mono text-[11.5px] text-slate-800" title={c.programId}>
+                {rutGonDiaChi(c.programId)}
+              </code>
+            </span>
+          ))}{" "}
+          (full {chuongTrinhLa.length === 1 ? "id" : "ids"} in Technical details).
+        </>,
+      );
+    }
+  }
+  if (ketQua.loiKhaiLech) {
+    lyDoXemTay.push(
+      <>
+        What the app declares ({ketQua.loiKhaiLech.khai}) does not match what the transaction does (
+        {ketQua.loiKhaiLech.nhanDien}).
+      </>,
+    );
+  }
+  /*
+   * Quyền kiểm soát RỜI KHỎI người ký (cột trước là "You") hoặc dòng core chấm `danger` — vòng review 2:
+   * không nói về mọi dòng quyền, và chỉ bỏ đúng dòng CHÍNH LÀ hành động chính (dòng "được phép rút" khi
+   * hành động chính là cấp quyền rút), không bỏ cả nhóm.
+   */
+  const quyenRoiTay = hq.quyen.filter(
+    (d) => (BAN.includes(d.before) || d.severity === "danger") && !(hanhDong && LA_CAP_QUYEN.has(hanhDong.type) && LA_DONG_RUT(d)),
+  );
+  if (quyenRoiTay.length > 0) {
+    lyDoXemTay.push(
+      <>
+        It also hands over control: {quyenRoiTay.map((d) => d.label).join("; ")}
+        {tenHanhDong ? <> — the detected primary action ({tenHanhDong}) does not need that.</> : "."}
+      </>,
+    );
+  }
+  /** Có mã nói về HÀNH VI (không chỉ thông tin) — khi đó mức không chỉ đến từ phần chưa đọc. */
+  const coMaHanhVi = ketQua.reasonCodes.length > 0 && !chiLaThongTin(ketQua.reasonCodes);
+  /** Thẻ có đưa ra quyết định không (Phòng phân tích, màn thực thi) — chỉ khi đó thanh nút mới dính đáy. */
+  const coQuyetDinh = choPhepKy || !!onTiepTuc;
 
   return (
     <section
-      aria-live="polite"
+      aria-live={vungTrucTiep ? "polite" : undefined}
       /*
        * NHÃN RIÊNG, KHÔNG TRÙNG VỚI LỚP BỌC CỦA VÍ DEMO — CU-08.
        *
@@ -299,7 +438,9 @@ export function CanhBao({
        * đúng thứ nó là: tấm thẻ verdict, không phải cả vùng kết quả.
        */
       aria-label="Custos warning card"
-      className={`result-card overflow-hidden rounded-2xl border ${n.vien} ${n.nen}`}
+      // Dính đáy cần `overflow: clip` (không tạo vùng cuộn) — lớp `result-card--dinh` đặt `hidden` trước làm
+      // đường lui cho trình duyệt cũ (demo-thiet-ke.css). Thẻ không có quyết định giữ `overflow-hidden` như cũ.
+      className={`result-card ${coQuyetDinh ? "result-card--dinh" : "overflow-hidden"} rounded-2xl border ${n.vien} ${n.nen}`}
     >
       {/* PHÁN QUYẾT ĐỨNG ĐẦU. Người dùng đang chuẩn bị ký; thứ họ cần biết trước
           tiên là có nên dừng lại không, không phải metadata của giao dịch. */}
@@ -311,17 +452,13 @@ export function CanhBao({
             <IconTrangThai className="h-6 w-6" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-[22px] font-semibold leading-none tracking-[-0.025em] text-slate-950">
+            {/* `data-muc-tieu-de` + tabIndex -1: ví demo đưa focus vào đúng tiêu đề mức khi kết quả MỚI hiện ra. */}
+            <h3 data-muc-tieu-de tabIndex={-1} className="text-[22px] font-semibold leading-none tracking-[-0.025em] text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2">
               {n.chu}
             </h3>
             <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-600">{n.phu}</p>
           </div>
         </div>
-        <span
-          className={`${n.chip} shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold`}
-        >
-          {n.muc}
-        </span>
       </header>
 
       {/* MỘT KHUNG, NHIỀU VÙNG NGĂN BẰNG ĐƯỜNG KẺ MẢNH.
@@ -348,8 +485,9 @@ export function CanhBao({
                 </button>
                 {/* Nguồn câu chi tiết thấy được KHI CHƯA MỞ (CK-04: "[AI: nguồn diễn giải]"). */}
                 {nguonChu && (
-                  <span className="nhan-nguon-ngan ml-2 text-[11.5px] text-slate-500" data-nguon={nguonChu}>
-                    · {NHAN_NGUON[nguonChu].ngan}
+                  <span className="nhan-nguon-ngan mt-1 block text-[11.5px] text-slate-500 sm:ml-2 sm:mt-0 sm:inline" data-nguon={nguonChu}>
+                    <span className="hidden sm:inline" aria-hidden="true">· </span>
+                    {NHAN_NGUON[nguonChu].ngan}. The level never depends on it.
                   </span>
                 )}
                 {/* MỨC 2 — ĐỦ. Cùng dữ kiện, cùng con số, chỉ nói dài hơn. */}
@@ -421,14 +559,19 @@ export function CanhBao({
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 px-4 py-3 sm:px-5">
             <span className="inline-flex items-center gap-1.5 text-[12.5px] text-slate-500">
               <ScanIcon className="h-3.5 w-3.5" aria-hidden="true" />
-              Detected primary action
+              Detected primary action:
             </span>
             <span className="min-w-0 break-words text-[13.5px] font-medium text-slate-900">
-              {ketQua.detectedPrimaryAction.type}
-              {ketQua.detectedPrimaryAction.from && ketQua.detectedPrimaryAction.to
-                ? ` · ${ketQua.detectedPrimaryAction.from} → ${ketQua.detectedPrimaryAction.to}`
-                : ""}
+              {tenHanhDong}
+              {ketQua.detectedPrimaryAction.from && ketQua.detectedPrimaryAction.to ? (
+                <>
+                  <span aria-hidden="true">{` · ${ketQua.detectedPrimaryAction.from} → ${ketQua.detectedPrimaryAction.to}`}</span>
+                  <span className="sr-only">{`, from ${ketQua.detectedPrimaryAction.from} to ${ketQua.detectedPrimaryAction.to}`}</span>
+                </>
+              ) : null}
             </span>
+            {/* Quyết định khoá số 2: hành động NHẬN DIỆN từ giao dịch, không phải ý định hay lời khai. */}
+            <span className="text-[12px] text-slate-500">(inferred from the transaction, not from what the app says)</span>
           </div>
         )}
 
@@ -438,7 +581,7 @@ export function CanhBao({
                 mũi tên nhỏ và người đang vội thì không dừng lại phân tích nó. */}
             <div className="flex items-baseline justify-between gap-4 px-4 pb-1 pt-3.5 text-[12px] text-slate-500 sm:px-5">
               <span>Changes if you sign</span>
-              <span className="font-mono tabular-nums">
+              <span className="font-mono tabular-nums" aria-hidden="true">
                 before <span className="px-0.5">→</span> after
               </span>
             </div>
@@ -462,7 +605,7 @@ export function CanhBao({
                 )}
                 <div className="divide-y divide-slate-100">
                   {dong.map((d, i) => (
-                    <DongHauQua key={i} d={d} cluster={clusterExplorer} thuTu={(nhom === 0 ? 0 : hq.taiSan.length) + i} />
+                    <DongHauQua key={i} d={d} thuTu={(nhom === 0 ? 0 : hq.taiSan.length) + i} />
                   ))}
                 </div>
               </section>
@@ -470,7 +613,7 @@ export function CanhBao({
             {hq.khac.length > 0 && (
               <section aria-label="Consequences if you sign — other" className="divide-y divide-slate-100 border-t border-slate-100">
                 {hq.khac.map((d, i) => (
-                  <DongHauQua key={i} d={d} cluster={clusterExplorer} thuTu={hq.taiSan.length + hq.quyen.length + i} />
+                  <DongHauQua key={i} d={d} thuTu={hq.taiSan.length + hq.quyen.length + i} />
                 ))}
               </section>
             )}
@@ -488,7 +631,9 @@ export function CanhBao({
           được phép làm nó êm hơn.
         */}
         <div className="px-4 py-3.5 sm:px-5">
-          <div className="flex items-baseline justify-between gap-4">
+          {/* Một nguồn cho trình đọc màn hình: dòng chữ + "%" là hình, thanh progressbar bên dưới đọc đủ câu
+              qua aria-valuetext (review a11y phase 6 — trước đó coverage bị đọc 2–3 lần). */}
+          <div className="flex items-baseline justify-between gap-4" aria-hidden="true">
             <p className="text-[13px] text-slate-700">
               Understood <span className="font-semibold text-slate-950">{analyzed} of {total}</span> instructions
             </p>
@@ -502,10 +647,13 @@ export function CanhBao({
             aria-valuenow={phanTramCoverage}
             aria-valuemin={0}
             aria-valuemax={100}
+            aria-valuetext={`Understood ${analyzed} of ${total} instructions (${phanTramCoverage}%)`}
             aria-label="Transaction coverage"
           >
             <div
-              className={`coverage-fill h-full rounded-full ${n.thanh}`}
+              // MÀU TRUNG TÍNH ở mọi mức: thanh đỏ làm "67%" đọc như thước đo nguy hiểm, ngược với
+              // câu "not how safe it is" ngay bên dưới (review UX 11/2026).
+              className="coverage-fill h-full rounded-full bg-slate-500"
               style={{ width: `${phanTramCoverage}%` }}
             />
           </div>
@@ -525,7 +673,7 @@ export function CanhBao({
             ngay tại chỗ nó sinh ra. */}
         {ketQua.aiAdvisory === "review_required" && (
           <div className="px-4 py-3.5 sm:px-5">
-            <p className="text-[13px] font-medium text-amber-900">Custos recommends a manual check</p>
+            <p className="text-[13px] font-medium text-amber-900">Also check by hand</p>
             {/* HAI CÂU NÀY TỪNG DÍNH LIỀN NHAU, VÀ CHÚNG PHỤC VỤ HAI NGƯỜI KHÁC NHAU.
                 Câu đầu là của người sắp ký: ai quyết định mức cảnh báo, và đề nghị
                 này KHÔNG phải một phán quyết. Nó bảo vệ quyết định đã khoá số 1 nên
@@ -538,9 +686,30 @@ export function CanhBao({
 
                 Nguồn câu chữ được ghi cạnh phần diễn giải theo từng lượt.
                 Không gắn nhãn tất định cố định khi có thể gọi mô hình thật. */}
-            <p className="mt-1 text-[12px] leading-relaxed text-slate-600">
-              The warning level above is decided by the rule engine. This recommendation only asks you
-              to look carefully — it does not confirm safety and does not conclude danger.
+            {lyDoXemTay.length > 0 ? (
+              <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[12.5px] leading-relaxed text-slate-700">
+                {lyDoXemTay.map((x, i) => (
+                  <li key={i}>{x}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1 text-[12.5px] leading-relaxed text-slate-700">
+                No more specific reason was given than the rows above — look at them yourself before deciding.
+              </p>
+            )}
+            {/* CỘNG THÊM, KHÔNG ĐỐI LẬP: câu này không được làm mức êm đi (quyết định khoá số 1 và 3). */}
+            <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
+              {ketQua.level === "danger"
+                ? "This adds to the Danger level above and never lowers it."
+                : ketQua.level === "warning"
+                  ? "This adds to the Review carefully level above and never lowers it."
+                  : "Normal covers only the parts Custos could read and is not a guarantee — check by hand anyway."}{" "}
+              {chuaHetCoverage && ketQua.level !== "safe"
+                ? ketQua.level === "danger" || coMaHanhVi
+                  ? "The level comes from the parts Custos did read; the unread part may change more. "
+                  : "This level is set because part of the transaction could not be read. "
+                : ""}
+              The rule engine sets the level; this note cannot change it.
             </p>
           </div>
         )}
@@ -593,10 +762,31 @@ export function CanhBao({
                   <div className="flex flex-wrap gap-x-2">
                     <dt className="text-slate-500">Not understood:</dt>
                     <dd className="break-all text-slate-800">
-                      {total - analyzed}/{total} instructions · {unverifiedPrograms} unverified programs
+                      {total - analyzed}/{total} instructions · {unverifiedPrograms} unverified{" "}
+                      {unverifiedPrograms === 1 ? "program" : "programs"}
+                      {chuongTrinhLa.length > 0 && ` · ${chuongTrinhLa.map((c) => c.programId).join(", ")}`}
                     </dd>
                   </div>
                 </dl>
+              )}
+              {/*
+                ĐỊA CHỈ ĐẦY ĐỦ — CK-04, dời từ lớp mặc định vào đây (review UX 11/2026: Mint / Token account /
+                New address kèm Copy và Explorer đẩy nút quyết định xa tiêu đề mức ~700 px). Vẫn trên chính
+                thẻ, một cú bấm: bản rút gọn 4…4 giả được bằng địa chỉ "vanity", chuỗi đầy đủ mới đối chiếu được.
+                Mọi dòng hậu quả đều đi qua đây, cùng cluster của lượt.
+              */}
+              {ketQua.diff.some((d) => diaChiCuaDong(d).length > 0) && (
+                <section aria-label="Full addresses" className="mo-ra mt-2 rounded-xl border border-slate-200 bg-white p-3">
+                  <h4 className="text-[12px] font-semibold text-slate-700">Full addresses</h4>
+                  {ketQua.diff.map((d, i) =>
+                    diaChiCuaDong(d).length > 0 ? (
+                      <div key={i} className="mt-2">
+                        <p className="text-[11.5px] text-slate-500">{d.label}</p>
+                        <DiaChiDong d={d} cluster={clusterExplorer} />
+                      </div>
+                    ) : null,
+                  )}
+                </section>
               )}
               {/*
                 TRACE — CU-09, đặt SAU bối cảnh và TRƯỚC bảng kỹ thuật.
@@ -630,15 +820,22 @@ export function CanhBao({
         </div>
       </div>
 
-      {/* MA SÁT TỈ LỆ VỚI RỦI RO — xem chú thích ở HANH_DONG. */}
-      <div className="grid gap-2 border-t border-slate-200/80 px-4 py-4 sm:grid-cols-2 sm:px-5">
+      {/* MA SÁT TỈ LỆ VỚI RỦI RO — xem chú thích ở HANH_DONG.
+          DÍNH ĐÁY THẺ (review UX 11/2026): nút quyết định từng cách tiêu đề mức ~700 px. CHỈ khi thẻ thật sự đưa
+          ra quyết định — Inspector và trang phỏng vấn giữ thanh tĩnh như cũ. Một hàng mỏng: trên điện thoại hai
+          nút đứng cạnh nhau, nhãn rút gọn (tên truy cập vẫn đủ câu). */}
+      <div
+        className={`result-card__hanh-dong ${
+          coQuyetDinh ? "result-card__hanh-dong--dinh sticky bottom-0 z-10 grid-cols-2 px-3 py-2.5" : "px-4 py-4 sm:grid-cols-2"
+        } grid gap-2 border-t border-slate-200/80 bg-white sm:grid-cols-2 sm:px-5`}
+      >
         {choPhepKy && !hd.huyChinh ? (
           <>
             <button onClick={onKy} className="nut nut-quyet-dinh nut-chinh sm:order-2">
-              {hd.ky}
+              <NhanNut day={hd.ky} gon={NHAN_GON[hd.ky] ?? hd.ky} thuGon={coQuyetDinh} />
             </button>
             <button onClick={onHuy} className="nut nut-quyet-dinh nut-phu sm:order-1">
-              {hd.huy}
+              <NhanNut day={hd.huy} gon={NHAN_GON[hd.huy] ?? hd.huy} thuGon={coQuyetDinh} />
             </button>
           </>
         ) : (
@@ -647,15 +844,18 @@ export function CanhBao({
               onClick={onHuy}
               className={`nut nut-quyet-dinh ${ketQua.level === "danger" ? "nut-nguy" : "nut-chinh"}`}
             >
-              {hd.huy}
+              <NhanNut day={hd.huy} gon={NHAN_GON[hd.huy] ?? hd.huy} thuGon={coQuyetDinh} />
             </button>
             {choPhepKy ? (
               <button onClick={onKy} className="nut nut-quyet-dinh nut-phu">
-                {hd.ky}
+                <NhanNut day={hd.ky} gon={NHAN_GON[hd.ky] ?? hd.ky} thuGon={coQuyetDinh} />
               </button>
             ) : onTiepTuc ? (
               <button onClick={onTiepTuc} className="nut nut-quyet-dinh nut-phu">
-                {ketQua.level === "safe" ? "Continue — see the result" : "Continue anyway — see what would happen"}
+                {(() => {
+                  const day = ketQua.level === "safe" ? "Continue — see the result" : "Continue anyway — see what would happen";
+                  return <NhanNut day={day} gon={NHAN_GON[day] ?? day} thuGon={coQuyetDinh} />;
+                })()}
               </button>
             ) : (
               <span className="flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[11.5px] leading-relaxed text-slate-500">

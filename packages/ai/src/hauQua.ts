@@ -54,10 +54,13 @@ export function dungHauQua(ketQua: InspectResult, locale: Locale = "vi"): HangHa
   const ra: HangHauQua[] = [];
   const NHAN = CHU_BANG[locale].nhan;
   const duoi = CHU_BANG[locale].sauKhiKy;
+  const duoiTK = CHU_BANG[locale].duoiTaiKhoan;
   const C = CAU_HAU_QUA[locale];
   const tenTuNhan = (label: string, tienTo: string) => {
-    const t = label.slice(tienTo.length);
-    return (t.endsWith(duoi) ? t.slice(0, -duoi.length) : t).trim();
+    let t = label.slice(tienTo.length);
+    if (t.endsWith(duoi)) t = t.slice(0, -duoi.length);
+    if (duoiTK && t.endsWith(duoiTK)) t = t.slice(0, -duoiTK.length);
+    return t.trim();
   };
 
   for (const d of ketQua.diff) {

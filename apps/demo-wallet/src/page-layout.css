@@ -1,0 +1,4 @@
+/* Shared outer edge. Reading measures belong to paragraphs, not to the whole page. */
+:root {
+  --custos-page-gutter: clamp(14px, 2vw, 40px);
+}

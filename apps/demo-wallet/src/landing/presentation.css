@@ -54,7 +54,6 @@
 .custos-landing .lg-owner-node { background: white; color: #52675f; border: 1px solid #d5e0da; border-radius: 6px; padding: 7px 12px; font-size: 13px; }
 .custos-landing .lg-owner-node--changed { color: #a2263b; border-color: #ecc4cd; }
 .custos-landing .lg-phieu__canhbao { margin-top: 8px; font-size: 12px; }
-.custos-landing .lg-phieu__lien { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; padding: 16px 24px; border-top: 1px solid #e0e8e1; text-decoration: none; font-size: 13px; }
 .custos-landing .lg-phieu__caption { margin: 0; background: #f7f9f6; padding: 12px 24px; font-size: 11px; line-height: 1.6; border-top: 1px solid #e0e8e1; }
 .custos-landing .lg-thongtin { background: #fff; padding-block: 25px; }
 .custos-landing .lg-thongtin__o { display: flex; align-items: center; gap: 16px; border: 0; }
@@ -92,9 +91,6 @@
 .custos-landing .lg-buoc .lg-h3 { font-size: 21px; line-height: 1.4; margin-bottom: 12px; }
 .custos-landing .lg-buoc p { font-size: 14px; line-height: 1.8; }
 .custos-landing .lg-pipeline__ghichu { margin-top: 28px; }
-.custos-landing .lg-giatri { margin-top: 42px; padding-top: 28px; gap: 40px; }
-.custos-landing .lg-giatri__o h3 { font-size: 14px; margin-bottom: 8px; }
-.custos-landing .lg-giatri__o p { font-size: 13px; line-height: 1.75; }
 .custos-landing #nha-phat-trien { background: #102f28; }
 .custos-landing .lg-dev { grid-template-columns: .88fr 1.1fr; gap: 68px; align-items: center; }
 .custos-landing .lg-dev .lg-h2 { max-width: 17ch; }
@@ -164,7 +160,6 @@
   .custos-landing .lg-bcs__ds { margin-top: 12px; }
   .custos-landing .lg-thongtin__ds { grid-template-columns: 1fr 1fr; gap: 22px; }
   .custos-landing .lg-pipeline { gap: 24px; }
-  .custos-landing .lg-giatri { gap: 24px; }
   .custos-landing .lg-bc { padding: 20px; }
 }
 @media (max-width: 480px) {
@@ -200,11 +195,9 @@
 .custos-landing .lg-phieu__hanhdong { padding: 22px 24px 18px; }
 .custos-landing .lg-phieu__nhom { margin: 20px 24px 0; }
 .custos-landing .lg-phieu__nhom + .lg-phieu__nhom { margin-top: 22px; }
-.custos-landing .lg-phieu__lien { margin-top: 22px; }
 .custos-landing .lg-phieu__nhan-nhom { color: #4f6a5d; }
 @media (max-width: 960px) {
   .custos-landing .lg-phieu__hanhdong { padding: 18px 16px 16px; }
   .custos-landing .lg-phieu__nhom { margin: 16px 16px 0; }
   .custos-landing .lg-phieu__nhom + .lg-phieu__nhom { margin-top: 18px; }
-  .custos-landing .lg-phieu__lien { margin-top: 18px; }
 }

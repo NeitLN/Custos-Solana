@@ -32,13 +32,13 @@ with sync_playwright() as p:
     frame = symbol.evaluate('(el) => getComputedStyle(el).transform')
     page.wait_for_timeout(500)
     assert frame != symbol.evaluate('(el) => getComputedStyle(el).transform')
-    page.get_by_role('button', name='Dừng chuyển động').click()
+    page.get_by_role('button', name='Dừng chuyển động').first.click()  # hai nút: chân hero và footer
     assert page.evaluate('document.getAnimations().filter(a => a.playState === "running").length') == 0
     report['checks'].append('Vietnamese display font loaded; lens animates and respects pause')
     page.locator('.lg-thongtin').screenshot(path=str(OUT / 'destinations.png'), style=hide_fixed)
     links = page.locator('.cine-resource')
     expect(links).to_have_count(4)
-    expect(links.nth(0)).to_have_attribute('href', urlsplit(BASE).path)
+    expect(links.nth(0)).to_have_attribute('href', urlsplit(BASE).path + 'index.html')
     expect(links.nth(2)).to_have_attribute('href', urlsplit(BASE).path + 'soi.html')
     for index, target in [(1, '#nha-phat-trien'), (3, '#bang-chung')]:
         links.nth(index).focus()

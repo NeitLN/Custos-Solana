@@ -182,7 +182,7 @@ test("kiemSanSangTanCong: lỗi mạng ⇒ NÉM (để trang dùng đường ngu
  */
 test("bàn giao trang tấn công → ví: byte, lời khai và hai hậu quả đi nguyên vẹn", async () => {
   const tx = dungTxTanCongSong(HT, BH, SO_DU_SONG);
-  const hash = chuoiBanGiao(tx, { type: "airdrop" }, { [HT.mint]: "USDC-demo" });
+  const hash = chuoiBanGiao(tx, { type: "airdrop" }, { [HT.mint]: "DEMO" });
 
   const g = globalThis as { window?: unknown };
   const cu = g.window;

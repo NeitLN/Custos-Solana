@@ -1,7 +1,7 @@
-import { ProductNavigation } from "./ProductNavigation.tsx";
+import { ProductHeader, ProductIntro } from "./ProductNavigation.tsx";
 import { WalletExecution } from "./WalletExecution.tsx";
 import { initialWalletSurface } from "./walletSurface.ts";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PublicKey, type Connection } from "@solana/web3.js";
 import type { InspectResult } from "@custos-solana/types";
 import { inspect } from "@custos-solana/core";
@@ -13,7 +13,7 @@ import { CanhBao } from "./CanhBao.tsx";
 import { DemoScanArtwork } from "./DemoScanArtwork.tsx";
 import { HauQua } from "./HauQua.tsx";
 import { docCheDo, type CheDo } from "./nguon.ts";
-import { docHienTruong, docHienTruongChiTiet, chonRpc, dsRpc, clusterCua, hostCua, type HienTruong } from "./hienTruong.ts";
+import { docHienTruong, docHienTruongChiTiet, chonRpc, dsRpc, clusterCua, hostCua, kyHieuHienThi, type HienTruong } from "./hienTruong.ts";
 import { ketNoiDuPhong, taoBoChon, locTheoGenesis, LoiNguonTron, LoiKhongCoRpcDung, type QuanSatRpc } from "../../../scripts/rpcDuPhong.ts";
 import { ThieuFixture } from "../../../scripts/replayFixture.ts";
 import {
@@ -36,6 +36,7 @@ import { locDongNhatKy } from "./locNhatKy.ts";
 import { coHan, coHanChung, moHan, LoiQuaHan } from "../../../scripts/coHan.ts";
 import { docNguonSong, HienTruongChuaSan } from "../../../scripts/hienTruongSong.ts";
 import { CheckIcon, CopyIcon, ExternalIcon, ShieldIcon, WalletIcon } from "./Icons.tsx";
+import { rutGonDiaChi } from "./diaChi.ts";
 
 /**
  * Kịch bản được nhận diện bằng ID CHUỖI từ sổ đăng ký, không còn là union hai nhánh.
@@ -60,31 +61,28 @@ type ChieuDienGiai = ExplanationSource; // xem `live/interpreter.ts` — sáu ng
 export default function App() {
   const [surface, setSurface] = useState(() => initialWalletSurface(window.location.search, window.location.hash));
   const [walletBusy, setWalletBusy] = useState(false);
-  /*
-   * Bộ chuyển màn nằm DƯỚI header của mỗi màn, không phải một thanh tràn toàn chiều rộng
-   * phía trên — review 26/09, mục 3.11: trang ví từng có hai thanh điều hướng chồng nhau
-   * (thanh này và "Giới thiệu / Ví mẫu / Inspector / Số liệu") trong khi mọi trang khác
-   * chỉ có một. Giờ header giống nhau ở mọi trang; đây là bộ chuyển trong trang.
-   */
-  const chuyenMan = (
-    <nav className="wallet-surface-bar" aria-label="Custos Wallet spaces">
-      {/* Phân tích đứng trước và là mặc định: chạy được với mọi người, không cần khoá. */}
-      <button aria-pressed={surface === "analysis"} disabled={walletBusy} onClick={() => setSurface("analysis")}>Analysis Room</button>
-      <button aria-pressed={surface === "wallet"} disabled={walletBusy} onClick={() => setSurface("wallet")}>Your wallet</button>
-      <span>{surface === "wallet" ? "Sign and execute on Devnet" : "Try signing requests and read Custos's analysis"}</span>
-    </nav>
-  );
   return <>
-    {/* Phân tích đứng TRƯỚC trong DOM, khớp thứ tự hiển thị: màn thực thi ẩn bên dưới cũng
-        có thẻ "Nhận quà tặng" (bị khoá khi chưa có khoá), và bộ chọn `.first` của probe CI
-        từng trúng nó — review 26/09, mục 3.2. */}
-    {surface === "analysis" && <AnalysisWallet chuyenMan={chuyenMan} moVi={() => setSurface("wallet")} />}
+    <ProductHeader active="demo" label="SDK reference wallet" />
+    <ProductIntro page="demo" context="Custos Wallet · Solana Devnet"
+      title={surface === "wallet" ? <>Your Devnet <em>wallet.</em></> : <>Transaction <em>analysis room.</em></>}>
+      <p>{surface === "wallet"
+        ? "Send test tokens, review the warning before you sign, and verify what happened to your account."
+        : "Try a signing request. See what changes in your account, who gains control, and which instructions Custos could read."}</p>
+    </ProductIntro>
+    <nav className="wallet-surface-row" aria-label="Custos Wallet spaces">
+      <div className="wallet-surface-bar">
+        {/* Phân tích đứng trước và là mặc định: chạy được với mọi người, không cần khoá. */}
+        <button aria-pressed={surface === "analysis"} disabled={walletBusy} onClick={() => setSurface("analysis")}>Analysis Room</button>
+        <button aria-pressed={surface === "wallet"} disabled={walletBusy} onClick={() => setSurface("wallet")}>Your wallet</button>
+      </div>
+    </nav>
+    {surface === "analysis" && <AnalysisWallet moVi={() => setSurface("wallet")} />}
     {/* Keep the signer alive when inspecting advanced cases in the same page. */}
-    <div hidden={surface !== "wallet"}><WalletExecution visible={surface === "wallet"} onBusy={setWalletBusy} chuyenMan={chuyenMan} /></div>
+    <div hidden={surface !== "wallet"}><WalletExecution visible={surface === "wallet"} onBusy={setWalletBusy} /></div>
   </>;
 }
 
-function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () => void }) {
+function AnalysisWallet({ moVi }: { moVi?: () => void }) {
   const [cheDo, setCheDo] = useState<CheDo | null>(null);
   /*
    * ĐƯA KẾT QUẢ VÀO TẦM NHÌN — trên điện thoại nó nằm dưới màn hình.
@@ -129,7 +127,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
     if (!o) return;
     const itChuyenDong = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     o.scrollIntoView({ behavior: itChuyenDong ? "auto" : "smooth", block: "start" });
-    o.focus({ preventScroll: true });
+    // Focus vào TIÊU ĐỀ MỨC (Danger / Review carefully / Normal) — một lần cho mỗi kết quả mới; vắng thì vào khung.
+    (o.querySelector<HTMLElement>("[data-muc-tieu-de]") ?? o).focus({ preventScroll: true });
   }, [ketQua]);
   /*
    * DI ĐỘNG: CUỘN TỚI KHUNG KIỂM NGAY KHI BẤM (redesign 06/10). Ở màn hẹp, khung kết quả nằm dưới cột kịch
@@ -576,7 +575,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         }
         mauPL = boPL.mau.find((m) => m.id === kich);
         if (!mauPL) throw new LoiPhatLai(`no recorded data yet for scenario "${kich}"`);
-        htDung = boPL.hienTruong;
+        // Ký hiệu HIỂN THỊ thống nhất với lượt trực tiếp (xem `kyHieuHienThi`); bộ ghi giữ nguyên.
+        htDung = kyHieuHienThi(boPL.hienTruong);
         const m = mauPL;
         taoC = () => {
           const rp = connReplay(m);
@@ -750,9 +750,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
   }
 
   const chuaDung = ht === null && loiCauHinh === null;
-  const diaChiRutGon = ht
-    ? `${ht.nanNhan.slice(0, 5)}…${ht.nanNhan.slice(-5)}`
-    : "No account yet";
+  // Một kiểu rút gọn cho cả ví (`diaChi.ts`) — chỉ để hiển thị; nút chép vẫn chép chuỗi đầy đủ.
+  const diaChiRutGon = ht ? rutGonDiaChi(ht.nanNhan) : "No account yet";
 
   async function saoChepDiaChi() {
     if (!ht) return;
@@ -783,64 +782,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
         </div>
       )}
 
-      <div className="demo-container relative z-10 mx-auto max-w-[1280px] px-4 pb-10 pt-5 sm:px-6 lg:px-8 lg:pb-14 lg:pt-7">
-        <header className="wallet-header flex items-center justify-between gap-4">
-          <div className="wallet-brand flex min-w-0 items-center gap-3">
-            <div className="brand-mark grid h-11 w-11 shrink-0 place-items-center" aria-hidden="true">
-              <img
-                className="brand-symbol"
-                src={`${import.meta.env.BASE_URL}brand/custos-symbol.svg`}
-                alt=""
-                width={44}
-                height={44}
-              />
-            </div>
-            <div className="wallet-brand__copy min-w-0">
-              <p className="wallet-brand__title text-[20px] font-semibold leading-none tracking-[-0.03em] text-chu sm:text-[22px]">
-                Custos <span className="demo-brand-label">Devnet</span>
-              </p>
-              {/* CUSTOS KHÔNG BÁN VÍ. Custos bán SDK cho ví.
-                  "Custos Wallet" + "Ví Devnet · kiểm tra giao dịch trước khi ký" đọc
-                  trôi chảy thành "Custos là một cái ví" — và đó là hiểu nhầm đắt nhất
-                  có thể xảy ra ở track Best Product & Business, vì nó đổi luôn thị
-                  trường: một cái ví phải giành người dùng với Phantom, còn một SDK thì
-                  bán CHO Phantom.
-
-                  Dòng cũ còn `hidden sm:block`, nên dưới 640px không có dòng nào cả —
-                  người xem trên điện thoại chỉ thấy đúng hai chữ "Custos Wallet". Bỏ
-                  `hidden`: chỗ dễ đọc nhầm nhất là chỗ ít chữ nhất.
-
-                  Bỏ luôn "· Devnet" ở đuôi: ở 375px nó rớt xuống một dòng riêng chỉ
-                  để nói lại điều mà banner trên đầu và chip bên cạnh đã nói. Ba lần
-                  cùng một chữ không làm ai tin hơn, chỉ làm dòng bị gãy. */}
-              <p className="wallet-brand__subtitle mt-1 text-[12px] text-chu-mo sm:text-[12.5px]">
-                Reference wallet with the Custos SDK built in
-              </p>
-            </div>
-          </div>
-
-          <div className="wallet-header__actions flex items-center gap-2 sm:gap-3">
-            <ProductNavigation active="demo" />
-          </div>
-        </header>
-        {chuyenMan}
-
-        <section className="demo-intro" aria-labelledby="demo-title">
-          <div>
-            <p className="demo-eyebrow"><ShieldIcon className="h-4 w-4" /> Try the Custos SDK</p>
-            <h1 id="demo-title">Know what will change.<br /><span>Before you sign.</span></h1>
-            <p className="demo-intro__description">One signature can change both your assets and who controls them. Custos shows you the consequences — and the parts it could not read.</p>
-          </div>
-          <ol className="demo-steps" aria-label="Demo steps">
-            {["Pick a scenario", "Custos analyzes", "Read the result"].map((label, i) => {
-              const current = dangChay ? 1 : ketQua || hauQua ? 2 : 0;
-              return <li key={label} aria-current={i === current ? "step" : undefined}>
-                <span className="demo-steps__number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><span>{label}</span>
-              </li>;
-            })}
-          </ol>
-        </section>
-
+      <div className="demo-container relative z-10">
         {ht === undefined && <div className="demo-loading" role="status"><span />Preparing the demo environment…</div>}
 
         {loiCauHinh !== null && (
@@ -914,13 +856,17 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     <span className="balance-unit text-[16px] font-medium text-chu-nhat">{ht.kyHieu ?? "token"}</span>
                   </div>
                   <p className="wallet-balance__note mt-2 text-[12px] text-chu-mo">Devnet test token · no exchange value</p>
+                  {/* Cùng nhãn DEMO với SolBonus nhưng KHÔNG cùng tài khoản (review UX 11/2026, vòng 2). */}
+                  <p className="wallet-balance__note wallet-balance__note--rieng mt-1 text-[12px] text-chu-mo">
+                    A separate Devnet token account from the SolBonus session token — same DEMO label.
+                  </p>
                 </div>
               </div>
 
               <div className="wallet-actions border-t px-5 py-5 sm:px-6">
                 <div className="demo-scenario-heading">
                   <h2 className="mb-3 text-[13.5px] font-semibold text-chu">
-                    <span className="demo-section-number">01</span> Try a signing request
+                    Try a signing request
                   </h2>
                   <span className="demo-scenario-source">Source: {nguonKiem === "trucTiep" ? "Live Devnet" : "Recorded data"}</span>
                 </div>
@@ -950,8 +896,8 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                   {coAi === null
                     ? "Checking the explanation server…"
                     : coAi
-                      ? "Explanation: language model via server, with a deterministic fallback. The warning level is still decided by the rule engine."
-                      : "Explanation: deterministic — this build has no AI server. The warning level is decided by the rule engine."}
+                      ? "Explanation: language model via server, with a deterministic template as fallback. The warning level is still decided by the rule engine."
+                      : "Explanation: deterministic template — this build has no language model server. The warning level is decided by the rule engine."}
                 </p>
                 {/*
                   PHÒNG KỊCH BẢN — duyệt từ sổ đăng ký, không gõ tay từng nút.
@@ -1022,8 +968,15 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                         Custos protection layer
                         <span className={`h-1.5 w-1.5 rounded-full ${batCustos ? "bg-thuong shadow-[0_0_10px_currentColor]" : "bg-nguy"}`} />
                       </span>
+                      {/*
+                        NÓI TẮT ĐI THÌ THẤY GÌ (review UX 11/2026). Tắt ⇒ `HauQua`: chỉ hậu quả mô phỏng,
+                        không mức, không lý do, không độ phủ. KHÔNG nói đó là cách ví khác hoạt động — đội
+                        không có so sánh tái lập được.
+                      */}
                       <span className="mt-0.5 block text-[11.5px] leading-relaxed text-chu-mo">
-                        {batCustos ? "Simulate and explain before signing" : "Checks off — the transaction goes straight to signing"}
+                        {batCustos
+                          ? "On: simulate, set a warning level and explain before signing. Turn it off to see the simulated changes alone."
+                          : "Off: you see only the simulated changes — no warning level, no reasons, no coverage. Nothing is signed."}
                       </span>
                     </span>
                   </span>
@@ -1040,13 +993,21 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                 </label>
               </div>
 
-              <HoatDong rpc={chonRpc(ht)} diaChi={ht.nanNhan} />
+              {/* Thu gọn và đặt tên đúng (review UX 11/2026): bốn dòng "succeeded · 54 days ago" không liên quan
+                  tới lượt phân tích trông như bị bỏ hoang. Đây là lịch sử thật của ví thử, không phải của phòng này. */}
+              <HoatDong
+                rpc={chonRpc(ht)}
+                diaChi={ht.nanNhan}
+                tieuDe="Test wallet history (Devnet)"
+                moTa="Earlier Devnet transactions of this test wallet — demo setup and signed test runs. The Analysis Room itself never signs or sends."
+                thuGon
+              />
             </section>
 
-            <section ref={oKiem} className="review-card reveal-card reveal-card--delay overflow-hidden rounded-[20px]">
+            <section ref={oKiem} className="review-card reveal-card reveal-card--delay rounded-[20px]">
               <div className="review-header flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6">
                 <div>
-                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu"><span className="demo-section-number">02</span> Check before signing</h2>
+                  <h2 className="text-[17px] font-semibold tracking-[-0.015em] text-chu">Check before signing</h2>
                   <p className="mt-0.5 text-[12.5px] text-chu-mo">Simulate the transaction, then explain the consequences</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2 rounded-full border border-nhan/20 bg-nhan/[0.08] px-3 py-1.5 text-[11.5px] font-medium text-nhan">
@@ -1272,6 +1233,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
                     {thongTinNguon && <DaiNguon tt={thongTinNguon} />}
                     <CanhBao
                       ketQua={ketQua}
+                      vungTrucTiep={false}
                       nguonChu={chieuDienGiai}
                       moBangChung={moBangChung}
                       /*
@@ -1348,7 +1310,7 @@ function AnalysisWallet({ chuyenMan, moVi }: { chuyenMan: ReactNode; moVi?: () =
 
                 {nhatKy.length > 0 && (
                   <details className="mt-4">
-                    <summary className="cursor-pointer text-[12.5px] text-chu-mo transition-colors hover:text-chu-nhat">
+                    <summary className="min-h-11 cursor-pointer py-3 text-[12.5px] leading-5 text-chu-mo transition-colors hover:text-chu-nhat">
                       Technical log · {nhatKy.length} events
                     </summary>
                     <pre className="technical-log mt-2 max-h-32 overflow-auto rounded-xl p-3 font-mono text-[10.5px] leading-relaxed text-chu-mo">

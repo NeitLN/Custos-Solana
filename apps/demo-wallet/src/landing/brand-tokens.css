@@ -23,6 +23,8 @@
  */
 
 :root {
+  --custos-masthead: #082720;
+  --custos-hero-accent: #c5e69d;
   /* ── Nền và bề mặt ──────────────────────────────────────────────────── */
   --custos-bg: #f5f8f7;
   --custos-surface: #ffffff;

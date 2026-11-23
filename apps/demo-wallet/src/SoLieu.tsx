@@ -1,4 +1,4 @@
-import { ProductHeader } from "./ProductNavigation.tsx";
+import { ProductHeader, ProductIntro } from "./ProductNavigation.tsx";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { docPhatLai, docThucThiLive, docAiThat } from "../../../scripts/bangChungChungKet.ts";
@@ -126,7 +126,7 @@ const soEn = (n: number, toiDa = 0) => n.toLocaleString("en-US", { maximumFracti
  * Hàng chạy hết chiều ngang: con số đứng cột trái cố định, tên và cách đo chạy dài
  * bên phải với cỡ chữ đọc được. Con số vẫn nổi vì nó to và lệch hẳn khỏi cột chữ.
  */
-function PhepDo({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: string }) {
+function PhepDo({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: ReactNode }) {
   return (
     <div className="evidence-measure grid gap-x-5 gap-y-1 border-t border-vien py-4 sm:grid-cols-[7.5rem_1fr]">
       <div className="text-[30px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-chu sm:text-right">
@@ -140,8 +140,78 @@ function PhepDo({ so, nhan, cachDo }: { so: string; nhan: string; cachDo: string
   );
 }
 
+/** Nhấn mạnh bằng chữ đậm thay cho CHỮ IN HOA (review UX 11/2026) — nội dung câu giữ nguyên. */
+const Dam = ({ children }: { children: ReactNode }) => <strong className="font-semibold text-chu">{children}</strong>;
+
+/*
+ * BẢNG TÓM TẮT ĐẦU TRANG — review UX 11/2026: trang dài ~7.600 px, giám khảo không đọc hết chín mục.
+ * Mỗi ô: một số, một dòng phạm vi, một link tới mục của nó. Mọi số đọc từ CHÍNH `so-lieu.json` mà mục
+ * bên dưới dùng — không gõ tay; trường nào vắng thì ô đó không hiện (ô "chưa đo" luôn hiện, kể cả số 0).
+ * Thứ tự: bằng chứng mạnh nhất trước, giới hạn sau cùng.
+ */
+function TomTat({ d }: { d: SoLieu }) {
+  const o: Array<{ so: string; nhan: string; phamVi: string; href: string }> = [];
+  if (d.test)
+    o.push({
+      so: `${d.soLuatCoCapDoiChung}/${d.soLuat}`,
+      nhan: "rules tested with a control pair",
+      phamVi: `each rule has a triggering sample and a near-identical control case · ${soEn(d.test.pass)} automated tests, ${d.test.fail} failing`,
+      href: "#san-pham",
+    });
+  if (d.phongVan)
+    o.push({
+      so: `${d.phongVan.hieu.dung}/${d.phongVan.n}`,
+      nhan: "people named the consequence",
+      phamVi: `${d.phongVan.n} end users, one interviewer, measured on the warning card as it was then (not the current build)`,
+      href: "#muc-do-hieu",
+    });
+  if (d.thucThiLive)
+    o.push({
+      so: `${d.thucThiLive.soKhopSoDu}/${d.thucThiLive.soBienNhan}`,
+      nhan: "predicted balances matched the chain",
+      phamVi: `confirmed Devnet transactions signed by the fixed demo wallet; ${d.thucThiLive.soLechSoDu} ${d.thucThiLive.soLechSoDu === 1 ? "mismatch" : "mismatches"}${d.thucThiLive.soChuaRoSoDu ? `, ${d.thucThiLive.soChuaRoSoDu} could not be read back` : ""}`,
+      href: "#thuc-thi-live",
+    });
+  if (d.tichHop)
+    o.push({
+      so: `${soEn(d.tichHop.msMotLuot)} ms`,
+      nhan: "for one check on Devnet",
+      phamVi: "one real attack scenario, run by the team's own sample dApp from outside the monorepo",
+      href: "#tich-hop",
+    });
+  if (d.cohort)
+    o.push({
+      so: `${d.cohort.coveragePhanTram}% · ${Math.round((d.cohort.chamTaiSan.hieu / Math.max(d.cohort.chamTaiSan.tong, 1)) * 100)}%`,
+      nhan: "instructions understood · asset-touching ones",
+      phamVi: `public cohort: ${d.cohort.mauDoDuoc} of ${d.cohort.mauTrongCohort} saved mainnet transactions could still be simulated; no ground truth labels`,
+      href: "#du-lieu-cong-khai",
+    });
+  o.push({
+    so: `${d.nguoiMua} · ${d.tichHop?.doiTac ? 1 : 0}`,
+    nhan: "buyer interviews · third-party integrations",
+    phamVi: "not measured yet — the integration and the sample wallet were built by the team itself",
+    href: "#gioi-han",
+  });
+  return (
+    <section className="evidence-summary" aria-labelledby="evidence-summary-title">
+      <h2 id="evidence-summary-title" className="sr-only">Summary</h2>
+      <ul>
+        {o.map((x) => (
+          <li key={x.href}>
+            <a href={x.href}>
+              <span className="evidence-summary__so">{x.so}</span>
+              <span className="evidence-summary__nhan">{x.nhan}</span>
+              <span className="evidence-summary__pham-vi">{x.phamVi}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /** Ghi chú giới hạn — nói ngay cạnh con số, không giấu ở cuối trang. */
-function GioiHan({ tieuDe, children }: { tieuDe: string; children: ReactNode }) {
+function GioiHan({ tieuDe, children }: { tieuDe: ReactNode; children: ReactNode }) {
   return (
     <p className="evidence-limit mt-4 rounded-xl border border-vien bg-white px-4 py-3.5 text-[14px] leading-relaxed text-chu-nhat">
       <span className="font-semibold text-chu">{tieuDe}</span> {children}
@@ -160,27 +230,21 @@ export function SoLieu() {
   }, []);
 
   return (
-    <main className="app-shell evidence-shell">
-      <div className="evidence-container">
-        <ProductHeader active="evidence" label="Evidence" />
-        <header className="evidence-heading">
-          <p className="tool-eyebrow">VERIFICATION RECORD / CUSTOS</p>
-        <h1 className="mt-2 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-chu sm:text-[30px]">
-          Here are the numbers.
-          <span>And their limits.</span>
-        </h1>
-        <p className="mt-3 max-w-[68ch] text-[15px] leading-relaxed text-chu-nhat">
-          Every number below comes from a measurement with a file in the repo — none is typed by hand.
-          The page updates itself from the most recent measurement.
-        </p>
-
-        {d && <div className="evidence-stamp"><span>Data generated from measurements</span><time dateTime={d.sinhLuc}>Updated {ngay(d.sinhLuc)}</time></div>}
-        </header>
+    <>
+      <ProductHeader active="evidence" label="Evidence" />
+      <ProductIntro page="evidence" context="Evidence · Verification record"
+        title={<>The numbers <em>and their limits.</em></>}>
+        <p>Trace each result to its measurement, method and scope. The figures come directly from the latest recorded measurements in the repository.</p>
+        {d && <p className="workspace-intro__note"><time dateTime={d.sinhLuc}>Updated {ngay(d.sinhLuc)}</time></p>}
+      </ProductIntro>
+      <main className="app-shell evidence-shell">
+        <div className="evidence-container">
         {d === undefined && <div className="evidence-status" role="status">Loading the verification record…</div>}
         {d === null && <div className="evidence-status" role="alert"><h2>Could not load the numbers.</h2><p>There is no data to show right now. Try reloading the page or go back to Custos Wallet.</p><button className="nut nut-chinh" type="button" onClick={() => window.location.reload()}>Reload page</button></div>}
         {d && <>
+        <TomTat d={d} />
         <nav className="evidence-index" aria-label="Evidence sections">
-          {d.cohort && <a href="#du-lieu-cong-khai">Public data</a>}
+          {d.cohort && <a href="#du-lieu-cong-khai">Public cohort</a>}
           {d.phongVan && <a href="#muc-do-hieu">Comprehension</a>}
           {d.tichHop && <a href="#tich-hop">SDK integration</a>}
           {d.phatLai && <a href="#phat-lai">Replay</a>}
@@ -193,9 +257,12 @@ export function SoLieu() {
         {d.cohort && (
           <section className="evidence-section mt-10" id="du-lieu-cong-khai">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
-              Testing the engine on public data saved offline
+              Public cohort: testing the engine on public data saved offline
             </h2>
-            <p className="mt-1 text-[14px] text-chu-mo">Measured {ngay(d.cohort.ngayDo)}</p>
+            <p className="mt-1 text-[14px] text-chu-mo">
+              Measured {ngay(d.cohort.ngayDo)} · {d.cohort.mauTrongCohort} saved public SPL transactions,{" "}
+              {d.cohort.mauDoDuoc} still simulatable · not the mainnet replay set in Inspector
+            </p>
 
             <GioiHan tieuDe="This is historical data, not runtime.">
               Some public transactions were saved as offline data to test the engine.
@@ -205,15 +272,37 @@ export function SoLieu() {
             </GioiHan>
 
             <div className="mt-6">
+              {/*
+                Review UX 11/2026: "0 transactions ACCUSED" đứng một mình đọc như "cảnh báo gần như mọi thứ".
+                Câu mới nói cả hai số trên cùng một mẫu số — mọi số đọc từ `d.cohort`. Dữ liệu cohort
+                (`data/seed/cohort-ket-qua.json`) KHÔNG ghi số đếm theo từng lý do của các ca Review carefully,
+                nên trang chỉ nêu loại lý do làm ví dụ, không bịa số đếm.
+              */}
               <PhepDo
-                so={String(d.cohort.caoBuoc)}
-                nhan="transactions ACCUSED"
-                cachDo={`Accused = carries a reason code that ACCUSES a specific behavior. This is different from the Review carefully level: the ${d.cohort.verdict.warning} transactions at that level are there because INFORMATION or coverage is missing (for example "unverified program", "simulation failed") — caution, not an accusation. That is why this number is ${d.cohort.caoBuoc} even though there are ${d.cohort.verdict.warning} warnings. Measured on ${d.cohort.mauDoDuoc} public SPL transactions saved offline; the cohort has no ground truth labels, so this is NOT precision/recall or a false-positive rate.`}
+                so={`${d.cohort.caoBuoc}/${d.cohort.mauDoDuoc}`}
+                nhan="transactions with a reason code naming a harmful behavior"
+                cachDo={
+                  <>
+                    <Dam>
+                      {d.cohort.verdict.warning} of {d.cohort.mauDoDuoc} were flagged “Review carefully” because
+                      information was missing or part of them could not be read.
+                    </Dam>{" "}
+                    A reason code naming a harmful behavior accuses the transaction of a specific act. This
+                    is different from the Review carefully level: the {d.cohort.verdict.warning} transactions at that
+                    level are there because <Dam>information</Dam> or coverage is missing (for example “unverified
+                    program”, “simulation failed”) — caution, not an accusation. That is the current coverage limit, and
+                    it is why the first number is {d.cohort.caoBuoc} even though there are {d.cohort.verdict.warning}{" "}
+                    warnings. Measured on {d.cohort.mauDoDuoc} public SPL transactions saved offline; the cohort has no
+                    ground truth labels, so this is <Dam>not</Dam> precision/recall or a false-positive rate. The
+                    measurement file does not break the {d.cohort.verdict.warning} down by reason, so no per-reason
+                    counts are shown.
+                  </>
+                }
               />
               <PhepDo
                 so={`${d.cohort.coveragePhanTram}%`}
                 nhan="of instructions understood"
-                cachDo={`Average over ${d.cohort.mauDoDuoc} transactions. For the rest, Custos does NOT guess — it reports that it did not understand and keeps the verdict at a cautious level.`}
+                cachDo={<>Average over {d.cohort.mauDoDuoc} transactions. For the rest, Custos does <Dam>not</Dam> guess — it reports that it did not understand and keeps the verdict at a cautious level.</>}
               />
               <PhepDo
                 so={`${Math.round((d.cohort.chamTaiSan.hieu / Math.max(d.cohort.chamTaiSan.tong, 1)) * 100)}%`}
@@ -265,8 +354,7 @@ export function SoLieu() {
                 ))}
               </dl>
               <p className="mt-3 max-w-[68ch] text-[14px] leading-relaxed text-chu-nhat">
-                Of these, {d.cohort.caoBuoc} transactions are accused (carry an accusing code); the remaining
-                warnings are due to missing information or coverage.
+                Of these, {d.cohort.caoBuoc} transactions carry a reason code naming a harmful behavior; the remaining warnings are due to missing information or coverage.
               </p>
             </div>
           </section>
@@ -275,14 +363,15 @@ export function SoLieu() {
         {d.phongVan && (
           <section className="evidence-section mt-10" id="muc-do-hieu">
             <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
-              Do real people understand the warning
+              Do people understand the warning?
             </h2>
             <p className="mt-1 text-[14px] text-chu-mo">
               {d.phongVan.n} people
               {d.phongVan.khoangPhongVan ? ` · interviewed ${khoangNgay(d.phongVan.khoangPhongVan)}` : ""}
+              {" · "}<a className="evidence-research-link" href={`${import.meta.env.BASE_URL}phong-van.html`}>Open the interview worksheet</a>
             </p>
 
-            <GioiHan tieuDe="Measured on the interface AS IT WAS THEN.">
+            <GioiHan tieuDe={<>Measured on the interface <Dam>as it was then</Dam>.</>}>
               The warning card was redesigned after the interview round (Sep 1 and Sep 4). At the time,
               participants saw the <em>Danger</em> level, a 500 → 0 balance table, the account-owner change
               line and <em>&quot;understood 2 of 3 instructions&quot;</em>. The current build keeps that level,
@@ -296,17 +385,17 @@ export function SoLieu() {
               <PhepDo
                 so={`${d.phongVan.hieu.dung}/${d.phongVan.n}`}
                 nhan="named the consequence"
-                cachDo={`We showed the screen and asked "if you press sign, what happens to your wallet?" — with no explanation beforehand. Counted as CORRECT when the person named losing money OR losing control. ${d.phongVan.hieu.motPhan} people understood partly and ${d.phongVan.hieu.sai} misunderstood; "partly" is NOT merged into "correct".`}
+                cachDo={<>We showed the screen and asked “if you press sign, what happens to your wallet?” — with no explanation beforehand. Counted as <Dam>correct</Dam> when the person named losing money <Dam>or</Dam> losing control. {d.phongVan.hieu.motPhan} people understood partly and {d.phongVan.hieu.sai} misunderstood; “partly” is <Dam>not</Dam> merged into “correct”.</>}
               />
               <PhepDo
                 so={`${d.phongVan.quyetDinh.ky}/${d.phongVan.n}`}
                 nhan="would still sign after seeing the warning"
-                cachDo={`Asked SEPARATELY, after the first answer was written down — asking both at once would itself hint that something is worth cancelling. Of those ${d.phongVan.quyetDinh.ky} people: ${d.phongVan.hieuDungVanKy} UNDERSTOOD the consequence correctly and still chose to sign knowingly (a spare wallet, demo tokens with no value), so only ${d.phongVan.quyetDinh.ky - d.phongVan.hieuDungVanKy} signed because they misread the screen. That is where the product failed, and the team keeps the number as is instead of merging it to look better.`}
+                cachDo={<>Asked <Dam>separately</Dam>, after the first answer was written down — asking both at once would itself hint that something is worth cancelling. Of those {d.phongVan.quyetDinh.ky} people: {d.phongVan.hieuDungVanKy} <Dam>understood</Dam> the consequence correctly and still chose to sign knowingly (a spare wallet, demo tokens with no value), so only {d.phongVan.quyetDinh.ky - d.phongVan.hieuDungVanKy} signed because they misread the screen. That is where the product failed, and the team keeps the number as is instead of merging it to look better.</>}
               />
               <PhepDo
                 so={String(d.phongVan.quyetDinh.huy)}
                 nhan="cancelled the transaction"
-                cachDo={`Another ${d.phongVan.quyetDinh.kiemTraThem} people said they would check further before deciding. Understanding and acting are TWO separate variables — measuring only understanding is measuring half the story, and the half that is easier to make look good.`}
+                cachDo={`Another ${d.phongVan.quyetDinh.kiemTraThem} people said they would check further before deciding. Understanding and acting are two separate variables — measuring only understanding is measuring half the story, and the half that is easier to make look good.`}
               />
             </div>
 
@@ -346,7 +435,7 @@ export function SoLieu() {
               <PhepDo
                 so={String(d.tichHop.dongMa)}
                 nhan="lines of integration code"
-                cachDo="Real lines counted, excluding blank lines and comments, in the one file that contains every call to Custos. Three constraints the integrator must keep: the address comes from the WALLET, not from the dApp; context declared by the dApp may only make the product more cautious; and errors BLOCK — they never turn into permission to sign."
+                cachDo={<>Real lines counted, excluding blank lines and comments, in the one file that contains every call to Custos. Three constraints the integrator must keep: the address comes from the <Dam>wallet</Dam>, not from the dApp; context declared by the dApp may only make the product more cautious; and errors <Dam>block</Dam> — they never turn into permission to sign.</>}
               />
               <PhepDo
                 so={`${soEn(d.tichHop.msMotLuot)} ms`}
@@ -409,7 +498,7 @@ export function SoLieu() {
               hàng là một giao dịch đã lên chuỗi; chữ ký mở thẳng Explorer để ai cũng tự kiểm.
             */}
             <details className="evidence-chain mt-4 rounded-xl border border-vien bg-white px-4 py-3">
-              <summary className="cursor-pointer text-[14px] font-medium text-chu">
+              <summary className="min-h-11 cursor-pointer py-2.5 text-[14px] font-medium text-chu">
                 View {d.thucThiLive.chuoi.length} transactions — from the choice to the on-chain signature
               </summary>
               <div className="mt-3 overflow-x-auto">
@@ -438,7 +527,7 @@ export function SoLieu() {
                         <td className="py-1.5 pr-3">{QUYET_DINH[x.quyetDinh] ?? x.quyetDinh}</td>
                         <td className="py-1.5 pr-3">
                           <a
-                            className="font-mono underline underline-offset-2"
+                            className="inline-flex min-h-11 items-center font-mono underline underline-offset-2"
                             href={`https://explorer.solana.com/tx/${encodeURIComponent(x.chuKy)}?cluster=devnet`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -511,7 +600,7 @@ export function SoLieu() {
               <PhepDo
                 so={`${d.evalAi.soBayChanDuoc}/${d.evalAi.soBay}`}
                 nhan="traps blocked"
-                cachDo="Inventing wallet addresses, inventing amounts, reassuring the user, inserting a danger level on its own, returning garbage, returning nothing. The first two traps ONCE GOT THROUGH: the old filter checked the format and reassuring phrases but not whether the wording was grounded. Fixed — the model never receives a full address, so any address in its output is one it made up."
+                cachDo={<>Inventing wallet addresses, inventing amounts, reassuring the user, inserting a danger level on its own, returning garbage, returning nothing. The first two traps <Dam>once got through</Dam>: the old filter checked the format and reassuring phrases but not whether the wording was grounded. Fixed — the model never receives a full address, so any address in its output is one it made up.</>}
               />
             </div>
 
@@ -563,7 +652,7 @@ export function SoLieu() {
 
         <section className="evidence-section mt-10" id="gioi-han">
           <h2 className="text-[19px] font-semibold tracking-[-0.01em] text-chu">
-            What the team has NOT measured yet
+            What the team has not measured yet
           </h2>
           <p className="mt-1 text-[14px] text-chu-mo">
             The current limits, so the results are read within the right scope.
@@ -571,7 +660,7 @@ export function SoLieu() {
           <div className="mt-6">
             <PhepDo
               so={String(d.nguoiMua)}
-              nhan="BUYER interviews (wallets, dApps)"
+              nhan="Buyer interviews (wallets, dApps)"
               cachDo="The team has asked end users, not the people who decide on integration. The two groups answer different questions, and one group's numbers cannot stand in for the other's. The question set is drafted in docs/PHONG-VAN-NGUOI-MUA.md."
             />
             <PhepDo
@@ -600,7 +689,7 @@ export function SoLieu() {
             <PhepDo
               so={String(d.soMau)}
               nhan="test samples"
-              cachDo="Each sample records its origin. The accusation count is measured only on public samples saved offline, never mixed with samples the team built."
+              cachDo="Each sample records its origin. The count of transactions with a reason code naming a harmful behavior is measured only on public samples saved offline, never mixed with samples the team built."
             />
             {d.chiPhi && (
               <PhepDo
@@ -622,6 +711,7 @@ export function SoLieu() {
         </div>
         </>}
       </div>
-    </main>
+      </main>
+    </>
   );
 }

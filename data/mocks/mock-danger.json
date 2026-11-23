@@ -14,7 +14,7 @@
       "severity": "danger"
     },
     {
-      "label": "Token account owner: USDC",
+      "label": "Owner of your USDC token account",
       "before": "You",
       "after": "9xQe…7Tm2",
       "severity": "danger"

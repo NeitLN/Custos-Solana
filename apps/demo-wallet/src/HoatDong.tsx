@@ -37,12 +37,18 @@ export function HoatDong({
   diaChi,
   tieuDe = "Recent activity",
   khiRong = "This wallet has no transactions on Devnet yet. Try a scenario above to create the first one.",
+  moTa,
+  thuGon = false,
 }: {
   rpc: string;
   diaChi: string;
   tieuDe?: string;
   /** Câu khi ví chưa có giao dịch — tuỳ màn: người xem tab Ví không có khoá thì không tự tạo được giao dịch. */
   khiRong?: string;
+  /** Một câu nói các giao dịch này là gì — để chúng không trông như kết quả của màn đang xem. */
+  moTa?: string;
+  /** Thu vào `<details>` đóng sẵn (Phòng phân tích: lịch sử này không phải việc chính của màn). */
+  thuGon?: boolean;
 }) {
   const [tt, setTt] = useState<TrangThai>({ loai: "dangTai" });
 
@@ -66,9 +72,9 @@ export function HoatDong({
     };
   }, [rpc, diaChi]);
 
-  return (
-    <section className="border-t border-vien px-5 py-5 sm:px-6">
-      <h2 className="mb-3 text-[13.5px] font-semibold text-chu">{tieuDe}</h2>
+  const noiDung = (
+    <>
+      {moTa && <p className="mb-3 text-[12px] leading-relaxed text-chu-mo">{moTa}</p>}
 
       {tt.loai === "dangTai" && (
         <ul className="space-y-2.5" aria-busy="true" aria-label="Loading activity">
@@ -127,6 +133,23 @@ export function HoatDong({
           ))}
         </ul>
       )}
+    </>
+  );
+
+  if (thuGon) {
+    return (
+      <section className="hoat-dong hoat-dong--thu-gon border-t border-vien px-5 py-2 sm:px-6">
+        <details>
+          <summary className="min-h-[44px] cursor-pointer py-3 text-[13px] font-semibold text-chu">{tieuDe}</summary>
+          <div className="pb-3">{noiDung}</div>
+        </details>
+      </section>
+    );
+  }
+  return (
+    <section className="border-t border-vien px-5 py-5 sm:px-6">
+      <h2 className="mb-3 text-[13.5px] font-semibold text-chu">{tieuDe}</h2>
+      {noiDung}
     </section>
   );
 }

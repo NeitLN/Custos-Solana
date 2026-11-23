@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Keypair } from "@solana/web3.js";
 import { DEMO_FAUCET_URL } from "../../../scripts/demo-wallet-config.ts";
 import { dinhDangSo, inspect } from "@custos-solana/core";
@@ -6,7 +6,6 @@ import type { GoiMoHinh } from "@custos-solana/ai";
 import { ganNhanTheoLuot, type ExplanationSource } from "./live/interpreter.ts";
 import { sessionStorageKey, PublicSessionCache, mayDiscardSession, isEmptySession } from "./live/store.ts";
 import { SCENARIOS, type LiveKind } from "./live/scenarios.ts";
-import { ProductNavigation } from "./ProductNavigation.tsx";
 import { LINK } from "./landing/links.ts";
 import { CanhBao } from "./CanhBao.tsx";
 import { DaiPhamVi } from "./DaiPhamVi.tsx";
@@ -26,11 +25,9 @@ const STORAGE = "custos.live-receipt.v1";
 export function WalletExecution({
   visible,
   onBusy,
-  chuyenMan,
 }: {
   visible: boolean;
   onBusy: (busy: boolean) => void;
-  chuyenMan?: ReactNode;
 }) {
   const [aiAvailable, setAiAvailable] = useState<boolean | null>(null);
   const [useAI, setUseAI] = useState(true);
@@ -222,7 +219,6 @@ export function WalletExecution({
       : LINK.solBonus;
     window.open(url, "_blank", "noopener,noreferrer");
   };
-  const stage = view.receipt?.observation ? 2 : p || view.busy ? 1 : 0;
   const status =
     view.send.pha === "dangKy"
       ? "Signing the transaction…"
@@ -349,45 +345,6 @@ export function WalletExecution({
         <strong>Solana Devnet</strong> · fixed test wallet · tokens have no real-money value
       </DaiPhamVi>
       <div className="wallet-container">
-        <header className="wallet-header flex items-center justify-between gap-4">
-          <a
-            className="wallet-brand flex items-center gap-3"
-            href={`${import.meta.env.BASE_URL}gioi-thieu.html`}
-          >
-            <img src={`${import.meta.env.BASE_URL}brand/custos-symbol.svg`} alt="" width="40" height="40" />
-            <div>
-              <p className="wallet-brand__title">
-                Custos <span className="demo-brand-label">Devnet</span>
-              </p>
-              <p className="wallet-brand__subtitle">Reference wallet with the Custos SDK built in</p>
-            </div>
-          </a>
-          <div className="wallet-header__actions">
-            <ProductNavigation active="demo" />
-          </div>
-        </header>
-        {chuyenMan}
-        <section className="demo-intro" aria-labelledby="demo-title">
-          <div>
-            <p className="demo-eyebrow">Your wallet · Your decision</p>
-            <h1 id="demo-title">
-              One transaction.
-              <br />
-              <span>See it clearly before you sign.</span>
-            </h1>
-            <p className="demo-intro__description">
-              Send tokens, see the warning before you sign, and verify what actually happened to your account.
-            </p>
-          </div>
-          <ol className="demo-steps" aria-label="Transaction steps">
-            {["Pick a transaction", "Review & sign", "Confirm on-chain"].map((label, i) => (
-              <li key={label} aria-current={stage === i ? "step" : undefined}>
-                <span className="demo-steps__number">0{i + 1}</span>
-                <span>{label}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
         <main className="demo-workspace grid items-start">
           <section className="wallet-card overflow-hidden">
             {/* Chưa có khoá ⇒ việc làm được đứng ĐẦU thẻ, cả về DOM lẫn hiển thị: đổi thứ tự bằng CSS
@@ -702,8 +659,10 @@ export function WalletExecution({
               <HoatDong
                 rpc={chonRpc(ht)}
                 diaChi={view.wallet}
-                tieuDe="Recent transactions of this wallet on Devnet"
+                tieuDe="Test wallet history (Devnet)"
+                moTa="Earlier Devnet transactions of this test wallet — demo setup and signed test runs."
                 khiRong="This wallet has no transactions on Devnet yet. The presenter can sign a test transaction with the key file."
+                thuGon
               />
             )}
             <section className="wallet-history" aria-labelledby="history-title" hidden={history.length === 0}>
@@ -877,6 +836,7 @@ export function WalletExecution({
                         <button
                           className={`nut ${needsOverride ? "wallet-override" : "nut-chinh"}`}
                           disabled={!consent || view.busy}
+                          aria-describedby={!consent ? "wallet-sign-reason" : undefined}
                           onClick={() =>
                             void run(() => session.execute(p.id, needsOverride ? "override" : "approve"))
                           }
@@ -888,6 +848,12 @@ export function WalletExecution({
                               : "Sign and send on Devnet"}
                         </button>
                       </div>
+                      {/* Nút ký bị khoá thì NÓI vì sao — thấy được và gắn vào nút bằng aria-describedby (review UX mục 4). */}
+                      {!consent && (
+                        <p id="wallet-sign-reason" className="wallet-small-print">
+                          The send button stays off until you tick the box above.
+                        </p>
+                      )}
                       <p className="wallet-small-print">
                         {p.protected
                           ? "The signed transaction must match the result just checked."

@@ -8,6 +8,7 @@ import { PhongVan } from "./PhongVan.tsx";
 import "./style.css";
 import "./product-presentation.css";
 import "./tool-design.css";
+import "./product-workspace.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

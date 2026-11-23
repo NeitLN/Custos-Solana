@@ -128,27 +128,27 @@ export function ganNhanTheoLuot(
 /** Câu nhãn hiển thị ngay dưới câu diễn giải — một chỗ cho cả Phòng phân tích và màn thực thi. */
 export const NHAN_NGUON: Record<ExplanationSource, { ngan: string; dai: string }> = {
   moHinh: {
-    ngan: "AI explanation",
+    ngan: "Explanation: language model (output filtered)",
     dai: "The text above was written by a language model and passed the output filter. The warning level is still decided by the rule engine.",
   },
   tatDinh: {
-    ngan: "Deterministic explanation",
+    ngan: "Explanation: deterministic template",
     dai: "The text above was written by the deterministic core, without calling a language model.",
   },
   moHinhBiChan: {
-    ngan: "Deterministic explanation",
+    ngan: "Explanation: deterministic template (model output rejected by the filter)",
     dai: "The model answered but the output filter rejected it, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   moHinhQuaHan: {
-    ngan: "AI did not respond, using the deterministic explanation",
+    ngan: "Explanation: deterministic template (language model unavailable)",
     dai: "The model did not answer in time, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   moHinhLoi: {
-    ngan: "AI did not respond, using the deterministic explanation",
+    ngan: "Explanation: deterministic template (language model unavailable)",
     dai: "The model could not answer, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
   chuaCauHinh: {
-    ngan: "Deterministic explanation",
+    ngan: "Explanation: deterministic template",
     dai: "This build has no language model configured, so the text above is the deterministic explanation. The warning level is unchanged.",
   },
 };

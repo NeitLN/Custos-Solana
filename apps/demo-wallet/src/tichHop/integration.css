@@ -1,0 +1,25 @@
+.tich-hop-muc { display:grid; gap:12px; padding:20px 0; border-top:1px solid var(--vien, #d6ddd6); min-width:0; }
+.tich-hop-muc > * { min-width:0; }
+.tich-hop-muc h2 { font-size:19px; margin:0; } .tich-hop-muc h3 { font-size:15px; margin:8px 0 0; }
+.tich-hop-muc p, .tich-hop-muc li { font-size:14px; line-height:1.7; max-width:78ch; }
+.tich-hop-muc pre { margin:0; padding:12px 14px; border-radius:10px; background:#0f1a14; color:#e3efe6; overflow-x:auto; font-size:12.5px; line-height:1.55; }
+.tich-hop-ma { max-height:420px; }
+.tich-hop-json { max-height:320px; }
+.tich-hop-gioi-han { border:1px solid #cbd9ce; background:#eef2ea; padding:16px 20px; border-radius:10px; margin-bottom:8px; }
+.tich-hop-gioi-han ul { margin:0; padding-left:18px; list-style:disc; }
+.tich-hop-bang { overflow-x:auto; }
+.tich-hop-bang:focus-visible { outline:2px solid #2f6b3a; outline-offset:2px; }
+.tich-hop-bang table { width:100%; min-width:640px; border-collapse:collapse; font-size:13.5px; line-height:1.55; }
+.tich-hop-bang th, .tich-hop-bang td { text-align:left; vertical-align:top; padding:8px 10px; border-top:1px solid #d6ddd6; }
+.tich-hop-bang th { font-weight:600; font-size:12.5px; color:#3f5643; border-top:0; }
+.tich-hop-gap { border:1px solid #d6ddd6; border-radius:10px; background:#fff; padding:0 14px; }
+.tich-hop-gap > summary { min-height:44px; display:flex; align-items:center; cursor:pointer; font-size:14px; font-weight:600; color:#30543f; }
+.tich-hop-gap[open] { display:grid; gap:12px; padding-bottom:14px; }
+.tich-hop-luu-y { border:1px solid #e6cfae; background:#fbf5ec; padding:10px 14px; border-radius:8px; }
+.tich-hop-chay { display:grid; gap:12px; }
+.tich-hop-ca { display:grid; gap:6px; }
+.tich-hop-ca button { justify-self:start; font:inherit; font-size:14px; min-height:44px; padding:8px 14px; border-radius:8px; border:1px solid #146c60; background:#146c60; color:#fff; cursor:pointer; text-align:left; }
+.tich-hop-ca button:disabled { opacity:.5; cursor:not-allowed; }
+.tich-hop-kq { border-left:3px solid #146c60; padding-left:12px; }
+.tich-hop-kq[data-cho=chan], .tich-hop-kq[data-cho=block] { border-color:#b3261e; }
+.tich-hop-phu { opacity:.8; font-size:13px !important; }
