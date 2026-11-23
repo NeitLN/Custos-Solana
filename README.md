@@ -131,7 +131,7 @@ Use **Node 24.12.x** and **npm 11.6.2** as pinned in [.nvmrc](.nvmrc) and [packa
 git clone https://github.com/NeitLN/Custos-Solana.git
 cd Custos-Solana
 npx npm@11.6.2 ci
-npx npm@11.6.2 run check # typecheck + 1421 tests
+npx npm@11.6.2 run check # typecheck + 1456 tests
 npm run vi
 ```
 
@@ -181,7 +181,7 @@ The numbers below are a **stored snapshot**, not a promise of performance or acc
 | Scope | Stored result |
 |---|---|
 | Rules in production | **14** — 12 from the spec, plus 2 rules that came out of the security audit |
-| Tests | **1421**, run by `npm run check` |
+| Tests | **1456**, run by `npm run check` |
 | Samples in the dataset | **38** — all 14 rules have a triggering sample; **all 14 rules** also have a near-identical control case that differs only in the deciding condition |
 | Real mainnet transactions, replayed | **10** consecutive successful SPL Token transactions, recorded on 2026-10-06 seconds after execution, not selected by outcome: **4** Normal (no flags in the parts we could read) · **6** Review carefully (**4** because the re-simulation failed — fail-safe, never returns `safe`) · **0** Danger. [Data](apps/demo-wallet/public/replay/mainnet.json) · [how it was recorded](scripts/capture-mainnet-phat-lai.ts) |
 
@@ -190,7 +190,7 @@ The numbers below are a **stored snapshot**, not a promise of performance or acc
 
 | Evidence | What it shows, and within what scope | Not yet shown |
 |---|---|---|
-| **1421 tests** automated | The behaviours and invariants in the test suite | Detection quality on real-world traffic |
+| **1456 tests** automated | The behaviours and invariants in the test suite | Detection quality on real-world traffic |
 | **38 samples** labelled | Triggering and control cases for the rules | Generalisation to an independent set |
 | **Public cohort stored offline** | Behaviour on stored responses | Precision/recall; the cohort has no ground truth yet |
 | **10 replayed mainnet transactions** | The engine reads real mainnet messages; when state is missing it says so instead of guessing | A signing flow or asset protection on mainnet; a detection rate — 10 samples, unlabelled |
@@ -201,7 +201,7 @@ Rubric mapping per [ADR-0001](docs/adr/0001-doi-huong-technical-build.md); the w
 
 | Criterion group | Evidence and source |
 |---|---|
-| **30 %** difficulty and depth | **14** L2 rules · **1421** tests in the suite, a few CLI cases need RPC · [behaviour matrix](docs/bao-mat/MA-TRAN-HANH-VI.md) |
+| **30 %** difficulty and depth | **14** L2 rules · **1456** tests in the suite, a few CLI cases need RPC · [behaviour matrix](docs/bao-mat/MA-TRAN-HANH-VI.md) |
 | **25 %** on-chain/off-chain architecture | L1/L2/L3; the engine owns the verdict, the integrating app owns signing; no dedicated contract yet |
 | **25 %** Solana stack · performance | `inspect()` **639 ms** in the stored integration measurement; [RPC budget](docs/NGAN-SACH-RPC.md) |
 | **20 %** demo and presentation | FCP **88 ms** · click→card **n=30**, median **890 ms**, observed p95 **6005 ms** · [environment and method](docs/HIEU-NANG.md) |
@@ -216,7 +216,7 @@ Interface numbers were measured on headless Chromium; do not extrapolate them to
 
 This consumer was built by the team; the integration-friction measurement does not prove there is a customer or partner.
 
-Measured, not estimated: **1421 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
+Measured, not estimated: **1456 tests** and **38 labelled samples** in the stored snapshot. These are scoped engineering checks, not an accuracy benchmark.
 
 </details>
 

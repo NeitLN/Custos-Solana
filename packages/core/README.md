@@ -483,7 +483,7 @@ always matches the verdict just produced, instead of being built independently a
 
 ```bash
 npm install
-npx npm@11.6.2 run check     # 1421 tests, run offline
+npx npm@11.6.2 run check     # 1456 tests, run offline
 npm run thu-goi              # install the tarball into an empty project OUTSIDE the repo and run it for real
 
 node --experimental-strip-types scripts/dung-hien-truong.ts   # build the Devnet setup
